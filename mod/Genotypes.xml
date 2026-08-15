@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <genotypes>
 
   <genotype Name="Mutated Human" Load="Merge" MutationPoints="16" RandomWeight="10" BaseHPGain="2-3" BaseSPGain="65" BaseMPGain="1-2">
@@ -25,7 +25,7 @@
     <extrainfo>Increased HP gain, fewer points to allocate</extrainfo>
   </genotype>
 
-  <genotype Name="Psionic" MutationPoints="0" StatPoints="34" AllowedMutationCategories="" CyberneticsLicensePoints="2" RandomWeight="10" DisplayName="Psionic Adept" Subtypes="Affinities" Class="" Code="r" Tile="creatures/sw_nomad.bmp" DetailColor="M" BodyObject="Yttrian" BaseHPGain="1-4" BaseSPGain="95" BaseMPGain="0" Species="human" IsTrueKin="True" CharacterBuilderModules="XRL.CharacterBuilds.Qud.QudCallingModule,XRL.CharacterBuilds.Qud.QudMutationsModule">
+  <genotype Name="Psionic" MutationPoints="0" StatPoints="34" AllowedMutationCategories="" CyberneticsLicensePoints="2" RandomWeight="10" DisplayName="Psionic Adept" Subtypes="Affinities" Class="" Code="r" Tile="creatures/sw_nomad.bmp" DetailColor="M" BodyObject="PsionicAdept" BaseHPGain="1-4" BaseSPGain="95" BaseMPGain="0" Species="human" IsTrueKin="True" CharacterBuilderModules="XRL.CharacterBuilds.Qud.QudCallingModule,XRL.CharacterBuilds.Qud.QudMutationsModule">
     <stat Name="Strength" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Strength}} score determines how effectively you penetrate your opponents' armor with melee attacks, how much damage your melee attacks do, your ability to resist forced movement, and your carry capacity." />
     <stat Name="Agility" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Agility}} score determines your accuracy with both melee and ranged weapons and your ability to dodge attacks." />
     <stat Name="Toughness" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Toughness}} score determines your number of hit points, your natural healing rate, and your ability to resist poison and disease." />

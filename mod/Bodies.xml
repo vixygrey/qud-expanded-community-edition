@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <bodies>
 
   <bodyparttypes>
-    <bodyparttype Type="Chipset Interface" Description="Chipset Interface" Integral="true" Abstract="true" IgnorePosition="true" />
+    <bodyparttype Type="Chip Interface" Description="Chip Interface" Integral="true" Abstract="true" IgnorePosition="true" />
   </bodyparttypes>
 
   <anatomies>
 
     <anatomy Name="Humanoid" Load="Merge">
-      <part Type="Chipset Interface" />
+      <part Type="Chip Interface" />
     </anatomy>
 
     <anatomy Name="TrueKin">
@@ -26,11 +26,11 @@
       <part Type="Missile Weapon" Laterality="Left" />
       <part Type="Hands" DependsOn="Hands" />
       <part Type="Feet" />
-      <part Type="Chipset Interface" />
-      <part Type="Chipset Interface" />
+      <part Type="Chip Interface" />
+      <part Type="Chip Interface" />
     </anatomy>
 
-    <anatomy Name="Yttrian">
+    <anatomy Name="PsionicAdept">
       <part Type="Head">
         <part Type="Face" />
       </part>
@@ -45,10 +45,10 @@
       <part Type="Missile Weapon" Laterality="Left" />
       <part Type="Hands" DependsOn="Hands" />
       <part Type="Feet" />
-      <part Type="Chipset Interface" />
-      <part Type="Chipset Interface" />
-      <part Type="Chipset Interface" />
-      <part Type="Chipset Interface" />
+      <part Type="Chip Interface" />
+      <part Type="Chip Interface" />
+      <part Type="Chip Interface" />
+      <part Type="Chip Interface" />
     </anatomy>
 
   </anatomies>

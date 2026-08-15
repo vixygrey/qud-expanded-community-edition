@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <objects>
 
@@ -16,8 +16,8 @@
     <part Name="Body" Anatomy="TrueKin" />
   </object>
 
-  <object Name="Yttrian" Inherits="Humanoid">
-    <part Name="Body" Anatomy="Yttrian" />
+  <object Name="PsionicAdept" Inherits="Humanoid">
+    <part Name="Body" Anatomy="PsionicAdept" />
   </object>
   
 </objects>
