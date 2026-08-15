@@ -3,19 +3,28 @@
 ## What this is
 
 A community fork of **Caves of Qud Expanded** (Steam Workshop `1134036260`), originally by
-**Mura** (`@mura_raven`). Fork permission is public and explicit — see `PERMISSION.md`.
+**Mura** (`@mura_raven`). Fork permission is public and explicit — see `docs/PERMISSION.md`.
 
-This folder **is** the mod. There is no build step: Qud loads these XML files directly, and the
-folder as-is is what gets packaged and uploaded to the Workshop. Anything you add here ships to
-subscribers.
+**`mod/` is the mod.** There is no build step: Qud loads those XML files directly, and `mod/` is
+what gets packaged and uploaded to the Workshop. **Anything you put in `mod/` ships to
+subscribers** — 8 of the 87 mods installed locally accidentally ship a `README.md`, 5 a `LICENSE`,
+4 a `.csproj`. Development tooling lives at the repo root, outside `mod/`, so it never reaches
+players. Point the Workshop uploader at `mod/`, not the repo root.
 
-**Read `FEATURES.md` before touching anything.** It's the complete reference for what the mod
+```
+mod/     the shipped mod          docs/    reference documentation
+tools/   validation and helpers   .github/ CI
+```
+
+**Read `docs/FEATURES.md` before touching anything.** It's the complete reference for what the mod
 does — every system, every item, all 350 new blueprints and 209 vanilla merges, reconstructed
 from the source because no complete list ever existed. Section 10 is the bug/fork checklist.
+**`docs/STYLEGUIDE.md`** covers naming, formatting, and Workshop requirements — read §1 before
+renaming anything, because several conventions that look like mess are load-bearing identifiers.
 
 ## Fork charter
 
-Five rules, set by the maintainer at the start of the fork. They are constraints, not
+Six rules, set by the maintainer at the start of the fork. They are constraints, not
 aspirations — where existing content violates one, that's debt to pay down, not precedent.
 
 ### 1. Compatibility is a hard constraint
@@ -53,7 +62,7 @@ value curves below. That derivability is the whole reason Mura's conventions are
 
 Credit is the one condition attached to the fork permission, so it is non-negotiable.
 
-- The `PERMISSION.md` §4 credit list stays intact in the Workshop description, the README, and
+- The `docs/PERMISSION.md` §4 credit list stays intact in the Workshop description, the README, and
   release notes — **Noble Lark named explicitly**, as Mura asked.
 - **Keep the `Raven_` blueprint prefix.** It's Mura's signature in the namespace. Renaming it
   would erase attribution from the one place every future contributor actually reads.
@@ -62,15 +71,16 @@ Credit is the one condition attached to the fork permission, so it is non-negoti
 
 - **No workarounds, no bandaids.** Fix causes. If a correct fix is out of scope right now,
   write the issue and leave the defect — don't paper it.
-- **No build step.** The folder is the mod. Keep it that way; it's why anyone can contribute.
+- **No build step.** `mod/` is loaded directly by the game. Keep it that way; it's why anyone
+  can contribute without a toolchain.
 - **Validation is one command, and it fails loudly.** Grow the checks under "Validating changes"
-  into a real script rather than a heredoc pasted out of a doc — the `Skills.xml` bug survived
+  into a real script rather than a heredoc pasted out of a doc — the `mod/Skills.xml` bug survived
   years precisely because nothing ran automatically.
 - Issue → branch → small PR → squash merge, per the global workflow rules.
 
 ### 5. Safety
 
-Qud mods run with **full process privileges**, and any `Scripting/` directory triggers a
+Qud mods run with **full process privileges**, and any `mod/Scripting/` directory triggers a
 mod-approval prompt for every subscriber. That is a trust relationship; treat it as one.
 
 - **Prefer XML to C#.** Every feature achievable in data should be data. Less code is both safer
@@ -80,7 +90,7 @@ mod-approval prompt for every subscriber. That is a trust relationship; treat it
 - **No Harmony.** Freehold recommend it as a last resort; it also breaks on arm64 macOS
   (`../design-docs/API_VERIFICATION.md` §1). Every hook these designs need exists as a `MinEvent`.
 - **No reflection into game internals.** Public events and documented extension points only.
-- The current `Scripting/` is 36 one-line `ModImprovedMutationBase<T>` subclasses — no I/O, no
+- The current `mod/Scripting/` is 36 one-line `ModImprovedMutationBase<T>` subclasses — no I/O, no
   reflection, no state. **That inertness is the ceiling**, not a starting point. Any C# that
   wants more must justify itself explicitly.
 
@@ -88,12 +98,6 @@ mod-approval prompt for every subscriber. That is a trust relationship; treat it
 
 Nobody should have to swallow the whole mod to get one part of it. Opinionated changes ship
 **off by default**; content ships on.
-
-There is a hard technical constraint here that shapes everything:
-
-> **Mod options cannot gate XML.** Blueprint and population-table merges are applied at load
-> time, before any option is read. `Options.xml` + `[OptionFlag]` only reaches behaviour that
-> C# evaluates at runtime.
 
 Qud ships a real mod-options menu and it is the primary mechanism. Two halves, verified against
 the mods installed on this machine (`~/Library/Application Support/Steam/steamapps/workshop/
@@ -107,7 +111,7 @@ content/333640/`):
   class, with an `[OptionFlagUpdate]` method to react to changes. Empirically firm: of the 12
   installed mods shipping an `Options.xml`, **all 12 also ship at least one `.cs`**.
 
-### Content is gateable too — the load-time objection is wrong
+**Content is gateable too.**
 
 Blueprints and tables are read from XML at load, but the **loaded result stays mutable**.
 `PopulationManager.Populations` is a live `Dictionary<string, PopulationInfo>`; installed mods
@@ -142,7 +146,7 @@ opinion. Cross-mod dependencies use `LoadBefore` / `LoadAfter` in `manifest.json
 is deprecated as of build 210.
 
 Note this rule spends a little of rule 5's budget: gating content means more C#, not less. The
-mod already ships `Scripting/`, so the subscriber approval prompt is **already paid for**, and
+mod already ships `mod/Scripting/`, so the subscriber approval prompt is **already paid for**, and
 option-reading plus table adjustment stays well inside rule 5's limits — no I/O, no network, no
 reflection. It licenses nothing beyond that.
 
@@ -151,16 +155,16 @@ reflection. It licenses nothing beyond that.
 These are the things blocking a first release, in order. **The mod loads and plays on current
 Qud** — none of this is about getting it to run.
 
-1. **`workshop.json` still has `"WorkshopId": 1134036260`** — Mura's item. This fork releases
+1. **`mod/workshop.json` still has `"WorkshopId": 1134036260`** — Mura's item. This fork releases
    *separately*, so that field must be cleared or the uploader targets their page. `Description`
    also holds Mura's pre-handoff text (which asks that the mod *not* be forked); `Title` and
    `ImagePath` need updating too. Upload blocker and a charter-rule-3 obligation at once.
 2. **`Artifact 3`–`Artifact 8` are full table replacements, not merges.** The mod's worst
    compatibility defect: conflicts with any other mod touching those tables, and silently
    discards future vanilla additions to them. Charter rule 1 makes this the highest-value fix in
-   the codebase. See `FEATURES.md` §7.3. Same class of problem, smaller: the `<removetable>`
+   the codebase. See `docs/FEATURES.md` §7.3. Same class of problem, smaller: the `<removetable>`
    chain in `Armor 7C/7R/8C/8R`.
-3. **`Skills.xml` is not well-formed** — line 10 has a duplicate `Tile` attribute on Berserk!.
+3. **`mod/Skills.xml` is not well-formed** — line 10 has a duplicate `Tile` attribute on Berserk!.
    It is the only file in the mod that fails a strict XML parse. Since the mod otherwise plays
    fine, Qud's loader is either tolerating it or dropping this one file silently; Qud loads files
    independently, so both are consistent with what we see. **Determine which before fixing** —
@@ -168,12 +172,12 @@ Qud** — none of this is about getting it to run.
    actually buy Axe → Cleave. That answer tells you whether §4's skill changes have ever shipped.
 4. **72 of 144 psionic chips can't drop.** `Raven_Chips Tier 1/2/3` only list the first chip of
    each family plus its chipset (24 entries where 48 are needed). Chips B and C of all 12
-   families are in no table and have no `TinkerItem`. See `FEATURES.md` §3.3.
+   families are in no table and have no `TinkerItem`. See `docs/FEATURES.md` §3.3.
 5. **Nine armor pieces are unobtainable** — the four nanoweave, four flexi, and the mutating mask
    have no drop entry and no tinker recipe. Plus `Raven_Iron Maceth`. See §7.2.
 
 Lower-priority items (value typos, tier typos, the `<stag>` bug, the Akimbo class collision) are
-in `FEATURES.md` §10, severity-ranked with file and line.
+in `docs/FEATURES.md` §10, severity-ranked with file and line.
 
 ## Conventions to preserve
 
@@ -199,19 +203,19 @@ Mura was consistent. Match these when adding anything.
 
 Mura's player-facing docs all say **"Psionic Interface"**; the XML defines the body part as
 **"Chipset Interface"** and the items are chips/chipsets. The in-game string comes from
-`Bodies.xml`, so players currently see "Chipset Interface". Pick one and make it consistent
+`mod/Bodies.xml`, so players currently see "Chipset Interface". Pick one and make it consistent
 before writing any new player-facing text.
 
 ## Validating changes
 
 There is no test suite. The minimum bar before any commit — this would have caught the
-`Skills.xml` bug:
+`mod/Skills.xml` bug:
 
 ```bash
 python3 - <<'EOF'
 import xml.etree.ElementTree as ET, glob, sys
 bad = 0
-for f in glob.glob('*.xml') + glob.glob('ObjectBlueprints/*.xml') + glob.glob('*.rpm'):
+for f in glob.glob('mod/*.xml') + glob.glob('mod/ObjectBlueprints/*.xml') + glob.glob('mod/*.rpm'):
     try:
         ET.parse(f)
     except Exception as e:
@@ -223,10 +227,10 @@ EOF
 
 Useful follow-up checks, all scriptable against the XML:
 
-- Every `Blueprint="..."` in `PopulationTables.xml` resolves to a real object.
+- Every `Blueprint="..."` in `mod/PopulationTables.xml` resolves to a real object.
 - Every new blueprint is reachable — appears in a population table **or** has a `TinkerItem` part.
   (This is the check that surfaces the 72 chips and 9 armor pieces.)
-- Every `Raven_Mod*` part referenced by a chip has a matching class in `Scripting/`.
+- Every `Raven_Mod*` part referenced by a chip has a matching class in `mod/Scripting/`.
   (Currently clean: 36 referenced, 36 defined.)
 - Tier tags are internally consistent with the value curve.
 
@@ -235,12 +239,12 @@ In-game, `wish` is the fastest way to spawn a blueprint by name and eyeball it.
 ## Things not to break
 
 - **Credit is the one condition of the fork permission.** Mura named **Noble Lark** explicitly for
-  the subtype sprites. Keep the credits list in `PERMISSION.md` §4 intact in the Workshop
+  the subtype sprites. Keep the credits list in `docs/PERMISSION.md` §4 intact in the Workshop
   description and any README.
-- `Ammo.xml` is **entirely commented out** (62 objects, "removed temporarily"). Don't delete it —
+- `mod/ObjectBlueprints/Ammo.xml` is **entirely commented out** (62 objects, "removed temporarily"). Don't delete it —
   it's the largest block of ready-made content available, including vibro bullets/shells and a
   reworked shotgun shell. Reviving it is a good early win.
-- Four vibro weapons are commented out in `Melee Weapons.xml` with "rework these or remove them".
+- Four vibro weapons are commented out in `mod/ObjectBlueprints/MeleeWeapons.xml` with "rework these or remove them".
 - The `Chipset Interface` slot is merged into the base `Humanoid` anatomy, so **every humanoid NPC
   in the game has one**. Nothing populates it today. Be deliberate if you ever change that — it
   would affect the entire world at once.
@@ -252,7 +256,7 @@ Under git as of 2026-08-15, with a deliberate two-commit baseline:
 | Commit | Contents |
 |---|---|
 | `971d97e` — tag **`upstream-2.2`** | Pristine upstream 2.2, 76 files, unmodified |
-| `da753b7` | This fork's docs — `FEATURES.md`, `PERMISSION.md`, `CLAUDE.md`, `.gitignore` |
+| `da753b7` | This fork's docs — `FEATURES.md`, `PERMISSION.md`, `CLAUDE.md`, `.gitignore` (later moved to `docs/`) |
 
 So `git diff upstream-2.2` shows exactly what the fork has changed, forever. Keep that true:
 never amend or rewrite the baseline commit. No remote is configured yet.
@@ -261,7 +265,7 @@ never amend or rewrite the baseline commit. No remote is configured yet.
 
 Trunk-based, per the global rules, with these project specifics:
 
-- **Issue first, always.** Nothing gets coded before it's filed. `FEATURES.md` §10 is the backlog
+- **Issue first, always.** Nothing gets coded before it's filed. `docs/FEATURES.md` §10 is the backlog
   to seed from — each row is already scoped, severity-ranked, and carries a file and line.
   Labels: `bug`, `feature`, `chore`, `docs`, `tech-debt`, `compat`, `upstream-defect`.
   `compat` earns its own label because charter rule 1 makes it a distinct class of work.
@@ -270,7 +274,7 @@ Trunk-based, per the global rules, with these project specifics:
   population-table edit and a blueprint edit can look identical in a diff and have completely
   different blast radii. Never mix a defect fix with a design change in one commit.
 - **Conventional commits**, with scopes that match this repo's structure:
-  `tables` (`PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
+  `tables` (`mod/PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
   `genotypes` · `bodies` · `workshop` · `scripting` · `docs`.
   Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #4)`.
 - **The body carries the causality.** Charter rule 2 lives or dies here — say *why*, and cite the
@@ -286,13 +290,14 @@ Trunk-based, per the global rules, with these project specifics:
 
 | File | What it is |
 |---|---|
-| `FEATURES.md` | Complete feature reference + bug checklist. Written for this fork; the authoritative doc. |
-| `PERMISSION.md` | Fork permission, provenance, credit obligations, pre-upload actions. |
-| `permission-mura-workshop-comment.png` | Screenshot evidence of the grant. |
-| `What Does the Mod Do (WIP).txt` | Mura's oldest partial list. Joppa section is stale. |
-| `2.2 changelog.txt` | The 2.1.1 → 2.2 delta. Only source for the physical-vs-mental chip scaling split. |
+| `docs/FEATURES.md` | Complete feature reference + bug checklist. Written for this fork; the authoritative doc. |
+| `docs/PERMISSION.md` | Fork permission, provenance, credit obligations, pre-upload actions. |
+| `docs/STYLEGUIDE.md` | Naming, layout, XML/C# formatting, Workshop requirements. Read §1 before renaming anything. |
+| `docs/permission-mura-workshop-comment.png` | Screenshot evidence of the grant. |
+| `docs/mura-feature-notes-wip.txt` | Mura's oldest partial list. Joppa section is stale. |
+| `docs/2.2-changelog.txt` | The 2.1.1 → 2.2 delta. Only source for the physical-vs-mental chip scaling split. |
 
 Mura also kept a pinned "Partial Feature List" discussion on the Workshop page — newest of the
 three writeups, best source for the energy-cell mod formulas. Its content is folded into
-`FEATURES.md` §6.6 and §10. Where any of Mura's docs disagree with the XML, **the XML is what
-ships** — `FEATURES.md` §10 has a table of the known disagreements.
+`docs/FEATURES.md` §6.6 and §10. Where any of Mura's docs disagree with the XML, **the XML is what
+ships** — `docs/FEATURES.md` §10 has a table of the known disagreements.
