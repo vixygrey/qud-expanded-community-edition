@@ -14,8 +14,12 @@ stated — those are the ones that look arbitrary and are not.
 
 ## 1. The rule that comes before all the others
 
-> **Some names are identifiers, not labels. Renaming them breaks saves, breaks other mods, or
+> **Some names are identifiers, not labels. Renaming them orphans data, breaks other mods, or
 > breaks the mod itself — silently, with no error.**
+
+Sort them into three groups before touching any of them: permanently frozen (§1.1), frozen only
+once this fork has released (§1.1b), and free (§1.3). Conflating the first two is how a fork
+either paralyses itself or breaks its own merges.
 
 Qud resolves modded XML by **root element, not by filename**. Verified across the 87 mods
 installed locally: `ObjectBlueprints.xml`, `Objectblueprints.xml`, and
@@ -25,22 +29,45 @@ element (`<objects>`, `<populations>`) and ignores what the file is called.
 That makes **filenames free** and makes several other things **frozen**. Know which is which
 before renaming anything.
 
-### 1.1 Frozen — never rename
+### 1.1 Permanently frozen — never rename
+
+These are frozen by vanilla identity or engine requirement. **No release schedule or save policy
+changes them.**
 
 | Thing | Why |
 |---|---|
-| **Blueprint names** (`Raven_Iron Maceth`, `Battle Axe3th`) | Cross-referenced by population tables, other mods, `wish`, and **existing save files**. Spaces and odd casing inside them are not typos to fix. |
-| **Population table names** (`Artifact 6R`, `Melee Weapons 3C`) | Vanilla identities. Renaming silently orphans the table. |
+| **Vanilla blueprint names** (`Cudgel3`, `Battle Axe3th`, `Iron Vinereaper`) | Vanilla identity. Renaming doesn't break a save — it silently orphans the `Load="Merge"`, and the edit simply stops applying. No error. |
+| **Population table names** (`Artifact 6R`, `Melee Weapons 3C`) | Same: the merge target must match vanilla exactly. |
 | **`.rpm` map basenames** (`Joppa.rpm`) | The basename *is* the zone the patch applies to. |
 | **`workshop.json`, `manifest.json`, `preview.png`** | Required names — the Workshop uploader and Qud's mod loader look for exactly these. |
 | **Options filename pattern** | Qud only treats a file as mod options if the filename **contains `Option`**. `ModOptions.xml` and `Options.xml` both work; `Settings.xml` does not. |
-| **Body part type strings** (`Chipset Interface`) | Written into save state on every character that has one. See #13. |
-| **C# class names** (`Raven_ModKindle`) | Referenced by `Name=` on `<part>` elements in the XML. |
+| **The `Raven_` prefix** | Charter rule 3 — policy, not technology. Mura's signature in the namespace, and the attribution future contributors actually read. |
+
+### 1.1b Frozen after first release — free until then
+
+These are frozen only by **save compatibility**, and this fork has no saves yet.
+
+It publishes as a **new Workshop item** and its release notes state that a new character is
+required, so nothing carries over from the original. That makes the following free to change
+today — and expensive the moment this fork ships its own v1, because at that point it has players
+with saves of its own.
+
+> **This is a closing window, not a standing freedom.** If a rename is wanted, it happens before
+> first release. See #24.
+
+| Thing | Note |
+|---|---|
+| **Body part type strings** (`Chipset Interface`) | Written into save state on every character that has one. The `Chipset` vs `Psionic Interface` decision (#13) was blocked on this and no longer is. |
+| **Anatomy and body-object names** (`Yttrian`) | Leftover from the genotype's rename to "Psionic Adept". |
+| **CoQE-original blueprint names** (`Raven_Iron Maceth`) | **Verified free:** no installed mod references a `Raven_` blueprint. The 11 names the Grand Bazaar sub-mod shares with CoQE are all *vanilla* blueprints CoQE merges, not CoQE originals. The `Raven_` prefix itself still stays — see above. |
 
 ### 1.2 Coupled — renameable, but only in lockstep
 
+Independent of release state: these travel in pairs, always.
+
 | Thing | Update alongside |
 |---|---|
+| **C# class names** (`Raven_ModKindle`) | Referenced by `Name=` on `<part>` elements in the XML. Rename both or neither. |
 | **Texture files** (`Textures/Subtypes/forcePsionic.png`) | Referenced from `Subtypes.xml` as `Tile="Subtypes/forcePsionic.bmp"` — note the **`.bmp` extension in XML against a `.png` on disk**. That mismatch is normal Qud convention, not a bug: the engine resolves `.bmp` tile paths against `.png` assets. |
 | **C# filenames** | Keep filename == class name (standard .NET). Renaming the file means renaming the class, which means updating every `<part Name="…">` that references it. |
 
@@ -106,9 +133,9 @@ matching vanilla makes modded files instantly legible to anyone who knows the ga
 | Tooling scripts | `kebab-case` or `snake_case.py`, matching the language's norm | `validate-mod.py` |
 | Branches | `type/kebab-case-description` | `fix/artifact-table-merge` |
 
-**Do not introduce spaces into new filenames.** The four existing ones — `Melee Weapons.xml`,
-`Other Equipment.xml`, `Psionic Chips.xml`, `Ranged Weapons.xml` — are safe to rename (§1.3) and
-should be, because spaces require quoting in every script, hook, and CI step that touches them.
+**No filename contains a space.** The four that did — `Melee Weapons.xml`, `Other Equipment.xml`,
+`Psionic Chips.xml`, `Ranged Weapons.xml` — were renamed in #23, because spaces require quoting in
+every script, hook and CI step that touches them. Do not reintroduce any.
 
 ### 3.1 Blueprint naming (for new content)
 
