@@ -1,0 +1,1375 @@
+# Caves of Qud Expanded — Complete Feature Reference
+
+*Generated from a full read of the mod source (all XML blueprints, population tables, skills,
+genotypes, subtypes, bodies, C# scripts, and the Joppa map patch). This is the exhaustive
+list the original mod never had.*
+
+**Original author:** Mura (`@mura_raven`) — with contributions from Noble Lark (subtype sprites),
+Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship).
+**Workshop ID:** 1134036260 · **Last upstream release:** 2.2 (built for Qud 1.0)
+**Steam tags:** Stable, Armor, Artifact, Cybernetic, Item, Item Mod, Weapon, Genotype, Subtype, Mutation, Skill, Balance, Lore
+
+---
+
+## 0. At a glance
+
+| Area | What the mod does |
+|---|---|
+| **New item blueprints** | **350** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **209** `Load="Merge"` edits to existing objects |
+| **New genotype** | Psionic Adept (internally `Psionic`, formerly "Yttrian") with 18 subtypes |
+| **New body system** | "Chipset Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
+| **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
+| **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
+| **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
+| **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
+| **Skill tree edits** | 6 skill trees retuned; Akimbo added to Multiweapon Fighting |
+| **Loot tables** | 48 vanilla tables merged, **6 replaced outright**, 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **World edits** | New amenity building in Joppa (76 map cells) |
+| **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
+
+---
+
+## 1. Genotypes
+
+All three genotypes are defined/merged in `Genotypes.xml`.
+
+### 1.1 Changes shared by all genotypes
+
+Every genotype gains these starting skills:
+
+- **Staunch Wounds** (`Physic_StaunchWounds`)
+- **Cooking and Gathering** (`CookingAndGathering`)
+- **Meal Preparation** (`CookingAndGathering_MealPreparation`) — the base skill is required for this to function, which is why both are granted
+
+Every humanoid also gains **one Chipset Interface slot** (see §3).
+
+### 1.2 Mutated Human
+
+| Field | Vanilla | CoQE |
+|---|---|---|
+| Mutation points | 12 | **16** |
+| Skill points / level (`BaseSPGain`) | 50 | **65** |
+| HP gain / level (`BaseHPGain`) | 1-4 | **2-3** |
+| MP gain / level (`BaseMPGain`) | 1 | **1-2** |
+| Joppa reputation | 0 | **+300** |
+| Extra starting skill | — | **Menacing Stare** (`Persuasion_MenacingStare`) |
+
+> ⚠️ **Documentation mismatch — persistent across every source.** All three of Mura's writeups
+> (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop feature list)
+> state mutants get **1-5** HP per level. The shipped `Genotypes.xml` sets `BaseHPGain="2-3"`.
+>
+> The intent is unambiguous — the changelog explains the reasoning at length ("the variability but
+> potential for greater numbers was nice flavor"), deliberately mirroring True Kin's 2-4 in the
+> opposite direction. The two files even disagree on the verb: the WIP notes say the range was
+> "Narrowed" 1-4 → 1-5, the pinned list says "Widened." Either way `2-3` is neither, and it makes
+> mutants strictly worse than True Kin at HP, which inverts the stated design. **Almost certainly a
+> regression in the XML rather than a documentation error.**
+
+### 1.3 True Kin
+
+| Field | Vanilla | CoQE |
+|---|---|---|
+| Skill points / level | 70 | **85** |
+| HP gain / level | 1-4 | **2-4** |
+| Cybernetics license points | 2 | **4** |
+| Body object | `Humanoid` | **`TrueKin`** (custom anatomy — 2 Chipset Interface slots) |
+| Extra starting skills | — | Staunch Wounds, Cooking and Gathering, Meal Preparation |
+
+### 1.4 Psionic Adept (new)
+
+Internal name `Psionic`, display name **Psionic Adept**. Earlier versions called it "Yttrian";
+the body/anatomy object is still named `Yttrian`.
+
+| Field | Value |
+|---|---|
+| Mutation points | 0 (`AllowedMutationCategories=""` — no mutation access at all) |
+| Stat points to allocate | **34** (True Kin: 38, Mutant: 44) |
+| Base stat floor | 12 in every stat (identical to True Kin), then heavily modified by affinity |
+| Stat range | 12–24 per stat |
+| HP gain / level | **1-4** |
+| Skill points / level | **95** (+10 over True Kin, +25 over vanilla mutant) |
+| MP gain / level | 0 |
+| Cybernetics license points | **2** |
+| Chipset Interface slots | **4** |
+| Species / flags | `human`, `IsTrueKin="True"` |
+| Mechanimist reputation | **+300** |
+| Random-weight in chargen | 10 (same as the other two) |
+| Tile | `creatures/sw_nomad.bmp`, detail color `M`, code `r` |
+
+Starting skills: Run (`Tactics_Run`), Camp (`Survival_Camp`), Staunch Wounds, Cooking and
+Gathering, Meal Preparation, and **Gadget Inspector** (`Tinkering_GadgetInspector`) in place of
+the Rebuke Robot / Menacing Stare the other genotypes get.
+
+Because `IsTrueKin="True"` and cybernetics points are granted, Psionic Adepts can use the
+becoming nook and all cybernetics — they are mechanically a third "tech" genotype, not a mutant.
+
+> ⚠️ The genotype's chargen blurb reads `{{C|30}} bonus skill points each level`. The actual
+> delta versus vanilla True Kin is +25 (95 vs 70) or +10 vs the mod's own True Kin (95 vs 85).
+> The "30" is left over from an earlier tuning pass.
+
+---
+
+## 2. Psionic Adept subtypes (`Subtypes.xml`)
+
+18 subtypes in one class (`Affinities`, chargen title "choose expertise", singular "affinity"),
+split into two categories:
+
+- **The Lore Seekers of the Grand Library** (`Full Psionic`) — 9 caster subtypes. Each grants
+  **+1 cybernetics license point** on top of the genotype's 2.
+- **The Immovable Wall of the Yttria** (`Half Psionic`) — 9 martial "Guardian" subtypes. No
+  bonus cybernetics points.
+
+Design rule stated in the source comments: each subtype nets **+2 to +3 stat points** after
+subtracting penalties (True Kin net +3 to +4, Mutants net +2). Subtypes with elemental
+resistances take a penalty resist equal to **half** their bonus.
+
+### 2.1 Full Psionic — The Lore Seekers of the Grand Library
+
+| Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
+|---|---|---|---|---|---|---|---|---|
+| Force, Watchers of the World | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Rifles, Tinkering (+Disassemble, Reverse Engineer, Tinker I) |
+| Fire, Defenders of the Core | +1 | -2 | -2 | +2 | +2 | +2 | Heat +40 / Cold -20 | Short Blades Expertise, Axe, Heavy Weapons (+Tank, Sweep) |
+| Ice, Bulwark of the Throne | -2 | -2 | +1 | +2 | +2 | +2 | Cold +40 / Heat -20 | Short Blades Expertise, Rifles, Kickback, Endurance (+Swimming) |
+| Lightning, Hunters of the Defilers | -2 | +1 | -2 | +2 | +2 | +2 | Electric +40 / Acid -20 | Short Blades (+Bloodletter, Jab, Hobble), Pistol |
+| Light, Seekers of the Path | -2 | +1 | -2 | +2 | +2 | +2 | Heat +20, Electric +20 / Cold -10, Acid -10 | Short Blades Expertise, Pistol (+Akimbo, Weak Spotter, Sling and Run) |
+| Corrosive, Builders of the Wall | -2 | -2 | -2 | +2 | +2 | +4 | Acid +40 / Electric -20 | Short Blades Expertise, Rifles, Persuasion (+Intimidate, Berate, Snake Oiler) |
+| Blood, Lurkers of the Unknown | -2 | +1 | -2 | +2 | +2 | +2 | *+4 save vs Bleeding* | Short Blades, Pistol, Multiweapon Fighting (+Proficiency, Expertise) |
+| Mental, Guides of the Lost | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Rifles, Customs (+Trash Divining), Survival + **all 7 terrain survival skills** |
+| Temporal, Keepers of the Records | -2 | -2 | -2 | +2 | +4 | +2 | — | Short Blades Expertise, Rifles, Discipline (+Fasting Way, Iron Mind, Lionheart, Conatus, Mind over Body) |
+
+*Light also carries an `extrainfo`: "Guaranteed one Solar Cell."*
+
+### 2.2 Half Psionic — The Immovable Wall of the Yttria
+
+| Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
+|---|---|---|---|---|---|---|---|---|
+| Force, Main Battalion | +3 | +3 | +1 | — | -2 | -2 | — | Long Blades (+Dueling Stance), Shield (+Deft Blocking, Swift Blocking) |
+| Fire, Berserker Battalion | +4 | +2 | +2 | -2 | -2 | -2 | Heat +20 / Cold -10 | Axe (+Cleave, Dismember, Hook and Drag), Cudgel Charging Strike |
+| Ice, Assault Battalion | +4 | +2 | +2 | -2 | -2 | -2 | Cold +20 / Heat -10 | Cudgel (+Bludgeon, Charging Strike, Conk, Backswing) |
+| Lightning, Skirmish Battalion | +2 | +4 | +2 | -2 | -2 | -2 | Electric +20 / Acid -10 | Tactics (+Throwing, Juke), Acrobatics (+Dodge, Tumble) |
+| Light, Ranged Battalion | +2 | +4 | +2 | -2 | -2 | -2 | Heat +10, Electric +10 / Cold -5, Acid -5 | Rifles (+Kickback, Suppressive Fire, Wounding Fire, Sure Fire) |
+| Corrosive, Flank Battalion | +2 | +2 | +4 | -2 | -2 | -2 | Acid +20 / Electric -10 | Long Blades Proficiency, Endurance (+Swimming, Poison Tolerance, Weathered, Juicer) |
+| Blood, Assassin Battalion | +1 | +4 | +2 | -2 | -2 | -2 | *+2 save vs Bleeding* | Axe (+Dismember), Short Blades (+Bloodletter), Multiweapon Fighting (+Proficiency) |
+| Mental, Technical Battalion | +1 | +3 | +1 | — | -2 | — | — | Persuasion (+Inspiring Presence), Tinkering (+Disassemble, Deploy Turret, Lay Mine) |
+| Temporal, Support Battalion | +2 | +2 | +2 | **-6** | +1 | +1 | — | **19 skill trees at once** — see below |
+
+*Light Guardian also carries "Guaranteed one Solar Cell."*
+
+**Temporal, Support Battalion** is the outlier build: it trades a crippling **-6 Intelligence**
+for base access to Acrobatics, Axe, Rifles, Cooking and Gathering, Cudgel, Customs, Discipline,
+Multiweapon Fighting, Endurance, Physic, Heavy Weapons, Long Blades, Persuasion, Pistol, Shield,
+Short Blades, Survival, Tactics, and Tinkering (plus Tinker I, Disassemble, Scavenger). Its own
+`extrainfo` says: *"Starts with massively lowered Intelligence in exchange for so many skills."*
+
+### 2.3 Subtype sprites
+
+18 custom tiles by **Noble Lark** live in `Textures/Subtypes/` — `{force,fire,ice,lightning,light,corrosion,blood,mental,temporal}{Psionic,Guardian}.png`.
+
+Two naming quirks: the file prefix is `corrosion*` while the subtype is named "Corrosive", and
+`Subtypes.xml` references the tiles as **`.bmp`** (`Subtypes/forcePsionic.bmp`) while the shipped
+files are `.png`. The latter is normal Qud convention — the engine resolves `.bmp` tile paths
+against `.png` assets — but worth knowing if you ever rename them.
+
+---
+
+## 3. The Chipset Interface & psionic chips
+
+This is the mod's headline system: **equipment that grants real, working mutations to genotypes
+that cannot mutate.**
+
+### 3.1 Body slots (`Bodies.xml`)
+
+A new abstract, integral, position-ignoring body part type — **Chipset Interface** — is defined
+and then attached to anatomies:
+
+| Anatomy | Chipset Interface slots | Notes |
+|---|---|---|
+| `Humanoid` (merged) | **1** | Applies to every humanoid in the game, NPCs included |
+| `TrueKin` (new) | **2** | Full custom anatomy; True Kin genotype points at this |
+| `Yttrian` (new) | **4** | Psionic Adept anatomy |
+
+> 🗒️ **Naming inconsistency:** every piece of Mura's player-facing documentation calls this the
+> **"Psionic Interface"** slot, while the XML defines the body part as **"Chipset Interface"** and
+> the items are called chips/chipsets. Pick one before you write any new docs — the in-game
+> string comes from `Bodies.xml`, so "Chipset Interface" is what players actually see.
+
+The `TrueKin` and `Yttrian` anatomies are otherwise identical to vanilla Humanoid (Head/Face,
+Back, two Arms with Hands, two Missile Weapon slots, Hands, Feet). Two matching creature
+blueprints (`TrueKin`, `Yttrian`) in `ObjectBlueprints/Creatures.xml` inherit from `Humanoid`
+and swap the anatomy.
+
+### 3.2 How chips work
+
+`Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chipset Interface slot with 0 AV /
+0 DV and 0 weight, and uses the `UnknownArmor` examiner alternate (so it needs identifying).
+Its description explains the fiction: the chip integrates with your flesh and grants lost
+knowledge — remove it and you lose the ability.
+
+Each chip carries one or more custom parts named `Raven_Mod<Mutation>`. Every one of those is a
+one-line C# class in `Scripting/`:
+
+```csharp
+public class Raven_ModDisintegration : ModImprovedMutationBase<Disintegration> { }
+```
+
+36 such scripts exist, one per mutation. The part's `Tier` attribute is the mutation level granted.
+
+**Physical vs mental scaling (2.2 change):** mental mutations keep scaling with Ego even when
+granted by a chip; physical mutations do not scale at all. To compensate, chips granting
+*physical* mutations give **3 / 6 / 10** levels instead of the **2 / 4 / 6** that mental chips give.
+Chipsets follow the same split: **1 / 2 / 3** for mental, **2 / 4 / 6** for physical.
+
+### 3.3 The 12 affinity families
+
+Each family has 3 single-mutation chips and 1 chipset, each at 3 grades
+(**basic** → **upgraded** → **perfected**) = 12 items per family, **144 chips total** (plus the base blueprint).
+
+| Family | Mutation A | Mutation B | Mutation C |
+|---|---|---|---|
+| **Force** | Disintegration | Stunning Force | Force Bubble |
+| **Fire** | Kindle | Flaming Ray *(physical)* | Pyrokinesis |
+| **Ice** | Frost Webs *(physical)* | Freezing Ray *(physical)* | Cryokinesis |
+| **Lightning** | Electromagnetic Pulse *(physical)* | Electrical Generation *(physical)* | Phasing *(physical)* |
+| **Light** | Photosynthetic Skin *(physical)* | Light Manipulation | Teleportation |
+| **Acid** | Corrosive Gas Generation *(physical)* | Confusion | Acid Slime Glands *(physical)* |
+| **Blood** | Syphon Vim | Adrenal Control *(physical)* | Regeneration *(physical)* |
+| **Mental** | Sunder Mind | Domination | Mass Mind |
+| **Temporal** | Space-Time Vortex | Time Dilation | Temporal Fugue |
+| **Neutral Mind** | Mental Mirror | Teleport Other | Force Wall |
+| **Neutral Body** | Heightened Quickness *(physical)* | Ego Projection (`Raven_ModWillForce`) | Heightened Hearing *(physical)* |
+| **Neutral Spirit** | Clairvoyance | Psychometry | Precognition |
+
+Item tiers and prices are uniform across all families:
+
+| Grade | Single chip: item tier / value / mutation level | Chipset: item tier / value / mutation levels |
+|---|---|---|
+| basic (`Simple`) | Tier 4 · 20 · **2** (mental) or **3** (physical) | Tier 6 · 20 · **1** / **2** |
+| upgraded (`Improved`) | Tier 6 · 40 · **4** / **6** | Tier 7 · 40 · **2** / **4** |
+| perfected (`Advanced`) | Tier 8 · 60 · **6** / **10** | Tier 8 · 60 · **3** / **6** |
+
+> 🔴 **Major gap for a fork: 72 of the 144 chips can never drop.** The `Raven_Chips Tier 1/2/3`
+> tables only list *the first chip of each family* plus that family's chipset — 24 entries each.
+> Chips B and C of every family (Stunning Force, Force Bubble, Flaming Ray, Pyrokinesis,
+> Freezing Ray, Cryokinesis, Electrical Generation, Phasing, Light Manipulation, Teleportation,
+> Confusion, Acid Slime Glands, Adrenal Control, Regeneration, Domination, Mass Mind,
+> Time Dilation, Temporal Fugue, Teleport Other, Force Wall, Ego Projection, Heightened Hearing,
+> Psychometry, Precognition — × 3 grades each) appear nowhere in `PopulationTables.xml`, and
+> chips have no `TinkerItem` part, so they cannot be built either. Half the chip catalogue is
+> currently wish-only. They do not appear in Psionic Adept starting gear either — the 18
+> `StartingGear_*` tables only hand out first-of-family chips and chipsets, all of which are
+> already in the drop tables.
+
+### 3.4 Chip drop rates
+
+Chips enter the loot pool through the **Artifact** tables (see §7.3):
+
+| Table | Chip table used | Weight |
+|---|---|---|
+| Artifact 3, 4, 5 | `Raven_Chips Tier 1` | 10 / 100 |
+| Artifact 6, 7 | `Raven_Chips Tier 2` | 10 / 100 |
+| Artifact 8 | `Raven_Chips Tier 3` | 10 / 100 |
+
+Within a chip table, single chips are weight 3 and chipsets weight 1 — so a chipset is a 1-in-4
+result among that family, and each family is equally likely.
+
+---
+
+## 4. Skills (`Skills.xml`)
+
+Six trees are edited. Nothing is removed; requirements and costs are retuned and one power is added.
+
+| Tree | Change |
+|---|---|
+| **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
+| **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
+| **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. |
+| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. **Akimbo added** (cost 150, Agility 17) — "Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them." |
+| **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
+| **Tinkering** | *Disassemble* cost **→ 0** (free with the tree). *Reverse Engineer* cost **100 → 200**. *Tinker I* Int **19 → 17**, *Tinker II* **23 → 21**, *Tinker III* **29 → 25**. |
+
+> ⚠️ **Compatibility note:** the new Akimbo power uses `Class="Pistol_Akimbo"` — the same
+> implementation class as the Pistol tree's Akimbo. A character who buys both will own two
+> abilities backed by one class. Worth testing before release.
+
+> ℹ️ The 2.2 changelog notes that vanilla itself adopted Strength-or-Agility for Multiweapon
+> Fighting, so only the **requirement reduction** there is still a mod change. The
+> Strength-or-Agility rewrite is a genuine mod feature for **Axe** and **Cudgel**.
+
+---
+
+## 5. Item mods (`Mods.xml`)
+
+One line, big consequence:
+
+```xml
+<mod Part="ModGigantic" Load="Merge" TinkerAllowed="true" />
+```
+
+**Gigantic becomes a tinkerable item mod.** You can now apply Gigantic to equipment yourself
+rather than only finding it. Combined with the energy-cell notes below, Gigantic on a cell
+doubles max charge and stacks with High Capacity.
+
+---
+
+## 6. Items
+
+### 6.1 Counts by file
+
+| File | New objects | Merged vanilla objects |
+|---|---|---|
+| `Melee Weapons.xml` | 71 | 79 |
+| `Armor.xml` | 61 | 38 |
+| `Ranged Weapons.xml` | 49 | 8 |
+| `Psionic Chips.xml` | 145 | 0 |
+| `Cybernetics.xml` | 9 | 16 |
+| `Other Equipment.xml` | 9 | 14 |
+| `Throwables.xml` | 0 | 51 |
+| `Furniture.xml` | 4 | 0 |
+| `Creatures.xml` | 2 | 1 |
+| `Food.xml` | 0 | 2 |
+| `Ammo.xml` | 0 (62 disabled) | 0 |
+| **Total** | **350 active** | **209** |
+
+### 6.2 Melee weapons
+
+The mod's core structural change: **vanilla weapon families are completed across all 9 tiers
+(0–8) and split into one-handed / two-handed variants with consistent stat rules.**
+
+Conventions the mod follows:
+
+- Two-handed variants get **+1 penetration** and a damage bump; one-handed variants keep vanilla pen.
+- Tiers map to materials: **0 bronze · 1 iron · 2 steel · 3 carbide · 4 folded carbide · 5 fullerite · 6 crysteel · 7 flawless crysteel · 8 zetachrome**.
+- Value doubles per tier: 5 / 10 / 20 / 40 / 80 / 160 / 320 / 640 / 1280.
+- **Agility-scaling martial weapons** are a deliberate theme: vinereapers, halberds, rapiers, katanas and war hammers all use `Stat="Agility"` while keeping their tree's skill (Axe, Long Blades, Cudgel respectively).
+- Vibro variants sit at tier 5, cost 300, take an energy cell, use 100 charge per swing, and set penetration equal to the defender's AV.
+
+
+#### Greataxes (Axe, two-handed, Strength) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Greataxe | new | 0 | 1d2+1 | +1 | 1 | Strength | 5 | 6 | yes |
+| Iron Greataxe | new | 1 | 1d3+1 | +1 | 2 | Strength | 10 | 5 | yes |
+| Vibro Greataxe | new | 5 | 1d6+3 | +0 | 0 | (inh) | 300 | 6 | yes |
+| Crysteel Greataxe | new | 6 | 1d8+5 | +1 | 7 | (inh) | 320 | 5 | yes |
+| Flawless Crysteel Greataxe | new | 7 | 1d9+5 | +1 | 8 | (inh) | 640 | 5 | yes |
+| Zetachrome Greataxe | new | 8 | 1d10+6 | +1 | 9 | (inh) | 1200 | 4 | yes |
+
+#### Halberds (Axe, two-handed, Agility) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Halberd | new | 0 | 1d2+1 | +1 | 1 | Agility | 5 | 7 | yes |
+| Iron Halberd | new | 1 | 1d3+1 | +1 | 2 | Agility | 10 | 6 | yes |
+| Steel Halberd | new | 2 | 1d4+2 | +1 | 3 | Agility | 20 | 6 | yes |
+| Carbide Halberd | new | 3 | 1d5+2 | +1 | 4 | Agility | 40 | 8 | yes |
+| Folded Carbide Halberd | new | 4 | 1d6+3 | +1 | 5 | Agility | 80 | 7 | yes |
+| Fullerite Halberd | new | 5 | 1d7+3 | +1 | 6 | Agility | 160 | 9 | yes |
+| Vibro Halberd | new | 5 | 1d6+3 | +0 | 0 | Agility | 300 | 7 | yes |
+
+#### Vinereapers (Axe, one-handed, Agility) — vanilla family, completed to all tiers
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Vinereaper | new | 0 | 1d2 | +0 | 1 | Agility | 5 | 3 |  |
+| Iron Vinereaper | merge | 1 | 1d3 | +0 | 2 | Agility | 10 | 2 |  |
+| Steel Vinereaper | merge | 2 | 1d4 | +0 | 3 | Agility | 20 | 2 |  |
+| Carbide Vinereaper | new | 3 | 1d5 | +0 | 4 | Agility | 40 | 4 |  |
+| Folded Carbide Vinereaper | new | 4 | 1d6+1 | +0 | 5 | Agility | 80 | 3 |  |
+| Fullerite Vinereaper | new | 5 | 1d7+1 | +0 | 6 | Agility | 160 | 5 |  |
+| Vibro Vinereaper | new | 5 | 1d6+1 | +0 | 0 | Agility | 300 | 3 |  |
+| Crysteel Vinereaper | new | 6 | 1d8+2 | +0 | 7 | Agility | 320 | 3 |  |
+| Flawless Crysteel Vinereaper | new | 7 | 1d9+2 | +0 | 8 | Agility | 640 | 3 |  |
+| Zetachrome Vinereaper | new | 8 | 1d10+3 | +0 | 9 | Agility | 1280 | 2 |  |
+
+#### Katanas (Long Blades, two-handed, Agility) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Katana | new | 0 | 1d6 | +1 | 1 | Agility | 5 | 6 | yes |
+| Iron Katana | new | 1 | 1d8 | +1 | 2 | Agility | 10 | 5 | yes |
+| Steel Katana | new | 2 | 1d10 | +1 | 3 | Agility | 20 | 5 | yes |
+| Carbide Katana | new | 3 | 1d12 | +1 | 4 | Agility | 40 | 7 | yes |
+| Folded Carbide Katana | new | 4 | 2d6+1 | +1 | 5 | Agility | 80 | 6 | yes |
+| Fullerite Katana | new | 5 | 2d8+1 | +1 | 6 | Agility | 160 | 9 | yes |
+| Vibro Katana | new | 5 | 2d8 | +0 | 0 | Agility | 300 | 6 | yes |
+| Crysteel Katana | new | 6 | 2d8+2 | +1 | 7 | Agility | 320 | 4 | yes |
+| Flawless Crysteel Katana | new | 7 | 2d10+1 | +1 | 8 | Agility | 640 | 4 | yes |
+| Zetachrome Katana | new | 8 | 2d12+1 | +1 | 9 | Agility | 1280 | 3 | yes |
+
+#### Rapiers (Long Blades, one-handed, Agility) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Rapier | new | 0 | 1d3 | +0 | 1 | Agility | 5 | 3 |  |
+| Iron Rapier | new | 1 | 1d4 | +0 | 2 | Agility | 10 | 3 |  |
+| Steel Rapier | new | 2 | 1d6 | +0 | 3 | Agility | 20 | 3 |  |
+| Carbide Rapier | new | 3 | 1d8 | +0 | 4 | Agility | 40 | 4 |  |
+| Folded Carbide Rapier | new | 4 | 1d10 | +0 | 5 | Agility | 80 | 3 |  |
+| Fullerite Rapier | new | 5 | 1d12 | +0 | 6 | Agility | 160 | 4 |  |
+| Vibro Rapier | new | 5 | 1d10 | +0 | 0 | Agility | 300 | 3 |  |
+| Crysteel Rapier | new | 6 | 2d6+1 | +0 | 7 | Agility | 320 | 2 |  |
+| Flawless Crysteel Rapier | new | 7 | 2d8+1 | +0 | 8 | Agility | 640 | 2 |  |
+| Zetachrome Rapier | new | 8 | 2d8+2 | +0 | 9 | Agility | 1280 | 2 |  |
+
+#### Wristblades / arm daggers (Short Blades) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Wristblade | new | 0 | 1 | +0 | 1 | (inh) | 15 | 1 |  |
+| Iron Wristblade | new | 1 | 1d2 | +0 | 2 | (inh) | 25 | 1 |  |
+| Steel Wristblade | new | 2 | 1d3 | +0 | 3 | (inh) | 35 | 1 |  |
+| Carbide Wristblade | new | 3 | 2d2 | +0 | 4 | (inh) | 55 | 2 |  |
+| Fullerite Wristblade | new | 5 | 2d3+1 | +0 | 6 | (inh) | 105 | 3 |  |
+| Vibro Wristblade | new | 5 | 1d4+1 | +0 | 0 | (inh) | 300 | 1 |  |
+| Crysteel Wristblade | new | 6 | 2d4 | +0 | 7 | (inh) | 320 | 1 |  |
+| Flawless Crysteel Wristblade | new | 7 | 2d4+1 | +0 | 8 | (inh) | 640 | 1 |  |
+| Zetachrome Wristblade | new | 8 | 2d6 | +0 | 9 | (inh) | 1200 | 1 |  |
+
+#### Maces, one-handed (Cudgel, Strength)
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 5 | 5 |  |
+| Iron Mace | new | 1 | 1d4 | +0 | 2 | (inh) | 10 | 4 |  |
+| Carbide Mace | new | 3 | 2d4 | +0 | 4 | (inh) | 40 | 6 |  |
+| Folded Carbide Mace | new | 4 | 2d4+1 | +0 | 5 | (inh) | 80 | 5 |  |
+| Fullerite Mace | new | 5 | 2d6 | +0 | 6 | (inh) | 160 | 7 |  |
+| Zetachrome Mace | new | 8 | 3d6+2 | +0 | 9 | (inh) | 1280 | 3 |  |
+
+#### Maces, two-handed (Cudgel, Strength) — **new family**
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Maceth | new | 0 | 2d2 | +1 | 1 | (inh) | 5 | 8 | yes |
+| Iron Maceth | new | 1 | 2d2+1 | +1 | 2 | (inh) | 10 | 7 | yes |
+| Steel Maceth | new | 2 | 3d2 | +1 | 3 | (inh) | 20 | 7 | yes |
+| Carbide Maceth | new | 3 | 3d4 | +1 | 4 | (inh) | 40 | 9 | yes |
+| Folded Carbide Maceth | new | 4 | 3d4+1 | +1 | 5 | (inh) | 80 | 8 | yes |
+| Crysteel Maceth | new | 6 | 3d6+1 | +1 | 7 | (inh) | 320 | 6 | yes |
+| Flawless Crysteel Maceth | new | 7 | 5d4+2 | +1 | 8 | (inh) | 640 | 6 | yes |
+| Zetachrome Maceth | new | 8 | 5d6+2 | +1 | 9 | (inh) | 1280 | 5 | yes |
+
+#### War hammers (Cudgel, Agility)
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze War Hammer | new | 0 | 1d3 | +0 | 1 | Agility | 5 | 4 |  |
+| Bronze War Hammerth | new | 0 | 2d2 | +1 | 1 | Agility | 5 | 7 | yes |
+| Iron War Hammerth | new | 1 | 2d2+1 | +1 | 2 | Agility | 10 | 6 | yes |
+| Steel War Hammer | merge | 2 | 2d2 | +0 | 3 | Agility | 20 | 3 |  |
+| Steel War Hammerth | merge | 2 | 3d2 | +1 | 3 | Agility | 20 | 6 |  |
+| Crysteel War Hammer | new | 6 | 2d6+1 | +0 | 7 | Agility | 320 | 3 |  |
+| Flawless Crysteel War Hammer | new | 7 | 3d4+2 | +0 | 8 | Agility | 640 | 3 |  |
+
+#### Greathammers (Cudgel, Agility)
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Fullerite Greathammer | new | 5 | 3d6 | +1 | 6 | Agility | 160 | 9 |  |
+
+#### Greatswords (Long Blades)
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Vibro Greatsword | new | 5 | 2d8 | +0 | 0 | (inh) | 300 | 6 | yes |
+
+#### Other new melee weapons
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Vibro Battle Axe | new | 5 | 1d6+1 | +0 | 0 | (inh) | 300 | 4 | |
+
+The full vibro set added by the mod is: **vibro battle axe, vibro greataxe, vibro vinereaper,
+vibro halberd, vibro greatsword, vibro rapier, vibro katana, vibro wristblade** (8 weapons,
+all tier 5, all 300 value, all `ChargeUse=100`, all tinkerable at bits `0015`, all with
+`Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`). None of them appear in any
+population table — they are tinker-only.
+
+#### Rebalanced vanilla melee lines (merge-only, no new blueprint)
+
+The mod also retunes the vanilla **Long Sword**, **Dagger/Short Blade**, **Battle Axe**, and
+**Cudgel** progressions — mostly weight, value, and damage-die smoothing so the new families
+line up with them. Notable base-object edits: `BaseAxe` weight → 3, `BaseLongBlade` weight → 2,
+`BaseDagger` weight → 1 (and `Stat="Agility"` on the dagger bases and both relic-dagger bases).
+
+Two-handed vanilla long swords received a substantial damage lift (e.g. Long Sword2th 1d8,
+Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
+
+> ⚠️ **Likely typo:** `Cudgel6th` (tier 6 two-handed war hammer) has `MaxStrengthBonus="11"`.
+> Every other tier-6 weapon in the mod uses 7. This lets it scale off ~4 extra Strength.
+
+> 🗒️ **Dormant content:** four blueprints are commented out in `Melee Weapons.xml` (two blocks,
+> both headed *"rework these or remove them"*): `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`
+> ("vibro flail"), `Raven_Vibro War Hammer`, and `Raven_Two-Handed Vibro War Hammer`
+> ("vibro greathammer").
+
+### 6.3 Armor
+
+New concepts introduced:
+
+- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla only puts bucklers in that slot, so this is the first real armor line for arms.
+- **Greatshields** — a full tier 0–8 line of two-handed-feel `Hand` shields with the highest AV in the game (3 → 10) at a DV cost.
+- **Weave cloaks** at every tier (bronzeweave → zetachromeweave), filling out the vanilla ironweave cloak.
+- **Nanoweave** and **Flexi** gear — a tier 5–6 "light armor" alternative that trades AV for **positive DV**, which vanilla metal armor never gives.
+- **Bio-scanner mask** and **mutating mask** — two `Face`-slot artifacts.
+- **Reinforced suspension** — `Tread`-slot accessory for the mechanical-legs build.
+
+
+#### Feet
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronze Boots | new | 0 | Feet | 2 | -2 | — | 5 | 8 |
+| Iron Boots | new | 1 | Feet | 2 | -1 | — | 10 | 7 |
+| Chain Boots | merge | 2 | Feet | 2 | -2 | — | 20 | 6 |
+| Steel Boots | merge | 2 | Feet | 3 | -3 | — | 20 | 7 |
+| Carbide Boots | merge | 3 | Feet | 3 | -2 | — | 40 | 9 |
+| Flawless Crysteel Boots | merge | 3 | Feet | 4 | 0 | 5/5/5/5 | 640 | 6 |
+| Folded Carbide Boots | new | 4 | Feet | 3 | -1 | — | 80 | 8 |
+| Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 160 | 10 |
+| Flexiboots | new | 5 | Feet | 1 | 3 | — | 75 | 2 |
+| Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 320 | 6 |
+| Nanoweave Boots | new | 6 | Feet | 3 | 1 | — | 300 | 3 |
+| Zetachrome Pumps | merge | 8 | Feet | 6 | 0 | 6/6/6/6 | 1280 | 5 |
+
+#### Hands
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronze Gauntlets | new | 0 | Hands | 2 | -2 | — | 5 | 8 |
+| Iron Gauntlets | new | 1 | Hands | 2 | -1 | — | 10 | 7 |
+| Steel Gauntlets | merge | 2 | Hands | 3 | -3 | — | 20 | 7 |
+| Carbide Gauntlets | merge | 3 | Hands | 3 | -2 | — | 40 | 9 |
+| Folded Carbide Gauntlets | new | 4 | Hands | 3 | -1 | — | 80 | 8 |
+| Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | — | 160 | 10 |
+| Flexigloves | new | 5 | Hands | 1 | 2 | — | 125 | 2 |
+| Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 320 | 6 |
+| Nanoweave Gloves | new | 6 | Hands | 2 | 1 | — | 300 | 3 |
+| Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 640 | 6 |
+| Zetachrome Gloves | merge | 8 | Hands | 6 | 0 | 5/5/5/5 | 1280 | 5 |
+| Chain Gauntlets | merge | - | Hands | 2 | -1 | — | - | 6 |
+
+#### Head
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronze Helmet | new | 0 | Head | 2 | -2 | — | 5 | 10 |
+| Iron Helmet | new | 1 | Head | 2 | -1 | — | 10 | 9 |
+| Chain Coif | merge | 2 | Head | 2 | -1 | — | 20 | 6 |
+| Steel Helmet | merge | 2 | Head | 3 | -3 | — | 20 | 9 |
+| Carbide Helmet | new | 3 | Head | 3 | -2 | — | 40 | 11 |
+| Folded Carbide Helmet | new | 4 | Head | 3 | -1 | — | 80 | 10 |
+| Fullerite Armet | merge | 5 | Head | 4 | -4 | — | 160 | 12 |
+| Flexihelmet | new | 5 | Head | 1 | 2 | — | 125 | 2 |
+| Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 320 | 8 |
+| Nanoweave Helmet | new | 6 | Head | 2 | 1 | — | 300 | 3 |
+| Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 640 | 8 |
+| Zetachrome Apex | merge | 8 | Head | 6 | 0 | 6/6/6/6 | 1280 | 7 |
+
+#### Body
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronze Plate Armor | new | 0 | Body | 3 | -3 | — | 8 | 24 |
+| Iron Plate Armor | new | 1 | Body | 3 | -1 | — | 16 | 21 |
+| Chain Mail | merge | 2 | (inh) | - | - | — | 32 | 18 |
+| Steel Plate Mail | merge | 2 | Body | 4 | -4 | — | 32 | 21 |
+| Carbide Plate Armor | merge | 3 | Body | 4 | -2 | — | 64 | 27 |
+| Folded Carbide Plate Armor | new | 4 | Body | 6 | -4 | — | 128 | 24 |
+| Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 256 | 30 |
+| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 256 | 36 |
+| Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 512 | 18 |
+| Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1024 | 18 |
+| Zetachrome Lune | merge | 8 | Body | 10 | -2 | 10/10/10/10 | 2048 | 15 |
+
+#### Back (cloaks)
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronzeweave Cloak | new | 0 | Back | 1 | -1 | — | 5 | 4 |
+| Ironweave Cloak | merge | 1 | Back | 1 | 0 | — | 10 | 3 |
+| Steelweave Cloak | new | 2 | Back | 2 | -2 | — | 20 | 3 |
+| Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 5 | 6 |
+| Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | — | 80 | 5 |
+| Flexicloak | new | 5 | Back | 1 | 2 | — | 125 | 2 |
+| Fulleriteweave Cloak | new | 5 | Back | 3 | -2 | — | 160 | 6 |
+| Crysteelweave Cloak | new | 6 | Back | 3 | -3 | 6/6/6/6 | 320 | 3 |
+| Nanoweave Cloak | new | 6 | Back | 2 | 1 | — | 300 | 3 |
+| Flawless Crysteelweave Cloak | new | 7 | Back | 3 | -1 | 6/6/6/6 | 640 | 3 |
+| Zetachromeweave Cloak | new | 8 | Back | 3 | 0 | 6/6/6/6 | 1280 | 2 |
+| Portable Beehive | merge | - | Back | 0 | 1 | — | - | - |
+
+#### Arm (vambraces — new slot usage)
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bronze Vambrace | new | 0 | Arm | 1 | -1 | — | 4 | 4 |
+| Iron Vambrace | new | 1 | Arm | 1 | 0 | — | 8 | 3 |
+| Steel Vambrace | new | 2 | Arm | 2 | -2 | — | 16 | 3 |
+| Carbide Vambrace | new | 3 | Arm | 2 | -1 | — | 32 | 5 |
+| Folded Carbide Vambrace | new | 4 | Arm | 2 | 0 | — | 64 | 4 |
+| Fullerite Vambrace | new | 5 | Arm | 3 | -3 | — | 128 | 6 |
+| Crysteel Vambrace | new | 6 | Arm | 3 | -2 | 5/5/5/5 | 256 | 3 |
+| Flawless Crysteel Vambrace | new | 7 | Arm | 3 | -1 | 5/5/5/5 | 512 | 3 |
+| Zetachrome Vambrace | new | 8 | Arm | 3 | 0 | 6/6/6/6 | 1024 | 2 |
+
+#### Face
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Bio Scanner Mask | new | 5 | Face | 0 | 0 | — | 60 | 5 |
+| Mutating Mask | new | 8 | Face | 1 | 1 | — | 1000 | 5 |
+| VISAGE | merge | - | (inh) | - | - | — | - | - |
+
+#### Tread
+
+| Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
+|---|---|---|---|---|---|---|---|---|
+| Reinforced Suspension | new | 3 | Tread | 0 | 2 | — | 25 | 5 |
+
+#### Bucklers (Arm slot)
+
+| Blueprint | New? | Tier | Slot | AV | DV | Value | Weight |
+|---|---|---|---|---|---|---|---|
+| Bronze Buckler | new | 0 | Arm | 1 | -1 | 5 | 4 |
+| Iron Buckler | merge | 1 | Arm | 1 | 0 | 10 | 3 |
+| Steel Buckler | merge | 2 | Arm | 2 | -1 | 20 | 3 |
+| Carbide Buckler | new | 3 | Arm | 2 | 0 | 40 | 5 |
+| Folded Carbide Buckler | new | 4 | Arm | 3 | -2 | 80 | 4 |
+| Fullerite Buckler | new | 5 | Arm | 3 | -1 | 160 | 6 |
+| Crysteel Buckler | new | 6 | Arm | 3 | 0 | 320 | 3 |
+| Flawless Crysteel Buckler | new | 7 | Arm | 4 | -3 | 640 | 3 |
+| Zetachrome Buckler | new | 8 | Arm | 4 | -1 | 1280 | 2 |
+
+#### Shields (Hand slot)
+
+| Blueprint | New? | Tier | Slot | AV | DV | Value | Weight |
+|---|---|---|---|---|---|---|---|
+| Bronze Shield | new | 0 | Hand | 2 | -2 | 5 | 8 |
+| Iron Shield | new | 1 | Hand | 2 | -1 | 10 | 7 |
+| Steel Shield | merge | 2 | (inh) | - | - | 20 | 7 |
+| Carbide Shield | merge | 3 | Hand | 4 | -2 | 40 | 10 |
+| Folded Carbide Shield | new | 4 | Hand | 5 | -3 | 80 | 9 |
+| Fullerite Shield | merge | 5 | Hand | 5 | -2 | 160 | 12 |
+| Crysteel Shield | merge | 6 | Hand | 6 | -2 | 320 | 6 |
+| Flawless Crysteel Shield | merge | 7 | Hand | 7 | -2 | 640 | 6 |
+| Zetachrome Shield | new | 8 | Hand | 8 | -1 | 1280 | 5 |
+
+#### Greatshields — **new family** (Hand slot)
+
+| Blueprint | New? | Tier | Slot | AV | DV | Value | Weight |
+|---|---|---|---|---|---|---|---|
+| Bronze Greatshield | new | 0 | Hand | 3 | -3 | 5 | 11 |
+| Iron Greatshield | new | 1 | Hand | 3 | -2 | 10 | 10 |
+| Steel Greatshield | new | 2 | Hand | 4 | -3 | 20 | 10 |
+| Carbide Greatshield | new | 3 | Hand | 5 | -3 | 40 | 13 |
+| Folded Carbide Greatshield | new | 4 | Hand | 6 | -3 | 80 | 12 |
+| Fullerite Greatshield | new | 5 | Hand | 7 | -3 | 160 | 15 |
+| Crysteel Greatshield | new | 6 | Hand | 8 | -3 | 320 | 9 |
+| Flawless Crysteel Greatshield | new | 7 | Hand | 9 | -3 | 640 | 9 |
+| Zetachrome Greatshield | new | 8 | Hand | 10 | -2 | 1280 | 7 |
+
+#### Notable armor artifacts
+
+**Bio-scanner mask** (tier 5, 60 value, Face) — energy-cell powered visor that sets the
+`BioScannerEquipped` property, giving creature readouts. 5-turn boot sequence, complexity 5,
+tinkerable (bits `0005`), accepts a Solar Cell by default.
+
+**Mutating mask** (tier 8, 1000 value, Face, AV 1 / DV 1) — a `GasMask` with Power 10 that also
+grants **+100 reputation with 50 factions simultaneously** (Antelopes through Worms — effectively
+every faction in the game including Joppa, Kyakukya, Barathrumites, Mechanimists, Templar, Girsh,
+Consortium and Mamon). Flavor: the visage takes the appearance of whoever looks at you.
+
+**Reinforced suspension** (tier 3, `Tread`) — +2 DV, -15 carry weight penalty, `Role="Uncommon"`, tinkerable.
+
+> ⚠️ **Two data bugs found in `Armor.xml`:**
+> - `Flawless Crysteel Boots` has `<tag Name="Tier" Value="3" />`. It should be 7 (vanilla value, and its price is 640 = tier-7 price). As shipped it will roll on tier-3 loot pools and gets tier-3 mod capacity.
+> - `Raven_Carbideweave Cloak` has `Commerce Value="5"`. The weave-cloak curve is 5/10/20/**40**/80/160/320/640/1280 — carbideweave should be 40.
+
+### 6.4 Ranged weapons
+
+#### Psionic pistols & rifles — new family (18 weapons)
+
+Two new base blueprints, `Raven_Base Psionic Pistol` and `Raven_Base Psionic Rifle`, both tier 3,
+energy-cell powered, tinkerable (bits `0003`), complexity 3, with `UnknownPistol`/`UnknownRifle`
+examiner alternates.
+
+| | Pistol | Rifle |
+|---|---|---|
+| Skill | Pistol | Rifle |
+| Charge per shot | 50 | 100 |
+| Value | 60 | 120 |
+| Weight | 4 | 10 (two-slot) |
+| Fire sound | `pistol_laser` | `laser_medium_1` |
+
+Nine elemental variants of each:
+
+| Variant | Display name | Pistol pen / dmg | Rifle pen / dmg | Special |
+|---|---|---|---|---|
+| Disintegration | disintegrating psionic … | 5 / 1d6 | 7 / 1d6 | `Disintegrate`, penetrates creatures |
+| Perception | mindflaying psionic … | 5 / 1d6 | 7 / 1d6 | `Mental Psionic` damage |
+| Ice | hyperborean psionic … | 4 / 1d8 | 6 / 1d8 | `Cold`, -3d20 (pistol) / -3d40 (rifle) temperature |
+| Fire | conflagrating psionic … | 4 / 1d8 | 6 / 1d8 | +3d20 / +3d40 temperature. Pistol is `Heat Fire`; **rifle is `Heat` only** — likely an oversight |
+| Lightning | fulminating psionic … | 4 / 1d8 | 6 / 1d8 | `Electric` |
+| Acid | corrosive psionic … | 4 / 1d8 | 6 / 1d8 | `Acid` |
+| Blood | sanguine psionic … | 3 / 1d10 | 5 / 1d10 | `Exsanguination` + **vampiric** (80–100% of damage healed, `Reduction=1d3-1`, cap 1d10+10, living targets only, reality-distortion based) |
+| Light | refulgent psionic … | 3 / 1d10 | 5 / 1d10 | `Light` |
+| Temporal | astral psionic … | 5 / 1d6 | 7 / 1d6 | `Cosmic` + **omniphase** (hits phased targets) |
+
+> ⚠️ Both psionic bases carry `Mods="…RifleMods,ElectronicsMods,BeamWeaponMods"`. The **pistol**
+> base inherits `BaseRifle` and lists `RifleMods` rather than `PistolMods` — likely an oversight
+> that blocks pistol-specific mods on the psionic pistols.
+
+#### Conventional guns — new (6 weapons)
+
+| Blueprint | Tier | Skill | Shots/action | Ammo | Accuracy | Range inc. | Value | Notes |
+|---|---|---|---|---|---|---|---|---|
+| Fine-tuned handgun | 6 | Pistol | 2 (2 ammo) | 10 slugs | **1** (near-perfect) | 1 | 600 | Projectile pen 8 / 1d8. Turret name "miniature burstfire turret" |
+| Modified handcannon | 5 | Pistol | 8 (1 ammo) | 4 shotgun shells | 30 | 12 | 400 | Fires shotgun shells from a handcannon; pellets pen 4 / 1d2 |
+| Drum shotgun | 3 | Rifle | 24 (4 ammo, 6/anim) | 20 shells | 36 | 6 | 75 | `NoWildfire`, two-slot, weight 16 |
+| Compact flamethrower | (inherits) | Heavy | — | 16 dram liquid | — | — | — | Occupies **both Missile Weapon slots** instead of hands |
+| Cryocannon | 5 | Heavy Weapons | 1 | energy cell, 2000 charge | 0 | — | 750 | 1d8 `Cold NonPenetrating`, **-300 temperature** on hit and on entering |
+| Net gun | 5 | Rifle | 1 | energy cell, 1000 charge | — | 12 | 130 | 1d4 `Electric NonPenetrating` + deploys a **Stasisfield** (radius 1, duration 1d3+3). Also a radius-8 light source while charged |
+
+#### Merged vanilla ranged weapons
+
+| Blueprint | Change |
+|---|---|
+| Musket | Weight → 12, now two-slot |
+| Nullray Pistol | Charge use → 500; projectile → **1d12+4 Vorpal** |
+| Borderlands Revolver | Value → 25 |
+| Ruin of House Isner | Mods now include `MagazineMods` |
+| Chain Pistol | Value → 100 |
+| Laser Pistol | Value → 250 |
+| Laser Rifle | Value → 550 |
+
+### 6.5 Cybernetics
+
+#### New implants
+
+| Implant | Cost | Slots | Effect | Weight |
+|---|---|---|---|---|
+| **Air filtration system** | 3 | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
+| **Steel dermal plating** | 1 | Body, Head, Back | +1 AV | 6 |
+| **Crysteel dermal plating** | 3 | Body, Head, Back | +3 AV | 12 |
+| **Zetachrome dermal plating** | 4 | Body, Head, Back | +4 AV | 16 |
+| **Omni pass** | 2 | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`). Tagged `StartingCybernetic:General` | 0 |
+| **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`SteelFist`, tier 3) | 10 |
+| **Zetachrome hand bones** | 8 | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
+
+Plus the two supporting fist weapons (`SteelFist`, `Raven_ZetachromeFist`), both `MaxStrengthBonus="999"`.
+
+#### Merged vanilla implants
+
+| Implant | Change |
+|---|---|
+| Carbide dermal plating (`DermalPlating`) | Renamed to **carbide** dermal plating, cost **2**, +2 AV (was the generic 1-point/+1) |
+| Crysteel hand bones | Now cost **6**, value 360, complexity 6, weight 10, **3d4** fist damage |
+| Fullerite hand bones / fist | **2d5** fist damage |
+| Beautiful Visage / Cherubic Visage | **+2 Ego** each (stat modifier added) |
+| Dopamine Synth | **+2 Willpower** |
+| Dermal Insulation | +10 to all four elemental resistances |
+| High-grade Dermal Insulation | Cost **4**, **+20** to all four resistances, complexity 5, value 240, slots Body/Head/Back |
+| Hyper-elastic ankle tendons | +10 movespeed |
+| Ultra-elastic ankle tendons | +20 movespeed |
+| Motorized treads | `SaveModifier` +6 vs Move, Knockdown, Knockback, Restraint, Drag (EMP-sensitive, tech-scannable) |
+| Optical multiscanner | Cost **4**, complexity 5, value 240 |
+| Air current microsensor, Nocturnal apex, Rapid release finger flexors | New custom tiles and color strings |
+
+### 6.6 Other equipment
+
+#### Energy cells — new
+
+| Cell | Tier | Max charge | Recharge | Value | Tinker bits |
+|---|---|---|---|---|---|
+| **Advanced chem cell** | 5 | 50,000 | — | 300 | `0014` |
+| **Dark matter cell** | 8 | **500,000** | — | 300 | `0047` |
+| **Solar cell array** | 4 | 10,000 | 25/turn in sunlight | 150 | `0023` |
+| **Solar cell nexus** | 7 | 50,000 | 50/turn in sunlight | 225 | `0025` |
+
+For reference, the mod's own notes record the vanilla baseline: chem cell 10,000 (T1);
+fidget 2,500 (T1, 2/20 per turn out of/in combat); solar 2,500 (T2, 10/turn); nuclear 100,000 (T7);
+antimatter 200,000 (T8); and the liquid-fuelled cells — lead-acid 4,000 (500/dram), combustion
+6,000 (750/dram), thermoelectric 40,000 (5,000/dram), biodynamic 60,000 (7,500/dram).
+
+So the solar array is 4× capacity / 2.5× recharge of a basic solar cell; the nexus is 20× / 5×
+(or 5× / 2× versus the array). The advanced chem cell is 5× a chem cell, half a nuclear cell. The
+dark matter cell is 10× the advanced chem cell, 5× a nuclear cell, 2.5× an antimatter cell.
+
+**How cell mods interact** (from Mura's pinned feature list — useful context for retuning these):
+
+| Mod | Effect |
+|---|---|
+| **Radio Powered** | Recharges (10 × Tier) per turn, up to (1 + Tier) max depth. Does **not** stack with Fidget/Solar recharge — only the highest rate applies. |
+| **High Capacity** | Max charge × (14 + Tier) / 10. A tier-1 cell gets 1.5×, each tier adds 0.1, capping at **2.2× at tier 8**. |
+| **Gigantic** | Doubles max charge, and **stacks** with High Capacity. (Mura never confirmed whether the stack is additive or multiplicative — worth testing, and note §5: this mod is what makes Gigantic tinkerable in the first place.) |
+
+> ⚠️ The dark matter cell (500,000 charge) and the advanced chem cell (50,000 charge) are both
+> priced at **300**. Given the mod's own doubling curve, the dark matter cell is drastically
+> underpriced.
+
+#### Other new items
+
+| Item | Tier | Effect | Value |
+|---|---|---|---|
+| **Advanced hoversled** | 6 | `Backpack` **-100 carry weight**, worn "Floating Nearby", tinkerable (`00345`) | 400 |
+| **Cybernetics credit pass** | — | `CyberneticsCreditWedge` worth **10 credits** | 1550 |
+| **Programmable recoiler** | — | Reprogrammable, **5,000** charge per use | — |
+| **Reprogrammable recoiler** | — | Reprogrammable, **2,500** charge per use | — |
+| **Large sphere of negative weight** | 8 | `Suspensor` at **200% force**, **0 charge use**, complexity 7, tinkerable (`00008`), trinket, `DisplayFullNameAsReward` | 100 |
+
+#### Merged vanilla equipment
+
+| Item | Change |
+|---|---|
+| `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable**, 10,000 charge per use — every vanilla recoiler inherits this |
+| All 7 location recoilers (Joppa, Grit Gate, Six Day Stilt, Kyakukya, Golgotha, Bethesda Susa, Ezra) | Given `NameElide` values so their names render correctly under the new programmable system |
+| Force bracelet | Charge use → 250 |
+| Bottle | Weight 5, value 10, **1000 HP**, 100 in all four resistances, `Inorganic`, `ThermalInsulation` 1000, non-solid, immune to freezing/burning |
+| Scrap | Weight → 0 |
+| Strength exo | `Backpack` -60 carry weight |
+| Waterskin / Oilskin | Recolored display names |
+| Yuckwheat stem, Witchwood bark (`Food.xml`) | Weight → 0 |
+| Chute crab claw (`Creatures.xml`) | Damage **1d3-1** (can now roll 0), Cudgel skill, Strength, Hand slot |
+
+#### Throwables — pure price rebalance
+
+All **51** grenade blueprints (sleep gas, poison gas, stun gas, acid gas, flashbang, heat, cold,
+HE, EMP, normality gas, stasis, sunder, defoliant, fungicide, fire support, time dilation,
+glitter — grades 1/2/3 each) are repriced to a flat **10 / 20 / 30** by grade. Nothing else about
+them changes.
+
+#### Furniture — new
+
+| Blueprint | Inherits | Notes |
+|---|---|---|
+| `Raven_Empty Weapon Rack` | Chest | "on"-preposition container, tier 2, `HangingSupport`, `NoSparkingQuest` |
+| `Raven_Empty Gun Rack` | ↑ | Recolored |
+| `Raven_Empty Armor Rack` | Weapon Rack | Recolored |
+| `Raven_Rusted Door` | Metal Door | Non-occluding, renders in dark |
+
+### 6.7 Ammo — **the entire file is disabled**
+
+`ObjectBlueprints/Ammo.xml` is 524 lines and **every one of its 62 objects is inside a single
+XML comment** opened on line 5 with the note *"removed temporarily"* and closed on line 523.
+
+The dormant content includes a reworked **Shotgun Shell**, plus vibro, explosive, and other
+specialty **bullets, shells, and arrows** with their paired projectile objects — e.g.
+`Raven_Vibro Bullet` (1d6 `Vorpal`, bits `BC`, makes 6) and `Raven_Vibro Shell`. For a fork this
+is the single largest block of ready-made content sitting unused.
+
+---
+
+## 7. Population / loot tables (`PopulationTables.xml`)
+
+76 table definitions: **48 merged** into vanilla, **28 declared fresh**.
+
+### 7.1 Starting gear (18 new tables)
+
+One `StartingGear_*` table per Psionic Adept subtype. Common pattern:
+
+**Lore Seekers (casters)** — `StartingGear_Common`, their affinity's psionic pistol or rifle,
+cloth robe, sandals, 3 half-full waterskins, 1d3 salve tonic, a dagger, **their affinity's basic
+chipset**, a **basic mental mirror chip**, a **basic clairvoyance chip**, 1d3 injectors,
+2d4 scrap, 1d3 cells, 1d3 from Artifact 1, 1d3 from Artifact 2.
+
+Per-subtype deviations:
+
+| Subtype | Deviation |
+|---|---|
+| Force | Also a **basic toolkit**; 3d4 scrap instead of 2d4 |
+| Ice | **Iron plate armor** instead of cloth robe |
+| Lightning | Steel dagger instead of Dagger2 |
+| Fire | Dagger + **Battle Axe2** |
+| Light | Guaranteed **Solar Cell**, only 1d2 from the Cells table |
+| Corrosive | **4** waterskins, 1d3+1 salve tonic |
+| Blood | **Two** blood psionic pistols, **two** daggers |
+| Mental | **2d3** injectors instead of 1d3 |
+| Temporal | Only 2 waterskins, but **2d3** rolls on Artifact 1 and Artifact 2 |
+
+**Immovable Wall (Guardians)** — `StartingGear_Common`, a themed weapon, a **full iron armor
+set** (Raven_Iron Plate Armor, Boots, Gauntlets, Helmet), 3 half-full waterskins, 1d3 salve
+tonic, one themed single chip, a **basic neutral body chipset**, a **basic mental mirror chip**,
+1d3 injectors, 1d3 cells. Three Guardians break the armor-set pattern entirely.
+
+| Guardian | Weapon(s) | Armor | Chip | Other deviations |
+|---|---|---|---|---|
+| Force | Long Sword2 + **Iron Greatshield** | iron set | Disintegration | — |
+| Fire | **Steel Halberd** | iron set | Kindle | — |
+| Ice | **Steel War Hammerth** (2H) | iron set | Frost Webs | — |
+| Lightning | Long Sword2 + **Iron Buckler** + **Lightning Psionic Rifle** | iron set | EMP | **2d3** injectors |
+| Light | **Compound Bow + 100 Wooden Arrows** + **Light Psionic Rifle** + Dagger2 | iron set | Photosynthetic Skin | Guaranteed **Solar Cell**, only 1d2 cells |
+| Corrosive | **Steel Long Swordth** (2H) | iron set | Corrosive Gas | — |
+| Blood | 2× Dagger2 | **Vine-Weave Tunic, Elastyne Slippers / Gloves / Skull Cap** — no iron set | Syphon Vim | 1d2 cells |
+| Mental | **Battle Axe3** | iron set | Sunder Mind | 2 full + 2 empty waterskins, **Basic Toolkit**, 2d4 scrap, **1** cell |
+| Temporal | **2× Temporal Psionic Pistol** | **Cloth Robe + Sandals** — no iron set | Space-Time Vortex | **1** salve tonic, **Basic Toolkit**, **1** injector, 1d4 scrap, **1** cell |
+
+### 7.2 Equipment tables (merged)
+
+- **Melee Weapons 1C–8C / 1R–8R** — new melee blueprints are slotted into their tier's Common
+  (one-handed) and Rare (two-handed) tables, mostly at weight 20. Tier-1 tables seed bronze gear
+  at weight 20 and iron at weight 10; `Raven_Bronze Wristblade` is weight 5 in Melee Weapons 1C.
+  **Nine new melee blueprints appear in no table at all:** the eight vibro weapons
+  (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade — all
+  tinkerable, so still reachable) and `Raven_Iron Maceth`, which is neither dropped nor tinkerable.
+- **Armor 1C–8C / 1R–8R** — most new armor added, but **ten pieces appear in no table**:
+  the four nanoweave pieces, the four flexi pieces, the bio-scanner mask, and the mutating mask.
+  Only the bio-scanner mask is tinkerable, so **nine armor pieces are unobtainable in play**.
+  Notably, **Armor 7C/7R/8C/8R each carry a
+  `<removetable>`** stripping the tier-below reference (7C removes "Armor 6C", 8C removes
+  "Armor 7C", etc.), so top-tier armor pools no longer cascade down into lower-tier gear.
+- **Missile 2** — all 9 psionic pistols, weight 1 each.
+- **Missile 3** — all 9 psionic rifles, weight 1 each.
+- **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (5), modified handcannon (5), drum shotgun (5).
+- **Ammo 4–8** — solar cell array from tier 4; advanced chem cell from tier 5; solar cell nexus from tier 7; dark matter cell via a nested chance table at tier 8.
+- **Implants_1and2Pointers** — steel dermal plating, omni pass, steel hand bones.
+- **Implants_3Pointers** — air filtration system, crysteel dermal plating.
+- **Implants_4PlusPointers** — crysteel hand bones, zetachrome dermal plating, zetachrome hand bones.
+
+### 7.3 Artifact tables — **replaced, not merged**
+
+`Artifact 3, 4, 5, 6, 7, 8` are declared **without** `Load="Merge"`, meaning the mod fully
+overwrites those vanilla tables with:
+
+```
+85% → Artifact NC   ·   5% → Artifact NR   ·   10% → Raven_Chips Tier 1/2/3
+```
+
+`Artifact 3R/4R/5R/6R/8R` *are* merged, adding:
+
+| Table | Additions |
+|---|---|
+| Artifact 3R | Large sphere of negative weight (w5), advanced hoversled (w1) |
+| Artifact 4R | Sphere (w10), hoversled (w1) |
+| Artifact 5R | Sphere (w15), hoversled (w5) |
+| Artifact 6R | Sphere (w15), hoversled (w10) |
+| Artifact 8R | **Cybernetics credit pass** (w5), **dark matter cell** (w1) |
+
+> 🔴 **Biggest compatibility hazard in the mod.** Because Artifact 3–8 are replacements rather
+> than merges, **any other mod that also touches those tables will conflict**, and any *future
+> vanilla* additions to Artifact 3–8 will be silently discarded. Converting these to
+> `Load="Merge"` (using `<removeobject>`/weight adjustments where needed) is the single highest-value
+> compatibility fix for a fork.
+
+### 7.4 The dark matter cell chance table
+
+```
+Ammo 8  →  weight 1  →  Raven_Dark Matter Cell Chance
+                         ├─ weight 1 → reroll on Ammo 8
+                         └─ weight 1 → Raven_Dark Matter Cell
+```
+
+So on Ammo 8, hitting the weight-1 slot gives a 50/50 between the cell and a reroll. On
+Artifact 8R it is a flat weight-1 entry with no second roll. (This nesting was added in 2.2
+after the cell was corrected from tier 7 to tier 8.)
+
+---
+
+## 8. World changes — Joppa (`Joppa.rpm`)
+
+A `Load="Merge"` map patch adding **76 cells** in the region X 16–27, Y 13–21 — a walled
+building near Argyve's workshop (the changelog describes it as "the building in red"). It was
+rebuilt as a separate structure in 2.2 specifically to stop it colliding with the Spring Molting
+update's new Joppa furniture and with the Saving Joppa sub-mod.
+
+Contents:
+
+| Object | Count |
+|---|---|
+| DirtPath | 45 |
+| RustedMetalWall | 27 |
+| Torchpost | 2 |
+| CyberneticsStationRack (becoming nook rack) | 1 |
+| CyberneticsTerminal2 (becoming nook) | 1 |
+| `Raven_Empty Gun Rack` | 1 |
+| `Raven_Empty Weapon Rack` | 1 |
+| `Raven_Rusted Door` | 1 |
+| Bookshelf, Bed, Dresser, Low Table, Floor Cushion, Vase, Oven, Woven Basket, Chest | 1 each |
+
+> 🗒️ The `What Does the Mod Do (WIP).txt` in this folder describes this as "two chests, a bedroll,
+> a becoming nook, and an empty cybernetics rack." That text predates the 2.2 rebuild — the shipped
+> map actually has **one** chest, a **bed** (not a bedroll), and a good deal more besides. Mura's
+> later pinned feature list drops the itemisation and just calls it "a new building into Joppa that
+> can be used as a sort of home base for the player," which matches what's in the file.
+
+Net effect: a free bed, storage, an oven, and — most importantly — **a becoming nook and
+cybernetics rack available in Joppa from turn one**, which matters a great deal now that
+Psionic Adepts and (buffed) True Kin both want early cybernetics.
+
+---
+
+## 9. Economy & value curve
+
+The mod deliberately flattens the top of the price curve so high-tier gear is attainable:
+
+- Standard tier progression for weapons/armor: **5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280**.
+- Body armor runs a parallel curve at 8/16/32/64/128/256/512/1024/2048.
+- Vambraces run at 4/8/16/32/64/128/256/512/1024 (half the standard curve — they're a partial slot).
+- Several tier-8 items are pulled *below* curve: zetachrome greataxe 1200, zetachrome wristblade 1200, Cudgel8/Cudgel8th 1200.
+- Vibro weapons are flat 300 across the board.
+- Laser pistol 250, laser rifle 550, chain pistol 100, borderlands revolver 25.
+- All grenades flattened to 10/20/30.
+
+---
+
+## 10. Known issues & fork checklist
+
+Ordered roughly by impact.
+
+| # | Severity | Issue | Where |
+|---|---|---|---|
+| 0 | 🔴 **Critical — verify first** | **`Skills.xml` is not well-formed XML.** Line 10 has a duplicate attribute: `<power Name="Berserk!" … Tile="Abilities/abil_berserk.bmp" Tile="Abilities/abil_berserk.bmp" …>`. It is the only file in the mod that fails to parse. Depending on how forgiving Qud's loader is, **every skill change in §4 may be silently failing to load.** Test this before anything else. | `Skills.xml` line 10 |
+| 0b | 🔴 **Critical — do not upload as-is** | **`workshop.json` still points at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID. This fork is being released as a **separate** Workshop item, so uploading with this file intact would target Mura's page rather than creating your own. **Clear `WorkshopId` before the first upload** so Qud's uploader publishes a new item. The `Description` field is also stale (it holds Mura's pre-handoff "please don't fork this" text) and `Title` / `ImagePath` will both want changing. | `workshop.json` |
+| 1 | 🔴 High | **72 of 144 psionic chips have no drop-table entry and no tinker recipe** — half the flagship system is unobtainable | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
+| 2 | 🔴 High | **Artifact 3–8 are full table replacements**, not merges — guarantees conflicts with other mods and drops future vanilla additions | `PopulationTables.xml` |
+| 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
+| 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
+| 4 | 🟠 Med | **Mutant HP gain is `2-3`** in XML but documented as `1-5` in both the changelog and the WIP notes | `Genotypes.xml` |
+| 5 | 🟠 Med | **`Flawless Crysteel Boots` tagged Tier 3** (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
+| 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/Other Equipment.xml` lines 95, 196 |
+| 7 | 🟡 Low | **Akimbo reuses `Class="Pistol_Akimbo"`** — a character can buy the same implementation twice (Pistol tree + Multiweapon tree) | `Skills.xml` |
+| 8 | 🟡 Low | **`Cudgel6th` has `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/Melee Weapons.xml` |
+| 9 | 🟡 Low | **`Raven_Carbideweave Cloak` valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
+| 10 | 🟡 Low | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/Other Equipment.xml` |
+| 11 | 🟡 Low | **Psionic pistols list `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/Ranged Weapons.xml` |
+| 12 | 🟡 Low | **Psionic Adept chargen text says "+30 bonus skill points"** — actual delta is +25 vs vanilla / +10 vs the mod's True Kin | `Genotypes.xml` |
+| 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
+| 13b | 🟡 Low | **`ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
+| 14 | ⚪ Note | Subtype sprite files use the prefix `corrosion*` while the subtype is named "Corrosive" — cosmetic inconsistency only | `Textures/Subtypes/` |
+| 15 | ⚪ Note | The `Yttrian` anatomy/body-object name survives the rename to "Psionic Adept" — harmless, but confusing in the source | `Bodies.xml`, `Genotypes.xml` |
+| 16 | ⚪ Note | The Chipset Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
+
+### Things the changelog references that are **not** in this folder
+
+The 2.2 changelog mentions fixes to **Experience Curve Beta**, the **Grand Bazaar**, and
+**Saving Joppa**. Those are separate sub-mods by the same author — no `.cs` or map files for
+them exist in this directory. The only C# here is the 36 one-line mutation-mod classes. If you
+want to carry those sub-mods forward, you'll need to pull them separately.
+
+### Mura's three partial feature lists — and how far to trust them
+
+Three overlapping writeups of the mod exist. None is complete; all three are explicitly labelled
+as partial by their author. Where they disagree with the XML, **the XML is what ships**.
+
+| Source | Where | Scope | Reliability |
+|---|---|---|---|
+| `What Does the Mod Do (WIP).txt` | In this folder | Genotypes, skills, "other", energy cells. Header says *"THIS LIST IS NOT COMPLETE, IT IS A WORK IN PROGRESS (Need to add equipment)"* | Oldest. Joppa section is stale (describes the pre-2.2 building) |
+| **Pinned Workshop discussion**, "Partial Feature List" | Workshop page, Mura, Nov 9 2024 | Near-identical to the above, but with a rewritten Joppa line and a much fuller energy-cell/item-mod explanation | Newest of the three. Best source for the cell-mod formulas |
+| `2.2 changelog.txt` | In this folder | Only the 2.1.1 → 2.2 delta | Accurate for what it covers; the only source documenting the physical-vs-mental chip scaling split |
+
+Mura's own framing of the pinned list: *"this is NOT a feature-complete list. In particular, I
+don't have all the new equipment or psionic chips listed, nor the changes to armor/weapon stats
+and trade values, among other things."* That gap is precisely what §6 and Appendices A–B of this
+document fill in.
+
+**Known points where the docs and the XML disagree** (all covered in detail above):
+
+| Claim in Mura's docs | Reality in the XML |
+|---|---|
+| Mutants get 1-5 HP/level | `BaseHPGain="2-3"` (§1.2) |
+| Psionic Adept "+30 bonus skill points" | +25 vs vanilla, +10 vs the mod's True Kin (§1.4) |
+| "Psionic Interface" slot | Body part is named `Chipset Interface` (§3.1) |
+| Joppa gets "two chests, a bedroll…" | One chest, a bed, and considerably more (§8) |
+| Multiweapon Fighting Str-or-Agi is a mod feature | Vanilla adopted it; only the requirement cut is the mod's (§4) |
+
+
+---
+
+## 11. File map
+
+```
+qud-expanded/
+├── Mods.xml                    # Makes Gigantic tinkerable
+├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
+├── Subtypes.xml                # 18 affinities in 2 categories
+├── Skills.xml                  # 6 tree edits, Akimbo added
+├── Bodies.xml                  # Chipset Interface part; TrueKin + Yttrian anatomies
+├── PopulationTables.xml        # 76 tables (48 merge / 28 new)
+├── Joppa.rpm                   # 76-cell amenity building
+├── workshop.json               # Steam metadata + description
+├── preview.png
+├── 2.2 changelog.txt
+├── What Does the Mod Do (WIP).txt
+├── ObjectBlueprints/
+│   ├── Melee Weapons.xml       # 71 new / 79 merged
+│   ├── Armor.xml               # 61 new / 38 merged
+│   ├── Ranged Weapons.xml      # 49 new / 8 merged
+│   ├── Psionic Chips.xml       # 145 new (1 base + 144 chips)
+│   ├── Cybernetics.xml         # 9 new / 16 merged
+│   ├── Other Equipment.xml     # 9 new / 14 merged
+│   ├── Throwables.xml          # 51 merged (prices only)
+│   ├── Ammo.xml                # 62 objects, ALL COMMENTED OUT
+│   ├── Furniture.xml           # 4 new
+│   ├── Creatures.xml           # 2 new bodies + 1 merge
+│   └── Food.xml                # 2 merges
+├── Scripting/                  # 36 one-line ModImprovedMutationBase<T> classes
+└── Textures/Subtypes/          # 18 sprites by Noble Lark
+```
+
+---
+
+## 12. Credits (carry these forward)
+
+- **Mura** (`@mura_raven`) — creator; years of work on the original mod
+- **Noble Lark** — all 18 psionic subtype sprites (credited in the Workshop description)
+- **Scrolldier / Parzival** — taught Mura to mod Caves of Qud (credited in the Workshop description)
+- **Arendeth** — population-table fixes (credited in `2.2 changelog.txt`)
+- **Tyrir** — found the 2.2 typo batch and the invalid blueprint in Other Equipment (credited in `2.2 changelog.txt`)
+
+> 📌 **Fork permission — granted publicly.** The live Workshop description now reads:
+> *"Despite my original apprehension, I've decided to make the mod open to the community to
+> update, fork, and generally do with as they please, all I ask is that you give credit where due,
+> which includes Noble Lark for the subclass sprites."* Mura reiterated it in the discussions
+> (*"It is indeed open for anyone to update, use, and fork as they want"*) and replied directly to
+> this fork's request: *"@VixyGrey13 it's open to the community now, so feel free to do so, feel
+> free to DM me if you have any questions."*
+>
+> **The one condition is credit** — and Noble Lark is named explicitly. Keep the list above intact
+> in your Workshop description and in-repo.
+>
+> ⚠️ Note that the `workshop.json` **in this folder is stale**: it still contains the older
+> "please don't fork this" description. See §10 row 0b.
+
+---
+
+## Appendix A — every merged vanilla melee weapon
+
+Full listing of the 79 `Load="Merge"` edits in `Melee Weapons.xml`. Blank cells mean the mod did
+not touch that field (the vanilla value is inherited).
+
+| Blueprint | Tier | Damage | Pen | Max STR | Stat | Value | Weight |
+|---|---|---|---|---|---|---|---|
+| BaseAxe |  |  |  |  |  |  | 3 |
+| Battle Axe | 0 |  |  |  |  | 5 | 4 |
+| Battle Axe2 | 1 | 1d3 |  | 2 |  | 10 | 3 |
+| Steel Battle Axe | 2 | 1d4 |  | 3 |  | 20 | 3 |
+| Steel Battle Axeth | 2 | 1d4+2 | 1 | 3 |  | 20 | 5 |
+| Battle Axe3 | 3 | 1d5 |  | 4 |  | 40 | 5 |
+| Battle Axe3th | 3 | 1d5+2 | 1 | 4 |  | 40 | 8 |
+| Battle Axe4 | 4 | 1d6+1 |  | 5 |  | 80 | 4 |
+| Battle Axe4th | 4 | 1d6+3 | 1 | 5 |  | 80 | 6 |
+| Battle Axe5 | 5 | 1d7+1 |  | 6 |  | 160 | 6 |
+| Battle Axe5th | 5 | 1d7+3 | 1 | 6 |  | 160 | 9 |
+| Battle Axe6 | 6 | 1d8+2 |  | 7 |  | 320 | 3 |
+| Battle Axe7 | 7 | 1d9+2 |  | 8 |  | 640 | 3 |
+| Battle Axe8 | 8 | 1d10+3 |  | 9 |  | 1280 | 2 |
+| Iron Vinereaper | 1 | 1d3 |  | 2 | Agility | 10 | 2 |
+| Steel Vinereaper | 2 | 1d4 |  | 3 | Agility | 20 | 2 |
+| Battle Axe6th | 6 | 1d8+5 | 1 | 7 | Agility | 320 | 6 |
+| Battle Axe7th | 7 | 1d9+5 | 1 | 8 | Agility | 640 | 6 |
+| Battle Axe8th | 8 | 1d10+6 | 1 | 9 | Agility | 1280 | 5 |
+| BaseLongBlade |  |  |  |  |  |  | 2 |
+| Long Sword | 0 | 1d3 |  | 1 |  | 5 | 4 |
+| Two-Handed Sword | 0 | 1d6 | 1 | 1 |  | 5 | 6 |
+| Long Sword2 | 1 | 1d4 |  | 2 |  | 10 | 3 |
+| Long Sword2th | 1 | 1d8 | 1 | 2 |  | 10 | 5 |
+| Steel Long Sword | 2 | 1d6 |  | 3 |  | 20 | 3 |
+| Steel Long Swordth | 2 | 1d10 | 1 | 3 |  | 20 | 5 |
+| Long Sword3 | 3 | 1d8 |  | 4 |  | 40 | 5 |
+| Long Sword3th | 3 | 1d12 | 1 | 4 |  | 40 | 7 |
+| Long Sword4 | 4 | 1d10 |  | 5 |  | 80 | 4 |
+| Long Sword4th | 4 | 2d6+1 | 1 | 5 |  | 80 | 6 |
+| Long Sword5 | 5 | 1d12 |  | 6 |  | 160 | 6 |
+| Long Sword5th | 5 | 2d8+1 | 1 | 6 |  | 160 | 9 |
+| Long Sword6 | 6 | 2d6+1 |  | 7 |  | 320 | 3 |
+| Long Sword6th | 6 | 2d8+2 |  | 7 |  | 320 | 5 |
+| Long Sword7 | 7 | 2d8+1 |  | 8 |  | 640 | 3 |
+| Long Sword7th | 7 | 2d10+1 | 1 | 8 |  | 640 | 5 |
+| Long Sword8 | 8 | 2d8+2 |  | 9 |  | 1280 | 2 |
+| Long Sword8th | 8 | 2d12+1 | 1 | 9 |  | 1280 | 4 |
+| Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 4 |
+| BaseDagger |  |  |  |  | Agility |  | 1 |
+| BaseRelicDagger1 |  |  |  |  | Agility |  |  |
+| BaseRelicDagger2 |  |  |  |  | Agility |  |  |
+| Dagger | 0 | 1d2 |  | 1 |  | 5 | 1 |
+| Dagger2 | 1 | 1d3 |  | 2 |  | 10 | 1 |
+| Desert Kris | 1 | 1d3 |  | 2 |  | 10 | 1 |
+| Steel Kukri | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Steel Dagger | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Steel Utility Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Steel Potter's Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Steel Butcher Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Dagger3 | 3 | 1d6 |  | 4 |  | 40 | 2 |
+| Dagger4 | 4 | 1d8 |  | 5 |  | 80 | 2 |
+| Obsidian Kris | 4 | 1d8 |  | 5 |  | 80 | 2 |
+| Dagger5 | 5 | 1d10 |  | 6 |  | 160 | 3 |
+| Dagger6 | 6 | 1d12 |  | 7 |  | 320 | 1 |
+| Dagger7 | 7 | 2d6+1 |  | 8 |  | 640 | 1 |
+| Dagger8 | 8 | 2d6+2 |  | 9 |  | 1280 | 1 |
+| Vibro Dagger | 5 | 2d4 |  | 0 |  | 300 | 1 |
+| ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 2 |
+| BaseCudgel |  |  |  |  |  |  | 3 |
+| Club | 0 |  |  |  |  | 2 | 3 |
+| Mace2 | 0 | 1d3 |  | 1 |  | 5 | 5 |
+| Steel Hammer | 2 | 2d2 |  | 3 |  | 20 | 4 |
+| Cudgel5th | 5 | 3d6 | 1 | 6 |  | 160 | 11 |
+| Cudgel6 | 6 | 2d6+1 |  | 7 |  | 320 | 3 |
+| Cudgel7 | 7 | 3d4+2 |  | 8 |  | 640 | 3 |
+| Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 480 | 10 |
+| Warhammer2 | 1 | 1d4 |  | 2 | Agility | 10 | 3 |
+| Steel War Hammer | 2 | 2d2 |  | 3 | Agility | 20 | 3 |
+| Steel War Hammerth | 2 | 3d2 | 1 | 3 | Agility | 20 | 6 |
+| Cudgel3 | 3 | 2d4 |  | 4 | Agility | 40 | 5 |
+| Cudgel3th | 3 | 3d4 | 1 | 4 | Agility | 40 | 8 |
+| Cudgel4 | 4 | 2d4+1 |  | 5 | Agility | 80 | 4 |
+| Cudgel4th | 4 | 3d4+1 | 1 | 5 | Agility | 80 | 7 |
+| Cudgel5 | 5 | 2d6 |  | 6 | Agility | 160 | 6 |
+| Cudgel6th | 6 | 3d6+1 | 1 | 11 | Agility | 320 | 6 |
+| Cudgel7th | 7 | 5d4+2 | 1 | 8 | Agility | 640 | 6 |
+| Cudgel8 | 8 | 3d6+2 |  | 9 | Agility | 1200 | 3 |
+| Cudgel8th | 8 | 5d6+2 | 1 | 9 | Agility | 1200 | 5 |
+
+---
+
+## Appendix B — every psionic chip
+
+144 chips. `Mut. level` is the level of the granted mutation(s).
+
+| Chip | Item tier | Value | Grants (mutation @ level) |
+|---|---|---|---|
+| basic disintegration chip | 4 | 20 | Disintegration @ 2 |
+| upgraded disintegration chip | 6 | 40 | Disintegration @ 4 |
+| perfected disintegration chip | 8 | 60 | Disintegration @ 6 |
+| basic stunning force chip | 4 | 20 | StunningForce @ 2 |
+| upgraded stunning force chip | 6 | 40 | StunningForce @ 4 |
+| perfected stunning force chip | 8 | 60 | StunningForce @ 6 |
+| basic force bubble chip | 4 | 20 | ForceBubble @ 2 |
+| upgraded force bubble chip | 6 | 40 | ForceBubble @ 4 |
+| perfected force bubble chip | 8 | 60 | ForceBubble @ 6 |
+| basic force chipset | 6 | 20 | Disintegration @ 1, StunningForce @ 1, ForceBubble @ 1 |
+| upgraded force chipset | 7 | 40 | Disintegration @ 2, StunningForce @ 2, ForceBubble @ 2 |
+| perfected force chipset | 8 | 60 | Disintegration @ 3, StunningForce @ 3, ForceBubble @ 3 |
+| basic kindle chip | 4 | 20 | Kindle @ 2 |
+| upgraded kindle chip | 6 | 40 | Kindle @ 4 |
+| perfected kindle chip | 8 | 60 | Kindle @ 6 |
+| basic flaming ray chip | 4 | 20 | FlamingRay @ 3 |
+| upgraded flaming ray chip | 6 | 40 | FlamingRay @ 6 |
+| perfected flaming ray chip | 8 | 60 | FlamingRay @ 10 |
+| basic pyrokinesis chip | 4 | 20 | Pyrokinesis @ 2 |
+| upgraded pyrokinesis chip | 6 | 40 | Pyrokinesis @ 4 |
+| perfected pyrokinesis chip | 8 | 60 | Pyrokinesis @ 6 |
+| basic fire chipset | 6 | 20 | Kindle @ 1, FlamingRay @ 2, Pyrokinesis @ 1 |
+| upgraded fire chipset | 7 | 40 | Kindle @ 2, FlamingRay @ 4, Pyrokinesis @ 2 |
+| perfected fire chipset | 8 | 60 | Kindle @ 3, FlamingRay @ 6, Pyrokinesis @ 3 |
+| basic frost webs chip | 4 | 20 | FrostWebs @ 3 |
+| upgraded frost webs chip | 6 | 40 | FrostWebs @ 6 |
+| perfected frost webs chip | 8 | 60 | FrostWebs @ 10 |
+| basic freezing ray chip | 4 | 20 | FreezingRay @ 3 |
+| upgraded freezing ray chip | 6 | 40 | FreezingRay @ 6 |
+| perfected freezing ray chip | 8 | 60 | FreezingRay @ 10 |
+| basic cryokinesis chip | 4 | 20 | Cryokinesis @ 2 |
+| upgraded cryokinesis chip | 6 | 40 | Cryokinesis @ 4 |
+| perfected cryokinesis chip | 8 | 60 | Cryokinesis @ 6 |
+| basic ice chipset | 6 | 20 | FrostWebs @ 2, FreezingRay @ 2, Cryokinesis @ 1 |
+| upgraded ice chipset | 7 | 40 | FrostWebs @ 4, FreezingRay @ 4, Cryokinesis @ 2 |
+| perfected ice chipset | 8 | 60 | FrostWebs @ 6, FreezingRay @ 6, Cryokinesis @ 3 |
+| basic EMP chip | 4 | 20 | ElectromagneticPulse @ 3 |
+| upgraded EMP chip | 6 | 40 | ElectromagneticPulse @ 6 |
+| perfected EMP chip | 8 | 60 | ElectromagneticPulse @ 10 |
+| basic electrical generation chip | 4 | 20 | ElectricalGeneration @ 3 |
+| upgraded electrical generation chip | 6 | 40 | ElectricalGeneration @ 6 |
+| perfected electrical generation chip | 8 | 60 | ElectricalGeneration @ 10 |
+| basic phasing chip | 4 | 20 | Phasing @ 3 |
+| upgraded phasing chip | 6 | 40 | Phasing @ 6 |
+| perfected phasing chip | 8 | 60 | Phasing @ 10 |
+| basic lightning chipset | 6 | 20 | ElectromagneticPulse @ 2, ElectricalGeneration @ 2, Phasing @ 2 |
+| upgraded lightning chipset | 7 | 40 | ElectromagneticPulse @ 4, ElectricalGeneration @ 4, Phasing @ 4 |
+| perfected lightning chipset | 8 | 60 | ElectromagneticPulse @ 6, ElectricalGeneration @ 6, Phasing @ 6 |
+| basic photosynthetic skin chip | 4 | 20 | PhotosyntheticSkin @ 3 |
+| upgraded photosynthetic skin chip | 6 | 40 | PhotosyntheticSkin @ 6 |
+| perfected photosynthetic skin chip | 8 | 60 | PhotosyntheticSkin @ 10 |
+| basic light manipulation chip | 4 | 20 | LightManipulation @ 2 |
+| upgraded light manipulation chip | 6 | 40 | LightManipulation @ 4 |
+| perfected light manipulation chip | 8 | 60 | LightManipulation @ 6 |
+| basic teleportation chip | 4 | 20 | Teleportation @ 2 |
+| upgraded teleportation chip | 6 | 40 | Teleportation @ 4 |
+| perfected teleportation chip | 8 | 60 | Teleportation @ 6 |
+| basic light chipset | 6 | 20 | PhotosyntheticSkin @ 2, LightManipulation @ 1, Teleportation @ 1 |
+| upgraded light chipset | 7 | 40 | PhotosyntheticSkin @ 4, LightManipulation @ 2, Teleportation @ 2 |
+| perfected light chipset | 8 | 60 | PhotosyntheticSkin @ 6, LightManipulation @ 3, Teleportation @ 3 |
+| basic corrosive gas chip | 4 | 20 | GasGeneration @ 3 |
+| upgraded corrosive gas chip | 6 | 40 | GasGeneration @ 6 |
+| perfected corrosive gas chip | 8 | 60 | GasGeneration @ 10 |
+| basic confusion chip | 4 | 20 | Confusion @ 2 |
+| upgraded confusion chip | 6 | 40 | Confusion @ 4 |
+| perfected confusion chip | 8 | 60 | Confusion @ 6 |
+| basic acid slime glands chip | 4 | 20 | AcidSlimeGlands @ 3 |
+| upgraded acid slime glands chip | 6 | 40 | AcidSlimeGlands @ 6 |
+| perfected acid slime glands chip | 8 | 60 | AcidSlimeGlands @ 10 |
+| basic acid chipset | 6 | 20 | GasGeneration @ 2, Confusion @ 1, AcidSlimeGlands @ 2 |
+| upgraded acid chipset | 7 | 40 | GasGeneration @ 4, Confusion @ 2, AcidSlimeGlands @ 4 |
+| perfected acid chipset | 8 | 60 | GasGeneration @ 6, Confusion @ 3, AcidSlimeGlands @ 6 |
+| basic syphon vim chip | 4 | 20 | LifeDrain @ 2 |
+| upgraded syphon vim chip | 6 | 40 | LifeDrain @ 4 |
+| perfected syphon vim chip | 8 | 60 | LifeDrain @ 6 |
+| basic adrenal control chip | 4 | 20 | AdrenalControl2 @ 3 |
+| upgraded adrenal control chip | 6 | 40 | AdrenalControl2 @ 6 |
+| perfected adrenal control chip | 8 | 60 | AdrenalControl2 @ 10 |
+| basic regeneration chip | 4 | 20 | Regeneration @ 3 |
+| upgraded regeneration chip | 6 | 40 | Regeneration @ 6 |
+| perfected regeneration chip | 8 | 60 | Regeneration @ 10 |
+| basic blood chipset | 6 | 20 | LifeDrain @ 1, AdrenalControl2 @ 2, Regeneration @ 2 |
+| upgraded blood chipset | 7 | 40 | LifeDrain @ 2, AdrenalControl2 @ 4, Regeneration @ 4 |
+| perfected blood chipset | 8 | 60 | LifeDrain @ 3, AdrenalControl2 @ 6, Regeneration @ 6 |
+| basic sunder mind chip | 4 | 20 | SunderMind @ 2 |
+| upgraded sunder mind chip | 6 | 40 | SunderMind @ 4 |
+| perfected sunder mind chip | 8 | 60 | SunderMind @ 6 |
+| basic domination chip | 4 | 20 | Domination @ 2 |
+| upgraded domination chip | 6 | 40 | Domination @ 4 |
+| perfected domination chip | 8 | 60 | Domination @ 6 |
+| basic mass mind chip | 4 | 20 | MassMind @ 2 |
+| upgraded mass mind chip | 6 | 40 | MassMind @ 4 |
+| perfected mass mind chip | 8 | 60 | MassMind @ 6 |
+| basic mental chipset | 6 | 20 | SunderMind @ 1, Domination @ 1, MassMind @ 1 |
+| upgraded mental chipset | 7 | 40 | SunderMind @ 2, Domination @ 2, MassMind @ 2 |
+| perfected mental chipset | 8 | 60 | SunderMind @ 3, Domination @ 3, MassMind @ 3 |
+| basic space-time vortex chip | 4 | 20 | SpacetimeVortex @ 2 |
+| upgraded space-time vortex chip | 6 | 40 | SpacetimeVortex @ 4 |
+| perfected space-time vortex chip | 8 | 60 | SpacetimeVortex @ 6 |
+| basic time dilation chip | 4 | 20 | TimeDilation @ 2 |
+| upgraded time dilation chip | 6 | 40 | TimeDilation @ 4 |
+| perfected time dilation chip | 8 | 60 | TimeDilation @ 6 |
+| basic temporal fugue chip | 4 | 20 | TemporalFugue @ 2 |
+| upgraded temporal fugue chip | 6 | 40 | TemporalFugue @ 4 |
+| perfected temporal fugue chip | 8 | 60 | TemporalFugue @ 6 |
+| basic temporal chipset | 6 | 20 | SpacetimeVortex @ 1, TimeDilation @ 1, TemporalFugue @ 1 |
+| upgraded temporal chipset | 7 | 40 | SpacetimeVortex @ 2, TimeDilation @ 2, TemporalFugue @ 2 |
+| perfected temporal chipset | 8 | 60 | SpacetimeVortex @ 3, TimeDilation @ 3, TemporalFugue @ 3 |
+| basic mental mirror chip | 4 | 20 | MentalMirror @ 2 |
+| upgraded mental mirror chip | 6 | 40 | MentalMirror @ 4 |
+| perfected mental mirror chip | 8 | 60 | MentalMirror @ 6 |
+| basic teleport other chip | 4 | 20 | TeleportOther @ 2 |
+| upgraded teleport other chip | 6 | 40 | TeleportOther @ 4 |
+| perfected teleport other chip | 8 | 60 | TeleportOther @ 6 |
+| basic force wall chip | 4 | 20 | ForceWall @ 2 |
+| upgraded force wall chip | 6 | 40 | ForceWall @ 4 |
+| perfected force wall chip | 8 | 60 | ForceWall @ 6 |
+| basic neutral mind chipset | 6 | 20 | MentalMirror @ 1, TeleportOther @ 1, ForceWall @ 1 |
+| upgraded neutral mind chipset | 7 | 40 | MentalMirror @ 2, TeleportOther @ 2, ForceWall @ 2 |
+| perfected neutral mind chipset | 8 | 60 | MentalMirror @ 3, TeleportOther @ 3, ForceWall @ 3 |
+| basic heightened quickness chip | 4 | 20 | HeightenedSpeed @ 3 |
+| upgraded heightened quickness chip | 6 | 40 | HeightenedSpeed @ 6 |
+| perfected heightened quickness chip | 8 | 60 | HeightenedSpeed @ 10 |
+| basic ego projection chip | 4 | 20 | WillForce @ 2 |
+| upgraded ego projection chip | 6 | 40 | WillForce @ 4 |
+| perfected ego projection chip | 8 | 60 | WillForce @ 6 |
+| basic heightened hearing chip | 4 | 20 | HeightenedHearing @ 3 |
+| upgraded heightened hearing chip | 6 | 40 | HeightenedHearing @ 6 |
+| perfected heightened hearing chip | 8 | 60 | HeightenedHearing @ 10 |
+| basic neutral body chipset | 6 | 20 | HeightenedSpeed @ 2, WillForce @ 1, HeightenedHearing @ 2 |
+| upgraded neutral body chipset | 7 | 40 | HeightenedSpeed @ 4, WillForce @ 2, HeightenedHearing @ 4 |
+| perfected neutral body chipset | 8 | 60 | HeightenedSpeed @ 6, WillForce @ 3, HeightenedHearing @ 6 |
+| basic clairvoyance chip | 4 | 20 | Clairvoyance @ 2 |
+| upgraded clairvoyance chip | 6 | 40 | Clairvoyance @ 4 |
+| perfected clairvoyance chip | 8 | 60 | Clairvoyance @ 6 |
+| basic psychometry chip | 4 | 20 | Psychometry @ 2 |
+| upgraded psychometry chip | 6 | 40 | Psychometry @ 4 |
+| perfected psychometry chip | 8 | 60 | Psychometry @ 6 |
+| basic precognition chip | 4 | 20 | Precognition @ 2 |
+| upgraded precognition chip | 6 | 40 | Precognition @ 4 |
+| perfected precognition chip | 8 | 60 | Precognition @ 6 |
+| basic neutral spirit chipset | 6 | 20 | Clairvoyance @ 1, Psychometry @ 1, Precognition @ 1 |
+| upgraded neutral spirit chipset | 7 | 40 | Clairvoyance @ 2, Psychometry @ 2, Precognition @ 2 |
+| perfected neutral spirit chipset | 8 | 60 | Clairvoyance @ 3, Psychometry @ 3, Precognition @ 3 |

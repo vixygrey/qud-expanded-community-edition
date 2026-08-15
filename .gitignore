@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+._*
+
+# Editor / tooling scratch
+*.swp
+.idea/
+.vscode/
+
+# Qud writes these next to a loaded mod
+*.log
