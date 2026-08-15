@@ -1,0 +1,81 @@
+THIS LIST IS NOT COMPLETE, IT IS A WORK IN PROGRESS
+
+(Need to add equipment)
+
+Genotypes:
+
+- All
+	-> Added Staunch Wounds, Cooking and Gathering, and Meal Preparation as starting skills
+	-> All humanoids will have one Psionic Interface slot
+
+- Mutants
+	-> Increased base mutation points from 12 to 16
+	-> Increased skill point gain from 50 to 65
+	-> Narrowed health gain from 1-4 to 1-5 for more flavor and a chance at more HP.
+	-> Added Menacing Stare as a starting skill
+	-> Bonus 300 starting reputation with Joppa
+
+- True Kin
+	-> Increased lower end of health gain, went from 1-4 to 2-4 per level, gives a little more consistency whereas mutants have higher potential but greater variability.
+	-> Increased starting cybernetics points from 2 to 4
+	-> Increased skill point gain from 70 to 85
+
+- Psionics (new genotype)
+	-> HP gain of 1-4 per level
+	-> 34 starting stat points (4 less than True Kin, 10 less than mutants)
+	-> 95 skill points per level (10 more than True Kin)
+	-> 2 starting cybernetic points
+	-> "Base" starting stats are equal to True Kin (12 each), but heavily modified by each subclass, taking a penalty in some stats for a bonus in others
+	-> Starts with the same base skills as the others, but with Gadget Inspector instead of Rebuke Robot/Menacing Stare
+	-> +300 base reputation with Mechanimists
+	-> Four psionic interface slots instead of the 1 that everyone else gets
+
+
+
+Skills:
+
+- Axe and Cudgel skills can now use either Strength or Agility for minimum requirements. Mind you, this does not change the skills themselves (e.g. if they scale off Agility) but it does give you access to more skills.
+- Reduces Strength/Agility requirements for Multiweapon Expertise and Mastery by 2 points(23 -> 21, and 27 -> 25 respectively)
+- Reduces Intelligence requirement for Dueling Stance (Long Blade) by 2 points (17 -> 15).
+- Removes secondary stat requirement from En Garde! (Long Blade). Previously required 29 and 23 in Strength and Agility (it didn't matter which was 29 and which was 23, but you had to have both), now just requires 29 in one of them.
+- Disassemble is now included when you unlock Tinkering, but Reverse Engineer's cost has been increased from 100 to 200.
+- Increased cost of Butchery and Spicer from 50 to 100 each in exchange for starting with Cooking and Gathering and Meal Preparation.
+- Adds the Akimbo skill under Multiweapon Fighting
+
+
+
+Other:
+
+- Added two chests, a bedroll, a becoming nook, and an empty cybernetics rack for said nook to Joppa.
+- Gigantic can now be modified onto equipment.
+- Shifts around and smooths out the drop tables for some equipment, as well as adds the modded equipment in. This is far too granular to list every change.
+- Smooths the curve for how quickly some higher tier equipment ramps up in price. Brought the value of higher tier equipment down a tad as well.
+
+
+
+Energy Cells:
+
+  Vanilla (Tier in parentheses, Tier functions as a scalar value used for determining a variety of things like drop rates as well as mod capacity and requirements, higher is rarer/better from 1 to 8):
+
+    Mods:
+    Radio Powered - Recharges (10 x Tier) per tick, up to (1 + Tier) max depth. Does not stack with Fidget/Solar, the higher recharge rate is used.
+    High Capacity - Increases max charge to (Charge x (14 + Tier)) / 10.
+    Gigantic - Doubles max charge, stacks with High Capacity (not sure yet if multiplicative or additive).
+
+    Chem Cell (1) - 10000
+    Fidget Cell (1) - 2500, recharges 2/20 per tick out of/in combat
+    Solar Cell (2) - 2500, recharges 10 per tick in sunlight
+    Nuclear Cell (7) - 100000
+    Antimatter Cell (8) - 200000
+    Liquid Fueled:
+      Lead-Acid - 4000 max, 500 per dram
+      Combustion - 6000 max, 750 per dram
+      Thermoelectric - 40000 max, 5000 per dram
+      Biodynamic - 60000, 7500 per dram
+
+  Modded (Tier):
+
+    Advanced Chem Cell (5) - 50000 (5x chem cell, half a nuclear cell)
+    Dark Matter (8) - 500000
+    Solar Cell Array (4) - 10000, recharges 25 per tick in sunlight (so 4x capacity and 2.5x recharge of basic solar cell)
+    Solar Cell Nexus (7) - 50000, recharges 50 per tick in sunlight (so 20x capacity and 5x recharge of basic solar cell, or 5x capacity and 2x recharge of solar cell array)

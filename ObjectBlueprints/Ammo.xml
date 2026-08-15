@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+
+<!-- removed temporarily
+
+  <object Name="Shotgun Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="shotgun shell" ColorString="&amp;y" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileShotgunShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="A handful of pellets encased in a thick wax-paper and plastic shell." />
+    <part Name="TinkerItem" Bits="C" CanBuild="true" CanDisassemble="false" NumberMade="5" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileShotgunShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+  </object>
+
+
+
+  <object Name="Raven_Vibro Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cvibro &amp;ybullet" ColorString="&amp;c" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileVibroBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="A bullet with a shimmering, white tip." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileVibroBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+  </object>
+
+  <object Name="Raven_Vibro Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cvibro &amp;yshell" ColorString="&amp;c" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileVibroShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="A shotgun shell containing shimmering, white pellets." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileVibroShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+  </object>
+
+  <object Name="Raven_Vibro Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cvibro &amp;yarrow" ColorString="&amp;c" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileVibroArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An arrow with a shimmering, white tip." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileVibroArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+  </object>
+
+
+
+  <object Name="Raven_Sunder Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Ksunder &amp;ybullet" ColorString="&amp;K" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileSunderBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="A chrome bullet, humming with power.
+          
+          &amp;C2d100+20 damage to inorganic matter.
+          &amp;C2d10+20 damage to organic matter." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSunderBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="10" BaseDamage="1d6" ColorString="&amp;K" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="SunderGrenade" Radius="1" Level="2" />
+  </object>
+
+  <object Name="Raven_Sunder Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Ksunder &amp;yshell" ColorString="&amp;K" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileSunderShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="A shotgun shell containing chrome pellets, each humming with power.
+          
+          &amp;C2d100+20 damage to inorganic matter.
+          &amp;C2d10+20 damage to organic matter." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSunderShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="10" BaseDamage="1d6" ColorString="&amp;K" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="SunderGrenade" Radius="1" Level="2" />
+  </object>
+
+  <object Name="Raven_Sunder Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Ksunder &amp;yarrow" ColorString="&amp;K" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileSunderArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="A arrow with a chrome tip, humming with power.
+          
+          &amp;C2d100+20 damage to inorganic matter.
+          &amp;C2d10+20 damage to organic matter." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSunderArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="10" BaseDamage="1d6" ColorString="&amp;K" />
+    <part Name="SunderGrenade" Radius="1" Level="2" />
+    <part Name="Physics" IsReal="false" />
+  </object>
+
+
+
+  <object Name="Raven_Incendiary Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;oincendiary &amp;ybullet" ColorString="&amp;o" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileIncendiaryBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="An odd shell casing with a strange orange tip, it emanates a hot aura, and bursts in a blast of heat on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileIncendiaryBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;o" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Incendiary Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;oincendiary &amp;yshell" ColorString="&amp;o" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileIncendiaryShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="An odd shotgun shell containing strange orange pellets, they emanate a hot aura, and burst in a blast of heat on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileIncendiaryShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;o" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Incendiary Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;oincendiary &amp;yarrow" ColorString="&amp;o" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileIncendiaryArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="The tip of this arrow emanates a soft, hot aura. It holds a strange orange cube that bursts in a blast of heat on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileIncendiaryArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;o" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
+  </object>
+
+
+
+  <object Name="Raven_Sleep Gas Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Msleep gas &amp;ybullet" ColorString="&amp;M" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileSleepBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange purple tip, which bursts into a cloud of sleeping gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSleepBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;M" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
+  </object>
+
+  <object Name="Raven_Sleep Gas Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Msleep gas &amp;yshell" ColorString="&amp;M" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileSleepShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing strange purple pellets, which burst into a cloud of sleeping gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSleepShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;M" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
+  </object>
+
+  <object Name="Raven_Sleep Gas Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Msleep gas &amp;yarrow" ColorString="&amp;M" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileSleepArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="The tip of this arrow holds a strange purple cube, which bursts into a cloud of sleeping gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileSleepArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;M" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
+  </object>
+
+
+
+  <object Name="Raven_Poison Gas Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;gpoison gas &amp;ybullet" ColorString="&amp;g" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectilePoisonBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange purple tip, which bursts into a cloud of poison gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectilePoisonBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;g" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
+  </object>
+
+  <object Name="Raven_Poison Gas Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;gpoison gas &amp;yshell" ColorString="&amp;g" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectilePoisonShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing strange purple pellets, which burst into a cloud of poison gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectilePoisonShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;g" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
+  </object>
+
+  <object Name="Raven_Poison Gas Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;gpoison gas &amp;yarrow" ColorString="&amp;g" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectilePoisonArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="The tip of this arrow holds a strange purple cube, which bursts into a cloud of poisoning gas on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectilePoisonArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;g" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
+  </object>
+
+
+
+  <object Name="Raven_Razor Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;rrazor &amp;ybullet" ColorString="&amp;r" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileRazorBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange serrated bullet, for maximum bleeding." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileRazorBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
+  </object>
+
+  <object Name="Raven_Razor Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;rrazor &amp;yshell" ColorString="&amp;r" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileRazorShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing jagged pieces of metal to cause maximum bleeding." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileRazorShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
+  </object>
+
+  <object Name="Raven_Razor Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;rrazor &amp;yarrow" ColorString="&amp;r" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileRazorArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="The tip of this arrow is specially serrated to cause maximum bleeding." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileRazorArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
+  </object>
+
+  <object Name="Raven_Frozen Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;ybullet" ColorString="&amp;c" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileFrozenBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="An odd shell casing with a strange blue tip, it emanates a cold aura, and bursts in a blast of cold on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFrozenBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Frozen Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;yshell" ColorString="&amp;c" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileFrozenShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="An odd shotgun shell containing strange blue pellets, they emanate a cold aura, and burst in a blast of cold on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFrozenShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Frozen Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;yarrow" ColorString="&amp;c" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileFrozenArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="The tip of this arrow emanates a soft, cold aura. It holds a strange blue cube that bursts in a blast of cold on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFrozenArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;c" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
+  </object>
+
+
+
+  <object Name="Raven_Explosive Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Wexplosive &amp;ybullet" ColorString="&amp;W" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileExplosiveBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange red tip, which creates a small explosion on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileExplosiveBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="HEGrenade" Force="1200" Damage="1d6" />
+  </object>
+
+  <object Name="Raven_Explosive Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Wexplosive &amp;yshell" ColorString="&amp;W" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileExplosiveShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing strange red pellets, which create a small explosions on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileExplosiveShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="HEGrenade" Force="1200" Damage="1d6" />
+  </object>
+
+  <object Name="Boomrose Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Rboomrose &amp;yarrow" ColorString="&amp;R" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileExplosiveArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short="The tip of this arrow holds a strange red cube, which creates a small explosion on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileExplosiveArrow" Inherits="TemporaryProjectile">
+    <part Name="Render" DisplayName="explosive arrow" ColorString="&amp;R" />
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;R" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="HEGrenade" Force="1200" Damage="1d6" />
+  </object>
+
+  <object Name="Raven_Flash Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;ybullet" ColorString="&amp;R" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileFlashBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange white tip, which bursts with a loud pop and white flash on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFlashBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
+  </object>
+
+  <object Name="Raven_Flash Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;yshell" ColorString="&amp;R" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileFlashShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing strange white pellets, which burst with a loud pop and white flash on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFlashShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
+  </object>
+
+  <object Name="Raven_Flash Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;yarrow" ColorString="&amp;R" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileFlashArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="The tip of this arrow holds a strange white cube, which bursts with a loud pop and white flash on impact." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileFlashArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
+  </object>
+
+
+
+  <object Name="Raven_Stasis Bullet" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;mstasis &amp;ybullet" ColorString="&amp;m" />
+    <part Name="AmmoSlug" ProjectileObject="ProjectileStasisBullet" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shell casing with a strange yellow tip, which expands on impact to engulf whatever it hits." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileStasisBullet" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
+  </object>
+
+  <object Name="Raven_Stasis Shell" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;mstasis &amp;yshell" ColorString="&amp;m" />
+    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileStasisShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Commerce" Value="0.20" />
+    <part Name="Description" Short="An odd shotgun shell containing strange yellow pellets, which expand on impact to engulf whatever they hit." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileStasisShell" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
+  </object>
+
+  <object Name="Raven_Stasis Arrow" Inherits="Projectile">
+    <part Name="Render" DisplayName="&amp;mstasis &amp;yarrow" ColorString="&amp;m" />
+    <part Name="AmmoArrow" ProjectileObject="ProjectileStasisArrow" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="Description" Short=" The tip of this arrow holds a strange yellow cube, which expands on impact to engulf whatever it hit." />
+    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="Commerce" Value="0.20" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="DynamicObjectsTable:Ammo" />
+  </object>
+  <object Name="ProjectileStasisArrow" Inherits="TemporaryProjectile">
+    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;R" />
+    <part Name="Physics" IsReal="false" />
+    <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
+  </object>
+-->
+
+</objects>

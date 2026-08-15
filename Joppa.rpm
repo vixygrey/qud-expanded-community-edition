@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Map Load="Merge">
+  <cell X="23" Y="13">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="24" Y="13">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="25" Y="13">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="26" Y="13">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="27" Y="13">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="19" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="20" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="21" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="22" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="23" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="24" Y="14">
+    <object Name="CyberneticsStationRack"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="14">
+    <object Name="CyberneticsTerminal2"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="14">
+    <object Name="Raven_Empty Gun Rack"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="27" Y="14">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="19" Y="15">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="20" Y="15">
+    <object Name="Bookshelf"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="21" Y="15">
+    <object Name="Bed"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="22" Y="15">
+    <object Name="Dresser"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="15">
+    <object Name="Torchpost"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="15">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="15">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="15">
+    <object Name="Raven_Empty Weapon Rack"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="27" Y="15">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="19" Y="16">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="20" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="21" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="22" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="16">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="27" Y="16">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="16" Y="17">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="19" Y="17">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="20" Y="17">
+    <object Name="Low Table"></object>
+  </cell>
+  <cell X="21" Y="17">
+    <object Name="Floor Cushion"></object>
+  </cell>
+  <cell X="22" Y="17">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="17">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="17">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="17">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="17">
+    <object Name="Vase"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="27" Y="17">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="17" Y="18">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="18" Y="18">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="19" Y="18">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="20" Y="18">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="21" Y="18">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="22" Y="18">
+    <object Name="Oven"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="18">
+    <object Name="Woven Basket"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="18">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="18">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="18">
+    <object Name="Chest"></object>
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="27" Y="18">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="17" Y="19">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="18" Y="19">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="19" Y="19">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="20" Y="19">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="21" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="22" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="23" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="24" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="25" Y="19">
+    <object Name="Raven_Rusted Door"></object>
+  </cell>
+  <cell X="26" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="27" Y="19">
+    <object Name="RustedMetalWall"></object>
+  </cell>
+  <cell X="19" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="20" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="21" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="22" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="20">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="26" Y="20">
+    <object Name="Torchpost"></object>
+  </cell>
+  <cell X="21" Y="21">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="22" Y="21">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="23" Y="21">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="24" Y="21">
+    <object Name="DirtPath"></object>
+  </cell>
+  <cell X="25" Y="21">
+    <object Name="DirtPath"></object>
+  </cell>
+</Map>

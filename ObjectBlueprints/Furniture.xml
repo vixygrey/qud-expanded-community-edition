@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objects>
+  <object Name="Raven_Empty Weapon Rack" Inherits="Chest">
+    <part Name="Render" DisplayName="weapon rack" Tile="Items/sw_weapons_rack.bmp" ColorString="&amp;c" />
+    <part Name="Description" Short="Wooden and chrome poles let weapons rest peacefully." />
+    <part Name="Container" Preposition="on" />
+    <tag Name="Tier" Value="2" />
+    <tag Name="NoSparkingQuest" />
+    <tag Name="HangingSupport" />
+  </object>
+
+  <object Name="Raven_Empty Gun Rack" Inherits="Raven_Empty Weapon Rack">
+    <part Name="Render" DisplayName="gun rack" Tile="Items/sw_weapons_rack.bmp" DetailColor="K" />
+    <part Name="Description" Short="Wooden and chrome poles let guns rest peacefully." />
+  </object>
+
+  <object Name="Raven_Empty Armor Rack" Inherits="Weapon Rack">
+    <part Name="Render" DisplayName="armor rack" Tile="Items/sw_weapons_rack.bmp" DetailColor="Y" />
+    <part Name="Description" Short="Wooden and chrome poles let armor rest peacefully." />
+  </object>
+
+  <object Name="Raven_Rusted Door" Inherits="Metal Door">
+    <part Name="Render" DisplayName="rusted door" ColorString="&amp;r^C" TileColor="&amp;r" DetailColor="C" RenderString="+" Occluding="false" RenderIfDark="true" />
+    <part Name="Description" Short="Sheet metal is locked in diamond pattern and welded into the shape of a door. The surface is scorched and scratched in sections." />
+  </object>
+</objects>

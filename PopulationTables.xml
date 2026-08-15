@@ -1,0 +1,1023 @@
+<?xml version="1.0" encoding="utf-8"?>
+<populations>
+
+    <!-- Starting Equipment -->
+
+<population Name="StartingGear_Force Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Disintegration Psionic Rifle" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Force Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <object Blueprint="Basic Toolkit" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="3d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Fire Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Fire Psionic Rifle" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger" Number="1" />
+      <object Blueprint="Battle Axe2" Number="1" />
+      <object Blueprint="Raven_Simple Fire Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Ice Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Ice Psionic Rifle" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Ice Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Lightning Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Lightning Psionic Pistol" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Steel Dagger" Number="1" />
+      <object Blueprint="Raven_Simple Lightning Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Light Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Light Psionic Pistol" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Light Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <object Blueprint="Solar Cell" Number="1" />
+      <table Name="Cells" Number="1d2" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Corrosive Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Acid Psionic Rifle" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="4" />
+      <object Blueprint="SalveTonic" Number="1d3+1" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Acid Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Blood Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Blood Psionic Pistol" Number="2" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="2" />
+      <object Blueprint="Raven_Simple Blood Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Mental Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Perception Psionic Rifle" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Mental Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="2d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="1d3" />
+      <table Name="Artifact 2" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Temporal Psionic">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Temporal Psionic Rifle" Number="1" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="2" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Raven_Simple Temporal Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Raven_Simple Clairvoyance Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1d3" />
+      <table Name="Artifact 1" Number="2d3" />
+      <table Name="Artifact 2" Number="2d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Force Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Long Sword2" Number="1" />
+      <object Blueprint="Raven_Iron Greatshield" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple Disintegration Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Cells" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Fire Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Steel Halberd" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple Kindle Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Cells" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Ice Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Steel War Hammerth" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple Frost Webs Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Cells" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Lightning Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Long Sword2" Number="1" />
+      <object Blueprint="Iron Buckler" Number="1" />
+      <object Blueprint="Raven_Lightning Psionic Rifle" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple EMP Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="2d3" />
+      <table Name="Cells" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Light Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" /> 
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Light Psionic Rifle" Number="1" />
+      <object Blueprint="Compound Bow" Number="1" />
+      <object Blueprint="Dagger2" Number="1" />
+      <object Blueprint="Wooden Arrow" Number="100" />
+      <object Blueprint="Raven_Simple Photosynthetic Skin Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <object Blueprint="Solar Cell" Number="1" />
+      <table Name="Cells" Number="1d2" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Corrosive Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Steel Long Swordth" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple Corrosive Gas Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Cells" Number="1d3" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Blood Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Vine-Weave Tunic" Number="1" />
+      <object Blueprint="Elastyne Slippers" Number="1" />
+      <object Blueprint="Elastyne Gloves" Number="1" />
+      <object Blueprint="Elastyne Skull Cap" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Dagger2" Number="2" />
+      <object Blueprint="Raven_Simple Syphon Vim Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Cells" Number="1d2" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Mental Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Battle Axe3" Number="1" />
+      <object Blueprint="Raven_Iron Plate Armor" Number="1" />
+      <object Blueprint="Raven_Iron Boots" Number="1" />
+      <object Blueprint="Raven_Iron Gauntlets" Number="1" />
+      <object Blueprint="Raven_Iron Helmet" Number="1" />
+      <object Blueprint="FullWaterskin" Number="2" />
+      <object Blueprint="EmptyWaterskin" Number="2" />
+      <object Blueprint="SalveTonic" Number="1d3" />
+      <object Blueprint="Raven_Simple Sunder Mind Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Basic Toolkit" Number="1" />
+      <table Name="Injectors" Number="1d3" />
+      <table Name="Scrap 1" Number="2d4" />
+      <table Name="Cells" Number="1" />
+    </group>
+  </population>
+
+<population Name="StartingGear_Temporal Guardian">
+    <group Name="Items" Style ="pickeach">
+      <table Name="StartingGear_Common" />
+      <object Blueprint="Raven_Temporal Psionic Pistol" Number="2" />
+      <object Blueprint="Cloth Robe" Number="1" />
+      <object Blueprint="Sandals" Number="1" />
+      <object Blueprint="HalfFullWaterskin" Number="3" />
+      <object Blueprint="SalveTonic" Number="1" />
+      <object Blueprint="Raven_Simple Space-Time Vortex Chip" Number="1" />
+      <object Blueprint="Raven_Simple Neutral Body Chipset" Number="1" />
+      <object Blueprint="Raven_Simple Mental Mirror Chip" Number="1" />
+      <object Blueprint="Basic Toolkit" Number="1" />
+      <table Name="Injectors" Number="1" />
+      <table Name="Scrap 1" Number="1d4" />
+      <table Name="Cells" Number="1" />
+    </group>
+  </population>
+
+  <!-- Implant Tables by Points -->
+
+  <population Name="Implants_1and2Pointers" Load="Merge">
+    <group Name="Items" Load="Merge" >
+      <object Blueprint="Raven_DermalPlatingSteel" Number="1" Weight="1" />
+      <object Blueprint="Raven_OmniPass" Number="1" Weight="1" />
+      <object Blueprint="Raven_SteelHandBones" Number="1" Weight="1" />
+    </group>
+  </population> 
+
+  <population Name="Implants_3Pointers" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Raven_AirFiltrationSystem" Number="1" Weight="1" />
+      <object Blueprint="Raven_DermalPlatingCrysteel" Number="1" Weight="1" />
+    </group>
+  </population>
+
+  <population Name="Implants_4PlusPointers" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="CrysteelHandBones" Number="1" Weight="1" />
+      <object Blueprint="Raven_DermalPlatingZetachrome" Number="1" Weight="1" />
+      <object Blueprint="Raven_ZetachromeHandBones" Number="1" Weight="1" />
+    </group>
+  </population>
+
+<!-- Melee Weapon Tables, Common is one-handed while Rare is two-handed. Group 1 is the exceptoin, 1C is both Bronze and Iron both one- and two-handed, and 1R is only Iron but both one- and two-handed.
+
+        1 - Bronze/Iron
+        2 - Steel
+        3 - Carbide
+        4 - Folded Carbide
+        5 - Fullerite
+        6 - Crysteel
+        7 - Flawless Crysteel
+        8 - Zetachrome
+-->
+
+  <population Name="Melee Weapons 1C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Greataxe" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Halberd" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze War Hammer" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze War Hammerth" />
+      <object Weight="5" Number="1" Blueprint="Raven_Bronze Wristblade" />
+
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="10" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="10" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron War Hammerth" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 1R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="20" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="20" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Wristblade" />
+    </group>
+  </population>
+  
+  <population Name="Melee Weapons 2C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Steel Rapier" />
+    </group>
+  </population>
+  
+    <population Name="Melee Weapons 2R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Steel Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Steel Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Steel Halberd" />
+      <object Weight="20" Number="1" Blueprint="Raven_Steel Wristblade" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 3C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Mace" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 3R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Halberd" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Wristblade" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 4C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Mace" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 4R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Halberd" />
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Maceth" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 5C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Mace" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 5R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Halberd" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greathammer" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Wristblade" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 6C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Vinereaper" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 6R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel War Hammer" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greataxe" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Wristblade" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 7C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Vinereaper" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 7R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel War Hammer" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greataxe" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Wristblade" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 8C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vinereaper" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Rapier" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Mace" />
+    </group>
+  </population>
+
+  <population Name="Melee Weapons 8R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Katana" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Maceth" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greataxe" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Wristblade" />
+    </group>
+  </population>
+
+<!-- Armor tables -->
+
+  <population Name="Armor 1C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Boots" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Gauntlets" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Helmet" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Plate Armor" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronzeweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Buckler" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Bronze Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 1R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Boots" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Helmet" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Plate Armor" />
+      <object Weight="10" Number="1" Blueprint="Ironweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Iron Buckler" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 2C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Boots" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Gauntlets" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Helmet" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Plate Armor" />
+      <object Weight="20" Number="1" Blueprint="Ironweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 2R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Steel Boots" />
+      <object Weight="10" Number="1" Blueprint="Steel Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Steel Helmet" />
+      <object Weight="10" Number="1" Blueprint="Steel Plate Mail" />
+      <object Weight="10" Number="1" Blueprint="Raven_Steelweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Steel Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Steel Buckler" />
+      <object Weight="10" Number="1" Blueprint="Steel Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Steel Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 3C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="25" Number="1" Blueprint="Raven_Steelweave Cloak" />
+      <object Weight="25" Number="1" Blueprint="Raven_Steel Vambrace" />
+      <object Weight="25" Number="1" Blueprint="Raven_Steel Greatshield" />
+
+      <object Weight="5" Number="1" Blueprint="Raven_Reinforced Suspension" />
+    </group>
+  </population>
+
+  <population Name="Armor 3R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Carbide Boots" />
+      <object Weight="10" Number="1" Blueprint="Carbide Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Helmet" />
+      <object Weight="10" Number="1" Blueprint="Carbide Plate Armor" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbideweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Buckler" />
+      <object Weight="10" Number="1" Blueprint="Carbide Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Greatshield" />
+
+      <object Weight="10" Number="1" Blueprint="Raven_Reinforced Suspension" />
+    </group>
+  </population>
+
+  <population Name="Armor 4C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Carbide Boots" />
+      <object Weight="20" Number="1" Blueprint="Carbide Gauntlets" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Helmet" />
+      <object Weight="20" Number="1" Blueprint="Carbide Plate Armor" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbideweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Buckler" />
+      <object Weight="20" Number="1" Blueprint="Carbide Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Carbide Greatshield" />
+
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Boots" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Helmet" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Plate Armor" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbideweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Buckler" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Greatshield" />
+
+      <object Weight="10" Number="1" Blueprint="Raven_Reinforced Suspension" />
+    </group>
+  </population>
+
+  <population Name="Armor 4R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Boots" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Helmet" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Plate Armor" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbideweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Buckler" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 5C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Fullerite Boots" />
+      <object Weight="20" Number="1" Blueprint="Fullerite Gauntlets" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fulleriteweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Buckler" />
+      <object Weight="20" Number="1" Blueprint="Fullerite Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 5R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Fullerite Boots" />
+      <object Weight="10" Number="1" Blueprint="Fullerite Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Fulleriteweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Fullerite Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Fullerite Buckler" />
+      <object Weight="10" Number="1" Blueprint="Fullerite Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Fullerite Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 6C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteelweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Buckler" />
+      <object Weight="20" Number="1" Blueprint="Crysteel Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 6R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Crysteelweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Crysteel Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Crysteel Buckler" />
+      <object Weight="10" Number="1" Blueprint="Crysteel Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Crysteel Greatshield" />
+    </group>
+  </population>
+
+  <population Name="Armor 7C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteelweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Buckler" />
+      <object Weight="20" Number="1" Blueprint="Flawless Crysteel Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greatshield" />
+      <removetable Name="Armor 6C" /> <!-- From Arendeth: If you want to remove a table from an entry this is how it is currently done since the edit fixed the error -->
+    </group>
+  </population>
+
+  <population Name="Armor 7R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteelweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Buckler" />
+      <object Weight="10" Number="1" Blueprint="Flawless Crysteel Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Greatshield" />
+      <removetable Name="Armor 6R" />
+    </group>
+  </population>
+
+  <population Name="Armor 8C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <removetable Name="Armor 7C" />
+    </group>
+  </population>
+
+  <population Name="Armor 8R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <removetable Name="Armor 7R" />
+    </group>
+  </population>
+
+<!-- Ranged Weapon Tables -->
+
+  <population Name="Missile 2" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="1" Number="1" Blueprint="Raven_Disintegration Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Perception Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Fire Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Ice Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Lightning Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Acid Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Blood Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Light Psionic Pistol" />
+      <object Weight="1" Number="1" Blueprint="Raven_Temporal Psionic Pistol" />
+    </group>
+  </population>
+
+  <population Name="Missile 3" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="1" Number="1" Blueprint="Raven_Disintegration Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Perception Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Fire Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Ice Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Lightning Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Acid Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Blood Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Light Psionic Rifle" />
+      <object Weight="1" Number="1" Blueprint="Raven_Temporal Psionic Rifle" />
+    </group>
+  </population>
+
+  <population Name="Missile 4" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Compact Flamethrower" />
+      <object Weight="10" Number="1" Blueprint="Raven_Cryocannon" />
+      <object Weight="5" Number="1" Blueprint="Raven_Net Gun" />
+      <object Weight="5" Number="1" Blueprint="Raven_Fine-Tuned Handgun" />
+      <object Weight="5" Number="1" Blueprint="Raven_HandCannonMod" />
+      <object Weight="5" Number="1" Blueprint="Raven_Drum Shotgun" />
+    </group>
+  </population>
+
+<!-- Ammo/Cell Tables, simply merging in new cell types. -->
+
+  <population Name="Ammo 4" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+    </group>
+  </population>
+
+  <population Name="Ammo 5" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+    </group>
+  </population>
+
+  <population Name="Ammo 6" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+    </group>
+  </population>
+
+  <population Name="Ammo 7" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
+    </group>
+  </population>
+
+  <population Name="Ammo 8" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
+      <table Weight="1" Number="1" Name="Raven_Dark Matter Cell Chance" />  <!-- Adding a chance onto the rare table to roll -->
+    </group>
+  </population>
+
+  <population Name="Raven_Dark Matter Cell Chance"> <!-- If you get the roll on the table, you have a 50/50 shot of actually getting a Dark Matter Cell vs. just rerolling on the table. -->
+    <group Name="Items" Style="pickone">
+      <table Weight="1" Number="1" Name="Ammo 8" />
+      <object Weight="1" Number="1" Blueprint="Raven_Dark Matter Cell" />
+    </group>
+  </population>
+
+<!-- Artifact Tables -->
+
+  <population Name="Artifact 3"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 3C" />
+      <table Weight="5" Number="1" Name="Artifact 3R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
+    </group>
+  </population>
+
+  <population Name="Artifact 3R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="5" Number="1" Blueprint="Raven_Large Sphere of Negative Weight" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Hoversled" />
+    </group>
+  </population>
+
+  <population Name="Artifact 4"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 4C" />
+      <table Weight="5" Number="1" Name="Artifact 4R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
+    </group>
+  </population>
+
+  <population Name="Artifact 4R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Raven_Large Sphere of Negative Weight" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Hoversled" />
+    </group>
+  </population>
+
+  <population Name="Artifact 5"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 5C" />
+      <table Weight="5" Number="1" Name="Artifact 5R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
+    </group>
+  </population>
+
+  <population Name="Artifact 5R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="15" Number="1" Blueprint="Raven_Large Sphere of Negative Weight" />
+      <object Weight="5" Number="1" Blueprint="Raven_Advanced Hoversled" />
+    </group>
+  </population>
+
+  <population Name="Artifact 6"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 6C" />
+      <table Weight="5" Number="1" Name="Artifact 6R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 2" />
+    </group>
+  </population>
+
+  <population Name="Artifact 6R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="15" Number="1" Blueprint="Raven_Large Sphere of Negative Weight" />
+      <object Weight="10" Number="1" Blueprint="Raven_Advanced Hoversled" />
+    </group>
+  </population>
+
+  <population Name="Artifact 7"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 7C" />
+      <table Weight="5" Number="1" Name="Artifact 7R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 2" />
+    </group>
+  </population>
+
+  <population Name="Artifact 8"> <!-- Overwrite instead of merge to neatly add chips in -->
+    <group Name="Items" Style="pickone">
+      <table Weight="85" Number="1" Name="Artifact 8C" />
+      <table Weight="5" Number="1" Name="Artifact 8R" />
+      <table Weight="10" Number="1" Name="Raven_Chips Tier 3" />
+    </group>
+  </population>
+
+  <population Name="Artifact 8R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="5" Number="1" Blueprint="Raven_CyberneticsCreditPass" />
+      <object Weight="1" Number="1" Blueprint="Raven_Dark Matter Cell" />
+    </group>
+  </population>
+
+<!-- Chip Tables -->
+
+  <population Name="Raven_Chips Tier 1">
+    <group Name="Items" Style="pickone">
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Disintegration Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Force Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Kindle Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Fire Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Frost Webs Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Ice Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple EMP Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Lightning Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Photosynthetic Skin Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Light Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Corrosive Gas Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Acid Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Syphon Vim Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Blood Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Sunder Mind Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Mental Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Space-Time Vortex Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Temporal Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Mental Mirror Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Mind Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Heightened Quickness Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Body Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Clairvoyance Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Spirit Chipset" />
+    </group>
+  </population>
+
+  <population Name="Raven_Chips Tier 2">
+    <group Name="Items" Style="pickone">
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Disintegration Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Force Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Kindle Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Fire Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Frost Webs Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Ice Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved EMP Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Lightning Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Photosynthetic Skin Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Light Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Corrosive Gas Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Acid Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Syphon Vim Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Blood Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Sunder Mind Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Mental Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Space-Time Vortex Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Temporal Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Mental Mirror Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Mind Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Heightened Quickness Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Body Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Clairvoyance Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Spirit Chipset" />
+    </group>
+  </population>
+
+  <population Name="Raven_Chips Tier 3">
+    <group Name="Items" Style="pickone">
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Disintegration Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Force Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Kindle Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Fire Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Frost Webs Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Ice Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced EMP Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Lightning Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Photosynthetic Skin Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Light Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Corrosive Gas Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Acid Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Syphon Vim Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Blood Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Sunder Mind Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Mental Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Space-Time Vortex Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Temporal Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Mental Mirror Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Mind Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Heightened Quickness Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Body Chipset" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Clairvoyance Chip" />
+      <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Spirit Chipset" />
+    </group>
+  </population>
+
+</populations>

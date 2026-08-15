@@ -1,0 +1,42 @@
+Changes:
+
+- Tweaked the custom Genotype and Subtypes.
+	-> Sprites for all the subtypes have been updated, courtesy of Noble Lark! All credit goes to them for their wonderful work.
+	-> The display name for the Yttrian genotype has been renamed to Psionic Adept. 
+	-> Base stats for the custom genotype have been increased by 2 across the board, up to 12 like True Kin, however the subtype modifiers have been decreased across the board to compensate. The end result is the same, however now it will be (hopefully) a little more clear what each subtype is losing in exchange for what it gains.
+	-> Each category of subtypes has been renamed, the Psionic focused category has been renamed to 'The Lore Seekers of the Grand Library', whereas the hybrid category has been renamed 'The Immovable Wall of Yttria' for flavor.
+	-> The subtype stat bonuses have been reworked. A subtype will now have a total value of +2 to 3 points, found by adding the bonuses together then subtracting the penalties. True Kin all have 3-4 bonus points, and Mutants all have 2 for comparison.
+	-> The subtypes that have elemental resistances have now had any penalties they had halved. Previously the penalty was equal to whatever corresponding bonus they had, e.g. +40 in one and -40 in another. The same subtype would now have +40 and -20.
+	-> Decreased base SP gain to 95, I felt they were a little too overtuned in that regard
+	-> Increased HP gain per level from 1-3 to 1-4
+	-> True Kin get a second chipset interface slot now
+
+- Adjusted the psionic chips for physical mutations. Previously, psionic chips granted 2/4/6 levels for their respective mutation (based on the chip's tier), regardless of whether it was a physical or mental mutation, with chipsets giving 1/2/3 levels of all 3 mutations in a given set. However, unlike mental mutations which scale with Ego even when obtained via a chip, physical mutations do not scale at all. To compensate for this, psionic chips that give physical mutations now give 3/6/10 levels for their respective mutations. Chipsets work similarly, but slightly different, still giving 1/2/3 levels for any mental mutations granted, but giving 2/4/6 levels of any physical mutations granted.
+
+- Changed multiweapon fighting to use Strength/Agility. This was implemented in vanilla. I did however leave the stat requirement reduction in.
+- Added Cooking and Gathering as well as Meal Preparation to the starting skills for all genotypes. For whatever reason, Meal Preparation won't work without the base skill, so I had to include that as well. In exchange, I increased the cost of Butchery and Spicer from 50 to 100 each.
+- Adjusted Skill Point gain. Mutants now get 65 (Vanilla 50), True Kin 85 (Vanilla 70)
+- Adjusted HP gain per level. Mutants are now 1-5 per level (Vanilla 1-4), I thought the variability but potential for greater numbers was nice flavor. True Kin on the other hand are now 2-4 per level (Vanilla 1-4) for a little more consistency, leaning the opposite from Mutants.
+- Decreased Intelligence requirement of Tinkering I from 19 to 17, II from 23 to 21, and III from 29 to 25.
+- Added the Akimbo skill to Multiweapon Fighting
+- Dark Matter cells were correctly adjusted to be tier 8 in a recent hotfix, however I didn't immediately go through the population tables. They're now rarer than before, only appearing on the Ammo 8 and Artifact 8R (rare) tables. On the Ammo 8 table, if you actually get the weight 1 roll for it, you have a 50/50 shot of getting the cell or rerolling on the table. On the Artifact 8R table you just have a weight 1 roll without any follow-up roll.
+
+---
+
+Fixes:
+
+- Fixed the added furniture in Joppa from the base mod and Saving Joppa layering on top of new furniture from the Spring Molting update. Made a new, separate building with amenities near Argyve's workshop. It's the building in red.
+- Experience Curve Beta has been fixed, just some minor changes that needed made.
+- Grand Bazaar needed just a little bit of work to fix, but I took some extra time to make some changes I was looking to make and dig into the code a bit more for it.
+	-> Adjusted the seed generation to figure out layout for the stilt tents. Regions cap much smaller, should hopefully make it a bit more consistent to have more tents.
+	-> Also shrank the path a bit and removed set Noise to false for it, reducing/removing how windy it got. May or may not change it back, but it gets a bit...chaotic with it turned on.
+	-> Added a lot of notes and renamed some of the variables to make the .cs file easier to read. If you're interested in the scripting feel free to dig through it.
+- Fixed a number of typos on PopulationTables.xml, as well as an invalid blueprint due to a part name change in OtherEquipment.xml, huge thanks to Tyrir for finding these and pointing them out.
+
+-----
+
+Hotfixes since last version (2.1.1):
+
+- Dark Matter Cells adjusted to be tier 8 as intended.
+- Hotfix for Zetachrome Aegis (and found a couple other shields) not properly working with Shield Wall. They were set to equip on the arm like bucklers, not hands.
+- Hotfix for PopulationTables.xml to fix some errors and tables not being removed properly. Credits to Arendeth for this fix, as they were the one to find and fix it themself then send the changes over to me.

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<bodies>
+
+  <bodyparttypes>
+    <bodyparttype Type="Chipset Interface" Description="Chipset Interface" Integral="true" Abstract="true" IgnorePosition="true" />
+  </bodyparttypes>
+
+  <anatomies>
+
+    <anatomy Name="Humanoid" Load="Merge">
+      <part Type="Chipset Interface" />
+    </anatomy>
+
+    <anatomy Name="TrueKin">
+      <part Type="Head">
+        <part Type="Face" />
+      </part>
+      <part Type="Back" />
+      <part Type="Arm" Laterality="Right">
+        <part Type="Hand" Laterality="Right" SupportsDependent="Hands" />
+      </part>
+      <part Type="Arm" Laterality="Left">
+        <part Type="Hand" Laterality="Left" SupportsDependent="Hands" />
+      </part>
+      <part Type="Missile Weapon" Laterality="Right" />
+      <part Type="Missile Weapon" Laterality="Left" />
+      <part Type="Hands" DependsOn="Hands" />
+      <part Type="Feet" />
+      <part Type="Chipset Interface" />
+      <part Type="Chipset Interface" />
+    </anatomy>
+
+    <anatomy Name="Yttrian">
+      <part Type="Head">
+        <part Type="Face" />
+      </part>
+      <part Type="Back" />
+      <part Type="Arm" Laterality="Right">
+        <part Type="Hand" Laterality="Right" SupportsDependent="Hands" />
+      </part>
+      <part Type="Arm" Laterality="Left">
+        <part Type="Hand" Laterality="Left" SupportsDependent="Hands" />
+      </part>
+      <part Type="Missile Weapon" Laterality="Right" />
+      <part Type="Missile Weapon" Laterality="Left" />
+      <part Type="Hands" DependsOn="Hands" />
+      <part Type="Feet" />
+      <part Type="Chipset Interface" />
+      <part Type="Chipset Interface" />
+      <part Type="Chipset Interface" />
+      <part Type="Chipset Interface" />
+    </anatomy>
+
+  </anatomies>
+
+</bodies>

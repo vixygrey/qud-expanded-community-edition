@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+
+  <!-- Merge Changes -->
+
+  <object Name="AirCurrentMicrosensor" Load="Merge">
+    <part Name="Render" DisplayName="&amp;cair current &amp;ymicrosensor" Tile="Items/sw_aircurrent.bmp" ColorString="&amp;C" DetailColor="r" />
+  </object>
+
+  <object Name="BeautifulVisage" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+2 Ego" />
+    <part Name="CyberneticsStatModifier" Stats="Ego:2" />
+  </object>
+
+  <object Name="CherubicVisage" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+2 Ego" />
+    <part Name="CyberneticsStatModifier" Stats="Ego:2" />
+  </object>
+
+  <object Name="CrysteelHandBones" Load="Merge">
+    <part Name="Physics" Weight="10" />
+    <part Name="Examiner" Complexity="6" Difficulty="1" />
+    <part Name="Commerce" Value="360" />
+    <part Name="CyberneticsBaseItem" Slots="Hands" Cost="6" BehaviorDescription="Your fists deal 3d4 damage." />
+  </object>
+
+  <object Name="DermalInsulation" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+10 Heat Resistance
++10 Cold Resistance
++10 Electrical Resistance
++10 Acid Resistance" />
+    <part Name="CyberneticsStatModifier" Stats="HeatResistance:10;ColdResistance:10;ElectricResistance:10;AcidResistance:10" />
+  </object>
+
+  <object Name="DermalPlating" Load="Merge">
+    <part Name="Render" DisplayName="{{b|carbide}} dermal plating" />
+    <part Name="CyberneticsBaseItem" Cost="2" BehaviorDescription="+2 AV"/>
+    <part Name="CyberneticsStatModifier" Stats="AV:2" />
+  </object>
+
+  <object Name="DopamineSynth" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+2 Willpower" />
+    <part Name="CyberneticsStatModifier" Stats="Willpower:2" />
+  </object>
+
+  <object Name="FulleriteHandBones" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="Your fists deal 2d5 damage." />
+  </object>
+  <object Name="FulleriteFist" Load="Merge">
+    <part Name="MeleeWeapon" BaseDamage="2d5" />
+  </object>
+
+  <object Name="HighGradeDermalInsulation" Load="Merge">
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="4" BehaviorDescription="+20 Heat Resistance
++20 Cold Resistance
++20 Electrical Resistance
++20 Acid Resistance"/>
+    <part Name="CyberneticsStatModifier" Stats="HeatResistance:20;ColdResistance:20;ElectricResistance:20;AcidResistance:20" />
+    <part Name="Examiner" Complexity="5" />
+    <part Name="Commerce" Value="240" />
+  </object>
+
+  <object Name="HyperElasticAnkleTendons" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+10 movespeed" />
+    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-10" />
+  </object>
+
+  <object Name="MotorizedTreads" Load="Merge">
+    <part Name="SaveModifier" Vs="Move,Knockdown,Knockback,Restraint,Drag" Amount="6" IsEMPSensitive="true" IsTechScannable="true" NameForStatus="DriveTrain" />
+  </object>
+
+  <object Name="NocturnalApex" Load="Merge">
+    <part Name="Render" DisplayName="&amp;Knocturnal &amp;yapex" Tile="Items/sw_nocturnal.bmp" ColorString="&amp;r" DetailColor="C" />
+  </object>
+
+  <object Name="OpticalMultiscanner" Load="Merge">
+    <part Name="CyberneticsBaseItem" Cost="4" />
+    <part Name="Examiner" Complexity="5" />
+    <part Name="Commerce" Value="240" />
+  </object>
+  
+  <object Name="RapidReleaseFingerFlexors" Load="Merge">
+    <part Name="Render" DisplayName="&amp;grapid &amp;yrelease &amp;rfinger flexors" Tile="Items/sw_flexors.bmp" ColorString="&amp;g" DetailColor="C" />
+  </object>
+
+  <object Name="UltraElasticAnkleTendons" Load="Merge">
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+20 movespeed" />
+    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-20" />
+  </object>
+
+  <!-- New Items -->
+
+  <object Name="Raven_AirFiltrationSystem" Inherits="BaseCyberneticsEquipment_3point">
+    <part Name="Physics" Weight="2" />
+    <part Name="Description" Short="An air filtration system is installed into the lungs of the user, preventing any sort of gaseous attack." />
+    <part Name="Render" DisplayName="&amp;Yair filtration system" Tile="Items/sw_axions.bmp" ColorString="&amp;K" DetailColor="C" />
+    <part Name="CyberneticsBaseItem" Slots="Body" Cost="3" BehaviorDescription="You are immune to gas-based attacks." />
+    <part Name="GasMask" Power="100" />
+  </object>
+
+  <object Name="Raven_DermalPlatingSteel" Inherits="BaseCyberneticsEquipment_1point">
+    <part Name="Physics" Weight="6" />
+    <part Name="Description" Short="Interlinked plates of smooth steel tessellate into a subcutaneous sheet." />
+    <part Name="Render" DisplayName="{{Y|steel}} dermal plating" Tile="Items/sw_dermalplating.bmp" ColorString="&amp;Y" DetailColor="r" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="1" BehaviorDescription="+1 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:1" />    
+  </object>
+
+  <object Name="Raven_DermalPlatingCrysteel" Inherits="BaseCyberneticsEquipment_3point">
+    <part Name="Physics" Weight="12" />
+    <part Name="Description" Short="Interlinked plates of hexagonal crysteel tessellate into a subcutaneous sheet." />
+    <part Name="Render" DisplayName="{{crysteel|crysteel}} dermal plating" Tile="Items/sw_dermalplating.bmp" ColorString="&amp;g" DetailColor="r" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="3" BehaviorDescription="+3 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:3" />    
+  </object>
+
+  <object Name="Raven_DermalPlatingZetachrome" Inherits="BaseCyberneticsEquipment_4point">
+    <part Name="Physics" Weight="16" />
+    <part Name="Description" Short="Innumberable globules of quasi-indistinct hardened quark-gluon plasma meld into a subcutaneous sheet." />
+    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} &amp;ydermal plating" Tile="Items/sw_dermalplating.bmp" ColorString="&amp;m" DetailColor="r" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="4" BehaviorDescription="+4 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:4" />    
+  </object>
+
+  <object Name="Raven_OmniPass" Inherits="BaseCyberneticsEquipment_2point">
+    <part Name="Physics" Weight="0" />
+    <part Name="Description" Short="The emitted frequencies of your tiniest bits are synchronized with the standardized band for force emission, whilst hidden compartments hold fluted keys for every wavelength along every spectrum permit entrance through every portal." />
+    <part Name="Render" DisplayName="&amp;Womni &amp;ypass" Tile="Items/sw_comminterlock.bmp" ColorString="&amp;K" DetailColor="r" />
+    <part Name="CyberneticsBaseItem" Slots="Hands,Feet,Body,Back,Face,Arm,Head" Cost="2" BehaviorDescription="You can walk through forcefields and unlock any door." />
+    <part Name="CyberneticsPropertyModifier" Props="DoorUnlocker:1" />
+    <part Name="CyberneticsForcefieldNullifier" />
+    <tag Name="StartingCybernetic:General" />
+  </object>
+
+  <object Name="Raven_SteelHandBones" Inherits="BaseCyberneticsEquipment_1point">
+    <part Name="Physics" Weight="10" />
+    <part Name="Description" Short="Silvery steel merely dents where where weak collagen would be smashed." />
+    <part Name="Render" DisplayName="&amp;Ysteel &amp;yhand bones" Tile="Items/sw_carbidehand.bmp" ColorString="&amp;b" DetailColor="r" />
+    <part Name="CyberneticsBaseItem" Slots="Hands" Cost="1" BehaviorDescription="Your fists deal 1d5 damage."/>
+    <part Name="CyberneticsFistReplacement" FistObject="SteelFist" />
+    <tag Name="Gender" Value="plural" />
+  </object>
+  <object Name="SteelFist" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="&amp;Ysteel &amp;yfist" Tile="Items/sw_nightvcyber.bmp" ColorString="&amp;Y" DetailColor="K" RenderString="\" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="999" BaseDamage="1d5" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="0" />
+    <part Name="Description" Short="Skeletal hand of silvery metal remains suspended in temporary lifelessness." />
+    <tag Name="Tier" Value="3" />
+    <part Name="Physics" Weight="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+    <tag Name="Mods" Value="None" />
+    <tag Name="WeaponUnarmed" />
+    <tag Name="NoSparkingQuest" />
+  </object>
+
+  <object Name="Raven_ZetachromeHandBones" Inherits="BaseCyberneticsEquipment_8point">
+    <part Name="Physics" Weight="10" />
+    <part Name="Description" Short="These fists are quite literally impossible to destroy, at least by conventional means. Bones have been replaced with hardened quark-gluon plasma, not only for the hands but also extending up into the arms and shoulders as reinforcement for the bones, so they don't shatter under the impact of the fists. Muscles have also been enhanced to hit faster and harder than ever.
+
+&amp;CYour fists deal 3d6 damage." />
+    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} hand bones" Tile="Items/sw_carbidehand.bmp" ColorString="&amp;m" DetailColor="Y" />
+    <part Name="CyberneticsBaseItem" Slots="Hands" Cost="8" BehaviorDescription="Your fists deal 3d6 damage." />
+    <part Name="CyberneticsFistReplacement" FistObject="Raven_ZetachromeFist" />
+    <part Name="Zetachrome" />
+    <tag Name="Gender" Value="plural" />
+  </object>
+  <object Name="Raven_ZetachromeFist" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} fist" Tile="Items/sw_carbidehand.bmp" ColorString="&amp;m" DetailColor="Y" RenderString="\" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="999" BaseDamage="3d6" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="0" />
+    <part Name="Description" Short="Skeletal hand of quark-gluon plasma remains suspended in temporary lifelessness." />
+    <part Name="Zetachrome" />
+    <tag Name="Tier" Value="8" />
+    <part Name="Physics" Weight="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+    <tag Name="Mods" Value="None" />
+    <tag Name="WeaponUnarmed" />
+    <tag Name="NoSparkingQuest" />
+  </object>
+
+</objects>

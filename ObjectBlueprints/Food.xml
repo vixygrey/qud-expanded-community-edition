@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+
+  <object Name="Yuckwheat Stem" Load="Merge">
+    <part Name="Physics" Weight="0" />
+  </object>
+
+  <object Name="Witchwood Bark" Load="Merge">
+    <part Name="Physics" Weight="0" />
+  </object>
+
+</objects>
