@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 |---|---|
 | **New item blueprints** | **350** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **209** `Load="Merge"` edits to existing objects |
-| **New genotype** | Psionic Adept (internally `Psionic`, formerly "Yttrian") with 18 subtypes |
-| **New body system** | "Chipset Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
+| **New genotype** | Psionic Adept (internally `Psionic`; the anatomy was formerly `Yttrian`) with 18 subtypes |
+| **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
 | **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
@@ -42,7 +42,7 @@ Every genotype gains these starting skills:
 - **Cooking and Gathering** (`CookingAndGathering`)
 - **Meal Preparation** (`CookingAndGathering_MealPreparation`) — the base skill is required for this to function, which is why both are granted
 
-Every humanoid also gains **one Chipset Interface slot** (see §3).
+Every humanoid also gains **one Chip Interface slot** (see §3).
 
 ### 1.2 Mutated Human
 
@@ -73,13 +73,14 @@ Every humanoid also gains **one Chipset Interface slot** (see §3).
 | Skill points / level | 70 | **85** |
 | HP gain / level | 1-4 | **2-4** |
 | Cybernetics license points | 2 | **4** |
-| Body object | `Humanoid` | **`TrueKin`** (custom anatomy — 2 Chipset Interface slots) |
+| Body object | `Humanoid` | **`TrueKin`** (custom anatomy — 2 Chip Interface slots) |
 | Extra starting skills | — | Staunch Wounds, Cooking and Gathering, Meal Preparation |
 
 ### 1.4 Psionic Adept (new)
 
-Internal name `Psionic`, display name **Psionic Adept**. Earlier versions called it "Yttrian";
-the body/anatomy object is still named `Yttrian`.
+Internal name `Psionic`, display name **Psionic Adept**. Earlier versions called the genotype
+"Yttrian"; the anatomy and body object kept that name until this fork renamed them to
+`PsionicAdept` (#13).
 
 | Field | Value |
 |---|---|
@@ -91,7 +92,7 @@ the body/anatomy object is still named `Yttrian`.
 | Skill points / level | **95** (+10 over True Kin, +25 over vanilla mutant) |
 | MP gain / level | 0 |
 | Cybernetics license points | **2** |
-| Chipset Interface slots | **4** |
+| Chip Interface slots | **4** |
 | Species / flags | `human`, `IsTrueKin="True"` |
 | Mechanimist reputation | **+300** |
 | Random-weight in chargen | 10 (same as the other two) |
@@ -173,35 +174,36 @@ against `.png` assets — but worth knowing if you ever rename them.
 
 ---
 
-## 3. The Chipset Interface & psionic chips
+## 3. The Chip Interface & psionic chips
 
 This is the mod's headline system: **equipment that grants real, working mutations to genotypes
 that cannot mutate.**
 
 ### 3.1 Body slots (`Bodies.xml`)
 
-A new abstract, integral, position-ignoring body part type — **Chipset Interface** — is defined
+A new abstract, integral, position-ignoring body part type — **Chip Interface** — is defined
 and then attached to anatomies:
 
-| Anatomy | Chipset Interface slots | Notes |
+| Anatomy | Chip Interface slots | Notes |
 |---|---|---|
 | `Humanoid` (merged) | **1** | Applies to every humanoid in the game, NPCs included |
 | `TrueKin` (new) | **2** | Full custom anatomy; True Kin genotype points at this |
-| `Yttrian` (new) | **4** | Psionic Adept anatomy |
+| `PsionicAdept` (new) | **4** | Psionic Adept anatomy |
 
-> 🗒️ **Naming inconsistency:** every piece of Mura's player-facing documentation calls this the
-> **"Psionic Interface"** slot, while the XML defines the body part as **"Chipset Interface"** and
-> the items are called chips/chipsets. Pick one before you write any new docs — the in-game
-> string comes from `Bodies.xml`, so "Chipset Interface" is what players actually see.
+> ✅ **Resolved in this fork (#13).** The original shipped a slot called **"Chipset Interface"**
+> while every piece of Mura's player-facing documentation called it the **"Psionic Interface"**.
+> Neither was accurate: the slot takes 108 chips against 36 chipsets, and 13 of the 36 mutations
+> the chips grant are *physical* rather than mental. It is now **"Chip Interface"** — true of the
+> whole catalogue, and consistent with the technological fiction in the chips' own description.
 
-The `TrueKin` and `Yttrian` anatomies are otherwise identical to vanilla Humanoid (Head/Face,
+The `TrueKin` and `PsionicAdept` anatomies are otherwise identical to vanilla Humanoid (Head/Face,
 Back, two Arms with Hands, two Missile Weapon slots, Hands, Feet). Two matching creature
-blueprints (`TrueKin`, `Yttrian`) in `ObjectBlueprints/Creatures.xml` inherit from `Humanoid`
+blueprints (`TrueKin`, `PsionicAdept`) in `ObjectBlueprints/Creatures.xml` inherit from `Humanoid`
 and swap the anatomy.
 
 ### 3.2 How chips work
 
-`Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chipset Interface slot with 0 AV /
+`Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chip Interface slot with 0 AV /
 0 DV and 0 weight, and uses the `UnknownArmor` examiner alternate (so it needs identifying).
 Its description explains the fiction: the chip integrates with your flesh and grants lost
 knowledge — remove it and you lose the ability.
@@ -1038,8 +1040,8 @@ Ordered roughly by impact.
 | 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
 | 13b | 🟡 Low | **`ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
 | 14 | ⚪ Note | Subtype sprite files use the prefix `corrosion*` while the subtype is named "Corrosive" — cosmetic inconsistency only | `Textures/Subtypes/` |
-| 15 | ⚪ Note | The `Yttrian` anatomy/body-object name survives the rename to "Psionic Adept" — harmless, but confusing in the source | `Bodies.xml`, `Genotypes.xml` |
-| 16 | ⚪ Note | The Chipset Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
+| 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
+| 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
 
 ### Things the changelog references that are **not** in this folder
 
@@ -1070,7 +1072,7 @@ document fill in.
 |---|---|
 | Mutants get 1-5 HP/level | `BaseHPGain="2-3"` (§1.2) |
 | Psionic Adept "+30 bonus skill points" | +25 vs vanilla, +10 vs the mod's True Kin (§1.4) |
-| "Psionic Interface" slot | Body part is named `Chipset Interface` (§3.1) |
+| "Psionic Interface" slot | Was `Chipset Interface`; now **`Chip Interface`** in this fork (§3.1) |
 | Joppa gets "two chests, a bedroll…" | One chest, a bed, and considerably more (§8) |
 | Multiweapon Fighting Str-or-Agi is a mod feature | Vanilla adopted it; only the requirement cut is the mod's (§4) |
 
@@ -1085,7 +1087,7 @@ qud-expanded/
 ├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 6 tree edits, Akimbo added
-├── Bodies.xml                  # Chipset Interface part; TrueKin + Yttrian anatomies
+├── Bodies.xml                  # Chip Interface part; TrueKin + Yttrian anatomies
 ├── PopulationTables.xml        # 76 tables (48 merge / 28 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── workshop.json               # Steam metadata + description
