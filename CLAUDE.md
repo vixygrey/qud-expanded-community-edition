@@ -551,6 +551,52 @@ second run proves it), and **guard the input's identity** rather than trusting i
 refuses to run unless the base is 418×312, because every offset is measured against that logo and
 a swapped base would misplace the marks instead of erroring.
 
+### A gate is only evidence about the property it checks
+
+Reformatting the XML in #78 produced output that `tools/validate_mod.py`,
+`tools/check_vanilla_drift.py` **and** `npx prettier --check` all passed — while prettier had
+reflowed the text inside `<helptext>` in `Options.xml`, inserting a newline mid-sentence into a
+string Qud renders in its options menu.
+
+None of those three gates was broken. None of them looks at whether text *content* survived, so all
+three were honestly green and collectively meaningless for that question. Three passing checks felt
+like three pieces of evidence and were zero.
+
+It surfaced by comparing the **parsed element tree** of every file before and after — tags,
+attributes, stripped text — which found 18 of 19 files identical and one not. That is exactly the
+ratio that gets waved through on a 2,500-line diff.
+
+This is the general form of two things already recorded below in their specific cases: an orphaned
+`Load="Merge"` applies nothing with no error, and a renamed vanilla blueprint breaks no save while
+silently ceasing to merge. Stated generally:
+
+> **Before trusting a green run, ask which property each check actually inspects.** A change that
+> rewrites content wholesale needs a comparison of a *parsed* representation — the AST for Python,
+> the element tree for XML — not a reading of the diff and not the checks that happen to exist.
+
+It is also why `serializable-shape` and `subtype-tile` were written: each exists because nothing
+else was looking at that property, and "nothing was looking" is not the same as "nothing is wrong".
+
+### `git checkout <file>` restores from the index, not from HEAD
+
+While testing a new check in #80, `git checkout mod/Subtypes.xml` — used to undo a deliberately
+broken probe — also silently reverted the real fix in that file, because the fix had never been
+staged. The validator caught it moments later, but the command itself gave no sign it had discarded
+work.
+
+Stage before using checkout to undo scratch edits in a file you are also legitimately changing, or
+keep the probe in a different file entirely.
+
+### Discovery attributes fail by doing nothing
+
+`[PlayerMutator]` is the marker Qud scans for. A class implementing `IPlayerMutator` **without** it
+compiles, ships, and is simply never called — no exception, no log line, just a feature that does
+not happen. Measured: 11 of the installed mods implementing that interface carry the attribute.
+
+Generalises to every attribute-driven extension point in the game, `[HasOptionFlagUpdate]` and
+`[OptionFlagUpdate]` included. **The failure mode for a missing registration marker is silence**, so
+check the marker against a working installed mod rather than assuming the interface is sufficient.
+
 ## Source documents
 
 | File | What it is |
