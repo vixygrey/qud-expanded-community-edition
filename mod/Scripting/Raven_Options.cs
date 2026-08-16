@@ -80,6 +80,15 @@ namespace QudExpandedCE
         /// <summary>The power while it is removed, so it can be put back verbatim.</summary>
         private static PowerEntry DetachedTwoGunStance;
 
+        /// <summary>The key it was filed under, so it goes back exactly where it came from.</summary>
+        private static string DetachedKey;
+
+        private const string SharedAkimboClass = "Pistol_Akimbo";
+
+        /// <summary>Kept in sync with the Description in mod/Skills.xml.</summary>
+        private const string TwoGunStanceDescriptionStart =
+            "Whenever you make a ranged attack while wielding multiple pistols";
+
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
 
@@ -174,30 +183,62 @@ namespace QudExpandedCE
             }
 
             bool wanted = Enabled(MultiweaponPistolsID, "Yes");
-            bool present = skill.Powers.TryGetValue(TwoGunStance, out PowerEntry entry);
+            string key = FindKey(skill);
 
             if (wanted)
             {
-                if (!present && DetachedTwoGunStance != null)
+                if (key == null && DetachedTwoGunStance != null)
                 {
-                    skill.Powers[TwoGunStance] = DetachedTwoGunStance;
+                    skill.Powers[DetachedKey ?? TwoGunStance] = DetachedTwoGunStance;
                     if (!skill.PowerList.Contains(DetachedTwoGunStance))
                     {
                         skill.PowerList.Add(DetachedTwoGunStance);
                     }
 
                     DetachedTwoGunStance = null;
+                    DetachedKey = null;
                 }
 
                 return;
             }
 
-            if (present)
+            if (key != null)
             {
-                DetachedTwoGunStance = entry;
-                skill.Powers.Remove(TwoGunStance);
-                skill.PowerList.Remove(entry);
+                DetachedTwoGunStance = skill.Powers[key];
+                DetachedKey = key;
+                skill.PowerList.Remove(DetachedTwoGunStance);
+                skill.Powers.Remove(key);
             }
+        }
+
+        /// <summary>
+        /// Locate this mod's power in a skill, without assuming what SkillEntry.Powers is keyed by.
+        ///
+        /// The dictionary could reasonably be keyed by display name or by implementation class, and
+        /// PowerEntry exposes neither - IBaseSkillEntry carries only Tile, Foreground, Detail and
+        /// Description. Guessing wrong would not throw: the lookup would simply miss, the removal
+        /// would never run, and the option would sit in the menu doing nothing at all.
+        ///
+        /// So match on the key OR on Description, which this mod sets in mod/Skills.xml and is
+        /// therefore the one identifier it can be certain of.
+        /// </summary>
+        private static string FindKey(SkillEntry skill)
+        {
+            foreach (KeyValuePair<string, PowerEntry> pair in skill.Powers)
+            {
+                if (pair.Key == TwoGunStance || pair.Key == SharedAkimboClass)
+                {
+                    return pair.Key;
+                }
+
+                if (pair.Value?.Description != null
+                    && pair.Value.Description.StartsWith(TwoGunStanceDescriptionStart))
+                {
+                    return pair.Key;
+                }
+            }
+
+            return null;
         }
 
         private static void ApplyChipSlots()
