@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   Mod options. The filename must contain "Option" for Qud to treat it as one.
   Declaring options is pure XML; reading them requires C# - see mod/Scripting/Raven_Options.cs.
@@ -7,7 +7,7 @@
 <options>
 
   <option
-      ID="Option_QudExpandedCE_MutationPoints"
+      ID="OptionQudExpandedCEMutationPoints"
       DisplayText="Qud Expanded: Mutated Human mutation points"
       Category="Mods"
       Type="Slider"

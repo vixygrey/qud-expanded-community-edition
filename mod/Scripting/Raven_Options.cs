@@ -1,13 +1,14 @@
 ﻿using XRL;
+using XRL.UI;
 
 namespace QudExpandedCE
 {
     /// <summary>
     /// Reads this mod's options and applies them to already-loaded game data.
     ///
-    /// Declaring an option is pure XML (mod/Options.xml); reading one requires C#. A field
-    /// carrying [OptionFlag] is populated from the named option, and a method carrying
-    /// [OptionFlagUpdate] runs whenever any option changes.
+    /// Declaring an option is pure XML (mod/Options.xml); reading one requires C#. A class marked
+    /// [HasOptionFlagUpdate] gets its [OptionFlagUpdate] method called whenever options change,
+    /// and values are read with Options.GetOption, which always returns a string.
     ///
     /// Charter rule 5: no file I/O, no network, no reflection, no Harmony. This reads an option
     /// and writes a public field on a record the game has already loaded.
@@ -15,36 +16,38 @@ namespace QudExpandedCE
     [HasOptionFlagUpdate]
     public static class Raven_Options
     {
-        public const string MutationPointsID = "Option_QudExpandedCE_MutationPoints";
+        public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
 
         /// <summary>The genotype whose mutation points the slider controls.</summary>
         private const string MutantGenotype = "Mutated Human";
 
         /// <summary>
-        /// Mutation points a Mutated Human starts with. Vanilla is 12; this mod's long-standing
-        /// value, and this option's default, is 16.
+        /// This mod's long-standing value, and the option's default. Vanilla Qud gives 12.
+        /// Kept in sync with Default= in mod/Options.xml.
         /// </summary>
-        [OptionFlag(MutationPointsID)]
-        public static int MutationPoints = 16;
+        public const int DefaultMutationPoints = 16;
 
-        /// <summary>
-        /// Applies every option. Runs on any option change.
-        ///
-        /// GenotypeFactory.GetGenotypeEntry would throw if genotypes are not loaded yet, so the
-        /// Try form is used: if this runs before XRL.GenotypeFactory.Init(), it does nothing
-        /// rather than crashing, and the next option change applies it.
-        /// </summary>
+        /// <summary>Runs whenever any option changes, and once as options are first read.</summary>
         [OptionFlagUpdate]
-        public static void Apply()
+        public static void OnOptionFlagUpdate()
         {
             ApplyMutationPoints();
         }
 
         private static void ApplyMutationPoints()
         {
+            // Every option value is a string, including sliders.
+            string raw = Options.GetOption(MutationPointsID, DefaultMutationPoints.ToString());
+            if (!int.TryParse(raw, out int points))
+            {
+                points = DefaultMutationPoints;
+            }
+
+            // Try rather than Get: if this runs before XRL.GenotypeFactory.Init(), the genotype
+            // is not loaded yet and this becomes a no-op instead of throwing.
             if (GenotypeFactory.TryGetGenotypeEntry(MutantGenotype, out GenotypeEntry entry))
             {
-                entry.MutationPoints = MutationPoints;
+                entry.MutationPoints = points;
             }
         }
     }
