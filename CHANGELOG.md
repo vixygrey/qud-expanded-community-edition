@@ -67,6 +67,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** `CLAUDE.md` *Lessons learned* records why a generator must never read the file it
+  writes. The preview-image generator was first written to read and write `mod/preview.png`, which
+  would have composited the fork's marks on twice from the second run onward — a failure that
+  renders fine and shows nothing useful in a diff. Kept because the general form covers anything
+  that appends, wraps or composites, not just images.
+  ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
+
 - **(internal)** `tools/build_preview.sh` regenerates the Workshop preview image from
   `tools/preview-base.png` — Mura's original logo, kept unmodified. The sizes, angles and green
   used for the fork's marks now live in a script instead of in whoever last opened an image
