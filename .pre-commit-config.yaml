@@ -22,7 +22,7 @@ repos:
         exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.29.4
+    rev: v1.49.0
     hooks:
       - id: typos
         args: [--config, .typos.toml]
