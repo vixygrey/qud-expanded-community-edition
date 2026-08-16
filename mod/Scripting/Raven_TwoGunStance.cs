@@ -32,7 +32,8 @@ namespace XRL.World.Parts.Skill
         /// Do not register a second identical ability when the character already has Akimbo.
         ///
         /// Buying this and the Pistol tree's Akimbo attaches two parts, and each inherited
-        /// AddAbility registers an activated ability under the same command. In play that showed
+        /// AddAbility registers an activated ability under the same command. HandleEvent below
+        /// silences the matching duplicate on the *toggle*; this handles the ability entry. In play that showed
         /// as "Akimbo" twice on the bar and left the skills screen reopening itself on Escape.
         /// It did not survive a save - the ability list is rebuilt from parts on load and the
         /// duplicate collapsed - so the saved character was always fine; the damage was confined
@@ -56,6 +57,27 @@ namespace XRL.World.Parts.Skill
             }
 
             return base.AddSkill(GO);
+        }
+
+        /// <summary>
+        /// Let vanilla's Akimbo handle the toggle when the character has both.
+        ///
+        /// Suppressing the duplicate ability in AddSkill leaves one entry on the bar and one
+        /// command, but both parts still *listen* for that command, and each one announces the
+        /// toggle - so the log read "Akimbo Toggled Off" twice.
+        ///
+        /// Returning true without calling base is "I did nothing, carry on": the event keeps
+        /// propagating and vanilla's part does the work and the announcing. When this is the only
+        /// Akimbo on the character, base runs as normal and this part drives the toggle itself.
+        /// </summary>
+        public override bool HandleEvent(CommandEvent E)
+        {
+            if (HasSeparateAkimbo(ParentObject))
+            {
+                return true;
+            }
+
+            return base.HandleEvent(E);
         }
 
         /// <summary>
