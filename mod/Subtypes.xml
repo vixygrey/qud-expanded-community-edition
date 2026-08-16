@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <subtypes>
   <!-- The subtype stat bonuses are aimed at a total value of 2-3 by adding the bonuses together then subtracting the penalties. True Kin all have 3-4 bonus points, and Mutants all have 2 -->
 
@@ -139,7 +139,7 @@
         Name="Corrosive, Builders of the Wall"
         Code="f"
         Gear="StartingGear_Corrosive Psionic"
-        Tile="Subtypes/corrosionPsionic.bmp"
+        Tile="Subtypes/corrosivePsionic.bmp"
         CyberneticsLicensePoints="1"
         DetailColor="g"
       >
@@ -373,7 +373,7 @@
         Name="Corrosive, Flank Battalion"
         Code="n"
         Gear="StartingGear_Corrosive Guardian"
-        Tile="Subtypes/corrosionGuardian.bmp"
+        Tile="Subtypes/corrosiveGuardian.bmp"
         DetailColor="g"
       >
         <stat Name="Strength" Bonus="2" />
