@@ -504,6 +504,32 @@ They look alike and behave completely differently. Renaming a vanilla blueprint 
 table doesn't break a save — it silently orphans the `Load="Merge"` so the edit stops applying,
 with **no error anywhere**. See `docs/STYLEGUIDE.md` §1.
 
+### A generator must never read the file it writes
+
+`tools/build_preview.sh` was first written to read `mod/preview.png`, composite the fork's marks
+onto it, and write back to the same path. That is correct exactly once. `mod/preview.png` is now
+the *composited* result, so the second run would have layered `- CE` and `& VixyGrey` on top of
+marks that were already there.
+
+The fix: keep the pristine input as its own committed file — `tools/preview-base.png`, Mura's
+original, verified byte-identical to `git show upstream-2.2:preview.png` — and generate from that.
+
+Two things make this worth remembering rather than filing under "obvious":
+
+- **It fails plausibly, not loudly.** A double-composited image isn't corrupt and doesn't error.
+  It renders, and a binary diff tells you nothing. Same silent-failure class as an orphaned
+  `Load="Merge"`.
+- **The general form is broader than images.** Any generator whose output overwrites its own input
+  has stopped being idempotent — it applies to anything that appends, wraps, or composites. The
+  same reasoning is why charter rule 5 requires option handlers to make data *match* the option's
+  value rather than performing a one-way edit.
+
+Two habits that catch it: make the check `regenerate → diff against the committed artefact` part
+of finishing the work (`tools/build_preview.sh` reproduces `mod/preview.png` byte-for-byte, and a
+second run proves it), and **guard the input's identity** rather than trusting it — the script
+refuses to run unless the base is 418×312, because every offset is measured against that logo and
+a swapped base would misplace the marks instead of erroring.
+
 ## Source documents
 
 | File | What it is |
