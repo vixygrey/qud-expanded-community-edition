@@ -23,6 +23,16 @@ repos:
 
   # Python lint + format for tools/. Scoped: mod/ contains no Python, and the exclusion keeps
   # the hook from ever reformatting shipped mod files. Pinned to the same version CI runs.
+  # XML formatting for the shipped mod. Pinned to the versions in package.json; the local hook
+  # runs the repo's own prettier so contributors and CI cannot disagree.
+  - repo: local
+    hooks:
+      - id: prettier-xml
+        name: prettier (mod XML)
+        entry: npx --no-install prettier --write
+        language: system
+        files: ^mod/.*\.(xml|rpm)$
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.2
     hooks:

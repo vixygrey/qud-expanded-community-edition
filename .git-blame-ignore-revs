@@ -14,3 +14,6 @@
 
 # style: apply ruff format to tools/ (#74)
 4adf089dc65c64b2d44518075fb0a50f15000be5
+
+# style: reformat all mod XML with prettier (#78)
+d6d4c1cd5bbdd29a2ccb4058d60a802ab4c25468

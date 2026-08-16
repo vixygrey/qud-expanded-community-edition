@@ -42,6 +42,22 @@ jobs:
       - name: ruff format --check
         run: ruff format --check tools/
 
+  xml-format:
+    name: XML format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # npm ci, not npm install: package-lock.json is committed so CI resolves exactly the
+      # versions used locally. A formatter that disagrees with the contributor's is worse
+      # than none.
+      - name: Install formatter
+        run: npm ci
+      - name: prettier --check
+        run: npx prettier --check "mod/**/*.xml" "mod/**/*.rpm"
+
   spelling:
     name: Spelling
     runs-on: ubuntu-latest

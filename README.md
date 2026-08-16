@@ -153,5 +153,22 @@ docs/    FEATURES, PERMISSION, STYLEGUIDE, and Mura's original documents
 tools/   validation, drift checking, and the preview-image generator
 ```
 
-`git diff upstream-2.2` shows everything this fork has changed since Mura's 2.2 release. Add
-`--ignore-cr-at-eol`, since the mod was normalised from CRLF to LF.
+`git diff upstream-2.2` shows what this fork has changed since Mura's 2.2 release:
+
+```bash
+git diff -M --ignore-cr-at-eol upstream-2.2 HEAD
+```
+
+**Since #78 that diff is dominated by formatting**, because the XML was reformatted wholesale and
+long elements now put one attribute per line. `-w` does *not* help: it ignores whitespace within a
+line, and the reformat splits single lines into many, which git sees as genuinely different lines.
+Treat the raw diff as "what files changed", not "what changed in them".
+
+Two things still work, and they are the ones that matter:
+
+- **Retrieving Mura's originals.** `git show upstream-2.2:<path>` reproduces any file byte-for-byte
+  exactly as they wrote it. The tag is immutable and is never moved, so this is true permanently
+  regardless of any future reformat.
+- **`git blame`.** The reformat commit is listed in [`.git-blame-ignore-revs`](.git-blame-ignore-revs),
+  so blame attributes lines to whoever actually wrote them. Enable it once per clone:
+  `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
