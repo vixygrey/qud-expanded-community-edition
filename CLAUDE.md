@@ -325,6 +325,27 @@ deleting its branch. Recover with
 *before* merging, because it is painful to find afterwards. Better still, avoid stacking when the
 base will merge soon.
 
+### Squash merging invalidates blame-ignore SHAs
+
+`.git-blame-ignore-revs` must list the **squash commit on `main`**, not the commit from the
+feature branch — squash merging replaces the branch SHA, so an entry written before merge points
+at a commit that does not exist in history and is silently ignored.
+
+Consequence: **an entry can only be added after its PR merges**, in a follow-up. And because the
+squash collapses a whole PR into one commit, a PR containing a mechanical change plus anything
+else produces a squash commit that is not purely mechanical. If a change is meant to be
+blame-ignored, give it its own PR.
+
+Verify with `git merge-base --is-ancestor <sha> HEAD` — a listed SHA that fails this check is
+doing nothing.
+
+### Normalisation rules need explicit exemptions for preserved documents
+
+`* text=auto eol=lf` in `.gitattributes` reaches Mura's original documents too, which are a
+provenance record meant to stay byte-for-byte. They need `-text` to opt out of EOL conversion
+entirely. Check with `git ls-files --eol` and `git add --renormalize`, not by reading the
+attribute file — `git check-attr` reports an inherited `eol` value even where it does not apply.
+
 ### Verify Qud's behaviour against installed mods, not from memory
 
 Several confident-sounding assumptions about Qud were wrong and were caught only by checking the

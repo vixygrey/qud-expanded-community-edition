@@ -39,7 +39,8 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **All mod files normalised to LF line endings**, enforced by `.gitattributes`. Upstream was
   CRLF throughout. Diff against the pre-normalisation baseline with
   `git diff --ignore-cr-at-eol upstream-2.2`, and `git blame` skips the conversion via
-  `.git-blame-ignore-revs`.
+  `.git-blame-ignore-revs`. Mura's original documents are exempted from normalisation and stay
+  byte-for-byte.
   ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
 
 ### Added
