@@ -99,6 +99,7 @@
     <object Name="DirtPath"></object>
   </cell>
   <cell X="26" Y="16">
+    <object Name="Raven_Empty Armor Rack"></object>
     <object Name="DirtPath"></object>
   </cell>
   <cell X="27" Y="16">
