@@ -53,6 +53,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **`manifest.json`** — the mod had none, where 64 of 87 installed mods do. Declares `id`,
+  `title`, `version`, `author`, `description`, `tags` and `previewImage`, and makes ordering
+  against other mods expressible via `LoadBefore` / `LoadAfter` when it is ever needed.
+  Versioning continues Mura's lineage: upstream ended at 2.2, so this fork starts at **2.3.0**.
+  ([#21](https://github.com/vixygrey/qud-expanded-community-edition/issues/21))
+
 - **(internal)** `docs/STYLEGUIDE.md` — naming, layout, XML and C# formatting, and Steam Workshop
   requirements. §1 records which identifiers are safe to rename and which are load-bearing.
   ([#16](https://github.com/vixygrey/qud-expanded-community-edition/issues/16))

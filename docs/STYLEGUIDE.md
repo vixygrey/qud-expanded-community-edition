@@ -280,6 +280,26 @@ here** (#21). Lowercase keys:
 `loadorder` is **deprecated as of build 210**. Use `LoadBefore` / `LoadAfter` when ordering
 against another mod is genuinely required.
 
+**`id` is effectively permanent.** It is what other mods name in their `LoadBefore` / `LoadAfter`
+declarations, so changing it breaks their ordering against this mod. It is
+`QudExpandedCommunityEdition` and should stay that way.
+
+**`author` must name Mura.** Charter rule 3 in machine-readable form; the validator enforces it.
+
+### 7.2.1 Versioning
+
+Semantic versioning, **continuing Mura's lineage rather than resetting**. Upstream's last release
+was 2.2, so this fork's first release is **2.3.0**. Restarting at 1.0.0 would present the fork as a
+new mod rather than a continuation, which is both less accurate and a quieter form of taking
+credit for the eleven releases that came before.
+
+- **Patch** — defect fixes that change no player-facing behaviour beyond correcting it
+- **Minor** — new content, new tables, rebalancing
+- **Major** — reserved for a change that breaks saves or removes content
+
+Note that "requires a new character" applies to the **first** release regardless, because
+save-baked identifiers changed during the fork.
+
 ### 7.3 `preview.png`
 
 - PNG, **under 1 MB** (Steam limit). The current file is 418×312 and 60 KB.
