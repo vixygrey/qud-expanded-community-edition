@@ -57,6 +57,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- **Ten items that existed but could never be found are now obtainable.** The four nanoweave
+  pieces, the four flexi pieces, the mutating mask and `Raven_Iron Maceth` were in no population
+  table and had no tinker recipe. Each is placed in the table matching its own tier: nanoweave
+  (tier 6) in Armor 6C, flexi (tier 5) in Armor 5C, the mutating mask (tier 8) in Armor 8R, and
+  the two-handed iron maceth in Melee Weapons 1R alongside its peers.
+  ([#7](https://github.com/vixygrey/qud-expanded-community-edition/issues/7))
 - **All 144 psionic chips can now drop.** The three chip tables listed only the first chip of
   each of the 12 families plus its chipset — 24 entries where 48 were needed — so **72 of the
   144 chips existed but could never be obtained**, and had no tinker recipe either. Half the

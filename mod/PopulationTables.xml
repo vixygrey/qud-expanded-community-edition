@@ -429,6 +429,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Iron Mace" />
       <object Weight="20" Number="1" Blueprint="Raven_Iron War Hammerth" />
       <object Weight="20" Number="1" Blueprint="Raven_Iron Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Raven_Iron Maceth" />
     </group>
   </population>
   
@@ -680,6 +681,10 @@
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Buckler" />
       <object Weight="20" Number="1" Blueprint="Fullerite Shield" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greatshield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flexihelmet" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flexicloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flexigloves" />
+      <object Weight="20" Number="1" Blueprint="Raven_Flexiboots" />
     </group>
   </population>
 
@@ -702,6 +707,10 @@
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Buckler" />
       <object Weight="20" Number="1" Blueprint="Crysteel Shield" />
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greatshield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Helmet" />
+      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Gloves" />
+      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Boots" />
     </group>
   </population>
 
@@ -756,6 +765,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
       <removetable Name="Armor 7R" />
+      <object Weight="20" Number="1" Blueprint="Raven_Mutating Mask" />
     </group>
   </population>
 
