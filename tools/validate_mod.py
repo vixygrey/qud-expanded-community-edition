@@ -45,6 +45,36 @@ NEW_UNPREFIXED = {
 # New population tables the mod declares. Same reasoning as NEW_UNPREFIXED.
 NEW_TABLE_PREFIXES = ("StartingGear_",)
 
+# Tier -> material, from CLAUDE.md's convention table. Longest first so "flawless crysteel"
+# wins over "crysteel" and "folded carbide" over "carbide".
+TIER_MATERIALS = [
+    (7, "flawless crysteel"),
+    (4, "folded carbide"),
+    (8, "zetachrome"),
+    (5, "fullerite"),
+    (6, "crysteel"),
+    (3, "carbide"),
+    (0, "bronze"),
+    (2, "steel"),
+    (1, "iron"),
+]
+
+# Value doubles per tier. The base differs by slot: body armour runs 8 -> 2048 and vambraces
+# 4 -> 1024 (half curve, partial slot); everything else 5 -> 1280.
+VALUE_BASE_DEFAULT = 5
+VALUE_BASE_BODY = 8
+VALUE_BASE_VAMBRACE = 4
+
+# Objects the curves genuinely do not describe. Each needs a reason, not just a name.
+CURVE_EXEMPT = {
+    # Vibro weapons are tier 5 at value 300 by their own convention, whatever the material.
+    "vibro": "vibro weapons are tier 5 / value 300 by convention",
+    # Cybernetic fists are granted by an implant and are not sold. Vanilla's own do not follow
+    # the material table either - CarbideFist 3, FulleriteFist 4, CrysteelFist 7 - so they
+    # track the implant rather than the metal.
+    "fist": "cybernetic fists track the implant, not the material curve",
+}
+
 # Mura's original Workshop item. This fork publishes SEPARATELY and must never target it —
 # uploading with this ID in workshop.json would publish over their page. See docs/PERMISSION.md §5.
 UPSTREAM_WORKSHOP_ID = 1134036260
@@ -588,6 +618,69 @@ def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 )
 
 
+def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Tier tags and prices must match the curves CLAUDE.md states.
+
+    Both curves are mechanical, which is exactly why drift goes unnoticed: a tier tag that is
+    wrong puts an item in the wrong loot pool AND gives it the wrong mod capacity, and neither
+    shows up as an error. This found two mispriced zetachrome weapons that the hand-written
+    defect list in #9 had missed.
+
+    Only the mod's own objects are priced, since vanilla sets its own values. Tier tags are
+    checked on merges too, because the mod overriding a correct vanilla tier with a wrong one
+    is the defect that started #9 (Flawless Crysteel Boots, tagged 3 against vanilla's 7).
+    """
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            low = name.lower()
+            if not name:
+                continue
+            exempt = next(
+                (why for word, why in CURVE_EXEMPT.items() if word in low), None
+            )
+            if exempt:
+                continue
+            tier = next((t for t, mat in TIER_MATERIALS if mat in low), None)
+            if tier is None:
+                continue
+
+            tag = next(
+                (e.get("Value") for e in obj.iter("tag") if e.get("Name") == "Tier"),
+                None,
+            )
+            if tag is not None and tag != str(tier):
+                f.add(
+                    "item-curve",
+                    f"{path}: {name} is tier {tier} by material, but tagged Tier {tag}",
+                )
+
+            if not name.startswith("Raven_"):
+                continue  # vanilla sets its own prices
+            commerce = next(
+                (e for e in obj.iter("part") if e.get("Name") == "Commerce"), None
+            )
+            if commerce is None or commerce.get("Value") is None:
+                continue
+            worn = next(
+                (e.get("WornOn") for e in obj.iter("part") if e.get("Name") == "Armor"),
+                None,
+            )
+            base = VALUE_BASE_DEFAULT
+            if "vambrace" in low:
+                base = VALUE_BASE_VAMBRACE
+            elif worn == "Body":
+                base = VALUE_BASE_BODY
+            expected = base * (2**tier)
+            actual = int(commerce.get("Value"))
+            if actual != expected:
+                f.add(
+                    "item-curve",
+                    f"{path}: {name} is tier {tier}, so the value curve gives "
+                    f"{expected}, not {actual}",
+                )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -669,6 +762,7 @@ def run() -> Findings:
     check_scripting_parts(f, roots)
     check_scripting_policy(f)
     check_subtype_tiles(f, roots)
+    check_item_curves(f, roots)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
