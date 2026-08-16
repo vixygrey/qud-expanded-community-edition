@@ -29,14 +29,16 @@ BASELINE_PATH = Path("tools/validation-baseline.json")
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
 
-# New objects the mod declares WITHOUT the Raven_ prefix. Documented in docs/FEATURES.md as
-# exceptions to the prefix rule; they are new declarations, not vanilla replacements, so
-# merge-discipline does not apply. Anything not listed here and not Raven_-prefixed is treated
-# as a vanilla record.
+# New objects the mod declares WITHOUT the Raven_ prefix. They are new declarations, not vanilla
+# replacements, so merge-discipline does not apply. Anything not listed here and not
+# Raven_-prefixed is treated as a vanilla record.
+#
+# Keep this list minimal: an entry here is a hole in merge-discipline, so a stale name silently
+# exempts anything later declared under it. Both remaining entries are body objects, unprefixed
+# because vanilla's own BodyObject convention is the display name with spaces removed - the
+# convention `TrueKin` itself sets (#13).
 NEW_UNPREFIXED = {
-    "SteelFist",
     "TrueKin",
-    "Yttrian",
     "PsionicAdept",
 }
 

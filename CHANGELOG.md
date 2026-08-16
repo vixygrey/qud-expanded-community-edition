@@ -97,6 +97,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   that appends, wraps or composites, not just images.
   ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
 
+- **(internal)** The validator no longer exempts two blueprints that no longer exist. `NEW_UNPREFIXED` in `tools/validate_mod.py` still listed `SteelFist` (renamed in #66) and `Yttrian` (renamed in #13). Both were inert, but that list is what makes the validator treat an unprefixed object as a *new declaration* rather than a *vanilla record* — so a stale name is a latent hole in merge-discipline, silently exempting anything later declared under it. The two real entries, `TrueKin` and `PsionicAdept`, now carry a comment saying why they are legitimately unprefixed.
+  ([#68](https://github.com/vixygrey/qud-expanded-community-edition/issues/68))
+
 - **(internal)** `tools/build_preview.sh` regenerates the Workshop preview image from
   `tools/preview-base.png` — Mura's original logo, kept unmodified. The sizes, angles and green
   used for the fork's marks now live in a script instead of in whoever last opened an image
