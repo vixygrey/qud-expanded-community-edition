@@ -121,9 +121,13 @@ content/333640/`):
   `<option ID= DisplayText= Category="Mods" Type="Checkbox|Slider|Combo|BigCombo|Button"
   Default= SearchKeywords=>` each, with a `<helptext>` child. `Category="Mods"` is what files it
   into the in-game menu. No code needed to make an option *appear*.
-- **Reading an option requires C#** — `[OptionFlag]` on a field in a `[HasOptionFlagUpdate]`
-  class, with an `[OptionFlagUpdate]` method to react to changes. Empirically firm: of the 12
-  installed mods shipping an `Options.xml`, **all 12 also ship at least one `.cs`**.
+- **Reading an option requires C#.** Of the 12 installed mods shipping an `Options.xml`, **all 12
+  also ship at least one `.cs`**. The working pattern is `[HasOptionFlagUpdate]` on the class,
+  `[OptionFlagUpdate]` on a `static void` method, and `XRL.UI.Options.GetOption(ID, default)`
+  inside it — **every option value is a string**, sliders included, so numbers need parsing.
+  `[OptionFlag]` field binding also exists, and `../design-docs/DESIGN_sleep.md` §7 recommends it
+  over `GetOption` — but **zero of the 87 installed mods use it and 17 use `GetOption`**. Prefer
+  the pattern with evidence behind it.
 
 **Content is gateable too.**
 
@@ -340,6 +344,43 @@ Trunk-based, per the global rules, with these project specifics:
 
 Operational traps hit during this fork, kept so nobody pays for them twice. Add to this whenever
 something bites — the reasoning is the durable artifact, not the fix.
+
+### Read the crash *type* before forming a hypothesis
+
+A Qud crash report's exception type narrows the search enormously, and it is free:
+
+- `EXC_BAD_ACCESS` in the **Stack Guard** region with `RECURSION LEVEL n` markers is a **stack
+  overflow** — unbounded recursion inside the game, not an exception thrown by mod code. A
+  handler that calls two functions and returns cannot produce it.
+- A managed exception appears in `game_log.txt` with a stack trace instead, and names the type.
+
+The options-menu crash was chased through two wrong hypotheses before the report was read
+properly. The recursion markers pointed at the game's own UI, which immediately made "my C# threw
+something" the wrong tree.
+
+Note the crash report lives in macOS's crash reporter, **not** in Qud's own logs — `game_log.txt`
+had four lines because the process died before logging started.
+
+### The sibling design docs are not verified sources
+
+`../design-docs/` was written before this project had a metadata reader or the installed-mod
+corpus to check against. `DESIGN_sleep.md` §7 recommends reading options with `[OptionFlag]`,
+calling `Options.GetOption` "legacy". Measured: **zero of 87 installed mods use `[OptionFlag]`
+field binding; 17 use `GetOption`.**
+
+Treat those docs as design thinking, not as an API reference. Anything they assert about the game
+gets checked against the DLL metadata or the installed mods before code is written against it.
+
+### When the only test environment is someone else's machine, batch the experiments
+
+Every hypothesis here costs a full round-trip through the maintainer: copy the mod, launch Qud,
+reproduce, report. That is the dominant cost, not the thinking.
+
+So: prepare the **whole bisect set at once** — one variant per suspected cause, numbered in
+descending order of suspicion — rather than one change per exchange. And compare against working
+examples on *value ranges*, not just structure: every installed slider uses `Min` of 0 or 1, and
+this mod's used 6, which no amount of checking that the attributes were "present and correct"
+would have surfaced.
 
 ### Stacked PRs do not survive a squash merge of their base
 
