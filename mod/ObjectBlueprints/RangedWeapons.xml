@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <object Name="Musket" Load="Merge">
     <part Name="Physics" Weight="12" UsesTwoSlots="true" />
@@ -230,7 +230,7 @@
     <part Name="TinkerItem" Bits="0003" CanDisassemble="true" CanBuild="true" />
     <part Name="Physics" Weight="4" />
     <tag Name="MissileFireSound" Value="pistol_laser" />
-    <tag Name="Mods" Value="MissileWeaponMods,FirearmMods,CommonMods,RifleMods,ElectronicsMods,BeamWeaponMods" />
+    <tag Name="Mods" Value="MissileWeaponMods,FirearmMods,CommonMods,PistolMods,ElectronicsMods,BeamWeaponMods" />
     <tag Name="DynamicObjectsTable:Guns" />
     <tag Name="BaseObject" Value="*noinherit" />
     <tag Name="TinkerCategory" Value="pistols" />
@@ -438,7 +438,7 @@
       Name="Projectile"
       BasePenetration="6"
       BaseDamage="1d8"
-      Attributes="Heat"
+      Attributes="Heat Fire"
       ColorString="&amp;o"
       PassByVerb="streak"
     />

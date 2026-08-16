@@ -1035,16 +1035,16 @@ Ordered roughly by impact.
 | 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
 | 4 | 🟠 Med | **Mutant HP gain is `2-3`** in XML but documented as `1-5` in both the changelog and the WIP notes | `Genotypes.xml` |
-| 5 | 🟠 Med | **`Flawless Crysteel Boots` tagged Tier 3** (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
+| 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
 | 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/Other Equipment.xml` lines 95, 196 |
 | 7 | 🟡 Low | **Akimbo reuses `Class="Pistol_Akimbo"`** — a character can buy the same implementation twice (Pistol tree + Multiweapon tree) | `Skills.xml` |
-| 8 | 🟡 Low | **`Cudgel6th` has `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/Melee Weapons.xml` |
-| 9 | 🟡 Low | **`Raven_Carbideweave Cloak` valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
-| 10 | 🟡 Low | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/Other Equipment.xml` |
-| 11 | 🟡 Low | **Psionic pistols list `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/Ranged Weapons.xml` |
+| 8 | ✅ Fixed | **`Cudgel6th` had `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/Melee Weapons.xml` |
+| 9 | ✅ Fixed | **`Raven_Carbideweave Cloak` was valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
+| 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/Other Equipment.xml` |
+| 11 | ✅ Fixed | **Psionic pistols listed `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/Ranged Weapons.xml` |
 | 12 | 🟡 Low | **Psionic Adept chargen text says "+30 bonus skill points"** — actual delta is +25 vs vanilla / +10 vs the mod's True Kin | `Genotypes.xml` |
 | 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
-| 13b | 🟡 Low | **`Raven_ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
+| 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
 | 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
 | 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |

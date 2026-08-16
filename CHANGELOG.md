@@ -23,6 +23,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Changed
 
+- **The dark matter cell is priced for what it holds**, at 1200 rather than 300. It stores 500,000 charge against the advanced chem cell's 50,000 and cost exactly the same, so the ordering was simply wrong.
+  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+
+- **Wristblade prices follow the tier curve end to end.** Tiers 0–5 ran 15/25/35/55/105 while tiers 6–8 already sat exactly on the doubling curve at 320/640/1280 — two progressions in one family. The low tiers are now 5/10/20/40/160, which makes cheap wristblades cheaper. The vibro wristblade keeps its 300; vibro weapons price by their own convention.
+  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+
 - **The Psionic Adept genotype is now named `Psionic Adept` internally**, matching its display
   name. It was `Psionic`. Vanilla's convention is that a genotype's internal and display names
   agree — `Mutated Human`, `True Kin` — and this was the last identifier in the mod that didn't
@@ -104,6 +110,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
 
 ### Fixed
+
+- **Nine item stats and prices corrected.** `Flawless Crysteel Boots` was tagged tier 3 by the mod, overriding vanilla's 7 — wrong loot pool and wrong mod capacity. `Cudgel6th` carried `MaxStrengthBonus="11"` where vanilla and all fourteen other tier-6 weapons use 7. The `Raven_Carbideweave Cloak` cost 5 instead of 40, the only member of a family that is otherwise exactly on the doubling curve. Two zetachrome weapons cost 1200 where every other tier-8 item costs 1280. Psionic pistols offered rifle mods rather than pistol mods, because their base inherits `BaseRifle`. And the fire rifle's projectile was missing its `Fire` attribute, so it most likely was not setting anything alight — its pistol counterpart has it.
+  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
 
 - **High-tier armor drops cascade again.** `Armor 7C`, `7R`, `8C` and `8R` each carried a `<removetable>` that severed vanilla's tier cascade, so a tier-8 armor roll produced a zetachrome piece **100%** of the time instead of vanilla's 8.6% — and vanilla gear reachable only through the cascade, like anti-gravity boots and high-energy thermo casks, stopped dropping from those rolls entirely. The cascade is restored and this mod's own zetachrome pieces carry the weight instead, landing at **25%** top-tier: still a large boost over vanilla, but a tier-8 container is a jackpot again rather than a certainty. Tier 7 keeps its existing weights and simply cascades again (67% → 79%). Nothing is removed from any vanilla table any more, so future Qud additions and other mods' entries stay reachable.
   ([#4](https://github.com/vixygrey/qud-expanded-community-edition/issues/4))
