@@ -302,9 +302,13 @@ save-baked identifiers changed during the fork.
 
 ### 7.3 `preview.png`
 
-- PNG, **under 1 MB** (Steam limit). The current file is 418×312 and 60 KB.
+- PNG, **under 1 MB** (Steam limit). The current file is 504×382 and 71 KB.
 - Must be readable as a thumbnail — it is displayed small.
 - Path declared in `workshop.json` `ImagePath`.
+- **Mura's original lettering stays untouched and stays dominant.** The fork's own marks — the
+  green `- CE` and `& VixyGrey` — are additions layered on top of it, deliberately in a different
+  face so they read as tacked on rather than as part of the original logo. Charter rule 3: the
+  maintainer credit sits *under* Mura's, it does not replace or restyle it.
 
 ### 7.4 Description content
 

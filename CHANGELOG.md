@@ -37,6 +37,14 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   states plainly that a new character is required.
   ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
 
+- **The Workshop preview image now marks this as the Community Edition.** It was Mura's original
+  *CoQ / Expanded / by TLR* logo, which gave a subscriber no way to tell the fork from the
+  original in a search listing. A green `- CE` now follows "Expanded", and `& VixyGrey` sits under
+  "by TLR". Both are in a marker face deliberately unlike Mura's chrome lettering, so they read as
+  additions rather than as part of the original logo — Mura's artwork is untouched and still the
+  dominant element, per charter rule 3.
+  ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
+
 - **The chip slot is now `Chip Interface`** (was `Chipset Interface`). The slot holds 108 chips
   against 36 chipsets, so it was named after the minority item; a chipset is a set of chips, so
   the new name is accurate for the whole catalogue. `Psionic Interface` — the name Mura's
@@ -58,6 +66,15 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
 
 ### Added
+
+- **(internal)** `tools/build_preview.sh` regenerates the Workshop preview image from
+  `tools/preview-base.png` — Mura's original logo, kept unmodified. The sizes, angles and green
+  used for the fork's marks now live in a script instead of in whoever last opened an image
+  editor, so the next title or credits change does not start by guessing at them. It needs
+  ImageMagick and a macOS font, so unlike the validators it is not part of the gate and does not
+  run in CI; `mod/preview.png` stays committed and no contributor needs the script to build or
+  play the mod.
+  ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
 
 - **(internal)** Charter rule 5 amended: the mod's C# may now hold state and adjust already-loaded
   game data, which is past the "36 inert one-line classes" the rule previously named as its
