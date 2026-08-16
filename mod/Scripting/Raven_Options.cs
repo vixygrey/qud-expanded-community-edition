@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using XRL;
 using XRL.UI;
+using XRL.World.Anatomy;
 
 namespace QudExpandedCE
 {
@@ -25,12 +26,43 @@ namespace QudExpandedCE
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
+        public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
+        public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
         /// when a zone activates, not a field on a record this class can write.
         /// </summary>
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
+
+        private const string ChipSlot = "Chip Interface";
+
+        /// <summary>
+        /// Anatomies whose Chip Interface slots are optional, and which option governs each.
+        ///
+        /// "Humanoid" is vanilla's, merged into by mod/Bodies.xml, and is shared by every humanoid
+        /// NPC *and* by a Mutated Human player - vanilla's Mutated Human genotype is
+        /// BodyObject="Humanoid". That sharing is why the player needs a separate correction at
+        /// chargen; see Raven_ChipSlotPlayerMutator.
+        ///
+        /// "TrueKin" is this mod's own anatomy and no vanilla creature uses it, so it is
+        /// player-only and the player's option can govern it directly.
+        ///
+        /// "PsionicAdept" is deliberately absent. Its four slots are the genotype rather than an
+        /// addition to one - the same reasoning that keeps it out of AddedSkills.
+        /// </summary>
+        private const string HumanoidAnatomy = "Humanoid";
+        private const string TrueKinAnatomy = "TrueKin";
+
+        /// <summary>
+        /// Slots removed from each anatomy, kept so they can be put back verbatim.
+        ///
+        /// Restoring the original AnatomyPart instances rather than constructing new ones keeps
+        /// this genuinely reversible: whatever the XML declared - flags, laterality, everything -
+        /// is what comes back, with nothing reconstructed from assumptions.
+        /// </summary>
+        private static readonly Dictionary<string, List<AnatomyPart>> DetachedChipSlots =
+            new Dictionary<string, List<AnatomyPart>>();
 
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
@@ -89,11 +121,72 @@ namespace QudExpandedCE
             ApplyMutationPoints();
             ApplyStartingSkills();
             ApplyStartingReputation();
+            ApplyChipSlots();
         }
 
         private static bool Enabled(string id, string fallback)
         {
             return Options.GetOption(id, fallback) == "Yes";
+        }
+
+        /// <summary>True when the player asked to keep their own chip slots.</summary>
+        public static bool PlayerChipSlots => Enabled(ChipSlotsPlayerID, "Yes");
+
+        /// <summary>True when the player asked to leave other humanoids their chip slots.</summary>
+        public static bool NPCChipSlots => Enabled(ChipSlotsNPCsID, "Yes");
+
+        private static void ApplyChipSlots()
+        {
+            SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
+            SetChipSlots(HumanoidAnatomy, NPCChipSlots);
+        }
+
+        /// <summary>
+        /// Make an anatomy's Chip Interface slots match the option, in either direction.
+        ///
+        /// Option handlers run repeatedly and in any order, so this sets state rather than
+        /// toggling it: removing when already removed, or restoring when already present, are
+        /// both no-ops.
+        /// </summary>
+        private static void SetChipSlots(string anatomyName, bool wanted)
+        {
+            // GetAnatomy returns null rather than throwing if bodies have not loaded yet, which
+            // happens when options are read before Anatomies.Init().
+            Anatomy anatomy = Anatomies.GetAnatomy(anatomyName);
+            if (anatomy?.Parts == null)
+            {
+                return;
+            }
+
+            if (!DetachedChipSlots.TryGetValue(anatomyName, out List<AnatomyPart> detached))
+            {
+                detached = new List<AnatomyPart>();
+                DetachedChipSlots[anatomyName] = detached;
+            }
+
+            if (wanted)
+            {
+                foreach (AnatomyPart part in detached)
+                {
+                    if (!anatomy.Parts.Contains(part))
+                    {
+                        anatomy.Parts.Add(part);
+                    }
+                }
+
+                detached.Clear();
+                return;
+            }
+
+            for (int i = anatomy.Parts.Count - 1; i >= 0; i--)
+            {
+                AnatomyPart part = anatomy.Parts[i];
+                if (part?.Type?.Type == ChipSlot)
+                {
+                    detached.Add(part);
+                    anatomy.Parts.RemoveAt(i);
+                }
+            }
         }
 
         private static void ApplyMutationPoints()
