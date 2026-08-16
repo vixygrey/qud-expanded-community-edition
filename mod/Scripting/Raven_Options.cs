@@ -28,6 +28,7 @@ namespace QudExpandedCE
         public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
+        public const string ChipDropsID = "OptionQudExpandedCEChipDrops";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
 
@@ -38,6 +39,29 @@ namespace QudExpandedCE
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
 
         private const string ChipSlot = "Chip Interface";
+
+        /// <summary>
+        /// Prefix of the tables that put psionic chips into the world: Raven_Chips Tier 1, 2 and 3.
+        ///
+        /// Six loot tables reference them - Artifact 3 through 8, weight 10 each - and nothing else
+        /// does. Matching on the reference rather than on a list of Artifact table names means a
+        /// seventh reference added later is governed automatically rather than silently escaping.
+        ///
+        /// Deliberately does NOT reach the Psionic Adept's starting gear, which names chip
+        /// blueprints directly rather than going through these tables. Those chips are the
+        /// genotype, not an addition to it - the same line the skills and reputation options draw.
+        /// </summary>
+        private const string ChipTablePrefix = "Raven_Chips";
+
+        /// <summary>
+        /// Chip table references removed from loot tables, kept so they can be put back exactly.
+        ///
+        /// Holding the original PopulationTable instances, paired with the list each came out of,
+        /// keeps this genuinely reversible: weight, number and hint all return as declared, with
+        /// nothing rebuilt from assumptions.
+        /// </summary>
+        private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedChipEntries =
+            new List<KeyValuePair<PopulationList, PopulationItem>>();
 
         /// <summary>
         /// Anatomies whose Chip Interface slots are optional, and which option governs each.
@@ -183,6 +207,7 @@ namespace QudExpandedCE
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
+            ApplyChipDrops();
         }
 
         private static bool Enabled(string id, string fallback)
@@ -245,6 +270,76 @@ namespace QudExpandedCE
                 {
                     detached.Add(part);
                     anatomy.Parts.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Make the world's psionic chip supply match the option, in either direction.
+        ///
+        /// Population tables are read from XML at load, but the loaded result stays mutable, so
+        /// this is fully live: it changes what future containers and merchants roll, without
+        /// needing a new character. Chips already in the world are left alone.
+        ///
+        /// No chip carries a TinkerItem part, so removing these six references closes the supply
+        /// completely rather than leaving tinkering as a way in.
+        /// </summary>
+        private static void ApplyChipDrops()
+        {
+            if (Enabled(ChipDropsID, "Yes"))
+            {
+                foreach (KeyValuePair<PopulationList, PopulationItem> entry in DetachedChipEntries)
+                {
+                    entry.Key.AddItem(entry.Value);
+                }
+
+                DetachedChipEntries.Clear();
+                return;
+            }
+
+            // Reading the property runs PopulationManager.CheckInit(), which loads the tables if
+            // they are not loaded yet - so unlike the genotype and anatomy edits above, this one
+            // cannot lose a race with the game's own load order.
+            foreach (PopulationInfo info in PopulationManager.Populations.Values)
+            {
+                DetachChipTables(info);
+            }
+        }
+
+        /// <summary>
+        /// Recursively strip chip table references out of one population and remember where each
+        /// came from. Removing when already removed is a no-op, so repeated calls are safe.
+        /// </summary>
+        private static void DetachChipTables(PopulationList list)
+        {
+            if (list?.Items == null)
+            {
+                return;
+            }
+
+            for (int i = list.Items.Count - 1; i >= 0; i--)
+            {
+                PopulationItem item = list.Items[i];
+
+                PopulationTable table = item as PopulationTable;
+                if (table != null)
+                {
+                    if (table.Name != null && table.Name.StartsWith(ChipTablePrefix))
+                    {
+                        DetachedChipEntries.Add(
+                            new KeyValuePair<PopulationList, PopulationItem>(list, table));
+                        list.RemoveItem(table);
+                    }
+
+                    continue;
+                }
+
+                // Groups nest, and a chip reference could sit at any depth. PopulationInfo and
+                // PopulationGroup are both PopulationList, so one cast covers every container.
+                PopulationList nested = item as PopulationList;
+                if (nested != null)
+                {
+                    DetachChipTables(nested);
                 }
             }
         }

@@ -130,6 +130,25 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCEChipDrops"
+    DisplayText="{{C|Qud Expanded}}: psionic chips in loot"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded psionic chip drops loot artifact tables"
+  >
+    <helptext>
+            Lets psionic chips and chipsets appear in the world, as this mod has always done. They are rolled from the artifact tables at tiers 3 through 8, so they turn up in containers, on ruins floors and in merchants' stock alongside other artifacts.
+
+            Turn this off to play with the mod's weapons, armor and genotypes but none of the chip economy. No chip can be tinkered, so this closes the supply completely.
+
+            Fully live - this changes what is rolled from now on. Chips already lying in the world, or already in your pack, stay where they are.
+
+            Psionic Adepts still begin with their starting chips either way. Those are the genotype rather than an addition to it, and taking them would leave a subtype with nothing to use.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEChipSlotsPlayer"
     DisplayText="{{C|Qud Expanded}}: your own Chip Interface slots"
     Category="Mods"
