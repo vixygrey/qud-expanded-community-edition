@@ -53,13 +53,23 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- Development note in the README and the Workshop description: VixyGrey uses AI to help with
+  development and documentation tasks.
+
+- **Validator now guards Qud's slider crash.** A `Type="Slider"` option with `Min` above 1 sends
+  the game's options menu into unbounded recursion; the check refuses any such slider, and also
+  catches a `Default` outside its own `Min`..`Max`.
+  ([#51](https://github.com/vixygrey/qud-expanded-community-edition/issues/51))
+- **Mod options menu, first entry: a mutation-point slider.** Mutated Humans start with 16
+  mutation points by default, as this mod has always given, and the slider covers 0–24 for
+  players who want vanilla's 12 or something else. Set it before creating a character.
+  ([#44](https://github.com/vixygrey/qud-expanded-community-edition/issues/44))
 - **(internal)** Lessons from the options-menu crash recorded in `CLAUDE.md`: read a crash's
   *type* before hypothesising (a stack overflow rules out mod code that cannot recurse), treat the
   sibling design docs as design thinking rather than as an API reference, and batch experiments
   when the only test environment is someone else's machine. Charter rule 6 corrected — it named
   `[OptionFlag]` as the way to read options, where 0 of 87 installed mods use it and 17 use
   `Options.GetOption`.
-
 - **`manifest.json`** — the mod had none, where 64 of 87 installed mods do. Declares `id`,
   `title`, `version`, `author`, `description`, `tags` and `previewImage`, and makes ordering
   against other mods expressible via `LoadBefore` / `LoadAfter` when it is ever needed.

@@ -47,10 +47,10 @@ each because two of the three are proven and one is not.
 | Feature | Mechanism | When it applies | Verified? |
 |---|---|---|---|
 | Loot participation (chips, new weapons and armor in tables) | `PopulationManager.Populations` mutated at runtime | Live | ✅ Proven — installed mods do this (`1756765609/fishvendorhotloader.cs`) |
-| Psionic Adept genotype | Chargen | Before starting a character | ⚠️ Hook exists, mechanism unproven |
-| Mutation points | Chargen | Before starting a character | ⚠️ Unproven |
-| Starting reputation | Chargen | Before starting a character | ⚠️ Unproven |
-| Skill tree changes | Unknown | ? | ❌ No worked example anywhere |
+| Psionic Adept genotype | `GenotypeFactory.Genotypes` / `.GenotypesByName` — static collections | Before starting a character | ✅ Surface confirmed |
+| Mutation points | `GenotypeEntry.MutationPoints` — public int | Before starting a character | ✅ Surface confirmed |
+| Starting reputation | `GenotypeEntry.Reputations` — public list | Before starting a character | ✅ Surface confirmed |
+| Skill tree changes | `SkillFactory.PowersByClass` → `PowerEntry.Minimum` — public | Before starting a character | ✅ Surface confirmed |
 | Joppa house | Zone generation | New game only | ⚠️ Unproven |
 | Chip Interface anatomy slot | Baked into every creature at creation | **Not gateable** | ✅ Known |
 
@@ -95,6 +95,15 @@ A file with `Option` in its name, root `<options>`:
 `Category="Mods"` is what files it into the in-game menu. Types: `Checkbox`, `Slider`, `Combo`,
 `BigCombo`, `Button`.
 
+> ⚠️ **A `Slider` whose `Min` is above 1 crashes the game.** Opening Options → Mods dies with a
+> stack overflow — 21,697 levels of recursion, no exception, nothing in `game_log.txt`. Verified
+> by bisection: `Min="6"` crashes, `Min="0"` does not. This is a bug in Qud, not in the mod
+> (issue #51), and it is enforced by `tools/validate_mod.py` so it cannot be reintroduced.
+>
+> The tell was available before the bisection: **all 13 sliders across the 87 installed mods use
+> `Min="0"` or `Min="1"`.** When every real-world example agrees on a value range, that is a
+> constraint, not a coincidence.
+
 ### 2.2 Reading options — requires C#
 
 `[OptionFlag]` on a field in a `[HasOptionFlagUpdate]` class, with `[OptionFlagUpdate]` to react to
@@ -131,13 +140,48 @@ Used in practice by `ChooseYourFighter` (`3032410975/Scripts/PlayerModel.cs`), w
 `BOOTEVENT_AFTERBOOTPLAYEROBJECT` is the interesting one for reputation: the player object exists
 and can be adjusted before play begins.
 
-### 2.5 What is *not* documented
+### 2.5 Undocumented does not mean absent — resolved
 
-**`GenotypeFactory`, `SkillFactory`, and anything named `MutationPoints` do not appear in the API
-documentation at all**, and **no installed mod manipulates them**. Zero worked examples across 87
-mods.
+An earlier draft called this the largest risk in the document: `GenotypeFactory`, `SkillFactory`
+and `MutationPoints` appear nowhere in `Assembly-CSharp.xml`, and no installed mod touches them.
 
-This is the single largest risk in the document, and it is why §3 exists.
+**That was reading absence from the *documentation* as absence from the *API*.** A metadata pass
+over `Assembly-CSharp.dll` (7,837 types) shows all of it present, public, and shaped exactly like
+`PopulationManager.Populations`:
+
+```
+XRL.GenotypeFactory
+    public static List<GenotypeEntry>              Genotypes
+    public static Dictionary<string,GenotypeEntry> GenotypesByName
+    public static GenotypeEntry GetGenotypeEntry(string Name)
+    public static GenotypeEntry RequireGenotypeEntry(string Name)
+    public static bool TryGetGenotypeEntry(string Name, out GenotypeEntry Entry)
+
+XRL.GenotypeEntry            (all public fields)
+    int MutationPoints · int StatPoints · int CyberneticsLicensePoints
+    List<GenotypeReputation> Reputations · List<string> Skills / RemoveSkills
+    string BaseHPGain / BaseSPGain / BaseMPGain · string BodyObject
+
+XRL.World.Skills.SkillFactory
+    public Dictionary<string,SkillEntry>  SkillList · SkillByClass
+    public Dictionary<string,PowerEntry>  PowersByClass
+XRL.World.Skills.PowerEntry
+    public string Minimum · Requires · Exclusion
+
+XRL.OptionFlag             : Attribute   (ctor takes the option ID; also AllowMissing)
+XRL.HasOptionFlagUpdate    : Attribute
+XRL.OptionFlagUpdate       : Attribute
+```
+
+**Four of the five features have confirmed public surface.** None of it needs reflection — these
+are public fields and public static methods, so charter rule 5's "documented extension points
+only" is satisfied in substance: no private state is being reached into.
+
+The lesson is worth keeping: `Assembly-CSharp.xml` documents *some* members. For "does this exist
+at all", the DLL metadata is the authority. The tool is
+`../lore-expansion/tools/metadata/` — point `cli_meta.py`'s `DLL` at the installed game.
+
+The remaining unknown is **the Joppa map patch (§4.5)**, which has no identified hook.
 
 ---
 
@@ -160,7 +204,37 @@ It is the best first target for four reasons:
 **Definition of done:** an `Options.xml` slider, an `[OptionFlag]` field, and a Mutated Human
 starting with the number the slider says. Nothing else.
 
-Only after that lands should the rest be designed against a proven mechanism.
+**Status: ✅ done and verified in game.** Setting the slider to 12 produces a Mutated Human with
+12 mutation points; leaving it alone produces 16.
+
+**The open question is answered: `[OptionFlagUpdate]` fires *after* `GenotypeFactory.Init()`.** The
+write lands on a loaded record and survives, so no `BOOTEVENT_*` hook is needed. The whole working
+pattern is four lines:
+
+```csharp
+[HasOptionFlagUpdate]
+public static class Raven_Options
+{
+    [OptionFlagUpdate]
+    public static void OnOptionFlagUpdate()
+    {
+        string raw = Options.GetOption(MutationPointsID, "16");   // always a string
+        if (int.TryParse(raw, out int points)
+            && GenotypeFactory.TryGetGenotypeEntry("Mutated Human", out GenotypeEntry entry))
+        {
+            entry.MutationPoints = points;
+        }
+    }
+}
+```
+
+**What this unlocks.** Starting reputation, the Psionic Adept genotype toggle and the skill tree
+changes all read and write the same kind of surface — public fields on `GenotypeEntry`, and the
+static collections on `GenotypeFactory` / `SkillFactory`. They are no longer speculative; they are
+the same mechanism applied to a different field.
+
+**The cost was one Qud bug**, not a design problem: a slider with `Min` above 1 crashes the options
+menu (§2.1, issue #51). Four hypotheses were wrong before bisection found it.
 
 ---
 
@@ -300,16 +374,25 @@ Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 
 ## 9. Open questions
 
-- Can a genotype be removed from the chargen list at runtime? No worked example exists.
-- Can `MutationPoints` be overridden from an embark builder module, or does it need to be read
-  from the genotype record before chargen builds its UI?
-- Are skill tree definitions mutable after load at all?
-- Does the Joppa map patch have any hook at zone generation, or is splitting the only option?
-- Does `GetRequiredMod` matter here — is there value in the chargen UI knowing this mod is
-  required for a build code?
+**Answered by the spike:**
 
-Every one of these is answerable with a small spike against a running game. None should be
-answered by assumption.
+- ~~Can `MutationPoints` be overridden?~~ **Yes** — write `GenotypeEntry.MutationPoints` from an
+  `[OptionFlagUpdate]` method. No embark builder module needed.
+- ~~Does `[OptionFlagUpdate]` fire after `GenotypeFactory.Init()`?~~ **Yes.** The write survives.
+
+**Still open:**
+
+- Can a genotype be *removed* from the chargen list at runtime? The collections are public and
+  mutable, but removal is a different operation from mutating a field, and the chargen UI may
+  cache the list. Next spike.
+- Are skill tree definitions mutable after load? `SkillFactory.PowersByClass` is public, and
+  `PowerEntry.Minimum` is a public string, so the surface is there — but `PowerEntry` also holds a
+  private `_requirements` list that is probably parsed *from* `Minimum`, in which case writing
+  `Minimum` alone may not take effect.
+- Does the Joppa map patch have any hook at zone generation? Still the one feature with no
+  identified mechanism.
+- Does `GetRequiredMod` matter — is there value in the chargen UI knowing this mod is required for
+  a build code?
 
 ---
 

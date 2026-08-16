@@ -134,6 +134,50 @@ def check_manifest(f: Findings) -> None:
         f.add("manifest", "manifest.json author does not credit Mura — charter rule 3")
 
 
+def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Guard the slider constraint that crashes Qud.
+
+    A Type="Slider" option whose Min is above 1 sends Qud's options menu into unbounded
+    recursion: opening Options -> Mods crashes the game with a stack overflow and no usable
+    diagnostic. Verified by bisection (Min=6 crashes, Min=0 does not), and corroborated by every
+    one of the 13 sliders across the 87 mods installed locally using 0 or 1. See issue #51.
+
+    This is a bug in the game, not in the mod, which is exactly why it needs a guard here: the
+    crash points nowhere near the change that caused it.
+    """
+    for path, root in all_roots.items():
+        if "option" not in path.name.lower():
+            continue
+        for el in root.iter("option"):
+            if el.get("Type") != "Slider":
+                continue
+            name = el.get("ID", "<no ID>")
+            raw_min = el.get("Min")
+            try:
+                minimum = int(raw_min)
+            except (TypeError, ValueError):
+                f.add("option-slider", f"{name}: Slider has no numeric Min ({raw_min!r})")
+                continue
+            if minimum not in (0, 1):
+                f.add(
+                    "option-slider",
+                    f'{name}: Slider Min="{minimum}" crashes Qud\'s options menu. '
+                    f"Must be 0 or 1 — see issue #51",
+                )
+            # A Default outside the range is the other way a slider ends up in a state the UI
+            # was never asked to render.
+            try:
+                default, maximum = int(el.get("Default")), int(el.get("Max"))
+            except (TypeError, ValueError):
+                f.add("option-slider", f"{name}: Slider needs numeric Default and Max")
+                continue
+            if not minimum <= default <= maximum:
+                f.add(
+                    "option-slider",
+                    f'{name}: Default="{default}" is outside Min="{minimum}"..Max="{maximum}"',
+                )
+
+
 def check_filenames(f: Findings) -> None:
     """Spaces force quoting in every script, hook and CI step. STYLEGUIDE.md section 3."""
     for path in MOD.rglob("*"):
@@ -178,7 +222,10 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     roots = blueprint_sources(all_roots)
     defined = set()
     for cs in (MOD / "Scripting").glob("*.cs"):
-        classes = re.findall(r"public\s+class\s+(\w+)", cs.read_text(encoding="utf-8-sig"))
+        classes = re.findall(
+            r"public\s+(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+(\w+)",
+            cs.read_text(encoding="utf-8-sig"),
+        )
         defined.update(classes)
         # STYLEGUIDE.md section 5: one public class per file, filename == class name.
         if classes and cs.stem not in classes:
@@ -264,6 +311,7 @@ def run() -> Findings:
     check_json(f)
     check_workshop_target(f)
     check_manifest(f)
+    check_options(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)

@@ -5,6 +5,9 @@ A community-maintained fork of **[Caves of Qud Expanded](https://steamcommunity.
 This is a **separate mod**. It does not replace, modify, or take over the original, which remains
 Mura's.
 
+> **Development note:** I, VixyGrey, do use AI to help me with development and documentation
+> tasks.
+
 ---
 
 ## Credits
