@@ -647,6 +647,34 @@ title. The check stays red until an unrelated commit is pushed.
 event payload must listen for the event that changes that payload**, or it is unfixable by the very
 action it demands — which teaches contributors that a red check can be ignored.
 
+### Stale prose rots silently, and the emphatic passages rot worst
+
+Every gate this repo has inspects a *machine-readable* property. `validate_mod.py` checks XML and C#
+structure, prettier checks formatting, `typos` checks spelling, CodeQL checks the Python. **Not one
+of them reads a sentence and asks whether it is still true.** So documentation decays with no signal
+at all — the same silent-failure shape as an orphaned `Load="Merge"`, but across every file a
+contributor reads *first*.
+
+Measured at the point the option toggles landed (#93): **all five** of the "Immediate priorities"
+above were closed, `docs/FEATURES.md` §7.3 still called a defect fixed months earlier in #34 the
+"🔴 Biggest compatibility hazard in the mod", and §3.4's drop-rate arithmetic still read `10 / 100`,
+which was only correct under the table *replacement* that #34 had removed. One of those is a wrong
+number that would have been repeated as fact by anyone who trusted the doc.
+
+**The emphasis is the tell.** A 🔴 callout, a "highest-value fix in the codebase", a numbered
+priority list — these get written when a defect is freshest and most irritating, and that same
+emphasis is what stops them being revisited. They read as settled background rather than as claims
+under review, so the strongest statements in the repo become the least trustworthy ones. Two harms,
+both charter-relevant: they point the next contributor at work already done, and they advertise a
+resolved hazard in the one dimension charter rule 1 makes the fork's headline claim.
+
+Stale **cross-references** are the same class. `CLAUDE.md`'s own commit-message example read
+`closes #4` for work that actually closed #3, and nothing checks issue numbers in prose either.
+
+> **When a PR closes a defect, grep the docs for it in the same PR.** `rg -i 'artifact 3|removetable'`
+> costs seconds. The fix and the prose describing the defect are one change, not two — and the
+> second half is the one no gate will ever remind you about.
+
 ## Source documents
 
 | File | What it is |
