@@ -84,7 +84,13 @@ absolute ones. The capture date at the top of this file is the anchor.
 
 ## 7. Action required before first upload
 
-`workshop.json` in this folder still carries `"WorkshopId": 1134036260` — Mura's original item.
+✅ **Done (#2).** `WorkshopId` is now `0`, so the uploader creates a new item, and the validation
+script fails the build if it is ever set back to `1134036260`. The description, title and credits
+were rewritten for this fork.
+
+Original note, kept for the record:
+
+`workshop.json` in this folder still carried `"WorkshopId": 1134036260` — Mura's original item.
 Because this fork publishes separately (§5), **that field must be cleared before the first
 upload**, or Qud's uploader will target Mura's page instead of creating a new item. The
 `Description`, `Title`, and `ImagePath` fields all need replacing too; the description currently

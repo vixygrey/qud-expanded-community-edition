@@ -43,6 +43,10 @@ NEW_UNPREFIXED = {
 # New population tables the mod declares. Same reasoning as NEW_UNPREFIXED.
 NEW_TABLE_PREFIXES = ("StartingGear_",)
 
+# Mura's original Workshop item. This fork publishes SEPARATELY and must never target it —
+# uploading with this ID in workshop.json would publish over their page. See docs/PERMISSION.md §5.
+UPSTREAM_WORKSHOP_ID = 1134036260
+
 
 class Findings:
     def __init__(self) -> None:
@@ -81,6 +85,27 @@ def check_json(f: Findings) -> None:
             json.loads(path.read_text(encoding="utf-8-sig"))
         except json.JSONDecodeError as exc:
             f.add("json", f"{path}: {exc}")
+
+
+def check_workshop_target(f: Findings) -> None:
+    """The uploader publishes to whatever WorkshopId names. It must never be Mura's.
+
+    0 means "create a new item". Once this fork is published, Qud writes its own ID here, which
+    is fine — the only forbidden value is the upstream one.
+    """
+    path = MOD / "workshop.json"
+    if not path.is_file():
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return  # check_json reports this
+    if data.get("WorkshopId") == UPSTREAM_WORKSHOP_ID:
+        f.add(
+            "workshop-target",
+            f"workshop.json WorkshopId is {UPSTREAM_WORKSHOP_ID} — Mura's original item. "
+            f"Uploading would publish over their page. This fork releases separately.",
+        )
 
 
 def check_filenames(f: Findings) -> None:
@@ -211,6 +236,7 @@ def run() -> Findings:
     f = Findings()
     roots = check_wellformed(f)
     check_json(f)
+    check_workshop_target(f)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
