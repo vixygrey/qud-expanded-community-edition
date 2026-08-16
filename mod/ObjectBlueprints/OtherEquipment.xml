@@ -1,7 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
-
   <!-- Energy Cells
 
   Vanilla (Tier in parentheses, Tier functions as a scalar value used for determining a variety of things like drop rates as well as mod capacity and requirements, higher is rarer/better from 1 to 8):
@@ -32,9 +30,18 @@
   -->
 
   <object Name="Raven_Advanced Chem Cell" Inherits="Energy Cell">
-    <part Name="Render" DisplayName="{{C|advanced}} {{c|chem cell}}" ColorString="&amp;c" RenderString="'" RenderLayer="5" />
+    <part
+      Name="Render"
+      DisplayName="{{C|advanced}} {{c|chem cell}}"
+      ColorString="&amp;c"
+      RenderString="'"
+      RenderLayer="5"
+    />
     <part Name="EnergyCell" Charge="50000" MaxCharge="50000" />
-    <part Name="Description" Short="A metallic block, this is energy cell holds much more power than its smaller counterpart." />
+    <part
+      Name="Description"
+      Short="A metallic block, this is energy cell holds much more power than its smaller counterpart."
+    />
     <part Name="Commerce" Value="300" />
     <part Name="TinkerItem" Bits="0014" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="5" />
@@ -43,9 +50,18 @@
   </object>
 
   <object Name="Raven_Dark Matter Cell" Inherits="Energy Cell">
-    <part Name="Render" DisplayName="{{K|dark matter}} {{c|cell}}" ColorString="&amp;c" RenderString="'" RenderLayer="5" />
+    <part
+      Name="Render"
+      DisplayName="{{K|dark matter}} {{c|cell}}"
+      ColorString="&amp;c"
+      RenderString="'"
+      RenderLayer="5"
+    />
     <part Name="EnergyCell" Charge="500000" MaxCharge="500000" />
-    <part Name="Description" Short="A tightly wound hedron of dark matter containing vast amounts of potential energy." />
+    <part
+      Name="Description"
+      Short="A tightly wound hedron of dark matter containing vast amounts of potential energy."
+    />
     <part Name="Commerce" Value="300" />
     <part Name="TinkerItem" Bits="0047" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="8" />
@@ -54,9 +70,18 @@
   </object>
 
   <object Name="Raven_Solar Cell Array" Inherits="Energy Cell">
-    <part Name="Render" DisplayName="{{W|solar}} {{c|cell array}}" ColorString="&amp;W" RenderString="'" RenderLayer="5" />
+    <part
+      Name="Render"
+      DisplayName="{{W|solar}} {{c|cell array}}"
+      ColorString="&amp;W"
+      RenderString="'"
+      RenderLayer="5"
+    />
     <part Name="EnergyCell" Charge="10000" MaxCharge="10000" />
-    <part Name="Description" Short="An array of shimmering silver cubes, these cells will slowly recharge if left in sunlight." />
+    <part
+      Name="Description"
+      Short="An array of shimmering silver cubes, these cells will slowly recharge if left in sunlight."
+    />
     <part Name="SolarArray" ChargeRate="25" />
     <part Name="IntegralRecharger" />
     <part Name="TinkerItem" Bits="0023" CanDisassemble="true" CanBuild="true" />
@@ -67,9 +92,18 @@
   </object>
 
   <object Name="Raven_Solar Cell Nexus" Inherits="Energy Cell">
-    <part Name="Render" DisplayName="{{W|solar}} {{c|cell nexus}}" ColorString="&amp;W" RenderString="'" RenderLayer="5" />
+    <part
+      Name="Render"
+      DisplayName="{{W|solar}} {{c|cell nexus}}"
+      ColorString="&amp;W"
+      RenderString="'"
+      RenderLayer="5"
+    />
     <part Name="EnergyCell" Charge="50000" MaxCharge="50000" />
-    <part Name="Description" Short="An undulating nexus of shimmering silver cubes, they will gradually recharge if left in sunlight." />
+    <part
+      Name="Description"
+      Short="An undulating nexus of shimmering silver cubes, they will gradually recharge if left in sunlight."
+    />
     <part Name="SolarArray" ChargeRate="50" />
     <part Name="IntegralRecharger" />
     <part Name="TinkerItem" Bits="0025" CanDisassemble="true" CanBuild="true" />
@@ -84,11 +118,22 @@
 
   <object Name="Raven_Advanced Hoversled" Inherits="Tool">
     <part Name="Armor" WornOn="Floating Nearby" />
-    <part Name="Render" DisplayName="{{C|advanced}} hoversled" RenderString="004" RenderLayer="5" Tile="Items/sw_hoversled.bmp" ColorString="&amp;c" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{C|advanced}} hoversled"
+      RenderString="004"
+      RenderLayer="5"
+      Tile="Items/sw_hoversled.bmp"
+      ColorString="&amp;c"
+      DetailColor="Y"
+    />
     <part Name="Physics" Weight="50" />
     <part Name="Backpack" WeightWhenWorn="-100" />
     <part Name="Commerce" Value="400" />
-    <part Name="Description" Short="A large toboggan repels above the ground and gently rocks on an ethereal wave. It's encircled by a corona of wafting dust." />
+    <part
+      Name="Description"
+      Short="A large toboggan repels above the ground and gently rocks on an ethereal wave. It's encircled by a corona of wafting dust."
+    />
     <part Name="Examiner" Alternate="Unknownmetal box" Complexity="4" />
     <part Name="TinkerItem" Bits="00345" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="6" />
@@ -97,7 +142,16 @@
 
   <object Name="Raven_CyberneticsCreditPass" Inherits="Item">
     <part Name="Physics" Weight="0" />
-    <part Name="Render" DisplayName="{{C|cybernetics credit pass}}" RenderString="-" ColorString="&amp;c" Occluding="false" RenderIfDark="true" Tile="Items/sw_wedge3.bmp" DetailColor="C" />
+    <part
+      Name="Render"
+      DisplayName="{{C|cybernetics credit pass}}"
+      RenderString="-"
+      ColorString="&amp;c"
+      Occluding="false"
+      RenderIfDark="true"
+      Tile="Items/sw_wedge3.bmp"
+      DetailColor="C"
+    />
     <part Name="CyberneticsCreditWedge" Credits="10" />
     <part Name="Commerce" Value="1550" />
     <tag Name="NoEquip" Value="1" />
@@ -105,7 +159,7 @@
     <tag Name="NoSparkingQuest" />
   </object>
 
-<!-- Miscellaneous -->
+  <!-- Miscellaneous -->
 
   <object Name="Force Bracelet" Load="Merge">
     <part Name="ForceEmitter" ChargeUse="250" />
@@ -113,7 +167,17 @@
 
   <!-- Makes bottles function like phials for things like lava -->
   <object Name="Bottle" Load="Merge">
-    <part Name="Physics" Weight="5" Takeable="true" Solid="false" SpecificHeat="0" FreezeTemperature="-9999" BrittleTemperature="-9999" FlameTemperature="99999" VaporTemperature="9999" />
+    <part
+      Name="Physics"
+      Weight="5"
+      Takeable="true"
+      Solid="false"
+      SpecificHeat="0"
+      FreezeTemperature="-9999"
+      BrittleTemperature="-9999"
+      FlameTemperature="99999"
+      VaporTemperature="9999"
+    />
     <part Name="Commerce" Value="10" />
     <stat Name="Hitpoints" Value="1000" />
     <stat Name="HeatResistance" Value="100" />
@@ -138,12 +202,18 @@
 
   <object Name="Programmable Recoiler" Load="Merge">
     <part Name="ProgrammableRecoiler" ChargeUse="5000" Reprogrammable="true" />
-    <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within seem to have had alterations made to them." />
+    <part
+      Name="Description"
+      Short="A small crystalline disk with a recessed button on top. The mechanisms within seem to have had alterations made to them."
+    />
   </object>
 
   <object Name="Reprogrammable Recoiler" Load="Merge">
     <part Name="ProgrammableRecoiler" ChargeUse="2500" />
-    <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within have had considerable alterations made to them." />
+    <part
+      Name="Description"
+      Short="A small crystalline disk with a recessed button on top. The mechanisms within have had considerable alterations made to them."
+    />
   </object>
 
   <!-- give set recoilers the ability to change name now that they're reprogrammable -->
@@ -158,7 +228,7 @@
   <object Name="Six Day Stilt Recoiler" Load="Merge">
     <part Name="ProgrammableRecoiler" NameElide="Six Day Stilt" />
   </object>
-       
+
   <object Name="Kyakukya Recoiler" Load="Merge">
     <part Name="ProgrammableRecoiler" NameElide="Kyakukya" />
   </object>
@@ -179,13 +249,24 @@
     <part Name="Backpack" WeightWhenWorn="-60" />
   </object>
 
-<object Name="Raven_Large Sphere of Negative Weight" Inherits="Trinket">
-    <part Name="Render" DisplayName="sphere of negative weight" Tile="Items/sw_sphere_negative_weight.bmp" ColorString="&amp;K" DetailColor="y" RenderString="009" RenderLayer="5" />
+  <object Name="Raven_Large Sphere of Negative Weight" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="sphere of negative weight"
+      Tile="Items/sw_sphere_negative_weight.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+      RenderString="009"
+      RenderLayer="5"
+    />
     <part Name="DisplayNameColor" Color="c" />
     <part Name="SizeAdjective" Adjective="large" />
     <part Name="Physics" Weight="30" />
     <part Name="Commerce" Value="100" />
-    <part Name="Description" Short="A sphere of some black pyritic metal succumbs to the negative pressures of gravity and tries to fall upward." />
+    <part
+      Name="Description"
+      Short="A sphere of some black pyritic metal succumbs to the negative pressures of gravity and tries to fall upward."
+    />
     <part Name="TinkerItem" Bits="00008" CanDisassemble="true" CanBuild="true" />
     <part Name="Examiner" Unknown="UnknownOddTrinket" Complexity="7" />
     <part Name="Suspensor" PercentageForce="200" ChargeUse="0" />
@@ -203,5 +284,4 @@
   <object Name="Oilskin" Load="Merge">
     <part Name="Render" DisplayName="&amp;Koil&amp;wskin" />
   </object>
-  
 </objects>

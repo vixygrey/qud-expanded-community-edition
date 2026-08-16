@@ -1,10 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
-
   <!-- Enemy Adjustments -->
 
-    <!-- Chute crab claw can deal 0 damage as well now-->
+  <!-- Chute crab claw can deal 0 damage as well now-->
 
   <object Name="Chute Crab Claw" Load="Merge">
     <part Name="MeleeWeapon" BaseDamage="1d3-1" Skill="Cudgel" Stat="Strength" Slot="Hand" />
@@ -19,5 +17,4 @@
   <object Name="PsionicAdept" Inherits="Humanoid">
     <part Name="Body" Anatomy="PsionicAdept" />
   </object>
-  
 </objects>

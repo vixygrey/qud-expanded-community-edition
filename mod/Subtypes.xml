@@ -1,386 +1,487 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <subtypes>
+  <!-- The subtype stat bonuses are aimed at a total value of 2-3 by adding the bonuses together then subtracting the penalties. True Kin all have 3-4 bonus points, and Mutants all have 2 -->
 
-    <!-- The subtype stat bonuses are aimed at a total value of 2-3 by adding the bonuses together then subtracting the penalties. True Kin all have 3-4 bonus points, and Mutants all have 2 -->
+  <!-- Previous tiles were Creatures/caste_flipped_18.bmp for Psionics and creatures/caste_7.bmp for Guardians -->
 
-    <!-- Previous tiles were Creatures/caste_flipped_18.bmp for Psionics and creatures/caste_7.bmp for Guardians -->
+  <!-- Pure Psionic Affinities -->
 
-    <!-- Pure Psionic Affinities -->
+  <class ID="Affinities" ChargenTitle="choose expertise" SingularTitle="affinity" StatBoxDisplay="true">
+    <category Name="Full Psionic" DisplayName="&amp;MThe Lore Seekers of the Grand Library">
+      <subtype
+        Name="Force, Watchers of the World"
+        Code="a"
+        Gear="StartingGear_Force Psionic"
+        Tile="Subtypes/forcePsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="K"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="4" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Rifles" />
+          <skill Name="Tinkering" />
+          <skill Name="Tinkering_Disassemble" />
+          <skill Name="Tinkering_ReverseEngineer" />
+          <skill Name="Tinkering_Tinker1" />
+        </skills>
+      </subtype>
 
-    <class ID="Affinities" ChargenTitle="choose expertise" SingularTitle="affinity" StatBoxDisplay="true">
-        <category Name="Full Psionic" DisplayName="&amp;MThe Lore Seekers of the Grand Library">
+      <subtype
+        Name="Fire, Defenders of the Core"
+        Code="b"
+        Gear="StartingGear_Fire Psionic"
+        Tile="Subtypes/firePsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="o"
+      >
+        <stat Name="Strength" Bonus="1" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <stat Name="HeatResistance" Bonus="40" />
+        <stat Name="ColdResistance" Bonus="-20" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Axe" />
+          <skill Name="HeavyWeapons" />
+          <skill Name="HeavyWeapons_Tank" />
+          <skill Name="HeavyWeapons_Sweep" />
+        </skills>
+      </subtype>
 
-            <subtype Name="Force, Watchers of the World" Code="a" Gear="StartingGear_Force Psionic" Tile="Subtypes/forcePsionic.bmp" CyberneticsLicensePoints="1" DetailColor="K">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="4" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Rifles" />
-                        <skill Name="Tinkering" />
-                        <skill Name="Tinkering_Disassemble" />
-                        <skill Name="Tinkering_ReverseEngineer" />
-                        <skill Name="Tinkering_Tinker1" />
-                    </skills>
-            </subtype>
+      <subtype
+        Name="Ice, Bulwark of the Throne"
+        Code="c"
+        Gear="StartingGear_Ice Psionic"
+        Tile="Subtypes/icePsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="C"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="1" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <stat Name="ColdResistance" Bonus="40" />
+        <stat Name="HeatResistance" Bonus="-20" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Rifles" />
+          <skill Name="Tactics_Kickback" />
+          <skill Name="Endurance" />
+          <skill Name="Endurance_Swimming" />
+        </skills>
+      </subtype>
 
-            <subtype Name="Fire, Defenders of the Core" Code="b" Gear="StartingGear_Fire Psionic" Tile="Subtypes/firePsionic.bmp" CyberneticsLicensePoints="1" DetailColor="o">
-                    <stat Name="Strength" Bonus="1" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <stat Name="HeatResistance" Bonus="40" />
-                    <stat Name="ColdResistance" Bonus="-20" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Axe" />
-                        <skill Name="HeavyWeapons" />
-                        <skill Name="HeavyWeapons_Tank" />
-                        <skill Name="HeavyWeapons_Sweep" />
-                    </skills>
-            </subtype>
+      <subtype
+        Name="Lightning, Hunters of the Defilers"
+        Code="d"
+        Gear="StartingGear_Lightning Psionic"
+        Tile="Subtypes/lightningPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="W"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="1" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <stat Name="ElectricResistance" Bonus="40" />
+        <stat Name="AcidResistance" Bonus="-20" />
+        <skills>
+          <skill Name="ShortBlades" />
+          <skill Name="ShortBlades_Bloodletter" />
+          <skill Name="ShortBlades_Jab" />
+          <skill Name="ShortBlades_Hobble" />
+          <skill Name="Pistol" />
+        </skills>
+      </subtype>
 
-            <subtype Name="Ice, Bulwark of the Throne" Code="c" Gear="StartingGear_Ice Psionic" Tile="Subtypes/icePsionic.bmp" CyberneticsLicensePoints="1" DetailColor="C">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="1" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <stat Name="ColdResistance" Bonus="40" />
-                    <stat Name="HeatResistance" Bonus="-20" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Rifles" />
-                        <skill Name="Tactics_Kickback" />
-                        <skill Name="Endurance" />
-                        <skill Name="Endurance_Swimming" />
-                    </skills>
-            </subtype>
+      <subtype
+        Name="Light, Seekers of the Path"
+        Code="e"
+        Gear="StartingGear_Light Psionic"
+        Tile="Subtypes/lightPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="O"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="1" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <stat Name="HeatResistance" Bonus="20" />
+        <stat Name="ElectricResistance" Bonus="20" />
+        <stat Name="ColdResistance" Bonus="-10" />
+        <stat Name="AcidResistance" Bonus="-10" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Pistol" />
+          <skill Name="Pistol_Akimbo" />
+          <skill Name="Pistol_WeakSpotter" />
+          <skill Name="Pistol_SlingAndRun" />
+        </skills>
+        <extrainfo>Guaranteed one Solar Cell</extrainfo>
+      </subtype>
 
-            <subtype Name="Lightning, Hunters of the Defilers" Code="d" Gear="StartingGear_Lightning Psionic" Tile="Subtypes/lightningPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="W">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="1" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <stat Name="ElectricResistance" Bonus="40" />
-                    <stat Name="AcidResistance" Bonus="-20" />
-                    <skills>
-                        <skill Name="ShortBlades" />
-                        <skill Name="ShortBlades_Bloodletter" />
-                        <skill Name="ShortBlades_Jab" />
-                        <skill Name="ShortBlades_Hobble" />
-                        <skill Name="Pistol" />
-                    </skills>
-            </subtype>
+      <subtype
+        Name="Corrosive, Builders of the Wall"
+        Code="f"
+        Gear="StartingGear_Corrosive Psionic"
+        Tile="Subtypes/corrosionPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="g"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="4" />
+        <stat Name="AcidResistance" Bonus="40" />
+        <stat Name="ElectricResistance" Bonus="-20" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Rifles" />
+          <skill Name="Persuasion" />
+          <skill Name="Persuasion_Intimidate" />
+          <skill Name="Persuasion_Berate" />
+          <skill Name="Persuasion_SnakeOiler" />
+        </skills>
+      </subtype>
 
-            <subtype Name="Light, Seekers of the Path" Code="e" Gear="StartingGear_Light Psionic" Tile="Subtypes/lightPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="O">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="1" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <stat Name="HeatResistance" Bonus="20" />
-                    <stat Name="ElectricResistance" Bonus="20" />
-                    <stat Name="ColdResistance" Bonus="-10" />
-                    <stat Name="AcidResistance" Bonus="-10" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Pistol" />
-                        <skill Name="Pistol_Akimbo" />
-                        <skill Name="Pistol_WeakSpotter" />
-                        <skill Name="Pistol_SlingAndRun" />
-                    </skills>
-                    <extrainfo>Guaranteed one Solar Cell</extrainfo>
-            </subtype>
+      <subtype
+        Name="Blood, Lurkers of the Unknown"
+        Code="g"
+        Gear="StartingGear_Blood Psionic"
+        Tile="Subtypes/bloodPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="R"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="1" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <skills>
+          <skill Name="ShortBlades" />
+          <skill Name="Pistol" />
+          <skill Name="Multiweapon_Fighting" />
+          <skill Name="Multiweapon_Proficiency" />
+          <skill Name="Multiweapon_Expertise" />
+        </skills>
+        <savemodifiers>
+          <savemodifier Vs="Bleeding" Amount="4" />
+        </savemodifiers>
+      </subtype>
 
-            <subtype Name="Corrosive, Builders of the Wall" Code="f" Gear="StartingGear_Corrosive Psionic" Tile="Subtypes/corrosionPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="g">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="4" />
-                    <stat Name="AcidResistance" Bonus="40" />
-                    <stat Name="ElectricResistance" Bonus="-20" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Rifles" />
-                        <skill Name="Persuasion" />
-                        <skill Name="Persuasion_Intimidate" />
-                        <skill Name="Persuasion_Berate" />
-                        <skill Name="Persuasion_SnakeOiler" />
-                    </skills>
-            </subtype>
+      <subtype
+        Name="Mental, Guides of the Lost"
+        Code="h"
+        Gear="StartingGear_Mental Psionic"
+        Tile="Subtypes/mentalPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="M"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="4" />
+        <stat Name="Willpower" Bonus="2" />
+        <stat Name="Ego" Bonus="2" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Rifles" />
+          <skill Name="Customs" />
+          <skill Name="Customs_TrashDivining" />
+          <skill Name="Survival" />
+          <skill Name="Survival_PlainsSurvival" />
+          <skill Name="Survival_SaltmarshSurvival" />
+          <skill Name="Survival_MountainsSurvival" />
+          <skill Name="Survival_DesertCanyonSurvival" />
+          <skill Name="Survival_JungleSurvival" />
+          <skill Name="Survival_SaltDesertSurvival" />
+          <skill Name="Survival_RuinsSurvival" />
+        </skills>
+      </subtype>
 
-            <subtype Name="Blood, Lurkers of the Unknown" Code="g" Gear="StartingGear_Blood Psionic" Tile="Subtypes/bloodPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="R">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="1" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <skills>
-                        <skill Name="ShortBlades" />
-                        <skill Name="Pistol" />
-                        <skill Name="Multiweapon_Fighting" />
-                        <skill Name="Multiweapon_Proficiency" />
-                        <skill Name="Multiweapon_Expertise" />
-                    </skills>
-                    <savemodifiers>
-                      <savemodifier Vs="Bleeding" Amount="4" />
-                    </savemodifiers>
-            </subtype>
+      <subtype
+        Name="Temporal, Keepers of the Records"
+        Code="q"
+        Gear="StartingGear_Temporal Psionic"
+        Tile="Subtypes/temporalPsionic.bmp"
+        CyberneticsLicensePoints="1"
+        DetailColor="Y"
+      >
+        <stat Name="Strength" Bonus="-2" />
+        <stat Name="Agility" Bonus="-2" />
+        <stat Name="Toughness" Bonus="-2" />
+        <stat Name="Intelligence" Bonus="2" />
+        <stat Name="Willpower" Bonus="4" />
+        <stat Name="Ego" Bonus="2" />
+        <skills>
+          <skill Name="ShortBlades_Expertise" />
+          <skill Name="Rifles" />
+          <skill Name="Discipline" />
+          <skill Name="Discipline_FastingWay" />
+          <skill Name="Discipline_IronMind" />
+          <skill Name="Discipline_Lionheart" />
+          <skill Name="Discipline_Conatus" />
+          <skill Name="Discipline_MindOverBody" />
+        </skills>
+      </subtype>
+    </category>
 
-            <subtype Name="Mental, Guides of the Lost" Code="h" Gear="StartingGear_Mental Psionic" Tile="Subtypes/mentalPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="M">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="4" />
-                    <stat Name="Willpower" Bonus="2" />
-                    <stat Name="Ego" Bonus="2" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Rifles" />
-                        <skill Name="Customs" />
-                        <skill Name="Customs_TrashDivining" />
-                        <skill Name="Survival" />
-                        <skill Name="Survival_PlainsSurvival" />
-                        <skill Name="Survival_SaltmarshSurvival" />
-                        <skill Name="Survival_MountainsSurvival" />
-                        <skill Name="Survival_DesertCanyonSurvival" />
-                        <skill Name="Survival_JungleSurvival" />
-                        <skill Name="Survival_SaltDesertSurvival" />
-                        <skill Name="Survival_RuinsSurvival" />
-                    </skills>
-            </subtype>
+    <!-- Guardian Affinities -->
 
-            <subtype Name="Temporal, Keepers of the Records" Code="q" Gear="StartingGear_Temporal Psionic" Tile="Subtypes/temporalPsionic.bmp" CyberneticsLicensePoints="1" DetailColor="Y">
-                    <stat Name="Strength" Bonus="-2" />
-                    <stat Name="Agility" Bonus="-2" />
-                    <stat Name="Toughness" Bonus="-2" />
-                    <stat Name="Intelligence" Bonus="2" />
-                    <stat Name="Willpower" Bonus="4" />
-                    <stat Name="Ego" Bonus="2" />
-                    <skills>
-                        <skill Name="ShortBlades_Expertise" />
-                        <skill Name="Rifles" />
-                        <skill Name="Discipline" />
-                        <skill Name="Discipline_FastingWay" />
-                        <skill Name="Discipline_IronMind" />
-                        <skill Name="Discipline_Lionheart" />
-                        <skill Name="Discipline_Conatus" />
-                        <skill Name="Discipline_MindOverBody" />
-                    </skills>
-            </subtype>
+    <category Name="Half Psionic" DisplayName="&amp;WThe Immovable Wall of the Yttria">
+      <subtype
+        Name="Force, Main Battalion"
+        Code="i"
+        Gear="StartingGear_Force Guardian"
+        Tile="Subtypes/forceGuardian.bmp"
+        DetailColor="K"
+      >
+        <stat Name="Strength" Bonus="3" />
+        <stat Name="Agility" Bonus="3" />
+        <stat Name="Toughness" Bonus="1" />
+        <!--<stat Name="Intelligence" Bonus="0" />      Left here for consistency/readable code -->
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <skills>
+          <skill Name="LongBlades" />
+          <skill Name="LongBladesDuelingStance" />
+          <skill Name="Shield" />
+          <skill Name="Shield_DeftBlocking" />
+          <skill Name="Shield_SwiftBlocking" />
+        </skills>
+      </subtype>
 
-        </category>
+      <subtype
+        Name="Fire, Berserker Battalion"
+        Code="j"
+        Gear="StartingGear_Fire Guardian"
+        Tile="Subtypes/fireGuardian.bmp"
+        DetailColor="o"
+      >
+        <stat Name="Strength" Bonus="4" />
+        <stat Name="Agility" Bonus="2" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <stat Name="HeatResistance" Bonus="20" />
+        <stat Name="ColdResistance" Bonus="-10" />
+        <skills>
+          <skill Name="Axe" />
+          <skill Name="Axe_Cleave" />
+          <skill Name="Cudgel_ChargingStrike" />
+          <skill Name="Axe_Dismember" />
+          <skill Name="Axe_HookAndDrag" />
+        </skills>
+      </subtype>
 
+      <subtype
+        Name="Ice, Assault Battalion"
+        Code="k"
+        Gear="StartingGear_Ice Guardian"
+        Tile="Subtypes/iceGuardian.bmp"
+        DetailColor="C"
+      >
+        <stat Name="Strength" Bonus="4" />
+        <stat Name="Agility" Bonus="2" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <stat Name="ColdResistance" Bonus="20" />
+        <stat Name="HeatResistance" Bonus="-10" />
+        <skills>
+          <skill Name="Cudgel" />
+          <skill Name="Cudgel_Bludgeon" />
+          <skill Name="Cudgel_ChargingStrike" />
+          <skill Name="Cudgel_Conk" />
+          <skill Name="Cudgel_Backswing" />
+        </skills>
+      </subtype>
 
+      <subtype
+        Name="Lightning, Skirmish Battalion"
+        Code="l"
+        Gear="StartingGear_Lightning Guardian"
+        Tile="Subtypes/lightningGuardian.bmp"
+        DetailColor="W"
+      >
+        <stat Name="Strength" Bonus="2" />
+        <stat Name="Agility" Bonus="4" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <stat Name="ElectricResistance" Bonus="20" />
+        <stat Name="AcidResistance" Bonus="-10" />
+        <skills>
+          <skill Name="Tactics" />
+          <skill Name="Tactics_Throwing" />
+          <skill Name="Tactics_Juke" />
+          <skill Name="Acrobatics" />
+          <skill Name="Acrobatics_Dodge" />
+          <skill Name="Acrobatics_Tumble" />
+        </skills>
+      </subtype>
 
+      <subtype
+        Name="Light, Ranged Battalion"
+        Code="m"
+        Gear="StartingGear_Light Guardian"
+        Tile="Subtypes/lightGuardian.bmp"
+        DetailColor="O"
+      >
+        <stat Name="Strength" Bonus="2" />
+        <stat Name="Agility" Bonus="4" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <stat Name="HeatResistance" Bonus="10" />
+        <stat Name="ElectricResistance" Bonus="10" />
+        <stat Name="ColdResistance" Bonus="-5" />
+        <stat Name="AcidResistance" Bonus="-5" />
+        <skills>
+          <skill Name="Rifles" />
+          <skill Name="Tactics_Kickback" />
+          <skill Name="Rifle_SuppressiveFire" />
+          <skill Name="Rifle_WoundingFire" />
+          <skill Name="Rifle_SureFire" />
+        </skills>
+        <extrainfo>Guaranteed one Solar Cell</extrainfo>
+      </subtype>
 
+      <subtype
+        Name="Corrosive, Flank Battalion"
+        Code="n"
+        Gear="StartingGear_Corrosive Guardian"
+        Tile="Subtypes/corrosionGuardian.bmp"
+        DetailColor="g"
+      >
+        <stat Name="Strength" Bonus="2" />
+        <stat Name="Agility" Bonus="2" />
+        <stat Name="Toughness" Bonus="4" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <stat Name="AcidResistance" Bonus="20" />
+        <stat Name="ElectricResistance" Bonus="-10" />
+        <skills>
+          <skill Name="LongBladesProficiency" />
+          <skill Name="Endurance" />
+          <skill Name="Endurance_Swimming" />
+          <skill Name="Endurance_PoisonTolerance" />
+          <skill Name="Endurance_Weathered" />
+          <skill Name="Endurance_Juicer" />
+        </skills>
+      </subtype>
 
+      <subtype
+        Name="Blood, Assassin Battalion"
+        Code="o"
+        Gear="StartingGear_Blood Guardian"
+        Tile="Subtypes/bloodGuardian.bmp"
+        DetailColor="R"
+      >
+        <stat Name="Strength" Bonus="1" />
+        <stat Name="Agility" Bonus="4" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-2" />
+        <stat Name="Willpower" Bonus="-2" />
+        <stat Name="Ego" Bonus="-2" />
+        <savemodifiers>
+          <savemodifier Vs="Bleeding" Amount="2" />
+        </savemodifiers>
+        <skills>
+          <skill Name="Axe" />
+          <skill Name="Axe_Dismember" />
+          <skill Name="ShortBlades" />
+          <skill Name="ShortBlades_Bloodletter" />
+          <skill Name="Multiweapon_Fighting" />
+          <skill Name="Multiweapon_Proficiency" />
+        </skills>
+      </subtype>
 
+      <subtype
+        Name="Mental, Technical Battalion"
+        Code="p"
+        Gear="StartingGear_Mental Guardian"
+        Tile="Subtypes/mentalGuardian.bmp"
+        DetailColor="M"
+      >
+        <stat Name="Strength" Bonus="1" />
+        <stat Name="Agility" Bonus="3" />
+        <stat Name="Toughness" Bonus="1" />
+        <!--<stat Name="Intelligence" Bonus="0" />      Left here for consistency/readable code -->
+        <stat Name="Willpower" Bonus="-2" />
+        <!--<stat Name="Ego" Bonus="0" />               Left here for consistency/readable code -->
+        <skills>
+          <skill Name="Persuasion" />
+          <skill Name="Persuasion_InspiringPresence" />
+          <skill Name="Tinkering" />
+          <skill Name="Tinkering_Disassemble" />
+          <skill Name="Tinkering_DeployTurret" />
+          <skill Name="Tinkering_LayMine" />
+        </skills>
+      </subtype>
 
-
-
-
-
-        <!-- Guardian Affinities -->
-
-        <category Name="Half Psionic" DisplayName="&amp;WThe Immovable Wall of the Yttria">
-
-            <subtype Name="Force, Main Battalion" Code="i" Gear="StartingGear_Force Guardian" Tile="Subtypes/forceGuardian.bmp" DetailColor="K">
-                    <stat Name="Strength" Bonus="3" />
-                    <stat Name="Agility" Bonus="3" />
-                    <stat Name="Toughness" Bonus="1" />
-                <!--<stat Name="Intelligence" Bonus="0" />      Left here for consistency/readable code -->
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                        <skills>
-                            <skill Name="LongBlades" />
-                            <skill Name="LongBladesDuelingStance" />
-                            <skill Name="Shield" />
-                            <skill Name="Shield_DeftBlocking" />
-                            <skill Name="Shield_SwiftBlocking" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Fire, Berserker Battalion" Code="j" Gear="StartingGear_Fire Guardian" Tile="Subtypes/fireGuardian.bmp" DetailColor="o">
-                    <stat Name="Strength" Bonus="4" />
-                    <stat Name="Agility" Bonus="2" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <stat Name="HeatResistance" Bonus="20" />
-                    <stat Name="ColdResistance" Bonus="-10" />
-                        <skills>
-                            <skill Name="Axe" />
-                            <skill Name="Axe_Cleave" />
-                            <skill Name="Cudgel_ChargingStrike" />
-                            <skill Name="Axe_Dismember" />
-                            <skill Name="Axe_HookAndDrag" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Ice, Assault Battalion" Code="k" Gear="StartingGear_Ice Guardian" Tile="Subtypes/iceGuardian.bmp" DetailColor="C">
-                    <stat Name="Strength" Bonus="4" />
-                    <stat Name="Agility" Bonus="2" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <stat Name="ColdResistance" Bonus="20" />
-                    <stat Name="HeatResistance" Bonus="-10" />
-                        <skills>
-                            <skill Name="Cudgel" />
-                            <skill Name="Cudgel_Bludgeon" />
-                            <skill Name="Cudgel_ChargingStrike" />
-                            <skill Name="Cudgel_Conk" />
-                            <skill Name="Cudgel_Backswing" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Lightning, Skirmish Battalion" Code="l" Gear="StartingGear_Lightning Guardian" Tile="Subtypes/lightningGuardian.bmp" DetailColor="W">
-                    <stat Name="Strength" Bonus="2" />
-                    <stat Name="Agility" Bonus="4" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <stat Name="ElectricResistance" Bonus="20" />
-                    <stat Name="AcidResistance" Bonus="-10" />
-                        <skills>
-                            <skill Name="Tactics" />
-                            <skill Name="Tactics_Throwing" />
-                            <skill Name="Tactics_Juke" />
-                            <skill Name="Acrobatics" />
-                            <skill Name="Acrobatics_Dodge" />
-                            <skill Name="Acrobatics_Tumble" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Light, Ranged Battalion" Code="m" Gear="StartingGear_Light Guardian" Tile="Subtypes/lightGuardian.bmp" DetailColor="O">
-                    <stat Name="Strength" Bonus="2" />
-                    <stat Name="Agility" Bonus="4" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <stat Name="HeatResistance" Bonus="10" />
-                    <stat Name="ElectricResistance" Bonus="10" />
-                    <stat Name="ColdResistance" Bonus="-5" />
-                    <stat Name="AcidResistance" Bonus="-5" />
-                        <skills>
-                            <skill Name="Rifles" />
-                            <skill Name="Tactics_Kickback" />
-                            <skill Name="Rifle_SuppressiveFire" />
-                            <skill Name="Rifle_WoundingFire" />
-                            <skill Name="Rifle_SureFire" />
-                        </skills>
-                    <extrainfo>Guaranteed one Solar Cell</extrainfo>
-            </subtype>
-
-            <subtype Name="Corrosive, Flank Battalion" Code="n" Gear="StartingGear_Corrosive Guardian" Tile="Subtypes/corrosionGuardian.bmp" DetailColor="g">
-                    <stat Name="Strength" Bonus="2" />
-                    <stat Name="Agility" Bonus="2" />
-                    <stat Name="Toughness" Bonus="4" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <stat Name="AcidResistance" Bonus="20" />
-                    <stat Name="ElectricResistance" Bonus="-10" />
-                        <skills>
-                            <skill Name="LongBladesProficiency" />
-                            <skill Name="Endurance" />
-                            <skill Name="Endurance_Swimming" />
-                            <skill Name="Endurance_PoisonTolerance" />
-                            <skill Name="Endurance_Weathered" />
-                            <skill Name="Endurance_Juicer" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Blood, Assassin Battalion" Code="o" Gear="StartingGear_Blood Guardian" Tile="Subtypes/bloodGuardian.bmp" DetailColor="R">
-                    <stat Name="Strength" Bonus="1" />
-                    <stat Name="Agility" Bonus="4" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-2" />
-                    <stat Name="Willpower" Bonus="-2" />
-                    <stat Name="Ego" Bonus="-2" />
-                    <savemodifiers>
-                      <savemodifier Vs="Bleeding" Amount="2" />
-                    </savemodifiers>
-                        <skills>
-                            <skill Name="Axe" />
-                            <skill Name="Axe_Dismember" />
-                            <skill Name="ShortBlades" />
-                            <skill Name="ShortBlades_Bloodletter" />
-                            <skill Name="Multiweapon_Fighting" />
-                            <skill Name="Multiweapon_Proficiency" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Mental, Technical Battalion" Code="p" Gear="StartingGear_Mental Guardian" Tile="Subtypes/mentalGuardian.bmp" DetailColor="M">
-                    <stat Name="Strength" Bonus="1" />
-                    <stat Name="Agility" Bonus="3" />
-                    <stat Name="Toughness" Bonus="1" />
-                <!--<stat Name="Intelligence" Bonus="0" />      Left here for consistency/readable code -->
-                    <stat Name="Willpower" Bonus="-2" />
-                <!--<stat Name="Ego" Bonus="0" />               Left here for consistency/readable code -->
-                        <skills>
-                            <skill Name="Persuasion" />
-                            <skill Name="Persuasion_InspiringPresence" />
-                            <skill Name="Tinkering" />
-                            <skill Name="Tinkering_Disassemble" />
-                            <skill Name="Tinkering_DeployTurret" />
-                            <skill Name="Tinkering_LayMine" />
-                        </skills>
-            </subtype>
-
-            <subtype Name="Temporal, Support Battalion" Code="r" Gear="StartingGear_Temporal Guardian" Tile="Subtypes/temporalGuardian.bmp" DetailColor="Y">
-                    <stat Name="Strength" Bonus="2" />
-                    <stat Name="Agility" Bonus="2" />
-                    <stat Name="Toughness" Bonus="2" />
-                    <stat Name="Intelligence" Bonus="-6" />
-                    <stat Name="Willpower" Bonus="1" />
-                    <stat Name="Ego" Bonus="1" />
-                        <skills>
-                            <skill Name="Acrobatics" />
-                            <skill Name="Axe" />
-                            <skill Name="Rifles" />
-                            <skill Name="CookingAndGathering" />
-                            <skill Name="Cudgel" />
-                            <skill Name="Customs" />
-                            <skill Name="Discipline" />
-                            <skill Name="Multiweapon_Fighting" />
-                            <skill Name="Endurance" />
-                            <skill Name="Physic" />
-                            <skill Name="HeavyWeapons" />
-                            <skill Name="LongBlades" />
-                            <skill Name="Persuasion" />
-                            <skill Name="Pistol" />
-                            <skill Name="Shield" />
-                            <skill Name="ShortBlades" />
-                            <skill Name="Survival" />
-                            <skill Name="Tactics" />
-                            <skill Name="Tinkering" />
-                            <skill Name="Tinkering_Tinker1" />
-                            <skill Name="Tinkering_Disassemble" />
-                            <skill Name="Tinkering_Scavenger" />
-                        </skills>
-                    <extrainfo>Starts with massively lowered Intelligence in exchange for so many skills</extrainfo>
-            </subtype>
-
-        </category>
-    </class>
-
+      <subtype
+        Name="Temporal, Support Battalion"
+        Code="r"
+        Gear="StartingGear_Temporal Guardian"
+        Tile="Subtypes/temporalGuardian.bmp"
+        DetailColor="Y"
+      >
+        <stat Name="Strength" Bonus="2" />
+        <stat Name="Agility" Bonus="2" />
+        <stat Name="Toughness" Bonus="2" />
+        <stat Name="Intelligence" Bonus="-6" />
+        <stat Name="Willpower" Bonus="1" />
+        <stat Name="Ego" Bonus="1" />
+        <skills>
+          <skill Name="Acrobatics" />
+          <skill Name="Axe" />
+          <skill Name="Rifles" />
+          <skill Name="CookingAndGathering" />
+          <skill Name="Cudgel" />
+          <skill Name="Customs" />
+          <skill Name="Discipline" />
+          <skill Name="Multiweapon_Fighting" />
+          <skill Name="Endurance" />
+          <skill Name="Physic" />
+          <skill Name="HeavyWeapons" />
+          <skill Name="LongBlades" />
+          <skill Name="Persuasion" />
+          <skill Name="Pistol" />
+          <skill Name="Shield" />
+          <skill Name="ShortBlades" />
+          <skill Name="Survival" />
+          <skill Name="Tactics" />
+          <skill Name="Tinkering" />
+          <skill Name="Tinkering_Tinker1" />
+          <skill Name="Tinkering_Disassemble" />
+          <skill Name="Tinkering_Scavenger" />
+        </skills>
+        <extrainfo>Starts with massively lowered Intelligence in exchange for so many skills</extrainfo>
+      </subtype>
+    </category>
+  </class>
 </subtypes>

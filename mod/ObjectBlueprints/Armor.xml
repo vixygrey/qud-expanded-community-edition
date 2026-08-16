@@ -1,7 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
-
   <!-- Feet -->
 
   <object Name="Raven_Bronze Boots" Inherits="BaseBoot">
@@ -42,7 +40,10 @@
     <part Name="Armor" AV="3" DV="-1" WornOn="Feet" />
     <part Name="Render" DisplayName="{{B|folded carbide}} boots" Tile="Items/sw_metal_boots.bmp" ColorString="&amp;B" />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="A pair of leather boots onto which several folded carbide bands have been riveted." />
+    <part
+      Name="Description"
+      Short="A pair of leather boots onto which several folded carbide bands have been riveted."
+    />
     <part Name="Physics" Weight="8" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -79,9 +80,18 @@
 
   <object Name="Raven_Nanoweave Boots" Inherits="BaseBoot">
     <part Name="Armor" AV="3" DV="1" WornOn="Feet" />
-    <part Name="Render" DisplayName="{{K|nanoweave}} boots" Tile="Items/sw_metal_boots.bmp" ColorString="&amp;K" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{K|nanoweave}} boots"
+      Tile="Items/sw_metal_boots.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="300" />
-    <part Name="Description" Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom." />
+    <part
+      Name="Description"
+      Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom."
+    />
     <part Name="Physics" Weight="3" />
     <part Name="Springy" Factor="0.9" />
     <tag Name="Tier" Value="6" />
@@ -106,7 +116,14 @@
 
   <object Name="Raven_Reinforced Suspension" Inherits="BaseTreadAccessory">
     <part Name="Armor" AV="0" DV="2" WornOn="Tread" />
-    <part Name="Render" DisplayName="reinforced suspension" ColorString="&amp;c" Tile="Items/sw_treadguards.bmp" DetailColor="C" RenderString="]" />
+    <part
+      Name="Render"
+      DisplayName="reinforced suspension"
+      ColorString="&amp;c"
+      Tile="Items/sw_treadguards.bmp"
+      DetailColor="C"
+      RenderString="]"
+    />
     <part Name="Commerce" Value="25" />
     <part Name="Description" Short="Metal frames are mounted on treads to protect against wheel-cramming detritus." />
     <part Name="Physics" Weight="5" />
@@ -122,7 +139,13 @@
 
   <object Name="Raven_Bronze Gauntlets" Inherits="BaseGlove">
     <part Name="Armor" AV="2" DV="-2" WornOn="Hands" />
-    <part Name="Render" DisplayName="{{w|bronze}} gauntlets" Tile="Items/sw_metal_gloves.bmp" ColorString="&amp;w" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{w|bronze}} gauntlets"
+      Tile="Items/sw_metal_gloves.bmp"
+      ColorString="&amp;w"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="5" />
     <part Name="Description" Short="Thick, banded bronze gauntlets" />
     <part Name="Physics" Weight="8" />
@@ -132,7 +155,13 @@
 
   <object Name="Raven_Iron Gauntlets" Inherits="BaseGlove">
     <part Name="Armor" AV="2" DV="-1" WornOn="Hands" />
-    <part Name="Render" DisplayName="iron gauntlets" Tile="Items/sw_metal_gloves.bmp" ColorString="&amp;y" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="iron gauntlets"
+      Tile="Items/sw_metal_gloves.bmp"
+      ColorString="&amp;y"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="10" />
     <part Name="Description" Short="Thick, banded iron gauntlets" />
     <part Name="Physics" Weight="7" />
@@ -156,9 +185,18 @@
 
   <object Name="Raven_Folded Carbide Gauntlets" Inherits="BaseGlove">
     <part Name="Armor" AV="3" DV="-1" WornOn="Hands" />
-    <part Name="Render" DisplayName="{{B|folded carbide}} gauntlets" Tile="Items/sw_metal_gloves.bmp" ColorString="&amp;B" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} gauntlets"
+      Tile="Items/sw_metal_gloves.bmp"
+      ColorString="&amp;B"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="A pair of leather gauntlets onto which several folded carbide bands have been riveted." />
+    <part
+      Name="Description"
+      Short="A pair of leather gauntlets onto which several folded carbide bands have been riveted."
+    />
     <part Name="Physics" Weight="8" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -194,9 +232,18 @@
 
   <object Name="Raven_Nanoweave Gloves" Inherits="BaseGlove">
     <part Name="Armor" AV="2" DV="1" WornOn="Hands" />
-    <part Name="Render" DisplayName="{{K|nanoweave}} gloves" Tile="Items/sw_metal_gloves.bmp" ColorString="&amp;K" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{K|nanoweave}} gloves"
+      Tile="Items/sw_metal_gloves.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="300" />
-    <part Name="Description" Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom." />
+    <part
+      Name="Description"
+      Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom."
+    />
     <part Name="Physics" Weight="3" />
     <part Name="Springy" Factor="0.9" />
     <tag Name="Tier" Value="6" />
@@ -204,7 +251,13 @@
 
   <object Name="Raven_Flexigloves" Inherits="BaseGlove">
     <part Name="Armor" AV="1" DV="2" WornOn="Hands" />
-    <part Name="Render" DisplayName="flexigloves" Tile="Items/sw_metal_gloves.bmp" ColorString="&amp;y" DetailColor="C" />
+    <part
+      Name="Render"
+      DisplayName="flexigloves"
+      Tile="Items/sw_metal_gloves.bmp"
+      ColorString="&amp;y"
+      DetailColor="C"
+    />
     <part Name="Commerce" Value="125" />
     <part Name="Description" Short="Gloves cut from an elastyne mesh and reinforced with plastic." />
     <part Name="Physics" Weight="2" />
@@ -261,7 +314,12 @@
 
   <object Name="Raven_Folded Carbide Helmet" Inherits="BaseHelmet">
     <part Name="Armor" AV="3" DV="-1" WornOn="Head" />
-    <part Name="Render" DisplayName="{{B|folded carbide}} helmet" Tile="Items/sw_metal_helmet.bmp" ColorString="&amp;B" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} helmet"
+      Tile="Items/sw_metal_helmet.bmp"
+      ColorString="&amp;B"
+    />
     <part Name="Commerce" Value="80" />
     <part Name="Description" Short="A dark, visored helmet made of folded carbide." />
     <part Name="Physics" Weight="10" />
@@ -275,7 +333,7 @@
     <part Name="Commerce" Value="160" />
     <part Name="Physics" Weight="12" />
     <tag Name="Tier" Value="5" />
-  </object> 
+  </object>
 
   <object Name="Crysteel Coronet" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Head" />
@@ -300,9 +358,18 @@
 
   <object Name="Raven_Nanoweave Helmet" Inherits="BaseHelmet">
     <part Name="Armor" AV="2" DV="1" WornOn="Head" />
-    <part Name="Render" DisplayName="{{K|nanoweave}} skullcap" Tile="Items/sw_metal_helmet.bmp" ColorString="&amp;K" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{K|nanoweave}} skullcap"
+      Tile="Items/sw_metal_helmet.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="300" />
-    <part Name="Description" Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom." />
+    <part
+      Name="Description"
+      Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom."
+    />
     <part Name="Physics" Weight="3" />
     <part Name="Springy" Factor="0.9" />
     <tag Name="Tier" Value="6" />
@@ -331,9 +398,18 @@
 
   <object Name="Raven_Bronze Plate Armor" Inherits="BaseArmor">
     <part Name="Armor" AV="3" DV="-3" WornOn="Body" />
-    <part Name="Render" DisplayName="{{w|bronze}} plate armor" Tile="Items/sw_plate_mail.bmp" ColorString="&amp;w" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{w|bronze}} plate armor"
+      Tile="Items/sw_plate_mail.bmp"
+      ColorString="&amp;w"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="8" />
-    <part Name="Description" Short="This suit of armor is made of many large plates of forged bronze over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding." />
+    <part
+      Name="Description"
+      Short="This suit of armor is made of many large plates of forged bronze over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding."
+    />
     <part Name="Physics" Weight="24" />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
@@ -341,9 +417,18 @@
 
   <object Name="Raven_Iron Plate Armor" Inherits="BaseArmor">
     <part Name="Armor" AV="3" DV="-1" WornOn="Body" />
-    <part Name="Render" DisplayName="iron plate armor" Tile="Items/sw_plate_mail.bmp" ColorString="&amp;y" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="iron plate armor"
+      Tile="Items/sw_plate_mail.bmp"
+      ColorString="&amp;y"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="16" />
-    <part Name="Description" Short="This suit of armor is made of many large plates of forged iron over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding." />
+    <part
+      Name="Description"
+      Short="This suit of armor is made of many large plates of forged iron over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding."
+    />
     <part Name="Physics" Weight="21" />
     <part Name="Metal" />
     <tag Name="Tier" Value="1" />
@@ -365,9 +450,18 @@
 
   <object Name="Raven_Folded Carbide Plate Armor" Inherits="BaseArmor">
     <part Name="Armor" AV="6" DV="-4" WornOn="Body" />
-    <part Name="Render" DisplayName="{{B|folded carbide}} plate mail" Tile="Items/sw_plate_mail.bmp" ColorString="&amp;B" DetailColor="B" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} plate mail"
+      Tile="Items/sw_plate_mail.bmp"
+      ColorString="&amp;B"
+      DetailColor="B"
+    />
     <part Name="Commerce" Value="128" />
-    <part Name="Description" Short="This suit of armor is made of overlapping slabs of thin-blue metal, welded to a chain-mail undergarment. Streaks of shaded blue show where the plates were carbon-folded on the forge." />
+    <part
+      Name="Description"
+      Short="This suit of armor is made of overlapping slabs of thin-blue metal, welded to a chain-mail undergarment. Streaks of shaded blue show where the plates were carbon-folded on the forge."
+    />
     <part Name="Physics" Weight="24" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -418,7 +512,13 @@
 
   <object Name="Raven_Bronzeweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="1" DV="-1" WornOn="Back" />
-    <part Name="Render" DisplayName="{{w|bronzeweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;w" DetailColor="W" />
+    <part
+      Name="Render"
+      DisplayName="{{w|bronzeweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;w"
+      DetailColor="W"
+    />
     <part Name="Commerce" Value="5" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with bronze." />
     <part Name="Physics" Weight="4" />
@@ -437,7 +537,13 @@
 
   <object Name="Raven_Steelweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="2" DV="-2" WornOn="Back" />
-    <part Name="Render" DisplayName="{{Y|steelweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;y" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{Y|steelweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;y"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="20" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with steel." />
     <part Name="Physics" Weight="3" />
@@ -447,7 +553,13 @@
 
   <object Name="Raven_Carbideweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="2" DV="-1" WornOn="Back" />
-    <part Name="Render" DisplayName="{{b|carbideweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;b" DetailColor="B" />
+    <part
+      Name="Render"
+      DisplayName="{{b|carbideweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;b"
+      DetailColor="B"
+    />
     <part Name="Commerce" Value="5" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with carbide." />
     <part Name="Physics" Weight="6" />
@@ -457,7 +569,13 @@
 
   <object Name="Raven_Folded Carbideweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="2" DV="0" WornOn="Back" />
-    <part Name="Render" DisplayName="{{B|folded carbideweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;B" DetailColor="B" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbideweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;B"
+      DetailColor="B"
+    />
     <part Name="Commerce" Value="80" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with folded carbide." />
     <part Name="Physics" Weight="5" />
@@ -467,7 +585,13 @@
 
   <object Name="Raven_Fulleriteweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="3" DV="-2" WornOn="Back" />
-    <part Name="Render" DisplayName="{{K|fulleriteweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;K" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{K|fulleriteweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with fullerite." />
     <part Name="Physics" Weight="6" />
@@ -476,28 +600,55 @@
 
   <object Name="Raven_Crysteelweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="3" DV="-3" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
-    <part Name="Render" DisplayName="{{crysteel|crysteelweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;c" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{crysteel|crysteelweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;c"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Flawless Crysteelweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="3" DV="-1" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteelweave}} cloak}}" Tile="items/sw_cloak.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteelweave}} cloak}}"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="7" />
   </object>
 
-
   <object Name="Raven_Zetachromeweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="3" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
-    <part Name="Render" DisplayName="{{zetachrome|zetachromeweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;m" TileColor="&amp;C" DetailColor="m" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachromeweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;m"
+      TileColor="&amp;C"
+      DetailColor="m"
+    />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Physics" Weight="2" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
@@ -506,9 +657,18 @@
 
   <object Name="Raven_Nanoweave Cloak" Inherits="BaseCloak">
     <part Name="Armor" AV="2" DV="1" WornOn="Back" />
-    <part Name="Render" DisplayName="{{K|nanoweave}} cloak" Tile="items/sw_cloak.bmp" ColorString="&amp;K" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{K|nanoweave}} cloak"
+      Tile="items/sw_cloak.bmp"
+      ColorString="&amp;K"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="300" />
-    <part Name="Description" Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom." />
+    <part
+      Name="Description"
+      Short="The manifold fibers are colorful and have a touching texture like no other fabric. A molecular weft was pulled through shrinking warps on a fractal loom."
+    />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -592,16 +752,27 @@
     <part Name="Armor" AV="3" DV="-2" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
     <part Name="Render" DisplayName="{{crysteel|crysteel}} vambrace" ColorString="&amp;c" />
     <part Name="Commerce" Value="256" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Vambrace" Inherits="BaseArmlet">
     <part Name="Armor" AV="3" DV="-1" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} vambrace}}" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} vambrace}}"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="Commerce" Value="512" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Physics" Weight="3" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
@@ -609,9 +780,18 @@
 
   <object Name="Raven_Zetachrome Vambrace" Inherits="BaseArmlet">
     <part Name="Armor" AV="3" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} vambrace" ColorString="&amp;m" TileColor="&amp;C" DetailColor="m" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} vambrace"
+      ColorString="&amp;m"
+      TileColor="&amp;C"
+      DetailColor="m"
+    />
     <part Name="Commerce" Value="1024" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Physics" Weight="2" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
@@ -622,7 +802,13 @@
 
   <object Name="Raven_Bronze Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="1" DV="-1" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{w|bronze}} buckler" Tile="items/sw_buckler.bmp" DetailColor="y" ColorString="&amp;w" />
+    <part
+      Name="Render"
+      DisplayName="{{w|bronze}} buckler"
+      Tile="items/sw_buckler.bmp"
+      DetailColor="y"
+      ColorString="&amp;w"
+    />
     <part Name="Commerce" Value="5" />
     <part Name="Description" Short="A small bronze shield meant to be strapped to the arm, leaving the hands free." />
     <part Name="Physics" Weight="4" />
@@ -646,7 +832,13 @@
 
   <object Name="Raven_Carbide Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="2" DV="0" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{b|carbide}} buckler" Tile="items/sw_buckler.bmp" DetailColor="y" ColorString="&amp;b" />
+    <part
+      Name="Render"
+      DisplayName="{{b|carbide}} buckler"
+      Tile="items/sw_buckler.bmp"
+      DetailColor="y"
+      ColorString="&amp;b"
+    />
     <part Name="Commerce" Value="40" />
     <part Name="Description" Short="A small carbide shield meant to be strapped to the arm, leaving the hands free." />
     <part Name="Physics" Weight="5" />
@@ -656,9 +848,18 @@
 
   <object Name="Raven_Folded Carbide Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="3" DV="-2" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{B|folded carbide}} buckler" Tile="items/sw_buckler.bmp" DetailColor="y" ColorString="&amp;B" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} buckler"
+      Tile="items/sw_buckler.bmp"
+      DetailColor="y"
+      ColorString="&amp;B"
+    />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="A small folded carbide shield meant to be strapped to the arm, leaving the hands free." />
+    <part
+      Name="Description"
+      Short="A small folded carbide shield meant to be strapped to the arm, leaving the hands free."
+    />
     <part Name="Physics" Weight="4" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -666,27 +867,54 @@
 
   <object Name="Raven_Fullerite Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="3" DV="-1" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{K|fullerite}} buckler" ColorString="&amp;K" DetailColor="y" Tile="Items/sw_buckler.bmp" />
+    <part
+      Name="Render"
+      DisplayName="{{K|fullerite}} buckler"
+      ColorString="&amp;K"
+      DetailColor="y"
+      Tile="Items/sw_buckler.bmp"
+    />
     <part Name="Commerce" Value="160" />
-    <part Name="Description" Short="A small fullerite shield meant to be strapped to the arm, leaving the hands free." />
+    <part
+      Name="Description"
+      Short="A small fullerite shield meant to be strapped to the arm, leaving the hands free."
+    />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Raven_Crysteel Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="3" DV="0" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{crysteel|crysteel}} buckler" Tile="items/sw_buckler.bmp"  ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{crysteel|crysteel}} buckler"
+      Tile="items/sw_buckler.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="4" DV="-3" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} buckler}"  Tile="items/sw_buckler.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} buckler}"
+      Tile="items/sw_buckler.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Physics" Weight="3" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
@@ -694,9 +922,19 @@
 
   <object Name="Raven_Zetachrome Buckler" Inherits="BaseShield">
     <part Name="Shield" AV="4" DV="-1" WornOn="Arm" />
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} buckler" Tile="items/sw_buckler.bmp" ColorString="&amp;m" TileColor="&amp;C" DetailColor="m" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} buckler"
+      Tile="items/sw_buckler.bmp"
+      ColorString="&amp;m"
+      TileColor="&amp;C"
+      DetailColor="m"
+    />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Physics" Weight="2" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
@@ -773,9 +1011,18 @@
 
   <object Name="Raven_Zetachrome Shield" Inherits="BaseShield">
     <part Name="Shield" AV="8" DV="-1" WornOn="Hand" />
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} aegis" ColorString="&amp;m" TileColor="&amp;C" DetailColor="m" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} aegis"
+      ColorString="&amp;m"
+      TileColor="&amp;C"
+      DetailColor="m"
+    />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Physics" Weight="5" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
@@ -847,16 +1094,27 @@
     <part Name="Shield" AV="8" DV="-3" WornOn="Hand" />
     <part Name="Render" DisplayName="{{crysteel|crysteel}} greatshield" ColorString="&amp;c" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <part Name="Physics" Weight="9" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Greatshield" Inherits="BaseShield">
     <part Name="Shield" AV="9" DV="-3" WornOn="Hand" />
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} greatshield}}" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} greatshield}}"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Physics" Weight="9" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
@@ -864,9 +1122,18 @@
 
   <object Name="Raven_Zetachrome Greatshield" Inherits="BaseShield">
     <part Name="Shield" AV="10" DV="-2" WornOn="Hand" />
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} greatshield" ColorString="&amp;m" TileColor="&amp;C" DetailColor="m" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} greatshield"
+      ColorString="&amp;m"
+      TileColor="&amp;C"
+      DetailColor="m"
+    />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Physics" Weight="7" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
@@ -877,11 +1144,28 @@
 
   <object Name="Raven_Bio Scanner Mask" Inherits="Armor">
     <part Name="Armor" AV="0" DV="0" WornOn="Face" />
-    <part Name="Render" DisplayName="{{g|bio-scanner}} mask" Tile="items/sw_mask.bmp" ColorString="&amp;g" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{g|bio-scanner}} mask"
+      Tile="items/sw_mask.bmp"
+      ColorString="&amp;g"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="60" />
-    <part Name="Description" Short="A metal mask that scans all it sees and compares it to a database of biological organisms." />
+    <part
+      Name="Description"
+      Short="A metal mask that scans all it sees and compares it to a database of biological organisms."
+    />
     <part Name="Physics" Weight="5" />
-    <part Name="IntPropertyChanger" AffectedProperty="BioScannerEquipped" Amount="1" ChargeUse="1" WorksOnSelf="false" WorksOnEquipper="true" MustBeUnderstood="true" />
+    <part
+      Name="IntPropertyChanger"
+      AffectedProperty="BioScannerEquipped"
+      Amount="1"
+      ChargeUse="1"
+      WorksOnSelf="false"
+      WorksOnEquipper="true"
+      MustBeUnderstood="true"
+    />
     <part Name="BootSequence" BootTime="5" ReadoutInName="true" ReadoutInDescription="true" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" SlottedType="Solar Cell" />
     <part Name="Examiner" Alternate="UnknownVisor" Complexity="5" />
@@ -897,13 +1181,25 @@
 
   <object Name="Raven_Mutating Mask" Inherits="Armor">
     <part Name="Armor" AV="1" DV="1" WornOn="Face" />
-    <part Name="Render" DisplayName="{{c|mutating}} mask" Tile="items/sw_mask.bmp" ColorString="&amp;c" DetailColor="Y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|mutating}} mask"
+      Tile="items/sw_mask.bmp"
+      ColorString="&amp;c"
+      DetailColor="Y"
+    />
     <part Name="Commerce" Value="1000" />
-    <part Name="Description" Short="An ever mutating mask. It seems to shimmer between a thousand forms before your mortal eyes. Its eyes are as dark as a raven's feathers. Whenever any other creature looks upon your face, the visage takes the appearance of that creature." />
+    <part
+      Name="Description"
+      Short="An ever mutating mask. It seems to shimmer between a thousand forms before your mortal eyes. Its eyes are as dark as a raven's feathers. Whenever any other creature looks upon your face, the visage takes the appearance of that creature."
+    />
     <part Name="Physics" Weight="5" />
     <part Name="GasMask" Power="10" />
     <tag Name="Tier" Value="8" />
-    <part Name="AddsRep" Faction="Antelopes,Apes,Arachnids,Baboons,Baetyls,Barathrumites,Bears,Birds,Cannibals,Cats,Mamon,Consortium,Crabs,Cragmensch,Dogs,Dromad,Equines,Wardens,Fish,Flowers,Frogs,Fungi,Girsh,Glow Wights,Goatfolk,Hermits,Insects,Issachari,Mechanimists,Mollusks,Strangers,Oozes,Templar,Robots,Roots,Seekers,Snapjaws,Succulents,Swine,Tortoises,Trees,Trolls,Unshelled Reptiles,Urchins,Joppa,Kyakukya,Vines,Water,Winged Mammals,Worms" Value="100" />
+    <part
+      Name="AddsRep"
+      Faction="Antelopes,Apes,Arachnids,Baboons,Baetyls,Barathrumites,Bears,Birds,Cannibals,Cats,Mamon,Consortium,Crabs,Cragmensch,Dogs,Dromad,Equines,Wardens,Fish,Flowers,Frogs,Fungi,Girsh,Glow Wights,Goatfolk,Hermits,Insects,Issachari,Mechanimists,Mollusks,Strangers,Oozes,Templar,Robots,Roots,Seekers,Snapjaws,Succulents,Swine,Tortoises,Trees,Trolls,Unshelled Reptiles,Urchins,Joppa,Kyakukya,Vines,Water,Winged Mammals,Worms"
+      Value="100"
+    />
   </object>
-
 </objects>

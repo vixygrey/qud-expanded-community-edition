@@ -1,10 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <populations>
+  <!-- Starting Equipment -->
 
-    <!-- Starting Equipment -->
-
-<population Name="StartingGear_Force Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Force Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Disintegration Psionic Rifle" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -24,8 +23,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Fire Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Fire Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Fire Psionic Rifle" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -45,8 +44,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Ice Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Ice Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Ice Psionic Rifle" Number="1" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -65,8 +64,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Lightning Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Lightning Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Lightning Psionic Pistol" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -85,8 +84,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Light Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Light Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Light Psionic Pistol" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -106,8 +105,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Corrosive Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Corrosive Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Acid Psionic Rifle" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -126,8 +125,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Blood Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Blood Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Blood Psionic Pistol" Number="2" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -146,8 +145,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Mental Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Mental Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Perception Psionic Rifle" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -166,8 +165,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Temporal Psionic">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Temporal Psionic">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Temporal Psionic Rifle" Number="1" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -186,8 +185,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Force Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Force Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Long Sword2" Number="1" />
       <object Blueprint="Raven_Iron Greatshield" Number="1" />
@@ -205,8 +204,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Fire Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Fire Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Steel Halberd" Number="1" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -223,8 +222,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Ice Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Ice Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Steel War Hammerth" Number="1" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -241,8 +240,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Lightning Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Lightning Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Long Sword2" Number="1" />
       <object Blueprint="Iron Buckler" Number="1" />
@@ -261,9 +260,9 @@
     </group>
   </population>
 
-<population Name="StartingGear_Light Guardian">
-    <group Name="Items" Style ="pickeach">
-      <table Name="StartingGear_Common" /> 
+  <population Name="StartingGear_Light Guardian">
+    <group Name="Items" Style="pickeach">
+      <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
       <object Blueprint="Raven_Iron Boots" Number="1" />
       <object Blueprint="Raven_Iron Gauntlets" Number="1" />
@@ -283,8 +282,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Corrosive Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Corrosive Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Steel Long Swordth" Number="1" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -301,8 +300,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Blood Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Blood Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Vine-Weave Tunic" Number="1" />
       <object Blueprint="Elastyne Slippers" Number="1" />
@@ -319,8 +318,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Mental Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Mental Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Battle Axe3" Number="1" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -340,8 +339,8 @@
     </group>
   </population>
 
-<population Name="StartingGear_Temporal Guardian">
-    <group Name="Items" Style ="pickeach">
+  <population Name="StartingGear_Temporal Guardian">
+    <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Temporal Psionic Pistol" Number="2" />
       <object Blueprint="Cloth Robe" Number="1" />
@@ -361,12 +360,12 @@
   <!-- Implant Tables by Points -->
 
   <population Name="Implants_1and2Pointers" Load="Merge">
-    <group Name="Items" Load="Merge" >
+    <group Name="Items" Load="Merge">
       <object Blueprint="Raven_DermalPlatingSteel" Number="1" Weight="1" />
       <object Blueprint="Raven_OmniPass" Number="1" Weight="1" />
       <object Blueprint="Raven_SteelHandBones" Number="1" Weight="1" />
     </group>
-  </population> 
+  </population>
 
   <population Name="Implants_3Pointers" Load="Merge">
     <group Name="Items" Load="Merge">
@@ -383,7 +382,7 @@
     </group>
   </population>
 
-<!-- Melee Weapon Tables, Common is one-handed while Rare is two-handed. Group 1 is the exception, 1C is both Bronze and Iron both one- and two-handed, and 1R is only Iron but both one- and two-handed.
+  <!-- Melee Weapon Tables, Common is one-handed while Rare is two-handed. Group 1 is the exception, 1C is both Bronze and Iron both one- and two-handed, and 1R is only Iron but both one- and two-handed.
 
         1 - Bronze/Iron
         2 - Steel
@@ -432,14 +431,14 @@
       <object Weight="20" Number="1" Blueprint="Raven_Iron Maceth" />
     </group>
   </population>
-  
+
   <population Name="Melee Weapons 2C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Steel Rapier" />
     </group>
   </population>
-  
-    <population Name="Melee Weapons 2R" Load="Merge">
+
+  <population Name="Melee Weapons 2R" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Steel Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Steel Katana" />
@@ -549,7 +548,7 @@
     </group>
   </population>
 
-<!-- Armor tables -->
+  <!-- Armor tables -->
 
   <population Name="Armor 1C" Load="Merge">
     <group Name="Items" Load="Merge">
@@ -731,7 +730,8 @@
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Buckler" />
       <object Weight="20" Number="1" Blueprint="Flawless Crysteel Shield" />
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greatshield" />
-      <removetable Name="Armor 6C" /> <!-- From Arendeth: If you want to remove a table from an entry this is how it is currently done since the edit fixed the error -->
+      <removetable Name="Armor 6C" />
+      <!-- From Arendeth: If you want to remove a table from an entry this is how it is currently done since the edit fixed the error -->
     </group>
   </population>
 
@@ -769,7 +769,7 @@
     </group>
   </population>
 
-<!-- Ranged Weapon Tables -->
+  <!-- Ranged Weapon Tables -->
 
   <population Name="Missile 2" Load="Merge">
     <group Name="Items" Load="Merge">
@@ -810,7 +810,7 @@
     </group>
   </population>
 
-<!-- Ammo/Cell Tables, simply merging in new cell types. -->
+  <!-- Ammo/Cell Tables, simply merging in new cell types. -->
 
   <population Name="Ammo 4" Load="Merge">
     <group Name="Items" Load="Merge">
@@ -845,18 +845,20 @@
       <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
       <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
-      <table Weight="1" Number="1" Name="Raven_Dark Matter Cell Chance" />  <!-- Adding a chance onto the rare table to roll -->
+      <table Weight="1" Number="1" Name="Raven_Dark Matter Cell Chance" />
+      <!-- Adding a chance onto the rare table to roll -->
     </group>
   </population>
 
-  <population Name="Raven_Dark Matter Cell Chance"> <!-- If you get the roll on the table, you have a 50/50 shot of actually getting a Dark Matter Cell vs. just rerolling on the table. -->
+  <population Name="Raven_Dark Matter Cell Chance">
+    <!-- If you get the roll on the table, you have a 50/50 shot of actually getting a Dark Matter Cell vs. just rerolling on the table. -->
     <group Name="Items" Style="pickone">
       <table Weight="1" Number="1" Name="Ammo 8" />
       <object Weight="1" Number="1" Blueprint="Raven_Dark Matter Cell" />
     </group>
   </population>
 
-<!-- Artifact Tables -->
+  <!-- Artifact Tables -->
 
   <population Name="Artifact 3" Load="Merge">
     <group Name="Items" Load="Merge">
@@ -929,7 +931,7 @@
     </group>
   </population>
 
-<!-- Chip Tables -->
+  <!-- Chip Tables -->
 
   <population Name="Raven_Chips Tier 1">
     <group Name="Items" Style="pickone">
@@ -1089,5 +1091,4 @@
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Spirit Chipset" />
     </group>
   </population>
-
 </populations>
