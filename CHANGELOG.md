@@ -80,6 +80,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Internal — tooling
 
+- **(internal)** `.gitignore` now covers `.claude/worktrees/`. Claude Code agent worktrees are created inside the repository and each is a complete second copy of the working tree, so leaving them untracked meant one `git add -A` would stage the whole duplicate. Worse than ordinary untracked noise because it is intermittent: the worktree is removed when the agent finishes, so it exists only while someone is mid-task. Scoped to `worktrees/` rather than all of `.claude/`, so any agent or skill configuration this project checks in later stays visible. Same reasoning as #63 — a repo's `.gitignore` has to stand on its own.
+  ([#98](https://github.com/vixygrey/qud-expanded-community-edition/issues/98))
+
 - **All mod files normalised to LF line endings**, enforced by `.gitattributes`. Upstream was
   CRLF throughout. Diff against the pre-normalisation baseline with
   `git diff --ignore-cr-at-eol upstream-2.2`, and `git blame` skips the conversion via
