@@ -22,6 +22,10 @@ __pycache__/
 .venv/
 venv/
 
+# Node: the repo's XML formatter (prettier + @prettier/plugin-xml) is dev tooling only.
+# It lives at the repo root, never in mod/, so it cannot ship to subscribers.
+node_modules/
+
 # Never commit secrets. Nothing here reads a .env today; this is insurance, not a description.
 .env
 

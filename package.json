@@ -1,0 +1,15 @@
+{
+  "name": "qud-expanded-community-edition-tooling",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Dev tooling only. The mod itself is mod/, which Qud loads directly and which has no build step (CLAUDE.md charter rule 4). Nothing here ships to subscribers.",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "format:xml": "prettier --write \"mod/**/*.xml\" \"mod/**/*.rpm\"",
+    "check:xml": "prettier --check \"mod/**/*.xml\" \"mod/**/*.rpm\""
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "3.4.2",
+    "prettier": "3.9.6"
+  }
+}
