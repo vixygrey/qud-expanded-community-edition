@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <skills>
-  <skill Name="Axe">
+  <skill Name="Axe" Load="Merge">
     <power
       Name="Cleave"
       Attribute="Strength|Agility"
@@ -51,12 +51,12 @@
     />
   </skill>
 
-  <skill Name="Cooking and Gathering">
+  <skill Name="Cooking and Gathering" Load="Merge">
     <power Name="Butchery" Cost="100" Tile="Abilities/abil_butcher_toggle_off.bmp" Foreground="y" Detail="r" />
     <power Name="Spicer" Cost="100" Tile="Abilities/sw_skill_spicer.png" Foreground="y" Detail="r" />
   </skill>
 
-  <skill Name="Cudgel">
+  <skill Name="Cudgel" Load="Merge">
     <power
       Name="Bludgeon"
       Attribute="Strength|Agility"
@@ -107,7 +107,7 @@
     />
   </skill>
 
-  <skill Name="Long Blade">
+  <skill Name="Long Blade" Load="Merge">
     <power
       Name="Dueling Stance"
       Attribute="Intelligence"
@@ -126,7 +126,7 @@
     />
   </skill>
 
-  <skill Name="Multiweapon Fighting">
+  <skill Name="Multiweapon Fighting" Load="Merge">
     <power
       Name="Multiweapon Expertise"
       Minimum="21|21"
@@ -143,7 +143,7 @@
     />
   </skill>
 
-  <skill Name="Tinkering">
+  <skill Name="Tinkering" Load="Merge">
     <power Name="Disassemble" Cost="0" Tile="Abilities/sw_skill_disassemble.png" Foreground="y" Detail="c" />
     <power
       Name="Reverse Engineer"
