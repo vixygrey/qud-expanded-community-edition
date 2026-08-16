@@ -93,6 +93,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **CI on every pull request** — validation, spelling, secret scanning, conventional PR titles,
   and a changelog check.
   ([#19](https://github.com/vixygrey/qud-expanded-community-edition/issues/19))
+- **Vanilla drift checker** (`tools/check_vanilla_drift.py`) — a maintainer tool, run after each
+  Qud update, that verifies every `Load="Merge"` still has a vanilla target and that the copied
+  anatomies still match vanilla's `Humanoid`. Both failure modes are otherwise completely silent.
 - **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
   ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
 - Repository placed under version control with the pristine upstream 2.2 import tagged
