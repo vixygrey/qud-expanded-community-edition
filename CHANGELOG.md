@@ -23,6 +23,14 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Changed
 
+- **Workshop metadata now describes this fork.** `WorkshopId` is cleared so the uploader creates
+  a **new** item — it previously still pointed at Mura's original, which would have published
+  over their page. The description was Mura's pre-handoff notice asking that the mod *not* be
+  forked; it is replaced with one that credits everyone in `docs/PERMISSION.md` §4, names
+  **Noble Lark** explicitly for the subtype sprites as Mura asked, links the original mod, and
+  states plainly that a new character is required.
+  ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
+
 - **The chip slot is now `Chip Interface`** (was `Chipset Interface`). The slot holds 108 chips
   against 36 chipsets, so it was named after the minority item; a chipset is a set of chips, so
   the new name is accurate for the whole catalogue. `Psionic Interface` — the name Mura's
