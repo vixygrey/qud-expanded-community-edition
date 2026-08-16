@@ -125,21 +125,4 @@
             {{y;Set this before creating a character.}} Bodies are built once, when a creature is generated, so this cannot change humanoids that already exist in a save.
         </helptext>
   </option>
-
-  <option
-    ID="OptionQudExpandedCEMultiweaponPistols"
-    DisplayText="{{C|Qud Expanded}}: Two-Gun Stance in Multiweapon Fighting"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded akimbo multiweapon pistol dual wield skill"
-  >
-    <helptext>
-            Adds {{W|Two-Gun Stance}} to the Multiweapon Fighting tree, letting a dual-wielder fire both pistols at once without buying into the Pistol tree.
-
-            It is the same ability as {{W|Akimbo}}, which the Pistol tree already grants, and it is the only ranged power in a tree that is otherwise entirely melee - every other Multiweapon power raises your melee offhand hit chance. Buying it in both trees gains you nothing.
-
-            Turn this off to leave Multiweapon Fighting exactly as vanilla has it. Akimbo in the Pistol tree is untouched either way.
-        </helptext>
-  </option>
 </options>

@@ -2,7 +2,6 @@
 using XRL;
 using XRL.UI;
 using XRL.World.Anatomy;
-using XRL.World.Skills;
 
 namespace QudExpandedCE
 {
@@ -29,7 +28,6 @@ namespace QudExpandedCE
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
-        public const string MultiweaponPistolsID = "OptionQudExpandedCEMultiweaponPistols";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
@@ -65,29 +63,6 @@ namespace QudExpandedCE
         /// </summary>
         private static readonly Dictionary<string, List<AnatomyPart>> DetachedChipSlots =
             new Dictionary<string, List<AnatomyPart>>();
-
-        /// <summary>
-        /// The mod's one addition to the Multiweapon Fighting tree, and the skill it lives in.
-        ///
-        /// It has its own class, Raven_TwoGunStance, rather than reusing Pistol_Akimbo. Sharing
-        /// the class displaced vanilla's entry in SkillFactory.PowersByClass, which holds one
-        /// PowerEntry per class - see Raven_TwoGunStance for what that broke.
-        /// </summary>
-        private const string MultiweaponSkill = "Multiweapon Fighting";
-        private const string TwoGunStance = "Two-Gun Stance";
-
-        /// <summary>The power while it is removed, so it can be put back verbatim.</summary>
-        private static PowerEntry DetachedTwoGunStance;
-
-        /// <summary>The key it was filed under, so it goes back exactly where it came from.</summary>
-        private static string DetachedKey;
-
-        private const string TwoGunStanceClass = "Raven_TwoGunStance";
-
-        /// <summary>Kept in sync with the Description in mod/Skills.xml.</summary>
-        private const string TwoGunStanceDescriptionStart =
-            "Whenever you make a ranged attack while wielding multiple pistols";
-
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
 
@@ -146,7 +121,6 @@ namespace QudExpandedCE
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
-            ApplyMultiweaponPistols();
         }
 
         private static bool Enabled(string id, string fallback)
@@ -159,87 +133,6 @@ namespace QudExpandedCE
 
         /// <summary>True when the player asked to leave other humanoids their chip slots.</summary>
         public static bool NPCChipSlots => Enabled(ChipSlotsNPCsID, "Yes");
-
-        /// <summary>
-        /// Add or remove Two-Gun Stance from Multiweapon Fighting to match the option.
-        ///
-        /// Skill trees are read every time the player opens the skills screen rather than baked
-        /// into a character, so unlike the chip slots this takes effect immediately and needs no
-        /// restart. Powers the player has already bought are parts on them and are not touched.
-        ///
-        /// SkillEntry exposes no name on a PowerEntry - IBaseSkillEntry has Tile, Foreground,
-        /// Detail and Description and nothing else - so the key in SkillEntry.Powers is the only
-        /// identifier available, and both that dictionary and PowerList have to be kept in step.
-        /// </summary>
-        private static void ApplyMultiweaponPistols()
-        {
-            // GetSkillIfExists rather than GetSkill: options are read before skills are loaded on
-            // the first pass, and the throwing variant would take the whole handler down with it.
-            SkillEntry skill = SkillFactory.Factory?.GetSkillIfExists(MultiweaponSkill);
-            if (skill?.Powers == null || skill.PowerList == null)
-            {
-                return;
-            }
-
-            bool wanted = Enabled(MultiweaponPistolsID, "Yes");
-            string key = FindKey(skill);
-
-            if (wanted)
-            {
-                if (key == null && DetachedTwoGunStance != null)
-                {
-                    skill.Powers[DetachedKey ?? TwoGunStance] = DetachedTwoGunStance;
-                    if (!skill.PowerList.Contains(DetachedTwoGunStance))
-                    {
-                        skill.PowerList.Add(DetachedTwoGunStance);
-                    }
-
-                    DetachedTwoGunStance = null;
-                    DetachedKey = null;
-                }
-
-                return;
-            }
-
-            if (key != null)
-            {
-                DetachedTwoGunStance = skill.Powers[key];
-                DetachedKey = key;
-                skill.PowerList.Remove(DetachedTwoGunStance);
-                skill.Powers.Remove(key);
-            }
-        }
-
-        /// <summary>
-        /// Locate this mod's power in a skill, without assuming what SkillEntry.Powers is keyed by.
-        ///
-        /// The dictionary could reasonably be keyed by display name or by implementation class, and
-        /// PowerEntry exposes neither - IBaseSkillEntry carries only Tile, Foreground, Detail and
-        /// Description. Guessing wrong would not throw: the lookup would simply miss, the removal
-        /// would never run, and the option would sit in the menu doing nothing at all.
-        ///
-        /// So match on the key OR on Description, which this mod sets in mod/Skills.xml and is
-        /// therefore the one identifier it can be certain of.
-        /// </summary>
-        private static string FindKey(SkillEntry skill)
-        {
-            foreach (KeyValuePair<string, PowerEntry> pair in skill.Powers)
-            {
-                if (pair.Key == TwoGunStance || pair.Key == TwoGunStanceClass)
-                {
-                    return pair.Key;
-                }
-
-                if (pair.Value?.Description != null
-                    && pair.Value.Description.StartsWith(TwoGunStanceDescriptionStart))
-                {
-                    return pair.Key;
-                }
-            }
-
-            return null;
-        }
-
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);

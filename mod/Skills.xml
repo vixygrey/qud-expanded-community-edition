@@ -128,18 +128,6 @@
 
   <skill Name="Multiweapon Fighting">
     <power
-      Name="Two-Gun Stance"
-      Cost="150"
-      Attribute="Agility"
-      Minimum="17"
-      Class="Raven_TwoGunStance"
-      Snippet="akimbo"
-      Description="Whenever you make a ranged attack while wielding multiple pistols, you fire a shot with each of them. This is the same ability as Akimbo in the Pistol tree; buying both gains you nothing."
-      Tile="Abilities/abil_akimbo_toggle_off.bmp"
-      Foreground="y"
-      Detail="c"
-    />
-    <power
       Name="Multiweapon Expertise"
       Minimum="21|21"
       Tile="Abilities/sw_skill_multiweapon_expertise.png"

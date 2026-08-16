@@ -89,11 +89,6 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
-- **Multiweapon Fighting's borrowed pistol power is renamed and can be switched off.** It was called *Akimbo* and shared its implementation with the Pistol tree's power of the same name, so a character could buy it twice — and the second purchase gained them nothing, because the underlying ability is a yes/no permission to fire every wielded missile weapon rather than anything that stacks. It is now **Two-Gun Stance** with its own implementation class, and its description says plainly that the Pistol tree's Akimbo is the same ability.
-
-  Sharing that class was doing real damage, not just wasting skill points. Qud maps each power class to exactly one power, and vanilla hands out powers *by class* — the **Gunslinger** calling is literally `<skill Name="Pistol_Akimbo" />`. Because this mod declared a second power against the same class and loads after vanilla, it took that slot: Gunslinger began listing this mod's power instead of Akimbo, and vanilla's Akimbo started reporting Multiweapon Fighting as the skill it belongs to. The collision was invisible while both powers shared the name "Akimbo"; renaming one is what exposed it. Buying it alongside the Pistol tree's Akimbo no longer registers the ability twice — that showed as a duplicate entry on the bar and a skills screen that reopened itself on Escape, until you saved and reloaded. A new option removes it from the tree entirely for anyone who would rather Multiweapon Fighting stayed as vanilla has it; it is on by default, and Akimbo in the Pistol tree is untouched either way. Unlike the chip-slot options this one takes effect immediately, because skill trees are read each time the skills screen opens rather than baked into a character.
-  ([#11](https://github.com/vixygrey/qud-expanded-community-edition/issues/11))
-
 - **(internal)** `CLAUDE.md` *Lessons learned* records three verification traps from this release's tooling work: that a green gate is only evidence about the property it inspects (three checks passed on XML whose player-facing text had been silently reflowed), that `git checkout <file>` restores from the index and can discard unstaged work without saying so, and that attribute-driven extension points like `[PlayerMutator]` fail by doing nothing at all rather than erroring.
   ([#83](https://github.com/vixygrey/qud-expanded-community-edition/issues/83))
 
@@ -113,6 +108,11 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   renders fine and shows nothing useful in a diff. Kept because the general form covers anything
   that appends, wraps or composites, not just images.
   ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
+
+### Removed
+
+- **Multiweapon Fighting no longer offers Akimbo.** Akimbo is unchanged and still available in the Pistol tree, and Multiweapon Fighting keeps this mod's reduced stat requirements for Expertise and Mastery. The two powers shared one implementation, and Qud maps each implementation to exactly one power — so this mod's copy was served wherever the game asked for vanilla's, most visibly on the **Gunslinger** calling, which grants Akimbo by implementation name and therefore displayed the wrong power. It went unnoticed for years because both powers were named "Akimbo" and looked identical wherever they appeared; it surfaced only when this fork renamed one of them while working on something else. Giving the mod's version its own implementation fixed the Gunslinger, but a character who then bought both got the ability listed twice and a skills screen that would not close, so the power was removed rather than shipped with a known way to spoil a run.
+  ([#11](https://github.com/vixygrey/qud-expanded-community-edition/issues/11))
 
 ### Fixed
 
