@@ -818,8 +818,6 @@ dark matter cell is 10× the advanced chem cell, 5× a nuclear cell, 2.5× an an
 |---|---|---|---|
 | **Advanced hoversled** | 6 | `Backpack` **-100 carry weight**, worn "Floating Nearby", tinkerable (`00345`) | 400 |
 | **Cybernetics credit pass** | — | `CyberneticsCreditWedge` worth **10 credits** | 1550 |
-| **Programmable recoiler** | — | Reprogrammable, **5,000** charge per use | — |
-| **Reprogrammable recoiler** | — | Reprogrammable, **2,500** charge per use | — |
 | **Large sphere of negative weight** | 8 | `Suspensor` at **200% force**, **0 charge use**, complexity 7, tinkerable (`00008`), trinket, `DisplayFullNameAsReward` | 100 |
 
 #### Merged vanilla equipment
@@ -827,6 +825,8 @@ dark matter cell is 10× the advanced chem cell, 5× a nuclear cell, 2.5× an an
 | Item | Change |
 |---|---|
 | `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable**, 10,000 charge per use — every vanilla recoiler inherits this |
+| `Programmable Recoiler` | **Vanilla object.** Charge use 10,000 → **5,000**, and `Reprogrammable` false → **true**, so the cheaper recoiler can now be re-imprinted. Custom description. *(Listed as a new object in earlier drafts of this file — it is not; see #29.)* |
+| `Reprogrammable Recoiler` | **Vanilla object.** Charge use 30,000 → **2,500**. Custom description. |
 | All 7 location recoilers (Joppa, Grit Gate, Six Day Stilt, Kyakukya, Golgotha, Bethesda Susa, Ezra) | Given `NameElide` values so their names render correctly under the new programmable system |
 | Force bracelet | Charge use → 250 |
 | Bottle | Weight 5, value 10, **1000 HP**, 100 in all four resistances, `Inorganic`, `ThermalInsulation` 1000, non-solid, immune to freezing/burning |

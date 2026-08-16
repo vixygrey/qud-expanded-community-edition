@@ -63,6 +63,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   moves from 10% to 9.1% as a consequence of adding to the pool rather than carving space out of
   it; commons and rares return to vanilla's ratio.
   ([#3](https://github.com/vixygrey/qud-expanded-community-edition/issues/3))
+- **The programmable and reprogrammable recoilers no longer replace their vanilla definitions.**
+  The mod redeclared both, which discarded everything vanilla defines on them: their value
+  (80 and 210), their tinker recipes, their `Tier` / `TechTier` / `Role` tags, their examiner
+  complexity, their display names and their imprint sound. Both now merge, so they keep all of
+  that and carry only the mod's intended changes — reduced charge use, and the cheaper recoiler
+  becoming re-imprintable.
+  ([#29](https://github.com/vixygrey/qud-expanded-community-edition/issues/29))
 - **`Skills.xml` now parses.** Line 10 carried a duplicate `Tile` attribute on the Berserk!
   power — the only file in the mod that failed a strict XML parse. Confirmed in-game that Qud's
   loader tolerated it, so the six retuned skill trees have been working all along and no player
