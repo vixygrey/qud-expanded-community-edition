@@ -10,17 +10,17 @@ rather than the defect bar.
 
 ---
 
-## 0. The decision that comes first
+## 0. The decision that comes first — settled
 
-Charter rule 6 currently reads:
+Charter rule 6 originally read:
 
 > Opinionated changes ship **off by default**; content ships on.
 
-Applied literally to the features below, someone installs *Qud Expanded* and gets a mod that
-mostly does not do anything. The skill retunes are off, the mutation points are vanilla, the
-starting reputations are vanilla. That is not configurability, it is a mod that fails to arrive.
+Applied literally to the features below, someone would install *Qud Expanded* and get a mod that
+mostly does not do anything. The skill retunes off, the mutation points vanilla, the
+starting reputations vanilla. That is not configurability, it is a mod that fails to arrive.
 
-**Proposed amendment:**
+**Settled (#45), and `CLAUDE.md` rule 6 now reads:**
 
 > **Defaults reproduce the mod's established behaviour. Options let players opt out.**
 > "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
@@ -30,8 +30,12 @@ The reasoning is that this is a **fork continuing an existing mod**, not a new o
 subscribing to *Qud Expanded Community Edition* is asking for Caves of Qud Expanded. Shipping it
 inert would be a surprising reading of "players choose".
 
-This needs settling before anything is built, because it decides every `Default=` value below.
-**Nothing else in this document is blocked on it**, but every option's default is.
+The exception is a change that **grants power with no content attached** — those stay off even
+though they predate the fork. The practical test: does turning the option on give the player
+something to **use**, or merely something to **have**? Starting reputation is the current
+example, and it is the latter.
+
+Every `Default=` value below follows from this.
 
 ---
 
@@ -224,7 +228,7 @@ both reversible, both safe.
 
 Thirty toggles is its own kind of unusable. Target **six to eight**:
 
-| Option | Type | Default (pending §0) |
+| Option | Type | Default |
 |---|---|---|
 | Mutation points | Slider | 16 |
 | Skill tree changes | Checkbox | on |

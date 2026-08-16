@@ -96,8 +96,22 @@ mod-approval prompt for every subscriber. That is a trust relationship; treat it
 
 ### 6. Configurable — players choose what they take
 
-Nobody should have to swallow the whole mod to get one part of it. Opinionated changes ship
-**off by default**; content ships on.
+Nobody should have to swallow the whole mod to get one part of it.
+
+> **Defaults reproduce the mod's established behaviour. Options let players opt out.**
+> "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
+> already is.
+
+This fork **continues** an existing mod rather than starting one. Someone subscribing to Qud
+Expanded Community Edition is asking for Caves of Qud Expanded, so shipping it inert would be a
+surprising reading of "players choose" — a mod that fails to arrive is not a configurable mod.
+
+The exception is a change that **grants power with no content attached**. Those stay off by
+default even though they predate the fork; the starting reputation bonuses are the current
+example. The test is whether turning the option on gives the player something to *use* or merely
+something to *have*.
+
+Settled in #45. Every `Default=` value follows from this.
 
 Qud ships a real mod-options menu and it is the primary mechanism. Two halves, verified against
 the mods installed on this machine (`~/Library/Application Support/Steam/steamapps/workshop/
