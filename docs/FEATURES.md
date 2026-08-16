@@ -1037,7 +1037,7 @@ Ordered roughly by impact.
 | 4 | 🟠 Med | **Mutant HP gain is `2-3`** in XML but documented as `1-5` in both the changelog and the WIP notes | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
 | 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/Other Equipment.xml` lines 95, 196 |
-| 7 | 🟡 Low | **Akimbo reuses `Class="Pistol_Akimbo"`** — a character can buy the same implementation twice (Pistol tree + Multiweapon tree) | `Skills.xml` |
+| 7 | ✅ Fixed | **Akimbo reused `Class="Pistol_Akimbo"`** across the Pistol and Multiweapon trees. `SkillFactory.PowersByClass` holds one entry per class and vanilla grants powers by class — the Gunslinger calling is `<skill Name="Pistol_Akimbo" />` — so the mod's entry was served in place of vanilla's. Removed from Multiweapon Fighting in #11 after a distinct class proved to duplicate the ability and lock the skills screen. | `Skills.xml` |
 | 8 | ✅ Fixed | **`Cudgel6th` had `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/Melee Weapons.xml` |
 | 9 | ✅ Fixed | **`Raven_Carbideweave Cloak` was valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
 | 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/Other Equipment.xml` |

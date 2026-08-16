@@ -128,18 +128,6 @@
 
   <skill Name="Multiweapon Fighting">
     <power
-      Name="Akimbo"
-      Cost="150"
-      Attribute="Agility"
-      Minimum="17"
-      Class="Pistol_Akimbo"
-      Snippet="akimbo"
-      Description="Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them."
-      Tile="Abilities/abil_akimbo_toggle_off.bmp"
-      Foreground="y"
-      Detail="c"
-    />
-    <power
       Name="Multiweapon Expertise"
       Minimum="21|21"
       Tile="Abilities/sw_skill_multiweapon_expertise.png"

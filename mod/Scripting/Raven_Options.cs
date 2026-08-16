@@ -63,7 +63,6 @@ namespace QudExpandedCE
         /// </summary>
         private static readonly Dictionary<string, List<AnatomyPart>> DetachedChipSlots =
             new Dictionary<string, List<AnatomyPart>>();
-
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
 
@@ -134,7 +133,6 @@ namespace QudExpandedCE
 
         /// <summary>True when the player asked to leave other humanoids their chip slots.</summary>
         public static bool NPCChipSlots => Enabled(ChipSlotsNPCsID, "Yes");
-
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
