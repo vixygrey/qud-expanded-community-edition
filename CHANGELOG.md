@@ -67,6 +67,8 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **(internal)** `docs/FEATURES.md` — complete feature reference reconstructed from source: 350
   new blueprints, 209 vanilla merges, and a severity-ranked defect checklist.
 - **(internal)** `docs/PERMISSION.md` — fork permission, provenance, and credit obligations.
+- **(internal)** `README.md` — what the mod is, the credit list, install instructions, and the
+  contributor workflow.
 - **(internal)** This changelog.
 
 ### Fixed
