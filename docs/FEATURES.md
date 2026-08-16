@@ -923,9 +923,11 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
 - **Armor 1C–8C / 1R–8R** — most new armor added, but **ten pieces appear in no table**:
   the four nanoweave pieces, the four flexi pieces, the bio-scanner mask, and the mutating mask.
   Only the bio-scanner mask is tinkerable, so **nine armor pieces are unobtainable in play**.
-  Notably, **Armor 7C/7R/8C/8R each carry a
-  `<removetable>`** stripping the tier-below reference (7C removes "Armor 6C", 8C removes
-  "Armor 7C", etc.), so top-tier armor pools no longer cascade down into lower-tier gear.
+  Armor 7C/7R/8C/8R each used to carry a `<removetable>` stripping the tier-below reference,
+  severing vanilla's tier cascade — `Armor 8C` weights that cascade **900** against 85 of actual
+  zetachrome, so a tier-8 roll is meant to be a rare jackpot rather than a guarantee. Removed in
+  #4; the mod's own entries carry the weight instead, giving 25% top-tier at tier 8 against
+  vanilla's 8.6%.
 - **Missile 2** — all 9 psionic pistols, weight 1 each.
 - **Missile 3** — all 9 psionic rifles, weight 1 each.
 - **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (5), modified handcannon (5), drum shotgun (5).
