@@ -67,6 +67,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** `.gitignore` now covers Python build artefacts, Windows desktop files and `.env`.
+  Running the validators writes `tools/__pycache__/`, which was ignored only by the maintainer's
+  *global* gitignore — so it was invisible to them and untracked noise for every contributor, who
+  could commit bytecode by accident. A repo's `.gitignore` has to stand on its own, because a
+  global one is per-developer machine config and is not part of a clone.
+  ([#63](https://github.com/vixygrey/qud-expanded-community-edition/issues/63))
+
 - **(internal)** `CLAUDE.md` *Lessons learned* records why a generator must never read the file it
   writes. The preview-image generator was first written to read and write `mod/preview.png`, which
   would have composited the fork's marks on twice from the second run onward — a failure that

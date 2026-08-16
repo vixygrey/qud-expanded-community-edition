@@ -1,11 +1,29 @@
+# This file has to stand on its own. A global gitignore (core.excludesfile) is per-developer
+# machine configuration and is not part of a clone, so anything covered only there is invisible
+# to whoever set it up and untracked noise for everyone else. See #63.
+
 # macOS
 .DS_Store
 ._*
+
+# Windows — the counterpart to the above, and Qud contributors skew Windows
+Thumbs.db
+desktop.ini
 
 # Editor / tooling scratch
 *.swp
 .idea/
 .vscode/
+
+# Python: tools/ holds the validators, so running them writes tools/__pycache__/.
+# README.md tells contributors to run them, so this is generated on a normal first clone.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Never commit secrets. Nothing here reads a .env today; this is insurance, not a description.
+.env
 
 # Qud writes these next to a loaded mod
 *.log
