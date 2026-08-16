@@ -204,16 +204,37 @@ It is the best first target for four reasons:
 **Definition of done:** an `Options.xml` slider, an `[OptionFlag]` field, and a Mutated Human
 starting with the number the slider says. Nothing else.
 
-**Status: written, untested.** `mod/Options.xml` and `mod/Scripting/Raven_Options.cs` exist. The
-surface they use is verified from metadata, but nothing here has been compiled or run — no C#
-compiler and no game in this environment. The single open question the spike exists to answer:
+**Status: ✅ done and verified in game.** Setting the slider to 12 produces a Mutated Human with
+12 mutation points; leaving it alone produces 16.
 
-> Does `[OptionFlagUpdate]` fire *after* `GenotypeFactory.Init()`?
+**The open question is answered: `[OptionFlagUpdate]` fires *after* `GenotypeFactory.Init()`.** The
+write lands on a loaded record and survives, so no `BOOTEVENT_*` hook is needed. The whole working
+pattern is four lines:
 
-If it fires earlier, the write lands on a record that XML loading then overwrites, and the option
-will appear to do nothing. `TryGetGenotypeEntry` means that failure is silent rather than a crash.
-The fix, if needed, is to apply from a `QudGameBootModule.BOOTEVENT_*` hook instead — the
-lifecycle in §2.4 has several candidates, `BOOTEVENT_GAMESTARTING` being the most conservative.
+```csharp
+[HasOptionFlagUpdate]
+public static class Raven_Options
+{
+    [OptionFlagUpdate]
+    public static void OnOptionFlagUpdate()
+    {
+        string raw = Options.GetOption(MutationPointsID, "16");   // always a string
+        if (int.TryParse(raw, out int points)
+            && GenotypeFactory.TryGetGenotypeEntry("Mutated Human", out GenotypeEntry entry))
+        {
+            entry.MutationPoints = points;
+        }
+    }
+}
+```
+
+**What this unlocks.** Starting reputation, the Psionic Adept genotype toggle and the skill tree
+changes all read and write the same kind of surface — public fields on `GenotypeEntry`, and the
+static collections on `GenotypeFactory` / `SkillFactory`. They are no longer speculative; they are
+the same mechanism applied to a different field.
+
+**The cost was one Qud bug**, not a design problem: a slider with `Min` above 1 crashes the options
+menu (§2.1, issue #51). Four hypotheses were wrong before bisection found it.
 
 ---
 
@@ -353,16 +374,25 @@ Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 
 ## 9. Open questions
 
-- Can a genotype be removed from the chargen list at runtime? No worked example exists.
-- Can `MutationPoints` be overridden from an embark builder module, or does it need to be read
-  from the genotype record before chargen builds its UI?
-- Are skill tree definitions mutable after load at all?
-- Does the Joppa map patch have any hook at zone generation, or is splitting the only option?
-- Does `GetRequiredMod` matter here — is there value in the chargen UI knowing this mod is
-  required for a build code?
+**Answered by the spike:**
 
-Every one of these is answerable with a small spike against a running game. None should be
-answered by assumption.
+- ~~Can `MutationPoints` be overridden?~~ **Yes** — write `GenotypeEntry.MutationPoints` from an
+  `[OptionFlagUpdate]` method. No embark builder module needed.
+- ~~Does `[OptionFlagUpdate]` fire after `GenotypeFactory.Init()`?~~ **Yes.** The write survives.
+
+**Still open:**
+
+- Can a genotype be *removed* from the chargen list at runtime? The collections are public and
+  mutable, but removal is a different operation from mutating a field, and the chargen UI may
+  cache the list. Next spike.
+- Are skill tree definitions mutable after load? `SkillFactory.PowersByClass` is public, and
+  `PowerEntry.Minimum` is a public string, so the surface is there — but `PowerEntry` also holds a
+  private `_requirements` list that is probably parsed *from* `Minimum`, in which case writing
+  `Minimum` alone may not take effect.
+- Does the Joppa map patch have any hook at zone generation? Still the one feature with no
+  identified mechanism.
+- Does `GetRequiredMod` matter — is there value in the chargen UI knowing this mod is required for
+  a build code?
 
 ---
 
