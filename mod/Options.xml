@@ -56,6 +56,25 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCESkillPointGain"
+    DisplayText="{{C|Qud Expanded}}: extra skill points per level"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded skill points level gain mutant true kin"
+  >
+    <helptext>
+            Grants the extra skill points per level this mod has always given: {{G|65}} for a Mutated Human against vanilla's 50, and {{G|85}} for a True Kin against vanilla's 70.
+
+            Turn this off to earn exactly vanilla's skill points.
+
+            Psionic Adepts are unaffected. Their {{G|95}} is the genotype rather than an addition to a vanilla one, so there is no vanilla number to fall back to.
+
+            Skill points are rolled at each level-up, so this takes effect from your next level. It does not take away points you have already earned.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEStartingSkills"
     DisplayText="{{C|Qud Expanded}}: extra starting skills"
     Category="Mods"

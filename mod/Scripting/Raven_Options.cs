@@ -25,6 +25,7 @@ namespace QudExpandedCE
     {
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
         public const string MutantHPGainID = "OptionQudExpandedCEMutantHPGain";
+        public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
@@ -121,6 +122,45 @@ namespace QudExpandedCE
         };
 
         /// <summary>
+        /// One value this mod changes, paired with the vanilla value it replaced.
+        ///
+        /// Every option here has to restore vanilla's number, not merely stop applying the mod's,
+        /// because the mod's XML overwrote it at load and the original is gone from memory by the
+        /// time any option is read. Keeping the pair together is what makes each toggle reversible
+        /// rather than one-way.
+        /// </summary>
+        private sealed class Tuning<T>
+        {
+            public readonly T Mod;
+            public readonly T Vanilla;
+
+            public Tuning(T mod, T vanilla)
+            {
+                Mod = mod;
+                Vanilla = vanilla;
+            }
+
+            public T For(bool on)
+            {
+                return on ? Mod : Vanilla;
+            }
+        }
+
+        /// <summary>
+        /// Skill points per level, per genotype: this mod's value against vanilla's.
+        ///
+        /// The Psionic Adept's 95 is deliberately absent, for the same reason its skills and
+        /// reputation are: it is this mod's own genotype rather than a merge onto a vanilla one,
+        /// so there is no vanilla value to restore.
+        /// </summary>
+        private static readonly Dictionary<string, Tuning<string>> SkillPointGain =
+            new Dictionary<string, Tuning<string>>
+            {
+                [Mutant] = new Tuning<string>("65", "50"),
+                [TrueKin] = new Tuning<string>("85", "70"),
+            };
+
+        /// <summary>
         /// Reputation this mod grants, per genotype.
         ///
         /// Only Mutated Human. True Kin's Templar +600 is vanilla's and must not be touched, and
@@ -139,6 +179,7 @@ namespace QudExpandedCE
         {
             ApplyMutationPoints();
             ApplyMutantHPGain();
+            ApplySkillPointGain();
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
@@ -242,6 +283,24 @@ namespace QudExpandedCE
             if (GenotypeFactory.TryGetGenotypeEntry(Mutant, out GenotypeEntry entry))
             {
                 entry.BaseHPGain = range;
+            }
+        }
+
+        /// <summary>
+        /// Set skill points per level for the two vanilla genotypes.
+        ///
+        /// Live rather than chargen-scoped, on the same footing as ApplyMutantHPGain: Leveler
+        /// reads BaseSPGain through RollSP(string) at every level-up.
+        /// </summary>
+        private static void ApplySkillPointGain()
+        {
+            bool on = Enabled(SkillPointGainID, "Yes");
+            foreach (KeyValuePair<string, Tuning<string>> pair in SkillPointGain)
+            {
+                if (GenotypeFactory.TryGetGenotypeEntry(pair.Key, out GenotypeEntry entry))
+                {
+                    entry.BaseSPGain = pair.Value.For(on);
+                }
             }
         }
 
