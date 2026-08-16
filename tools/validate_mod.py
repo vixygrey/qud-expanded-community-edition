@@ -231,7 +231,7 @@ def check_joppa_sync(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     }
 
     text = JOPPA_SYSTEM.read_text(encoding="utf-8-sig")
-    block = re.search(r"PlacedObjects\s*=\s*\{(.*?)\};", text, re.S)
+    block = re.search(r"PlacedObjects\s*=\s*\{(.*?)\};", text, re.DOTALL)
     if not block:
         f.add("joppa-sync", "Raven_JoppaBuildingSystem has no PlacedObjects array to check")
         return
