@@ -336,11 +336,12 @@ not boilerplate — it is the difference between an option that works and a bug 
 
 ## 6. What this costs against the charter
 
-**Rule 5 (safety).** The mod already ships `mod/Scripting/`, so the subscriber approval prompt is
-already paid for and this adds no new trust cost in that sense. But it moves the C# from **36
-inert one-line subclasses to real logic with state**, and rule 5 currently names that inertness as
-"the ceiling". That ceiling is being raised deliberately, and the charter should say so rather
-than have it happen by drift.
+**Rule 5 (safety).** ✅ **Settled in #46.** The mod already shipped `mod/Scripting/`, so the
+subscriber approval prompt was already paid for. What changed is that C# now holds state and
+adjusts loaded data — the rule was amended to say so explicitly, and to add the two obligations
+that come with it: a `[Serializable]` system's field layout is an identifier written into saves,
+and anything mutating loaded data must be idempotent and reversible. The hard limits — no I/O,
+network, reflection, Harmony, external assemblies — did not move.
 
 The limits themselves do not move: no file I/O, no network, no reflection into internals, no
 Harmony. Reading options and mutating already-loaded game data stays well inside them.
