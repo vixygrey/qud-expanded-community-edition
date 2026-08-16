@@ -97,6 +97,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   that appends, wraps or composites, not just images.
   ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
 
+- **(internal)** The XML formatter is configured with `xmlWhitespaceSensitivity: "preserve"`, not `"ignore"`. Under `ignore`, prettier reflowed the *text content* of `<helptext>` in `mod/Options.xml` to satisfy the print width, inserting a newline mid-sentence in a string Qud renders in the options menu. Attribute formatting is unaffected, so the chosen style is unchanged; only text nodes are now protected.
+  ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
+
 - **(internal)** Prettier with `@prettier/plugin-xml` is declared as the mod's XML formatter, pinned in `package.json` and configured in `.prettierrc.json` (2-space indent, LF, `printWidth` 120). Tooling only, at the repo root — `mod/` is still loaded directly by Qud with no build step, and `node_modules/` is gitignored, so nothing here reaches subscribers. This commit adds the tooling; the reformat itself lands separately.
   ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
 
