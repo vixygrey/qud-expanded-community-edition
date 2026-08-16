@@ -89,6 +89,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **Multiweapon Fighting's borrowed pistol power is renamed and can be switched off.** It was called *Akimbo* and shared its implementation with the Pistol tree's power of the same name, so a character could buy it twice — and the second purchase gained them nothing, because the underlying ability is a yes/no permission to fire every wielded missile weapon rather than anything that stacks. It is now **Two-Gun Stance**, and its description says plainly that the Pistol tree's Akimbo is the same ability. A new option removes it from the tree entirely for anyone who would rather Multiweapon Fighting stayed as vanilla has it; it is on by default, and Akimbo in the Pistol tree is untouched either way. Unlike the chip-slot options this one takes effect immediately, because skill trees are read each time the skills screen opens rather than baked into a character.
+  ([#11](https://github.com/vixygrey/qud-expanded-community-edition/issues/11))
+
 - **(internal)** `CLAUDE.md` *Lessons learned* records three verification traps from this release's tooling work: that a green gate is only evidence about the property it inspects (three checks passed on XML whose player-facing text had been silently reflowed), that `git checkout <file>` restores from the index and can discard unstaged work without saying so, and that attribute-driven extension points like `[PlayerMutator]` fail by doing nothing at all rather than erroring.
   ([#83](https://github.com/vixygrey/qud-expanded-community-edition/issues/83))
 

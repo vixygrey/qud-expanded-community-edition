@@ -128,13 +128,13 @@
 
   <skill Name="Multiweapon Fighting">
     <power
-      Name="Akimbo"
+      Name="Two-Gun Stance"
       Cost="150"
       Attribute="Agility"
       Minimum="17"
       Class="Pistol_Akimbo"
       Snippet="akimbo"
-      Description="Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them."
+      Description="Whenever you make a ranged attack while wielding multiple pistols, you fire a shot with each of them. This is the same ability as Akimbo in the Pistol tree; buying both gains you nothing."
       Tile="Abilities/abil_akimbo_toggle_off.bmp"
       Foreground="y"
       Detail="c"

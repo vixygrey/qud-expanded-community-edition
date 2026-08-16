@@ -2,6 +2,7 @@
 using XRL;
 using XRL.UI;
 using XRL.World.Anatomy;
+using XRL.World.Skills;
 
 namespace QudExpandedCE
 {
@@ -28,6 +29,7 @@ namespace QudExpandedCE
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
+        public const string MultiweaponPistolsID = "OptionQudExpandedCEMultiweaponPistols";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
@@ -63,6 +65,20 @@ namespace QudExpandedCE
         /// </summary>
         private static readonly Dictionary<string, List<AnatomyPart>> DetachedChipSlots =
             new Dictionary<string, List<AnatomyPart>>();
+
+        /// <summary>
+        /// The mod's one addition to the Multiweapon Fighting tree, and the skill it lives in.
+        ///
+        /// It shares Pistol_Akimbo with the Pistol tree's Akimbo deliberately. A separate class
+        /// would not help: Pistol_Akimbo answers CanFireAllMissileWeaponsEvent, a boolean gate, so
+        /// two copies would both answer "yes" and the player would own two identical permissions.
+        /// Sharing at least makes a second purchase a no-op rather than a duplicate.
+        /// </summary>
+        private const string MultiweaponSkill = "Multiweapon Fighting";
+        private const string TwoGunStance = "Two-Gun Stance";
+
+        /// <summary>The power while it is removed, so it can be put back verbatim.</summary>
+        private static PowerEntry DetachedTwoGunStance;
 
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
@@ -122,6 +138,7 @@ namespace QudExpandedCE
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
+            ApplyMultiweaponPistols();
         }
 
         private static bool Enabled(string id, string fallback)
@@ -134,6 +151,54 @@ namespace QudExpandedCE
 
         /// <summary>True when the player asked to leave other humanoids their chip slots.</summary>
         public static bool NPCChipSlots => Enabled(ChipSlotsNPCsID, "Yes");
+
+        /// <summary>
+        /// Add or remove Two-Gun Stance from Multiweapon Fighting to match the option.
+        ///
+        /// Skill trees are read every time the player opens the skills screen rather than baked
+        /// into a character, so unlike the chip slots this takes effect immediately and needs no
+        /// restart. Powers the player has already bought are parts on them and are not touched.
+        ///
+        /// SkillEntry exposes no name on a PowerEntry - IBaseSkillEntry has Tile, Foreground,
+        /// Detail and Description and nothing else - so the key in SkillEntry.Powers is the only
+        /// identifier available, and both that dictionary and PowerList have to be kept in step.
+        /// </summary>
+        private static void ApplyMultiweaponPistols()
+        {
+            // GetSkillIfExists rather than GetSkill: options are read before skills are loaded on
+            // the first pass, and the throwing variant would take the whole handler down with it.
+            SkillEntry skill = SkillFactory.Factory?.GetSkillIfExists(MultiweaponSkill);
+            if (skill?.Powers == null || skill.PowerList == null)
+            {
+                return;
+            }
+
+            bool wanted = Enabled(MultiweaponPistolsID, "Yes");
+            bool present = skill.Powers.TryGetValue(TwoGunStance, out PowerEntry entry);
+
+            if (wanted)
+            {
+                if (!present && DetachedTwoGunStance != null)
+                {
+                    skill.Powers[TwoGunStance] = DetachedTwoGunStance;
+                    if (!skill.PowerList.Contains(DetachedTwoGunStance))
+                    {
+                        skill.PowerList.Add(DetachedTwoGunStance);
+                    }
+
+                    DetachedTwoGunStance = null;
+                }
+
+                return;
+            }
+
+            if (present)
+            {
+                DetachedTwoGunStance = entry;
+                skill.Powers.Remove(TwoGunStance);
+                skill.PowerList.Remove(entry);
+            }
+        }
 
         private static void ApplyChipSlots()
         {
