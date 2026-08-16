@@ -50,21 +50,37 @@ Every humanoid also gains **one Chip Interface slot** (see §3).
 |---|---|---|
 | Mutation points | 12 | **16** |
 | Skill points / level (`BaseSPGain`) | 50 | **65** |
-| HP gain / level (`BaseHPGain`) | 1-4 | **2-3** |
+| HP gain / level (`BaseHPGain`) | 1-4 | **1-5** |
 | MP gain / level (`BaseMPGain`) | 1 | **1-2** |
 | Joppa reputation | 0 | **+300** |
 | Extra starting skill | — | **Menacing Stare** (`Persuasion_MenacingStare`) |
 
-> ⚠️ **Documentation mismatch — persistent across every source.** All three of Mura's writeups
-> (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop feature list)
-> state mutants get **1-5** HP per level. The shipped `Genotypes.xml` sets `BaseHPGain="2-3"`.
+> ℹ️ **`BaseHPGain` was `2-3` through 2.2; this fork corrected it to `1-5` in #90.** All three of
+> Mura's writeups (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop
+> feature list) state 1-5, and the XML was the odd one out.
 >
-> The intent is unambiguous — the changelog explains the reasoning at length ("the variability but
-> potential for greater numbers was nice flavor"), deliberately mirroring True Kin's 2-4 in the
-> opposite direction. The two files even disagree on the verb: the WIP notes say the range was
-> "Narrowed" 1-4 → 1-5, the pinned list says "Widened." Either way `2-3` is neither, and it makes
-> mutants strictly worse than True Kin at HP, which inverts the stated design. **Almost certainly a
-> regression in the XML rather than a documentation error.**
+> Three things settled it. `2-3` is uniform over {2,3}, so it carries **vanilla's own 2.5 average**
+> — the headline mutant HP change moved nothing. It inverts the changelog's stated design, which
+> gives mutants "variability but potential for greater numbers" against True Kin's 2-4 "for a
+> little more consistency, leaning the opposite from Mutants"; at 2-3 mutants are *more* consistent
+> than True Kin and strictly dominated by them, same floor of 2 against a ceiling of 3 rather than
+> 4. And every other HP claim in the docs matches its XML — True Kin's 2-4 and the Adept's 1-4 both
+> check out, leaving this the single disagreement.
+>
+> The WIP notes' sentence is the source of the long-standing confusion: *"Narrowed health gain from
+> 1-4 to 1-5 for more flavor and a chance at more HP"* contradicts itself, since the verb says
+> narrow while the numbers and the rationale say widen. The newer changelog carries the reasoning
+> and resolves it.
+>
+> Players who preferred the shipped 2-3 can select it — see §13.
+
+**How HP gain actually works**, verified against `Assembly-CSharp.dll` metadata rather than
+inferred: `XRL.GenotypeEntry.BaseHPGain` is a **public string**, and `XRL.World.Parts.Leveler`
+calls `RollHP(string BaseHPGain)` on every level-up via `GetEntryDice`. Rolls run through
+`Stat.RandomLevelUpChoice` on a dedicated seeded level-up RNG stream. The range is a uniform
+inclusive `min-max`, re-read **fresh at each level** — nothing is baked at chargen, which is why
+the option over it takes effect mid-save from the next level onward. `BaseSPGain` and `BaseMPGain`
+work identically, through `RollSP` and `RollMP`.
 
 ### 1.3 True Kin
 
@@ -1034,7 +1050,7 @@ Ordered roughly by impact.
 | 2 | 🔴 High | **Artifact 3–8 are full table replacements**, not merges — guarantees conflicts with other mods and drops future vanilla additions | `PopulationTables.xml` |
 | 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
-| 4 | 🟠 Med | **Mutant HP gain is `2-3`** in XML but documented as `1-5` in both the changelog and the WIP notes | `Genotypes.xml` |
+| 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
 | 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/Other Equipment.xml` lines 95, 196 |
 | 7 | ✅ Fixed | **Akimbo reused `Class="Pistol_Akimbo"`** across the Pistol and Multiweapon trees. `SkillFactory.PowersByClass` holds one entry per class and vanilla grants powers by class — the Gunslinger calling is `<skill Name="Pistol_Akimbo" />` — so the mod's entry was served in place of vanilla's. Removed from Multiweapon Fighting in #11 after a distinct class proved to duplicate the ability and lock the skills screen. | `Skills.xml` |
@@ -1076,7 +1092,7 @@ document fill in.
 
 | Claim in Mura's docs | Reality in the XML |
 |---|---|
-| Mutants get 1-5 HP/level | `BaseHPGain="2-3"` (§1.2) |
+| Mutants get 1-5 HP/level | Was `BaseHPGain="2-3"`; the docs were right and the XML was the regression. Now `1-5` (§1.2) |
 | Psionic Adept "+30 bonus skill points" | +25 vs vanilla, +10 vs the mod's True Kin (§1.4) |
 | "Psionic Interface" slot | Was `Chipset Interface`; now **`Chip Interface`** in this fork (§3.1) |
 | Joppa gets "two chests, a bedroll…" | One chest, a bed, and considerably more (§8) |
