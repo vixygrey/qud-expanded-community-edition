@@ -178,6 +178,30 @@ def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 )
 
 
+def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Every declared option must be read, and every option read must be declared.
+
+    Both directions fail silently in game. A declared option appears in the menu and does nothing
+    when changed; an option read but never declared makes Options.GetOption always return its
+    fallback, so the feature is permanently stuck at its default. Neither produces an error.
+    """
+    declared: set[str] = set()
+    for path, root in all_roots.items():
+        if "option" in path.name.lower():
+            declared |= {el.get("ID") for el in root.iter("option") if el.get("ID")}
+    if not declared:
+        return
+
+    read: set[str] = set()
+    for cs in (MOD / "Scripting").glob("*.cs"):
+        read |= set(re.findall(r'"(Option[A-Za-z0-9_]+)"', cs.read_text(encoding="utf-8-sig")))
+
+    for missing in sorted(declared - read):
+        f.add("option-wiring", f"{missing} is declared but never read — the option will do nothing")
+    for undeclared in sorted(read - declared):
+        f.add("option-wiring", f"{undeclared} is read but never declared — GetOption will always return the fallback")
+
+
 def check_filenames(f: Findings) -> None:
     """Spaces force quoting in every script, hook and CI step. STYLEGUIDE.md section 3."""
     for path in MOD.rglob("*"):
@@ -312,6 +336,7 @@ def run() -> Findings:
     check_workshop_target(f)
     check_manifest(f)
     check_options(f, roots)
+    check_option_wiring(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
