@@ -48,8 +48,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
-- Nothing yet. The inherited defect backlog is tracked in
-  [`docs/FEATURES.md`](docs/FEATURES.md) §10 and in the issue tracker.
+- Four typos, two of them in text players actually see: *"stiched"* → *"stitched"* in the bronze
+  and iron scale armor descriptions, and *"have had consider alterations"* → *"considerable"* on
+  the reprogrammable recoiler. Two more in source comments.
 
 ### Internal
 
@@ -60,6 +61,17 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **Spaces removed from blueprint filenames** — `MeleeWeapons.xml`, `OtherEquipment.xml`,
   `PsionicChips.xml`, `RangedWeapons.xml`. Safe because Qud resolves modded XML by root element
   rather than by filename.
+- **Validation script** (`tools/validate_mod.py`) — XML and JSON well-formedness, blueprint
+  reachability, `Load="Merge"` discipline, C# part resolution, and filename rules. Python 3
+  standard library only, so it adds no toolchain. Known inherited defects are enumerated in
+  `tools/validation-baseline.json` against the issue tracking each, so new violations fail while
+  catalogued debt does not.
+  ([#8](https://github.com/vixygrey/qud-expanded-community-edition/issues/8))
+- **CI on every pull request** — validation, spelling, secret scanning, conventional PR titles,
+  and a changelog check.
+  ([#19](https://github.com/vixygrey/qud-expanded-community-edition/issues/19))
+- **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
+  ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
 - Repository placed under version control with the pristine upstream 2.2 import tagged
   `upstream-2.2`, so `git diff upstream-2.2` always shows exactly what the fork changed.
 
