@@ -8,14 +8,6 @@
       ],
       "count": 1
     },
-    "merge-discipline": {
-      "issue": "#29 (Recoilers)",
-      "items": [
-        "mod/ObjectBlueprints/OtherEquipment.xml: <object Name=\"Programmable Recoiler\"> replaces a vanilla object",
-        "mod/ObjectBlueprints/OtherEquipment.xml: <object Name=\"Reprogrammable Recoiler\"> replaces a vanilla object"
-      ],
-      "count": 2
-    },
     "unreachable": {
       "issue": "#6 (72 psionic chips), #7 (9 armor pieces + Raven_Iron Maceth)",
       "items": [

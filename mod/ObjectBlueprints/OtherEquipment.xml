@@ -136,13 +136,13 @@
     <part Name="ProgrammableRecoiler" ChargeUse="10000" Reprogrammable="true" NameElide="basic" />
   </object>
 
-  <object Name="Programmable Recoiler" Inherits="BaseRecoiler">
-    <part Name="ProgrammableRecoiler" ChargeUse="5000" Reprogrammable="true" NameElide="programmable" />
+  <object Name="Programmable Recoiler" Load="Merge">
+    <part Name="ProgrammableRecoiler" ChargeUse="5000" Reprogrammable="true" />
     <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within seem to have had alterations made to them." />
   </object>
 
-  <object Name="Reprogrammable Recoiler" Inherits="BaseRecoiler">
-    <part Name="ProgrammableRecoiler" ChargeUse="2500" Reprogrammable="true" NameElide="reprogrammable" />
+  <object Name="Reprogrammable Recoiler" Load="Merge">
+    <part Name="ProgrammableRecoiler" ChargeUse="2500" />
     <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within have had considerable alterations made to them." />
   </object>
 
