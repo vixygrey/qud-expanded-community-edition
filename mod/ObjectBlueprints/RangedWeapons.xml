@@ -176,60 +176,60 @@
 
   <object Name="Raven_Disintegration Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{K|disintegrating}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;K" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileDisintegrationPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileDisintegrationPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{K|Disintegration}} damage and penetrates targets." />
   </object>
-  <object Name="ProjectileDisintegrationPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileDisintegrationPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{K|pulse}}" ColorString="&amp;K" />
     <part Name="Projectile" BasePenetration="5" BaseDamage="1d6" Attributes="Disintegrate" ColorString="&amp;K" PenetrateCreatures="true" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Disintegration Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{K|disintegrating}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;K" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileDisintegationRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileDisintegrationRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{K|Disintegration}} damage and penetrates targets." />
   </object>
-  <object Name="ProjectileDisintegationRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileDisintegrationRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{K|pulse}}" ColorString="&amp;K" />
     <part Name="Projectile" BasePenetration="7" BaseDamage="1d6" Attributes="Disintegrate" ColorString="&amp;K" PenetrateCreatures="true" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Perception Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{psychalflesh|mindflaying}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;m" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectilePerceptionPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectilePerceptionPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{b-B-C-c sequence|psionic}} damage, attacks target {{m|Mental Armor}} but ignores {{C|Armor/Dodge Value}}." />
   </object>
-  <object Name="ProjectilePerceptionPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectilePerceptionPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{m|pulse}}" ColorString="&amp;m" />
     <part Name="Projectile" BasePenetration="5" BaseDamage="1d6" Attributes="Mental Psionic" ColorString="&amp;m" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Perception Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{psychalflesh|mindflaying}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;m" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectilePerceptionRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectilePerceptionRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{b-B-C-c sequence|psionic}} damage, attacks target {{m|Mental Armor}} but ignores {{C|Armor/Dodge Value}}." />
   </object>
-  <object Name="ProjectilePerceptionRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectilePerceptionRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{m|pulse}}" ColorString="&amp;m" />
     <part Name="Projectile" BasePenetration="7" BaseDamage="1d6" Attributes="Mental Psionic" ColorString="&amp;m" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Ice Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{C|hyperborean}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;C" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileIcePistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileIcePistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{C|Cold}} damage." />
   </object>
-  <object Name="ProjectileIcePistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileIcePistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{C|pulse}}" ColorString="&amp;C" />
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d8" Attributes="Cold" ColorString="&amp;C" PassByVerb="streak" />
     <part Name="TemperatureOnHit" Amount="-3d20" Max="false" OnWielderHit="true" />
@@ -237,12 +237,12 @@
 
   <object Name="Raven_Ice Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{C|hyperborean}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;C" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileIceRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileIceRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{C|Cold}} damage." />
   </object>
-  <object Name="ProjectileIceRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileIceRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{C|pulse}}" ColorString="&amp;C" />
     <part Name="Projectile" BasePenetration="6" BaseDamage="1d8" Attributes="Cold" ColorString="&amp;C" PassByVerb="streak" />
     <part Name="TemperatureOnHit" Amount="-3d40" Max="false" OnWielderHit="true" />
@@ -250,12 +250,12 @@
 
   <object Name="Raven_Fire Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{o|conflagrating}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;o" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileFirePistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileFirePistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{o|Heat}} damage." />
   </object>
-  <object Name="ProjectileFirePistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileFirePistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{o|pulse}}" ColorString="&amp;o" />
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d8" Attributes="Heat Fire" ColorString="&amp;o" PassByVerb="streak" />
     <part Name="TemperatureOnHit" Amount="3d20" Max="false" OnWielderHit="true" />
@@ -263,12 +263,12 @@
 
   <object Name="Raven_Fire Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{o|conflagrating}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;o" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileFireRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileFireRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{o|Heat}} damage." />
   </object>
-  <object Name="ProjectileFireRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileFireRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="TemperatureOnHit" Amount="3d40" Max="false" OnWielderHit="true" />
     <part Name="Render" DisplayName="{{o|pulse}}" ColorString="&amp;o" />
     <part Name="Projectile" BasePenetration="6" BaseDamage="1d8" Attributes="Heat" ColorString="&amp;o" PassByVerb="streak" />
@@ -276,60 +276,60 @@
 
   <object Name="Raven_Lightning Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{W|fulminating}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;W" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileElectricPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileElectricPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{W|Electrical}} damage." />
   </object>
-  <object Name="ProjectileElectricPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileElectricPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{W|pulse}}" ColorString="&amp;W" />
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d8" Attributes="Electric" ColorString="&amp;W" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Lightning Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{W|fulminating}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;W" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileElectricRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileElectricRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{W|Electrical}} damage." />
   </object>
-  <object Name="ProjectileElectricRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileElectricRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{W|pulse}}" ColorString="&amp;W" />
     <part Name="Projectile" BasePenetration="6" BaseDamage="1d8" Attributes="Electric" ColorString="&amp;W" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Acid Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{g|corrosive}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;g" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileAcidPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileAcidPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{g|Acid}} damage." />
   </object>
-  <object Name="ProjectileAcidPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileAcidPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{g|pulse}}" ColorString="&amp;g" />
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d8" Attributes="Acid" ColorString="&amp;g" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Acid Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{g|corrosive}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;g" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileAcidRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileAcidRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{g|Acid}} damage." />
   </object>
-  <object Name="ProjectileAcidRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileAcidRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{g|pulse}}" ColorString="&amp;g" />
     <part Name="Projectile" BasePenetration="6" BaseDamage="1d8" Attributes="Acid" ColorString="&amp;g" PassByVerb="streak" />
   </object>
 
   <object Name="Raven_Blood Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{R|sanguine}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;R" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileBleedPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileBleedPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       {{R|Lifesteals}} a portion of damage dealt." />
   </object>
-  <object Name="ProjectileBleedPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileBleedPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{R|pulse}}" ColorString="&amp;R" />
     <part Name="Projectile" BasePenetration="3" BaseDamage="1d10" Attributes="Exsanguination" ColorString="&amp;R" PassByVerb="streak" />
     <part Name="VampiricWeapon" Percent="80-100" Reduction="1d3-1" Maximum="1d10+10" RequiresLivingTarget="true" RealityDistortionBased="true" />
@@ -337,12 +337,12 @@
 
   <object Name="Raven_Blood Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{R|sanguine}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;R" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileBleedRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileBleedRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       {{R|Lifesteals}} a portion of damage dealt." />
   </object>
-  <object Name="ProjectileBleedRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileBleedRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{R|pulse}}" ColorString="&amp;R" />
     <part Name="VampiricWeapon" Percent="80-100" Reduction="1d3-1" Maximum="1d10+10" RequiresLivingTarget="true" RealityDistortionBased="true" />
     <part Name="Projectile" BasePenetration="5" BaseDamage="1d10" Attributes="Exsanguination" ColorString="&amp;R" PassByVerb="streak" />
@@ -350,36 +350,36 @@
   
   <object Name="Raven_Light Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{O|refulgent}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;O" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileLightPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileLightPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{O|Light}} damage." />
   </object>
-  <object Name="ProjectileLightPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileLightPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{O|pulse}}" ColorString="&amp;O" />
     <part Name="Projectile" BasePenetration="3" BaseDamage="1d10" Attributes="Light" ColorString="&amp;O" PassByVerb="streak" />
   </object>
   
   <object Name="Raven_Light Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{O|refulgent}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;O" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileLightRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileLightRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{O|Light}} damage." />
   </object>
-  <object Name="ProjectileLightRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileLightRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{O|pulse}}" ColorString="&amp;O" />
     <part Name="Projectile" BasePenetration="5" BaseDamage="1d10" Attributes="Light" ColorString="&amp;O" PassByVerb="streak" />
   </object>
   
   <object Name="Raven_Temporal Psionic Pistol" Inherits="Raven_Base Psionic Pistol">
     <part Name="Render" DisplayName="{{K-y-Y sequence|astral}} {{b-B-C-c sequence|psionic}} pistol" ColorString="&amp;Y" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileTemporalPistol" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileTemporalPistol" />
     <part Name="Description" Short="The slender pistol shaped machine houses several components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{K-y-Y sequence|Cosmic}} damage which has no resistances, and can hit both in-phase and out-of-phase targets." />
   </object>
-  <object Name="ProjectileTemporalPistol" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileTemporalPistol" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{y|pulse}}" ColorString="&amp;y" />
     <part Name="Projectile" BasePenetration="5" BaseDamage="1d6" Attributes="Cosmic" ColorString="&amp;Y" PassByVerb="streak" />
     <part Name="OmniphaseProjectile" />
@@ -388,12 +388,12 @@
 
   <object Name="Raven_Temporal Psionic Rifle" Inherits="Raven_Base Psionic Rifle">
     <part Name="Render" DisplayName="{{K-y-Y sequence|astral}} {{b-B-C-c sequence|psionic}} rifle" ColorString="&amp;Y" />
-    <part Name="EnergyAmmoLoader" ProjectileObject="ProjectileTemporalRifle" />
+    <part Name="EnergyAmmoLoader" ProjectileObject="Raven_ProjectileTemporalRifle" />
     <part Name="Description" Short="The slender rifle shaped machine houses many components, all connected in a labyrinth of tubing and wiring, each individual part's function beyond you. What you do know, however, is that it shoots deadly beams of energy out the front.
 
       Deals {{K-y-Y sequence|Cosmic}} damage which has no resistances, and can hit both in-phase and out-of-phase targets." />
   </object>
-  <object Name="ProjectileTemporalRifle" Inherits="TemporaryEnergyProjectile">
+  <object Name="Raven_ProjectileTemporalRifle" Inherits="TemporaryEnergyProjectile">
     <part Name="Render" DisplayName="{{y|pulse}}" ColorString="&amp;y" />
     <part Name="Projectile" BasePenetration="7" BaseDamage="1d6" Attributes="Cosmic" ColorString="&amp;Y" PassByVerb="streak" />
     <part Name="OmniphaseProjectile" />

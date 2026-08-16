@@ -248,9 +248,11 @@ in `docs/FEATURES.md` §10, severity-ranked with file and line.
 Mura was consistent. Match these when adding anything.
 
 - **Blueprint prefix `Raven_`** on every new object. Merges into vanilla objects use the vanilla
-  name with `Load="Merge"` and no prefix. (A handful of new objects break this — `SteelFist` and
-  the `Projectile*` objects — but the prefix is the rule. The Recoilers were listed here too;
-  they turned out to be vanilla objects the mod was replacing, fixed in #29.)
+  name with `Load="Merge"` and no prefix. **No exceptions remain:** `SteelFist` and the 18
+  `Projectile*` objects were the last, renamed in #66 before the save window closed; the
+  Recoilers turned out to be vanilla objects the mod was replacing, fixed in #29. The only
+  unprefixed new objects left are `TrueKin` and `PsionicAdept`, which are body objects following
+  vanilla's own `BodyObject` convention (#13).
 - **Tier → material:** 0 bronze · 1 iron · 2 steel · 3 carbide · 4 folded carbide · 5 fullerite ·
   6 crysteel · 7 flawless crysteel · 8 zetachrome.
 - **Value curve doubles per tier:** 5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280. Body armor

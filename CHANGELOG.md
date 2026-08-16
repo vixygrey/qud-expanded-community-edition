@@ -37,6 +37,22 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   states plainly that a new character is required.
   ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
 
+- **Nineteen blueprints gained the `Raven_` prefix they were missing** — `SteelFist` and the 18
+  psionic-weapon projectiles are now `Raven_SteelFist` and `Raven_Projectile*`. They were the
+  mod's own objects wearing vanilla-style names, which is a live risk rather than an untidiness:
+  vanilla owns `CarbideFist`, `CrysteelFist` and `FulleriteFist`, and **steel is the obvious gap
+  in that series**, so a future Qud patch filling it would have collided. The mod was also
+  inconsistent with itself, since its other new fist was already `Raven_ZetachromeFist`. Landed
+  now because blueprint names are written into saves, and this is the last release where changing
+  them costs nothing.
+  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+
+- **The disintegration rifle's projectile is spelled correctly.** `ProjectileDisintegationRifle`
+  was missing its second `r` while the pistol's was spelled correctly. It worked, because the
+  misspelling was consistent — but it is a blueprint name, so it was fixed as part of the rename
+  above rather than left to become a second save-breaking change later.
+  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+
 - **The Workshop preview image now marks this as the Community Edition.** It was Mura's original
   *CoQ / Expanded / by TLR* logo, which gave a subscriber no way to tell the fork from the
   original in a search listing. A green `- CE` now follows "Expanded", and `& VixyGrey` sits under
