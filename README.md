@@ -99,6 +99,9 @@ python3 tools/validate_mod.py
 
 It checks XML and JSON well-formedness, blueprint reachability, `Load="Merge"` discipline on every
 vanilla record, C# part resolution, the Workshop upload target, and the manifest's credit field.
+It also enforces charter rule 5 against `mod/Scripting/` — no file I/O, network, reflection,
+shelling out, external assemblies or Harmony — and flags any instance field on a `[Serializable]`
+type, since that layout is written into every player save.
 The same checks run in CI on every pull request.
 
 After a Caves of Qud update, also run:

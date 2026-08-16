@@ -308,6 +308,220 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                 )
 
 
+def strip_cs_comments(src: str) -> list[str]:
+    """Blank out C# comments, preserving line numbering.
+
+    Required, not cosmetic: the scripts *document* the banned APIs — Raven_Options.cs says
+    "no file I/O, no network, no reflection, no Harmony" — so scanning raw text reports the
+    charter rule as a violation of itself.
+
+    String literals are tracked so a `//` inside one is not mistaken for a comment. This is a
+    drift detector for code the maintainer writes, not a defence against someone hiding an API
+    call from it, so approximation is acceptable where malice is not the threat.
+    """
+    out: list[str] = []
+    in_block = False
+    for line in src.splitlines():
+        buf, i, in_str, in_char, verbatim = [], 0, False, False, False
+        while i < len(line):
+            two = line[i : i + 2]
+            if in_block:
+                if two == "*/":
+                    in_block, i = False, i + 2
+                    buf.append("  ")
+                    continue
+                buf.append(" ")
+                i += 1
+                continue
+            if in_str:
+                if verbatim and two == '""':
+                    buf.append(two)
+                    i += 2
+                    continue
+                if not verbatim and line[i] == "\\":
+                    buf.append(line[i : i + 2])
+                    i += 2
+                    continue
+                if line[i] == '"':
+                    in_str, verbatim = False, False
+                buf.append(line[i])
+                i += 1
+                continue
+            if in_char:
+                if line[i] == "\\":
+                    buf.append(line[i : i + 2])
+                    i += 2
+                    continue
+                if line[i] == "'":
+                    in_char = False
+                buf.append(line[i])
+                i += 1
+                continue
+            if two == "//":
+                buf.append(" " * (len(line) - i))
+                break
+            if two == "/*":
+                in_block, i = True, i + 2
+                buf.append("  ")
+                continue
+            if line[i] == '"':
+                in_str = True
+                verbatim = i > 0 and line[i - 1] == "@"
+                buf.append(line[i])
+                i += 1
+                continue
+            if line[i] == "'":
+                in_char = True
+                buf.append(line[i])
+                i += 1
+                continue
+            buf.append(line[i])
+            i += 1
+        out.append("".join(buf))
+    return out
+
+
+# Charter rule 5's hard limits, as patterns. Each entry cites the clause it enforces, because a
+# banned-list without reasons is the kind of thing a future contributor deletes to make CI pass.
+#
+# These are NOT a security boundary - the maintainer writes this code, and anything here could be
+# evaded trivially by someone trying. They catch drift: the accidental `File.ReadAllText` added
+# while debugging, or a dependency that quietly pulls Harmony in.
+#
+# Comments are stripped before scanning, because the scripts legitimately *document* these APIs.
+# String literals deliberately are NOT: `Type.GetType("System.IO.File")` is precisely how a token
+# scan gets sidestepped, so a banned name in a string is worth a look. No current file trips it.
+BANNED_CS = [
+    (
+        r"\bSystem\.IO\b|\bFile\.[A-Z]|\bDirectory\.[A-Z]|\b(?:File|Stream)(?:Reader|Writer|Stream)\b",
+        "file I/O — rule 5: no file I/O outside the mod's own directory",
+    ),
+    (
+        r"\bSystem\.Net\b|\bHttpClient\b|\bWebClient\b|\bWebRequest\b|\b(?:Tcp|Udp)Client\b|\bSocket\b",
+        "network access — rule 5: no network access of any kind, or telemetry",
+    ),
+    (
+        r"\bEnvironment\.GetEnvironmentVariable\b|\bEnvironment\.GetFolderPath\b|\bSpecialFolder\b|\bRegistry\b",
+        "environment/player files — rule 5: no reading player files or the environment",
+    ),
+    (
+        r"\bProcess\.Start\b|\bProcessStartInfo\b|\bSystem\.Diagnostics\.Process\b",
+        "shelling out — rule 5: no shelling out, or loading external assemblies",
+    ),
+    (
+        r"\bAssembly\.Load\w*\b|\bAppDomain\b",
+        "external assemblies — rule 5: no shelling out, or loading external assemblies",
+    ),
+    (
+        r"\bHarmony\w*\b",
+        "Harmony — rule 5: breaks on arm64 macOS; every hook needed exists as a MinEvent",
+    ),
+    (
+        r"\bSystem\.Reflection\b|\bBindingFlags\b|\.GetField\(|\.GetMethod\(|\.GetProperty\(|\.InvokeMember\(",
+        "reflection — rule 5: public members and documented extension points only",
+    ),
+]
+
+
+def check_scripting_policy(f: Findings) -> None:
+    """Charter rule 5's hard limits, enforced instead of merely documented.
+
+    Qud mods run with full process privileges and mod/Scripting/ triggers an approval prompt for
+    every subscriber. Rule 5 calls that a trust relationship. Until this check existed the only
+    thing holding the line was code review.
+    """
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        lines = strip_cs_comments(cs.read_text(encoding="utf-8-sig"))
+        for lineno, line in enumerate(lines, start=1):
+            for pattern, why in BANNED_CS:
+                hit = re.search(pattern, line)
+                if hit:
+                    f.add(
+                        "scripting-policy",
+                        f"{cs}:{lineno}: {hit.group(0)!r} — {why}",
+                    )
+
+
+def check_serializable_shape(f: Findings) -> None:
+    """A [Serializable] type's instance fields are written into every player save.
+
+    CLAUDE.md rule 5: "Anything [Serializable] is written into player saves. Its field layout is
+    an identifier ... renaming or removing a field can break saves that already exist."
+
+    Today every such type holds zero instance state - the 36 mutation stubs are empty and
+    Raven_JoppaBuildingSystem is all static readonly - so save shape is trivially stable. This
+    fires the moment that stops being true, which is the moment the obligation starts applying,
+    rather than after a player's save has already broken.
+
+    Adding state is allowed; rule 5 was widened deliberately in #46. This is not a veto, it asks
+    that the layout be a considered, reviewed decision.
+
+    Works on the brace-matched class body rather than line-by-line, so a field sharing a line with
+    the class declaration is still seen. A miss here is a silent false negative, which is the
+    expensive direction.
+    """
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        text = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
+        for m in re.finditer(
+            r"\[\s*Serializable\s*\][\s\S]{0,400}?\b(?:class|struct)\s+([A-Za-z0-9_]+)", text
+        ):
+            cls = m.group(1)
+            brace = text.find("{", m.end())
+            if brace < 0:
+                continue
+            depth, i = 0, brace
+            while i < len(text):
+                if text[i] == "{":
+                    depth += 1
+                elif text[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                i += 1
+            body = text[brace + 1 : i]
+
+            # Walk the body, collecting statements that sit directly in the class (depth 0).
+            depth, stmt, start_off = 0, [], brace + 1
+            for off in range(len(body)):
+                ch = body[off]
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                elif ch == ";" and depth == 0:
+                    _report_field(f, cs, text, start_off, "".join(stmt), cls)
+                    stmt, start_off = [], brace + 1 + off + 1
+                    continue
+                if depth == 0:
+                    stmt.append(ch)
+                else:
+                    stmt.append(" ")
+
+
+def _report_field(
+    f: Findings, cs: Path, text: str, offset: int, stmt: str, cls: str
+) -> None:
+    """Flag one class-level statement if it declares a serialized instance field."""
+    stmt = stmt.strip()
+    if not stmt or stmt.startswith("["):
+        return
+    head = stmt.split("=", 1)[0]
+    # A "(" before any "=" means a method or expression, not a field declaration.
+    if "(" in head:
+        return
+    if re.search(r"\b(static|const)\b", head):
+        return
+    if not re.match(r"^(public|private|protected|internal|readonly|volatile)\b", stmt):
+        return
+    name = head.strip().split()[-1]
+    lineno = text.count("\n", 0, offset) + 1
+    f.add(
+        "serializable-shape",
+        f"{cs}:{lineno}: [Serializable] {cls} declares instance field {name!r} - its layout "
+        f"is written into every save. See CLAUDE.md rule 5.",
+    )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -385,6 +599,8 @@ def run() -> Findings:
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
+    check_scripting_policy(f)
+    check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
     return f

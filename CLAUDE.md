@@ -113,6 +113,22 @@ also:
 rule exists to prevent. The hard limits above are unchanged; what changed is that C# may now hold
 state and adjust already-loaded data in response to a player's choice.
 
+**Both limits above are now checked, not just written down.** `tools/validate_mod.py` runs
+`scripting-policy` (every banned API in rule 5's list, with the clause each pattern enforces) and
+`serializable-shape` (any instance field on a `[Serializable]` type, which is what makes a class's
+layout part of every save). Comments are stripped first, since the scripts legitimately name these
+APIs; string literals are not, because `Type.GetType("System.IO.File")` is how a token scan gets
+sidestepped.
+
+**CodeQL does not cover the C#, and cannot.** Every non-`System` dependency is `XRL.*`, which
+lives only in Freehold's 12 MB `Assembly-CSharp.dll` — proprietary, absent from NuGet and from CI
+runners — so with build-mode `none` call-target resolution sat at 82% against an 85% threshold,
+permanently. `autobuild` and `manual` both need something to build, and there is deliberately no
+`.csproj` (rule 4). C# was removed from the repo's CodeQL languages; `actions` and `python` still
+run. This is not a downgrade: CodeQL's generic queries could never express "no Harmony, no
+reflection, no shelling out" — that is a project policy, and the two checks above enforce it
+directly.
+
 **Two obligations that come with holding state:**
 
 - **Anything `[Serializable]` is written into player saves.** Its field layout is an identifier in
