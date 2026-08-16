@@ -5,6 +5,11 @@
         Declaring an option is pure XML. Reading it requires C# - see
         mod/Scripting/Raven_Options.cs. Defaults reproduce the mod's established
         behaviour, per CLAUDE.md charter rule 6.
+
+        Min MUST be 0 or 1. A slider with Min above 1 sends Qud's options menu into
+        unbounded recursion and crashes the game with a stack overflow the moment the
+        menu is opened. Verified: Min="6" crashes, Min="0" does not. Every slider across
+        the 87 mods installed locally uses 0 or 1. See docs/DESIGN_options.md.
     -->
 
     <option
@@ -12,7 +17,7 @@
         DisplayText="{{C|Qud Expanded}}: Mutated Human mutation points"
         Category="Mods"
         Type="Slider"
-        Min="6"
+        Min="0"
         Max="24"
         Increment="1"
         Default="16"
