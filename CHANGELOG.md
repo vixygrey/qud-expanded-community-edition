@@ -128,6 +128,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- **The advanced hoversled floats and the sphere of negative weight is a trinket again.** Both
+  carried `<stag>` where `<tag>` was meant, so neither tag was ever applied. Thanks to
+  **[@Jah-yee](https://github.com/Jah-yee)**, this project's first outside contribution.
+  ([#10](https://github.com/vixygrey/qud-expanded-community-edition/issues/10),
+  [#50](https://github.com/vixygrey/qud-expanded-community-edition/pull/50))
+
 - **The empty armor rack is now in the Joppa building.** It existed as a blueprint but had no
   route into the world at all — no drop table, no tinker recipe, and unlike its gun-rack and
   weapon-rack siblings it was never placed on the map. It now sits directly below them, completing
