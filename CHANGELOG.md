@@ -53,9 +53,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   loader tolerated it, so the six retuned skill trees have been working all along and no player
   was ever missing them; this is a correctness fix, not a behaviour change.
   ([#5](https://github.com/vixygrey/qud-expanded-community-edition/issues/5))
-- Four typos, two of them in text players actually see: *"stiched"* → *"stitched"* in the bronze
-  and iron scale armor descriptions, and *"have had consider alterations"* → *"considerable"* on
-  the reprogrammable recoiler. Two more in source comments.
+- Four spelling errors, two of them in text players actually see: "stitched" was misspelled in
+  the bronze and iron scale armor descriptions, and the reprogrammable recoiler's description
+  read "consider" where it meant "considerable". Two more in source comments.
+
+  (The misspellings are described rather than quoted here on purpose — the spell check in CI
+  reads this file too, and quoting them fails the build.)
 
 ### Internal
 
