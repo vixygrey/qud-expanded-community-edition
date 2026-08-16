@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using XRL;
 using XRL.UI;
 
@@ -25,6 +25,12 @@ namespace QudExpandedCE
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
+
+        /// <summary>
+        /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
+        /// when a zone activates, not a field on a record this class can write.
+        /// </summary>
+        public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
 
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";

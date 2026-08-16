@@ -1,6 +1,6 @@
 # Mod options — design doc
 
-**Status:** spec. No code written. Written before a first release, deliberately.
+**Status:** four options built and verified in game. Only the skill tree retunes remain.
 **Target:** Caves of Qud 2.0.211.x
 **Premise:** nobody should have to swallow the whole mod to get one part of it.
 
@@ -51,7 +51,7 @@ each because two of the three are proven and one is not.
 | Mutation points | `GenotypeEntry.MutationPoints` — public int | Before starting a character | ✅ Surface confirmed |
 | Starting reputation | `GenotypeEntry.Reputations` — public list | Before starting a character | ✅ Surface confirmed |
 | Skill tree changes | `SkillFactory.PowersByClass` → `PowerEntry.Minimum` — public | Before starting a character | ✅ Surface confirmed |
-| Joppa house | Zone generation | New game only | ⚠️ Unproven |
+| Joppa house | Removed on `ZoneActivatedEvent` by an `IGameSystem` | New game; removal is one-way | ✅ Built and verified |
 | Chip Interface anatomy slot | Baked into every creature at creation | **Not gateable** | ✅ Known |
 
 "Before starting a character" is not a defect. It is how every chargen-affecting option in Qud
@@ -285,14 +285,25 @@ Two candidate approaches, both unproven:
 1. Read the option at world generation and skip the patch.
 2. Ship the map patch as a separate sub-mod.
 
-**Approach 1.** An earlier draft of this document recommended splitting, on the grounds that the
-patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in isolation
-and wrong for this mod: the fork is deliberately **self-contained** (`CLAUDE.md` rule 6), because
-the experience it targets is one subscription rather than an assembly of eighty.
+**Approach 1, built and verified.** An earlier draft recommended splitting, on the grounds that
+the patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in
+isolation and wrong for this mod, which is deliberately self-contained (`CLAUDE.md` rule 6).
 
-So the work goes into making the toggle work. If it turns out the map patch cannot be gated at
-zone generation, the fallback is to **ship it on and say so in the description** — not to exile
-it.
+A map merge cannot be gated on an option — it happens as data loads, long before any option is
+read — so the building is **removed after the fact**, on `ZoneActivatedEvent`, by a scribed
+`IGameSystem` registered at character creation via `[PlayerMutator]`.
+
+What made it safe was computing the patch's contents by diffing `mod/Joppa.rpm` against
+**vanilla's own `Joppa.rpm`**: 89 objects across 76 cells, of which 66 cells were empty ground and
+10 held a `DirtPath` the patch covered. Removal matches **blueprint *and* cell**, because the patch
+places 45 `DirtPath` and 27 `RustedMetalWall` — objects that exist all over Joppa. Matching by name
+alone would have stripped half the village.
+
+The modded Joppa is identified by this mod's own objects at their expected cells rather than by a
+hardcoded zone ID.
+
+**One limitation, stated in the helptext:** turning the option back on does not rebuild. The
+building is map data, and once removed from a save it is gone.
 
 ### 4.6 Loot participation — `Checkbox`, fully live
 
@@ -368,6 +379,8 @@ reasonably want some of those without the others.
 6. Skill tree changes — last, because it is the least understood. If no mechanism exists, it
    ships on and unconditional, with that stated plainly rather than split out.
 
+**Steps 1–5 are done and verified in game.** Only the skill tree retunes remain unoptioned.
+
 Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 
 ---
@@ -389,8 +402,8 @@ Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
   `PowerEntry.Minimum` is a public string, so the surface is there — but `PowerEntry` also holds a
   private `_requirements` list that is probably parsed *from* `Minimum`, in which case writing
   `Minimum` alone may not take effect.
-- Does the Joppa map patch have any hook at zone generation? Still the one feature with no
-  identified mechanism.
+- ~~Does the Joppa map patch have any hook at zone generation?~~ **Answered:** no hook prevents
+  the merge, but `ZoneActivatedEvent` on a scribed `IGameSystem` removes the result cleanly.
 - Does `GetRequiredMod` matter — is there value in the chargen UI knowing this mod is required for
   a build code?
 

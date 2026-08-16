@@ -64,6 +64,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   the game's options menu into unbounded recursion; the check refuses any such slider, and also
   catches a `Default` outside its own `Min`..`Max`.
   ([#51](https://github.com/vixygrey/qud-expanded-community-edition/issues/51))
+- **The Joppa home base building is now optional** (**on** by default, as the mod has always
+  behaved). Turning it off removes the building the next time you enter Joppa and puts the ground
+  back beneath it. Nothing vanilla is removed either way. Set it before starting a new character —
+  and note that turning it back on afterwards does not rebuild it, because the building is map
+  data and once removed from a save it is gone.
+  ([#44](https://github.com/vixygrey/qud-expanded-community-edition/issues/44))
 - **Two more options: extra starting skills, and the starting reputation bonus.**
   *Extra starting skills* (**on** by default, as the mod has always behaved) gives Mutated Humans
   and True Kin Staunch Wounds, Cooking and Gathering and Meal Preparation, plus Menacing Stare for

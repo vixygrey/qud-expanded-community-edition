@@ -69,4 +69,20 @@
         </helptext>
     </option>
 
+    <option
+        ID="OptionQudExpandedCEJoppaBuilding"
+        DisplayText="{{C|Qud Expanded}}: home base building in Joppa"
+        Category="Mods"
+        Type="Checkbox"
+        Default="Yes"
+        SearchKeywords="qud expanded joppa building home base becoming nook">
+        <helptext>
+            Adds a walled building near Argyve's workshop in Joppa: a bed, storage, an oven, and a becoming nook with a cybernetics rack.
+
+            {{y|Set this before starting a new character.}} Turning it off removes the building the next time you enter Joppa, and the ground beneath it is put back. Turning it back on afterwards does {{r|not}} rebuild it - the building is map data, and once removed from a save it is gone.
+
+            Nothing vanilla is removed either way.
+        </helptext>
+    </option>
+
 </options>
