@@ -1,13 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <skills>
-
   <skill Name="Axe">
-    <power Name="Cleave" Attribute="Strength|Agility" Minimum="19|19" Tile="Abilities/sw_skill_cleave.png" Foreground="y" Detail="R" />
-    <power Name="Charging Strike" Attribute="Strength|Agility" Minimum="19|19" Tile="Abilities/sw_skill_axe_charging_strike.png" Foreground="y" Detail="R" />
-    <power Name="Dismember" Attribute="Strength|Agility" Minimum="21|21" Tile="Abilities/abil_dismember.bmp" Foreground="y" Detail="R" />
-    <power Name="Hook and Drag" Attribute="Strength|Agility" Minimum="23|23" Tile="Abilities/abil_hook_and_drag.bmp" Foreground="y" Detail="R" />
-    <power Name="Decapitate" Attribute="Strength|Agility" Minimum="25|25" Tile="Abilities/abil_decapitate_toggle_off.bmp" Foreground="y" Detail="R" />
-    <power Name="Berserk!" Attribute="Strength|Agility" Minimum="29|29" Tile="Abilities/abil_berserk.bmp" Foreground="y" Detail="R" />
+    <power
+      Name="Cleave"
+      Attribute="Strength|Agility"
+      Minimum="19|19"
+      Tile="Abilities/sw_skill_cleave.png"
+      Foreground="y"
+      Detail="R"
+    />
+    <power
+      Name="Charging Strike"
+      Attribute="Strength|Agility"
+      Minimum="19|19"
+      Tile="Abilities/sw_skill_axe_charging_strike.png"
+      Foreground="y"
+      Detail="R"
+    />
+    <power
+      Name="Dismember"
+      Attribute="Strength|Agility"
+      Minimum="21|21"
+      Tile="Abilities/abil_dismember.bmp"
+      Foreground="y"
+      Detail="R"
+    />
+    <power
+      Name="Hook and Drag"
+      Attribute="Strength|Agility"
+      Minimum="23|23"
+      Tile="Abilities/abil_hook_and_drag.bmp"
+      Foreground="y"
+      Detail="R"
+    />
+    <power
+      Name="Decapitate"
+      Attribute="Strength|Agility"
+      Minimum="25|25"
+      Tile="Abilities/abil_decapitate_toggle_off.bmp"
+      Foreground="y"
+      Detail="R"
+    />
+    <power
+      Name="Berserk!"
+      Attribute="Strength|Agility"
+      Minimum="29|29"
+      Tile="Abilities/abil_berserk.bmp"
+      Foreground="y"
+      Detail="R"
+    />
   </skill>
 
   <skill Name="Cooking and Gathering">
@@ -16,31 +57,115 @@
   </skill>
 
   <skill Name="Cudgel">
-    <power Name="Bludgeon" Attribute="Strength|Agility" Minimum="17|17" Tile="Abilities/sw_skill_bludgeon.bmp"  Foreground="y" Detail="g" />
-    <power Name="Charging Strike" Attribute="Strength|Agility" Minimum="19|19" Tile="Abilities/sw_skill_cudgel_charging_strike.png" Foreground="y" Detail="g" />
-    <power Name="Conk" Attribute="Strength|Agility" Minimum="21|21" Tile="Abilities/abil_conk.bmp" Foreground="y" Detail="g" />
-    <power Name="Backswing" Attribute="Strength|Agility" Minimum="23|23" Tile="Abilities/sw_skill_backswing.png" Foreground="y" Detail="g" />
-    <power Name="Slam" Attribute="Strength|Agility" Minimum="25|25" Tile="Abilities/abil_slam.bmp" Foreground="y" Detail="g" />
-    <power Name="Demolish" Attribute="Strength|Agility" Minimum="29|29" Tile="Abilities/abil_demolish.bmp" Foreground="y" Detail="g" />
+    <power
+      Name="Bludgeon"
+      Attribute="Strength|Agility"
+      Minimum="17|17"
+      Tile="Abilities/sw_skill_bludgeon.bmp"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Charging Strike"
+      Attribute="Strength|Agility"
+      Minimum="19|19"
+      Tile="Abilities/sw_skill_cudgel_charging_strike.png"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Conk"
+      Attribute="Strength|Agility"
+      Minimum="21|21"
+      Tile="Abilities/abil_conk.bmp"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Backswing"
+      Attribute="Strength|Agility"
+      Minimum="23|23"
+      Tile="Abilities/sw_skill_backswing.png"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Slam"
+      Attribute="Strength|Agility"
+      Minimum="25|25"
+      Tile="Abilities/abil_slam.bmp"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Demolish"
+      Attribute="Strength|Agility"
+      Minimum="29|29"
+      Tile="Abilities/abil_demolish.bmp"
+      Foreground="y"
+      Detail="g"
+    />
   </skill>
 
   <skill Name="Long Blade">
-    <power Name="Dueling Stance" Attribute="Intelligence" Minimum="15" Tile="Abilities/abil_dueling_stance_toggle_off.bmp" Foreground="y" Detail="Y" />
-    <power Name="En Garde!" Attribute="Strength|Agility" Minimum="29|29" Tile="Abilities/abil_engarde.bmp" Foreground="y" Detail="Y" />
+    <power
+      Name="Dueling Stance"
+      Attribute="Intelligence"
+      Minimum="15"
+      Tile="Abilities/abil_dueling_stance_toggle_off.bmp"
+      Foreground="y"
+      Detail="Y"
+    />
+    <power
+      Name="En Garde!"
+      Attribute="Strength|Agility"
+      Minimum="29|29"
+      Tile="Abilities/abil_engarde.bmp"
+      Foreground="y"
+      Detail="Y"
+    />
   </skill>
 
   <skill Name="Multiweapon Fighting">
-    <power Name="Akimbo" Cost="150" Attribute="Agility" Minimum="17" Class="Pistol_Akimbo" Snippet="akimbo" Description="Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them." Tile="Abilities/abil_akimbo_toggle_off.bmp" Foreground="y" Detail="c" />
-	  <power Name="Multiweapon Expertise" Minimum="21|21" Tile="Abilities/sw_skill_multiweapon_expertise.png" Foreground="y" Detail="M" />
-  	<power Name="Multiweapon Mastery" Minimum="25|25" Tile="Abilities/sw_skill_multiweapon_mastery.png" Foreground="y" Detail="M" />
+    <power
+      Name="Akimbo"
+      Cost="150"
+      Attribute="Agility"
+      Minimum="17"
+      Class="Pistol_Akimbo"
+      Snippet="akimbo"
+      Description="Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them."
+      Tile="Abilities/abil_akimbo_toggle_off.bmp"
+      Foreground="y"
+      Detail="c"
+    />
+    <power
+      Name="Multiweapon Expertise"
+      Minimum="21|21"
+      Tile="Abilities/sw_skill_multiweapon_expertise.png"
+      Foreground="y"
+      Detail="M"
+    />
+    <power
+      Name="Multiweapon Mastery"
+      Minimum="25|25"
+      Tile="Abilities/sw_skill_multiweapon_mastery.png"
+      Foreground="y"
+      Detail="M"
+    />
   </skill>
 
   <skill Name="Tinkering">
-	  <power Name="Disassemble" Cost="0" Tile="Abilities/sw_skill_disassemble.png" Foreground="y" Detail="c" />
-  	<power Name="Reverse Engineer" Cost="200" Tile="Abilities/sw_skill_reverse_engineer.png" Foreground="y" Detail="c" />
+    <power Name="Disassemble" Cost="0" Tile="Abilities/sw_skill_disassemble.png" Foreground="y" Detail="c" />
+    <power
+      Name="Reverse Engineer"
+      Cost="200"
+      Tile="Abilities/sw_skill_reverse_engineer.png"
+      Foreground="y"
+      Detail="c"
+    />
     <power Name="Tinker I" Cost="100" Minimum="17" Tile="Abilities/sw_skill_tinker_1.png" Foreground="y" Detail="c" />
     <power Name="Tinker II" Cost="200" Minimum="21" Tile="Abilities/sw_skill_tinker_2.png" Foreground="y" Detail="c" />
     <power Name="Tinker III" Cost="300" Minimum="25" Tile="Abilities/sw_skill_tinker_3.png" Foreground="y" Detail="c" />
   </skill>
-
 </skills>

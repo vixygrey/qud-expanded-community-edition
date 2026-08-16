@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <objects>
-
-<!-- removed temporarily
+  <!-- removed temporarily
 
   <object Name="Shotgun Shell" Inherits="Projectile">
     <part Name="Render" DisplayName="shotgun shell" ColorString="&amp;y" />
@@ -521,5 +519,4 @@
     <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
   </object>
 -->
-
 </objects>

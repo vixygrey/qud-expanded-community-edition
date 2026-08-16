@@ -1,12 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <bodies>
-
   <bodyparttypes>
-    <bodyparttype Type="Chip Interface" Description="Chip Interface" Integral="true" Abstract="true" IgnorePosition="true" />
+    <bodyparttype
+      Type="Chip Interface"
+      Description="Chip Interface"
+      Integral="true"
+      Abstract="true"
+      IgnorePosition="true"
+    />
   </bodyparttypes>
 
   <anatomies>
-
     <anatomy Name="Humanoid" Load="Merge">
       <part Type="Chip Interface" />
     </anatomy>
@@ -50,7 +54,5 @@
       <part Type="Chip Interface" />
       <part Type="Chip Interface" />
     </anatomy>
-
   </anatomies>
-
 </bodies>

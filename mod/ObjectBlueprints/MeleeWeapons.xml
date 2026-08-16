@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <objects>
-
   <!-- Battle Axes -->
 
   <object Name="BaseAxe" Load="Merge">
@@ -110,10 +108,19 @@
   </object>
 
   <object Name="Raven_Crysteel Greataxe" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} greataxe}}" Tile="Items/sw_axe_4.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} greataxe}}"
+      Tile="Items/sw_axe_4.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="1d8+5" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="5" UsesTwoSlots="true" FlameTemperature="99999" VaporTemperature="9999" />
   </object>
@@ -126,10 +133,19 @@
   </object>
 
   <object Name="Raven_Flawless Crysteel Greataxe" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} greataxe}}" Tile="Items/sw_axe_2.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} greataxe}}"
+      Tile="Items/sw_axe_2.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="1d9+5" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="5" UsesTwoSlots="true" FlameTemperature="99999" VaporTemperature="9999" />
@@ -144,10 +160,19 @@
   </object>
 
   <object Name="Raven_Zetachrome Greataxe" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} greataxe" Tile="Items/sw_axe_7.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} greataxe"
+      Tile="Items/sw_axe_7.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="1d10+6" />
     <part Name="Commerce" Value="1200" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="4" UsesTwoSlots="true" FlameTemperature="99999" VaporTemperature="9999" />
@@ -155,35 +180,59 @@
   </object>
 
   <object Name="Raven_Vibro Battle Axe" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{c|vibro battle axe}}" Tile="Items/sw_axe_1.bmp" ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro battle axe}}"
+      Tile="Items/sw_axe_1.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6+1" Skill="Axe" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="4" />
+    <part Name="Physics" Weight="4" />
   </object>
 
-   <object Name="Raven_Vibro Greataxe" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{c|vibro greataxe}}" Tile="Items/sw_axe_2.bmp" ColorString="&amp;c" DetailColor="y" />
+  <object Name="Raven_Vibro Greataxe" Inherits="BaseAxe">
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro greataxe}}"
+      Tile="Items/sw_axe_2.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6+3" Skill="Axe" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="Two curved, matte blades of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="Two curved, matte blades of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="6" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" UsesTwoSlots="true" />
   </object>
 
   <!-- Halberds and Vinereapers -->
@@ -236,7 +285,10 @@
     <part Name="Render" DisplayName="{{Y|steel}} halberd" Tile="Items/sw_axe_6.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="3" BaseDamage="1d4+2" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="20" />
-    <part Name="Description" Short="Its polished steel glistens on a flat plane, and skin oil stains the straps of its long leathery haft." />
+    <part
+      Name="Description"
+      Short="Its polished steel glistens on a flat plane, and skin oil stains the straps of its long leathery haft."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
@@ -246,7 +298,10 @@
     <part Name="Render" DisplayName="{{b|carbide}} vinereaper" Tile="Items/sw_axe_10.bmp" ColorString="&amp;b" />
     <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="1d5" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="40" />
-    <part Name="Description" Short="The luster of the azure edges fade to shadow at the beard of the bits, and a backspike balances the whole bladed volume." />
+    <part
+      Name="Description"
+      Short="The luster of the azure edges fade to shadow at the beard of the bits, and a backspike balances the whole bladed volume."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="4" />
@@ -256,7 +311,10 @@
     <part Name="Render" DisplayName="{{b|carbide}} halberd" Tile="Items/sw_axe_6.bmp" ColorString="&amp;b" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="1d5+2" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="40" />
-    <part Name="Description" Short="The luster of the wide azure edge fades to shadow at the beard of the bit. Hairline cracks ribbon the haft." />
+    <part
+      Name="Description"
+      Short="The luster of the wide azure edge fades to shadow at the beard of the bit. Hairline cracks ribbon the haft."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="8" UsesTwoSlots="true" />
@@ -276,7 +334,10 @@
     <part Name="Render" DisplayName="{{B|folded carbide}} halberd" Tile="Items/sw_axe_6.bmp" ColorString="&amp;B" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="1d6+3" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="Bright azure metal edged out into an elegantly curved blade bound to a long steel shaft." />
+    <part
+      Name="Description"
+      Short="Bright azure metal edged out into an elegantly curved blade bound to a long steel shaft."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="7" UsesTwoSlots="true" />
@@ -301,12 +362,21 @@
   </object>
 
   <object Name="Raven_Crysteel Vinereaper" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} vinereaper}}" Tile="Items/sw_axe_10.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} vinereaper}}"
+      Tile="Items/sw_axe_10.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="1d8+2" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Battle Axe6th" Load="Merge">
@@ -317,13 +387,22 @@
   </object>
 
   <object Name="Raven_Flawless Crysteel Vinereaper" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} vinereaper}}" Tile="Items/sw_axe_10.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} vinereaper}}"
+      Tile="Items/sw_axe_10.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="1d9+2" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Battle Axe7th" Load="Merge">
@@ -334,13 +413,22 @@
   </object>
 
   <object Name="Raven_Zetachrome Vinereaper" Inherits="BaseAxe">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} vinereaper" Tile="Items/sw_axe_10.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} vinereaper"
+      Tile="Items/sw_axe_10.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="1d10+3" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight ="2" />
+    <part Name="Physics" Weight="2" />
     <property Name="Role" Value="Rare" />
   </object>
 
@@ -352,35 +440,59 @@
   </object>
 
   <object Name="Raven_Vibro Vinereaper" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro vinereaper}}" Tile="Items/sw_axe_10.bmp" ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro vinereaper}}"
+      Tile="Items/sw_axe_10.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6+1" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Raven_Vibro Halberd" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro halberd}}" Tile="Items/sw_axe_6.bmp" ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro halberd}}"
+      Tile="Items/sw_axe_6.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6+3" Skill="Axe" Stat="Agility" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A long and curved, matte blade of ionic plastifer sits on a long haft. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A long and curved, matte blade of ionic plastifer sits on a long haft. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="7" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="7" UsesTwoSlots="true" />
   </object>
 
   <!-- Long Swords -->
@@ -524,12 +636,24 @@
   </object>
 
   <object Name="Raven_Vibro Greatsword" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{c|vibro greatsword}}" Tile="Items/sw_longblade_2.bmp" ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro greatsword}}"
+      Tile="Items/sw_longblade_2.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="2d8" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="An incredibly long, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="An incredibly long, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
@@ -545,7 +669,10 @@
     <part Name="Render" DisplayName="{{w|bronze}} rapier" Tile="items/sw_longblade_2.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" MaxStrengthBonus="1" BaseDamage="1d3" Stat="Agility" />
     <part Name="Commerce" Value="5" />
-    <part Name="Description" Short="Scratches checker the length of thin bronze blade, and skin oil dampens the leather grip." />
+    <part
+      Name="Description"
+      Short="Scratches checker the length of thin bronze blade, and skin oil dampens the leather grip."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="3" />
@@ -555,7 +682,10 @@
     <part Name="Render" DisplayName="{{w|bronze}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="1" BaseDamage="1d6" Stat="Agility" />
     <part Name="Commerce" Value="5" />
-    <part Name="Description" Short="Scratches checker the curved length of edged bell bronze, and skin oil dampens the double-handed leather grip." />
+    <part
+      Name="Description"
+      Short="Scratches checker the curved length of edged bell bronze, and skin oil dampens the double-handed leather grip."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
@@ -585,7 +715,10 @@
     <part Name="Render" DisplayName="{{Y|steel}} rapier" Tile="items/sw_longblade_2.bmp" ColorString="&amp;Y" />
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d6" Stat="Agility" />
     <part Name="Commerce" Value="20" />
-    <part Name="Description" Short="The fine blade is bright and polished. A grip is stained with dozens of oily fingerprints." />
+    <part
+      Name="Description"
+      Short="The fine blade is bright and polished. A grip is stained with dozens of oily fingerprints."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="3" />
@@ -595,7 +728,10 @@
     <part Name="Render" DisplayName="{{Y|steel}} katana" Tile="items/sw_kopesh.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="3" BaseDamage="1d10" Stat="Agility" />
     <part Name="Commerce" Value="20" />
-    <part Name="Description" Short="The curved edge is bright and polished. A wide grip is stained with dozens of oily fingerprints." />
+    <part
+      Name="Description"
+      Short="The curved edge is bright and polished. A wide grip is stained with dozens of oily fingerprints."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="5" UsesTwoSlots="true" />
@@ -615,17 +751,28 @@
     <part Name="Render" DisplayName="{{b|carbide}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;b" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="1d12" Stat="Agility" />
     <part Name="Commerce" Value="40" />
-    <part Name="Description" Short="Salt and scars form a comet's tail along the curved length of the azure blade's edge." />
+    <part
+      Name="Description"
+      Short="Salt and scars form a comet's tail along the curved length of the azure blade's edge."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="7" UsesTwoSlots="true" />
   </object>
 
   <object Name="Raven_Folded Carbide Rapier" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{B|folded carbide}} rapier" Tile="items/sw_longblade_2.bmp" ColorString="&amp;B" />
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} rapier"
+      Tile="items/sw_longblade_2.bmp"
+      ColorString="&amp;B"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d10" Stat="Agility" />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="Bright metal is polished to a ghost shine. Streaks of shaded blue show where the thin blade was carbon-folded on the forge." />
+    <part
+      Name="Description"
+      Short="Bright metal is polished to a ghost shine. Streaks of shaded blue show where the thin blade was carbon-folded on the forge."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="3" />
@@ -635,7 +782,10 @@
     <part Name="Render" DisplayName="{{B|folded carbide}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;B" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d6+1" Stat="Agility" />
     <part Name="Commerce" Value="80" />
-    <part Name="Description" Short="Bright and curved metal is polished to a ghost shine. Streaks of shaded blue show where the long blade was carbon-folded on the forge." />
+    <part
+      Name="Description"
+      Short="Bright and curved metal is polished to a ghost shine. Streaks of shaded blue show where the long blade was carbon-folded on the forge."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
@@ -660,95 +810,173 @@
   </object>
 
   <object Name="Raven_Crysteel Rapier" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} rapier}}" Tile="items/sw_longblade_2.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} rapier}}"
+      Tile="items/sw_longblade_2.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" Stat="Agility" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight ="2" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Crysteel Katana" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} katana}}" Tile="items/sw_kopesh.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} katana}}"
+      Tile="items/sw_kopesh.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="2d8+2" Stat="Agility" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight ="4" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Rapier" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} rapier}}" Tile="items/sw_longblade_2.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} rapier}}"
+      Tile="items/sw_longblade_2.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d8+1" Stat="Agility" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight ="2" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Katana" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} katana}}" Tile="items/sw_kopesh.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} katana}}"
+      Tile="items/sw_kopesh.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="2d10+1" Stat="Agility" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight ="4" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
   </object>
 
   <object Name="Raven_Zetachrome Rapier" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} rapier" Tile="items/sw_longblade_2.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} rapier"
+      Tile="items/sw_longblade_2.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d8+2" Stat="Agility" />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight ="2" />
+    <part Name="Physics" Weight="2" />
     <property Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Zetachrome Katana" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} katana"
+      Tile="items/sw_kopesh.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="2d12+1" Stat="Agility" />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight ="3" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="3" UsesTwoSlots="true" />
     <property Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Vibro Rapier" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{c|vibro rapier}}" Tile="items/sw_longblade_2.bmp" ColorString="&amp;m" DetailColor="y"/>
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro rapier}}"
+      Tile="items/sw_longblade_2.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d10" Stat="Agility" />
     <part Name="Examiner" Complexity="5" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A thin, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A thin, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="LongBladeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Raven_Vibro Katana" Inherits="BaseLongBlade">
-    <part Name="Render" DisplayName="{{c|vibro katana}}" Tile="items/sw_kopesh.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro katana}}"
+      Tile="items/sw_kopesh.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="2d8" Stat="Agility" />
     <part Name="Examiner" Complexity="5" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A curved, matte blade of ionic plastifer sits on a finger-rest hilt. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="LongBladeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight ="6" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" UsesTwoSlots="true" />
   </object>
 
   <!-- Daggers -->
@@ -761,7 +989,7 @@
   <object Name="BaseRelicDagger1" Load="Merge">
     <part Name="MeleeWeapon" Stat="Agility" />
   </object>
-  
+
   <object Name="BaseRelicDagger2" Load="Merge">
     <part Name="MeleeWeapon" Stat="Agility" />
   </object>
@@ -896,7 +1124,10 @@
     <part Name="Render" DisplayName="iron wristblade" Tile="Items/sw_shortblade_11.bmp" />
     <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d2" Slot="Arm" />
     <part Name="Commerce" Value="25" />
-    <part Name="Description" Short="A ribbon of leather is looped through the hilt of an iron blade, hairline traces of rust across its surface." />
+    <part
+      Name="Description"
+      Short="A ribbon of leather is looped through the hilt of an iron blade, hairline traces of rust across its surface."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="1" />
@@ -930,7 +1161,12 @@
   </object>
 
   <object Name="Raven_Fullerite Wristblade" Inherits="BaseDagger">
-    <part Name="Render" DisplayName="{{K|fullerite}} wristblade" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|fullerite}} wristblade"
+      Tile="Items/sw_shortblade_11.bmp"
+      ColorString="&amp;K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d3+1" Slot="Arm" />
     <part Name="Commerce" Value="105" />
     <part Name="Description" Short="A ribbon of leather is looped through the hilt of a dusky metal blade." />
@@ -939,29 +1175,56 @@
   </object>
 
   <object Name="Raven_Crysteel Wristblade" Inherits="BaseDagger">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} wristblade}}" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} wristblade}}"
+      Tile="Items/sw_shortblade_11.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d4" Slot="Arm" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="1" FlameTemperature="99999" VaporTemperature="9999" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Wristblade" Inherits="BaseDagger">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} wristblade}}" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} wristblade}}"
+      Tile="Items/sw_shortblade_11.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d4+1" Slot="Arm" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="1" FlameTemperature="99999" VaporTemperature="9999" />
   </object>
 
   <object Name="Raven_Zetachrome Wristblade" Inherits="BaseDagger">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} wristblade" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} wristblade"
+      Tile="Items/sw_shortblade_11.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d6" Slot="Arm" />
     <part Name="Commerce" Value="1200" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="1" FlameTemperature="99999" VaporTemperature="9999" />
@@ -969,12 +1232,24 @@
   </object>
 
   <object Name="Raven_Vibro Wristblade" Inherits="BaseDagger">
-    <part Name="Render" DisplayName="{{c|vibro wristblade}}" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;c" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro wristblade}}"
+      Tile="Items/sw_shortblade_11.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d4+1" Slot="Arm" />
     <part Name="Commerce" Value="300" />
     <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A short, matte blade of ionic plastifer wrapped securely around the wrist by a strap. When charged it blurs in high-width motion and jostles its material obstacles out of the way." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
+    <part
+      Name="Description"
+      Short="A short, matte blade of ionic plastifer wrapped securely around the wrist by a strap. When charged it blurs in high-width motion and jostles its material obstacles out of the way."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
     <part Name="Examiner" Complexity="5" Difficulty="0" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
@@ -1105,7 +1380,10 @@
     <part Name="Render" DisplayName="{{K|fullerite}} mace" Tile="Items/sw_cudgel_1.bmp" ColorString="&amp;K" />
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d6" />
     <part Name="Commerce" Value="160" />
-    <part Name="Description" Short="A dusky mass of gravid metal, roughly hewn to jagged edges, is welded to a steel shaft." />
+    <part
+      Name="Description"
+      Short="A dusky mass of gravid metal, roughly hewn to jagged edges, is welded to a steel shaft."
+    />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="7" />
     <tag Name="HitSound" Value="meleeTier5" />
@@ -1124,16 +1402,25 @@
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Raven_Crysteel Maceth" Inherits="BaseCudgel">
-    <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} maul}}" Tile="Items/sw_cudgel_13.bmp" ColorString="&amp;g" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} maul}}"
+      Tile="Items/sw_cudgel_13.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d6+1" />
     <part Name="Commerce" Value="320" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
+    />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight ="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier6" />
   </object>
 
@@ -1142,45 +1429,72 @@
     <part Name="Commerce" Value="640" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight ="3" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Maceth" Inherits="BaseCudgel">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} maul}}" Tile="Items/sw_cudgel_13.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} maul}}"
+      Tile="Items/sw_cudgel_13.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="5d4+2" />
     <part Name="Commerce" Value="640" />
-    <part Name="Description" Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms." />
+    <part
+      Name="Description"
+      Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight ="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier7" />
   </object>
 
   <object Name="Raven_Zetachrome Mace" Inherits="BaseCudgel">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} mace" Tile="Items/sw_cudgel_8.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} mace"
+      Tile="Items/sw_cudgel_8.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="3d6+2" />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight ="3" FlameTemperature="99999" VaporTemperature="9999" />
+    <part Name="Physics" Weight="3" FlameTemperature="99999" VaporTemperature="9999" />
     <tag Name="HitSound" Value="meleeTier8" />
     <property Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Zetachrome Maceth" Inherits="BaseCudgel">
-    <part Name="Render" DisplayName="{{zetachrome|zetachrome}} maul" Tile="Items/sw_cudgel_9.bmp" ColorString="&amp;m" DetailColor="y" />
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} maul"
+      Tile="Items/sw_cudgel_9.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="5d6+2" />
     <part Name="Commerce" Value="1280" />
-    <part Name="Description" Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces." />
+    <part
+      Name="Description"
+      Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
+    />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight ="5" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="5" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier8" />
     <property Name="Role" Value="Rare" />
   </object>
 
-<!-- rework these or remove them
+  <!-- rework these or remove them
   <object Name="Raven_Vibro Mace" Inherits="MeleeWeapon">
     <part Name="Render" DisplayName="{{c|vibro mace}}" Tile="Items/sw_cudgel_6.bmp" DetailColor="K" />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6" />
@@ -1219,13 +1533,17 @@
     <part Name="Physics" Weight="10" />
   </object>
 
-  <!-- Warhammers and Greathammers --> <!-- do descriptions -->
+  <!-- Warhammers and Greathammers -->
+  <!-- do descriptions -->
 
   <object Name="Raven_Bronze War Hammer" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{w|bronze}} warhammer" Tile="Items/sw_cudgel_2.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" MaxStrengthBonus="1" BaseDamage="1d3" Stat="Agility" />
     <part Name="Commerce" Value="5" />
-    <part Name="Description" Short="Damp leather wraps the wood handle holding a dented hammerhead of bell bronze at the end." />
+    <part
+      Name="Description"
+      Short="Damp leather wraps the wood handle holding a dented hammerhead of bell bronze at the end."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="4" />
@@ -1236,7 +1554,10 @@
     <part Name="Render" DisplayName="{{w|bronze}} greathammer" Tile="Items/sw_cudgel_3.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="1" BaseDamage="2d2" Stat="Agility" />
     <part Name="Commerce" Value="5" />
-    <part Name="Description" Short="Damp leather wraps the wood haft holding a wide dented hammerhead of bell bronze at the end." />
+    <part
+      Name="Description"
+      Short="Damp leather wraps the wood haft holding a wide dented hammerhead of bell bronze at the end."
+    />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="7" UsesTwoSlots="true" />
@@ -1331,7 +1652,10 @@
     <part Name="Render" DisplayName="{{K|fullerite}} greathammer" Tile="Items/sw_cudgel_3.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="3d6" Stat="Agility" />
     <part Name="Commerce" Value="160" />
-    <part Name="Description" Short="A large and roughly shaped hammerhead of dusky metal hangs from the end of a steel haft." />
+    <part
+      Name="Description"
+      Short="A large and roughly shaped hammerhead of dusky metal hangs from the end of a steel haft."
+    />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="9" />
   </object>
@@ -1354,7 +1678,13 @@
   </object>
 
   <object Name="Raven_Flawless Crysteel War Hammer" Inherits="BaseCudgel">
-    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} warhammer}}" Tile="Items/sw_cudgel_2.bmp" ColorString="&amp;G" DetailColor="K" />
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} warhammer}}"
+      Tile="Items/sw_cudgel_2.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
     <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="3d4+2" Stat="Agility" />
     <part Name="Commerce" Value="640" />
     <part Name="Metal" />
@@ -1364,7 +1694,11 @@
   </object>
 
   <object Name="Cudgel7th" Load="Merge">
-    <part Name="Render" DisplayName="two-handed {{K|flawless {{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
+    <part
+      Name="Render"
+      DisplayName="two-handed {{K|flawless {{crysteel|crysteel}} greathammer}}"
+      Tile="Items/sw_cudgel_7.bmp"
+    />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="5d4+2" Stat="Agility" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
@@ -1387,7 +1721,7 @@
     <part Name="Physics" Weight="5" />
   </object>
 
-<!-- rework these or remove them
+  <!-- rework these or remove them
   <object Name="Raven_Vibro War Hammer" Inherits="MeleeWeapon">
     <part Name="Render" DisplayName="{{c|vibro warhammer}}" Tile="Items/sw_cudgel_2.bmp" DetailColor="K" />
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6" Stat="Agility" />
@@ -1418,5 +1752,4 @@
     <tag Name="Tier" Value="6" />
   </object>
 -->
-
 </objects>

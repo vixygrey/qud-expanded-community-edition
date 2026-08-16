@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <genotypes>
-
-  <genotype Name="Mutated Human" Load="Merge" MutationPoints="16" RandomWeight="10" BaseHPGain="2-3" BaseSPGain="65" BaseMPGain="1-2">
+  <genotype
+    Name="Mutated Human"
+    Load="Merge"
+    MutationPoints="16"
+    RandomWeight="10"
+    BaseHPGain="2-3"
+    BaseSPGain="65"
+    BaseMPGain="1-2"
+  >
     <skills>
       <skill Name="Physic_StaunchWounds" />
       <skill Name="CookingAndGathering" />
@@ -9,14 +16,21 @@
       <skill Name="Persuasion_MenacingStare" />
     </skills>
     <reputations>
-          <reputation With="Joppa" Value="300" />
+      <reputation With="Joppa" Value="300" />
     </reputations>
     <extrainfo>Moderate HP gain and stat points to allocate</extrainfo>
     <extrainfo>+300 reputation with {{C|Joppa}}</extrainfo>
     <extrainfo>May use {{r|Menacing Stare}}</extrainfo>
   </genotype>
 
-  <genotype Name="True Kin" Load="Merge" BaseHPGain="2-4" BaseSPGain="85" CyberneticsLicensePoints="4" BodyObject="TrueKin">
+  <genotype
+    Name="True Kin"
+    Load="Merge"
+    BaseHPGain="2-4"
+    BaseSPGain="85"
+    CyberneticsLicensePoints="4"
+    BodyObject="TrueKin"
+  >
     <skills>
       <skill Name="Physic_StaunchWounds" />
       <skill Name="CookingAndGathering" />
@@ -25,13 +39,63 @@
     <extrainfo>Increased HP gain, fewer points to allocate</extrainfo>
   </genotype>
 
-  <genotype Name="Psionic Adept" MutationPoints="0" StatPoints="34" AllowedMutationCategories="" CyberneticsLicensePoints="2" RandomWeight="10" DisplayName="Psionic Adept" Subtypes="Affinities" Class="" Code="r" Tile="creatures/sw_nomad.bmp" DetailColor="M" BodyObject="PsionicAdept" BaseHPGain="1-4" BaseSPGain="95" BaseMPGain="0" Species="human" IsTrueKin="True" CharacterBuilderModules="XRL.CharacterBuilds.Qud.QudCallingModule,XRL.CharacterBuilds.Qud.QudMutationsModule">
-    <stat Name="Strength" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Strength}} score determines how effectively you penetrate your opponents' armor with melee attacks, how much damage your melee attacks do, your ability to resist forced movement, and your carry capacity." />
-    <stat Name="Agility" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Agility}} score determines your accuracy with both melee and ranged weapons and your ability to dodge attacks." />
-    <stat Name="Toughness" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Toughness}} score determines your number of hit points, your natural healing rate, and your ability to resist poison and disease." />
-    <stat Name="Intelligence" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Intelligence}} score determines your number of skill points and your ability to examine artifacts." />
-    <stat Name="Willpower" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Willpower}} score modifies the cooldowns of your activated abilities, determines your ability to resist mental attacks, and modifies your natural healing rate." />
-    <stat Name="Ego" Minimum="12" Maximum="24" ChargenDescription="Your {{W|Ego}} score determines the potency of your ability to haggle with merchants, and your ability to dominate the wills of other living creatures." />
+  <genotype
+    Name="Psionic Adept"
+    MutationPoints="0"
+    StatPoints="34"
+    AllowedMutationCategories=""
+    CyberneticsLicensePoints="2"
+    RandomWeight="10"
+    DisplayName="Psionic Adept"
+    Subtypes="Affinities"
+    Class=""
+    Code="r"
+    Tile="creatures/sw_nomad.bmp"
+    DetailColor="M"
+    BodyObject="PsionicAdept"
+    BaseHPGain="1-4"
+    BaseSPGain="95"
+    BaseMPGain="0"
+    Species="human"
+    IsTrueKin="True"
+    CharacterBuilderModules="XRL.CharacterBuilds.Qud.QudCallingModule,XRL.CharacterBuilds.Qud.QudMutationsModule"
+  >
+    <stat
+      Name="Strength"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Strength}} score determines how effectively you penetrate your opponents' armor with melee attacks, how much damage your melee attacks do, your ability to resist forced movement, and your carry capacity."
+    />
+    <stat
+      Name="Agility"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Agility}} score determines your accuracy with both melee and ranged weapons and your ability to dodge attacks."
+    />
+    <stat
+      Name="Toughness"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Toughness}} score determines your number of hit points, your natural healing rate, and your ability to resist poison and disease."
+    />
+    <stat
+      Name="Intelligence"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Intelligence}} score determines your number of skill points and your ability to examine artifacts."
+    />
+    <stat
+      Name="Willpower"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Willpower}} score modifies the cooldowns of your activated abilities, determines your ability to resist mental attacks, and modifies your natural healing rate."
+    />
+    <stat
+      Name="Ego"
+      Minimum="12"
+      Maximum="24"
+      ChargenDescription="Your {{W|Ego}} score determines the potency of your ability to haggle with merchants, and your ability to dominate the wills of other living creatures."
+    />
     <skills>
       <skill Name="Tactics_Run" />
       <skill Name="Survival_Camp" />
@@ -48,5 +112,4 @@
     <extrainfo>{{C|30}} bonus skill points each level</extrainfo>
     <extrainfo>+300 reputation with {{C|Mechanimists}}</extrainfo>
   </genotype>
-
 </genotypes>

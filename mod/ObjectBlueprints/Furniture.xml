@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <object Name="Raven_Empty Weapon Rack" Inherits="Chest">
     <part Name="Render" DisplayName="weapon rack" Tile="Items/sw_weapons_rack.bmp" ColorString="&amp;c" />
@@ -20,7 +20,19 @@
   </object>
 
   <object Name="Raven_Rusted Door" Inherits="Metal Door">
-    <part Name="Render" DisplayName="rusted door" ColorString="&amp;r^C" TileColor="&amp;r" DetailColor="C" RenderString="+" Occluding="false" RenderIfDark="true" />
-    <part Name="Description" Short="Sheet metal is locked in diamond pattern and welded into the shape of a door. The surface is scorched and scratched in sections." />
+    <part
+      Name="Render"
+      DisplayName="rusted door"
+      ColorString="&amp;r^C"
+      TileColor="&amp;r"
+      DetailColor="C"
+      RenderString="+"
+      Occluding="false"
+      RenderIfDark="true"
+    />
+    <part
+      Name="Description"
+      Short="Sheet metal is locked in diamond pattern and welded into the shape of a door. The surface is scorched and scratched in sections."
+    />
   </object>
 </objects>
