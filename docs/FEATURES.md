@@ -301,6 +301,10 @@ result among that family, and each family is equally likely.
 
 Six trees are edited. Nothing is removed; requirements and costs are retuned and one power is added.
 
+Both halves are optional, under two separate toggles — **eased skill requirements** and **retuned
+skill point costs**. They are split because their scopes differ: costs apply immediately, while
+requirements need a restart. See §13.
+
 | Tree | Change |
 |---|---|
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
@@ -1155,6 +1159,68 @@ qud-expanded/
 >
 > ⚠️ Note that the `workshop.json` **in this folder is stale**: it still contains the older
 > "please don't fork this" description. See §10 row 0b.
+
+---
+
+## 13. Options (`Options.xml`)
+
+Eleven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
+building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
+field on a loaded record.
+
+Per charter rule 6, **defaults reproduce the mod's established behaviour**. The single exception is
+the starting reputation bonus, which grants power with no content attached and so must be asked
+for rather than opted out of.
+
+### 13.1 What each option does
+
+| Option | Type | Default | Governs |
+|---|---|---|---|
+| Mutated Human mutation points | Slider 0–24 | **16** | `MutationPoints`. Vanilla gives 12. |
+| Mutated Human hit points per level | Combo | **1-5** | `BaseHPGain`. `2-3` is what 2.2 shipped, `1-4` is vanilla. See §1.2. |
+| extra skill points per level | Checkbox | **Yes** | `BaseSPGain` — 65 for mutants against vanilla's 50, 85 for True Kin against 70. |
+| extra starting skills | Checkbox | **Yes** | Staunch Wounds, Cooking and Gathering, Meal Preparation; Menacing Stare for mutants. |
+| eased skill requirements | Checkbox | **Yes** | The twenty retuned attribute requirements in §4. |
+| retuned skill point costs | Checkbox | **Yes** | The four retuned prices in §4. |
+| starting reputation bonus | Checkbox | **No** | +300 Joppa for mutants. §1.2. |
+| psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
+| home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
+| your own Chip Interface slots | Checkbox | **Yes** | The player's slots — 1 mutant, 2 True Kin. §3.1. |
+| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. |
+
+The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
+slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
+vanilla value to restore and turning them off would leave a genotype with nothing.
+
+### 13.2 When an option takes effect — three scopes
+
+This is the distinction that decides how an option must be written and what its `<helptext>` has to
+warn about. CLAUDE.md's guidance to *prefer designs whose off-switch is a runtime decision* is
+about moving features up this table.
+
+| Scope | Options | Why |
+|---|---|---|
+| **Live** — applies immediately | chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
+| **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building additionally **cannot be rebuilt** once removed from a save. |
+
+### 13.3 Two constraints worth knowing before adding another option
+
+- **A slider's `Min` must be 0 or 1.** Anything higher sends Qud's options menu into unbounded
+  recursion and crashes the game with a stack overflow the moment the menu opens — a bug in the
+  game, not the mod, which is why the crash points nowhere near its cause. Verified by bisection
+  and by every slider across the 87 mods installed locally. `tools/validate_mod.py` refuses to let
+  it back in. See issue #51.
+- **Both directions of the wiring fail silently.** A declared option that nothing reads appears in
+  the menu and does nothing; an option read but never declared makes `GetOption` return its
+  fallback forever, so the feature is stuck at its default. Neither raises an error, and
+  `validate_mod.py` checks both.
+
+Anything that mutates loaded game data must also be **idempotent and reversible**: handlers run
+repeatedly and in any order, so each one makes the data *match* the option rather than performing a
+one-way edit. That is why every toggle here stores the vanilla value it replaced — the mod's XML
+overwrote it at load, and the original is gone from memory by the time an option is read.
 
 ---
 
