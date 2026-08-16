@@ -1,0 +1,9 @@
+# Revisions to skip when running git blame — mechanical, content-free changes only.
+#
+# Enable once per clone:
+#     git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# GitHub applies this file automatically in its blame view.
+
+# style: normalise mod files to LF line endings
+e876e74ebca523ee1f5621d9ca65c4643e5fc2d9

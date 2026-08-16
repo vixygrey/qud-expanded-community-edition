@@ -1,0 +1,12 @@
+# LF everywhere, enforced in the repository regardless of contributor platform.
+#
+# The mod shipped as CRLF through upstream 2.2 (Mura worked on Windows) and was normalised to LF
+# in this fork. LF is what Qud mods overwhelmingly use — a sample of installed Workshop mods found
+# no CRLF at all — and .NET's XML parser is indifferent either way.
+#
+# To read a clean diff against the pre-normalisation baseline, use:
+#     git diff --ignore-cr-at-eol upstream-2.2
+* text=auto eol=lf
+
+# Binary: never touched, never diffed as text.
+*.png binary
