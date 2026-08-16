@@ -71,6 +71,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- **The empty armor rack is now in the Joppa building.** It existed as a blueprint but had no
+  route into the world at all — no drop table, no tinker recipe, and unlike its gun-rack and
+  weapon-rack siblings it was never placed on the map. It now sits directly below them, completing
+  the set along the building's east wall.
+  ([#37](https://github.com/vixygrey/qud-expanded-community-edition/issues/37))
+
 - `Raven_ModCorrosiveGasGeneration.cs` renamed to `Raven_ModGasGeneration.cs` to match the class
   it declares. Not a functional defect — the corrosive-gas chips always worked — but it was the
   one file of 36 breaking the filename-equals-class rule, and it is why `docs/FEATURES.md` once
