@@ -37,6 +37,14 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   states plainly that a new character is required.
   ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
 
+- **The Workshop preview image now marks this as the Community Edition.** It was Mura's original
+  *CoQ / Expanded / by TLR* logo, which gave a subscriber no way to tell the fork from the
+  original in a search listing. A green `- CE` now follows "Expanded", and `& VixyGrey` sits under
+  "by TLR". Both are in a marker face deliberately unlike Mura's chrome lettering, so they read as
+  additions rather than as part of the original logo — Mura's artwork is untouched and still the
+  dominant element, per charter rule 3.
+  ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
+
 - **The chip slot is now `Chip Interface`** (was `Chipset Interface`). The slot holds 108 chips
   against 36 chipsets, so it was named after the minority item; a chipset is a set of chips, so
   the new name is accurate for the whole catalogue. `Psionic Interface` — the name Mura's
