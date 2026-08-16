@@ -59,6 +59,14 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** Charter rule 5 amended: the mod's C# may now hold state and adjust already-loaded
+  game data, which is past the "36 inert one-line classes" the rule previously named as its
+  ceiling. The hard limits are unchanged — no file I/O, network, telemetry, reflection, Harmony or
+  external assemblies. Two new obligations come with holding state: a `[Serializable]` system's
+  field layout is written into saves and must be treated as an identifier, and anything mutating
+  loaded data must be idempotent and reversible.
+  ([#46](https://github.com/vixygrey/qud-expanded-community-edition/issues/46))
+
 - **[@Jah-yee](https://github.com/Jah-yee) credited** in the README and the Workshop description
   as this project's first outside contributor.
 

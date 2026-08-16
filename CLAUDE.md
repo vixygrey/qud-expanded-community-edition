@@ -89,14 +89,39 @@ mod-approval prompt for every subscriber. That is a trust relationship; treat it
 
 - **Prefer XML to C#.** Every feature achievable in data should be data. Less code is both safer
   and more patch-durable.
-- **Never:** file I/O outside the mod's own directory, network access of any kind, telemetry,
-  reading player files or environment, shelling out, or loading external assemblies.
-- **No Harmony.** Freehold recommend it as a last resort; it also breaks on arm64 macOS
+
+**Never — these do not move:**
+
+- file I/O outside the mod's own directory
+- network access of any kind, or telemetry
+- reading player files or the environment
+- shelling out, or loading external assemblies
+- **Harmony.** Freehold recommend it as a last resort; it also breaks on arm64 macOS
   (`../design-docs/API_VERIFICATION.md` §1). Every hook these designs need exists as a `MinEvent`.
-- **No reflection into game internals.** Public events and documented extension points only.
-- The current `mod/Scripting/` is 36 one-line `ModImprovedMutationBase<T>` subclasses — no I/O, no
-  reflection, no state. **That inertness is the ceiling**, not a starting point. Any C# that
-  wants more must justify itself explicitly.
+- **reflection into game internals.** Public members and documented extension points only.
+
+**What the mod's C# does, as of 2.3.0.** The rule used to name 36 one-line
+`ModImprovedMutationBase<T>` subclasses as the ceiling — no I/O, no reflection, no state. It now
+also:
+
+- reads its own options and writes public fields on records the game has already loaded
+  (`GenotypeEntry.MutationPoints`, `.Skills`, `.Reputations`)
+- registers a `[Serializable]` `IGameSystem` that handles a zone event and creates and destroys
+  objects within one zone
+
+**That ceiling was raised deliberately in #46, not crossed by drift** — which is the failure this
+rule exists to prevent. The hard limits above are unchanged; what changed is that C# may now hold
+state and adjust already-loaded data in response to a player's choice.
+
+**Two obligations that come with holding state:**
+
+- **Anything `[Serializable]` is written into player saves.** Its field layout is an identifier in
+  the sense of `docs/STYLEGUIDE.md` §1 — renaming or removing a field can break saves that already
+  exist. Treat a shipped system's shape as frozen unless you mean to break it.
+- **Anything that mutates loaded game data must be idempotent and reversible.** Option handlers run
+  repeatedly and in any order, so make the data *match* the option's value rather than performing a
+  one-way edit. Where that is impossible — the Joppa building, which cannot be rebuilt once
+  removed — say so in the option's `<helptext>` rather than letting the player discover it.
 
 ### 6. Configurable — players choose what they take
 
