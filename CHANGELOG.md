@@ -67,6 +67,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **(internal)** `docs/FEATURES.md` — complete feature reference reconstructed from source: 350
   new blueprints, 209 vanilla merges, and a severity-ranked defect checklist.
 - **(internal)** `docs/PERMISSION.md` — fork permission, provenance, and credit obligations.
+- **(internal)** Charter rule 6 now states the mod stays **self-contained** — one subscription,
+  not a constellation of sub-mods — with options as the mechanism and splitting a last resort.
+  Every new feature must ship with its option in the same PR.
 - **(internal)** Charter rule 6 settled: mod options will default to reproducing the mod's
   established behaviour, so installing it gives you Caves of Qud Expanded and the options let you
   opt out of parts. ([#45](https://github.com/vixygrey/qud-expanded-community-edition/issues/45))

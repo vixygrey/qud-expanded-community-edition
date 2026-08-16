@@ -209,10 +209,16 @@ in the save.
 Two candidate approaches, both unproven:
 
 1. Read the option at world generation and skip the patch.
-2. Ship the map patch as a **separate sub-mod**, which sidesteps the problem entirely.
+2. Ship the map patch as a separate sub-mod.
 
-Given it is a single 76-cell file with no dependencies on the rest of the mod, **option 2 is
-probably correct** and is the cheapest thing on this list to split.
+**Approach 1.** An earlier draft of this document recommended splitting, on the grounds that the
+patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in isolation
+and wrong for this mod: the fork is deliberately **self-contained** (`CLAUDE.md` rule 6), because
+the experience it targets is one subscription rather than an assembly of eighty.
+
+So the work goes into making the toggle work. If it turns out the map patch cannot be gated at
+zone generation, the fallback is to **ship it on and say so in the description** — not to exile
+it.
 
 ### 4.6 Loot participation — `Checkbox`, fully live
 
@@ -285,8 +291,8 @@ reasonably want some of those without the others.
 3. Starting reputation — small, and the clearest opt-out win.
 4. Psionic Adept genotype toggle.
 5. Joppa house — **decide split versus toggle first**, do not build both.
-6. Skill tree changes — last, because it is the least understood and the most likely to end as a
-   sub-mod.
+6. Skill tree changes — last, because it is the least understood. If no mechanism exists, it
+   ships on and unconditional, with that stated plainly rather than split out.
 
 Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 
@@ -314,5 +320,7 @@ answered by assumption.
 - Installed Workshop mods under `steamapps/workshop/content/333640/` — 87 mods, 12 with
   `Options.xml`, all 12 shipping C#
 - `CLAUDE.md` — charter rules 2, 5 and 6
-- `../design-docs/DESIGN_difficulty.md` §1 and §5 — the same split-versus-options argument, reached
-  independently
+- `../design-docs/DESIGN_difficulty.md` §1 and §5 — argues the opposite conclusion (split into
+  separate mods) for a *new* mod with no existing audience. The difference is deliberate: that
+  doc is designing a mod from scratch, this one is continuing a mod players already subscribe to
+  as a single item.
