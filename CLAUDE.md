@@ -347,6 +347,16 @@ provenance record meant to stay byte-for-byte. They need `-text` to opt out of E
 entirely. Check with `git ls-files --eol` and `git add --renormalize`, not by reading the
 attribute file — `git check-attr` reports an inherited `eol` value even where it does not apply.
 
+### The game ships its own API documentation
+
+`CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.xml` — **898 documented members** with
+summaries, including the full `QudGameBootModule.BOOTEVENT_*` lifecycle and the
+`AbstractEmbarkBuilderModule` chargen surface. This is better than metadata analysis and was not
+being used; `../design-docs/API_VERIFICATION.md` was written without it.
+
+Equally useful is what it *omits*: `GenotypeFactory`, `SkillFactory` and `MutationPoints` are
+absent, which is a real signal about what is and is not a supported extension point.
+
 ### The vanilla game data is readable — check it
 
 `~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base`
