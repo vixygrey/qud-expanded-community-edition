@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mod options. The filename must contain "Option" for Qud to treat it as one.
+  Declaring options is pure XML; reading them requires C# - see mod/Scripting/Raven_Options.cs.
+  Defaults reproduce the mod's established behaviour (CLAUDE.md charter rule 6).
+-->
+<options>
+
+  <option
+      ID="Option_QudExpandedCE_MutationPoints"
+      DisplayText="Qud Expanded: Mutated Human mutation points"
+      Category="Mods"
+      Type="Slider"
+      Default="16"
+      Min="6"
+      Max="24"
+      Increment="1"
+      SearchKeywords="qud expanded mutation points mutant chargen">
+    <helptext>
+      How many mutation points a Mutated Human starts character creation with.
+
+      Vanilla Caves of Qud gives {{W|12}}. Caves of Qud Expanded has always given {{W|16}}, which
+      is the default here.
+
+      {{y|Set this before creating a character.}} Changing it has no effect on a character that
+      already exists.
+    </helptext>
+  </option>
+
+</options>

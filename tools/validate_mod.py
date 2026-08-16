@@ -178,7 +178,10 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     roots = blueprint_sources(all_roots)
     defined = set()
     for cs in (MOD / "Scripting").glob("*.cs"):
-        classes = re.findall(r"public\s+class\s+(\w+)", cs.read_text(encoding="utf-8-sig"))
+        classes = re.findall(
+            r"public\s+(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+(\w+)",
+            cs.read_text(encoding="utf-8-sig"),
+        )
         defined.update(classes)
         # STYLEGUIDE.md section 5: one public class per file, filename == class name.
         if classes and cs.stem not in classes:

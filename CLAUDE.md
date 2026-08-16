@@ -429,6 +429,17 @@ being used; `../design-docs/API_VERIFICATION.md` was written without it.
 Equally useful is what it *omits*: `GenotypeFactory`, `SkillFactory` and `MutationPoints` are
 absent, which is a real signal about what is and is not a supported extension point.
 
+### For "does this API exist", read the DLL metadata, not the XML docs
+
+`Assembly-CSharp.xml` documents **some** members. `GenotypeFactory`, `SkillFactory` and
+`MutationPoints` appear in none of it — and all three exist, public, in the assembly. Absence from
+the documentation was briefly mistaken for absence from the API, which nearly redirected an entire
+design toward sub-mod splits it did not need.
+
+The metadata reader is `../lore-expansion/tools/metadata/cli_meta.py`; point its `DLL` constant at
+`CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll` (it ships with a path from another
+machine). 7,837 types, with field and method names, signatures and visibility flags.
+
 ### The vanilla game data is readable — check it
 
 `~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base`

@@ -47,10 +47,10 @@ each because two of the three are proven and one is not.
 | Feature | Mechanism | When it applies | Verified? |
 |---|---|---|---|
 | Loot participation (chips, new weapons and armor in tables) | `PopulationManager.Populations` mutated at runtime | Live | ✅ Proven — installed mods do this (`1756765609/fishvendorhotloader.cs`) |
-| Psionic Adept genotype | Chargen | Before starting a character | ⚠️ Hook exists, mechanism unproven |
-| Mutation points | Chargen | Before starting a character | ⚠️ Unproven |
-| Starting reputation | Chargen | Before starting a character | ⚠️ Unproven |
-| Skill tree changes | Unknown | ? | ❌ No worked example anywhere |
+| Psionic Adept genotype | `GenotypeFactory.Genotypes` / `.GenotypesByName` — static collections | Before starting a character | ✅ Surface confirmed |
+| Mutation points | `GenotypeEntry.MutationPoints` — public int | Before starting a character | ✅ Surface confirmed |
+| Starting reputation | `GenotypeEntry.Reputations` — public list | Before starting a character | ✅ Surface confirmed |
+| Skill tree changes | `SkillFactory.PowersByClass` → `PowerEntry.Minimum` — public | Before starting a character | ✅ Surface confirmed |
 | Joppa house | Zone generation | New game only | ⚠️ Unproven |
 | Chip Interface anatomy slot | Baked into every creature at creation | **Not gateable** | ✅ Known |
 
@@ -131,13 +131,48 @@ Used in practice by `ChooseYourFighter` (`3032410975/Scripts/PlayerModel.cs`), w
 `BOOTEVENT_AFTERBOOTPLAYEROBJECT` is the interesting one for reputation: the player object exists
 and can be adjusted before play begins.
 
-### 2.5 What is *not* documented
+### 2.5 Undocumented does not mean absent — resolved
 
-**`GenotypeFactory`, `SkillFactory`, and anything named `MutationPoints` do not appear in the API
-documentation at all**, and **no installed mod manipulates them**. Zero worked examples across 87
-mods.
+An earlier draft called this the largest risk in the document: `GenotypeFactory`, `SkillFactory`
+and `MutationPoints` appear nowhere in `Assembly-CSharp.xml`, and no installed mod touches them.
 
-This is the single largest risk in the document, and it is why §3 exists.
+**That was reading absence from the *documentation* as absence from the *API*.** A metadata pass
+over `Assembly-CSharp.dll` (7,837 types) shows all of it present, public, and shaped exactly like
+`PopulationManager.Populations`:
+
+```
+XRL.GenotypeFactory
+    public static List<GenotypeEntry>              Genotypes
+    public static Dictionary<string,GenotypeEntry> GenotypesByName
+    public static GenotypeEntry GetGenotypeEntry(string Name)
+    public static GenotypeEntry RequireGenotypeEntry(string Name)
+    public static bool TryGetGenotypeEntry(string Name, out GenotypeEntry Entry)
+
+XRL.GenotypeEntry            (all public fields)
+    int MutationPoints · int StatPoints · int CyberneticsLicensePoints
+    List<GenotypeReputation> Reputations · List<string> Skills / RemoveSkills
+    string BaseHPGain / BaseSPGain / BaseMPGain · string BodyObject
+
+XRL.World.Skills.SkillFactory
+    public Dictionary<string,SkillEntry>  SkillList · SkillByClass
+    public Dictionary<string,PowerEntry>  PowersByClass
+XRL.World.Skills.PowerEntry
+    public string Minimum · Requires · Exclusion
+
+XRL.OptionFlag             : Attribute   (ctor takes the option ID; also AllowMissing)
+XRL.HasOptionFlagUpdate    : Attribute
+XRL.OptionFlagUpdate       : Attribute
+```
+
+**Four of the five features have confirmed public surface.** None of it needs reflection — these
+are public fields and public static methods, so charter rule 5's "documented extension points
+only" is satisfied in substance: no private state is being reached into.
+
+The lesson is worth keeping: `Assembly-CSharp.xml` documents *some* members. For "does this exist
+at all", the DLL metadata is the authority. The tool is
+`../lore-expansion/tools/metadata/` — point `cli_meta.py`'s `DLL` at the installed game.
+
+The remaining unknown is **the Joppa map patch (§4.5)**, which has no identified hook.
 
 ---
 
@@ -160,7 +195,16 @@ It is the best first target for four reasons:
 **Definition of done:** an `Options.xml` slider, an `[OptionFlag]` field, and a Mutated Human
 starting with the number the slider says. Nothing else.
 
-Only after that lands should the rest be designed against a proven mechanism.
+**Status: written, untested.** `mod/Options.xml` and `mod/Scripting/Raven_Options.cs` exist. The
+surface they use is verified from metadata, but nothing here has been compiled or run — no C#
+compiler and no game in this environment. The single open question the spike exists to answer:
+
+> Does `[OptionFlagUpdate]` fire *after* `GenotypeFactory.Init()`?
+
+If it fires earlier, the write lands on a record that XML loading then overwrites, and the option
+will appear to do nothing. `TryGetGenotypeEntry` means that failure is silent rather than a crash.
+The fix, if needed, is to apply from a `QudGameBootModule.BOOTEVENT_*` hook instead — the
+lifecycle in §2.4 has several candidates, `BOOTEVENT_GAMESTARTING` being the most conservative.
 
 ---
 
