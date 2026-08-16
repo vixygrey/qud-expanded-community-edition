@@ -129,8 +129,11 @@ def check_manifest(f: Findings) -> None:
         if not data.get(key):
             f.add("manifest", f"manifest.json is missing required key: {key}")
     if "loadorder" in {k.lower() for k in data}:
-        f.add("manifest", "manifest.json uses loadorder, deprecated as of build 210 — "
-                          "use LoadBefore / LoadAfter")
+        f.add(
+            "manifest",
+            "manifest.json uses loadorder, deprecated as of build 210 — "
+            "use LoadBefore / LoadAfter",
+        )
     author = str(data.get("author", ""))
     if "Mura" not in author:
         f.add("manifest", "manifest.json author does not credit Mura — charter rule 3")
@@ -158,7 +161,9 @@ def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             try:
                 minimum = int(raw_min)
             except (TypeError, ValueError):
-                f.add("option-slider", f"{name}: Slider has no numeric Min ({raw_min!r})")
+                f.add(
+                    "option-slider", f"{name}: Slider has no numeric Min ({raw_min!r})"
+                )
                 continue
             if minimum not in (0, 1):
                 f.add(
@@ -196,12 +201,20 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
 
     read: set[str] = set()
     for cs in (MOD / "Scripting").glob("*.cs"):
-        read |= set(re.findall(r'"(Option[A-Za-z0-9_]+)"', cs.read_text(encoding="utf-8-sig")))
+        read |= set(
+            re.findall(r'"(Option[A-Za-z0-9_]+)"', cs.read_text(encoding="utf-8-sig"))
+        )
 
     for missing in sorted(declared - read):
-        f.add("option-wiring", f"{missing} is declared but never read — the option will do nothing")
+        f.add(
+            "option-wiring",
+            f"{missing} is declared but never read — the option will do nothing",
+        )
     for undeclared in sorted(read - declared):
-        f.add("option-wiring", f"{undeclared} is read but never declared — GetOption will always return the fallback")
+        f.add(
+            "option-wiring",
+            f"{undeclared} is read but never declared — GetOption will always return the fallback",
+        )
 
 
 JOPPA_SYSTEM = MOD / "Scripting" / "Raven_JoppaBuildingSystem.cs"
@@ -233,17 +246,28 @@ def check_joppa_sync(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     text = JOPPA_SYSTEM.read_text(encoding="utf-8-sig")
     block = re.search(r"PlacedObjects\s*=\s*\{(.*?)\};", text, re.DOTALL)
     if not block:
-        f.add("joppa-sync", "Raven_JoppaBuildingSystem has no PlacedObjects array to check")
+        f.add(
+            "joppa-sync",
+            "Raven_JoppaBuildingSystem has no PlacedObjects array to check",
+        )
         return
     in_code = {
         (int(x), int(y), name)
-        for x, y, name in re.findall(r'new Cel\((\d+),\s*(\d+),\s*"([^"]+)"\)', block.group(1))
+        for x, y, name in re.findall(
+            r'new Cel\((\d+),\s*(\d+),\s*"([^"]+)"\)', block.group(1)
+        )
     }
 
     for missing in sorted(in_map - in_code):
-        f.add("joppa-sync", f"Joppa.rpm places {missing[2]} at {missing[0]},{missing[1]} but the removal system does not know about it")
+        f.add(
+            "joppa-sync",
+            f"Joppa.rpm places {missing[2]} at {missing[0]},{missing[1]} but the removal system does not know about it",
+        )
     for extra in sorted(in_code - in_map):
-        f.add("joppa-sync", f"the removal system expects {extra[2]} at {extra[0]},{extra[1]} but Joppa.rpm does not place it")
+        f.add(
+            "joppa-sync",
+            f"the removal system expects {extra[2]} at {extra[0]},{extra[1]} but Joppa.rpm does not place it",
+        )
 
 
 def check_filenames(f: Findings) -> None:
@@ -297,7 +321,10 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
         defined.update(classes)
         # STYLEGUIDE.md section 5: one public class per file, filename == class name.
         if classes and cs.stem not in classes:
-            f.add("class-filename", f"{cs.name} declares {', '.join(classes)}, not {cs.stem}")
+            f.add(
+                "class-filename",
+                f"{cs.name} declares {', '.join(classes)}, not {cs.stem}",
+            )
     for path, root in roots.items():
         for part in root.iter("part"):
             name = part.get("Name", "")
@@ -463,7 +490,8 @@ def check_serializable_shape(f: Findings) -> None:
     for cs in sorted((MOD / "Scripting").glob("*.cs")):
         text = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
         for m in re.finditer(
-            r"\[\s*Serializable\s*\][\s\S]{0,400}?\b(?:class|struct)\s+([A-Za-z0-9_]+)", text
+            r"\[\s*Serializable\s*\][\s\S]{0,400}?\b(?:class|struct)\s+([A-Za-z0-9_]+)",
+            text,
         ):
             cls = m.group(1)
             brace = text.find("{", m.end())
@@ -549,7 +577,9 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     referenced: set[str] = set()
     for path, root in all_roots.items():
         for el in root.iter():
-            declares = path.suffix == ".xml"  # in a .rpm, <object Name="X"> PLACES X, it does
+            declares = (
+                path.suffix == ".xml"
+            )  # in a .rpm, <object Name="X"> PLACES X, it does
             for key, value in el.attrib.items():  # not declare it
                 if declares and key == "Name" and el.tag in ("object", "population"):
                     continue  # a declaration is not a reference to itself
