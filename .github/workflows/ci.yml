@@ -1,7 +1,13 @@
 name: CI
 
 on:
+  # `edited` is not in the default set (opened, synchronize, reopened), and without it the
+  # "PR conventions" job below cannot be satisfied: it reads the PR title from the event payload,
+  # so retitling a PR to fix a failing title neither re-runs the job nor changes what a manual
+  # re-run sees - a re-run replays the original payload. The check stays red until an unrelated
+  # commit is pushed, which is a poor reason to make someone write one.
   pull_request:
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
