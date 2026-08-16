@@ -10,3 +10,8 @@
 
 # Binary: never touched, never diffed as text.
 *.png binary
+
+# Mura's original documents are a provenance record, preserved byte-for-byte. They shipped as
+# CRLF and must not be normalised — `-text` disables all EOL conversion for them.
+docs/2.2-changelog.txt        -text
+docs/mura-feature-notes-wip.txt -text

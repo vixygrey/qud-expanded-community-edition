@@ -4,6 +4,10 @@
 #     git config blame.ignoreRevsFile .git-blame-ignore-revs
 #
 # GitHub applies this file automatically in its blame view.
+#
+# NOTE: because this repo squash-merges, the SHA to list is the *squash commit on main*, not the
+# commit on the feature branch — the branch SHA does not survive the merge. That means an entry
+# can only be added AFTER its PR merges, in a follow-up.
 
-# style: normalise mod files to LF line endings
-e876e74ebca523ee1f5621d9ca65c4643e5fc2d9
+# style: normalise mod files to LF line endings (#32)
+81070b419ec400ca1ce86b7a8be3bce6b44fffec
