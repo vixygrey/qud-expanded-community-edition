@@ -21,6 +21,17 @@ repos:
         # readability of `git diff upstream-2.2`. Formatting is tracked separately in #17.
         exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
 
+  # Python lint + format for tools/. Scoped: mod/ contains no Python, and the exclusion keeps
+  # the hook from ever reformatting shipped mod files. Pinned to the same version CI runs.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.2
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^tools/.*\.py$
+      - id: ruff-format
+        files: ^tools/.*\.py$
+
   - repo: https://github.com/crate-ci/typos
     rev: v1.49.0
     hooks:

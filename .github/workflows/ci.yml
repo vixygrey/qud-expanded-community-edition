@@ -25,6 +25,23 @@ jobs:
       - name: Validate mod
         run: python3 tools/validate_mod.py --all
 
+  python:
+    name: Python lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installed explicitly rather than via a third-party action: one fewer dependency to
+      # trust, and the pinned version is the one pre-commit and contributors run locally.
+      - name: Install ruff
+        run: pipx install ruff==0.16.2
+
+      - name: ruff check
+        run: ruff check tools/
+
+      - name: ruff format --check
+        run: ruff format --check tools/
+
   spelling:
     name: Spelling
     runs-on: ubuntu-latest
