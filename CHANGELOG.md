@@ -53,6 +53,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** Lessons from the options-menu crash recorded in `CLAUDE.md`: read a crash's
+  *type* before hypothesising (a stack overflow rules out mod code that cannot recurse), treat the
+  sibling design docs as design thinking rather than as an API reference, and batch experiments
+  when the only test environment is someone else's machine. Charter rule 6 corrected — it named
+  `[OptionFlag]` as the way to read options, where 0 of 87 installed mods use it and 17 use
+  `Options.GetOption`.
+
 - **`manifest.json`** — the mod had none, where 64 of 87 installed mods do. Declares `id`,
   `title`, `version`, `author`, `description`, `tags` and `previewImage`, and makes ordering
   against other mods expressible via `LoadBefore` / `LoadAfter` when it is ever needed.
