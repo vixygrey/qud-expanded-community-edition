@@ -82,7 +82,7 @@ def parse(path: Path, lenient: bool = False) -> ET.Element:
 
 
 def load_all(root_dir: Path, lenient: bool = False) -> list[ET.Element]:
-    """Load every XML file. Unparseable files are reported, never silently skipped — swallowing
+    """Load every XML file. Unparsable files are reported, never silently skipped — swallowing
     them makes every record they define look absent, which reads as hundreds of false defects."""
     out, failed = [], []
     for p in sorted(root_dir.rglob("*.xml")):
