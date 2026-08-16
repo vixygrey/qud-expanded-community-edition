@@ -1197,6 +1197,12 @@ Per charter rule 6, **defaults reproduce the mod's established behaviour**. The 
 the starting reputation bonus, which grants power with no content attached and so must be asked
 for rather than opted out of.
 
+> ✅ **Verified 2026-08-16: all eleven options work in game** (maintainer). Worth stating rather than
+> assuming — the mod's C# has **no compile gate**. CodeQL cannot cover it (see CLAUDE.md rule 5) and
+> there is no C# toolchain on the authoring machine, so in-game testing is the only evidence that
+> the scripting works at all. A syntax error surfaces as the mod failing to load, not as a build
+> failure.
+
 ### 13.1 What each option does
 
 | Option | Type | Default | Governs |
