@@ -48,6 +48,11 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- **`Skills.xml` now parses.** Line 10 carried a duplicate `Tile` attribute on the Berserk!
+  power — the only file in the mod that failed a strict XML parse. Confirmed in-game that Qud's
+  loader tolerated it, so the six retuned skill trees have been working all along and no player
+  was ever missing them; this is a correctness fix, not a behaviour change.
+  ([#5](https://github.com/vixygrey/qud-expanded-community-edition/issues/5))
 - Four typos, two of them in text players actually see: *"stiched"* → *"stitched"* in the bronze
   and iron scale armor descriptions, and *"have had consider alterations"* → *"considerable"* on
   the reprogrammable recoiler. Two more in source comments.

@@ -114,13 +114,6 @@
         "Raven_ZetachromeFist (Cybernetics.xml) is in no population table and has no TinkerItem"
       ],
       "count": 87
-    },
-    "wellformed": {
-      "issue": "#5 - Skills.xml duplicate Tile attribute",
-      "items": [
-        "mod/Skills.xml: duplicate attribute: line 10, column 106"
-      ],
-      "count": 1
     }
   }
 }

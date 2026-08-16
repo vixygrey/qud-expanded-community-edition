@@ -8,9 +8,8 @@ repos:
     rev: v5.0.0
     hooks:
       # NOTE: check-xml is deliberately absent. tools/validate_mod.py already parses every XML
-      # and map file, and unlike check-xml it understands the inherited-defect baseline, so it
-      # does not fail on the known Skills.xml defect (#5). Two gates that disagree is worse than
-      # one that is right.
+      # and map file, and unlike check-xml it understands the inherited-defect baseline. Two
+      # gates that can disagree is worse than one that is right.
       - id: check-json
         files: ^mod/.*\.json$
       - id: check-merge-conflict
