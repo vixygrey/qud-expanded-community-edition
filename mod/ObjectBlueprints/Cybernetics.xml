@@ -138,10 +138,10 @@
     <part Name="Description" Short="Silvery steel merely dents where where weak collagen would be smashed." />
     <part Name="Render" DisplayName="&amp;Ysteel &amp;yhand bones" Tile="Items/sw_carbidehand.bmp" ColorString="&amp;b" DetailColor="r" />
     <part Name="CyberneticsBaseItem" Slots="Hands" Cost="1" BehaviorDescription="Your fists deal 1d5 damage."/>
-    <part Name="CyberneticsFistReplacement" FistObject="SteelFist" />
+    <part Name="CyberneticsFistReplacement" FistObject="Raven_SteelFist" />
     <tag Name="Gender" Value="plural" />
   </object>
-  <object Name="SteelFist" Inherits="BaseCudgel">
+  <object Name="Raven_SteelFist" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="&amp;Ysteel &amp;yfist" Tile="Items/sw_nightvcyber.bmp" ColorString="&amp;Y" DetailColor="K" RenderString="\" />
     <part Name="MeleeWeapon" MaxStrengthBonus="999" BaseDamage="1d5" Skill="Cudgel" Stat="Strength" />
     <part Name="Commerce" Value="0" />

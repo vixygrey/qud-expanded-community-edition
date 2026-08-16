@@ -762,10 +762,10 @@ Nine elemental variants of each:
 | **Crysteel dermal plating** | 3 | Body, Head, Back | +3 AV | 12 |
 | **Zetachrome dermal plating** | 4 | Body, Head, Back | +4 AV | 16 |
 | **Omni pass** | 2 | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`). Tagged `StartingCybernetic:General` | 0 |
-| **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`SteelFist`, tier 3) | 10 |
+| **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
 | **Zetachrome hand bones** | 8 | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
 
-Plus the two supporting fist weapons (`SteelFist`, `Raven_ZetachromeFist`), both `MaxStrengthBonus="999"`.
+Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`), both `MaxStrengthBonus="999"`.
 
 #### Merged vanilla implants
 
@@ -1042,7 +1042,7 @@ Ordered roughly by impact.
 | 11 | 🟡 Low | **Psionic pistols list `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/Ranged Weapons.xml` |
 | 12 | 🟡 Low | **Psionic Adept chargen text says "+30 bonus skill points"** — actual delta is +25 vs vanilla / +10 vs the mod's True Kin | `Genotypes.xml` |
 | 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
-| 13b | 🟡 Low | **`ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
+| 13b | 🟡 Low | **`Raven_ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
 | 14 | ⚪ Note | Subtype sprite files use the prefix `corrosion*` while the subtype is named "Corrosive" — cosmetic inconsistency only | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
 | 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
