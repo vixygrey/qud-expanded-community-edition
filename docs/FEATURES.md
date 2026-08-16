@@ -270,17 +270,19 @@ Item tiers and prices are uniform across all families:
 | upgraded (`Improved`) | Tier 6 · 40 · **4** / **6** | Tier 7 · 40 · **2** / **4** |
 | perfected (`Advanced`) | Tier 8 · 60 · **6** / **10** | Tier 8 · 60 · **3** / **6** |
 
-> 🔴 **Major gap for a fork: 72 of the 144 chips can never drop.** The `Raven_Chips Tier 1/2/3`
-> tables only list *the first chip of each family* plus that family's chipset — 24 entries each.
-> Chips B and C of every family (Stunning Force, Force Bubble, Flaming Ray, Pyrokinesis,
-> Freezing Ray, Cryokinesis, Electrical Generation, Phasing, Light Manipulation, Teleportation,
-> Confusion, Acid Slime Glands, Adrenal Control, Regeneration, Domination, Mass Mind,
-> Time Dilation, Temporal Fugue, Teleport Other, Force Wall, Ego Projection, Heightened Hearing,
-> Psychometry, Precognition — × 3 grades each) appear nowhere in `PopulationTables.xml`, and
-> chips have no `TinkerItem` part, so they cannot be built either. Half the chip catalogue is
-> currently wish-only. They do not appear in Psionic Adept starting gear either — the 18
-> `StartingGear_*` tables only hand out first-of-family chips and chipsets, all of which are
-> already in the drop tables.
+> ✅ **All 144 chips can drop.** Upstream 2.2 shipped only *the first chip of each family* plus that
+> family's chipset in `Raven_Chips Tier 1/2/3` — 24 entries where 48 were needed — so chips B and C
+> of all 12 families appeared nowhere in `PopulationTables.xml`. Since no chip carries a
+> `TinkerItem` part, they could not be built either, leaving **half the flagship catalogue
+> wish-only**. Each tier table now holds **48** entries (#6, fixed in #36).
+>
+> The 18 `StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
+> deliberate — a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
+> sample of the whole catalogue.
+>
+> Chips remain **drop-only by design**: no `TinkerItem` anywhere in `PsionicChips.xml`. That is what
+> lets the *psionic chips in loot* option close the supply completely rather than leaving tinkering
+> as a way in — see §13.
 
 ### 3.4 Chip drop rates
 
@@ -945,9 +947,11 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
   **Nine new melee blueprints appear in no table at all:** the eight vibro weapons
   (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade — all
   tinkerable, so still reachable) and `Raven_Iron Maceth`, which is neither dropped nor tinkerable.
-- **Armor 1C–8C / 1R–8R** — most new armor added, but **ten pieces appear in no table**:
-  the four nanoweave pieces, the four flexi pieces, the bio-scanner mask, and the mutating mask.
-  Only the bio-scanner mask is tinkerable, so **nine armor pieces are unobtainable in play**.
+- **Armor 1C–8C / 1R–8R** — all new armor is reachable. Upstream 2.2 left **ten pieces in no
+  table** — the four nanoweave pieces, the four flexi pieces, the bio-scanner mask and the mutating
+  mask — and since only the bio-scanner mask is tinkerable, nine of them were unobtainable in play.
+  All now have drop entries (#7, fixed in #38), and `validate_mod.py`'s `reachability` check keeps
+  it that way.
   Armor 7C/7R/8C/8R each used to carry a `<removetable>` stripping the tier-below reference,
   severing vanilla's tier cascade — `Armor 8C` weights that cascade **900** against 85 of actual
   zetachrome, so a tier-8 roll is meant to be a rare jackpot rather than a guarantee. Removed in
@@ -1072,11 +1076,11 @@ Ordered roughly by impact.
 
 | # | Severity | Issue | Where |
 |---|---|---|---|
-| 0 | 🔴 **Critical — verify first** | **`Skills.xml` is not well-formed XML.** Line 10 has a duplicate attribute: `<power Name="Berserk!" … Tile="Abilities/abil_berserk.bmp" Tile="Abilities/abil_berserk.bmp" …>`. It is the only file in the mod that fails to parse. Depending on how forgiving Qud's loader is, **every skill change in §4 may be silently failing to load.** Test this before anything else. | `Skills.xml` line 10 |
-| 0b | 🔴 **Critical — do not upload as-is** | **`workshop.json` still points at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID. This fork is being released as a **separate** Workshop item, so uploading with this file intact would target Mura's page rather than creating your own. **Clear `WorkshopId` before the first upload** so Qud's uploader publishes a new item. The `Description` field is also stale (it holds Mura's pre-handoff "please don't fork this" text) and `Title` / `ImagePath` will both want changing. | `workshop.json` |
-| 1 | 🔴 High | **72 of 144 psionic chips have no drop-table entry and no tinker recipe** — half the flagship system is unobtainable | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
+| 0 | ✅ Fixed | **`Skills.xml` had a duplicate `Tile` attribute** on Berserk!, making it the only file in the mod that failed a strict parse. The open question was whether Qud's loader was tolerating it or dropping the file silently — which would have meant §4's skill changes had never shipped. It was tolerating it: the changes had been live all along, so the defect was cosmetic. Attribute removed (#5). | `Skills.xml` |
+| 0b | ✅ Fixed | **`workshop.json` pointed at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID, so uploading would have published over their item rather than creating this fork's. Cleared to `0`, which makes Qud's uploader create a new item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). `tools/validate_mod.py` has a `workshop-target` check so the upstream ID cannot come back. | `workshop.json` |
+| 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe** — half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
 | 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
-| 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
+| 2b | ✅ Fixed | **Nine new armor pieces were unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `reachability` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
