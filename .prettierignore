@@ -1,0 +1,16 @@
+# Prettier is scoped to the mod's XML and nothing else. Everything in this repo is either
+# hand-formatted, owned by another tool (Python by ruff, shell by shfmt), or a preserved
+# provenance document — so the safe default is to ignore all of it and opt mod/ back in.
+#
+# NOTE the directory re-includes below. Gitignore semantics cannot re-include a file whose
+# parent directory is still excluded, so `*` followed by only `!mod/**/*.xml` silently matches
+# nothing at all — and `prettier --check` then passes by inspecting zero files.
+*
+!mod/
+!mod/**/
+!mod/**/*.xml
+!mod/**/*.rpm
+
+# Mura's original documents are a provenance record and are never reformatted.
+docs/2.2-changelog.txt
+docs/mura-feature-notes-wip.txt
