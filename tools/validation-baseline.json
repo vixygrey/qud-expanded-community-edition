@@ -1,13 +1,6 @@
 {
   "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure.",
   "known": {
-    "class-filename": {
-      "issue": "#30 - Raven_ModCorrosiveGasGeneration.cs declares Raven_ModGasGeneration",
-      "items": [
-        "Raven_ModCorrosiveGasGeneration.cs declares Raven_ModGasGeneration, not Raven_ModCorrosiveGasGeneration"
-      ],
-      "count": 1
-    },
     "unreachable": {
       "issue": "#37 - Raven_Empty Armor Rack, furniture with no route into the world",
       "items": [

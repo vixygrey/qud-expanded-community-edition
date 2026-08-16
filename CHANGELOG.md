@@ -71,6 +71,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- `Raven_ModCorrosiveGasGeneration.cs` renamed to `Raven_ModGasGeneration.cs` to match the class
+  it declares. Not a functional defect — the corrosive-gas chips always worked — but it was the
+  one file of 36 breaking the filename-equals-class rule, and it is why `docs/FEATURES.md` once
+  reported the scripts as "36 referenced, 36 defined" while comparing filenames rather than
+  classes. ([#30](https://github.com/vixygrey/qud-expanded-community-edition/issues/30))
+
 - **Ten items that existed but could never be found are now obtainable.** The four nanoweave
   pieces, the four flexi pieces, the mutating mask and `Raven_Iron Maceth` were in no population
   table and had no tinker recipe. Each is placed in the table matching its own tier: nanoweave
