@@ -1,31 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ISOLATION TEST A: XML only, no C#, no markup in helptext.
-
-  The Options menu crashed with a stack overflow (21,697 levels of recursion, five frames
-  cycling). That shape cannot come from this mod's single-method option handler, so this build
-  removes the C# entirely to establish whether the option declaration alone is responsible.
-
-  If the menu opens: the XML is innocent, the handler is the problem.
-  If it still crashes: the problem is in this file.
--->
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <options>
 
-  <option
-      ID="OptionQudExpandedCEMutationPoints"
-      DisplayText="Qud Expanded: Mutated Human mutation points"
-      Category="Mods"
-      Type="Slider"
-      Min="6"
-      Max="24"
-      Increment="1"
-      Default="16"
-      SearchKeywords="qud expanded mutation points mutant">
-    <helptext>
-      How many mutation points a Mutated Human starts with. Vanilla is 12, this mod uses 16.
+    <!--
+        Declaring an option is pure XML. Reading it requires C# - see
+        mod/Scripting/Raven_Options.cs. Defaults reproduce the mod's established
+        behaviour, per CLAUDE.md charter rule 6.
+    -->
 
-      Set this before creating a character.
-    </helptext>
-  </option>
+    <option
+        ID="OptionQudExpandedCEMutationPoints"
+        DisplayText="{{C|Qud Expanded}}: Mutated Human mutation points"
+        Category="Mods"
+        Type="Slider"
+        Min="6"
+        Max="24"
+        Increment="1"
+        Default="16"
+        SearchKeywords="qud expanded mutation points mutant chargen">
+        <helptext>
+            How many mutation points a Mutated Human starts character creation with.
+
+            Vanilla Caves of Qud gives 12. Caves of Qud Expanded has always given 16, which is the default here.
+
+            Set this before creating a character. Changing it has no effect on a character that already exists.
+        </helptext>
+    </option>
 
 </options>
