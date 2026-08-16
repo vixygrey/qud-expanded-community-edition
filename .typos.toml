@@ -1,0 +1,36 @@
+# Qud's vocabulary is full of legitimate non-words. Extend deliberately; each entry is an
+# assertion that the word is correct, not that the warning is annoying.
+[default.extend-words]
+qud = "qud"
+crysteel = "crysteel"
+zetachrome = "zetachrome"
+fullerite = "fullerite"
+carbide = "carbide"
+joppa = "joppa"
+dromad = "dromad"
+snapjaw = "snapjaw"
+urshiib = "urshiib"
+yuckwheat = "yuckwheat"
+witchwood = "witchwood"
+watervine = "watervine"
+maceth = "maceth"        # Mura's two-handed suffix convention: mace + th
+vinereaper = "vinereaper"
+nanoweave = "nanoweave"
+flexi = "flexi"
+esper = "esper"
+mehmet = "mehmet"
+irudad = "irudad"
+yrame = "yrame"
+# Qud stat abbreviations used in docs tables
+TOU = "TOU"
+WIL = "WIL"
+AGI = "AGI"
+inh = "inh"          # FEATURES.md shorthand for an inherited stat
+retuned = "retuned"  # re-tuned; flagged by older typos versions
+
+[files]
+extend-exclude = [
+  "docs/2.2-changelog.txt",        # Mura's document, preserved verbatim
+  "docs/mura-feature-notes-wip.txt",
+  "mod/Textures/**",
+]

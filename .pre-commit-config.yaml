@@ -1,0 +1,51 @@
+# Local gates. CI (.github/workflows/ci.yml) runs the same checks — these just fail faster.
+#   pre-commit install     once, per clone
+#   pre-commit run --all-files
+default_install_hook_types: [pre-commit, pre-push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # NOTE: check-xml is deliberately absent. tools/validate_mod.py already parses every XML
+      # and map file, and unlike check-xml it understands the inherited-defect baseline, so it
+      # does not fail on the known Skills.xml defect (#5). Two gates that disagree is worse than
+      # one that is right.
+      - id: check-json
+        files: ^mod/.*\.json$
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: end-of-file-fixer
+        exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
+      - id: trailing-whitespace
+        # mod/ is excluded deliberately: reformatting it wholesale would destroy the
+        # readability of `git diff upstream-2.2`. Formatting is tracked separately in #17.
+        exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.29.4
+    hooks:
+      - id: typos
+        args: [--config, .typos.toml]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.23.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: validate-mod
+        name: validate mod (reachability, merge discipline, scripts)
+        entry: python3 tools/validate_mod.py
+        language: system
+        pass_filenames: false
+        files: ^mod/
+
+      - id: no-commit-to-main
+        # GitHub protects main server-side, but failing here beats a rejected push. See #20.
+        name: refuse commits on main
+        entry: bash -c '[ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] || { echo "Refusing to commit on main. Branch first — see CLAUDE.md § Workflow."; exit 1; }'
+        language: system
+        pass_filenames: false
+        always_run: true
