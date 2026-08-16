@@ -202,6 +202,48 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         f.add("option-wiring", f"{undeclared} is read but never declared — GetOption will always return the fallback")
 
 
+JOPPA_SYSTEM = MOD / "Scripting" / "Raven_JoppaBuildingSystem.cs"
+
+
+def check_joppa_sync(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """The Joppa removal system embeds the map patch's contents; keep them in step.
+
+    Raven_JoppaBuildingSystem removes the building by exact (cell, blueprint) match, using a list
+    generated from mod/Joppa.rpm. If the map is edited and that list is not regenerated, the
+    option silently leaves the new objects behind — no error, just a half-removed building.
+    """
+    if not JOPPA_SYSTEM.is_file():
+        return
+    rpm = MOD / "Joppa.rpm"
+    if not rpm.is_file():
+        return
+
+    try:
+        root = parse(rpm)
+    except ET.ParseError:
+        return  # check_wellformed reports this
+    in_map = {
+        (int(c.get("X")), int(c.get("Y")), o.get("Name"))
+        for c in root.iter("cell")
+        for o in c.findall("object")
+    }
+
+    text = JOPPA_SYSTEM.read_text(encoding="utf-8-sig")
+    block = re.search(r"PlacedObjects\s*=\s*\{(.*?)\};", text, re.S)
+    if not block:
+        f.add("joppa-sync", "Raven_JoppaBuildingSystem has no PlacedObjects array to check")
+        return
+    in_code = {
+        (int(x), int(y), name)
+        for x, y, name in re.findall(r'new Cel\((\d+),\s*(\d+),\s*"([^"]+)"\)', block.group(1))
+    }
+
+    for missing in sorted(in_map - in_code):
+        f.add("joppa-sync", f"Joppa.rpm places {missing[2]} at {missing[0]},{missing[1]} but the removal system does not know about it")
+    for extra in sorted(in_code - in_map):
+        f.add("joppa-sync", f"the removal system expects {extra[2]} at {extra[0]},{extra[1]} but Joppa.rpm does not place it")
+
+
 def check_filenames(f: Findings) -> None:
     """Spaces force quoting in every script, hook and CI step. STYLEGUIDE.md section 3."""
     for path in MOD.rglob("*"):
@@ -337,6 +379,7 @@ def run() -> Findings:
     check_manifest(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
+    check_joppa_sync(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
