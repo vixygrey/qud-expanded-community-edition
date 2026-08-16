@@ -23,7 +23,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
 | **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
-| **Skill tree edits** | 6 skill trees retuned; Akimbo added to Multiweapon Fighting |
+| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
 | **Loot tables** | **54** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
@@ -270,17 +270,19 @@ Item tiers and prices are uniform across all families:
 | upgraded (`Improved`) | Tier 6 · 40 · **4** / **6** | Tier 7 · 40 · **2** / **4** |
 | perfected (`Advanced`) | Tier 8 · 60 · **6** / **10** | Tier 8 · 60 · **3** / **6** |
 
-> 🔴 **Major gap for a fork: 72 of the 144 chips can never drop.** The `Raven_Chips Tier 1/2/3`
-> tables only list *the first chip of each family* plus that family's chipset — 24 entries each.
-> Chips B and C of every family (Stunning Force, Force Bubble, Flaming Ray, Pyrokinesis,
-> Freezing Ray, Cryokinesis, Electrical Generation, Phasing, Light Manipulation, Teleportation,
-> Confusion, Acid Slime Glands, Adrenal Control, Regeneration, Domination, Mass Mind,
-> Time Dilation, Temporal Fugue, Teleport Other, Force Wall, Ego Projection, Heightened Hearing,
-> Psychometry, Precognition — × 3 grades each) appear nowhere in `PopulationTables.xml`, and
-> chips have no `TinkerItem` part, so they cannot be built either. Half the chip catalogue is
-> currently wish-only. They do not appear in Psionic Adept starting gear either — the 18
-> `StartingGear_*` tables only hand out first-of-family chips and chipsets, all of which are
-> already in the drop tables.
+> ✅ **All 144 chips can drop.** Upstream 2.2 shipped only *the first chip of each family* plus that
+> family's chipset in `Raven_Chips Tier 1/2/3` — 24 entries where 48 were needed — so chips B and C
+> of all 12 families appeared nowhere in `PopulationTables.xml`. Since no chip carries a
+> `TinkerItem` part, they could not be built either, leaving **half the flagship catalogue
+> wish-only**. Each tier table now holds **48** entries (#6, fixed in #36).
+>
+> The 18 `StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
+> deliberate — a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
+> sample of the whole catalogue.
+>
+> Chips remain **drop-only by design**: no `TinkerItem` anywhere in `PsionicChips.xml`. That is what
+> lets the *psionic chips in loot* option close the supply completely rather than leaving tinkering
+> as a way in — see §13.
 
 ### 3.4 Chip drop rates
 
@@ -315,13 +317,28 @@ requirements need a restart. See §13.
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
 | **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
 | **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. |
-| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. **Akimbo added** (cost 150, Agility 17) — "Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them." |
+| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it — see below. |
 | **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
 | **Tinkering** | *Disassemble* cost **→ 0** (free with the tree). *Reverse Engineer* cost **100 → 200**. *Tinker I* Int **19 → 17**, *Tinker II* **23 → 21**, *Tinker III* **29 → 25**. |
 
-> ⚠️ **Compatibility note:** the new Akimbo power uses `Class="Pistol_Akimbo"` — the same
-> implementation class as the Pistol tree's Akimbo. A character who buys both will own two
-> abilities backed by one class. Worth testing before release.
+> ✅ **Akimbo was removed from Multiweapon Fighting in #88** (closing #11), and the story is worth
+> keeping because it is this repo's clearest demonstration that **`Class=` is an identifier**.
+>
+> Upstream 2.2 added Akimbo to Multiweapon Fighting under `Class="Pistol_Akimbo"` — the *same*
+> implementation class as the Pistol tree's Akimbo. `SkillFactory.PowersByClass` holds one entry
+> per class, and vanilla grants powers **by class**: the Gunslinger calling is
+> `<skill Name="Pistol_Akimbo" />`. So the mod's power was served wherever the game asked for
+> vanilla's, and Gunslingers silently got the wrong one.
+>
+> None of it was visible for years, because both powers were named "Akimbo" and rendered
+> identically. It surfaced only when this fork renamed one of them while working on something else.
+> Giving the mod's copy a distinct class fixed the Gunslinger but left a character who bought both
+> holding the ability twice, with a skills screen that would not close — so the power was removed
+> rather than shipped with a known way to spoil a run.
+>
+> Nothing is lost that cannot be had elsewhere: Akimbo is unchanged in the Pistol tree, where it has
+> always lived, and Multiweapon Fighting keeps this mod's reduced requirements above.
+> `docs/STYLEGUIDE.md` §1.0c carries the general rule.
 
 > ℹ️ The 2.2 changelog notes that vanilla itself adopted Strength-or-Agility for Multiweapon
 > Fighting, so only the **requirement reduction** there is still a mod change. The
@@ -945,9 +962,11 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
   **Nine new melee blueprints appear in no table at all:** the eight vibro weapons
   (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade — all
   tinkerable, so still reachable) and `Raven_Iron Maceth`, which is neither dropped nor tinkerable.
-- **Armor 1C–8C / 1R–8R** — most new armor added, but **ten pieces appear in no table**:
-  the four nanoweave pieces, the four flexi pieces, the bio-scanner mask, and the mutating mask.
-  Only the bio-scanner mask is tinkerable, so **nine armor pieces are unobtainable in play**.
+- **Armor 1C–8C / 1R–8R** — all new armor is reachable. Upstream 2.2 left **ten pieces in no
+  table** — the four nanoweave pieces, the four flexi pieces, the bio-scanner mask and the mutating
+  mask — and since only the bio-scanner mask is tinkerable, nine of them were unobtainable in play.
+  All now have drop entries (#7, fixed in #38), and `validate_mod.py`'s `reachability` check keeps
+  it that way.
   Armor 7C/7R/8C/8R each used to carry a `<removetable>` stripping the tier-below reference,
   severing vanilla's tier cascade — `Armor 8C` weights that cascade **900** against 85 of actual
   zetachrome, so a tier-8 roll is meant to be a rare jackpot rather than a guarantee. Removed in
@@ -1072,11 +1091,11 @@ Ordered roughly by impact.
 
 | # | Severity | Issue | Where |
 |---|---|---|---|
-| 0 | 🔴 **Critical — verify first** | **`Skills.xml` is not well-formed XML.** Line 10 has a duplicate attribute: `<power Name="Berserk!" … Tile="Abilities/abil_berserk.bmp" Tile="Abilities/abil_berserk.bmp" …>`. It is the only file in the mod that fails to parse. Depending on how forgiving Qud's loader is, **every skill change in §4 may be silently failing to load.** Test this before anything else. | `Skills.xml` line 10 |
-| 0b | 🔴 **Critical — do not upload as-is** | **`workshop.json` still points at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID. This fork is being released as a **separate** Workshop item, so uploading with this file intact would target Mura's page rather than creating your own. **Clear `WorkshopId` before the first upload** so Qud's uploader publishes a new item. The `Description` field is also stale (it holds Mura's pre-handoff "please don't fork this" text) and `Title` / `ImagePath` will both want changing. | `workshop.json` |
-| 1 | 🔴 High | **72 of 144 psionic chips have no drop-table entry and no tinker recipe** — half the flagship system is unobtainable | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
+| 0 | ✅ Fixed | **`Skills.xml` had a duplicate `Tile` attribute** on Berserk!, making it the only file in the mod that failed a strict parse. The open question was whether Qud's loader was tolerating it or dropping the file silently — which would have meant §4's skill changes had never shipped. It was tolerating it: the changes had been live all along, so the defect was cosmetic. Attribute removed (#5). | `Skills.xml` |
+| 0b | ✅ Fixed | **`workshop.json` pointed at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID, so uploading would have published over their item rather than creating this fork's. Cleared to `0`, which makes Qud's uploader create a new item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). `tools/validate_mod.py` has a `workshop-target` check so the upstream ID cannot come back. | `workshop.json` |
+| 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe** — half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
 | 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
-| 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
+| 2b | ✅ Fixed | **Nine new armor pieces were unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `reachability` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
@@ -1136,7 +1155,7 @@ qud-expanded/
 ├── Mods.xml                    # Makes Gigantic tinkerable
 ├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
 ├── Subtypes.xml                # 18 affinities in 2 categories
-├── Skills.xml                  # 6 tree edits, Akimbo added
+├── Skills.xml                  # 6 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + Yttrian anatomies
 ├── PopulationTables.xml        # 76 tables (48 merge / 28 new)
 ├── Joppa.rpm                   # 76-cell amenity building

@@ -349,7 +349,10 @@ Under git as of 2026-08-15, with a deliberate two-commit baseline:
 | `da753b7` | This fork's docs — `FEATURES.md`, `PERMISSION.md`, `CLAUDE.md`, `.gitignore` (later moved to `docs/`) |
 
 So `git diff upstream-2.2` shows exactly what the fork has changed, forever. Keep that true:
-never amend or rewrite the baseline commit. No remote is configured yet.
+never amend or rewrite the baseline commit.
+
+The remote is [`vixygrey/qud-expanded-community-edition`](https://github.com/vixygrey/qud-expanded-community-edition),
+with issues and CI both in use.
 
 ## Workflow
 
@@ -378,10 +381,13 @@ Trunk-based, per the global rules, with these project specifics:
   A PR without a changelog entry is incomplete, not merely untidy: the changelog is where charter
   rule 2's causality reaches players, who never read commit messages.
   Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
-- Run the validation script before every commit. It is the only automated gate that exists.
+- Run `python3 tools/validate_mod.py` before every commit. CI runs it too, alongside prettier for
+  XML formatting, `typos`, ruff, gitleaks, CodeQL, and a PR-conventions job that checks the title
+  and the changelog — but locally is where it costs you seconds instead of a round trip.
 
-> ⚠️ **Bootstrapping gap: there is no remote and no issue tracker yet.** "Issues first" cannot
-> start until a GitHub repo exists. Creating it is the first chore.
+> **None of these gates reads prose.** Every one inspects a machine-readable property, so a
+> document asserting something no longer true passes all of them. See *Stale prose rots silently*
+> below, and grep the docs for a defect's name in the PR that closes it.
 
 ## Lessons learned
 
