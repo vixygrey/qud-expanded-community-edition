@@ -24,6 +24,7 @@ namespace QudExpandedCE
     public static class Raven_Options
     {
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
+        public const string MutantHPGainID = "OptionQudExpandedCEMutantHPGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
@@ -73,6 +74,25 @@ namespace QudExpandedCE
         public const int DefaultMutationPoints = 16;
 
         /// <summary>
+        /// The HP-per-level range this mod has always documented, and the option's default.
+        /// Vanilla gives 1-4; 2.2 shipped 2-3 by mistake. Kept in sync with Default= in
+        /// mod/Options.xml and with BaseHPGain in mod/Genotypes.xml.
+        /// </summary>
+        public const string DefaultMutantHPGain = "1-5";
+
+        /// <summary>
+        /// Every range the option offers. An unrecognised value falls back to the default rather
+        /// than reaching GenotypeEntry.BaseHPGain, because the game parses that string at every
+        /// level-up and a malformed one would fail there rather than here.
+        /// </summary>
+        private static readonly HashSet<string> MutantHPGainChoices = new HashSet<string>
+        {
+            "1-5",
+            "2-3",
+            "1-4",
+        };
+
+        /// <summary>
         /// Skills this mod grants on top of vanilla's, per genotype.
         ///
         /// Vanilla gives Mutated Human {Run, Camp} and True Kin {Rebuke Robot, Run, Camp}; none of
@@ -118,6 +138,7 @@ namespace QudExpandedCE
         public static void OnOptionFlagUpdate()
         {
             ApplyMutationPoints();
+            ApplyMutantHPGain();
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
@@ -200,6 +221,27 @@ namespace QudExpandedCE
             if (GenotypeFactory.TryGetGenotypeEntry(Mutant, out GenotypeEntry entry))
             {
                 entry.MutationPoints = points;
+            }
+        }
+
+        /// <summary>
+        /// Set the Mutated Human's hit points per level.
+        ///
+        /// Unlike mutation points and starting skills, this is not a chargen-time value:
+        /// XRL.World.Parts.Leveler reads BaseHPGain through RollHP(string) at every level-up, so
+        /// the change is live from a character's next level rather than needing a new one.
+        /// </summary>
+        private static void ApplyMutantHPGain()
+        {
+            string range = Options.GetOption(MutantHPGainID, DefaultMutantHPGain);
+            if (!MutantHPGainChoices.Contains(range))
+            {
+                range = DefaultMutantHPGain;
+            }
+
+            if (GenotypeFactory.TryGetGenotypeEntry(Mutant, out GenotypeEntry entry))
+            {
+                entry.BaseHPGain = range;
             }
         }
 

@@ -34,6 +34,28 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCEMutantHPGain"
+    DisplayText="{{C|Qud Expanded}}: Mutated Human hit points per level"
+    Category="Mods"
+    Type="Combo"
+    Values="1-5,2-3,1-4"
+    Default="1-5"
+    SearchKeywords="qud expanded mutation hit points hp level mutant health"
+  >
+    <helptext>
+            How many hit points a Mutated Human rolls each time they gain a level. The range is rolled fresh every level, so a change takes effect from your next level onward.
+
+            {{G|1-5}} is what this mod has always documented: swingier than vanilla, with a higher ceiling, deliberately the opposite of the True Kin's steady {{G|2-4}}.
+
+            {{y|2-3}} is what version 2.2 actually shipped, through what appears to have been a mistake. It averages exactly what vanilla does and is strictly worse than the True Kin's range.
+
+            {{y|1-4}} is vanilla's.
+
+            True Kin and Psionic Adepts are unaffected either way.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEStartingSkills"
     DisplayText="{{C|Qud Expanded}}: extra starting skills"
     Category="Mods"
