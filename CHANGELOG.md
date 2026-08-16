@@ -59,6 +59,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **[@Jah-yee](https://github.com/Jah-yee) credited** in the README and the Workshop description
+  as this project's first outside contributor.
+
 - **(internal)** CI leaves an informational note when a pull request has maintainer edits
   disabled, explaining what enabling it would allow. It never fails the build — a contribution
   should not be rejected over a checkbox the contributor owns.
