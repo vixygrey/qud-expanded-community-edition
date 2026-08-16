@@ -69,10 +69,9 @@ namespace QudExpandedCE
         /// <summary>
         /// The mod's one addition to the Multiweapon Fighting tree, and the skill it lives in.
         ///
-        /// It shares Pistol_Akimbo with the Pistol tree's Akimbo deliberately. A separate class
-        /// would not help: Pistol_Akimbo answers CanFireAllMissileWeaponsEvent, a boolean gate, so
-        /// two copies would both answer "yes" and the player would own two identical permissions.
-        /// Sharing at least makes a second purchase a no-op rather than a duplicate.
+        /// It has its own class, Raven_TwoGunStance, rather than reusing Pistol_Akimbo. Sharing
+        /// the class displaced vanilla's entry in SkillFactory.PowersByClass, which holds one
+        /// PowerEntry per class - see Raven_TwoGunStance for what that broke.
         /// </summary>
         private const string MultiweaponSkill = "Multiweapon Fighting";
         private const string TwoGunStance = "Two-Gun Stance";
@@ -83,7 +82,7 @@ namespace QudExpandedCE
         /// <summary>The key it was filed under, so it goes back exactly where it came from.</summary>
         private static string DetachedKey;
 
-        private const string SharedAkimboClass = "Pistol_Akimbo";
+        private const string TwoGunStanceClass = "Raven_TwoGunStance";
 
         /// <summary>Kept in sync with the Description in mod/Skills.xml.</summary>
         private const string TwoGunStanceDescriptionStart =
@@ -226,7 +225,7 @@ namespace QudExpandedCE
         {
             foreach (KeyValuePair<string, PowerEntry> pair in skill.Powers)
             {
-                if (pair.Key == TwoGunStance || pair.Key == SharedAkimboClass)
+                if (pair.Key == TwoGunStance || pair.Key == TwoGunStanceClass)
                 {
                     return pair.Key;
                 }
