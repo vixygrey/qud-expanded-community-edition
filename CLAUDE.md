@@ -33,8 +33,11 @@ Compatible with vanilla, with future Qud patches, and with other mods. In practi
 
 - **Merge, never replace.** `Load="Merge"` on every touch of a vanilla object or table. A full
   redeclaration both conflicts with any other mod touching the same record *and* silently
-  discards future vanilla additions to it. Two standing violations: the `Artifact 3`–`8`
-  replacements, and the `<removetable>` chain in `Armor 7C/7R/8C/8R` that severs tier cascade.
+  discards future vanilla additions to it. **The two inherited violations are now paid off** —
+  the `Artifact 3`–`8` replacements (#3, fixed in #34) and the `<removetable>` chain in
+  `Armor 7C/7R/8C/8R` that severed the tier cascade (#4, fixed in #85). They are recorded here
+  because they were debt, not precedent: both were deliberate upstream choices made for
+  convenience, and both cost more than they bought. Don't reintroduce either shape.
 - **Additive over destructive.** Add entries rather than removing them; adjust weights rather
   than stripping tables.
 - **Know the blast radius.** The `Chip Interface` merge into base `Humanoid` reaches every
@@ -230,34 +233,23 @@ mod already ships `mod/Scripting/`, so the subscriber approval prompt is **alrea
 option-reading plus table adjustment stays well inside rule 5's limits — no I/O, no network, no
 reflection. It licenses nothing beyond that.
 
-## Immediate priorities
+## Release blockers — all five cleared
 
-These are the things blocking a first release, in order. **The mod loads and plays on current
-Qud** — none of this is about getting it to run.
+Five items were identified at the start of the fork as blocking a first release. **All five are
+now closed.** The list is kept as a record rather than a queue, because each was a real upstream
+defect and the shape of each is worth not reintroducing. **The mod loads and plays on current
+Qud** — none of this was ever about getting it to run.
 
-1. **`mod/workshop.json` still has `"WorkshopId": 1134036260`** — Mura's item. This fork releases
-   *separately*, so that field must be cleared or the uploader targets their page. `Description`
-   also holds Mura's pre-handoff text (which asks that the mod *not* be forked); `Title` and
-   `ImagePath` need updating too. Upload blocker and a charter-rule-3 obligation at once.
-2. **`Artifact 3`–`Artifact 8` are full table replacements, not merges.** The mod's worst
-   compatibility defect: conflicts with any other mod touching those tables, and silently
-   discards future vanilla additions to them. Charter rule 1 makes this the highest-value fix in
-   the codebase. See `docs/FEATURES.md` §7.3. Same class of problem, smaller: the `<removetable>`
-   chain in `Armor 7C/7R/8C/8R`.
-3. **`mod/Skills.xml` is not well-formed** — line 10 has a duplicate `Tile` attribute on Berserk!.
-   It is the only file in the mod that fails a strict XML parse. Since the mod otherwise plays
-   fine, Qud's loader is either tolerating it or dropping this one file silently; Qud loads files
-   independently, so both are consistent with what we see. **Determine which before fixing** —
-   check `Player.log` for a load error, and test in-game whether an Agility-primary character can
-   actually buy Axe → Cleave. That answer tells you whether §4's skill changes have ever shipped.
-4. **72 of 144 psionic chips can't drop.** `Raven_Chips Tier 1/2/3` only list the first chip of
-   each family plus its chipset (24 entries where 48 are needed). Chips B and C of all 12
-   families are in no table and have no `TinkerItem`. See `docs/FEATURES.md` §3.3.
-5. **Nine armor pieces are unobtainable** — the four nanoweave, four flexi, and the mutating mask
-   have no drop entry and no tinker recipe. Plus `Raven_Iron Maceth`. See §7.2.
+| What it was | Where it landed |
+|---|---|
+| `mod/workshop.json` carried `"WorkshopId": 1134036260` — Mura's item — plus their pre-handoff description asking that the mod not be forked | `WorkshopId` cleared to `0` so the uploader creates a **new** item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2) |
+| `Artifact 3`–`8` were full table replacements, not merges | All six merge, each contributing one `Raven_Chips Tier N` entry (#3, fixed in #34). See `docs/FEATURES.md` §7.3 |
+| `mod/Skills.xml` failed a strict XML parse — a duplicate `Tile` attribute on Berserk! | Cosmetic, and settled before the fix: Qud's loader tolerated it, so §4's skill changes had been shipping all along. Attribute removed (#5) |
+| 72 of 144 psionic chips could not drop | `Raven_Chips Tier 1/2/3` now hold 48 entries each (#6, fixed in #36) |
+| Nine armor pieces and `Raven_Iron Maceth` were unobtainable — no drop entry, no tinker recipe | All reachable; `tools/validate_mod.py` reports **0** known inherited defects (#7, fixed in #38) |
 
-Lower-priority items (value typos, tier typos, the `<stag>` bug, the Akimbo class collision) are
-in `docs/FEATURES.md` §10, severity-ranked with file and line.
+Remaining work lives in the issue tracker. `docs/FEATURES.md` §10 is still the severity-ranked
+backlog, with a file and line on every open row.
 
 ## Conventions to preserve
 
@@ -279,8 +271,9 @@ Mura was consistent. Match these when adding anything.
   war hammers all use `Stat="Agility"` while keeping their tree's skill.
 - **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
   `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
-- **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables are the one
-  place this was violated, and it's the mod's worst compatibility problem — don't add more.
+- **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables were the one
+  place this was violated; they were converted to merges in #34, and `tools/validate_mod.py`'s
+  `merge-discipline` check now holds the line. Don't add new violations for it to catch.
 
 ## Naming decision — settled
 
@@ -373,7 +366,7 @@ Trunk-based, per the global rules, with these project specifics:
 - **Conventional commits**, with scopes that match this repo's structure:
   `tables` (`mod/PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
   `genotypes` · `bodies` · `workshop` · `scripting` · `docs`.
-  Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #4)`.
+  Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #3)`.
 - **The body carries the causality.** Charter rule 2 lives or dies here — say *why*, and cite the
   convention or the in-world reason. A one-line commit body is a rule-2 violation.
 - **Every PR states its compatibility impact** — which vanilla records it touches and whether the
