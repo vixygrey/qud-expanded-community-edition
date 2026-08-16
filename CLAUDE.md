@@ -655,8 +655,9 @@ of them reads a sentence and asks whether it is still true.** So documentation d
 at all — the same silent-failure shape as an orphaned `Load="Merge"`, but across every file a
 contributor reads *first*.
 
-Measured at the point the option toggles landed (#93): **all five** of the "Immediate priorities"
-above were closed, `docs/FEATURES.md` §7.3 still called a defect fixed months earlier in #34 the
+Measured at the point the option toggles landed (#93): **all five** of the items in *Release
+blockers* above were closed while that section was still titled "Immediate priorities" and written
+as a queue, `docs/FEATURES.md` §7.3 still called a defect fixed months earlier in #34 the
 "🔴 Biggest compatibility hazard in the mod", and §3.4's drop-rate arithmetic still read `10 / 100`,
 which was only correct under the table *replacement* that #34 had removed. One of those is a wrong
 number that would have been repeated as fact by anyone who trusted the doc.
