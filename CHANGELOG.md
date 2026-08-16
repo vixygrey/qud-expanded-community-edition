@@ -64,6 +64,16 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   the game's options menu into unbounded recursion; the check refuses any such slider, and also
   catches a `Default` outside its own `Min`..`Max`.
   ([#51](https://github.com/vixygrey/qud-expanded-community-edition/issues/51))
+- **Two more options: extra starting skills, and the starting reputation bonus.**
+  *Extra starting skills* (**on** by default, as the mod has always behaved) gives Mutated Humans
+  and True Kin Staunch Wounds, Cooking and Gathering and Meal Preparation, plus Menacing Stare for
+  mutants. Turning it off restores exactly vanilla's starting skills — vanilla's own are never
+  removed, and Psionic Adepts are unaffected, since their skills are not an addition to a vanilla
+  genotype but the whole of what they start with.
+  *Starting reputation bonus* (**off** by default) gives Mutated Humans +300 with Joppa. It is off
+  because it grants power with nothing attached to use it — the exception written into charter
+  rule 6. True Kin keep their vanilla Templar standing either way.
+  ([#44](https://github.com/vixygrey/qud-expanded-community-edition/issues/44))
 - **Mod options menu, first entry: a mutation-point slider.** Mutated Humans start with 16
   mutation points by default, as this mod has always given, and the slider covers 0–24 for
   players who want vanilla's 12 or something else. Set it before creating a character.

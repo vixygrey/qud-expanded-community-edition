@@ -4,12 +4,14 @@
     <!--
         Declaring an option is pure XML. Reading it requires C# - see
         mod/Scripting/Raven_Options.cs. Defaults reproduce the mod's established
-        behaviour, per CLAUDE.md charter rule 6.
+        behaviour, per CLAUDE.md charter rule 6, except where an option grants power
+        with no content attached - those default off.
 
-        Min MUST be 0 or 1. A slider with Min above 1 sends Qud's options menu into
-        unbounded recursion and crashes the game with a stack overflow the moment the
-        menu is opened. Verified: Min="6" crashes, Min="0" does not. Every slider across
-        the 87 mods installed locally uses 0 or 1. See docs/DESIGN_options.md.
+        Slider Min MUST be 0 or 1. A slider with Min above 1 sends Qud's options menu
+        into unbounded recursion and crashes the game with a stack overflow the moment
+        the menu is opened. Verified: Min="6" crashes, Min="0" does not. Every slider
+        across the 87 mods installed locally uses 0 or 1. See issue #51, and
+        tools/validate_mod.py, which refuses to let this be reintroduced.
     -->
 
     <option
@@ -28,6 +30,42 @@
             Vanilla Caves of Qud gives 12. Caves of Qud Expanded has always given 16, which is the default here.
 
             Set this before creating a character. Changing it has no effect on a character that already exists.
+        </helptext>
+    </option>
+
+    <option
+        ID="OptionQudExpandedCEStartingSkills"
+        DisplayText="{{C|Qud Expanded}}: extra starting skills"
+        Category="Mods"
+        Type="Checkbox"
+        Default="Yes"
+        SearchKeywords="qud expanded starting skills chargen cooking staunch wounds">
+        <helptext>
+            Grants Mutated Humans and True Kin the extra starting skills this mod has always given: Staunch Wounds, Cooking and Gathering, and Meal Preparation. Mutated Humans also get Menacing Stare.
+
+            Turn this off to start with exactly vanilla's skills. Vanilla's own starting skills are never removed.
+
+            Psionic Adepts are unaffected. Their starting skills are not an addition to a vanilla genotype - they are all the genotype has.
+
+            Set this before creating a character.
+        </helptext>
+    </option>
+
+    <option
+        ID="OptionQudExpandedCEStartingReputation"
+        DisplayText="{{C|Qud Expanded}}: starting reputation bonus"
+        Category="Mods"
+        Type="Checkbox"
+        Default="No"
+        SearchKeywords="qud expanded starting reputation joppa faction chargen">
+        <helptext>
+            Gives Mutated Humans {{G|+300}} reputation with Joppa at character creation.
+
+            {{y|Off by default}}, unlike the rest of this mod. It grants power with nothing attached to use it, so it is the kind of change you should have to ask for rather than opt out of.
+
+            True Kin keep their vanilla Templar standing either way, and Psionic Adepts keep their Mechanimist standing.
+
+            Set this before creating a character.
         </helptext>
     </option>
 
