@@ -54,6 +54,34 @@ reachable only through the cascade stopped dropping at all. Removed in #4.
 no merge trickery, survives vanilla patches, and coexists with other mods. If your new items are
 not showing up often enough, they are underweighted — the vanilla cascade is not the problem.
 
+### 1.0c Skills merge per power, by name
+
+`mod/Skills.xml` touches six vanilla skills — Axe, Cooking and Gathering, Cudgel, Long Blade,
+Multiweapon Fighting, Tinkering — and edits individual powers inside them without restating the
+rest.
+
+**The loader merges at the level of the individual power, keyed by its `Name`, and keeps every
+attribute the mod does not restate.** That is why an entry like
+
+```xml
+<power Name="Multiweapon Expertise" Minimum="21|21" Tile="..." Foreground="y" Detail="M" />
+```
+
+works despite carrying no `Class=` and no `Cost=`: it is editing vanilla's entry, not replacing it.
+Here that single change is the whole point — the mod's contribution to that tree is a requirement
+cut, `23|23` down to `21|21`.
+
+The evidence is the mod itself. All **23** powers it declares omit `Class=`. If redeclaring a skill
+replaced it, all 23 would be left with no implementation — Cleave, Berserk!, Tinker I/II/III,
+Disassemble and the rest — and the mod would be obviously broken rather than subtly wrong. It has
+played correctly for years. Replacement would also have silently deleted **18** vanilla powers,
+including Tinkering's Repair and Scavenger and Long Blade's Lunge and Swipe.
+
+**Write `Load="Merge"` on the skill anyway** (#87). The mod did not, for years, and was saved by the
+loader's default rather than by intent — which is precisely the arrangement charter rule 1 exists to
+prevent. Explicit is also durable: it states what is meant, survives a change to the loader's
+default, and matches every other merge in the mod.
+
 ### 1.1 Permanently frozen — never rename
 
 These are frozen by vanilla identity or engine requirement. **No release schedule or save policy
