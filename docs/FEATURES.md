@@ -23,7 +23,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
 | **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
-| **Skill tree edits** | 6 skill trees retuned; Akimbo added to Multiweapon Fighting |
+| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
 | **Loot tables** | **54** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
@@ -317,13 +317,28 @@ requirements need a restart. See §13.
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
 | **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
 | **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. |
-| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. **Akimbo added** (cost 150, Agility 17) — "Whenever you make a ranged attack while wielding multiple guns, you fire a shot with each of them." |
+| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it — see below. |
 | **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
 | **Tinkering** | *Disassemble* cost **→ 0** (free with the tree). *Reverse Engineer* cost **100 → 200**. *Tinker I* Int **19 → 17**, *Tinker II* **23 → 21**, *Tinker III* **29 → 25**. |
 
-> ⚠️ **Compatibility note:** the new Akimbo power uses `Class="Pistol_Akimbo"` — the same
-> implementation class as the Pistol tree's Akimbo. A character who buys both will own two
-> abilities backed by one class. Worth testing before release.
+> ✅ **Akimbo was removed from Multiweapon Fighting in #88** (closing #11), and the story is worth
+> keeping because it is this repo's clearest demonstration that **`Class=` is an identifier**.
+>
+> Upstream 2.2 added Akimbo to Multiweapon Fighting under `Class="Pistol_Akimbo"` — the *same*
+> implementation class as the Pistol tree's Akimbo. `SkillFactory.PowersByClass` holds one entry
+> per class, and vanilla grants powers **by class**: the Gunslinger calling is
+> `<skill Name="Pistol_Akimbo" />`. So the mod's power was served wherever the game asked for
+> vanilla's, and Gunslingers silently got the wrong one.
+>
+> None of it was visible for years, because both powers were named "Akimbo" and rendered
+> identically. It surfaced only when this fork renamed one of them while working on something else.
+> Giving the mod's copy a distinct class fixed the Gunslinger but left a character who bought both
+> holding the ability twice, with a skills screen that would not close — so the power was removed
+> rather than shipped with a known way to spoil a run.
+>
+> Nothing is lost that cannot be had elsewhere: Akimbo is unchanged in the Pistol tree, where it has
+> always lived, and Multiweapon Fighting keeps this mod's reduced requirements above.
+> `docs/STYLEGUIDE.md` §1.0c carries the general rule.
 
 > ℹ️ The 2.2 changelog notes that vanilla itself adopted Strength-or-Agility for Multiweapon
 > Fighting, so only the **requirement reduction** there is still a mod change. The
@@ -1140,7 +1155,7 @@ qud-expanded/
 ├── Mods.xml                    # Makes Gigantic tinkerable
 ├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
 ├── Subtypes.xml                # 18 affinities in 2 categories
-├── Skills.xml                  # 6 tree edits, Akimbo added
+├── Skills.xml                  # 6 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + Yttrian anatomies
 ├── PopulationTables.xml        # 76 tables (48 merge / 28 new)
 ├── Joppa.rpm                   # 76-cell amenity building
