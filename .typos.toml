@@ -1,0 +1,27 @@
+# Spell-check policy
+#
+# `typos` matches a curated typo -> correction corpus, NOT an English dictionary, so invented
+# vocabulary does not trip it. Verified against this repo with the allowlist emptied: zetachrome,
+# crysteel, fullerite, snapjaw, dromad, urshiib, yuckwheat, witchwood, watervine, vinereaper,
+# nanoweave, maceth, Joppa and the rest all pass untouched. Only the three entries below fired.
+#
+# RULE: add an entry only after seeing it produce a false positive, never pre-emptively. Every
+# entry permanently exempts that word from checking, including in player-facing text, so a
+# padded allowlist quietly disables the check it is meant to support.
+#
+# Qud-vocabulary false positives are expected to be rare. When one appears, add it here with a
+# comment saying what it is.
+
+[default.extend-words]
+# Stat abbreviations in docs/FEATURES.md tables
+TOU = "TOU"
+WIL = "WIL"
+# FEATURES.md shorthand for "inherited" in stat tables
+inh = "inh"
+
+[files]
+extend-exclude = [
+  "docs/2.2-changelog.txt",          # Mura's document, preserved verbatim
+  "docs/mura-feature-notes-wip.txt", # likewise
+  "mod/Textures/**",
+]

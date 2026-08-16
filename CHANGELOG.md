@@ -48,8 +48,17 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
-- Nothing yet. The inherited defect backlog is tracked in
-  [`docs/FEATURES.md`](docs/FEATURES.md) §10 and in the issue tracker.
+- **`Skills.xml` now parses.** Line 10 carried a duplicate `Tile` attribute on the Berserk!
+  power — the only file in the mod that failed a strict XML parse. Confirmed in-game that Qud's
+  loader tolerated it, so the six retuned skill trees have been working all along and no player
+  was ever missing them; this is a correctness fix, not a behaviour change.
+  ([#5](https://github.com/vixygrey/qud-expanded-community-edition/issues/5))
+- Four spelling errors, two of them in text players actually see: "stitched" was misspelled in
+  the bronze and iron scale armor descriptions, and the reprogrammable recoiler's description
+  read "consider" where it meant "considerable". Two more in source comments.
+
+  (The misspellings are described rather than quoted here on purpose — the spell check in CI
+  reads this file too, and quoting them fails the build.)
 
 ### Internal
 
@@ -60,6 +69,17 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **Spaces removed from blueprint filenames** — `MeleeWeapons.xml`, `OtherEquipment.xml`,
   `PsionicChips.xml`, `RangedWeapons.xml`. Safe because Qud resolves modded XML by root element
   rather than by filename.
+- **Validation script** (`tools/validate_mod.py`) — XML and JSON well-formedness, blueprint
+  reachability, `Load="Merge"` discipline, C# part resolution, and filename rules. Python 3
+  standard library only, so it adds no toolchain. Known inherited defects are enumerated in
+  `tools/validation-baseline.json` against the issue tracking each, so new violations fail while
+  catalogued debt does not.
+  ([#8](https://github.com/vixygrey/qud-expanded-community-edition/issues/8))
+- **CI on every pull request** — validation, spelling, secret scanning, conventional PR titles,
+  and a changelog check.
+  ([#19](https://github.com/vixygrey/qud-expanded-community-edition/issues/19))
+- **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
+  ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
 - Repository placed under version control with the pristine upstream 2.2 import tagged
   `upstream-2.2`, so `git diff upstream-2.2` always shows exactly what the fork changed.
 

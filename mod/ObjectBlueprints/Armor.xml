@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <objects>
 
@@ -333,7 +333,7 @@
     <part Name="Armor" AV="3" DV="-3" WornOn="Body" />
     <part Name="Render" DisplayName="{{w|bronze}} plate armor" Tile="Items/sw_plate_mail.bmp" ColorString="&amp;w" DetailColor="Y" />
     <part Name="Commerce" Value="8" />
-    <part Name="Description" Short="This suit of armor is made of many large plates of forged bronze over a layer of chain-mail. The whole mass is stiched to an under-garment of leather and padding." />
+    <part Name="Description" Short="This suit of armor is made of many large plates of forged bronze over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding." />
     <part Name="Physics" Weight="24" />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
@@ -343,7 +343,7 @@
     <part Name="Armor" AV="3" DV="-1" WornOn="Body" />
     <part Name="Render" DisplayName="iron plate armor" Tile="Items/sw_plate_mail.bmp" ColorString="&amp;y" DetailColor="Y" />
     <part Name="Commerce" Value="16" />
-    <part Name="Description" Short="This suit of armor is made of many large plates of forged iron over a layer of chain-mail. The whole mass is stiched to an under-garment of leather and padding." />
+    <part Name="Description" Short="This suit of armor is made of many large plates of forged iron over a layer of chain-mail. The whole mass is stitched to an under-garment of leather and padding." />
     <part Name="Physics" Weight="21" />
     <part Name="Metal" />
     <tag Name="Tier" Value="1" />

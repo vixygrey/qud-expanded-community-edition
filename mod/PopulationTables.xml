@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <populations>
 
     <!-- Starting Equipment -->
@@ -383,7 +383,7 @@
     </group>
   </population>
 
-<!-- Melee Weapon Tables, Common is one-handed while Rare is two-handed. Group 1 is the exceptoin, 1C is both Bronze and Iron both one- and two-handed, and 1R is only Iron but both one- and two-handed.
+<!-- Melee Weapon Tables, Common is one-handed while Rare is two-handed. Group 1 is the exception, 1C is both Bronze and Iron both one- and two-handed, and 1R is only Iron but both one- and two-handed.
 
         1 - Bronze/Iron
         2 - Steel

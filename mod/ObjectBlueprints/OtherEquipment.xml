@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <objects>
 
@@ -111,7 +111,7 @@
     <part Name="ForceEmitter" ChargeUse="250" />
   </object>
 
-  <!-- Makes bottles fuction like phials for things like lava -->
+  <!-- Makes bottles function like phials for things like lava -->
   <object Name="Bottle" Load="Merge">
     <part Name="Physics" Weight="5" Takeable="true" Solid="false" SpecificHeat="0" FreezeTemperature="-9999" BrittleTemperature="-9999" FlameTemperature="99999" VaporTemperature="9999" />
     <part Name="Commerce" Value="10" />
@@ -143,7 +143,7 @@
 
   <object Name="Reprogrammable Recoiler" Inherits="BaseRecoiler">
     <part Name="ProgrammableRecoiler" ChargeUse="2500" Reprogrammable="true" NameElide="reprogrammable" />
-    <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within have had consider alterations made to them." />
+    <part Name="Description" Short="A small crystalline disk with a recessed button on top. The mechanisms within have had considerable alterations made to them." />
   </object>
 
   <!-- give set recoilers the ability to change name now that they're reprogrammable -->
