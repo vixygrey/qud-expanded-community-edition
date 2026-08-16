@@ -162,12 +162,19 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             if any(p.get("Name") == "TinkerItem" for p in obj.iter("part")):
                 tinkerable.add(name)
 
-    in_tables: set[str] = set()
-    for root in roots.values():
+    # An object is reachable if ANYTHING references it: a population table (Blueprint=), a map
+    # file placing it into a cell, or another object pointing at it (e.g. a cybernetic's
+    # FistObject=). Checking only Blueprint= reported Joppa's furniture and the cybernetic fist
+    # replacements as unobtainable, which they are not.
+    referenced: set[str] = set()
+    for path, root in all_roots.items():
         for el in root.iter():
-            bp = el.get("Blueprint")
-            if bp:
-                in_tables.add(bp)
+            declares = path.suffix == ".xml"  # in a .rpm, <object Name="X"> PLACES X, it does
+            for key, value in el.attrib.items():  # not declare it
+                if declares and key == "Name" and el.tag in ("object", "population"):
+                    continue  # a declaration is not a reference to itself
+                referenced.add(value)
+    in_tables = referenced
 
     for name, path in sorted(defined.items()):
         if name not in in_tables and name not in tinkerable:

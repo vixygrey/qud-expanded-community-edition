@@ -57,6 +57,16 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Fixed
 
+- **All 144 psionic chips can now drop.** The three chip tables listed only the first chip of
+  each of the 12 families plus its chipset — 24 entries where 48 were needed — so **72 of the
+  144 chips existed but could never be obtained**, and had no tinker recipe either. Half the
+  mod's flagship system was wish-only.
+  ([#6](https://github.com/vixygrey/qud-expanded-community-edition/issues/6))
+
+  How often a chip drops at all is unchanged, and each of the 12 families remains equally likely.
+  What changes is the mix within a family: with all three chips present at their declared
+  weights, chipsets are 10% of a family's results rather than 25%. The 25% was an artifact of
+  two-thirds of the chips being absent — the weights themselves always specified 10%.
 - **Artifact tables 3–8 no longer replace their vanilla counterparts.** The mod overwrote all six
   outright, which conflicted with any other mod touching them and silently discarded future
   vanilla additions. They now merge, contributing only the psionic-chip entry. Chip drop rate
