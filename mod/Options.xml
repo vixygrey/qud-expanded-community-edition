@@ -87,4 +87,42 @@
             Nothing vanilla is removed either way.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEChipSlotsPlayer"
+    DisplayText="{{C|Qud Expanded}}: your own Chip Interface slots"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded chip interface slot chargen psionic implant"
+  >
+    <helptext>
+            Gives your character the Chip Interface slots this mod has always granted: {{G|1}} for a Mutated Human and {{G|2}} for a True Kin. Chips implanted there grant mutations to genotypes that cannot otherwise mutate.
+
+            Turn this off to play with a vanilla body and no chip slots at all. Chips can still be found and traded, but you will have nowhere to implant them.
+
+            Psionic Adepts are unaffected. Their {{G|4}} slots are the genotype, not an addition to it, and removing them would leave it with nothing.
+
+            {{y|Set this before creating a character.}} A body is built once, at character creation, so this cannot change a character who already exists.
+        </helptext>
+  </option>
+
+  <option
+    ID="OptionQudExpandedCEChipSlotsNPCs"
+    DisplayText="{{C|Qud Expanded}}: Chip Interface slots on other humanoids"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded chip interface npc humanoid anatomy world"
+  >
+    <helptext>
+            Gives every other humanoid in Qud a Chip Interface slot, as this mod has always done. The slot is merged into the base humanoid anatomy, so it reaches every villager, merchant and snapjaw at once.
+
+            Nothing in this mod ever puts a chip in an NPC's slot, so leaving this on has no effect you can see. Turn it off if you would rather other humanoids simply did not have the slot - for instance so that another mod, or a later version of this one, cannot start filling them.
+
+            Your own slots are controlled separately, by the option above.
+
+            {{y;Set this before creating a character.}} Bodies are built once, when a creature is generated, so this cannot change humanoids that already exist in a save.
+        </helptext>
+  </option>
 </options>

@@ -341,7 +341,10 @@ In-game, `wish` is the fastest way to spawn a blueprint by name and eyeball it.
 - Four vibro weapons are commented out in `mod/ObjectBlueprints/MeleeWeapons.xml` with "rework these or remove them".
 - The `Chip Interface` slot is merged into the base `Humanoid` anatomy, so **every humanoid NPC
   in the game has one**. Nothing populates it today. Be deliberate if you ever change that — it
-  would affect the entire world at once.
+  would affect the entire world at once. Option-gated as of #81 — and note `Humanoid` is shared by
+  NPCs *and* by a Mutated Human player (vanilla's genotype is `BodyObject="Humanoid"`), so the two
+  cannot be separated by editing that anatomy alone. `Raven_ChipSlotPlayerMutator` exists solely to
+  correct the player when the two options disagree.
 
 ## Repo state
 

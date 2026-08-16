@@ -83,6 +83,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **Chip Interface slots are now optional, separately for you and for everyone else.** Two new options, both **on by default** so nothing changes unless you ask: *your own Chip Interface slots* (the 1 a Mutated Human gets, or the 2 a True Kin gets) and *Chip Interface slots on other humanoids* (the one merged into the base humanoid anatomy, which reaches every villager, merchant and snapjaw in the game). Psionic Adepts are unaffected by both — their 4 slots are the genotype rather than an addition to it. Nothing in the mod ever puts a chip in an NPC's slot, so the second option changes nothing you can see; it exists so the slot need not sit on every humanoid in the world, where another mod or a later version of this one could start filling them. Both are read at character creation, because a body is built once — set them before starting a character.
+  ([#81](https://github.com/vixygrey/qud-expanded-community-edition/issues/81))
+
 - **(internal)** `.gitignore` now covers Python build artefacts, Windows desktop files and `.env`.
   Running the validators writes `tools/__pycache__/`, which was ignored only by the maintainer's
   *global* gitignore — so it was invisible to them and untracked noise for every contributor, who
