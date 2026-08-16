@@ -11,3 +11,6 @@
 
 # style: normalise mod files to LF line endings (#32)
 81070b419ec400ca1ce86b7a8be3bce6b44fffec
+
+# style: apply ruff format to tools/ (#74)
+4adf089dc65c64b2d44518075fb0a50f15000be5
