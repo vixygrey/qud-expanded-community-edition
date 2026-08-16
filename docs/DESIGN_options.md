@@ -95,6 +95,15 @@ A file with `Option` in its name, root `<options>`:
 `Category="Mods"` is what files it into the in-game menu. Types: `Checkbox`, `Slider`, `Combo`,
 `BigCombo`, `Button`.
 
+> ⚠️ **A `Slider` whose `Min` is above 1 crashes the game.** Opening Options → Mods dies with a
+> stack overflow — 21,697 levels of recursion, no exception, nothing in `game_log.txt`. Verified
+> by bisection: `Min="6"` crashes, `Min="0"` does not. This is a bug in Qud, not in the mod
+> (issue #51), and it is enforced by `tools/validate_mod.py` so it cannot be reintroduced.
+>
+> The tell was available before the bisection: **all 13 sliders across the 87 installed mods use
+> `Min="0"` or `Min="1"`.** When every real-world example agrees on a value range, that is a
+> constraint, not a coincidence.
+
 ### 2.2 Reading options — requires C#
 
 `[OptionFlag]` on a field in a `[HasOptionFlagUpdate]` class, with `[OptionFlagUpdate]` to react to
