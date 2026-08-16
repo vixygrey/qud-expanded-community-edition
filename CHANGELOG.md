@@ -59,6 +59,10 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** CI leaves an informational note when a pull request has maintainer edits
+  disabled, explaining what enabling it would allow. It never fails the build — a contribution
+  should not be rejected over a checkbox the contributor owns.
+
 - **(internal)** Pull requests now automatically request review from the maintainer via
   `.github/CODEOWNERS`, and PRs opened by anyone else are assigned to them by a workflow — so a
   contribution from outside can't sit unnoticed.

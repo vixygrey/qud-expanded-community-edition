@@ -67,6 +67,24 @@ jobs:
             exit 1
           fi
 
+      # Informational only. "Allow edits from maintainers" is a checkbox the CONTRIBUTOR owns -
+      # there is no repository setting that requires it, and GitHub already defaults it on. This
+      # never fails the build: a contribution should not be rejected over a checkbox, and a
+      # maintainer can always cherry-pick the commit with authorship intact instead.
+      - name: Note whether maintainers can edit this PR
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          can_modify=$(gh api "repos/$REPO/pulls/$PR" --jq '.maintainer_can_modify')
+          if [ "$can_modify" = "true" ]; then
+            echo "Maintainer edits are enabled — thank you, that lets us rebase for you."
+          else
+            echo "::notice::Maintainer edits are disabled on this PR. That is fine and changes nothing about whether it can be merged. Enabling 'Allow edits from maintainers' just lets us rebase or add a changelog entry for you rather than asking; otherwise we cherry-pick your commit, which keeps your authorship either way."
+          fi
+
       # CLAUDE.md: every PR updates the changelog. It is where charter rule 2's causality
       # reaches players, who never read commit messages. Label 'skip-changelog' to opt out.
       - name: Changelog updated
