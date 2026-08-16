@@ -73,9 +73,15 @@ def parse(path: Path, lenient: bool = False) -> ET.Element:
     text = path.read_text(encoding="utf-8-sig")
     if lenient:
         text = INVALID_REF.sub(
-            lambda m: "" if not _valid_codepoint(
-                int(m.group()[3:-1], 16) if m.group()[2] in "xX" else int(m.group()[2:-1])
-            ) else m.group(),
+            lambda m: (
+                ""
+                if not _valid_codepoint(
+                    int(m.group()[3:-1], 16)
+                    if m.group()[2] in "xX"
+                    else int(m.group()[2:-1])
+                )
+                else m.group()
+            ),
             text,
         )
     return ET.fromstring(text)
@@ -91,7 +97,10 @@ def load_all(root_dir: Path, lenient: bool = False) -> list[ET.Element]:
         except ET.ParseError as exc:
             failed.append(f"{p.name}: {exc}")
     if failed:
-        print(f"WARNING: {len(failed)} file(s) could not be parsed; results are incomplete:", file=sys.stderr)
+        print(
+            f"WARNING: {len(failed)} file(s) could not be parsed; results are incomplete:",
+            file=sys.stderr,
+        )
         for f in failed:
             print(f"  {f}", file=sys.stderr)
         print(file=sys.stderr)
