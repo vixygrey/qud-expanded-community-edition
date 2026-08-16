@@ -108,6 +108,32 @@ def check_workshop_target(f: Findings) -> None:
         )
 
 
+def check_manifest(f: Findings) -> None:
+    """manifest.json carries mod identity, and two fields have consequences beyond display.
+
+    `id` is what other mods name in LoadBefore / LoadAfter, so changing it breaks their ordering
+    declarations. `author` is where charter rule 3's credit obligation lives in machine-readable
+    form, and must name Mura.
+    """
+    path = MOD / "manifest.json"
+    if not path.is_file():
+        f.add("manifest", "mod/manifest.json is missing — no id, version, or author")
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return  # check_json reports this
+    for key in ("id", "title", "version", "author", "description"):
+        if not data.get(key):
+            f.add("manifest", f"manifest.json is missing required key: {key}")
+    if "loadorder" in {k.lower() for k in data}:
+        f.add("manifest", "manifest.json uses loadorder, deprecated as of build 210 — "
+                          "use LoadBefore / LoadAfter")
+    author = str(data.get("author", ""))
+    if "Mura" not in author:
+        f.add("manifest", "manifest.json author does not credit Mura — charter rule 3")
+
+
 def check_filenames(f: Findings) -> None:
     """Spaces force quoting in every script, hook and CI step. STYLEGUIDE.md section 3."""
     for path in MOD.rglob("*"):
@@ -237,6 +263,7 @@ def run() -> Findings:
     roots = check_wellformed(f)
     check_json(f)
     check_workshop_target(f)
+    check_manifest(f)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
