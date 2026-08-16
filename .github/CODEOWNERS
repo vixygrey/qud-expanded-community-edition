@@ -1,0 +1,10 @@
+# Every pull request automatically requests review from the maintainer.
+#
+# GitHub never requests review from the PR's own author, so this affects contributions from
+# other people without getting in the maintainer's way on their own branches.
+#
+# Deliberately NOT wired into the branch ruleset as "require Code Owner review": with a single
+# code owner, that setting blocks the maintainer's own PRs, because GitHub will not accept a
+# self-approval to satisfy it.
+
+* @vixygrey
