@@ -23,6 +23,12 @@ This mod exists because of other people's work.
 | **Tyrir** | Bug reports, including the 2.2 typo batch. |
 | **Crow**, **chirps** | Contributors to the original. |
 
+### Contributors to this fork
+
+| Who | What |
+|---|---|
+| **[Jah-yee](https://github.com/Jah-yee)** | Fixed the `<stag>` typos that stopped the advanced hoversled floating and the sphere of negative weight registering as a trinket. This project's first outside contribution. |
+
 Mura opened the mod to the community with one condition — *give credit where due, which includes
 Noble Lark for the subclass sprites*. That condition is treated as permanent here, and the build
 fails if `manifest.json` stops naming Mura. Provenance and the full grant are recorded in

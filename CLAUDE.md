@@ -66,6 +66,10 @@ Credit is the one condition attached to the fork permission, so it is non-negoti
   release notes — **Noble Lark named explicitly**, as Mura asked.
 - **Keep the `Raven_` blueprint prefix.** It's Mura's signature in the namespace. Renaming it
   would erase attribution from the one place every future contributor actually reads.
+- **Every outside contribution is credited by name**, in the README and the Workshop description,
+  in the same pull request that merges it. Not "later" — a contributor who has to ask has already
+  been let down, and the Workshop description is the only place most players will ever look.
+  Their own section, kept separate from the `docs/PERMISSION.md` §4 list, which stays intact.
 
 ### 4. Friendly but rigorous DX
 
