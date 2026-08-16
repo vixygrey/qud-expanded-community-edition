@@ -5,7 +5,7 @@
     Load="Merge"
     MutationPoints="16"
     RandomWeight="10"
-    BaseHPGain="2-3"
+    BaseHPGain="1-5"
     BaseSPGain="65"
     BaseMPGain="1-2"
   >
