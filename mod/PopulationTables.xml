@@ -924,28 +924,52 @@
   <population Name="Raven_Chips Tier 1">
     <group Name="Items" Style="pickone">
       <object Weight="3" Number="1" Blueprint="Raven_Simple Disintegration Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Stunning Force Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Force Bubble Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Force Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Kindle Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Flaming Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Pyrokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Fire Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Frost Webs Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Freezing Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Cryokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Ice Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple EMP Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Electrical Generation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Phasing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Lightning Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Photosynthetic Skin Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Light Manipulation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Teleportation Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Light Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Corrosive Gas Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Confusion Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Acid Slime Glands Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Acid Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Syphon Vim Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Adrenal Control Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Regeneration Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Blood Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Sunder Mind Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Domination Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Mass Mind Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Mental Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Space-Time Vortex Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Time Dilation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Temporal Fugue Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Temporal Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Mental Mirror Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Teleport Other Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Force Wall Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Mind Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Heightened Quickness Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Ego Projection Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Heightened Hearing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Body Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Simple Clairvoyance Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Psychometry Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Simple Precognition Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Simple Neutral Spirit Chipset" />
     </group>
   </population>
@@ -953,28 +977,52 @@
   <population Name="Raven_Chips Tier 2">
     <group Name="Items" Style="pickone">
       <object Weight="3" Number="1" Blueprint="Raven_Improved Disintegration Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Stunning Force Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Force Bubble Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Force Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Kindle Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Flaming Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Pyrokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Fire Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Frost Webs Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Freezing Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Cryokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Ice Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved EMP Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Electrical Generation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Phasing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Lightning Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Photosynthetic Skin Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Light Manipulation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Teleportation Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Light Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Corrosive Gas Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Confusion Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Acid Slime Glands Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Acid Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Syphon Vim Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Adrenal Control Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Regeneration Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Blood Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Sunder Mind Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Domination Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Mass Mind Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Mental Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Space-Time Vortex Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Time Dilation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Temporal Fugue Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Temporal Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Mental Mirror Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Teleport Other Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Force Wall Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Mind Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Heightened Quickness Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Ego Projection Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Heightened Hearing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Body Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Improved Clairvoyance Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Psychometry Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Improved Precognition Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Improved Neutral Spirit Chipset" />
     </group>
   </population>
@@ -982,28 +1030,52 @@
   <population Name="Raven_Chips Tier 3">
     <group Name="Items" Style="pickone">
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Disintegration Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Stunning Force Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Force Bubble Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Force Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Kindle Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Flaming Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Pyrokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Fire Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Frost Webs Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Freezing Ray Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Cryokinesis Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Ice Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced EMP Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Electrical Generation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Phasing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Lightning Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Photosynthetic Skin Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Light Manipulation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Teleportation Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Light Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Corrosive Gas Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Confusion Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Acid Slime Glands Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Acid Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Syphon Vim Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Adrenal Control Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Regeneration Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Blood Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Sunder Mind Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Domination Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Mass Mind Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Mental Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Space-Time Vortex Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Time Dilation Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Temporal Fugue Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Temporal Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Mental Mirror Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Teleport Other Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Force Wall Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Mind Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Heightened Quickness Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Ego Projection Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Heightened Hearing Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Body Chipset" />
       <object Weight="3" Number="1" Blueprint="Raven_Advanced Clairvoyance Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Psychometry Chip" />
+      <object Weight="3" Number="1" Blueprint="Raven_Advanced Precognition Chip" />
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Spirit Chipset" />
     </group>
   </population>
