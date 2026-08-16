@@ -34,6 +34,14 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   `TrueKin`: the display name with spaces removed.
   ([#13](https://github.com/vixygrey/qud-expanded-community-edition/issues/13))
 
+### Internal — tooling
+
+- **All mod files normalised to LF line endings**, enforced by `.gitattributes`. Upstream was
+  CRLF throughout. Diff against the pre-normalisation baseline with
+  `git diff --ignore-cr-at-eol upstream-2.2`, and `git blame` skips the conversion via
+  `.git-blame-ignore-revs`.
+  ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
+
 ### Added
 
 - **(internal)** `docs/STYLEGUIDE.md` — naming, layout, XML and C# formatting, and Steam Workshop

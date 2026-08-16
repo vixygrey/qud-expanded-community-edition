@@ -151,23 +151,30 @@ New blueprints follow Mura's existing scheme, which the charter requires preserv
 
 ## 4. XML conventions
 
-### 4.1 Line endings — CRLF, deliberately
+### 4.1 Line endings — LF
 
-Every XML, C# and JSON file in the mod is **CRLF** throughout. This is consistent, not mixed:
-Mura worked on Windows.
+**LF everywhere**, enforced by `.gitattributes` (`* text=auto eol=lf`) so contributor platform
+cannot reintroduce CRLF.
 
-**Keep CRLF.** Normalising to LF would rewrite every line of every file and destroy the
-readability of `git diff upstream-2.2`, which is the entire reason that tag exists. The upstream
-baseline is worth more than the aesthetic preference.
+Upstream 2.2 was uniformly CRLF because Mura worked on Windows. This fork normalised it: LF is
+what Qud mods actually use — a sample of the installed Workshop mods turned up no CRLF at all —
+and .NET's XML parser is indifferent either way.
 
-Enforce it explicitly so contributors on macOS and Linux do not silently flip them:
+The obvious objection is that normalising rewrites every line and ruins the diff against the
+`upstream-2.2` baseline. It doesn't, because git can suppress the noise:
 
-```gitattributes
-mod/**/*.xml  text eol=crlf
-mod/**/*.cs   text eol=crlf
-mod/**/*.json text eol=crlf
-*.md          text eol=lf
+```bash
+git diff --ignore-cr-at-eol upstream-2.2
 ```
+
+The conversion also landed as a single mechanical commit listed in `.git-blame-ignore-revs`, so
+`git blame` skips it. Enable that once per clone:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+GitHub applies the file automatically in its own blame view.
 
 ### 4.2 Formatting
 
