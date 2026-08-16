@@ -29,6 +29,31 @@ element (`<objects>`, `<populations>`) and ignores what the file is called.
 That makes **filenames free** and makes several other things **frozen**. Know which is which
 before renaming anything.
 
+### 1.0b `<removetable>` — the tool this mod deliberately does not use
+
+Qud can remove a table reference from a population group:
+
+```xml
+<group Name="Items" Load="Merge">
+  <removetable Name="Armor 6C" />
+</group>
+```
+
+The syntax is **Arendeth's**, worked out for this mod when an earlier attempt was malformed. It is
+recorded here because it is genuinely hard to find, and because the code it was written for is
+gone.
+
+**Do not reach for it.** Charter rule 1 makes edits additive, and removing a vanilla table
+reference is destructive twice over: it discards whatever a future Qud patch adds behind that
+reference, and it makes any other mod's additions invisible too. It was used on
+`Armor 7C/7R/8C/8R` to sever the tier cascade, and the effect was far larger than intended — a
+tier-8 armor roll went from vanilla's 8.6% chance of a zetachrome piece to 100%, and vanilla items
+reachable only through the cascade stopped dropping at all. Removed in #4.
+
+**What to do instead: weight your own entries.** Weight is entirely within your own records, needs
+no merge trickery, survives vanilla patches, and coexists with other mods. If your new items are
+not showing up often enough, they are underweighted — the vanilla cascade is not the problem.
+
 ### 1.1 Permanently frozen — never rename
 
 These are frozen by vanilla identity or engine requirement. **No release schedule or save policy

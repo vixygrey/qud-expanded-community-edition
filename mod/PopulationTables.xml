@@ -730,8 +730,6 @@
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Buckler" />
       <object Weight="20" Number="1" Blueprint="Flawless Crysteel Shield" />
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greatshield" />
-      <removetable Name="Armor 6C" />
-      <!-- From Arendeth: If you want to remove a table from an entry this is how it is currently done since the edit fixed the error -->
     </group>
   </population>
 
@@ -742,30 +740,27 @@
       <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Buckler" />
       <object Weight="10" Number="1" Blueprint="Flawless Crysteel Shield" />
       <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Greatshield" />
-      <removetable Name="Armor 6R" />
     </group>
   </population>
 
   <population Name="Armor 8C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
-      <removetable Name="Armor 7C" />
+      <object Weight="43" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
     </group>
   </population>
 
   <population Name="Armor 8R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
-      <removetable Name="Armor 7R" />
-      <object Weight="20" Number="1" Blueprint="Raven_Mutating Mask" />
+      <object Weight="28" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <object Weight="28" Number="1" Blueprint="Raven_Mutating Mask" />
     </group>
   </population>
 
