@@ -590,6 +590,63 @@ Generalises to every attribute-driven extension point in the game, `[HasOptionFl
 `[OptionFlagUpdate]` included. **The failure mode for a missing registration marker is silence**, so
 check the marker against a working installed mod rather than assuming the interface is sufficient.
 
+### A public field is not a supported setter if something caches what it derives
+
+`PowerEntry.Attribute` and `.Minimum` are public and writable, so retuning a skill requirement at
+runtime looks trivial. It is not. `MeetsAttributeMinimum` gates on a **cached** `_requirements`
+list; `InitRequirements()` opens by returning early when that cache already exists; and the cache is
+private, so reaching it would need reflection, which charter rule 5 forbids outright. Once anything
+has rendered or checked that power, writing the field is **inert, with no error**.
+
+What saved the feature is that `HandleXMLNode` never primes the cache — it is null after load, so
+the value written at boot is the one the cache is eventually built from. That makes the
+`Restart="true"` option in #91 correct and honest. It would not have supported a live one, and
+shipping it as live would have produced an option that silently did nothing for anyone who happened
+to open the skills screen first.
+
+> **Before designing an option around writing a public field, find who *reads* it.** If a cache sits
+> between the field and the behaviour, the option's scope is set by the cache's lifetime, not by how
+> live the field looks.
+
+This is why #91 became two options rather than one. `Cost` is a plain int that `Render` and purchase
+read directly, so costs are genuinely live; requirements are not, and one toggle covering both would
+have had to describe itself dishonestly. **The scopes are a property of the game, not a design
+choice** — `docs/FEATURES.md` §13.2 tabulates all three (live / restart / new character).
+
+Same silent-failure family as an orphaned `Load="Merge"` and a missing `[PlayerMutator]`.
+
+### Read the IL when the metadata and the XML docs run out
+
+The two lessons above say to check `Assembly-CSharp.xml` for documentation and the metadata reader
+for structure. Neither can answer *"does this method rebuild, append, or return early"* — and that
+question decided the design above. Method bodies can answer it, and reading them needs **no
+decompiler**: the metadata reader already yields each method's RVA.
+
+- Header: `b & 3 == 2` means tiny format, one byte, code length `b >> 2`. Otherwise fat — 12-byte
+  header with the code size at offset 4.
+- Then scan opcodes. Token-bearing ones (`ldfld` `0x7b`, `stfld` `0x7d`, `call` `0x28`,
+  `newobj` `0x73`) carry a 4-byte metadata token whose high byte is the table and low three the RID,
+  so a field or method name can be resolved straight out of the tables.
+
+**Do not scan for tokens alone.** A token-only pass over `InitRequirements` showed `ldfld` → `newobj`
+→ `stfld` and read as a clean rebuild — exactly backwards, because it had dropped the branch between
+them. The opening bytes settled it: `02 7b … 3a d4 00 00 00` is `ldarg.0; ldfld _requirements;
+brtrue → ret`, a guard rather than a rebuild.
+
+Worth the twenty minutes because the wrong answer ships a silently inert option, and because the
+alternative was a round trip through the maintainer's machine.
+
+### GitHub does not re-run pull request checks on a retitle
+
+`on: pull_request` with no `types:` means `opened`, `synchronize`, `reopened`. A job reading
+`github.event.pull_request.title` therefore **cannot be satisfied by retitling**: the edit does not
+re-trigger it, and a manual re-run replays the *original* event payload, so it still sees the old
+title. The check stays red until an unrelated commit is pushed.
+
+`.github/workflows/ci.yml` now lists `edited` explicitly. The general form: **a check that reads the
+event payload must listen for the event that changes that payload**, or it is unfixable by the very
+action it demands — which teaches contributors that a red check can be ignored.
+
 ## Source documents
 
 | File | What it is |
