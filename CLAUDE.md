@@ -96,8 +96,22 @@ mod-approval prompt for every subscriber. That is a trust relationship; treat it
 
 ### 6. Configurable — players choose what they take
 
-Nobody should have to swallow the whole mod to get one part of it. Opinionated changes ship
-**off by default**; content ships on.
+Nobody should have to swallow the whole mod to get one part of it.
+
+> **Defaults reproduce the mod's established behaviour. Options let players opt out.**
+> "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
+> already is.
+
+This fork **continues** an existing mod rather than starting one. Someone subscribing to Qud
+Expanded Community Edition is asking for Caves of Qud Expanded, so shipping it inert would be a
+surprising reading of "players choose" — a mod that fails to arrive is not a configurable mod.
+
+The exception is a change that **grants power with no content attached**. Those stay off by
+default even though they predate the fork; the starting reputation bonuses are the current
+example. The test is whether turning the option on gives the player something to *use* or merely
+something to *have*.
+
+Settled in #45. Every `Default=` value follows from this.
 
 Qud ships a real mod-options menu and it is the primary mechanism. Two halves, verified against
 the mods installed on this machine (`~/Library/Application Support/Steam/steamapps/workshop/
@@ -133,17 +147,34 @@ Design consequence: **prefer designs whose off-switch is a runtime decision** ra
 load-time one. A chip family that can be dropped from the loot tables is more configurable than
 one welded into chargen, and that should influence how new content is built.
 
-### Modularity is the complement, not the substitute
+### One mod, not a constellation
 
-Splitting still earns its place — for keeping an optional system's C# out of the core mod
-entirely, and because each piece can then be updated or break without taking the rest down.
-Mura already worked this way: Grand Bazaar and Experience Curve Beta ship as separate sub-mods
-(both present at `../qud-expanded-bazaar` and `../qud-expanded-experience`), and
-`../design-docs/DESIGN_difficulty.md` §1 argues the same case independently.
+**This mod stays self-contained.** It is the vehicle for this fork's features, including new ones,
+and the player experience it targets is *one subscription* — not assembling the intended game from
+eighty separate Workshop items.
 
-Use **options** for choices within a system, and **a split** when a whole system is a separate
-opinion. Cross-mod dependencies use `LoadBefore` / `LoadAfter` in `manifest.json` — `LoadOrder`
-is deprecated as of build 210.
+That makes **options the mechanism**, and splitting a last resort rather than a peer choice.
+Where a feature cannot be option-gated, the answer is to ship it on with that stated in the
+description — not to exile it to a sub-mod.
+
+A split is justified only when a system is genuinely a different mod: a different audience, a
+different maintenance cadence, or a dependency the core should not carry. Mura's Grand Bazaar and
+Experience Curve Beta were split that way and remain separate for now (`../qud-expanded-bazaar`,
+`../qud-expanded-experience`); the fork permission explicitly covers them, so absorbing them later
+is allowed if it ever serves players better than a separate subscription.
+
+Cross-mod dependencies, if ever needed, use `LoadBefore` / `LoadAfter` in `manifest.json` —
+`LoadOrder` is deprecated as of build 210.
+
+### The obligation that comes with staying self-contained
+
+A growing single mod becomes take-it-or-leave-it unless the off-switches keep pace. So:
+
+> **Every new feature ships with its option in the same PR.**
+
+Not "options later". Retrofitting a toggle onto a shipped feature means deciding its default after
+players already have expectations, and it is the exact debt this fork spent its first release
+paying down.
 
 Note this rule spends a little of rule 5's budget: gating content means more C#, not less. The
 mod already ships `mod/Scripting/`, so the subscriber approval prompt is **already paid for**, and

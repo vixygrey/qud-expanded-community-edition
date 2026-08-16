@@ -10,17 +10,17 @@ rather than the defect bar.
 
 ---
 
-## 0. The decision that comes first
+## 0. The decision that comes first — settled
 
-Charter rule 6 currently reads:
+Charter rule 6 originally read:
 
 > Opinionated changes ship **off by default**; content ships on.
 
-Applied literally to the features below, someone installs *Qud Expanded* and gets a mod that
-mostly does not do anything. The skill retunes are off, the mutation points are vanilla, the
-starting reputations are vanilla. That is not configurability, it is a mod that fails to arrive.
+Applied literally to the features below, someone would install *Qud Expanded* and get a mod that
+mostly does not do anything. The skill retunes off, the mutation points vanilla, the
+starting reputations vanilla. That is not configurability, it is a mod that fails to arrive.
 
-**Proposed amendment:**
+**Settled (#45), and `CLAUDE.md` rule 6 now reads:**
 
 > **Defaults reproduce the mod's established behaviour. Options let players opt out.**
 > "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
@@ -30,8 +30,12 @@ The reasoning is that this is a **fork continuing an existing mod**, not a new o
 subscribing to *Qud Expanded Community Edition* is asking for Caves of Qud Expanded. Shipping it
 inert would be a surprising reading of "players choose".
 
-This needs settling before anything is built, because it decides every `Default=` value below.
-**Nothing else in this document is blocked on it**, but every option's default is.
+The exception is a change that **grants power with no content attached** — those stay off even
+though they predate the fork. The practical test: does turning the option on give the player
+something to **use**, or merely something to **have**? Starting reputation is the current
+example, and it is the latter.
+
+Every `Default=` value below follows from this.
 
 ---
 
@@ -205,10 +209,16 @@ in the save.
 Two candidate approaches, both unproven:
 
 1. Read the option at world generation and skip the patch.
-2. Ship the map patch as a **separate sub-mod**, which sidesteps the problem entirely.
+2. Ship the map patch as a separate sub-mod.
 
-Given it is a single 76-cell file with no dependencies on the rest of the mod, **option 2 is
-probably correct** and is the cheapest thing on this list to split.
+**Approach 1.** An earlier draft of this document recommended splitting, on the grounds that the
+patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in isolation
+and wrong for this mod: the fork is deliberately **self-contained** (`CLAUDE.md` rule 6), because
+the experience it targets is one subscription rather than an assembly of eighty.
+
+So the work goes into making the toggle work. If it turns out the map patch cannot be gated at
+zone generation, the fallback is to **ship it on and say so in the description** — not to exile
+it.
 
 ### 4.6 Loot participation — `Checkbox`, fully live
 
@@ -224,7 +234,7 @@ both reversible, both safe.
 
 Thirty toggles is its own kind of unusable. Target **six to eight**:
 
-| Option | Type | Default (pending §0) |
+| Option | Type | Default |
 |---|---|---|
 | Mutation points | Slider | 16 |
 | Skill tree changes | Checkbox | on |
@@ -281,8 +291,8 @@ reasonably want some of those without the others.
 3. Starting reputation — small, and the clearest opt-out win.
 4. Psionic Adept genotype toggle.
 5. Joppa house — **decide split versus toggle first**, do not build both.
-6. Skill tree changes — last, because it is the least understood and the most likely to end as a
-   sub-mod.
+6. Skill tree changes — last, because it is the least understood. If no mechanism exists, it
+   ships on and unconditional, with that stated plainly rather than split out.
 
 Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 
@@ -310,5 +320,7 @@ answered by assumption.
 - Installed Workshop mods under `steamapps/workshop/content/333640/` — 87 mods, 12 with
   `Options.xml`, all 12 shipping C#
 - `CLAUDE.md` — charter rules 2, 5 and 6
-- `../design-docs/DESIGN_difficulty.md` §1 and §5 — the same split-versus-options argument, reached
-  independently
+- `../design-docs/DESIGN_difficulty.md` §1 and §5 — argues the opposite conclusion (split into
+  separate mods) for a *new* mod with no existing audience. The difference is deliberate: that
+  doc is designing a mod from scratch, this one is continuing a mod players already subscribe to
+  as a single item.
