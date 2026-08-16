@@ -67,7 +67,6 @@
     <part Name="Armor" AV="4" DV="0" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Feet" />
     <part Name="Commerce" Value="640" />
     <part Name="Physics" Weight="6" />
-    <tag Name="Tier" Value="3" />
   </object>
 
   <object Name="Zetachrome Pumps" Load="Merge">
@@ -560,7 +559,7 @@
       ColorString="&amp;b"
       DetailColor="B"
     />
-    <part Name="Commerce" Value="5" />
+    <part Name="Commerce" Value="40" />
     <part Name="Description" Short="A cloak of unrippable synthetic fabric infused with carbide." />
     <part Name="Physics" Weight="6" />
     <part Name="Springy" Factor="0.1" />

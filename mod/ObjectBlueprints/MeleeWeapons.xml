@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <!-- Battle Axes -->
 
@@ -168,7 +168,7 @@
       DetailColor="y"
     />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="1d10+6" />
-    <part Name="Commerce" Value="1200" />
+    <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
       Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
@@ -1220,7 +1220,7 @@
       DetailColor="y"
     />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d6" Slot="Arm" />
-    <part Name="Commerce" Value="1200" />
+    <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
       Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
@@ -1671,7 +1671,7 @@
 
   <object Name="Cudgel6th" Load="Merge">
     <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="11" BaseDamage="3d6+1" Stat="Agility" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d6+1" Stat="Agility" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="6" />
