@@ -24,7 +24,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned; Akimbo added to Multiweapon Fighting |
-| **Loot tables** | 48 vanilla tables merged, **6 replaced outright**, 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **54** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
 
@@ -288,9 +288,14 @@ Chips enter the loot pool through the **Artifact** tables (see §7.3):
 
 | Table | Chip table used | Weight |
 |---|---|---|
-| Artifact 3, 4, 5 | `Raven_Chips Tier 1` | 10 / 100 |
-| Artifact 6, 7 | `Raven_Chips Tier 2` | 10 / 100 |
-| Artifact 8 | `Raven_Chips Tier 3` | 10 / 100 |
+| Artifact 3, 4, 5 | `Raven_Chips Tier 1` | 10 / 110 |
+| Artifact 6, 7 | `Raven_Chips Tier 2` | 10 / 110 |
+| Artifact 8 | `Raven_Chips Tier 3` | 10 / 110 |
+
+The denominator is **110**, not 100, because the entry is *added* to vanilla's pool rather than
+carved out of it. Vanilla's `Artifact N` group is a uniform 95 common / 5 rare across all six
+tables — read from the game's own `PopulationTables.xml` — so the merged pool totals 110 and a
+chip lands **9.09%** of the time. Under the pre-#34 replacement it was a flat 10%; see §7.3.
 
 Within a chip table, single chips are weight 3 and chipsets weight 1 — so a chipset is a 1-in-4
 result among that family, and each family is equally likely.
@@ -956,16 +961,20 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
 - **Implants_3Pointers** — air filtration system, crysteel dermal plating.
 - **Implants_4PlusPointers** — crysteel hand bones, zetachrome dermal plating, zetachrome hand bones.
 
-### 7.3 Artifact tables — **replaced, not merged**
+### 7.3 Artifact tables (merged)
 
-`Artifact 3, 4, 5, 6, 7, 8` are declared **without** `Load="Merge"`, meaning the mod fully
-overwrites those vanilla tables with:
+`Artifact 3, 4, 5, 6, 7, 8` each merge a single psionic-chip entry into vanilla's `Items` group
+and touch nothing else:
 
+```xml
+<population Name="Artifact 3" Load="Merge">
+  <group Name="Items" Load="Merge">
+    <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
+  </group>
+</population>
 ```
-85% → Artifact NC   ·   5% → Artifact NR   ·   10% → Raven_Chips Tier 1/2/3
-```
 
-`Artifact 3R/4R/5R/6R/8R` *are* merged, adding:
+`Artifact 3R/4R/5R/6R/8R` are likewise merged, adding:
 
 | Table | Additions |
 |---|---|
@@ -975,11 +984,26 @@ overwrites those vanilla tables with:
 | Artifact 6R | Sphere (w15), hoversled (w10) |
 | Artifact 8R | **Cybernetics credit pass** (w5), **dark matter cell** (w1) |
 
-> 🔴 **Biggest compatibility hazard in the mod.** Because Artifact 3–8 are replacements rather
-> than merges, **any other mod that also touches those tables will conflict**, and any *future
-> vanilla* additions to Artifact 3–8 will be silently discarded. Converting these to
-> `Load="Merge"` (using `<removeobject>`/weight adjustments where needed) is the single highest-value
-> compatibility fix for a fork.
+These six were declared **without** `Load="Merge"` through 2.2, overwriting vanilla's tables
+outright. A source comment shows it was deliberate — *"Overwrite instead of merge to neatly add
+chips in"* — convenience bought at the price of conflicting with any other mod touching those
+tables and silently discarding whatever a future Qud patch adds to them. It was the mod's worst
+compatibility defect; converted to merges in **#34**.
+
+Vanilla's weights are a uniform 95 common / 5 rare across all six tables, so the distribution
+moved by well under a percentage point:
+
+| | common | rare | chips |
+|---|---|---|---|
+| vanilla, unmodded | 95.00% | 5.00% | — |
+| before (replacement) | 85.00% | 5.00% | 10.00% |
+| **after (merge)** | **86.36%** | **4.55%** | **9.09%** |
+
+Chips drop marginally less often because the entry is added to the pool rather than carved out of
+it, which also dilutes rares by half a point. Reproducing the old numbers exactly would mean
+overriding vanilla's common weight to 85 — reintroducing a hardcoded assumption about a value the
+game is free to change, which is the problem the fix existed to remove. Charter rule 1 prefers
+additive.
 
 ### 7.4 The dark matter cell chance table
 
@@ -1051,7 +1075,7 @@ Ordered roughly by impact.
 | 0 | 🔴 **Critical — verify first** | **`Skills.xml` is not well-formed XML.** Line 10 has a duplicate attribute: `<power Name="Berserk!" … Tile="Abilities/abil_berserk.bmp" Tile="Abilities/abil_berserk.bmp" …>`. It is the only file in the mod that fails to parse. Depending on how forgiving Qud's loader is, **every skill change in §4 may be silently failing to load.** Test this before anything else. | `Skills.xml` line 10 |
 | 0b | 🔴 **Critical — do not upload as-is** | **`workshop.json` still points at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID. This fork is being released as a **separate** Workshop item, so uploading with this file intact would target Mura's page rather than creating your own. **Clear `WorkshopId` before the first upload** so Qud's uploader publishes a new item. The `Description` field is also stale (it holds Mura's pre-handoff "please don't fork this" text) and `Title` / `ImagePath` will both want changing. | `workshop.json` |
 | 1 | 🔴 High | **72 of 144 psionic chips have no drop-table entry and no tinker recipe** — half the flagship system is unobtainable | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
-| 2 | 🔴 High | **Artifact 3–8 are full table replacements**, not merges — guarantees conflicts with other mods and drops future vanilla additions | `PopulationTables.xml` |
+| 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
 | 2b | 🔴 High | **Nine new armor pieces are unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask have no drop-table entry and no `TinkerItem`. `Raven_Iron Maceth` has the same problem. | `Armor.xml`, `Melee Weapons.xml`, `PopulationTables.xml` |
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
