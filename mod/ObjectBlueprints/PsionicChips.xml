@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <objects>
 
   <object Name="Raven_Base Psionic Chip" Inherits="BaseArmor">
-    <part Name="Armor" AV="0" DV="0" WornOn="Chipset Interface" />
+    <part Name="Armor" AV="0" DV="0" WornOn="Chip Interface" />
     <part Name="Render" RenderString="]" Tile="Items/sw_security.bmp" />
     <part Name="Description" Short="Thin boards of silicon house innumerable interwoven lines of finely drawn quark-gluon plasma. Upon placing the chip on your body, it seems to come to life, integrating itself with you and granting the knowledge contained within, knowledge lost eons ago. Removing the chip, however, removes your ability to recall the knowledge, requiring you to leave it embedded within your flesh should you wish to use it. " />
     <part Name="Physics" Weight="0" />

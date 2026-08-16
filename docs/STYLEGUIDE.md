@@ -57,8 +57,8 @@ with saves of its own.
 
 | Thing | Note |
 |---|---|
-| **Body part type strings** (`Chipset Interface`) | Written into save state on every character that has one. The `Chipset` vs `Psionic Interface` decision (#13) was blocked on this and no longer is. |
-| **Anatomy and body-object names** (`Yttrian`) | Leftover from the genotype's rename to "Psionic Adept". |
+| **Body part type strings** (`Chip Interface`) | Written into save state on every character that has one. Settled in #13: `Chipset Interface` → **`Chip Interface`**. |
+| **Anatomy and body-object names** (`PsionicAdept`) | Settled in #13: `Yttrian` → **`PsionicAdept`**, matching the `TrueKin` convention. |
 | **CoQE-original blueprint names** (`Raven_Iron Maceth`) | **Verified free:** no installed mod references a `Raven_` blueprint. The 11 names the Grand Bazaar sub-mod shares with CoQE are all *vanilla* blueprints CoQE merges, not CoQE originals. The `Raven_` prefix itself still stays — see above. |
 
 ### 1.2 Coupled — renameable, but only in lockstep

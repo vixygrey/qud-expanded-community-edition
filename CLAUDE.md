@@ -37,7 +37,7 @@ Compatible with vanilla, with future Qud patches, and with other mods. In practi
   replacements, and the `<removetable>` chain in `Armor 7C/7R/8C/8R` that severs tier cascade.
 - **Additive over destructive.** Add entries rather than removing them; adjust weights rather
   than stripping tables.
-- **Know the blast radius.** The `Chipset Interface` merge into base `Humanoid` reaches every
+- **Know the blast radius.** The `Chip Interface` merge into base `Humanoid` reaches every
   humanoid in the game at once. Changes at that level need to be deliberate and stated.
 - ✅ **Verified 2026-08-15: 2.2 loads and plays on current Qud** (maintainer, Legion Go 2 S).
   Compatibility work here is about *other mods* and *future patches* — not about booting.
@@ -127,7 +127,7 @@ already passed by the time the player flips the switch:
 |---|---|
 | Loot/spawn participation, formulas, abilities, item behaviour | Option read at runtime. Fully live. |
 | Genotypes, subtypes, skill-tree edits | Read at chargen. Option must be set **before starting a character**; say so in the `<helptext>`. |
-| Anatomy (the `Chipset Interface` slot), the Joppa map patch | Baked into save state on creation. Realistically restart- or new-game-scoped. |
+| Anatomy (the `Chip Interface` slot), the Joppa map patch | Baked into save state on creation. Realistically restart- or new-game-scoped. |
 
 Design consequence: **prefer designs whose off-switch is a runtime decision** rather than a
 load-time one. A chip family that can be dropped from the loot tables is more configurable than
@@ -199,12 +199,23 @@ Mura was consistent. Match these when adding anything.
 - **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables are the one
   place this was violated, and it's the mod's worst compatibility problem — don't add more.
 
-## Naming decision still open
+## Naming decision — settled
 
-Mura's player-facing docs all say **"Psionic Interface"**; the XML defines the body part as
-**"Chipset Interface"** and the items are chips/chipsets. The in-game string comes from
-`mod/Bodies.xml`, so players currently see "Chipset Interface". Pick one and make it consistent
-before writing any new player-facing text.
+The slot is **"Chip Interface"**, and the anatomy/body object is **`PsionicAdept`** (#13).
+
+The original shipped a slot called `Chipset Interface` while all of Mura's player-facing
+documentation called it the "Psionic Interface". Neither was accurate: the slot takes 108 chips
+against 36 chipsets, and 13 of the 36 mutations the chips grant are *physical* rather than mental.
+"Chip Interface" is true of the whole catalogue, matches the technological fiction in the chips'
+own description, and doesn't imply the slot belongs to the Psionic Adept genotype — it is merged
+into base `Humanoid`, so every humanoid has one.
+
+`PsionicAdept` follows the convention `Genotypes.xml` already sets: the True Kin genotype
+("True Kin") points at a body object and anatomy named `TrueKin` — the display name with spaces
+removed.
+
+**Use these names in all new player-facing text.** Mura's original docs in `docs/` predate the
+decision and are left as historical record.
 
 ## Validating changes
 
@@ -245,7 +256,7 @@ In-game, `wish` is the fastest way to spawn a blueprint by name and eyeball it.
   it's the largest block of ready-made content available, including vibro bullets/shells and a
   reworked shotgun shell. Reviving it is a good early win.
 - Four vibro weapons are commented out in `mod/ObjectBlueprints/MeleeWeapons.xml` with "rework these or remove them".
-- The `Chipset Interface` slot is merged into the base `Humanoid` anatomy, so **every humanoid NPC
+- The `Chip Interface` slot is merged into the base `Humanoid` anatomy, so **every humanoid NPC
   in the game has one**. Nothing populates it today. Be deliberate if you ever change that — it
   would affect the entire world at once.
 
