@@ -111,6 +111,21 @@ That one compares the mod against your installed copy of the game and catches th
 modes that are otherwise completely silent: a `Load="Merge"` whose vanilla target no longer
 exists, and the custom anatomies drifting from vanilla's `Humanoid`.
 
+### Regenerating the Workshop preview image
+
+`mod/preview.png` is committed, so you only need this if you are changing it:
+
+```bash
+tools/build_preview.sh
+```
+
+It composites the fork's green `- CE` and `& VixyGrey` marks onto `tools/preview-base.png` —
+Mura's original logo, kept unmodified and byte-identical to `git show upstream-2.2:preview.png`.
+Unlike the validators it needs ImageMagick and a macOS system font, so it is not part of the
+validation gate and does not run in CI. Sizes, angles and colours live in the script rather than
+in someone's image editor; see the header, and `docs/STYLEGUIDE.md` §7.3 for why the fork's marks
+deliberately don't match Mura's lettering.
+
 ### Optional local hooks
 
 ```bash
@@ -132,7 +147,7 @@ easily lost.
 ```
 mod/     the shipped mod — the only directory uploaded to the Workshop
 docs/    FEATURES, PERMISSION, STYLEGUIDE, and Mura's original documents
-tools/   validation and drift checking
+tools/   validation, drift checking, and the preview-image generator
 ```
 
 `git diff upstream-2.2` shows everything this fork has changed since Mura's 2.2 release. Add
