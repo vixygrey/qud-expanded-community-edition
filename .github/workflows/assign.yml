@@ -1,0 +1,30 @@
+name: Assign PRs
+
+# pull_request_target runs in the BASE repository's context, which is what gives this the write
+# permission needed to assign a pull request opened from a fork.
+#
+# Safety: this workflow must never check out or execute code from the pull request. It only calls
+# the API with the PR number. Adding a checkout step here would run a contributor's code with a
+# write-scoped token, which is the well-known supply-chain hazard with this trigger.
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  assign:
+    name: Assign to maintainer
+    runs-on: ubuntu-latest
+    # Skip PRs the maintainer opened themselves — they are already the author.
+    if: github.event.pull_request.user.login != 'vixygrey'
+    steps:
+      - name: Assign the maintainer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api -X POST "repos/$REPO/issues/$PR/assignees" -f "assignees[]=vixygrey"
+          echo "Assigned #$PR to vixygrey"

@@ -53,6 +53,10 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Added
 
+- **(internal)** Pull requests now automatically request review from the maintainer via
+  `.github/CODEOWNERS`, and PRs opened by anyone else are assigned to them by a workflow — so a
+  contribution from outside can't sit unnoticed.
+
 - Development note in the README and the Workshop description: VixyGrey uses AI to help with
   development and documentation tasks.
 
