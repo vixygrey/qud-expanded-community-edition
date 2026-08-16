@@ -169,9 +169,9 @@ Short Blades, Survival, Tactics, and Tinkering (plus Tinker I, Disassemble, Scav
 
 ### 2.3 Subtype sprites
 
-18 custom tiles by **Noble Lark** live in `Textures/Subtypes/` — `{force,fire,ice,lightning,light,corrosion,blood,mental,temporal}{Psionic,Guardian}.png`.
+18 custom tiles by **Noble Lark** live in `Textures/Subtypes/` — `{force,fire,ice,lightning,light,corrosive,blood,mental,temporal}{Psionic,Guardian}.png`.
 
-Two naming quirks: the file prefix is `corrosion*` while the subtype is named "Corrosive", and
+One naming quirk:
 `Subtypes.xml` references the tiles as **`.bmp`** (`Subtypes/forcePsionic.bmp`) while the shipped
 files are `.png`. The latter is normal Qud convention — the engine resolves `.bmp` tile paths
 against `.png` assets — but worth knowing if you ever rename them.
@@ -1043,7 +1043,7 @@ Ordered roughly by impact.
 | 12 | 🟡 Low | **Psionic Adept chargen text says "+30 bonus skill points"** — actual delta is +25 vs vanilla / +10 vs the mod's True Kin | `Genotypes.xml` |
 | 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
 | 13b | 🟡 Low | **`Raven_ProjectileFireRifle` uses `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
-| 14 | ⚪ Note | Subtype sprite files use the prefix `corrosion*` while the subtype is named "Corrosive" — cosmetic inconsistency only | `Textures/Subtypes/` |
+| 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
 | 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
 

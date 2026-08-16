@@ -550,6 +550,44 @@ def _report_field(
     )
 
 
+def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Subtype tiles must exist on disk and be named for their affinity.
+
+    Two failures, both silent in game rather than loud:
+
+    A Tile pointing at a file that is not there renders as nothing, with no load error - the
+    same class of silent breakage as an orphaned Load="Merge".
+
+    And docs/STYLEGUIDE.md sets the texture convention `<affinity><Role>`, which 16 of the 18
+    subtype tiles follow. The two that did not were named `corrosion*` for a subtype called
+    "Corrosive" (#24), which is how a set of files stops being predictable from the thing it
+    illustrates.
+
+    Note the extension: Qud resolves a `.bmp` tile path against a `.png` asset. That mismatch
+    is normal convention, not a bug - see docs/STYLEGUIDE.md 1.2.
+    """
+    for path, root in all_roots.items():
+        for st in root.iter("subtype"):
+            tile = st.get("Tile")
+            name = st.get("Name") or "<unnamed>"
+            if not tile:
+                continue
+            asset = MOD / "Textures" / Path(tile).with_suffix(".png")
+            if not asset.is_file():
+                f.add(
+                    "subtype-tile", f"{path}: {name} tile {tile} has no file at {asset}"
+                )
+            affinity = name.split(",")[0].strip().lower()
+            stem = Path(tile).stem
+            match = re.match(r"([a-z]+)([A-Z]\w*)", stem)
+            if match and affinity and match.group(1) != affinity:
+                f.add(
+                    "subtype-tile",
+                    f"{path}: {name} uses tile {stem!r}, but the convention is "
+                    f"<affinity><Role> - expected {affinity + match.group(2)!r}",
+                )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -630,6 +668,7 @@ def run() -> Findings:
     check_merge_discipline(f, roots)
     check_scripting_parts(f, roots)
     check_scripting_policy(f)
+    check_subtype_tiles(f, roots)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
