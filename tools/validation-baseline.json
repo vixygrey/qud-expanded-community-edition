@@ -9,21 +9,11 @@
       "count": 1
     },
     "unreachable": {
-      "issue": "#7 (armor pieces, Raven_Iron Maceth, and others)",
+      "issue": "#37 - Raven_Empty Armor Rack, furniture with no route into the world",
       "items": [
-        "Raven_Empty Armor Rack (Furniture.xml) is in no population table and has no TinkerItem",
-        "Raven_Flexiboots (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Flexicloak (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Flexigloves (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Flexihelmet (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Iron Maceth (MeleeWeapons.xml) is in no population table and has no TinkerItem",
-        "Raven_Mutating Mask (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Nanoweave Boots (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Nanoweave Cloak (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Nanoweave Gloves (Armor.xml) is in no population table and has no TinkerItem",
-        "Raven_Nanoweave Helmet (Armor.xml) is in no population table and has no TinkerItem"
+        "Raven_Empty Armor Rack (Furniture.xml) is in no population table and has no TinkerItem"
       ],
-      "count": 11
+      "count": 1
     }
   }
 }
