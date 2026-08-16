@@ -848,10 +848,8 @@
 
 <!-- Artifact Tables -->
 
-  <population Name="Artifact 3"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 3C" />
-      <table Weight="5" Number="1" Name="Artifact 3R" />
+  <population Name="Artifact 3" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
     </group>
   </population>
@@ -863,10 +861,8 @@
     </group>
   </population>
 
-  <population Name="Artifact 4"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 4C" />
-      <table Weight="5" Number="1" Name="Artifact 4R" />
+  <population Name="Artifact 4" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
     </group>
   </population>
@@ -878,10 +874,8 @@
     </group>
   </population>
 
-  <population Name="Artifact 5"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 5C" />
-      <table Weight="5" Number="1" Name="Artifact 5R" />
+  <population Name="Artifact 5" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 1" />
     </group>
   </population>
@@ -893,10 +887,8 @@
     </group>
   </population>
 
-  <population Name="Artifact 6"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 6C" />
-      <table Weight="5" Number="1" Name="Artifact 6R" />
+  <population Name="Artifact 6" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 2" />
     </group>
   </population>
@@ -908,18 +900,14 @@
     </group>
   </population>
 
-  <population Name="Artifact 7"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 7C" />
-      <table Weight="5" Number="1" Name="Artifact 7R" />
+  <population Name="Artifact 7" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 2" />
     </group>
   </population>
 
-  <population Name="Artifact 8"> <!-- Overwrite instead of merge to neatly add chips in -->
-    <group Name="Items" Style="pickone">
-      <table Weight="85" Number="1" Name="Artifact 8C" />
-      <table Weight="5" Number="1" Name="Artifact 8R" />
+  <population Name="Artifact 8" Load="Merge">
+    <group Name="Items" Load="Merge">
       <table Weight="10" Number="1" Name="Raven_Chips Tier 3" />
     </group>
   </population>
