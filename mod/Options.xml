@@ -94,6 +94,51 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCESkillRequirements"
+    DisplayText="{{C|Qud Expanded}}: eased skill requirements"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    Restart="true"
+    SearchKeywords="qud expanded skill requirements attribute axe cudgel long blade multiweapon tinkering"
+  >
+    <helptext>
+            Keeps the eased attribute requirements this mod has always used:
+
+            {{W|Axe}} and {{W|Cudgel}} accept {{G|Strength or Agility}} for every power, so an Agility build can buy Cleave, Berserk!, Slam and the rest. The numbers themselves are unchanged.
+
+            {{W|Long Blade}} lowers Dueling Stance to {{G|15}} Intelligence from 17, and En Garde! asks for 29 in Strength {{G|or}} Agility rather than 29 in one and 23 in the other.
+
+            {{W|Multiweapon Fighting}} lowers Expertise to {{G|21}} from 23 and Mastery to {{G|25}} from 27.
+
+            {{W|Tinkering}} lowers Tinker I to {{G|17}} Intelligence, II to {{G|21}} and III to {{G|25}}, from 19, 23 and 29.
+
+            Turn this off to face vanilla's requirements. No power is removed either way, and skills you already own are never taken back.
+
+            {{y|Takes effect when you restart the game.}} Qud builds each power's requirement list once and keeps it for the session.
+        </helptext>
+  </option>
+
+  <option
+    ID="OptionQudExpandedCESkillCosts"
+    DisplayText="{{C|Qud Expanded}}: retuned skill point costs"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded skill point cost tinkering cooking butchery spicer disassemble"
+  >
+    <helptext>
+            Keeps the skill point prices this mod has always used: {{W|Disassemble}} free rather than 100, {{W|Reverse Engineer}} {{G|200}} rather than 100, and {{W|Butchery}} and {{W|Spicer}} {{G|100}} each rather than 50.
+
+            The Cooking prices are an offset. This mod gives every genotype Cooking and Gathering and Meal Preparation for free at character creation, and charges more for the two powers above to pay for them. If you have turned {{W|extra starting skills}} off, you may want this off as well - otherwise you pay the offset without getting the skills it offsets.
+
+            Turn this off to pay exactly vanilla's prices. Powers you have already bought are unaffected.
+
+            This one applies immediately.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEStartingReputation"
     DisplayText="{{C|Qud Expanded}}: starting reputation bonus"
     Category="Mods"

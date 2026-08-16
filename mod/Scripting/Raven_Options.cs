@@ -2,6 +2,7 @@
 using XRL;
 using XRL.UI;
 using XRL.World.Anatomy;
+using XRL.World.Skills;
 
 namespace QudExpandedCE
 {
@@ -28,6 +29,8 @@ namespace QudExpandedCE
         public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
         public const string StartingReputationID = "OptionQudExpandedCEStartingReputation";
+        public const string SkillRequirementsID = "OptionQudExpandedCESkillRequirements";
+        public const string SkillCostsID = "OptionQudExpandedCESkillCosts";
         public const string ChipDropsID = "OptionQudExpandedCEChipDrops";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
@@ -197,6 +200,124 @@ namespace QudExpandedCE
                 [Mutant] = new KeyValuePair<string, int>("Joppa", 300),
             };
 
+        /// <summary>One power's attribute requirement, as this mod sets it and as vanilla had it.</summary>
+        private sealed class PowerRequirement
+        {
+            public readonly string Skill;
+            public readonly string Power;
+            public readonly Tuning<string> Attribute;
+            public readonly Tuning<string> Minimum;
+
+            public PowerRequirement(
+                string skill, string power, Tuning<string> attribute, Tuning<string> minimum)
+            {
+                Skill = skill;
+                Power = power;
+                Attribute = attribute;
+                Minimum = minimum;
+            }
+        }
+
+        /// <summary>One power's skill point cost, as this mod sets it and as vanilla had it.</summary>
+        private sealed class PowerCost
+        {
+            public readonly string Skill;
+            public readonly string Power;
+            public readonly Tuning<int> Cost;
+
+            public PowerCost(string skill, string power, Tuning<int> cost)
+            {
+                Skill = skill;
+                Power = power;
+                Cost = cost;
+            }
+        }
+
+        private static Tuning<string> Range(string mod, string vanilla)
+        {
+            return new Tuning<string>(mod, vanilla);
+        }
+
+        // The Axe and Cudgel rewrite is one idea applied twelve times: accept either the tree's
+        // own attribute or Agility, so an Agility build can buy powers it already has the stats
+        // for. Vanilla gates both trees on Strength alone.
+        private static readonly Tuning<string> StrengthOrAgility =
+            Range("Strength|Agility", "Strength");
+
+        // Unchanged by the mod, but stated rather than skipped so every row of the table below
+        // says what it restores. A row that silently left a field alone would be the one place a
+        // future edit could go wrong unnoticed.
+        private static readonly Tuning<string> Intelligence = Range("Intelligence", "Intelligence");
+        private static readonly Tuning<string> AgilityOrStrength =
+            Range("Agility|Strength", "Agility|Strength");
+
+        /// <summary>
+        /// Every attribute requirement this mod retunes, against vanilla's own Base/Skills.xml.
+        ///
+        /// Read out of the game's data rather than reconstructed from the mod's changelog, because
+        /// the two have disagreed before - see the Mutated Human HP gain in #90.
+        /// </summary>
+        private static readonly PowerRequirement[] Requirements =
+        {
+            new PowerRequirement("Axe", "Cleave", StrengthOrAgility, Range("19|19", "19")),
+            new PowerRequirement("Axe", "Charging Strike", StrengthOrAgility, Range("19|19", "19")),
+            new PowerRequirement("Axe", "Dismember", StrengthOrAgility, Range("21|21", "21")),
+            new PowerRequirement("Axe", "Hook and Drag", StrengthOrAgility, Range("23|23", "23")),
+            new PowerRequirement("Axe", "Decapitate", StrengthOrAgility, Range("25|25", "25")),
+            new PowerRequirement("Axe", "Berserk!", StrengthOrAgility, Range("29|29", "29")),
+
+            new PowerRequirement("Cudgel", "Bludgeon", StrengthOrAgility, Range("17|17", "17")),
+            new PowerRequirement("Cudgel", "Charging Strike", StrengthOrAgility, Range("19|19", "19")),
+            new PowerRequirement("Cudgel", "Conk", StrengthOrAgility, Range("21|21", "21")),
+            new PowerRequirement("Cudgel", "Backswing", StrengthOrAgility, Range("23|23", "23")),
+            new PowerRequirement("Cudgel", "Slam", StrengthOrAgility, Range("25|25", "25")),
+            new PowerRequirement("Cudgel", "Demolish", StrengthOrAgility, Range("29|29", "29")),
+
+            new PowerRequirement("Long Blade", "Dueling Stance", Intelligence, Range("15", "17")),
+
+            // Vanilla asks for 29 in one of Strength or Agility AND 23 in the other, whichever way
+            // round; the mod asks only for 29 in either. Restoring it means putting back both the
+            // paired attribute list and its paired minimums.
+            new PowerRequirement(
+                "Long Blade",
+                "En Garde!",
+                Range("Strength|Agility", "Strength,Agility|Agility,Strength"),
+                Range("29|29", "29,23|29,23")),
+
+            // The mod leaves Attribute alone here - vanilla already accepts either - and cuts only
+            // the thresholds. Vanilla adopted Strength-or-Agility for this tree itself, so the
+            // requirement cut is all that is still the mod's own.
+            new PowerRequirement(
+                "Multiweapon Fighting", "Multiweapon Expertise", AgilityOrStrength,
+                Range("21|21", "23|23")),
+            new PowerRequirement(
+                "Multiweapon Fighting", "Multiweapon Mastery", AgilityOrStrength,
+                Range("25|25", "27|27")),
+
+            new PowerRequirement("Tinkering", "Tinker I", Intelligence, Range("17", "19")),
+            new PowerRequirement("Tinkering", "Tinker II", Intelligence, Range("21", "23")),
+            new PowerRequirement("Tinkering", "Tinker III", Intelligence, Range("25", "29")),
+        };
+
+        /// <summary>
+        /// Every skill point cost this mod retunes, against vanilla's own Base/Skills.xml.
+        ///
+        /// Tinker I, II and III are deliberately absent: mod/Skills.xml restates their 100/200/300
+        /// but those are vanilla's numbers already, so they belong to neither toggle. Only their
+        /// attribute minimums are a mod change, and those are in Requirements above.
+        /// </summary>
+        private static readonly PowerCost[] Costs =
+        {
+            // Raised to offset the free Cooking and Gathering + Meal Preparation the starting
+            // skills option grants. Turning that option off while leaving this one on means
+            // paying the offset without the thing it offsets.
+            new PowerCost("Cooking and Gathering", "Butchery", new Tuning<int>(100, 50)),
+            new PowerCost("Cooking and Gathering", "Spicer", new Tuning<int>(100, 50)),
+
+            new PowerCost("Tinkering", "Disassemble", new Tuning<int>(0, 100)),
+            new PowerCost("Tinkering", "Reverse Engineer", new Tuning<int>(200, 100)),
+        };
+
         /// <summary>Runs whenever any option changes, and once as options are first read.</summary>
         [OptionFlagUpdate]
         public static void OnOptionFlagUpdate()
@@ -208,6 +329,8 @@ namespace QudExpandedCE
             ApplyStartingReputation();
             ApplyChipSlots();
             ApplyChipDrops();
+            ApplySkillRequirements();
+            ApplySkillCosts();
         }
 
         private static bool Enabled(string id, string fallback)
@@ -340,6 +463,86 @@ namespace QudExpandedCE
                 if (nested != null)
                 {
                     DetachChipTables(nested);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Find one power by its skill's name and its own, or null if either is absent.
+        ///
+        /// Matches on Name through PowerList rather than indexing SkillEntry.Powers, because what
+        /// that dictionary is keyed by is not something this mod should depend on - and every
+        /// power mod/Skills.xml declares omits Class=, so a class-keyed lookup would find nothing.
+        /// </summary>
+        private static PowerEntry FindPower(string skillName, string powerName)
+        {
+            SkillEntry skill = SkillFactory.Factory?.GetSkillIfExists(skillName);
+            if (skill?.PowerList == null)
+            {
+                return null;
+            }
+
+            foreach (PowerEntry power in skill.PowerList)
+            {
+                if (power != null && power.Name == powerName)
+                {
+                    return power;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Make the twenty retuned attribute requirements match the option, in either direction.
+        /// </summary>
+        /// <remarks>
+        /// This one takes effect on restart, and its option says so with Restart="true" - the
+        /// attribute vanilla itself uses for OptionEnableMods.
+        ///
+        /// The reason is in the game rather than in this mod. PowerEntry.MeetsAttributeMinimum
+        /// gates on a cached _requirements list built from Attribute and Minimum, and
+        /// InitRequirements() opens by returning early when that list already exists, so it will
+        /// not rebuild. The cache is private, and clearing it would need reflection, which charter
+        /// rule 5 forbids outright.
+        ///
+        /// What saves this is that HandleXMLNode never primes the cache: it is null after load and
+        /// built lazily on first use. Options are read at boot, before any skills screen exists, so
+        /// the value written here is the one the cache is eventually built from. InitRequirements
+        /// is deliberately NOT called - warming the cache early would freeze whichever value
+        /// happened to be current at that moment for the rest of the session.
+        /// </remarks>
+        private static void ApplySkillRequirements()
+        {
+            bool on = Enabled(SkillRequirementsID, "Yes");
+            foreach (PowerRequirement tuning in Requirements)
+            {
+                PowerEntry power = FindPower(tuning.Skill, tuning.Power);
+                if (power == null)
+                {
+                    continue;
+                }
+
+                power.Attribute = tuning.Attribute.For(on);
+                power.Minimum = tuning.Minimum.For(on);
+            }
+        }
+
+        /// <summary>
+        /// Make the four retuned skill point costs match the option, in either direction.
+        ///
+        /// Fully live, unlike the requirements above: Cost is a plain public int with nothing
+        /// derived from it, read directly wherever a power is priced or purchased.
+        /// </summary>
+        private static void ApplySkillCosts()
+        {
+            bool on = Enabled(SkillCostsID, "Yes");
+            foreach (PowerCost tuning in Costs)
+            {
+                PowerEntry power = FindPower(tuning.Skill, tuning.Power);
+                if (power != null)
+                {
+                    power.Cost = tuning.Cost.For(on);
                 }
             }
         }
