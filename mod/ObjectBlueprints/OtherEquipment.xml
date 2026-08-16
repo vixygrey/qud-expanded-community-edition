@@ -62,7 +62,7 @@
       Name="Description"
       Short="A tightly wound hedron of dark matter containing vast amounts of potential energy."
     />
-    <part Name="Commerce" Value="300" />
+    <part Name="Commerce" Value="1200" />
     <part Name="TinkerItem" Bits="0047" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="8" />
     <tag Name="DynamicObjectsTable:EnergyCells" />
