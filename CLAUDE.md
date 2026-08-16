@@ -346,6 +346,23 @@ provenance record meant to stay byte-for-byte. They need `-text` to opt out of E
 entirely. Check with `git ls-files --eol` and `git add --renormalize`, not by reading the
 attribute file — `git check-attr` reports an inherited `eol` value even where it does not apply.
 
+### The vanilla game data is readable — check it
+
+`~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base`
+
+30 XML files plus `ObjectBlueprints/`. **Not** `CoQ_Data/StreamingAssets`, which holds only DLC —
+that wrong turn caused several questions to be reported as unanswerable when they weren't.
+
+Two gotchas when reading it:
+
+- **Five vanilla files are not well-formed XML.** `Items.xml`, `Creatures.xml`, `Furniture.xml`,
+  `Books.xml` and `Manual.xml` embed control characters as numeric references (`&#11;`, `&#15;`,
+  `&#27;`, `&#x7;`) which Qud accepts and XML 1.0 forbids. A strict parser rejects them.
+- **Never swallow those failures.** Skipping `Items.xml` silently makes every object it defines
+  look absent — which surfaced as *208 phantom "orphaned merge" defects* before the parse errors
+  were surfaced. `tools/check_vanilla_drift.py` strips the invalid refs and reports anything it
+  still cannot read.
+
 ### Verify Qud's behaviour against installed mods, not from memory
 
 Several confident-sounding assumptions about Qud were wrong and were caught only by checking the

@@ -9,18 +9,12 @@
       "count": 1
     },
     "merge-discipline": {
-      "issue": "#3 (Artifact 3-8), #29 (Recoilers)",
+      "issue": "#29 (Recoilers)",
       "items": [
         "mod/ObjectBlueprints/OtherEquipment.xml: <object Name=\"Programmable Recoiler\"> replaces a vanilla object",
-        "mod/ObjectBlueprints/OtherEquipment.xml: <object Name=\"Reprogrammable Recoiler\"> replaces a vanilla object",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 3\"> replaces a vanilla table",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 4\"> replaces a vanilla table",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 5\"> replaces a vanilla table",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 6\"> replaces a vanilla table",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 7\"> replaces a vanilla table",
-        "mod/PopulationTables.xml: <population Name=\"Artifact 8\"> replaces a vanilla table"
+        "mod/ObjectBlueprints/OtherEquipment.xml: <object Name=\"Reprogrammable Recoiler\"> replaces a vanilla object"
       ],
-      "count": 8
+      "count": 2
     },
     "unreachable": {
       "issue": "#6 (72 psionic chips), #7 (9 armor pieces + Raven_Iron Maceth)",
