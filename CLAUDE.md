@@ -281,10 +281,56 @@ Trunk-based, per the global rules, with these project specifics:
   convention or the in-world reason. A one-line commit body is a rule-2 violation.
 - **Every PR states its compatibility impact** — which vanilla records it touches and whether the
   edit is additive. If it touches a table other mods commonly touch, say so.
+- **Every PR updates `CHANGELOG.md`.** [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+  format — `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed` / `Security`, newest first,
+  under `[Unreleased]` until a release cuts it. Entries that don't affect the shipped mod are
+  marked **(internal)**, because the changelog serves subscribers first and contributors second.
+  A PR without a changelog entry is incomplete, not merely untidy: the changelog is where charter
+  rule 2's causality reaches players, who never read commit messages.
+  Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
 - Run the validation script before every commit. It is the only automated gate that exists.
 
 > ⚠️ **Bootstrapping gap: there is no remote and no issue tracker yet.** "Issues first" cannot
 > start until a GitHub repo exists. Creating it is the first chore.
+
+## Lessons learned
+
+Operational traps hit during this fork, kept so nobody pays for them twice. Add to this whenever
+something bites — the reasoning is the durable artifact, not the fix.
+
+### Stacked PRs do not survive a squash merge of their base
+
+Squash-merging PR A **and deleting its branch** does not retarget PR B stacked on it — GitHub
+**auto-closes B**. After B's branch is rebased, `gh pr reopen` then fails outright
+(*"Could not open the pull request"*) and `--base` cannot be changed on a closed PR. The only
+recovery is a fresh PR.
+
+The cause is that a squash merge creates a commit that is not an ancestor of B, so B's history no
+longer descends from `main`.
+
+**Do instead:** retarget the child to `main` *before* merging the base, or merge the base without
+deleting its branch. Recover with
+`git rebase --onto origin/main <old-base-tip> <child-branch>` — and capture `<old-base-tip>`
+*before* merging, because it is painful to find afterwards. Better still, avoid stacking when the
+base will merge soon.
+
+### Verify Qud's behaviour against installed mods, not from memory
+
+Several confident-sounding assumptions about Qud were wrong and were caught only by checking the
+~87 mods installed under `~/Library/Application Support/Steam/steamapps/workshop/content/333640/`:
+
+- Mod options **can** gate content. `PopulationManager.Populations` stays mutable at runtime, so
+  drops and behaviour are option-gateable; only chargen- and save-baked definitions are not.
+- The loader dispatches on **root element**, not filename — so XML filenames are free.
+- Dev files **do** ship to subscribers.
+
+That directory is the cheapest ground truth available. Use it before asserting how Qud behaves.
+
+### Distinguish "frozen by saves" from "frozen by vanilla identity"
+
+They look alike and behave completely differently. Renaming a vanilla blueprint or population
+table doesn't break a save — it silently orphans the `Load="Merge"` so the edit stops applying,
+with **no error anywhere**. See `docs/STYLEGUIDE.md` §1.
 
 ## Source documents
 
