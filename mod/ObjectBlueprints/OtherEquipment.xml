@@ -92,7 +92,7 @@
     <part Name="Examiner" Alternate="Unknownmetal box" Complexity="4" />
     <part Name="TinkerItem" Bits="00345" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="6" />
-    <stag Name="Floating" />
+    <tag Name="Floating" />
   </object>
 
   <object Name="Raven_CyberneticsCreditPass" Inherits="Item">
@@ -193,7 +193,7 @@
     <tag Name="DisplayFullNameAsReward" />
     <tag Name="Tier" Value="8" />
     <tag Name="Mods" Value="CommonMods,ElectronicsMods" />
-    <stag Name="Trinket" />
+    <tag Name="Trinket" />
   </object>
 
   <object Name="Waterskin" Load="Merge">
