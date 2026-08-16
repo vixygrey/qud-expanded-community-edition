@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 |---|---|
 | **New item blueprints** | **350** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **209** `Load="Merge"` edits to existing objects |
-| **New genotype** | Psionic Adept (internally `Psionic`; the anatomy was formerly `Yttrian`) with 18 subtypes |
+| **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
@@ -78,9 +78,13 @@ Every humanoid also gains **one Chip Interface slot** (see §3).
 
 ### 1.4 Psionic Adept (new)
 
-Internal name `Psionic`, display name **Psionic Adept**. Earlier versions called the genotype
-"Yttrian"; the anatomy and body object kept that name until this fork renamed them to
-`PsionicAdept` (#13).
+Named `Psionic Adept` internally and in display, matching vanilla's convention that a genotype's
+`Name` and `DisplayName` agree (`Mutated Human`, `True Kin`). It was internally `Psionic` until
+this fork renamed it (#24).
+
+Earlier versions called the genotype "Yttrian"; the anatomy and body object kept that name until
+this fork renamed them to `PsionicAdept` (#13) — that follows the *other* convention the same
+file sets, where a body object is the display name with spaces removed (`True Kin` → `TrueKin`).
 
 | Field | Value |
 |---|---|

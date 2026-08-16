@@ -23,6 +23,12 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Changed
 
+- **The Psionic Adept genotype is now named `Psionic Adept` internally**, matching its display
+  name. It was `Psionic`. Vanilla's convention is that a genotype's internal and display names
+  agree — `Mutated Human`, `True Kin` — and this was the last identifier in the mod that didn't
+  follow one of vanilla's own patterns.
+  ([#24](https://github.com/vixygrey/qud-expanded-community-edition/issues/24))
+
 - **Workshop metadata now describes this fork.** `WorkshopId` is cleared so the uploader creates
   a **new** item — it previously still pointed at Mura's original, which would have published
   over their page. The description was Mura's pre-handoff notice asking that the mod *not* be
