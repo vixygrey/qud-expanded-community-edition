@@ -25,6 +25,7 @@ from pathlib import Path
 
 MOD = Path("mod")
 BASELINE_PATH = Path("tools/validation-baseline.json")
+QUD_API_PATH = Path("tools/qud-api.json")
 
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
@@ -740,6 +741,92 @@ def check_table_targets(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 f.add("dangling-blueprint", f"{path}: table references undefined {bp}")
 
 
+def load_qud_api() -> dict | None:
+    """The committed snapshot of names Qud exposes. See tools/snapshot_qud_api.py."""
+    if not QUD_API_PATH.exists():
+        return None
+    try:
+        return json.loads(QUD_API_PATH.read_text())
+    except json.JSONDecodeError:
+        return None
+
+
+def object_parts(root: ET.Element):
+    """Only `<part>` elements belonging to an object blueprint.
+
+    Conversations use `<part Name="…">` for a different system in a different namespace — vanilla
+    has 55 of them, AskName and EndGame and the KithAndKin handlers. Scoping to objects is what
+    keeps this check honest; an allowlist would rot.
+    """
+    for obj in root.iter("object"):
+        yield from obj.iter("part")
+
+
+def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Every `<part Name="…">` must resolve to a real class.
+
+    Qud silently ignores a part it cannot resolve: the object still loads, still validates, and
+    simply does not do the thing you wrote. The mod's own Raven_Mod* parts are check_scripting_parts'
+    job; this covers the vanilla ones.
+    """
+    api = load_qud_api()
+    if api is None:
+        f.add(
+            "qud-api-snapshot",
+            f"{QUD_API_PATH} is missing or unreadable - regenerate with "
+            "tools/snapshot_qud_api.py (part and blueprint checks are skipped without it)",
+        )
+        return
+    known = set(api["parts"])
+    for path, root in blueprint_sources(all_roots).items():
+        for part in object_parts(root):
+            name = part.get("Name")
+            if not name or name.startswith("Raven_"):
+                continue
+            if name not in known:
+                f.add(
+                    "unknown-part",
+                    f'{path}: <part Name="{name}"> is not a class in '
+                    f"{api['part_namespace']} - Qud will ignore it silently",
+                )
+
+
+def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Blueprint-valued attributes must name a blueprint that exists.
+
+    This is the check that would have caught #144's `GasObject="GasPoison"`: GasPoison is a *part*
+    on the blueprint named PoisonGas, so the arrow fired and released nothing. Nothing errors, and
+    nothing in the XML looks wrong.
+
+    Only the attributes and contexts listed in the snapshot are checked, and each was included
+    because it resolves for 100% of its values in vanilla's own data - a property the snapshot
+    generator re-establishes every time it runs.
+    """
+    api = load_qud_api()
+    if api is None:
+        return  # already reported by check_part_names
+    known = set(api["blueprints"])
+    attrs = tuple(api["blueprint_attributes"])
+    contexts = set(api["blueprint_contexts"])
+    roots = blueprint_sources(all_roots)
+    for root in roots.values():
+        for obj in root.iter("object"):
+            if obj.get("Name"):
+                known.add(obj.get("Name"))
+    for path, root in roots.items():
+        for el in root.iter():
+            if el.tag not in contexts:
+                continue
+            for attr in attrs:
+                value = el.get(attr)
+                if value and value not in known:
+                    f.add(
+                        "dangling-blueprint-ref",
+                        f'{path}: <{el.tag} {attr}="{value}"> names no blueprint '
+                        f"in vanilla or this mod",
+                    )
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS = (
@@ -766,6 +853,8 @@ def run() -> Findings:
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
+    check_part_names(f, roots)
+    check_blueprint_refs(f, roots)
     return f
 
 

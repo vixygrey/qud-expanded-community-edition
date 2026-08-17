@@ -462,6 +462,8 @@ seconds rather than after a round trip.
 | `manifest.json` / `workshop.json` validity, and the upload target | `json`, `manifest`, `workshop-target` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
+| Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
+| Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Tier and value curve consistency | `item-curve` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
