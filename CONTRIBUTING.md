@@ -95,6 +95,11 @@ redeclaration conflicts with any other mod touching the same record *and* silent
 future Qud patches add to it. `merge-discipline` in the validator will catch you, but it's easier to
 write it right the first time.
 
+## Conduct
+
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) — the Contributor Covenant, and the standard I hold
+myself to as much as anyone else. If I fall short of it, say so.
+
 ## Security
 
 If you find something that could be abused before subscribers can update, please report it

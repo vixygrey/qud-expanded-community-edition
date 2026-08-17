@@ -80,6 +80,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Internal — tooling
 
+- **(internal)** `CODE_OF_CONDUCT.md` added — the Contributor Covenant 2.1, verbatim apart from the contact method it leaves blank. Reports go through the repository's private reporting form, which keeps them private without publishing a personal email address on a project that will get Workshop traffic; the file also points at GitHub's own abuse reporting, since the person someone needs to report might be me. Linked from `README.md` and `CONTRIBUTING.md`.
+  ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
+
 - **(internal)** `SECURITY.md`, issue forms and a pull request template added, finishing the contributor-facing documentation begun with `CONTRIBUTING.md`. The security policy is not boilerplate here: this mod ships C# that Qud runs with full process privileges, and any `mod/Scripting/` directory makes the game ask every subscriber to approve it. It states what's in scope, what `scripting-policy` and `serializable-shape` already enforce, and — plainly — that neither is a security boundary but a drift detector, that CodeQL cannot cover the C#, and that there's no compile gate either. Private vulnerability reporting is enabled, so reports have somewhere to go that isn't a public issue. The three issue forms route to the labels that exist and ask for the things I actually need: mod and Qud versions, the full mod list, and where the log lives on each platform. Compatibility gets its own form because charter rule 1 makes it the fork's headline claim rather than a flavour of "bug". Also indexed `docs/DESIGN_options.md`, which had been referenced only from a changelog entry.
   ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
 
