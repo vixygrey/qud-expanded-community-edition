@@ -167,7 +167,7 @@ shelling out, external assemblies or Harmony — and flags any instance field on
 type, since that layout is written into every player save.
 The same checks run in CI on every pull request.
 
-After a Caves of Qud update, run this one too:
+After a Caves of Qud update, run these two as well:
 
 ```bash
 python3 tools/check_vanilla_drift.py
@@ -176,6 +176,23 @@ python3 tools/check_vanilla_drift.py
 It compares the mod against your installed copy of the game and catches the two failure modes that
 are otherwise completely silent: a `Load="Merge"` whose vanilla target no longer exists, and the
 custom anatomies drifting from vanilla's `Humanoid`.
+
+```bash
+python3 tools/snapshot_qud_api.py
+```
+
+It regenerates `tools/qud-api.json`, the committed list of the part and blueprint names the game
+uses. That snapshot is what lets `validate_mod.py` check part names and blueprint references **in
+CI**, where there is no game to read — so the answer is committed rather than computed on demand.
+
+Everything in it comes from the plain-text XML the game ships; no decompiler is involved and none
+is needed. `--assembly` will widen the part list from `Assembly-CSharp.dll` if you ever need a part
+vanilla declares but never uses, and that path needs `ilspycmd` — but the default does not.
+
+The snapshot records the Steam build it came from, and `--check` compares it against what is
+installed without writing anything. A stale snapshot fails as a false positive on a newly added
+vanilla name, which is loud; that is the intended failure direction, since silence is the thing
+these checks exist to catch.
 
 ### Regenerating the Workshop preview image
 

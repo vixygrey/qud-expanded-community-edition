@@ -1,6 +1,169 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <objects>
-  <!-- removed temporarily
+  <!-- Effect arrows, revived in #144.
+
+       Every figure here is derived from vanilla's own effect arrow, Boomrose Arrow, which is the
+       only one the game ships: BaseArrow / BaseArrowProjectile for the chassis, StrengthPenetration
+       1 over 1d2 damage, and a commerce value of 0.20. Boomrose carries about 40-60% of the
+       high explosive grenade mk I it imitates, and the gas and flashbang payloads below are scaled
+       to their own grenade at the same ratio - same part as the grenade, dialled down.
+
+       Blaze and cryo are the two whose grenades are thermal (HeatGrenade1 at TemperatureDelta 500,
+       ColdGrenade1 at -400, both tier 1). Mura's original +/-400 matched those almost exactly, but
+       the two directions need opposite treatment because Qud implements them differently.
+
+       Heat takes the honest half: 250. Burning is threshold-gated AND self-extinguishing - the
+       effect removes itself the moment temperature drops back under FlameTemperature, and
+       Burning.GetBurningAmount keys damage off how far ABOVE that line you are (0-100 over is 1/turn,
+       101-300 is 1-2, 301-500 is 2-3, rising to 5-6 past 900). So the size of the hit sets both the
+       tick and the duration, and a small one is penalised twice: barely igniting something is worth
+       about 2 damage total. At 250, two arrows put a target near 520 for roughly 20 turns of
+       burning, which is what one thermal grenade does to a single target.
+
+       Cold takes -35, well under half, because freezing has no damage tier at all - crossing the
+       -100 brittle line is a binary immobilise. Halving the grenade would not moderate anything:
+       from a starting 25, any hit deeper than about -125 is a one-shot disable, so -200 lands in
+       exactly the same place as -400. -35 reaches the disable in three or four hits instead.
+
+       Both stay on TemperatureOnHit rather than ThermalGrenade, single target by design. Fire
+       already spreads on its own through the game's mechanics, so the blaze arrow needs no area
+       part to reach more than what it hits, and the cryo arrow is meant to be a single-target tool.
+       ThermalGrenade also sits on six objects in the game and every one inherits Grenade - it has
+       no projectile precedent, unlike HEGrenade, GasGrenade, FlashbangGrenade, SunderGrenade and
+       DeploymentGrenade, and its failure mode on a projectile would be silent.
+
+       Names are Qud-era, not artifact-era. Qud gives grenades functional names because they are
+       recovered old-world tech that arrives labelled - the Grenade blueprint carries an Examiner
+       part and reads as UnknownGrenade until identified. Arrows have no Examiner at all: they are
+       contemporary craft, and vanilla names them for the substance on the tip (boomrose, crysteel,
+       fullerite), never for the effect. -->
+
+  <object Name="Raven_Blaze Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{blaze|blaze}} arrow" ColorString="&amp;R" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileBlazeArrow" />
+    <part Name="MissileStatusColor" Color="R" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A phial of thickened blaze rides in the socket behind the arrowhead, sloshing and warm."
+    />
+    <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileBlazeArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{blaze|blaze}} arrow" ColorString="&amp;R" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" Attributes="Fire" ColorString="&amp;R" />
+    <part Name="TemperatureOnHit" Amount="250" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Cryo Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{cryogenic|cryo}} arrow" ColorString="&amp;C" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileCryoArrow" />
+    <part Name="MissileStatusColor" Color="C" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="Frost creeps down the wooden shank from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
+    />
+    <part Name="RulesDescription" Text="Chills what it strikes. Repeated hits will freeze a target solid." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{cryogenic|cryo}} arrow" ColorString="&amp;C" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" Attributes="Cold" ColorString="&amp;C" />
+    <part Name="TemperatureOnHit" Amount="-35" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Dream Dew Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{M|dream dew}} arrow" ColorString="&amp;M" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileDreamDewArrow" />
+    <part Name="MissileStatusColor" Color="M" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="The arrowhead is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
+    />
+    <part Name="RulesDescription" Text="Bursts into a cloud of sleep gas where it lands." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileDreamDewArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{M|dream dew}} arrow" ColorString="&amp;M" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;M" />
+    <part Name="GasGrenade" Density="20" GasObject="SleepGas" />
+  </object>
+
+  <object Name="Raven_Quill Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{r|quill}} arrow" ColorString="&amp;r" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileQuillArrow" />
+    <part Name="MissileStatusColor" Color="r" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A quillipede's barb lashed to a wooden shank with sinew. The backward teeth are meant to lodge and tear."
+    />
+    <part Name="RulesDescription" Text="May start a target bleeding on impact." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileQuillArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{r|quill}} arrow" ColorString="&amp;r" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;r" />
+    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
+  </object>
+
+  <object Name="Raven_Starshell Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{Y|starshell}} arrow" ColorString="&amp;Y" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileStarshellArrow" />
+    <part Name="MissileStatusColor" Color="Y" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A thin wax shell packed with white powder caps the wooden shank. It goes off with a clap and a scouring light."
+    />
+    <part Name="RulesDescription" Text="Bursts with a blinding flash where it lands, dazing those caught in it." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileStarshellArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{Y|starshell}} arrow" ColorString="&amp;Y" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;Y" />
+    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
+  </object>
+
+  <object Name="Raven_Stinger Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{g|stinger}} arrow" ColorString="&amp;g" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileStingerArrow" />
+    <part Name="MissileStatusColor" Color="g" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A hollowed stinger caps the wooden shank, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
+    />
+    <part Name="RulesDescription" Text="Bursts into a cloud of poison gas where it lands." />
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+  <object Name="Raven_ProjectileStingerArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{g|stinger}} arrow" ColorString="&amp;g" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;g" />
+    <part Name="GasGrenade" Density="20" GasObject="PoisonGas" />
+  </object>
+
+  <!-- Vanilla's own effect arrow becomes craftable on the same terms as the six above, so that one
+       rule covers every effect arrow in the game. One per craft, at a grenade's bit cost: finding
+       a stack of 1d4 in the wild still beats making them, which is how Qud gates them today. -->
+
+  <object Name="Boomrose Arrow" Load="Merge">
+    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
+  </object>
+
+  <!-- Bullets and shells are still disabled, and are the subject of #145 (shotgun shells) and #146
+       (slugs). They are held back rather than deleted because those issues need the originals to
+       work from; each one is a separate reachability and balance claim, and #146 in particular
+       touches 12 vanilla weapons plus 7 relic bases.
+
+       Do not revive these as-is. They carry the same defects #144 found in the arrows: they
+       inherit Projectile rather than the shell/slug bases, so they lose the tile, sounds and VFX;
+       both gas variants name a part (GasPoison, GasSleep) where a blueprint belongs (PoisonGas,
+       SleepGas) and would emit nothing; and Shotgun Shell below redeclares a vanilla record
+       instead of merging it, which charter rule 1 forbids.
 
   <object Name="Shotgun Shell" Inherits="Projectile">
     <part Name="Render" DisplayName="shotgun shell" ColorString="&amp;y" />
@@ -15,8 +178,6 @@
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
     <part Name="Physics" IsReal="false" />
   </object>
-
-
 
   <object Name="Raven_Vibro Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;cvibro &amp;ybullet" ColorString="&amp;c" />
@@ -48,30 +209,13 @@
     <part Name="Physics" IsReal="false" />
   </object>
 
-  <object Name="Raven_Vibro Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;cvibro &amp;yarrow" ColorString="&amp;c" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileVibroArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An arrow with a shimmering, white tip." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileVibroArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
-    <part Name="Physics" IsReal="false" />
-  </object>
-
-
-
   <object Name="Raven_Sunder Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Ksunder &amp;ybullet" ColorString="&amp;K" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileSunderBullet" />
     <part Name="Physics" Category="Ammo" />
     <part Name="Commerce" Value="0.20" />
     <part Name="Description" Short="A chrome bullet, humming with power.
-          
+
           &amp;C2d100+20 damage to inorganic matter.
           &amp;C2d10+20 damage to organic matter." />
     <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
@@ -90,7 +234,7 @@
     <part Name="Physics" Category="Ammo" />
     <part Name="Commerce" Value="0.20" />
     <part Name="Description" Short="A shotgun shell containing chrome pellets, each humming with power.
-          
+
           &amp;C2d100+20 damage to inorganic matter.
           &amp;C2d10+20 damage to organic matter." />
     <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
@@ -102,27 +246,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="SunderGrenade" Radius="1" Level="2" />
   </object>
-
-  <object Name="Raven_Sunder Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Ksunder &amp;yarrow" ColorString="&amp;K" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileSunderArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="A arrow with a chrome tip, humming with power.
-          
-          &amp;C2d100+20 damage to inorganic matter.
-          &amp;C2d10+20 damage to organic matter." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileSunderArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="10" BaseDamage="1d6" ColorString="&amp;K" />
-    <part Name="SunderGrenade" Radius="1" Level="2" />
-    <part Name="Physics" IsReal="false" />
-  </object>
-
-
 
   <object Name="Raven_Incendiary Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;oincendiary &amp;ybullet" ColorString="&amp;o" />
@@ -156,24 +279,6 @@
     <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
   </object>
 
-  <object Name="Raven_Incendiary Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;oincendiary &amp;yarrow" ColorString="&amp;o" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileIncendiaryArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="The tip of this arrow emanates a soft, hot aura. It holds a strange orange cube that bursts in a blast of heat on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileIncendiaryArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;o" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
-  </object>
-
-
-
   <object Name="Raven_Sleep Gas Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Msleep gas &amp;ybullet" ColorString="&amp;M" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileSleepBullet" />
@@ -205,24 +310,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
   </object>
-
-  <object Name="Raven_Sleep Gas Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Msleep gas &amp;yarrow" ColorString="&amp;M" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileSleepArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="The tip of this arrow holds a strange purple cube, which bursts into a cloud of sleeping gas on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileSleepArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;M" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
-  </object>
-
-
 
   <object Name="Raven_Poison Gas Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;gpoison gas &amp;ybullet" ColorString="&amp;g" />
@@ -256,24 +343,6 @@
     <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
   </object>
 
-  <object Name="Raven_Poison Gas Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;gpoison gas &amp;yarrow" ColorString="&amp;g" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectilePoisonArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="The tip of this arrow holds a strange purple cube, which bursts into a cloud of poisoning gas on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectilePoisonArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;g" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
-  </object>
-
-
-
   <object Name="Raven_Razor Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;rrazor &amp;ybullet" ColorString="&amp;r" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileRazorBullet" />
@@ -301,22 +370,6 @@
     <tag Name="DynamicObjectsTable:Ammo" />
   </object>
   <object Name="ProjectileRazorShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
-  </object>
-
-  <object Name="Raven_Razor Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;rrazor &amp;yarrow" ColorString="&amp;r" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileRazorArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="The tip of this arrow is specially serrated to cause maximum bleeding." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileRazorArrow" Inherits="TemporaryProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
     <part Name="Physics" IsReal="false" />
     <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
@@ -354,24 +407,6 @@
     <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
   </object>
 
-  <object Name="Raven_Frozen Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;yarrow" ColorString="&amp;c" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileFrozenArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="The tip of this arrow emanates a soft, cold aura. It holds a strange blue cube that bursts in a blast of cold on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileFrozenArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;c" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
-  </object>
-
-
-
   <object Name="Raven_Explosive Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Wexplosive &amp;ybullet" ColorString="&amp;W" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileExplosiveBullet" />
@@ -400,23 +435,6 @@
   </object>
   <object Name="ProjectileExplosiveShell" Inherits="TemporaryProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="HEGrenade" Force="1200" Damage="1d6" />
-  </object>
-
-  <object Name="Boomrose Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Rboomrose &amp;yarrow" ColorString="&amp;R" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileExplosiveArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="The tip of this arrow holds a strange red cube, which creates a small explosion on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileExplosiveArrow" Inherits="TemporaryProjectile">
-    <part Name="Render" DisplayName="explosive arrow" ColorString="&amp;R" />
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;R" />
     <part Name="Physics" IsReal="false" />
     <part Name="HEGrenade" Force="1200" Damage="1d6" />
   </object>
@@ -453,24 +471,6 @@
     <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
   </object>
 
-  <object Name="Raven_Flash Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;yarrow" ColorString="&amp;R" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileFlashArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="The tip of this arrow holds a strange white cube, which bursts with a loud pop and white flash on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileFlashArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
-  </object>
-
-
-
   <object Name="Raven_Stasis Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;mstasis &amp;ybullet" ColorString="&amp;m" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileStasisBullet" />
@@ -499,22 +499,6 @@
   </object>
   <object Name="ProjectileStasisShell" Inherits="TemporaryProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
-  </object>
-
-  <object Name="Raven_Stasis Arrow" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;mstasis &amp;yarrow" ColorString="&amp;m" />
-    <part Name="AmmoArrow" ProjectileObject="ProjectileStasisArrow" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short=" The tip of this arrow holds a strange yellow cube, which expands on impact to engulf whatever it hit." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileStasisArrow" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;R" />
     <part Name="Physics" IsReal="false" />
     <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
   </object>
