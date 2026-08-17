@@ -2,7 +2,7 @@
 
 How this repository is organised, named, and formatted.
 
-`CLAUDE.md` holds the **charter** — the six rules the fork is maintained under, and why. This
+`CHARTER.md` holds the **charter** — the six rules I maintain this fork under, and why. This
 document is the mechanical layer beneath it: given those rules, what does a file get called, how
 is it indented, and what is safe to change. Where the two touch, the charter wins.
 

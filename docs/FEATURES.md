@@ -1217,7 +1217,7 @@ the starting reputation bonus, which grants power with no content attached and s
 for rather than opted out of.
 
 > ✅ **Verified 2026-08-16: all eleven options work in game** (maintainer). Worth stating rather than
-> assuming — the mod's C# has **no compile gate**. CodeQL cannot cover it (see CLAUDE.md rule 5) and
+> assuming — the mod's C# has **no compile gate**. CodeQL cannot cover it (see `docs/CHARTER.md` rule 5) and
 > there is no C# toolchain on the authoring machine, so in-game testing is the only evidence that
 > the scripting works at all. A syntax error surfaces as the mod failing to load, not as a build
 > failure.
@@ -1245,7 +1245,7 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 ### 13.2 When an option takes effect — three scopes
 
 This is the distinction that decides how an option must be written and what its `<helptext>` has to
-warn about. CLAUDE.md's guidance to *prefer designs whose off-switch is a runtime decision* is
+warn about. The charter's guidance to *prefer designs whose off-switch is a runtime decision* is
 about moving features up this table.
 
 | Scope | Options | Why |
