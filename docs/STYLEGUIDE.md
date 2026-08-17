@@ -380,6 +380,14 @@ save-baked identifiers changed during the fork.
 - `FEATURES.md` is the feature reference and is expected to stay exhaustive.
 - `PERMISSION.md` is a provenance record — **append, never rewrite**.
 - Reference issues as `#N`, files as clickable relative paths.
+- `2.2-changelog.txt` and `mura-feature-notes-wip.txt` are Mura's, kept byte-for-byte as a
+  provenance record — **never edited**, not even for typos or line endings.
+
+> **On the first person.** The documents here are written in my voice, so they say "I decided" and
+> "I checked" rather than reporting decisions as though they made themselves. That is a description
+> of how *I* write, not a rule for you. **Write your issues, pull requests and comments however
+> comes naturally** — in your own voice, in whatever person you like. I'd rather have your
+> contribution than a stylistic match, and I'll keep the docs consistent myself.
 
 ---
 

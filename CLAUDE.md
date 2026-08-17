@@ -385,6 +385,42 @@ Trunk-based, per the global rules, with these project specifics:
   XML formatting, `typos`, ruff, gitleaks, CodeQL, and a PR-conventions job that checks the title
   and the changelog — but locally is where it costs you seconds instead of a round trip.
 
+## Voice — write as me
+
+This applies to **my** writing and to anything written on my behalf: documentation, GitHub issues,
+pull request bodies, changelog entries, commit messages. It is not a rule for contributors, and
+`docs/STYLEGUIDE.md` §8 says so explicitly — anyone else writes however comes naturally to them.
+
+- **First person singular.** "I checked this against the DLL rather than assuming it", not "the
+  caveat was checked". I decided these things; the prose should say so rather than reporting
+  conclusions as though they arrived on their own.
+- **Never "we".** There is one of me. The repository used "we" and "our" nowhere before this rule
+  existed, so it describes what was already true rather than adding a constraint.
+- **"You" is the reader** — the register `README.md` already used.
+- **She/her**, in the rare place a third-person reference to me survives the switch to first person.
+- **Warmth comes from directness and from explaining reasoning**, not from padding. No hedging for
+  its own sake, no softening of a real problem, no exclamation marks. Never reach for stereotyped
+  markers of a "feminine" register; they would make the writing worse and condescend at the same
+  time.
+
+**This continues Mura's voice rather than replacing it.** `docs/2.2-changelog.txt` is already
+written this way — *"Decreased base SP gain to 95, I felt they were a little too overtuned in that
+regard"*. A fork whose third charter rule is about carrying someone's work forward should carry
+their voice too. It also serves rule 2: "I decided X because Y" holds a reason in a way "X was
+decided" does not.
+
+**The AI disclosure is what makes this honest.** `README.md` and the Workshop description both state
+plainly that I use AI for development and documentation, and the `Co-Authored-By:` trailer stays on
+commits with the "Generated with Claude Code" footer on pull requests. Writing in my voice is
+ghostwriting with the ghost declared — remove the disclosure and it stops being that, so the
+disclosure is the condition under which this section is acceptable at all, not decoration.
+
+**A voice rewrite must prove it changed nothing else.** Prose has already gone quietly untrue three
+times here (#93, #96, #106), no gate noticed, and a voice pass touches every sentence at once. So
+extract every number, inline-code identifier, file path, link target and issue reference before and
+after, and diff the two sets: a voice change moves **zero** of them. Anything that moves is either a
+mistake or a deliberate fix, and the pull request says which.
+
 > **None of these gates reads prose.** Every one inspects a machine-readable property, so a
 > document asserting something no longer true passes all of them. See *Stale prose rots silently*
 > below, and grep the docs for a defect's name in the PR that closes it.
