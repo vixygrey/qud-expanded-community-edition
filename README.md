@@ -152,7 +152,7 @@ soonest if I stop watching for it.
 
 ```
 mod/     the shipped mod — the only directory uploaded to the Workshop
-docs/    FEATURES, PERMISSION, STYLEGUIDE, and Mura's original documents
+docs/    FEATURES, LESSONS, PERMISSION, STYLEGUIDE, and Mura's original documents
 tools/   validation, drift checking, and the preview-image generator
 ```
 
