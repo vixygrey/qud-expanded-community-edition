@@ -81,6 +81,39 @@ character with this mod enabled.** Saves from the original mod won't work.
 
 ---
 
+## Compatibility with the other Expanded mods
+
+> ⚠️ **Do not enable this and the original *Caves of Qud Expanded* at the same time.** Pick one.
+
+This fork is a continuation of Mura's mod, so it defines the same things the original does — **36 C#
+types with the same names in the same namespace**, one per psionic chip part. Qud reports that as
+`==== TYPE CONFLICTS DETECTED ====` and the result is undefined: whichever loads first wins, and you
+may get either mod's version of any given part. It isn't a bug in either mod, it's what a fork *is*.
+Saves don't carry across either, as above.
+
+The other two mods in the family are fine, and are unaffected by this fork:
+
+| Mod | | |
+|---|---|---|
+| **Caves of Qud Expanded** (Mura's original) | ❌ | Same 36 types in `XRL.World.Parts` — enable one or the other |
+| **Caves of Qud Expanded — The Grand Bazaar** | ✅ | No shared records or types with this fork |
+| **Caves of Qud Expanded — Experience Curve Beta** | ✅ | Script-only, and this fork never touches experience |
+
+Where those green ticks come from, so you can judge them: I compared every object, population table
+and C# type the three mods declare. The Bazaar shares **no** object name, **no** C# type, and **not
+one** vanilla record merged by both — its only merge target is vanilla's `EmptyTent` table, which this
+fork doesn't touch — and all 79 of its blueprint references resolve. The Experience Curve ships no XML
+at all, and its one class handles `AwardXPEvent`, which nothing in `mod/Scripting/` goes near. Neither
+declares a dependency on the original, and Mura's own description of the Bazaar says it works with or
+without it.
+
+That is a record-level comparison rather than a play-test of every combination, which is the honest
+limit of the claim. If you hit something anyway, please [file an
+issue](https://github.com/vixygrey/qud-expanded-community-edition/issues) — that's the compatibility
+promise this fork is built on, and I'd want to know.
+
+---
+
 ## Installing
 
 **From the Workshop** — subscribe, and enable the mod in Qud's mod menu.
