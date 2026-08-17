@@ -218,6 +218,33 @@ Two things make this worth writing down rather than filing under "install your t
 > **After installing hooks, prove one fires.** Attempt the thing it forbids. `git commit` on `main`
 > takes a second and is the only evidence that any of it is wired up.
 
+## Searching for a keyword is not the same as reading the document
+
+I described `docs/PERMISSION.md` as recording "permission to fork with a credit condition" that
+"says nothing about copyright or licensing at all", and licensed this repository on that basis
+(#101). I'd checked by grepping it for "licen" — zero hits — and read the section headings.
+
+The body of §1 says:
+
+> I've decided to make the mod open to the community to **update, fork, and generally do with as
+> they please**, all I ask is that you **give credit where due, which includes Noble Lark for the
+> subclass sprites**.
+
+Which is, in plain language, an attribution grant — and it names Noble Lark's sprites *inside* the
+grant, where I had written that they weren't covered at all. My search was for the wrong token: a
+grant this broad simply doesn't need the word "licence" in it, and the absence of that word is what
+I mistook for the absence of the thing.
+
+This is *a gate is only evidence about the property it checks*, with me as the gate. `grep` answered
+the question I asked — does this string appear — perfectly, and I treated that as settling a
+question it could not reach. The same shape as disabling the wiki because it had never been created
+(#106): a true answer, correctly obtained, to the wrong question.
+
+> **Before summarising a document, read it.** A keyword search tells you a word is absent, which is
+> almost never what you actually want to know. This is worth more care in short documents than long
+> ones, because a short document has no excuse — `docs/PERMISSION.md` is under 100 lines and I had
+> already opened it twice.
+
 ## `git checkout <file>` restores from the index, not from HEAD
 
 While testing a new check in #80, `git checkout mod/Subtypes.xml` — which I used to undo a
