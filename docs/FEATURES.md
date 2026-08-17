@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **350** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **209** `Load="Merge"` edits to existing objects |
+| **New item blueprints** | **348** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -368,18 +368,18 @@ doubles max charge and stacks with High Capacity.
 
 | File | New objects | Merged vanilla objects |
 |---|---|---|
-| `Melee Weapons.xml` | 71 | 79 |
+| `MeleeWeapons.xml` | 71 | 79 |
 | `Armor.xml` | 61 | 38 |
-| `Ranged Weapons.xml` | 49 | 8 |
-| `Psionic Chips.xml` | 145 | 0 |
+| `RangedWeapons.xml` | 49 | 8 |
+| `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 9 | 16 |
-| `Other Equipment.xml` | 9 | 14 |
+| `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 0 (62 disabled) | 0 |
-| **Total** | **350 active** | **209** |
+| **Total** | **348 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -550,7 +550,7 @@ Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
 > ⚠️ **Likely typo:** `Cudgel6th` (tier 6 two-handed war hammer) has `MaxStrengthBonus="11"`.
 > Every other tier-6 weapon in the mod uses 7. This lets it scale off ~4 extra Strength.
 
-> 🗒️ **Dormant content:** four blueprints are commented out in `Melee Weapons.xml` (two blocks,
+> 🗒️ **Dormant content:** four blueprints are commented out in `MeleeWeapons.xml` (two blocks,
 > both headed *"rework these or remove them"*): `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`
 > ("vibro flail"), `Raven_Vibro War Hammer`, and `Raven_Two-Handed Vibro War Hammer`
 > ("vibro greathammer").
@@ -1105,15 +1105,15 @@ someone rediscover the problem from scratch.
 | 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
-| 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/Other Equipment.xml` lines 95, 196 |
+| 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/OtherEquipment.xml` lines 95, 196 |
 | 7 | ✅ Fixed | **Akimbo reused `Class="Pistol_Akimbo"`** across the Pistol and Multiweapon trees. `SkillFactory.PowersByClass` holds one entry per class and vanilla grants powers by class — the Gunslinger calling is `<skill Name="Pistol_Akimbo" />` — so the mod's entry was served in place of vanilla's. Removed from Multiweapon Fighting in #11 after a distinct class proved to duplicate the ability and lock the skills screen. | `Skills.xml` |
-| 8 | ✅ Fixed | **`Cudgel6th` had `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/Melee Weapons.xml` |
+| 8 | ✅ Fixed | **`Cudgel6th` had `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/MeleeWeapons.xml` |
 | 9 | ✅ Fixed | **`Raven_Carbideweave Cloak` was valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
-| 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/Other Equipment.xml` |
-| 11 | ✅ Fixed | **Psionic pistols listed `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/Ranged Weapons.xml` |
+| 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/OtherEquipment.xml` |
+| 11 | ✅ Fixed | **Psionic pistols listed `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/RangedWeapons.xml` |
 | 12 | 🟡 Low | **Psionic Adept chargen text says "+30 bonus skill points"** — actual delta is +25 vs vanilla / +10 vs the mod's True Kin | `Genotypes.xml` |
-| 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/Melee Weapons.xml` |
-| 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/Ranged Weapons.xml` |
+| 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/MeleeWeapons.xml` |
+| 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/RangedWeapons.xml` |
 | 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
 | 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
@@ -1157,32 +1157,35 @@ document fill in.
 ## 11. File map
 
 ```
-qud-expanded/
-├── Mods.xml                    # Makes Gigantic tinkerable
+mod/                            # the only directory uploaded to the Workshop
+├── Mods.xml                    # makes Gigantic tinkerable
 ├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 6 tree edits
-├── Bodies.xml                  # Chip Interface part; TrueKin + Yttrian anatomies
-├── PopulationTables.xml        # 76 tables (48 merge / 28 new)
+├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
+├── Options.xml                 # 11 options (§13)
+├── PopulationTables.xml        # 76 tables (54 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
+├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
-├── 2.2 changelog.txt
-├── What Does the Mod Do (WIP).txt
 ├── ObjectBlueprints/
-│   ├── Melee Weapons.xml       # 71 new / 79 merged
+│   ├── MeleeWeapons.xml        # 71 new / 79 merged
 │   ├── Armor.xml               # 61 new / 38 merged
-│   ├── Ranged Weapons.xml      # 49 new / 8 merged
-│   ├── Psionic Chips.xml       # 145 new (1 base + 144 chips)
+│   ├── RangedWeapons.xml       # 49 new / 8 merged
+│   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 9 new / 16 merged
-│   ├── Other Equipment.xml     # 9 new / 14 merged
+│   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Ammo.xml                # 62 objects, ALL COMMENTED OUT
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 36 one-line ModImprovedMutationBase<T> classes
+├── Scripting/                  # 40 classes: 36 mutation stubs, plus options,
+│                               # the Joppa system, and the chip-slot mutator
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
+
+Mura's original documents are NOT in mod/ — they live in docs/, outside what ships.
 ```
 
 ---
@@ -1281,7 +1284,7 @@ overwrote it at load, and the original is gone from memory by the time an option
 
 ## Appendix A — every merged vanilla melee weapon
 
-Full listing of the 79 `Load="Merge"` edits in `Melee Weapons.xml`. Blank cells mean the mod did
+Full listing of the 79 `Load="Merge"` edits in `MeleeWeapons.xml`. Blank cells mean the mod did
 not touch that field (the vanilla value is inherited).
 
 | Blueprint | Tier | Damage | Pen | Max STR | Stat | Value | Weight |
