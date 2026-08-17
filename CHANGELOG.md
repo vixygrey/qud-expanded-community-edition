@@ -148,7 +148,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **(internal)** `tools/validate_mod.py` now checks subtype tiles: every `Tile` must resolve to a real file, and its prefix must match the subtype's affinity. A tile pointing at a missing file renders as nothing with no load error, which is the same silent failure class as an orphaned `Load="Merge"`.
   ([#24](https://github.com/vixygrey/qud-expanded-community-edition/issues/24))
 
-- **(internal)** All of the mod's XML is reformatted to a single consistent style, and that style is now enforced. Indentation is 2 spaces throughout with no tabs — `docs/STYLEGUIDE.md` has required that all along while 18 lines across `Skills.xml`, `Throwables.xml`, `Mods.xml` and `MeleeWeapons.xml` violated it — and long elements put one attribute per line. `prettier --check` runs in CI and formats on commit via `pre-commit`. The reformat was verified to change nothing but layout by comparing the parsed element tree of every file before and after: 19 of 19 identical in tags, attributes and text, BOMs preserved, and `Ammo.xml`'s commented-out 62 objects byte-identical. Mura's original files stay permanently retrievable through the immutable `upstream-2.2` tag, and the reformat commit is listed in `.git-blame-ignore-revs` so `git blame` skips it.
+- **(internal)** I reformatted all of the mod's XML to a single consistent style, and that style is now enforced. Indentation is 2 spaces throughout with no tabs — `docs/STYLEGUIDE.md` has required that all along while 18 lines across `Skills.xml`, `Throwables.xml`, `Mods.xml` and `MeleeWeapons.xml` violated it — and long elements put one attribute per line. `prettier --check` runs in CI and formats on commit via `pre-commit`. The reformat was verified to change nothing but layout by comparing the parsed element tree of every file before and after: 19 of 19 identical in tags, attributes and text, BOMs preserved, and `Ammo.xml`'s commented-out 62 objects byte-identical. Mura's original files stay permanently retrievable through the immutable `upstream-2.2` tag, and the reformat commit is listed in `.git-blame-ignore-revs` so `git blame` skips it.
   ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
 
 - **(internal)** The XML formatter is configured with `xmlWhitespaceSensitivity: "preserve"`, not `"ignore"`. Under `ignore`, prettier reflowed the *text content* of `<helptext>` in `mod/Options.xml` to satisfy the print width, inserting a newline mid-sentence in a string Qud renders in the options menu. Attribute formatting is unaffected, so the chosen style is unchanged; only text nodes are now protected.
@@ -160,7 +160,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 - **(internal)** Python linting and formatting are now an enforced gate rather than an undeclared habit. `ruff check` and `ruff format --check` run in CI and in `pre-commit`, both pinned to the same version, both scoped to `tools/` — `mod/` holds no Python and the scoping keeps the hook from ever touching shipped files. The gap this closes was not cosmetic: a formatter was already running as an editor hook on the maintainer's machine, so the repo received ruff-formatted output without having declared ruff, and that leaked incidental reformats into unrelated pull requests. `tools/` was reformatted once in #74, whose squash commit is listed in `.git-blame-ignore-revs`. Charter rule 4 is intact — `validate_mod.py` remains Python-stdlib-only at runtime, so no contributor needs ruff to run the validator.
   ([#72](https://github.com/vixygrey/qud-expanded-community-edition/issues/72))
 
-- **(internal)** The three pre-existing `ruff check` failures in `tools/` are fixed: both validators are now executable, making their `#!/usr/bin/env python3` shebangs true rather than decorative (`tools/build_preview.sh` was already `100755`), and `re.S` is spelled `re.DOTALL`. Groundwork for making Python linting an actual gate.
+- **(internal)** I fixed the three pre-existing `ruff check` failures in `tools/`: both validators are now executable, making their `#!/usr/bin/env python3` shebangs true rather than decorative (`tools/build_preview.sh` was already `100755`), and `re.S` is spelled `re.DOTALL`. Groundwork for making Python linting an actual gate.
   ([#72](https://github.com/vixygrey/qud-expanded-community-edition/issues/72))
 
 - **(internal)** The validator now enforces charter rule 5's C# limits instead of only documenting them. `scripting-policy` flags file I/O, network access, environment reads, shelling out, external-assembly loading, Harmony and reflection in `mod/Scripting/`, each pattern citing the clause it enforces; `serializable-shape` flags any instance field on a `[Serializable]` type, because that layout is written into every player save and `CLAUDE.md` treats it as an identifier. Both are Python-stdlib-only and run under the existing one command. Prompted by removing C# from the repo's CodeQL languages: every non-`System` dependency is `XRL.*` from Freehold's proprietary game assembly, which is absent from CI, so call-target resolution was stuck at 82% against an 85% threshold with no way to raise it. CodeQL's generic queries could not have expressed these rules anyway.
@@ -178,7 +178,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   play the mod.
   ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
 
-- **(internal)** Charter rule 5 amended: the mod's C# may now hold state and adjust already-loaded
+- **(internal)** I amended charter rule 5: the mod's C# may now hold state and adjust already-loaded
   game data, which is past the "36 inert one-line classes" the rule previously named as its
   ceiling. The hard limits are unchanged — no file I/O, network, telemetry, reflection, Harmony or
   external assemblies. Two new obligations come with holding state: a `[Serializable]` system's
@@ -193,7 +193,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   disabled, explaining what enabling it would allow. It never fails the build — a contribution
   should not be rejected over a checkbox the contributor owns.
 
-- **(internal)** Pull requests now automatically request review from the maintainer via
+- **(internal)** Pull requests now automatically request my review via
   `.github/CODEOWNERS`, and PRs opened by anyone else are assigned to them by a workflow — so a
   contribution from outside can't sit unnoticed.
 
@@ -224,7 +224,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   mutation points by default, as this mod has always given, and the slider covers 0–24 for
   players who want vanilla's 12 or something else. Set it before creating a character.
   ([#44](https://github.com/vixygrey/qud-expanded-community-edition/issues/44))
-- **(internal)** Lessons from the options-menu crash recorded in `CLAUDE.md`: read a crash's
+- **(internal)** I recorded the lessons from the options-menu crash (they live in `docs/LESSONS.md` now): read a crash's
   *type* before hypothesising (a stack overflow rules out mod code that cannot recurse), treat the
   sibling design docs as design thinking rather than as an API reference, and batch experiments
   when the only test environment is someone else's machine. Charter rule 6 corrected — it named
@@ -277,7 +277,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 - **Ten items that existed but could never be found are now obtainable.** The four nanoweave
   pieces, the four flexi pieces, the mutating mask and `Raven_Iron Maceth` were in no population
-  table and had no tinker recipe. Each is placed in the table matching its own tier: nanoweave
+  table and had no tinker recipe. I placed each in the table matching its own tier: nanoweave
   (tier 6) in Armor 6C, flexi (tier 5) in Armor 5C, the mutating mask (tier 8) in Armor 8R, and
   the two-handed iron maceth in Melee Weapons 1R alongside its peers.
   ([#7](https://github.com/vixygrey/qud-expanded-community-edition/issues/7))
@@ -317,6 +317,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   reads this file too, and quoting them fails the build.)
 
 ### Internal — tooling
+
+- **(internal)** This changelog had two `### Fixed` sections and two internal ones under a single `## [Unreleased]`, so anyone scrolling for fixes would have found half of them and stopped. Merged, and put in the order [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifies — which this file's own header says it follows. Entries where I'm the one who did the work now say so rather than reporting it as though it happened by itself. The reorganisation was verified to move nothing: 367 numbers, 280 identifiers, 89 issue references, 79 links and 78 URLs identical before and after.
+  ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
 
 - **(internal)** The repository has licences: **Apache-2.0** for code, **CC BY 4.0** for content and documentation, both covering my own contributions. `package.json` had claimed `"SEE LICENSE IN LICENSE"` since the fork began, pointing at a file that never existed, and a public repository with no licence is all-rights-reserved by default — which contradicted everything this project says about being a community fork. Apache rather than MIT deliberately: its `NOTICE` file is one downstream redistributors must reproduce, where MIT's attribution requirement only reaches the source, and credit surviving redistribution is the entire point here. What is **not** covered is stated just as plainly in `NOTICE` and `COPYING.md` — the inherited work is Mura's and the subtype sprites are Noble Lark's, and a permission to fork is not a copyright licence I can pass on. `CONTRIBUTING.md` now also says what terms a contribution arrives under, which it never did.
   ([#101](https://github.com/vixygrey/qud-expanded-community-edition/issues/101))
@@ -390,7 +393,7 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
   anatomies still match vanilla's `Humanoid`. Both failure modes are otherwise completely silent.
 - **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
   ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
-- Repository placed under version control with the pristine upstream 2.2 import tagged
+- I put the repository under version control with the pristine upstream 2.2 import tagged
   `upstream-2.2`, so `git diff upstream-2.2` always shows exactly what the fork changed.
 
 ## Credits
