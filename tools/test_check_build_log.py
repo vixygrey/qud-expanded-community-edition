@@ -11,7 +11,8 @@ firing looks exactly like a guard that passes.
 So every case here builds a synthetic save directory - a deployed copy of `mod/Scripting/` and a
 `build_log.txt` written in the game's own vocabulary - and asserts the script reaches the intended
 verdict. `test_a_good_log_passes` is the control: without it, a script that failed unconditionally
-would satisfy every other test here.
+would satisfy every other test here. It has already earned that place, by catching a hardcoded
+timestamp in these fixtures on its first CI run - see `stamp_after` below.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -31,7 +33,6 @@ SCRIPTING = REPO / "mod" / "Scripting"
 
 MOD_ID = "QudExpandedCommunityEdition"
 TITLE_CAPS = "QUD EXPANDED COMMUNITY EDITION"
-STAMP = "[2026-08-16T18:11:02] "
 ANCIENT = "[2020-01-01T00:00:00] "
 
 # What a successful build looks like, in the game's words.
@@ -44,10 +45,25 @@ BUILT = [
 ]
 
 
+def stamp_after(paths: list[Path]) -> str:
+    """A log timestamp an hour after the newest of these files, in the game's format.
+
+    Derived rather than hardcoded, and that is not fussiness. A fixed stamp passes locally, where
+    the working tree was written whenever it was written, and fails on a fresh checkout, where
+    every file's mtime is "now" and so newer than any date baked in here. The `fresh` guard then
+    fires on the control case - which is what happened. A fixture that describes files has to take
+    its clock from those files.
+    """
+    newest = max(p.stat().st_mtime for p in paths)
+    # Local time, because that is what the game writes - naive stamps with no offset.
+    local = datetime.fromtimestamp(newest, tz=timezone.utc).astimezone()
+    return (local + timedelta(hours=1)).strftime("[%Y-%m-%dT%H:%M:%S] ")
+
+
 def build_log(
     body: list[str],
     *,
-    stamp: str = STAMP,
+    stamp: str,
     load_order: tuple[str, ...] = (MOD_ID,),
     title: str = TITLE_CAPS,
 ) -> str:
@@ -72,7 +88,11 @@ class BuildLogCheck(unittest.TestCase):
     def run_check(
         self,
         *,
-        log: str | None,
+        body: list[str] | None = None,
+        stamp: str | None = None,
+        load_order: tuple[str, ...] = (MOD_ID,),
+        title: str = TITLE_CAPS,
+        write_log: bool = True,
         deploy: bool = True,
         edit: str | None = None,
         remove: str | None = None,
@@ -83,6 +103,7 @@ class BuildLogCheck(unittest.TestCase):
             save = Path(tmp)
             mods = save / "Mods"
             mods.mkdir()
+            deployed_cs: list[Path] = []
 
             if deploy:
                 # A folder name deliberately unlike the manifest id: the script must find the mod
@@ -90,20 +111,33 @@ class BuildLogCheck(unittest.TestCase):
                 deployed = mods / "some-installed-folder"
                 (deployed / "Scripting").mkdir(parents=True)
                 for cs in SCRIPTING.glob("*.cs"):
-                    shutil.copy2(cs, deployed / "Scripting" / cs.name)
+                    target = deployed / "Scripting" / cs.name
+                    shutil.copy2(cs, target)
+                    deployed_cs.append(target)
                 (deployed / "manifest.json").write_text(json.dumps({"id": MOD_ID}))
 
-                if edit:
-                    target = deployed / "Scripting" / edit
-                    target.write_text(target.read_text() + "\n// drifted\n")
-                if remove:
-                    (deployed / "Scripting" / remove).unlink()
-                if touch_future:
-                    victim = next(iter(sorted((deployed / "Scripting").glob("*.cs"))))
-                    os.utime(victim, (2_000_000_000, 2_000_000_000))  # 2033
+            # Before the mutations below, so touch_future lands *after* the log rather than
+            # dragging the derived timestamp along with it.
+            if stamp is None:
+                stamp = stamp_after(deployed_cs) if deployed_cs else ANCIENT
 
-            if log is not None:
-                (save / "build_log.txt").write_text(log)
+            if edit:
+                drifted = deployed / "Scripting" / edit
+                drifted.write_text(drifted.read_text() + "\n// drifted\n")
+            if remove:
+                (deployed / "Scripting" / remove).unlink()
+            if touch_future:
+                os.utime(min(deployed_cs), (2_000_000_000, 2_000_000_000))  # 2033
+
+            if write_log:
+                (save / "build_log.txt").write_text(
+                    build_log(
+                        BUILT if body is None else body,
+                        stamp=stamp,
+                        load_order=load_order,
+                        title=title,
+                    )
+                )
 
             result = subprocess.run(
                 [sys.executable, str(SCRIPT), "--save-dir", str(save)],
@@ -121,41 +155,41 @@ class BuildLogCheck(unittest.TestCase):
 
     def test_a_good_log_passes(self):
         """Without this, a script that always failed would pass every other test here."""
-        code, out = self.run_check(log=build_log(BUILT))
+        code, out = self.run_check()
         self.assertEqual(code, 0, out)
         self.assertIn("OK -", out)
 
     # -- refusing to answer without evidence ------------------------------------------
 
     def test_missing_log_is_an_error_not_a_pass(self):
-        code, out = self.run_check(log=None)
+        code, out = self.run_check(write_log=False)
         self.assertEqual(code, 2, out)
         self.assertIn("no build log at", out)
 
     def test_mod_not_deployed(self):
-        code, out = self.run_check(log=build_log(BUILT), deploy=False)
+        code, out = self.run_check(deploy=False)
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "deployed")
 
     # -- the verdict must be about *this* source --------------------------------------
 
     def test_deployed_source_differs(self):
-        code, out = self.run_check(log=build_log(BUILT), edit="Raven_Options.cs")
+        code, out = self.run_check(edit="Raven_Options.cs")
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "identical")
 
     def test_deployed_source_missing_a_file(self):
-        code, out = self.run_check(log=build_log(BUILT), remove="Raven_Options.cs")
+        code, out = self.run_check(remove="Raven_Options.cs")
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "identical")
 
     def test_log_older_than_deployed_source(self):
-        code, out = self.run_check(log=build_log(BUILT), touch_future=True)
+        code, out = self.run_check(touch_future=True)
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "fresh")
 
     def test_log_from_long_before_the_source(self):
-        code, out = self.run_check(log=build_log(BUILT, stamp=ANCIENT))
+        code, out = self.run_check(stamp=ANCIENT)
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "fresh")
 
@@ -164,7 +198,7 @@ class BuildLogCheck(unittest.TestCase):
     def test_mod_disabled_is_not_a_pass(self):
         """The failure this script exists to prevent: nothing compiled, nothing complained."""
         code, out = self.run_check(
-            log=build_log(["Loading path: /", "Skipping, state: Disabled"])
+            body=["Loading path: /", "Skipping, state: Disabled"]
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
@@ -172,15 +206,13 @@ class BuildLogCheck(unittest.TestCase):
 
     def test_compile_failure(self):
         code, out = self.run_check(
-            log=build_log(
-                [
-                    "Loading path: /",
-                    "Compiling 40 files...",
-                    "Failure :(",
-                    "== COMPILER ERRORS ==",
-                    "Raven_Options.cs(12,5): error CS0103: no such name",
-                ]
-            )
+            body=[
+                "Loading path: /",
+                "Compiling 40 files...",
+                "Failure :(",
+                "== COMPILER ERRORS ==",
+                "Raven_Options.cs(12,5): error CS0103: no such name",
+            ]
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
@@ -188,32 +220,28 @@ class BuildLogCheck(unittest.TestCase):
 
     def test_compiler_threw(self):
         code, out = self.run_check(
-            log=build_log(
-                [
-                    "Loading path: /",
-                    "Compiling 40 files...",
-                    "Exception compiling mod assembly: boom",
-                ]
-            )
+            body=[
+                "Loading path: /",
+                "Compiling 40 files...",
+                "Exception compiling mod assembly: boom",
+            ]
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
 
     def test_no_verdict_either_way(self):
-        code, out = self.run_check(
-            log=build_log(["Loading path: /", "Compiling 40 files..."])
-        )
+        code, out = self.run_check(body=["Loading path: /", "Compiling 40 files..."])
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
 
     def test_section_absent(self):
-        code, out = self.run_check(log=build_log(BUILT, title="A DIFFERENT MOD"))
+        code, out = self.run_check(title="A DIFFERENT MOD")
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
 
     def test_file_count_disagrees(self):
         code, out = self.run_check(
-            log=build_log([ln.replace("40 files", "39 files") for ln in BUILT])
+            body=[ln.replace("40 files", "39 files") for ln in BUILT]
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "count")
@@ -221,12 +249,12 @@ class BuildLogCheck(unittest.TestCase):
     # -- built is not the same as loaded ----------------------------------------------
 
     def test_absent_from_load_order(self):
-        code, out = self.run_check(log=build_log(BUILT, load_order=("SomeOtherMod",)))
+        code, out = self.run_check(load_order=("SomeOtherMod",))
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "loaded")
 
     def test_empty_load_order(self):
-        code, out = self.run_check(log=build_log(BUILT, load_order=()))
+        code, out = self.run_check(load_order=())
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "loaded")
 
