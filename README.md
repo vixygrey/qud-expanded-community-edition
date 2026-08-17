@@ -95,7 +95,8 @@ the Workshop.
 ## Contributing
 
 I'd be glad of the help, and I credit every outside contribution by name in the pull request that
-merges it — you shouldn't have to ask. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the full guide.
+merges it — you shouldn't have to ask. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the full guide, and
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) applies to me as much as to anyone.
 
 The rules I maintain this fork under are in [`docs/CHARTER.md`](docs/CHARTER.md) — six of them,
 covering compatibility, causality, credit, developer experience, safety, and configurability. I mean
