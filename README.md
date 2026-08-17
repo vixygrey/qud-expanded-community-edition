@@ -194,6 +194,19 @@ installed without writing anything. A stale snapshot fails as a false positive o
 vanilla name, which is loud; that is the intended failure direction, since silence is the thing
 these checks exist to catch.
 
+After changing which checks are required to merge, run:
+
+```bash
+python3 tools/check_docs.py --ruleset
+```
+
+It compares `tools/required-checks.json` against what GitHub actually enforces. That file is the
+in-repository copy of the ruleset, so the intent is reviewable in a pull request rather than
+visible only to whoever can open the settings page — and `check_docs.py` uses it in CI to verify
+both the documented count and that every CI job is either required or deliberately not. The one
+thing it cannot check on its own is whether GitHub still agrees, which is what this command is
+for. It needs `gh` and a network, so it is deliberately not part of the normal run.
+
 ### Regenerating the Workshop preview image
 
 `mod/preview.png` is committed, so you only need this if you're changing it:

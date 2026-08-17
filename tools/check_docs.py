@@ -10,11 +10,22 @@ that had stopped being true, every time by someone reading rather than by anythi
 It cannot read a sentence and ask whether it is still true; nothing can. What it can do is check
 the parts of a document that are *not* prose:
 
-  counts        a figure quoted in the docs, against the same figure recomputed from mod/
-  links         every relative link resolves to a file that exists
-  sections      every "FILE.md §N" cross-reference names a section that exists there
-  checks        every check name quoted in the docs is one a script in tools/ actually emits
-  preserved     Mura's two documents are still byte-identical to the upstream import
+  counts          a figure quoted in the docs, against the same figure recomputed from mod/
+  links           every relative link resolves to a file that exists
+  sections        every "FILE.md §N" cross-reference names a section that exists there
+  checks          every check name quoted in the docs is one a script in tools/ actually emits
+  required-checks every CI job is required or deliberately not, and the documented count agrees
+  preserved       Mura's two documents are still byte-identical to the upstream import
+
+The required-checks pair is the newest and came from a near-miss. Six documents claimed ten
+required checks while nine were enforced: Tests ran and passed on every pull request and was not
+in the ruleset, so a failing test suite could have merged. When that was corrected the obvious
+next move was to update the documented count - which would have changed a correct ten into an
+incorrect eleven. The documents were only right again *because* of the fix. See #152.
+
+`--ruleset` compares tools/required-checks.json against what GitHub actually enforces. It is not
+part of the normal run: it needs gh and a network, and a check that quietly passes when it could
+not reach anything is worse than no check at all.
 
 The counts check is the one that matters most and the one with a real limitation: it can only
 verify a figure it knows how to find. CLAIMS below pairs a regular expression with the facts its
@@ -25,6 +36,8 @@ at all, and it is cheaper than the alternative, which is three sweeps and counti
 
 from __future__ import annotations
 
+import argparse
+import json
 import re
 import subprocess
 import sys
@@ -32,6 +45,20 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 MOD = Path("mod")
+REQUIRED_CHECKS_PATH = Path("tools/required-checks.json")
+CI_WORKFLOWS = (Path(".github/workflows/ci.yml"), Path(".github/workflows/assign.yml"))
+
+# The documents write these as words, which is their voice and not something to rewrite for a
+# regex's convenience. Only the values actually used are listed; an unknown word is reported
+# rather than guessed at, so a count nobody anticipated fails loudly instead of being skipped.
+WORD_NUMBERS = {
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+}
 DOCS = [
     Path(p)
     for p in (
@@ -49,6 +76,7 @@ DOCS = [
         "docs/STYLEGUIDE.md",
         "docs/PERMISSION.md",
         "docs/DESIGN_options.md",
+        ".github/PULL_REQUEST_TEMPLATE.md",
     )
 ]
 
@@ -114,6 +142,7 @@ def facts() -> dict[str, int]:
         "chip-objects": len(chips),
         "scripting-files": len(list((MOD / "Scripting").glob("*.cs"))),
         "mutation-stubs": len(list((MOD / "Scripting").glob("Raven_Mod*.cs"))),
+        "required-checks": len(required_checks()["required"]),
     }
     for name, (n, m) in per_file.items():
         out[f"file:{name}:new"] = n
@@ -123,6 +152,19 @@ def facts() -> dict[str, int]:
 
 # Each pattern's capture groups map, in order, to the facts they must equal.
 CLAIMS: list[tuple[str, list[str]]] = [
+    # Required checks. Written as words in every document that carries them, so the patterns
+    # capture \w+ and WORD_NUMBERS resolves it. This claim was wrong for an unknown length of
+    # time - six copies said ten while nine were enforced - which is why it is checked now.
+    (
+        r"(\w+) checks run on every pull request and all (\w+) must pass",
+        ["required-checks", "required-checks"],
+    ),
+    (
+        r"(\w+) checks run here and all (\w+) must pass",
+        ["required-checks", "required-checks"],
+    ),
+    (r"\*\*(\w+) checks are required on every pull request\*\*", ["required-checks"]),
+    (r"not one of the (\w+) checks", ["required-checks"]),
     (
         r"(\d+) new blueprints and (\d+) vanilla merges",
         ["new-blueprints", "vanilla-merges"],
@@ -202,7 +244,18 @@ def check_counts(f: Findings, known: dict[str, int]) -> int:
             for m in re.finditer(pattern, text):
                 for group, name in enumerate(names, start=1):
                     checked += 1
-                    claimed = int(m.group(group))
+                    raw = m.group(group)
+                    if raw.isdigit():
+                        claimed = int(raw)
+                    elif raw.lower() in WORD_NUMBERS:
+                        claimed = WORD_NUMBERS[raw.lower()]
+                    else:
+                        f.add(
+                            "counts",
+                            f"{doc}: {raw!r} is not a number this script knows - add it to "
+                            f"WORD_NUMBERS rather than leaving the claim unchecked",
+                        )
+                        continue
                     if name not in known:
                         f.add("counts", f"{doc}: pattern names unknown fact {name!r}")
                     elif claimed != known[name]:
@@ -212,6 +265,77 @@ def check_counts(f: Findings, known: dict[str, int]) -> int:
                             f"{known[name]} — {m.group(0)[:60]!r}",
                         )
     return checked
+
+
+def required_checks() -> dict:
+    """The intended required-check list, committed so it is reviewable in a pull request."""
+    return json.loads(REQUIRED_CHECKS_PATH.read_text())
+
+
+def workflow_jobs() -> dict[str, str]:
+    """Map "file:jobkey" -> the check name GitHub will report for it.
+
+    A job's check name is its `name:` if it has one, and its key otherwise. Parsed with regexes
+    rather than a YAML library because this script is standard-library only, which is the same
+    constraint tools/validate_mod.py works under.
+    """
+    jobs: dict[str, str] = {}
+    for wf in CI_WORKFLOWS:
+        if not wf.is_file():
+            continue
+        body = wf.read_text()
+        body = body.split("\njobs:\n", 1)[-1]
+        for key, block in re.findall(
+            r"^  ([a-z][\w-]*):\n((?:    .*\n|\n)*)", body, re.MULTILINE
+        ):
+            name = re.search(r"^    name:\s*(.+?)\s*$", block, re.MULTILINE)
+            jobs[f"{wf.name}:{key}"] = name.group(1) if name else key
+    return jobs
+
+
+def check_required_checks(f: Findings) -> None:
+    """Every CI job is required, or is deliberately not. Neither by accident.
+
+    This is the check that would have caught #152's defect: Tests existed as a job, passed on
+    every pull request, and was not in the ruleset, so a failing test suite could have merged.
+    Nothing compared the two lists because one of them lived only in GitHub's settings.
+    """
+    data = required_checks()
+    required = {e["context"]: e["source"] for e in data["required"]}
+    exempt = {e["context"]: e for e in data.get("not_required", [])}
+    jobs = workflow_jobs()
+
+    for context, source in required.items():
+        if source.startswith("github:"):
+            continue  # external to the repository; --ruleset is the only way to see these
+        if source not in jobs:
+            f.add(
+                "required-checks",
+                f"{REQUIRED_CHECKS_PATH} requires {context!r} from {source}, which is not a job "
+                f"in any workflow - a required check that never reports blocks every merge",
+            )
+        elif jobs[source] != context:
+            f.add(
+                "required-checks",
+                f"{REQUIRED_CHECKS_PATH} calls {source} {context!r} but the workflow names it "
+                f"{jobs[source]!r} - GitHub matches on the reported name",
+            )
+
+    for source, name in sorted(jobs.items()):
+        if name in required or name in exempt:
+            continue
+        f.add(
+            "required-checks",
+            f"workflow job {source} reports {name!r}, which is neither required nor listed under "
+            f"not_required - decide which and record it in {REQUIRED_CHECKS_PATH}",
+        )
+
+    for context, entry in exempt.items():
+        if not entry.get("reason"):
+            f.add(
+                "required-checks",
+                f"{context!r} is exempt from being required with no reason given",
+            )
 
 
 def check_links(f: Findings) -> None:
@@ -314,7 +438,71 @@ def check_preserved(f: Findings) -> None:
             )
 
 
+def compare_ruleset() -> int:
+    """Compare the committed list against GitHub's live ruleset. Needs gh and network.
+
+    This is the one thing the committed file cannot check about itself: whether it still describes
+    what GitHub actually enforces. Kept out of the normal run deliberately - a check that needs a
+    token and a network would either fail for contributors who have neither, or be made to pass
+    quietly when it cannot reach anything, and a check that passes when it did not run is worse
+    than no check.
+    """
+    data = required_checks()
+    want = sorted(e["context"] for e in data["required"])
+    try:
+        out = subprocess.run(
+            ["gh", "api", "repos/{owner}/{repo}/rulesets", "--jq", ".[].id"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        print(f"could not reach the GitHub API: {exc}", file=sys.stderr)
+        return 2
+    live: list[str] = []
+    for rid in out.stdout.split():
+        detail = subprocess.run(
+            [
+                "gh",
+                "api",
+                f"repos/{{owner}}/{{repo}}/rulesets/{rid}",
+                "--jq",
+                (
+                    '[.rules[] | select(.type=="required_status_checks") '
+                    "| .parameters.required_status_checks[].context] | .[]"
+                ),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        live += detail.stdout.split("\n")
+    have = sorted(c for c in live if c)
+    if have == want:
+        print(f"Ruleset matches {REQUIRED_CHECKS_PATH}: {len(want)} required check(s).")
+        return 0
+    print(
+        f"MISMATCH between {REQUIRED_CHECKS_PATH} and the live ruleset:",
+        file=sys.stderr,
+    )
+    for c in sorted(set(want) - set(have)):
+        print(f"  committed but NOT enforced: {c}", file=sys.stderr)
+    for c in sorted(set(have) - set(want)):
+        print(f"  enforced but NOT committed: {c}", file=sys.stderr)
+    return 1
+
+
 def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--ruleset",
+        action="store_true",
+        help="compare tools/required-checks.json against GitHub's live ruleset (needs gh)",
+    )
+    args = ap.parse_args()
+    if args.ruleset:
+        return compare_ruleset()
+
     if not MOD.is_dir():
         print("error: run from the repository root (mod/ not found)", file=sys.stderr)
         return 2
@@ -325,6 +513,7 @@ def main() -> int:
     check_links(f)
     check_sections(f)
     check_check_names(f)
+    check_required_checks(f)
     check_preserved(f)
 
     if f.items:

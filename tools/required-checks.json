@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Which checks are required to merge, as this repository intends them. The authority is the",
+    "'main protection' ruleset in GitHub's settings; this file is the copy that lives in the repo,",
+    "so the intent is reviewable in a pull request rather than only visible to whoever can open the",
+    "settings page.",
+    "",
+    "It exists because six documents claim a number of required checks and nothing counted it. The",
+    "claim said ten while nine were enforced - Tests ran and passed on every pull request but was",
+    "not in the ruleset, so a pull request with a failing test suite could have merged. Nobody",
+    "noticed, because the number is prose. See #152.",
+    "",
+    "tools/check_docs.py reads this file and enforces three things: that the documented count",
+    "matches it, that every entry sourced from ci.yml names a job that exists, and that every job",
+    "in ci.yml is either required or listed under not_required with a reason. That last one is the",
+    "part that would have caught the original defect - a job cannot quietly exist without being a",
+    "deliberate decision either way.",
+    "",
+    "What it cannot check is whether GitHub's ruleset still matches this file. That needs the API.",
+    "Run tools/check_docs.py --ruleset to compare them; it needs gh and a token that can read",
+    "repository rulesets."
+  ],
+  "ruleset": "main protection",
+  "required": [
+    { "context": "Validate mod", "source": "ci.yml:validate" },
+    { "context": "Python lint", "source": "ci.yml:python" },
+    { "context": "Tests", "source": "ci.yml:tests" },
+    { "context": "XML format", "source": "ci.yml:xml-format" },
+    { "context": "Spelling", "source": "ci.yml:spelling" },
+    { "context": "Secret scan", "source": "ci.yml:secrets" },
+    { "context": "PR conventions", "source": "ci.yml:conventions" },
+    { "context": "CodeQL", "source": "github:code-scanning-default-setup" },
+    { "context": "Analyze (actions)", "source": "github:code-scanning-default-setup" },
+    { "context": "Analyze (python)", "source": "github:code-scanning-default-setup" }
+  ],
+  "not_required": [
+    {
+      "context": "Assign to maintainer",
+      "source": "assign.yml:assign",
+      "reason": "Convenience only - it assigns the pull request and has no opinion about the change. Requiring it would block merges on an assignment step, and it is skipped on forks by design."
+    }
+  ]
+}
