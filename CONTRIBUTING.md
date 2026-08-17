@@ -80,9 +80,30 @@ Three of those are less obvious than they look:
 
   Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
 
-Nine checks run on every pull request and all nine must pass. Run
+Ten checks run on every pull request and all ten must pass. Run
 `python3 tools/validate_mod.py` before you commit — locally it costs you seconds instead of a round
 trip.
+
+### If you touch `mod/Scripting/`
+
+Nothing in CI compiles the C#, and nothing can: compiling it needs the game's own
+`Assembly-CSharp.dll`, which is proprietary and cannot be committed or fetched on a runner. The
+validator lints those files but a linter is not a compiler.
+
+What does exist is [`tools/check_build_log.py`](tools/check_build_log.py). Qud compiles every
+enabled mod at launch and records the outcome in `build_log.txt`; that script reads the verdict
+back and refuses to accept it unless it demonstrably describes your working tree — the `identical`
+check compares your source against the copy the game actually compiled, and the `fresh` check
+rejects a verdict written before that copy. Launch the game once with the mod enabled, then:
+
+```bash
+pre-commit run --hook-stage manual check-build-log
+```
+
+It is a manual hook rather than an automatic one because mid-work you will often have edited C#
+without relaunching, and because contributors without Qud installed could never make it pass. So it
+is on you to run it — if you changed C# and did not, say so in the pull request and I will run it.
+Set `QUD_SAVE_DIR` if your save directory is not in the macOS default location.
 
 ## Two things that will save you pain
 
