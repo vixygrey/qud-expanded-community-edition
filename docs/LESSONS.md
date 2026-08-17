@@ -3,10 +3,15 @@
 Operational traps I hit while maintaining this fork, written down so nobody pays for them twice.
 I add to this whenever something bites — the reasoning is the durable artifact, not the fix.
 
-Most of these are about Caves of Qud itself and should be useful to anyone modding it: where the
-game keeps its own API documentation, which vanilla data files aren't valid XML, how an extension
-point fails when you forget its marker attribute. The rest are about git, GitHub, and the tooling
-here.
+Some are about Caves of Qud itself and should be useful to anyone modding it: where the game keeps its
+own API documentation, which vanilla data files aren't valid XML, how an extension point fails when you
+forget its marker attribute. Others are about git, GitHub and the tooling here — and a growing number
+are about the same underlying problem, which is telling a real green result from one that means
+nothing.
+
+(That first sentence used to read "most of these", which stopped being true somewhere around the
+thirteenth entry and was corrected in #137. A count in prose rots exactly as described in the last
+section of this document, so there is deliberately no proportion quoted here now — nothing checks it.)
 
 ---
 
@@ -350,3 +355,76 @@ Stale **cross-references** are the same class. The charter's own commit-message 
 > **When a PR closes a defect, grep the docs for it in the same PR.** `rg -i 'artifact 3|removetable'`
 > costs seconds. The fix and the prose describing the defect are one change, not two — and the
 > second half is the one no gate will ever remind me about.
+
+## "Could not determine" is not a pass
+
+Both C# checks (#135, #136) can be unable to answer: no game installed, no .NET SDK, no build log, or
+a mod the game skipped because it was disabled. Every one of those has to be loud, and a skip must
+never print next to the word OK. `tools/compile_scripting.py` prints `SKIPPED` on its own line and has
+a `--require` flag that turns a skip into a failure; `tools/check_build_log.py` treats a missing or
+disabled entry as a failure outright, because it is only ever run deliberately.
+
+The sharper form of the trap is that a **negative result can be ambiguous**. `find_compiler()` walks
+up from `csc.dll` to the dotnet root, and the first version went up three directories instead of four.
+That does not raise — it lands on a directory with no `dotnet` beside it, and reports *"no SDK
+found"*, which is exactly what a machine with no SDK reports. On a laptop where `dotnet` is keg-only
+and genuinely not on `PATH`, that read as correct behaviour. It survived to the first real run.
+
+What caught it was a test with an **independent oracle**: glob the known install locations directly,
+and if a `csc.dll` exists there, `find_compiler()` must not return `None`. A test that merely called
+the function and checked for `None` would have shared its mental model and agreed with it.
+
+> **When a check reports absence, ask whether it can tell "not there" from "I looked in the wrong
+> place".** If it cannot, the reassuring answer and the broken one are the same string. Verify against
+> a source derived differently from the code under test.
+
+This is a specific case of *A gate is only evidence about the property it checks*, above — the check
+was honestly green about a question it was not actually asking.
+
+## A suite of failure cases needs a positive control
+
+`tools/test_check_build_log.py` is fifteen cases and fourteen of them assert that something broken is
+reported as broken. A script that failed unconditionally would satisfy all fourteen. The fifteenth,
+`test_a_good_log_passes`, is the only one that can tell a working check from a broken one, and it is
+worth writing even when it looks tautological.
+
+It paid for itself on its first CI run, by failing — see the next lesson for what it found.
+
+> **Any suite whose cases all assert failure is satisfied by a permanently broken subject.** Add the
+> case that must pass, and treat it as the load-bearing one.
+
+## A fixture that describes files must take its clock from those files
+
+The build-log fixtures stamped every synthetic log `2026-08-16T18:11:02`, a real timestamp copied from
+a real log. It passed locally and failed in CI, and the check was right both times: my working tree's
+`.cs` files were older than that stamp, but a **fresh checkout writes every mtime at clone time**, so
+on the runner the source was newer than the log that claimed to describe it. The staleness guard did
+precisely its job and rejected the fixture.
+
+Timestamps now derive from the files the fixture deploys, computed *before* the per-case mutations so
+that a case which deliberately post-dates a file still post-dates the log.
+
+> **Never bake a timestamp into a fixture that makes claims about files.** Nothing about mtimes is
+> stable across machines or clones; derive the clock from the same files the assertion is about.
+
+## zsh does not word-split an unquoted variable, so a scenario loop can test nothing
+
+Checking that the compile gate degraded correctly on a machine with neither the game nor an SDK, I
+looped over environment combinations:
+
+```bash
+for sim in "QUD_MANAGED_DIR=/nonexistent QUD_CSC=/nonexistent"; do env $sim python3 -m unittest ...; done
+```
+
+In bash that splits into two assignments. **zsh does not word-split unquoted parameter expansions**,
+so `env` received one argument, `QUD_MANAGED_DIR` was set to the literal string
+`/nonexistent QUD_CSC=/nonexistent`, and `QUD_CSC` was never set at all. The run reported OK. The
+scenario I believed I had verified had not executed.
+
+It surfaced only because the skip *count* was identical to the previous scenario, which it could not
+have been if the second variable had taken effect. Put assignments directly on the command
+(`A=1 B=2 cmd`), or use an array, which zsh does split.
+
+> **After running a scenario, confirm it actually took effect** — assert on something that must differ
+> between cases, such as a count, an exit code or a reason string. A green result from a check that
+> never ran is worse than a red one, because it is filed as evidence.
