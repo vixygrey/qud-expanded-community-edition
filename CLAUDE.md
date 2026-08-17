@@ -17,48 +17,6 @@ What stays here is what applies to me rather than to the project.
 
 # Caves of Qud Expanded — fork working notes
 
-## Conventions to preserve
-
-Mura was consistent. Match these when adding anything.
-
-- **Blueprint prefix `Raven_`** on every new object. Merges into vanilla objects use the vanilla
-  name with `Load="Merge"` and no prefix. **No exceptions remain:** `SteelFist` and the 18
-  `Projectile*` objects were the last, renamed in #66 before the save window closed; the
-  Recoilers turned out to be vanilla objects the mod was replacing, fixed in #29. The only
-  unprefixed new objects left are `TrueKin` and `PsionicAdept`, which are body objects following
-  vanilla's own `BodyObject` convention (#13).
-- **Tier → material:** 0 bronze · 1 iron · 2 steel · 3 carbide · 4 folded carbide · 5 fullerite ·
-  6 crysteel · 7 flawless crysteel · 8 zetachrome.
-- **Value curve doubles per tier:** 5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280. Body armor
-  runs 8→2048; vambraces run 4→1024 (half curve, partial slot).
-- **Two-handed variants** get `PenBonus="1"` and a damage bump over the one-handed version, plus
-  `UsesTwoSlots="true"`.
-- **Agility-scaling martials** are a deliberate theme: vinereapers, halberds, rapiers, katanas,
-  war hammers all use `Stat="Agility"` while keeping their tree's skill.
-- **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
-  `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
-- **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables were the one
-  place this was violated; they were converted to merges in #34, and `tools/validate_mod.py`'s
-  `merge-discipline` check now holds the line. Don't add new violations for it to catch.
-
-## Naming decision — settled
-
-The slot is **"Chip Interface"**, and the anatomy/body object is **`PsionicAdept`** (#13).
-
-The original shipped a slot called `Chipset Interface` while all of Mura's player-facing
-documentation called it the "Psionic Interface". Neither was accurate: the slot takes 108 chips
-against 36 chipsets, and 13 of the 36 mutations the chips grant are *physical* rather than mental.
-"Chip Interface" is true of the whole catalogue, matches the technological fiction in the chips'
-own description, and doesn't imply the slot belongs to the Psionic Adept genotype — it is merged
-into base `Humanoid`, so every humanoid has one.
-
-`PsionicAdept` follows the convention `Genotypes.xml` already sets: the True Kin genotype
-("True Kin") points at a body object and anatomy named `TrueKin` — the display name with spaces
-removed.
-
-**Use these names in all new player-facing text.** Mura's original docs in `docs/` predate the
-decision and are left as historical record.
-
 ## Validating changes
 
 There is no test suite. The minimum bar before any commit — this would have caught the
