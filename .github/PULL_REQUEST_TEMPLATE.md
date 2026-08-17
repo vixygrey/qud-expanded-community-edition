@@ -34,10 +34,12 @@ Closes #
 <!--
 Two things worth knowing:
 
-- The C# has no compile gate. There's no .csproj and CodeQL can't cover it, so a syntax error in
-  mod/Scripting/ shows up as the mod failing to load in game rather than as a failing check. If you
-  changed C#, say whether you were able to test it in game.
+- The C# is compiled by a local hook, not by CI. tools/compile_scripting.py builds mod/Scripting/
+  against the game's own assemblies, but it needs Caves of Qud installed and skips without it, and
+  CodeQL can't cover the C# either. So nothing here compiles it. If you changed C# and couldn't run
+  the hook, say so and I'll run it — and say whether you tested in game, which is a separate question
+  a compiler can't answer.
 
-- Nine checks run here and all nine must pass. None of them reads prose, so if you changed
+- Ten checks run here and all ten must pass. None of them reads prose, so if you changed
   documentation, the accuracy is on us rather than on CI.
 -->

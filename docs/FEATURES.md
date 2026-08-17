@@ -1225,11 +1225,11 @@ Per charter rule 6, **defaults reproduce the mod's established behaviour**. The 
 the starting reputation bonus, which grants power with no content attached and so must be asked
 for rather than opted out of.
 
-> ✅ **Verified 2026-08-16: all eleven options work in game** (maintainer). Worth stating rather than
-> assuming — the mod's C# has **no compile gate**. CodeQL cannot cover it (see `docs/CHARTER.md` rule 5) and
-> there is no C# toolchain on the authoring machine, so in-game testing is the only evidence that
-> the scripting works at all. A syntax error surfaces as the mod failing to load, not as a build
-> failure.
+> ✅ **Verified 2026-08-16: all eleven options work in game** (maintainer). Still the only evidence
+> that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
+> locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
+> proves the code builds, not that an option does the right thing to a run. CodeQL cannot cover the C#
+> either (see `docs/CHARTER.md` rule 5). What each option actually does is checked by playing it.
 
 ### 13.1 What each option does
 

@@ -452,7 +452,7 @@ the causality.** Charter rule 2 lives or dies in commit messages.
 
 ## 10. What enforces what
 
-A style rule nobody checks is a preference. Everything below is enforced today — **nine checks are
+A style rule nobody checks is a preference. Everything below is enforced today — **ten checks are
 required on every pull request**, and `pre-commit` runs the same ones locally so they fail in
 seconds rather than after a round trip.
 

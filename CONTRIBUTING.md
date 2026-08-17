@@ -154,6 +154,8 @@ policy at all.
 
 ## If something here is wrong
 
-Say so — file an issue. The documentation has gone quietly stale three separate times (#93, #96,
-#106) because none of the nine checks reads a sentence and asks whether it's still true. A
-contributor noticing is currently the only mechanism that exists.
+Say so — file an issue. The documentation has gone quietly stale four separate times now (#93, #96,
+#106, #139) because not one of the ten checks reads a sentence and asks whether it's still true. The
+fourth was caused by the two checks that closed #134: they made "the C# has no compile gate" false in
+four documents at once, and nothing noticed. A contributor noticing is still the only mechanism that
+exists.
