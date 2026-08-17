@@ -25,12 +25,23 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # check_docs.py compares Mura's preserved documents against the upstream-2.2 tag, and a
+          # shallow checkout has neither the tag nor the blobs behind it. The check reports a
+          # missing tag as a failure rather than skipping, so it cannot quietly stop running.
+          fetch-depth: 0
 
       # No dependencies to install: the validator is Python 3 standard library only, which is
       # what keeps the "no build step" rule (charter rule 4) true for contributors as well as
       # for the game.
       - name: Validate mod
         run: python3 tools/validate_mod.py --all
+
+      # Checks the documents that describe the mod, which nothing did until #131. It cannot read a
+      # sentence and ask whether it is still true, but a figure quoted in prose can be recounted
+      # from mod/, and three staleness sweeps found exactly that class of error.
+      - name: Check documentation
+        run: python3 tools/check_docs.py
 
   python:
     name: Python lint
