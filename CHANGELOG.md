@@ -80,6 +80,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Internal — tooling
 
+- **(internal)** `README.md` now says the mod is configurable. It listed the genotype, the chips and the item families without mentioning that eleven options exist, so the people most likely to want the mod — someone who wants the weapons but not the chip economy, or vanilla's skill requirements back — had no way to tell from the front page. Charter rule 6 exists so nobody has to swallow the whole mod to get one part of it, and the README gave no hint that was true. It also spells out the three scopes, since when a change takes effect is the part people get caught by.
+  ([#113](https://github.com/vixygrey/qud-expanded-community-edition/issues/113))
+
 - **(internal)** `README.md` stops calling the local hooks optional and explains how to install them when `core.hooksPath` is set. `pre-commit install` refuses outright in that case, which is the common arrangement for anyone whose dotfiles wire in global hooks — so the instruction as written didn't work on my own machine, and the `no-commit-to-main` hook had therefore never been installed. I found that out by committing to `main` in #119 and having the ruleset reject the push. Recorded in `docs/LESSONS.md`, along with the related trap that `core.hooksPath` silently disables any per-repo hook it has no delegator for.
   ([#120](https://github.com/vixygrey/qud-expanded-community-edition/issues/120))
 
