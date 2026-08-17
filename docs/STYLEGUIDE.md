@@ -171,12 +171,13 @@ qud-expanded-community-edition/
 │   ├── manifest.json
 │   ├── workshop.json
 │   └── preview.png
-├── docs/                         # FEATURES.md, PERMISSION.md, STYLEGUIDE.md, upstream notes
+├── docs/                         # CHARTER, FEATURES, LESSONS, PERMISSION, STYLEGUIDE, upstream notes
 ├── tools/                        # validation script, helpers
 ├── .github/workflows/            # CI
 ├── .pre-commit-config.yaml
 ├── README.md
-└── CLAUDE.md
+├── CONTRIBUTING.md
+└── CLAUDE.md                     # my local working notes; untracked
 ```
 
 This matches the layout already used by the sibling Qud projects in this workspace
@@ -440,7 +441,7 @@ save-baked identifiers changed during the fork.
 
 ## 9. Commits, branches, and PRs
 
-Defined in `CLAUDE.md` § Workflow — trunk-based, issue-first, atomic commits, conventional commit
+Defined in `CONTRIBUTING.md` — trunk-based, issue-first, atomic commits, conventional commit
 messages with repo-specific scopes (`tables`, `chips`, `armor`, `melee`, `ranged`, `skills`,
 `genotypes`, `bodies`, `workshop`, `scripting`, `docs`). Not duplicated here.
 

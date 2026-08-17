@@ -280,7 +280,7 @@ review, so the strongest statements here become the least trustworthy. Two harms
 charter-relevant: they point the next contributor at work already done, and they advertise a
 resolved hazard in the one dimension charter rule 1 makes this fork's headline claim.
 
-Stale **cross-references** are the same class. `CLAUDE.md`'s own commit-message example read
+Stale **cross-references** are the same class. The charter's own commit-message example read
 `closes #4` for work that actually closed #3, and nothing checks issue numbers in prose either.
 
 > **When a PR closes a defect, grep the docs for it in the same PR.** `rg -i 'artifact 3|removetable'`

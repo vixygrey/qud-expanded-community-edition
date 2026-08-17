@@ -11,7 +11,7 @@ Known defects inherited from upstream 2.2 are enumerated in tools/validation-bas
 the issue that tracks each one. They are reported but do not fail the run, so CI is green on a
 codebase whose debt is already catalogued — while any *new* violation fails immediately.
 
-The baseline is a ledger, not an excuse: it only shrinks. See CLAUDE.md, charter rule 4.
+The baseline is a ledger, not an excuse: it only shrinks. See docs/CHARTER.md, rule 4.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ NEW_UNPREFIXED = {
 # New population tables the mod declares. Same reasoning as NEW_UNPREFIXED.
 NEW_TABLE_PREFIXES = ("StartingGear_",)
 
-# Tier -> material, from CLAUDE.md's convention table. Longest first so "flawless crysteel"
+# Tier -> material, from docs/STYLEGUIDE.md 3.2. Longest first so "flawless crysteel"
 # wins over "crysteel" and "folded carbide" over "carbide".
 TIER_MATERIALS = [
     (7, "flawless crysteel"),
@@ -502,7 +502,7 @@ def check_scripting_policy(f: Findings) -> None:
 def check_serializable_shape(f: Findings) -> None:
     """A [Serializable] type's instance fields are written into every player save.
 
-    CLAUDE.md rule 5: "Anything [Serializable] is written into player saves. Its field layout is
+    docs/CHARTER.md rule 5: "Anything [Serializable] is written into player saves. Its field layout is
     an identifier ... renaming or removing a field can break saves that already exist."
 
     Today every such type holds zero instance state - the 36 mutation stubs are empty and
@@ -576,7 +576,7 @@ def _report_field(
     f.add(
         "serializable-shape",
         f"{cs}:{lineno}: [Serializable] {cls} declares instance field {name!r} - its layout "
-        f"is written into every save. See CLAUDE.md rule 5.",
+        f"is written into every save. See docs/CHARTER.md rule 5.",
     )
 
 
@@ -619,7 +619,7 @@ def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
 
 
 def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Tier tags and prices must match the curves CLAUDE.md states.
+    """Tier tags and prices must match the curves docs/STYLEGUIDE.md 3.2 states.
 
     Both curves are mechanical, which is exactly why drift goes unnoticed: a tier tag that is
     wrong puts an item in the wrong loot pool AND gives it the wrong mod capacity, and neither

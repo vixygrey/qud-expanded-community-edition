@@ -26,6 +26,12 @@ venv/
 # It lives at the repo root, never in mod/, so it cannot ship to subscribers.
 node_modules/
 
+# Claude Code local instructions. CLAUDE.md loads automatically for anyone working in this repo, so
+# my personal writing preferences would otherwise be inherited by a contributor's assistant and end
+# up shaping their pull requests. The project's own rules are tracked in docs/CHARTER.md,
+# docs/LESSONS.md, docs/STYLEGUIDE.md and CONTRIBUTING.md; AGENTS.md points any agent at them.
+CLAUDE.md
+
 # Claude Code agent worktrees. Each is a COMPLETE second copy of the working tree, created inside
 # the repo and removed when the agent finishes — so it is absent most of the time and present
 # exactly while someone is mid-task and least likely to read `git status` closely. Left untracked,

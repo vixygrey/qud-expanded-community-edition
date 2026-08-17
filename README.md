@@ -78,7 +78,7 @@ the Workshop.
 ## Contributing
 
 I'd be glad of the help, and I credit every outside contribution by name in the pull request that
-merges it — you shouldn't have to ask.
+merges it — you shouldn't have to ask. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the full guide.
 
 The rules I maintain this fork under are in [`docs/CHARTER.md`](docs/CHARTER.md) — six of them,
 covering compatibility, causality, credit, developer experience, safety, and configurability. I mean
@@ -144,10 +144,8 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ### Workflow
 
-Issue first, short-lived branch, small PR, squash merge. Every PR updates
-[`CHANGELOG.md`](CHANGELOG.md) and states its compatibility impact. Commit bodies carry the
-*reason* for a change, not just its content — that's charter rule 2, and it's the one I lose
-soonest if I stop watching for it.
+[`CONTRIBUTING.md`](CONTRIBUTING.md) has it in full — issue first, short-lived branch, small PR,
+squash merge, and what each pull request needs before I can take it.
 
 ---
 

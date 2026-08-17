@@ -65,7 +65,7 @@ repos:
       - id: no-commit-to-main
         # GitHub protects main server-side, but failing here beats a rejected push. See #20.
         name: refuse commits on main
-        entry: bash -c '[ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] || { echo "Refusing to commit on main. Branch first — see CLAUDE.md § Workflow."; exit 1; }'
+        entry: bash -c '[ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] || { echo "Refusing to commit on main. Branch first — see CONTRIBUTING.md."; exit 1; }'
         language: system
         pass_filenames: false
         always_run: true

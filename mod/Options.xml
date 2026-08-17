@@ -3,7 +3,7 @@
   <!--
         Declaring an option is pure XML. Reading it requires C# - see
         mod/Scripting/Raven_Options.cs. Defaults reproduce the mod's established
-        behaviour, per CLAUDE.md charter rule 6, except where an option grants power
+        behaviour, per docs/CHARTER.md rule 6, except where an option grants power
         with no content attached - those default off.
 
         Slider Min MUST be 0 or 1. A slider with Min above 1 sends Qud's options menu
