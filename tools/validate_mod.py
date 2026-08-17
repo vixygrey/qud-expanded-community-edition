@@ -778,17 +778,21 @@ def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         )
         return
     known = set(api["parts"])
+    source = api.get("part_source", "unknown")
     for path, root in blueprint_sources(all_roots).items():
-        for part in object_parts(root):
-            name = part.get("Name")
-            if not name or name.startswith("Raven_"):
-                continue
-            if name not in known:
-                f.add(
-                    "unknown-part",
-                    f'{path}: <part Name="{name}"> is not a class in '
-                    f"{api['part_namespace']} - Qud will ignore it silently",
-                )
+        for obj in root.iter("object"):
+            owner = obj.get("Name") or "<unnamed>"
+            for part in obj.iter("part"):
+                name = part.get("Name")
+                if not name or name.startswith("Raven_"):
+                    continue
+                if name not in known:
+                    f.add(
+                        "unknown-part",
+                        f'{path}: {owner} uses <part Name="{name}">, which is not a part Qud '
+                        f"provides - it will be ignored silently (snapshot source: {source}; "
+                        f"if the part is real but unused by vanilla, regenerate with --assembly)",
+                    )
 
 
 def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
