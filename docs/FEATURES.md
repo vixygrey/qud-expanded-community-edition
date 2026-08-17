@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **360** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -385,8 +385,8 @@ doubles max charge and stacks with High Capacity.
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 12 (42 disabled) | 1 |
-| **Total** | **360 active** | **212** |
+| `Ammo.xml` | 12 (42 disabled) | 0 |
+| **Total** | **360 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -914,9 +914,9 @@ comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud c
 effects and the ammo degraded to plain ammo. #144 revived the arrows; the **42 bullet and shell
 objects remain commented** for #145 and #146, which are separate balance and reachability claims.
 
-**The six effect arrows.** All are `Commerce Value="0.20"`, `TinkerItem Bits="00" NumberMade="1"`,
-inherit `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over
-`1d2` damage. Those figures are vanilla's `Boomrose Arrow`, the only effect arrow the game ships.
+**The six effect arrows.** All are `Commerce Value="0.20"`, carry **no `TinkerItem`**, inherit
+`BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over `1d2` damage.
+Those figures are vanilla's `Boomrose Arrow`, the only effect arrow the game ships.
 
 | Displayed as | Blueprint | Payload | Shape | Its grenade |
 |---|---|---|---|---|
@@ -987,14 +987,35 @@ appears on six objects in the game and every one inherits `Grenade` — no proje
 unlike `HEGrenade`, `GasGrenade`, `FlashbangGrenade`, `SunderGrenade` and `DeploymentGrenade` —
 so its failure mode on a projectile would be silent.
 
-**One merge.** `Boomrose Arrow` gains the same `TinkerItem`. No vanilla arrow is craftable
-otherwise — slugs and shells are, bow ammo is not — so this is a deliberate change, made by merge.
-At one per craft it never beats the 1d4 stacks the wild drops.
+**None of them is craftable, and that follows a rule far wider than arrows.** Qud has exactly one
+crafting system, and Tinkering is the **artifact** skill — it builds recovered old-world technology
+and nothing else. No arrow is craftable, but neither is a dagger, a long sword, a battle axe, a
+steel suit, a short bow or a compound bow:
 
-**Drops.** Each arrow is weight 2 in `Ammo 2`, `Ammo 3` and `Ammo 4`, at Boomrose's own quantities
-(1, then 1d4, then 1d4) — so the set of six is worth roughly what Boomrose alone is worth in those
-pools rather than six times as much, and one craft never out-yields a find. They stay out of
-`Ammo 1`, where vanilla keeps Boomrose at weight 1 against wooden arrows' 100. See §7.
+| Craftable | Not craftable |
+|---|---|
+| Semi-Automatic Pistol, Combat Shotgun | Dagger, Steel Long Sword, Steel Battle Axe |
+| Lead Slug, Shotgun Shell | every arrow, including `Boomrose Arrow` |
+| Chem Cell, every grenade | Short Bow, Compound Bow, Steel Suit |
+| **Turbow** | |
+
+The Turbow is the tell: the only craftable bow in the game, and the only one with an `Examiner`
+part — *"servos click on the wheeling groves and a miniature air turbine exaggerates the pull of
+the bowstring."* An artifact that happens to be bow-shaped. Slugs and shells are craftable because
+they are cartridges serving firearms, which are recovered tech in their own right.
+
+Giving these arrows a recipe would not have filled a gap Freehold left; it would have put a stick
+into the artifact system, which vanilla declines to do for every wooden and forged object it ships.
+An earlier revision did exactly that, and also merged a `TinkerItem` onto vanilla's `Boomrose
+Arrow`; both were reverted before release. Whether this fork should add a *mundane* crafting system
+of its own — fletching, smithing, leatherwork — is #154.
+
+**Reachability is therefore entirely the drop tables.** Each arrow is weight 2 in `Ammo 2`,
+`Ammo 3` and `Ammo 4`, at Boomrose's own quantities (1, then 1d4, then 1d4) — so the set of six is
+worth roughly what Boomrose alone is worth in those pools rather than six times as much. They stay
+out of `Ammo 1`, where vanilla keeps Boomrose at weight 1 against wooden arrows' 100. Those tables
+also feed merchant stock through `Tier1Wares`, `Tier2Wares` and `YurlWares`, so buying is a
+reliable route rather than waiting on floor drops. See §7.
 
 **Three of the nine were cut**: the vibro arrow (`Vorpal`, which vanilla grants only to the tier-7
 Linear Cannon), the sunder arrow (flat `BasePenetration="10"`, above every vanilla arrow), and the

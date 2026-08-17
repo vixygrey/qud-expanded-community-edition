@@ -8,6 +8,20 @@
        high explosive grenade mk I it imitates, and the gas and flashbang payloads below are scaled
        to their own grenade at the same ratio - same part as the grenade, dialled down.
 
+       None of them carries a TinkerItem, which is also Boomrose's rule, and not a narrow one.
+       Qud has exactly one crafting system and Tinkering is the ARTIFACT skill: it builds recovered
+       old-world technology and nothing else. No arrow is craftable, but neither is a dagger, a
+       long sword, a battle axe, a steel suit, a short bow or a compound bow. The Turbow is the
+       only craftable bow in the game and it is the only one with an Examiner part - servos and an
+       air turbine, an artifact that happens to be bow-shaped. Slugs and shells are craftable
+       because they are cartridges serving firearms, which are themselves recovered tech.
+
+       So these are reachable through the drop tables instead, merged into Ammo 2-4 in
+       PopulationTables.xml. Giving them a recipe would not have filled a gap Freehold left; it
+       would have put a stick into the artifact system, which vanilla declines to do for every
+       wooden and forged object it ships. See #154 for the separate question of whether this fork
+       should add a mundane crafting system of its own.
+
        Blaze and cryo are the two whose grenades are thermal (HeatGrenade1 at TemperatureDelta 500,
        ColdGrenade1 at -400, both tier 1). Mura's original +/-400 matched those almost exactly, but
        the two directions need opposite treatment because Qud implements them differently.
@@ -61,7 +75,6 @@
       Short="A phial of thickened blaze rides in the socket behind the arrowhead, sloshing and warm."
     />
     <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileBlazeArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{blaze|blaze}} arrow" ColorString="&amp;R" />
@@ -79,7 +92,6 @@
       Short="Frost creeps down the wooden shank from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
     />
     <part Name="RulesDescription" Text="Chills what it strikes. Repeated hits will freeze a target solid." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{cryogenic|cryo}} arrow" ColorString="&amp;C" />
@@ -97,7 +109,6 @@
       Short="The arrowhead is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of sleep gas where it lands." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileDreamDewArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{M|dream dew}} arrow" ColorString="&amp;M" />
@@ -115,7 +126,6 @@
       Short="A quillipede's barb lashed to a wooden shank with sinew. The backward teeth are meant to lodge and tear."
     />
     <part Name="RulesDescription" Text="May start a target bleeding on impact." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileQuillArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{r|quill}} arrow" ColorString="&amp;r" />
@@ -133,7 +143,6 @@
       Short="A thin wax shell packed with white powder caps the wooden shank. It goes off with a clap and a scouring light."
     />
     <part Name="RulesDescription" Text="Bursts with a blinding flash where it lands, dazing those caught in it." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileStarshellArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{Y|starshell}} arrow" ColorString="&amp;Y" />
@@ -151,20 +160,11 @@
       Short="A hollowed stinger caps the wooden shank, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of poison gas where it lands." />
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileStingerArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{g|stinger}} arrow" ColorString="&amp;g" />
     <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;g" />
     <part Name="GasGrenade" Density="20" GasObject="PoisonGas" />
-  </object>
-
-  <!-- Vanilla's own effect arrow becomes craftable on the same terms as the six above, so that one
-       rule covers every effect arrow in the game. One per craft, at a grenade's bit cost: finding
-       a stack of 1d4 in the wild still beats making them, which is how Qud gates them today. -->
-
-  <object Name="Boomrose Arrow" Load="Merge">
-    <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
 
   <!-- Bullets and shells are still disabled, and are the subject of #145 (shotgun shells) and #146
