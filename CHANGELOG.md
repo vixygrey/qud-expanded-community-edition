@@ -80,6 +80,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Internal — tooling
 
+- **(internal)** The repository has licences: **Apache-2.0** for code, **CC BY 4.0** for content and documentation, both covering my own contributions. `package.json` had claimed `"SEE LICENSE IN LICENSE"` since the fork began, pointing at a file that never existed, and a public repository with no licence is all-rights-reserved by default — which contradicted everything this project says about being a community fork. Apache rather than MIT deliberately: its `NOTICE` file is one downstream redistributors must reproduce, where MIT's attribution requirement only reaches the source, and credit surviving redistribution is the entire point here. What is **not** covered is stated just as plainly in `NOTICE` and `COPYING.md` — the inherited work is Mura's and the subtype sprites are Noble Lark's, and a permission to fork is not a copyright licence I can pass on. `CONTRIBUTING.md` now also says what terms a contribution arrives under, which it never did.
+  ([#101](https://github.com/vixygrey/qud-expanded-community-edition/issues/101))
+
 - **(internal)** `CODE_OF_CONDUCT.md` added — the Contributor Covenant 2.1, verbatim apart from the contact method it leaves blank. Reports go through the repository's private reporting form, which keeps them private without publishing a personal email address on a project that will get Workshop traffic; the file also points at GitHub's own abuse reporting, since the person someone needs to report might be me. Linked from `README.md` and `CONTRIBUTING.md`.
   ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
 

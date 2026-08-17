@@ -95,6 +95,13 @@ redeclaration conflicts with any other mod touching the same record *and* silent
 future Qud patches add to it. `merge-discipline` in the validator will catch you, but it's easier to
 write it right the first time.
 
+## Licensing your contribution
+
+Contributions are offered under the same terms as the project — Apache-2.0 for code, CC BY 4.0 for
+content — so it stays consistently licensed. You keep your copyright; you're granting a licence, not
+signing anything away. [`COPYING.md`](COPYING.md) has the details, including which parts of this
+repository aren't mine to license and why.
+
 ## Conduct
 
 [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) — the Contributor Covenant, and the standard I hold

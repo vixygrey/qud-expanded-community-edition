@@ -15,11 +15,14 @@ repos:
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: end-of-file-fixer
-        exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
+        # LICENSE, LICENSE-CONTENT and NOTICE are canonical texts. Anyone verifying this really is
+        # Apache-2.0 or CC BY 4.0 will diff them against the published version, so they stay
+        # byte-identical — the same reasoning that exempts Mura's preserved documents.
+        exclude: ^(mod/|LICENSE|LICENSE-CONTENT|NOTICE|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
       - id: trailing-whitespace
         # mod/ is excluded deliberately: reformatting it wholesale would destroy the
         # readability of `git diff upstream-2.2`. Formatting is tracked separately in #17.
-        exclude: ^(mod/|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
+        exclude: ^(mod/|LICENSE|LICENSE-CONTENT|NOTICE|docs/2\.2-changelog\.txt|docs/mura-feature-notes-wip\.txt)
 
   # Python lint + format for tools/. Scoped: mod/ contains no Python, and the exclusion keeps
   # the hook from ever reformatting shipped mod files. Pinned to the same version CI runs.
