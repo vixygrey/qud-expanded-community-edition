@@ -80,6 +80,12 @@ CURVE_EXEMPT = {
 # uploading with this ID in workshop.json would publish over their page. See docs/PERMISSION.md §5.
 UPSTREAM_WORKSHOP_ID = 1134036260
 
+# Steam's own ceiling on a published item's description. Steamworks caps it at 8000 characters,
+# and the installed mods agree: of the 72 that ship a workshop.json, the longest description is
+# Caves of Qud Expanded's own at 7943 — right against the wall. Qud's uploader does not warn, so
+# an over-long description is the kind of failure that only shows up on the published page.
+STEAM_DESCRIPTION_MAX = 8000
+
 
 class Findings:
     def __init__(self) -> None:
@@ -138,6 +144,29 @@ def check_workshop_target(f: Findings) -> None:
             "workshop-target",
             f"workshop.json WorkshopId is {UPSTREAM_WORKSHOP_ID} — Mura's original item. "
             f"Uploading would publish over their page. This fork releases separately.",
+        )
+
+
+def check_workshop_description(f: Findings) -> None:
+    """The description must fit inside Steam's limit, with room to grow.
+
+    Nothing local complains about an over-long one: the JSON stays valid, the mod still loads,
+    and the truncation happens on Steam's side at upload. See docs/STYLEGUIDE.md §7.4.
+    """
+    path = MOD / "workshop.json"
+    if not path.is_file():
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return  # check_json reports this
+    length = len(data.get("Description", ""))
+    if length > STEAM_DESCRIPTION_MAX:
+        f.add(
+            "workshop-description",
+            f"workshop.json Description is {length} characters against Steam's "
+            f"{STEAM_DESCRIPTION_MAX} limit. Steam truncates the overflow at upload without "
+            f"reporting it. Cut it, or move the detail to CHANGELOG.md and link it.",
         )
 
 
@@ -844,6 +873,7 @@ def run() -> Findings:
     roots = check_wellformed(f)
     check_json(f)
     check_workshop_target(f)
+    check_workshop_description(f)
     check_manifest(f)
     check_options(f, roots)
     check_option_wiring(f, roots)

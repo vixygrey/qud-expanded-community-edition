@@ -418,6 +418,14 @@ save-baked identifiers changed during the fork.
 - State clearly that this is a **community fork** and link the original item (`1134036260`).
 - Never carry text written by the original author as though it were the fork's own — the current
   description is Mura's pre-handoff notice asking that the mod *not* be forked (#2).
+- **8000 characters, hard.** That is Steam's own limit on a published item's description, and the
+  installed mods confirm where the wall is: of the 72 shipping a `workshop.json`, the longest is
+  Caves of Qud Expanded's own at 7943. Nothing local complains — the JSON stays valid, Qud still
+  loads the mod, and the overflow is cut on Steam's side at upload — so `workshop-description` in
+  `tools/validate_mod.py` fails the build instead.
+- **Leave headroom.** The description grows with every release, and BBCode markup costs characters
+  a reader never sees. Keep it summary-shaped and let `CHANGELOG.md` carry the reasoning: the page
+  says what changed, the repository says why.
 
 ---
 
@@ -460,6 +468,7 @@ seconds rather than after a round trip.
 |---|---|
 | XML and map-file well-formedness | `wellformed` in `tools/validate_mod.py` |
 | `manifest.json` / `workshop.json` validity, and the upload target | `json`, `manifest`, `workshop-target` |
+| The Workshop description fitting inside Steam's 8000-character limit | `workshop-description` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
