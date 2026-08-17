@@ -135,12 +135,33 @@ validation gate and it doesn't run in CI. Sizes, angles and colours live in the 
 in someone's image editor; see the header, and `docs/STYLEGUIDE.md` §7.3 for why the fork's marks
 deliberately don't match Mura's lettering.
 
-### Optional local hooks
+### Local hooks — worth installing
 
 ```bash
-pre-commit install
+pre-commit install --install-hooks
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
+
+The hooks run the same checks CI does, so they fail in seconds instead of after a round trip. One of
+them CI **cannot** run: `no-commit-to-main` refuses a commit on `main` before it exists. By the time
+CI sees such a commit it has already been made, and the server-side ruleset can only reject the
+push afterwards.
+
+I know that one matters because I skipped installing these and then committed to `main` (#120).
+
+**If you get `Cowardly refusing to install hooks with core.hooksPath set`,** something in your git
+config — usually a dotfile manager wiring in global hooks — has set `core.hooksPath`, and
+`pre-commit` won't write `.git/hooks/` while it is. If your global hook delegates to the per-repo
+one, which is the common arrangement, unset it for the length of the install:
+
+```bash
+saved=$(git config --global --get core.hooksPath)
+git config --global --unset core.hooksPath
+pre-commit install --install-hooks
+git config --global core.hooksPath "$saved"
+```
+
+Then check it took, by trying to commit on `main` and being told no.
 
 ### Workflow
 
