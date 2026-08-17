@@ -133,6 +133,40 @@ redeclaration conflicts with any other mod touching the same record *and* silent
 future Qud patches add to it. `merge-discipline` in the validator will catch you, but it's easier to
 write it right the first time.
 
+## The wiki: it explains, `docs/FEATURES.md` specifies
+
+The wiki is for the things a reference document is bad at — what a build actually plays like, how the
+chip families interact, which combinations are worth building toward, what a system is *for* in the
+game's fiction, how to open a run as a Psionic Adept. [`docs/FEATURES.md`](docs/FEATURES.md) keeps
+every figure: tiers, weights, prices, drop rates, stat modifiers, option defaults and their scopes.
+
+| The wiki | `docs/FEATURES.md` |
+|---|---|
+| What an affinity plays like | The subtype's stat modifiers and resistances |
+| How the chip families interact, and what to build toward | Every chip, with its tier, grade and mutation level |
+| Why a build works; opening strategy | Starting gear tables, drop rates, the value curve |
+| What the Chip Interface is for, in the fiction | Which anatomies carry the slot, and how it merges |
+| What an option changes about a run | The option table, defaults, and live/restart/new-character scopes (§13) |
+
+**The rule that falls out of it: link to `docs/FEATURES.md` for figures instead of repeating them.** A
+tier, a weight, a price, a drop rate or an option default typed into a wiki page is a copy that nothing
+will ever check. Where a number genuinely has to appear inline for a page to read, say where it came
+from, so a later reader knows which one wins.
+
+That is a stronger rule for the wiki than for anything in this repository, because **the wiki is a
+separate git repository and not one of the ten checks reaches it.** No `typos`, no prettier, no
+`tools/validate_mod.py`, no changelog requirement, no review, and no `merge-discipline` or
+`unreachable` check standing behind its numbers. It is prose with *fewer* guardrails than the documents
+that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails — which makes it
+the highest-risk place in this project to write a number down.
+
+One practical trap: a wiki page **cannot** use a relative link to a file in this repository, because it
+is a different repository. Figures need a full `https://github.com/…/blob/main/docs/FEATURES.md` URL.
+That extra friction is exactly what tempts people to paste the number instead. Pay it.
+
+If you're creating or reorganising wiki pages, the home page should link to this section rather than
+restate it — same reason: one owner per rule.
+
 ## Licensing your contribution
 
 Contributions are offered under the same terms as the project — Apache-2.0 for code, CC BY 4.0 for
