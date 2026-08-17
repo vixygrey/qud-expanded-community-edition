@@ -14,9 +14,14 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
-Nothing has been released yet. Everything below lands in the fork's first Workshop release.
+Nothing yet.
 
-> ⚠️ **The first release requires a new character.** Body-part and anatomy identifiers changed
+## [2.3.0] - 2026-08-17
+
+The fork's first release. Version numbering continues Mura's lineage rather than resetting —
+upstream's last release was 2.2, and this is a continuation of it, not a new mod.
+
+> ⚠️ **This release requires a new character.** Body-part and anatomy identifiers changed
 > (see *Changed* below), and those are written into save state. This fork publishes as a separate
 > Workshop item, so no existing save is affected — but a save started against a pre-release build
 > of this fork will not carry forward.
@@ -506,4 +511,5 @@ Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.
 **Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
 named explicitly as the one condition of the fork permission.
 
-[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/commits/main
+[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.3.0...main
+[2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0
