@@ -16,10 +16,11 @@ Mura (@mura_raven)
     that credit is given where due — and that condition is treated as permanent
     here. See docs/PERMISSION.md.
 
-Noble Lark
+Noble Lark (also known as chirps)
     All 18 psionic subtype sprites in mod/Textures/Subtypes/. Mura named Noble
     Lark specifically when opening the mod to the community, and asked that the
-    credit carry forward. It does, permanently.
+    credit carry forward. It does, permanently. He was credited twice here under
+    both names until Mura pointed out they are one person.
 
 Scrolldier (also known as Parzival)
     Taught Mura to mod Caves of Qud.
@@ -31,8 +32,8 @@ Arendeth
 Tyrir
     Bug reports, including the 2.2 typo batch.
 
-Crow, chirps
-    Contributors to the original mod.
+Crow
+    Contributor to the original mod.
 
 Jah-yee
     Fixed the tag typos that stopped the advanced hoversled floating and the
@@ -51,42 +52,31 @@ and it cannot be, because not all of it is mine to license.
 
 COVERED by LICENSE (Apache License 2.0) and LICENSE-CONTENT (CC BY 4.0):
 
-    My own contributions to this fork — the code, data, tooling and
-    documentation I have written since forking Caves of Qud Expanded 2.2.
+    This mod, including the work inherited from Caves of Qud Expanded 2.2.
     Code is Apache-2.0; content, data and documentation are CC BY 4.0.
-    `git diff upstream-2.2` shows what that covers.
 
-OPEN, BUT NOT UNDER THESE LICENCES — the inherited work and the artwork:
+    Mura's own work is covered because Mura said so. Asked on 17 August 2026
+    whether the informal grant could be formalised as those two licences, they
+    answered: "I think that would be fine, I don't know a lot about them but
+    after a quick google search and some reading I don't see a problem with
+    them." Recorded in full in docs/PERMISSION.md section 8.
 
-    Everything in the upstream-2.2 tag is Mura's, and so are the 18 subtype
-    sprites by Noble Lark and the logo behind mod/preview.png (preserved
-    unmodified at tools/preview-base.png).
+NOT COVERED — the subtype sprites:
 
-    Mura has opened all of it to the community. Their words, from the Workshop
-    description and recorded in full in docs/PERMISSION.md:
+    The 18 sprites in mod/Textures/Subtypes/ are Noble Lark's (also known as
+    chirps), and no licence here applies to them. They are used with credit,
+    permanently, as the one condition Mura attached to opening the mod up.
 
-        "I've decided to make the mod open to the community to update, fork,
-         and generally do with as they please, all I ask is that you give
-         credit where due, which includes Noble Lark for the subclass sprites."
+    Mura named the sprites inside the original grant, which shows Mura believed
+    they were theirs to open up — but Noble Lark has never said so himself, and
+    Mura's advice was to ask him directly rather than assume. He has been asked.
+    If he agrees, this file will say so and the sprites will be covered too.
 
-    That is broad, it is public, and it names Noble Lark's sprites inside it.
-    In substance it is an attribution grant: do what you like, give credit.
+    Until then: reuse the sprites only with his permission. Credit him either
+    way.
 
-    What it is not is a named licence, so its edges are undefined — there is no
-    warranty disclaimer, no patent grant, and no explicit statement that I may
-    sublicense it. That last one is why the Apache and CC BY licences in this
-    repository cover my own contributions and stop there: a downstream user
-    should get their rights to Mura's work from Mura's grant, which is plainly
-    stated and easy to read, rather than from me passing on something I was
-    never explicitly given the power to pass on.
-
-    So: reusing the inherited work is almost certainly fine on Mura's own terms.
-    Read docs/PERMISSION.md, give credit, and name Noble Lark for the sprites.
-    If you need certainty rather than "almost certainly", ask Mura — they invited
-    questions and gave contact details, both recorded in docs/PERMISSION.md.
-
-I have asked Mura whether they would like to put a named licence on the original
-work. If they do, this file will say so and the scope above will widen.
+    mod/preview.png derives from Mura's logo, preserved unmodified at
+    tools/preview-base.png, and is covered by Mura's grant above.
 
 --------------------------------------------------------------------------------
 
