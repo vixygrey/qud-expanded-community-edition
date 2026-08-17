@@ -805,11 +805,45 @@
     </group>
   </population>
 
-  <!-- Ammo/Cell Tables, simply merging in new cell types. -->
+  <!-- Ammo/Cell Tables: new cell types, plus the effect arrows revived in #144.
+
+       Arrow weights follow Boomrose Arrow, vanilla's own effect arrow, which sits at weight 10 in
+       Ammo 2-4 and only 1 in Ammo 1. Each arrow here takes weight 2 so the whole set of six is
+       worth about what Boomrose alone is worth, rather than six times as much; quantities match
+       Boomrose tier for tier. They stay out of Ammo 1 for the same reason vanilla nearly keeps
+       Boomrose out of it - that pool is wooden arrows for characters who have just started. -->
+
+  <population Name="Ammo 2" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1" Blueprint="Raven_Blaze Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Cryo Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Dream Dew Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Starshell Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Stinger Arrow" />
+    </group>
+  </population>
+
+  <population Name="Ammo 3" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Starshell Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Stinger Arrow" />
+    </group>
+  </population>
 
   <population Name="Ammo 4" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Starshell Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Stinger Arrow" />
     </group>
   </population>
 

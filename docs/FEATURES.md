@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **348** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
+| **New item blueprints** | **360** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **54** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **56** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
 
@@ -385,8 +385,8 @@ doubles max charge and stacks with High Capacity.
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 0 (62 disabled) | 0 |
-| **Total** | **348 active** | **211** |
+| `Ammo.xml` | 12 (42 disabled) | 1 |
+| **Total** | **360 active** | **212** |
 
 ### 6.2 Melee weapons
 
@@ -907,23 +907,87 @@ them changes.
 | `Raven_Empty Armor Rack` | Weapon Rack | Recolored |
 | `Raven_Rusted Door` | Metal Door | Non-occluding, renders in dark |
 
-### 6.7 Ammo — **the entire file is disabled**
+### 6.7 Ammo — arrows live, bullets and shells still disabled
 
-`ObjectBlueprints/Ammo.xml` is 524 lines and **every one of its 62 objects is inside a single
-XML comment** opened on line 5 with the note *"removed temporarily"* and closed on line 523.
+`ObjectBlueprints/Ammo.xml` was 524 lines with **every one of its 62 objects inside a single XML
+comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud change broke the
+effects and the ammo degraded to plain ammo. #144 revived the arrows; the **42 bullet and shell
+objects remain commented** for #145 and #146, which are separate balance and reachability claims.
 
-The dormant content includes a reworked **Shotgun Shell**, plus vibro, explosive, and other
-specialty **bullets, shells, and arrows** with their paired projectile objects — e.g.
-`Raven_Vibro Bullet` (1d6 `Vorpal`, bits `BC`, makes 6) and `Raven_Vibro Shell`. For a fork this
-is the single largest block of ready-made content sitting unused.
+**The six effect arrows.** All are `Commerce Value="0.20"`, `TinkerItem Bits="00" NumberMade="1"`,
+inherit `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over
+`1d2` damage. Those figures are vanilla's `Boomrose Arrow`, the only effect arrow the game ships.
+
+| Displayed as | Blueprint | Payload | Shape | Its grenade |
+|---|---|---|---|---|
+| blaze arrow | `Raven_Blaze Arrow` | `TemperatureOnHit 250` | single target | thermal mk I is `ThermalGrenade 500`, **area** |
+| cryo arrow | `Raven_Cryo Arrow` | `TemperatureOnHit -35` | single target | freeze mk I is `ThermalGrenade -400`, **area** |
+| dream dew arrow | `Raven_Dream Dew Arrow` | `GasGrenade Density=20 GasObject=SleepGas` | area | sleep gas mk I is 40 |
+| quill arrow | `Raven_Quill Arrow` | `BleedingOnHit Amount=1d1 SaveTarget=20` | single target | none |
+| starshell arrow | `Raven_Starshell Arrow` | `FlashbangGrenade Radius=1 Duration=1d3` | area | flashbang mk I is R2, 1d4+4 |
+| stinger arrow | `Raven_Stinger Arrow` | `GasGrenade Density=20 GasObject=PoisonGas` | area | poison gas mk I is 40 |
+
+Payloads sit at roughly half their mk I grenade, which is the ratio Boomrose keeps against a high
+explosive grenade mk I (force 1,200 against 2,000; 1d6 against 4d6). `HEGrenade` takes no radius
+attribute anywhere in the game, so Boomrose's lower force buys a smaller blast as well as weaker
+damage — it is the same area part as the grenade, dialled down, which is what makes it a like-for-
+like anchor for the gas and flashbang arrows.
+
+**Blaze and cryo are asymmetric on purpose, because Qud implements heat and cold differently.**
+Their grenades are `HeatGrenade1` at `TemperatureDelta="500"` and `ColdGrenade1` at `-400`, both
+tier 1, and Mura's original ±400 matched them almost exactly. A creature starts at 25, freezes at
+0, goes brittle at −100 and ignites at 350.
+
+**Heat takes the honest half, 250.** Burning is threshold-gated *and* self-extinguishing: the
+effect removes itself as soon as temperature falls back under `FlameTemperature`, and
+`Burning.GetBurningAmount` keys damage to how far *above* that line the target sits.
+
+| Degrees above 350 | Damage/turn |
+|---|---|
+| 0–100 | 1 |
+| 101–300 | 1–2 |
+| 301–500 | 2–3 |
+| 501–700 | 3–4 |
+| 701–900 | 4–5 |
+| 901+ | 5–6 |
+
+So the size of the hit sets the tick *and* the duration, and a small one is penalised twice —
+barely igniting something is worth about 2 damage in total. At 250, two arrows put a target near
+520 for roughly 20 turns, which is what one thermal grenade does to a single target.
+
+**Cold takes −35, far below half,** because freezing has no damage tier — crossing −100 is a
+binary immobilise. Halving the grenade moderates nothing: from 25, anything deeper than about
+−125 is a one-shot disable, so −200 lands in the same place as −400. At −35 the disable takes
+three or four hits.
+
+Both stay on `TemperatureOnHit` rather than `ThermalGrenade`, single-target by design. Fire
+already spreads through the game's own mechanics, so the blaze arrow reaches beyond what it hits
+without an area part, and the cryo arrow is meant to be single-target. `ThermalGrenade` also
+appears on six objects in the game and every one inherits `Grenade` — no projectile precedent,
+unlike `HEGrenade`, `GasGrenade`, `FlashbangGrenade`, `SunderGrenade` and `DeploymentGrenade` —
+so its failure mode on a projectile would be silent.
+
+**One merge.** `Boomrose Arrow` gains the same `TinkerItem`. No vanilla arrow is craftable
+otherwise — slugs and shells are, bow ammo is not — so this is a deliberate change, made by merge.
+At one per craft it never beats the 1d4 stacks the wild drops.
+
+**Drops.** Each arrow is weight 2 in `Ammo 2`, `Ammo 3` and `Ammo 4`, at Boomrose's own quantities
+(1, then 1d4, then 1d4) — so the set of six is worth roughly what Boomrose alone is worth in those
+pools rather than six times as much, and one craft never out-yields a find. They stay out of
+`Ammo 1`, where vanilla keeps Boomrose at weight 1 against wooden arrows' 100. See §7.
+
+**Three of the nine were cut**: the vibro arrow (`Vorpal`, which vanilla grants only to the tier-7
+Linear Cannon), the sunder arrow (flat `BasePenetration="10"`, above every vanilla arrow), and the
+stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have suppressed it).
 
 ---
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-76 table definitions: **54 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+78 table definitions: **56 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
-was corrected in #95 and this line was missed.
+was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
+the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
 
 ### 7.1 Starting gear (18 new tables)
 
@@ -1109,7 +1173,7 @@ someone rediscover the problem from scratch.
 | 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe** — half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
 | 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
 | 2b | ✅ Fixed | **Nine new armor pieces were unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `unreachable` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
-| 3 | 🟠 Med | **All of `Ammo.xml` (62 objects) is commented out** — "removed temporarily" | `ObjectBlueprints/Ammo.xml` |
+| 3 | 🟠 Part | **All of `Ammo.xml` (62 objects) was commented out** — "removed temporarily". Mura pulled it when a Qud change broke the effects and the ammo degraded to plain ammo. The six effect **arrows** are live as of #144, retuned against `Boomrose Arrow` and renamed; three of the nine were cut rather than revived. The **42 bullet and shell objects are still disabled**, pending #145 (shells) and #146 (slugs) — they carry the same defects the arrows had, including two gas payloads that name a part where a blueprint belongs and so would emit nothing. | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
 | 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/OtherEquipment.xml` lines 95, 196 |
@@ -1171,7 +1235,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Skills.xml                  # 6 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
 ├── Options.xml                 # 11 options (§13)
-├── PopulationTables.xml        # 76 tables (54 merge / 22 new)
+├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
@@ -1184,7 +1248,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 9 new / 16 merged
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Ammo.xml                # 62 objects, ALL COMMENTED OUT
+│   ├── Ammo.xml                # 12 new + 1 merge; 42 bullets/shells still disabled
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
