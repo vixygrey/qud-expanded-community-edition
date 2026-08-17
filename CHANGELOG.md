@@ -23,7 +23,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Changed
 
-- **Turrets no longer load the effect arrows, or boomrose arrows.** A turret is fed by the game rather than from anyone's pack, and the game's rule is opt-out: any ammunition of the right kind is a candidate unless it has been marked otherwise. Nothing had marked these, so a deployed bow turret could be stocked with a cloud of poison gas or a blast — and a turret cannot choose its engagement range, so anything that closes to point blank puts that squarely on the turret and on whoever set it there. Vanilla's boomrose arrow has the same problem and is corrected the same way, by merge.
+- **Turrets you find no longer come loaded with effect arrows, or boomrose arrows.** When the game stocks a turret itself — one generated out in the world, or one an NPC sets down — it takes any ammunition of the right kind unless that ammunition has been marked otherwise, and nothing had marked these. A bow turret was not merely *risking* a bad arrow either: the game fills a turret with a share of every eligible type, so one carried a dozen effect arrows and a boomrose as a matter of course. Anything that closes to point blank on a turret like that puts the cloud or the blast on the turret and on whatever is standing beside it, and nobody chose to load it that way. Vanilla's boomrose arrow has the same problem and is corrected the same way, by merge.
+
+  This does not touch turrets **you** deploy. Those arrive empty and you load them from your own pack, so the ammunition is your choice — which is exactly why it needed saying about the ones that aren't.
 
   The other half of the reasoning covers the arrows that do not burst. These are hand-made things: a quill lashed to a shank with sinew, a hollowed stinger with the sac still in it, a scored gas bulb, a phial, a shell of thin wax. None of that survives being cycled through a magazine and a feed mechanism, which is a fair description of why vanilla's own arrows are a shaft and a metal head.
 

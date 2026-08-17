@@ -1021,25 +1021,35 @@ reliable route rather than waiting on floor drops. See §7.
 Linear Cannon), the sunder arrow (flat `BasePenetration="10"`, above every vanilla arrow), and the
 stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have suppressed it).
 
-**None of them can end up in a turret** — all six carry `ExcludeFromTurretStock`, and vanilla's
-`Boomrose Arrow` gains it by merge. Turret ammunition is supplied by the game, not from anyone's
-pack, and `MagazineAmmoLoader.GetAmmoBlueprints` is **opt-out**: every blueprint with the matching
-ammo part is a candidate unless tagged, and an untagged one gets one entry in the pool while a
-`TurretStockWeight="N"` gets N.
+**None of them can end up in a turret the game stocked** — all six carry `ExcludeFromTurretStock`,
+and vanilla's `Boomrose Arrow` gains it by merge. `MagazineAmmoLoader.GetAmmoBlueprints` is
+**opt-out**: every blueprint with the matching ammo part is a candidate unless tagged, and an
+untagged one gets one entry in the pool while a `TurretStockWeight="N"` gets N.
 
-| Arrow | Pool entries |
-|---|---|
-| Steel | 9 |
-| Carbide | 3 |
-| Folded Carbide | 2 |
-| Fullerite, Crysteel, Flawless Crysteel, Zetachrome | 1 each |
-| Wooden, **Boomrose**, **all six of ours** | 0 |
+**Which turrets, exactly.** Auto-stocking runs off a `GenerateIntegratedHostInitialAmmo` event, and
+only two things raise it: `TurretTinker`, for wild turrets, and `PlaceTurretGoal`, for an AI placing
+one. **`Tinkering_DeployTurret` does not** — a turret you deploy yourself arrives *empty* and you
+load it from your own pack. Confirmed in game. So this is about turrets nobody chose the ammunition
+for, not about your own.
+
+**And it was a guaranteed share, not a chance.** Short Bow and Compound Bow both carry
+`MagazineAmmoLoader MaxAmmo="1" AmmoPart="AmmoArrow"`. `GetDesiredAmmoCount` asks for
+`AmmoPerAction × 50` = 50 arrows, and the fill is `(desired ÷ entries)` of **every** entry rather
+than a weighted pick:
+
+| | Pool entries | What a wild bow turret carried |
+|---|---|---|
+| Before | 25 | 2 of each → **12 effect arrows and a boomrose**, plus 18 steel |
+| After | 18 | 18 steel, 6 carbide, 4 folded carbide, 2 of each end-game arrow |
+
+The Turbow is unaffected either way — it uses `EnergyAmmoLoader`, so a Turbow turret stocks no
+arrows at all.
 
 Two reasons, covering different arrows. **Three of the six burst** — dream dew, starshell and
-stinger carry area payloads — and a turret cannot choose its engagement range, so a target closing
-to point blank puts the cloud or the flash on the turret and on whoever deployed it. Boomrose is
-the vanilla case of the same problem. Blaze, cryo and quill are single-target and that argument
-does not reach them.
+stinger carry area payloads — and a turret stocked by the game is one nobody picked the ammunition
+for, so a target closing to point blank puts the cloud or the flash on the turret and on anything
+beside it. Boomrose is the vanilla case of the same problem. Blaze, cryo and quill are
+single-target and that argument does not reach them.
 
 **What reaches all six is that they are hand-made.** A quill lashed to a shank with sinew, a
 hollowed stinger with the sac still in it, a scored gas bulb, a phial, a wax shell — none of that
