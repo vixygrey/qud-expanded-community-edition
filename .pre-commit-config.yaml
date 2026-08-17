@@ -5,7 +5,7 @@ default_install_hook_types: [pre-commit, pre-push]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       # NOTE: check-xml is deliberately absent. tools/validate_mod.py already parses every XML
       # and map file, and unlike check-xml it understands the inherited-defect baseline. Two
@@ -37,7 +37,7 @@ repos:
         files: ^mod/.*\.(xml|rpm)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.2
+    rev: v0.16.3
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -52,7 +52,7 @@ repos:
         args: [--config, .typos.toml]
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.23.1
+    rev: v8.30.1
     hooks:
       - id: gitleaks
 
