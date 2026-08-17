@@ -573,6 +573,14 @@ silently ceasing to merge. Stated generally:
 > rewrites content wholesale needs a comparison of a *parsed* representation — the AST for Python,
 > the element tree for XML — not a reading of the diff and not the checks that happen to exist.
 
+The same trap catches *manual* verification, where there is no green run to be suspicious of. The
+repo's wiki was disabled in #102 after confirming it had never been created — a true answer,
+correctly obtained, to the wrong question. **"Never used" is evidence about the past, not about
+intent**, and an unwanted feature and a not-yet-wanted one are identical from the API; the wiki was
+wanted, for documenting the mod's mechanics, and had to be turned back on (#106). Before acting on a
+check, confirm it answers the question you are actually deciding — and where the real question is
+intent, no command answers it. Ask.
+
 It is also why `serializable-shape` and `subtype-tile` were written: each exists because nothing
 else was looking at that property, and "nothing was looking" is not the same as "nothing is wrong".
 
