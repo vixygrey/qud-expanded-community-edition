@@ -17,6 +17,11 @@ jobs:
   assign:
     name: Assign to maintainer
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # No `uses:` anywhere in this workflow, deliberately. It runs one `gh api` call against the
+    # runner's preinstalled CLI, so there is no third-party action to pin — which matters more here
+    # than in ci.yml, because pull_request_target hands this job a write-scoped token. If a step
+    # ever does need an action, pin it to a full commit SHA as ci.yml does.
     # Skip PRs the maintainer opened themselves — they are already the author.
     if: github.event.pull_request.user.login != 'vixygrey'
     steps:

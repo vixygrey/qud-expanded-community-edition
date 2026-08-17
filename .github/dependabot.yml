@@ -1,0 +1,55 @@
+# Keeps this repository's pins current.
+#
+# Everything here is pinned deliberately — actions to commit SHAs, npm to exact versions, ruff and
+# the pre-commit hooks to exact revisions — because a mutable reference means the code that runs in
+# CI can change without a commit. Pinning without an update mechanism just trades one problem for
+# another: reproducible today, quietly years out of date later. This is what makes the pinning
+# sustainable rather than a slow ratchet.
+#
+# Updates are grouped so a single-maintainer repository gets one PR per ecosystem per week rather
+# than a stream of them. Every PR still runs the full nine required checks.
+version: 2
+
+updates:
+  # Action SHAs in .github/workflows/. Dependabot reads the `# vX.Y.Z` comment beside each pin and
+  # keeps it in step with the SHA, which is the whole reason the comment is there.
+  #
+  # Note the workflows currently pin the majors that were in use when SHA-pinning landed (#103):
+  # checkout and setup-node at v4, gitleaks-action at v2, while v7/v7/v3 exist upstream. Those
+  # major bumps are deliberately left for Dependabot to raise as reviewable PRs rather than being
+  # smuggled in under a change described as "pinning".
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # prettier and @prettier/plugin-xml. Dev tooling only, at the repo root — mod/ has no build step
+  # (charter rule 4), so nothing here reaches subscribers.
+  #
+  # package-lock.json is committed and CI runs `npm ci`, so a lockfile-only change still alters
+  # what formats the shipped XML. Worth the same review as any other dependency.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ["*"]
+
+  # .pre-commit-config.yaml hook revisions.
+  #
+  # ⚠️ The ruff hook rev is deliberately kept identical to the version ci.yml installs
+  # (`pipx install ruff==0.16.2`), so a contributor's local run and CI cannot disagree about
+  # formatting. Dependabot updates the hook rev but CANNOT see the pinned version in the workflow —
+  # so when a ruff bump lands, the workflow has to be changed in the same PR. Check that before
+  # merging one.
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      pre-commit:
+        patterns: ["*"]
