@@ -306,6 +306,7 @@ with issues and CI both in use.
 |---|---|
 | `docs/FEATURES.md` | Complete feature reference + bug checklist. Written for this fork; the authoritative doc. |
 | `docs/LESSONS.md` | Operational traps I hit maintaining this fork — Qud internals, git and GitHub, tooling. |
+| `docs/DESIGN_options.md` | The design work behind the mod options (#45). Historical — the shipped result is in `docs/FEATURES.md` §13. |
 | `docs/PERMISSION.md` | Fork permission, provenance, credit obligations, pre-upload actions. |
 | `docs/STYLEGUIDE.md` | Naming, layout, XML/C# formatting, Workshop requirements. Read §1 before renaming anything. |
 | `docs/permission-mura-workshop-comment.png` | Screenshot evidence of the grant. |

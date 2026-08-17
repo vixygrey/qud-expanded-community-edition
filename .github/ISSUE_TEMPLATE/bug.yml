@@ -1,0 +1,85 @@
+name: Bug report
+description: Something in the mod behaves wrongly, crashes, or doesn't appear in game.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The version and mod-list fields matter more than they look —
+        most reports I can't reproduce turn out to be another mod touching the same record, or a
+        save made before a change landed.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce it
+      description: >
+        Steps if you have them. `wish` is the fastest way to spawn a blueprint by name, so
+        "wish for Raven_Iron Maceth, equip it, look at the damage" is a perfectly good repro.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: false
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      description: From the Workshop page, or the `version` field in `mod/manifest.json`.
+      placeholder: "2.3.0"
+    validations:
+      required: true
+
+  - type: input
+    id: qud-version
+    attributes:
+      label: Caves of Qud version
+      description: Shown on the main menu.
+      placeholder: "2.0.208.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-mods
+    attributes:
+      label: Other mods enabled
+      description: >
+        The whole list, please, even the ones that look unrelated. This fork treats compatibility
+        as a hard rule, so a conflict is a bug I want to know about rather than something to shrug
+        at. "None" is a genuinely useful answer too.
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Log output
+      description: >
+        `Player.log` if the mod failed to load or something threw. On Windows it's in
+        `%USERPROFILE%\AppData\LocalLow\Freehold Games\CavesOfQud\`, on macOS
+        `~/Library/Logs/Freehold Games/CavesOfQud/`, on Linux `~/.config/unity3d/Freehold Games/CavesOfQud/`.
+        If the game crashed outright, the crash report is in your OS crash reporter rather than in
+        Qud's logs — the exception type in it narrows things down enormously.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: new-character
+    attributes:
+      label: Character
+      options:
+        - label: This character was created with this mod already enabled.
+          required: false
+    validations:
+      required: false
