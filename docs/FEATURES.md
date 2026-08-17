@@ -30,6 +30,13 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
 
+> **This document specifies; the [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
+> explains.** Every figure below — tier, weight, price, drop rate, stat modifier, option default and
+> scope — is authoritative here, and the wiki links back to it rather than repeating it. What a build
+> plays like, how the chip families interact and how to open a run belong there instead. The boundary,
+> and why it is stricter for the wiki than for anything in this repository, is in
+> [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies).
+
 ---
 
 ## 1. Genotypes

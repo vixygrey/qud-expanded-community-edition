@@ -48,6 +48,12 @@ Noble Lark for the subclass sprites*. I treat that as permanent, and the build f
   wristblades and more.
 - **Skill and economy retuning**, and a home base building in Joppa.
 
+**Two places to read more, and they don't overlap.** The
+[wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) covers how the mod *plays* —
+builds, synergies, opening strategy, what each system is for. [`docs/FEATURES.md`](docs/FEATURES.md)
+is the complete reference and the authoritative source for every figure: tiers, weights, prices, drop
+rates, stat modifiers, option defaults.
+
 ### You can turn most of it off
 
 Eleven options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
