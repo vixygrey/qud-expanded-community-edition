@@ -20,10 +20,23 @@
        about 2 damage total. At 250, two arrows put a target near 520 for roughly 20 turns of
        burning, which is what one thermal grenade does to a single target.
 
-       Cold takes -35, well under half, because freezing has no damage tier at all - crossing the
+       Cold takes -50, well under half, because freezing has no damage tier at all - crossing the
        -100 brittle line is a binary immobilise. Halving the grenade would not moderate anything:
        from a starting 25, any hit deeper than about -125 is a one-shot disable, so -200 lands in
-       exactly the same place as -400. -35 reaches the disable in three or four hits instead.
+       exactly the same place as -400.
+
+       -50 is three consecutive hits, and the arithmetic is worth writing down because -35 was
+       play-tested at four to five and felt slower than it reads. Physics.IsFrozen is just
+       Temperature <![CDATA[<=]]> BrittleTemperature, no save and no roll, so this is pure
+       accounting - but temperature returns to ambient by Math.Max(5, |diff| * 0.02) every turn,
+       and at these magnitudes the 0.02 term never reaches 5, so it is a flat 5 a turn. Each hit
+       therefore nets -45, not -50, and every miss or idle turn hands 5 back:
+
+           hit 1: 25 -> -20     hit 2: -20 -> -65     hit 3: -65 -> -115, frozen
+
+       Note also that TemperatureOnHit passes Radiant: false, and on that branch cold resistance
+       still applies whenever the result lands below 25. The glowpad this was tested against has
+       ColdResistance 0; a resistant target will take proportionally less.
 
        Both stay on TemperatureOnHit rather than ThermalGrenade, single target by design. Fire
        already spreads on its own through the game's mechanics, so the blaze arrow needs no area
@@ -71,7 +84,7 @@
   <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{cryogenic|cryo}} arrow" ColorString="&amp;C" />
     <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" Attributes="Cold" ColorString="&amp;C" />
-    <part Name="TemperatureOnHit" Amount="-35" Max="false" OnWielderHit="true" />
+    <part Name="TemperatureOnHit" Amount="-50" Max="false" OnWielderHit="true" />
   </object>
 
   <object Name="Raven_Dream Dew Arrow" Inherits="BaseArrow">

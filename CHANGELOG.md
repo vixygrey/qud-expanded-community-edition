@@ -21,6 +21,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 > Workshop item, so no existing save is affected — but a save started against a pre-release build
 > of this fork will not carry forward.
 
+### Changed
+
+- **The cryo arrow chills harder, because play-testing said the first number was wrong.** It moves from −35 to −50 per hit, which freezes a target solid on the third consecutive hit instead of the fourth. Freezing itself is unconditional — there is no save and no roll, only whether temperature has reached the brittle line — so this is arithmetic, and the arithmetic had a term missing. Temperature crawls back toward ambient every single turn, by a flat five at the magnitudes involved, so each hit is worth less than it looks and every miss hands some of it back. In play that made the old number take four or five arrows rather than the three or four intended. One hit still leaves a target far above the freezing line, so this remains a tool you commit several arrows to rather than an opening move.
+
+  Worth recording alongside it: both temperature arrows are subject to the target's cold and heat resistance. The glowpad used for testing resists heat by a quarter and cold not at all — so the blaze arrow igniting it in two hits is a figure measured against something that was actively resisting, while the cryo figures assume no resistance at all and will stretch against anything that has it.
+  ([#144](https://github.com/vixygrey/qud-expanded-community-edition/issues/144))
+
 ### Added
 
 - **Two new validator checks catch silently-ignored XML.** **(internal)** `unknown-part` verifies every `<part Name="…">` resolves to a real class in `XRL.World.Parts`; `dangling-blueprint-ref` verifies that blueprint-valued attributes name a blueprint that exists. Both failures are invisible today — Qud discards a part it cannot resolve and spawns nothing for a blueprint that isn't there, with no error, no log line, and an object that still loads and still validates. #144 shipped with exactly that defect in its history: `GasObject="GasPoison"` names a *part* on the blueprint called `PoisonGas`, and the arrow would have flown, hit, and released no gas.

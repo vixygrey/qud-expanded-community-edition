@@ -921,7 +921,7 @@ inherit `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetrati
 | Displayed as | Blueprint | Payload | Shape | Its grenade |
 |---|---|---|---|---|
 | blaze arrow | `Raven_Blaze Arrow` | `TemperatureOnHit 250` | single target | thermal mk I is `ThermalGrenade 500`, **area** |
-| cryo arrow | `Raven_Cryo Arrow` | `TemperatureOnHit -35` | single target | freeze mk I is `ThermalGrenade -400`, **area** |
+| cryo arrow | `Raven_Cryo Arrow` | `TemperatureOnHit -50` | single target | freeze mk I is `ThermalGrenade -400`, **area** |
 | dream dew arrow | `Raven_Dream Dew Arrow` | `GasGrenade Density=20 GasObject=SleepGas` | area | sleep gas mk I is 40 |
 | quill arrow | `Raven_Quill Arrow` | `BleedingOnHit Amount=1d1 SaveTarget=20` | single target | none |
 | starshell arrow | `Raven_Starshell Arrow` | `FlashbangGrenade Radius=1 Duration=1d3` | area | flashbang mk I is R2, 1d4+4 |
@@ -955,10 +955,30 @@ So the size of the hit sets the tick *and* the duration, and a small one is pena
 barely igniting something is worth about 2 damage in total. At 250, two arrows put a target near
 520 for roughly 20 turns, which is what one thermal grenade does to a single target.
 
-**Cold takes −35, far below half,** because freezing has no damage tier — crossing −100 is a
+**Cold takes −50, far below half,** because freezing has no damage tier — crossing −100 is a
 binary immobilise. Halving the grenade moderates nothing: from 25, anything deeper than about
-−125 is a one-shot disable, so −200 lands in the same place as −400. At −35 the disable takes
-three or four hits.
+−125 is a one-shot disable, so −200 lands in the same place as −400.
+
+−50 freezes on the third consecutive hit, and the arithmetic matters because the first attempt at
+this number did not survive play-testing. `Physics.IsFrozen()` is `Temperature <= BrittleTemperature`
+with no save and no roll, so it is pure accounting — but temperature returns to ambient by
+`Math.Max(5, |diff| × 0.02)` every turn, and at these magnitudes the `0.02` term never reaches 5,
+making it a flat **5 a turn**. Each hit nets −45 rather than −50, and every miss hands 5 back:
+
+| After hit | Temp |
+|---|---|
+| 1 | −20 |
+| 2 | −65 |
+| 3 | **−115 → frozen** |
+
+The original −35 needed four *consecutive* hits and measured at four to five in play, which is why
+it moved. A single hit reaches −20, nowhere near the −100 line, so it stays clear of a one-shot
+disable by a wide margin.
+
+One caveat for both temperature arrows: `TemperatureOnHit` passes `Radiant: false`, and on that
+branch resistance still applies — cold whenever the result lands below 25, heat whenever it lands
+above 50. The glowpad these were tested against has `ColdResistance` 0 and `HeatResistance` 25, so
+blaze igniting it in two hits is a figure measured against a *resistant* target.
 
 Both stay on `TemperatureOnHit` rather than `ThermalGrenade`, single-target by design. Fire
 already spreads through the game's own mechanics, so the blaze arrow reaches beyond what it hits
