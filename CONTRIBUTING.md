@@ -86,24 +86,41 @@ trip.
 
 ### If you touch `mod/Scripting/`
 
-Nothing in CI compiles the C#, and nothing can: compiling it needs the game's own
+**Nothing in CI compiles the C#, and nothing can.** Compiling it needs the game's own
 `Assembly-CSharp.dll`, which is proprietary and cannot be committed or fetched on a runner. The
-validator lints those files but a linter is not a compiler.
+validator lints those files, but a linter is not a compiler. Two local checks cover the gap, and both
+skip rather than fail if you don't have the game — so neither can block you, and neither is
+CI-enforced. That makes running them a courtesy you owe the next person.
 
-What does exist is [`tools/check_build_log.py`](tools/check_build_log.py). Qud compiles every
-enabled mod at launch and records the outcome in `build_log.txt`; that script reads the verdict
-back and refuses to accept it unless it demonstrably describes your working tree — the `identical`
-check compares your source against the copy the game actually compiled, and the `fresh` check
-rejects a verdict written before that copy. Launch the game once with the mod enabled, then:
+**[`tools/compile_scripting.py`](tools/compile_scripting.py) actually compiles it**, in about half a
+second, against four DLLs from your Qud install. It runs automatically as a `pre-commit` hook when you
+touch `mod/Scripting/`, so usually you'll just see it pass. To run it directly:
+
+```bash
+python3 tools/compile_scripting.py
+```
+
+It needs a .NET SDK (`brew install dotnet`) and finds one on its own; set `QUD_MANAGED_DIR` or
+`QUD_CSC` if your install isn't where it looks. Two things worth knowing: the language version is
+pinned to C# 9 on purpose, because the SDK's compiler is newer than the one Unity embeds and would
+otherwise accept syntax the game rejects; and the reference set is deliberately narrow, so a file that
+starts using a new namespace fails here while compiling fine in game. That is a false *failure* — it
+names the missing reference, and the fix is to add it to `REFERENCES`.
+
+**[`tools/check_build_log.py`](tools/check_build_log.py) reads back what the game actually did.** Qud
+compiles every enabled mod at launch and records the outcome in `build_log.txt`; this reads that
+verdict and refuses it unless it demonstrably describes your working tree — the `identical` check
+compares your source against the copy the game compiled, and the `fresh` check rejects a verdict
+written before that copy. Launch the game once with the mod enabled, then:
 
 ```bash
 pre-commit run --hook-stage manual check-build-log
 ```
 
-It is a manual hook rather than an automatic one because mid-work you will often have edited C#
-without relaunching, and because contributors without Qud installed could never make it pass. So it
-is on you to run it — if you changed C# and did not, say so in the pull request and I will run it.
-Set `QUD_SAVE_DIR` if your save directory is not in the macOS default location.
+That one is manual rather than automatic because mid-work you'll often have edited C# without
+relaunching. Set `QUD_SAVE_DIR` if your save directory isn't in the macOS default location.
+
+If you changed C# and couldn't run either, say so in the pull request and I'll run them.
 
 ## Two things that will save you pain
 
