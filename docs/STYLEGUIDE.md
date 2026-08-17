@@ -131,6 +131,25 @@ Independent of release state: these travel in pairs, always.
 - Documentation filenames
 - Tooling and CI filenames
 
+### 1.4 Settled naming decisions
+
+The slot is **"Chip Interface"** and the anatomy and body object are **`PsionicAdept`** (#13). Both
+were decided rather than inherited, so here is the reasoning.
+
+The original shipped a slot called `Chipset Interface` while all of Mura's player-facing
+documentation called it the "Psionic Interface". Neither was accurate: the slot takes 108 chips
+against 36 chipsets, and 13 of the 36 mutations the chips grant are *physical* rather than mental.
+"Chip Interface" is true of the whole catalogue, it matches the technological fiction in the chips'
+own description, and it doesn't imply the slot belongs to the Psionic Adept genotype — it's merged
+into base `Humanoid`, so every humanoid has one.
+
+`PsionicAdept` follows the convention `Genotypes.xml` already sets: the True Kin genotype
+("True Kin") points at a body object and anatomy named `TrueKin`, the display name with spaces
+removed.
+
+**Use these names in all new player-facing text.** Mura's original documents in `docs/` predate the
+decision and I leave them as a historical record.
+
 ---
 
 ## 2. Repository layout
@@ -199,6 +218,34 @@ New blueprints follow Mura's existing scheme, which the charter requires preserv
 - Display names are lowercase (`basic kindle chip`), matching Qud's convention.
 - Tier suffixes follow vanilla's pattern where extending a vanilla family (`Battle Axe3th`), and
   read naturally where creating a new one (`Raven_Folded Carbide Halberd`).
+
+### 3.2 Content conventions
+
+Mura was consistent, and these tables are what make charter rule 2's "derived, not invented"
+possible in practice. Match them when adding anything.
+
+- **Blueprint prefix `Raven_`** on every new object. Merges into vanilla objects use the vanilla
+  name with `Load="Merge"` and no prefix. **No exceptions remain:** `SteelFist` and the 18
+  `Projectile*` objects were the last, renamed in #66 before the save window closed; the
+  Recoilers turned out to be vanilla objects the mod was replacing, fixed in #29. The only
+  unprefixed new objects left are `TrueKin` and `PsionicAdept`, which are body objects following
+  vanilla's own `BodyObject` convention (#13).
+- **Tier → material:** 0 bronze · 1 iron · 2 steel · 3 carbide · 4 folded carbide · 5 fullerite ·
+  6 crysteel · 7 flawless crysteel · 8 zetachrome.
+- **Value curve doubles per tier:** 5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280. Body armor
+  runs 8→2048; vambraces run 4→1024 (half curve, partial slot).
+- **Two-handed variants** get `PenBonus="1"` and a damage bump over the one-handed version, plus
+  `UsesTwoSlots="true"`.
+- **Agility-scaling martials** are a deliberate theme: vinereapers, halberds, rapiers, katanas and
+  war hammers all use `Stat="Agility"` while keeping their tree's skill.
+- **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
+  `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
+- **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables were the one
+  place this was violated; they became merges in #34, and `tools/validate_mod.py`'s
+  `merge-discipline` check holds the line now. Don't add new violations for it to catch.
+
+The tier and value curves are checked by `item-curve` in `tools/validate_mod.py`, so a mispriced or
+mistagged item fails CI rather than sitting in the loot pool at the wrong rarity.
 
 ---
 
@@ -404,22 +451,37 @@ the causality.** Charter rule 2 lives or dies in commit messages.
 
 ## 10. What enforces what
 
-A style rule nobody checks is a preference. Current and planned coverage:
+A style rule nobody checks is a preference. Everything below is enforced today — **nine checks are
+required on every pull request**, and `pre-commit` runs the same ones locally so they fail in
+seconds rather than after a round trip.
 
-| Rule | Enforced by | Status |
-|---|---|---|
-| XML well-formedness | `check-xml` pre-commit hook + CI | #18, #19 |
-| Indentation, trailing whitespace, EOF newline | pre-commit hooks | #18 |
-| Line endings | `.gitattributes` | #17 |
-| XML formatting | Formatter, one isolated baseline commit | #17 |
-| Spelling in player-facing strings | `typos`, with a Qud vocabulary allowlist | #18 |
-| No committed secrets | `gitleaks`, `detect-secrets` | #18 |
-| Blueprint reachability | Custom validation script | #8 |
-| **`Load="Merge"` on vanilla records** | Custom validation script | #8 |
-| Tier/value curve consistency | Custom validation script | #8 |
-| Conventional commit format | `commitlint` in CI | #19 |
-| No direct commits to `main` | Local hook; GitHub protection unavailable on private free tier | #20 |
+| Rule | Enforced by |
+|---|---|
+| XML and map-file well-formedness | `wellformed` in `tools/validate_mod.py` |
+| `manifest.json` / `workshop.json` validity, and the upload target | `json`, `manifest`, `workshop-target` |
+| **`Load="Merge"` on vanilla records** | `merge-discipline` |
+| Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
+| Tier and value curve consistency | `item-curve` |
+| Subtype tiles existing and named for their affinity | `subtype-tile` |
+| C# parts referenced by XML having a class | `missing-script`, `class-filename` |
+| Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
+| Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
+| Option wiring — declared but unread, or read but undeclared | `option-wiring` |
+| Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
+| Filenames without spaces | `filename-space` |
+| The Joppa removal system matching the map patch | `joppa-sync` |
+| Line endings | `.gitattributes` |
+| XML formatting | `prettier` with `@prettier/plugin-xml`, checked in CI |
+| Python lint and format for `tools/` | `ruff`, pinned to the same version `pre-commit` runs |
+| Spelling | `typos`, with a Qud vocabulary allowlist |
+| No committed secrets | `gitleaks` over full history, plus GitHub push protection |
+| Conventional PR title, and a changelog entry | The `conventions` job in `.github/workflows/ci.yml` |
+| No direct commits to `main`, linear history, squash-only merges | GitHub ruleset, plus a local `pre-commit` hook that fails first |
 
-The `Load="Merge"` check is the important one: it turns the fork's headline compatibility rule
+The `merge-discipline` check is the important one: it turns this fork's headline compatibility rule
 into something mechanically enforced rather than remembered, and it would have caught #3 on the
 commit that introduced it.
+
+**What none of them do is read a sentence and ask whether it's still true.** Every check above
+inspects a machine-readable property, which is why the documentation here has gone quietly stale
+three times (#93, #96, #106) with everything green. See `docs/LESSONS.md`.
