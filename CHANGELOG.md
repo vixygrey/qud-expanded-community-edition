@@ -318,6 +318,9 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Internal — tooling
 
+- **(internal)** Audited every documentation file against the mod itself and fixed what had drifted. The headline counts — **350 new blueprints and 209 vanilla merges** — were wrong in four places, including `README.md` and `docs/CHARTER.md`. They're **348 and 211**: #35 converted two Recoilers from new declarations to merges, and no document was updated. `docs/FEATURES.md` §11's file map was the worst of it, still describing the mod as it stood at the fork — the pre-#23 filenames with spaces, the `Yttrian` anatomy renamed in #13, `48 merge / 28 new` tables, `Scripting/` as "36 one-line classes" when it's 40 and does far more, no `Options.xml` or `manifest.json`, and Mura's documents listed *inside* `mod/` when they live in `docs/`, which matters because `mod/` is what ships. Also corrected §6.1's per-file table, where `OtherEquipment.xml` read 9 new / 14 merged against an actual 7 and 16.
+  ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
+
 - **(internal)** `docs/FEATURES.md` §7 said the mod merges **48** vanilla loot tables and declares 28 fresh, while §0 of the same document said **54** merged — the file contradicting itself. 54 and 22 are correct, counted from `mod/PopulationTables.xml`. The 48/28 split predates #34, which converted `Artifact 3`–`8` from replacements to merges; #95 corrected §0 and missed this line. Its header also no longer describes itself as "generated" — I reconstructed that document by reading the whole mod source, because no complete list of what this mod does had ever existed, and it should say so.
   ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
 
