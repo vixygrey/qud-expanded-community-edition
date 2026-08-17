@@ -22,6 +22,19 @@
        wooden and forged object it ships. See #154 for the separate question of whether this fork
        should add a mundane crafting system of its own.
 
+       All six also carry ExcludeFromTurretStock, and the reason is that a turret is fed by the
+       game rather than by a person. Two arguments, and they cover different arrows:
+
+       Three of the six burst - dream dew, starshell and stinger carry area payloads - and a turret
+       cannot choose its engagement range. A target that closes to point blank puts the cloud or the
+       flash on the turret and on whoever set it there. Blaze, cryo and quill are single-target and
+       that argument does not reach them.
+
+       What reaches all six is that they are hand-made and fragile in a way no vanilla arrow is. A
+       quill lashed to a shank with sinew, a hollowed stinger with the sac still in it, a scored gas
+       bulb, a phial, a wax shell - none of that survives being cycled through a magazine and a
+       feed mechanism intact. Vanilla's arrows are a shaft and a metal head, which does.
+
        Blaze and cryo are the two whose grenades are thermal (HeatGrenade1 at TemperatureDelta 500,
        ColdGrenade1 at -400, both tier 1). Mura's original +/-400 matched those almost exactly, but
        the two directions need opposite treatment because Qud implements them differently.
@@ -75,6 +88,7 @@
       Short="A phial of thickened blaze rides in the socket behind the arrowhead, sloshing and warm."
     />
     <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileBlazeArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{blaze|blaze}} arrow" ColorString="&amp;R" />
@@ -92,6 +106,7 @@
       Short="Frost creeps down the wooden shank from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
     />
     <part Name="RulesDescription" Text="Chills what it strikes. Repeated hits will freeze a target solid." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{cryogenic|cryo}} arrow" ColorString="&amp;C" />
@@ -109,6 +124,7 @@
       Short="The arrowhead is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of sleep gas where it lands." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileDreamDewArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{M|dream dew}} arrow" ColorString="&amp;M" />
@@ -126,6 +142,7 @@
       Short="A quillipede's barb lashed to a wooden shank with sinew. The backward teeth are meant to lodge and tear."
     />
     <part Name="RulesDescription" Text="May start a target bleeding on impact." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileQuillArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{r|quill}} arrow" ColorString="&amp;r" />
@@ -143,6 +160,7 @@
       Short="A thin wax shell packed with white powder caps the wooden shank. It goes off with a clap and a scouring light."
     />
     <part Name="RulesDescription" Text="Bursts with a blinding flash where it lands, dazing those caught in it." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileStarshellArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{Y|starshell}} arrow" ColorString="&amp;Y" />
@@ -160,11 +178,27 @@
       Short="A hollowed stinger caps the wooden shank, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of poison gas where it lands." />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileStingerArrow" Inherits="BaseArrowProjectile">
     <part Name="Render" DisplayName="{{g|stinger}} arrow" ColorString="&amp;g" />
     <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;g" />
     <part Name="GasGrenade" Density="20" GasObject="PoisonGas" />
+  </object>
+
+  <!-- Boomrose Arrow is the one vanilla arrow that carries a blast, and turret ammunition is
+       stocked by the game rather than drawn from anyone's pack. MagazineAmmoLoader.GetAmmoBlueprints
+       is opt-out: every blueprint with the ammo part is a candidate unless tagged, and an untagged
+       one gets a single entry in the pool. So a bow turret can currently be loaded with boomrose
+       arrows, and a turret cannot choose its engagement range - a target that closes to point blank
+       puts the blast on the turret, and on whoever deployed it.
+
+       Only the blast case is merged. The high-value arrows vanilla also leaves untagged - fullerite,
+       crysteel, flawless crysteel, zetachrome - are left exactly as they are. They are better
+       sticks, not hazards, and where Freehold draws its value ceiling is their economy to set. -->
+
+  <object Name="Boomrose Arrow" Load="Merge">
+    <tag Name="ExcludeFromTurretStock" />
   </object>
 
   <!-- Bullets and shells are still disabled, and are the subject of #145 (shotgun shells) and #146

@@ -23,6 +23,13 @@ Nothing has been released yet. Everything below lands in the fork's first Worksh
 
 ### Changed
 
+- **Turrets no longer load the effect arrows, or boomrose arrows.** A turret is fed by the game rather than from anyone's pack, and the game's rule is opt-out: any ammunition of the right kind is a candidate unless it has been marked otherwise. Nothing had marked these, so a deployed bow turret could be stocked with a cloud of poison gas or a blast — and a turret cannot choose its engagement range, so anything that closes to point blank puts that squarely on the turret and on whoever set it there. Vanilla's boomrose arrow has the same problem and is corrected the same way, by merge.
+
+  The other half of the reasoning covers the arrows that do not burst. These are hand-made things: a quill lashed to a shank with sinew, a hollowed stinger with the sac still in it, a scored gas bulb, a phial, a shell of thin wax. None of that survives being cycled through a magazine and a feed mechanism, which is a fair description of why vanilla's own arrows are a shaft and a metal head.
+
+  Deliberately left alone: fullerite, crysteel, flawless crysteel and zetachrome arrows are also unmarked, and are also stocked. They are better sticks rather than hazards, and where Freehold draws the line on handing out end-game materials is their economy to set, not this fork's.
+  ([#147](https://github.com/vixygrey/qud-expanded-community-edition/issues/147))
+
 - **The cryo arrow chills harder, because play-testing said the first number was wrong.** It moves from −35 to −50 per hit, which freezes a target solid on the third consecutive hit instead of the fourth. Freezing itself is unconditional — there is no save and no roll, only whether temperature has reached the brittle line — so this is arithmetic, and the arithmetic had a term missing. Temperature crawls back toward ambient every single turn, by a flat five at the magnitudes involved, so each hit is worth less than it looks and every miss hands some of it back. In play that made the old number take four or five arrows rather than the three or four intended. One hit still leaves a target far above the freezing line, so this remains a tool you commit several arrows to rather than an opening move.
 
   Worth recording alongside it: both temperature arrows are subject to the target's cold and heat resistance. The glowpad used for testing resists heat by a quarter and cold not at all — so the blaze arrow igniting it in two hits is a figure measured against something that was actively resisting, while the cryo figures assume no resistance at all and will stretch against anything that has it.
