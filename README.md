@@ -191,7 +191,7 @@ squash merge, and what each pull request needs before I can take it.
 
 ```
 mod/     the shipped mod — the only directory uploaded to the Workshop
-docs/    FEATURES, LESSONS, PERMISSION, STYLEGUIDE, and Mura's original documents
+docs/    CHARTER, FEATURES, LESSONS, PERMISSION, STYLEGUIDE, and Mura's original documents
 tools/   validation, drift checking, and the preview-image generator
 ```
 

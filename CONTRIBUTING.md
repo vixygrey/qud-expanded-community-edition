@@ -95,6 +95,13 @@ redeclaration conflicts with any other mod touching the same record *and* silent
 future Qud patches add to it. `merge-discipline` in the validator will catch you, but it's easier to
 write it right the first time.
 
+## Security
+
+If you find something that could be abused before subscribers can update, please report it
+privately rather than opening an issue — [`SECURITY.md`](SECURITY.md) has the details and the
+reasoning. This mod ships C# that Qud runs with full process privileges, which is why it has a
+policy at all.
+
 ## If something here is wrong
 
 Say so — file an issue. The documentation has gone quietly stale three separate times (#93, #96,

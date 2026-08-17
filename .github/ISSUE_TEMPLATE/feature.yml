@@ -1,0 +1,46 @@
+name: Feature or content idea
+description: Something new — an item, a system, an option, a change to how something works.
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome. Two things shape whether one lands, and knowing them up front saves us
+        both a round trip — both are from [`docs/CHARTER.md`](https://github.com/vixygrey/qud-expanded-community-edition/blob/main/docs/CHARTER.md).
+
+        **Rule 2 — nothing arbitrary.** A design change needs a reason grounded in Qud: its fiction,
+        its existing systems, or an asymmetry the game already created. "It felt weak" isn't one.
+        The test I use is whether the world explains it, and whether it changes a decision the
+        player makes.
+
+        **Rule 6 — everything ships with an off-switch.** New features arrive with their option in
+        the same pull request, so it's worth thinking about what turning it off would mean.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it fits Qud
+      description: >
+        What in the world explains it, and what decision does it change for the player? For new
+        items, note that stats are *derived* rather than invented — the tier and value curves in
+        `docs/STYLEGUIDE.md` §3.2 should give you the numbers.
+    validations:
+      required: true
+
+  - type: textarea
+    id: option
+    attributes:
+      label: What turning it off would look like
+      description: >
+        Live (a loot table or a formula), on restart, or only on a new character? Designs whose
+        off-switch is a runtime decision are preferred — a chip family that can be dropped from
+        the loot tables is more configurable than one welded into character creation.
+    validations:
+      required: false

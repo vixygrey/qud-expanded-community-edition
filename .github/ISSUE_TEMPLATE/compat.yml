@@ -1,0 +1,63 @@
+name: Compatibility problem
+description: This mod conflicts with another mod, with vanilla, or with a new Qud patch.
+labels: ["compat"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Compatibility gets its own form because it's the fork's headline claim, not a flavour of
+        "bug". Charter rule 1 says every touch of a vanilla record is a merge rather than a
+        replacement, precisely so this mod doesn't fight others or discard what future Qud patches
+        add. A conflict means either that rule was broken or something subtler is going on, and I
+        want to know either way.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of conflict
+      options:
+        - Another mod and this one interfere
+        - Something vanilla stopped working while this mod is enabled
+        - A Qud patch broke something this mod does
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: other-mod
+    attributes:
+      label: The other mod
+      description: Name and Workshop ID, if a second mod is involved.
+      placeholder: "Grand Bazaar — 1234567890"
+    validations:
+      required: false
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What goes wrong
+      description: >
+        What you see with both enabled, and what happens with either one on its own. That
+        comparison is usually the whole diagnosis.
+    validations:
+      required: true
+
+  - type: input
+    id: record
+    attributes:
+      label: The record involved, if you know it
+      description: >
+        A blueprint, population table, skill or anatomy name. Something like `Artifact 6R` or
+        `Humanoid`. Leave blank if you don't — I can usually find it.
+      placeholder: "Artifact 6R"
+    validations:
+      required: false
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: This mod, and Caves of Qud.
+      placeholder: "mod 2.3.0, Qud 2.0.208.x"
+    validations:
+      required: true

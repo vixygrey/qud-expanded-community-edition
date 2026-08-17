@@ -1,0 +1,22 @@
+# Blank issues stay enabled. The forms cover the common cases; anything else — a documentation
+# error, a chore, a question — is better as a plain issue than squeezed into the wrong form.
+blank_issues_enabled: true
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/vixygrey/qud-expanded-community-edition/security/advisories/new
+    about: >
+      Report privately instead. This mod ships C# that runs with full process privileges — please
+      don't open a public issue for anything that could be abused before subscribers can update.
+
+  - name: Something wrong in the documentation
+    url: https://github.com/vixygrey/qud-expanded-community-edition/issues/new?labels=docs
+    about: >
+      Please do say so. Nothing in CI reads a sentence and asks whether it's still true, so a
+      contributor noticing is the only mechanism that exists.
+
+  - name: A bug in Caves of Qud itself
+    url: https://www.cavesofqud.com/
+    about: >
+      Report it to Freehold Games. If it affects how this mod behaves, open an issue here too and
+      I'll work around it.
