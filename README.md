@@ -17,11 +17,11 @@ This mod exists because of other people's work, so I'd rather you saw that befor
 | Who | What |
 |---|---|
 | **Mura** (`@mura_raven`) | Created Caves of Qud Expanded and spent years on it. This fork is their mod, continued. |
-| **Noble Lark** | All 18 psionic subtype sprites. |
+| **Noble Lark** (a.k.a. **chirps**) | All 18 psionic subtype sprites. |
 | **Scrolldier** (a.k.a. Parzival) | Taught Mura to mod Caves of Qud. |
 | **Arendeth** | Population table fixes. |
 | **Tyrir** | Bug reports, including the 2.2 typo batch. |
-| **Crow**, **chirps** | Contributors to the original. |
+| **Crow** | Contributor to the original. |
 
 ### Contributors to this fork
 

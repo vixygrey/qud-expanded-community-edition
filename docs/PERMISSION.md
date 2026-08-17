@@ -56,7 +56,15 @@ fork's Workshop description and in-repo documentation:
 | **Scrolldier / Parzival** | Taught Mura to mod Caves of Qud |
 | **Arendeth** | Population-table fixes (credited in `2.2 changelog.txt`) |
 | **Tyrir** | Found the 2.2 typo batch and an invalid blueprint (credited in `2.2 changelog.txt`) |
-| **Crow**, ***chirps*** | Contributors named on the Workshop page |
+| **Crow** | Contributor named on the Workshop page |
+
+> **Names and pronouns.** *chirps* was listed here as a separate contributor until Mura pointed out
+> it is **Noble Lark's** Steam name — one person, credited twice. Corrected everywhere in §8.1.
+>
+> **Mura** uses **any/all pronouns**; this project writes *they/them* for them, which they have not
+> asked for but which is the safest of the set to use in writing about someone. **Noble Lark** uses
+> **he/him**, per his Discord profile. Getting these right is part of crediting someone properly,
+> so they are recorded here rather than left to whoever writes the next paragraph.
 
 Mura also offered an open line for questions via Steam DM, and gave `@mura_raven` on Discord as
 the preferred contact in the mod description.
@@ -97,3 +105,55 @@ upload**, or Qud's uploader will target Mura's page instead of creating a new it
 holds Mura's pre-handoff text asking that the mod not be forked.
 
 See `FEATURES.md` §10 row 0b.
+
+---
+
+## 8. Licence approval — Discord, 17 August 2026
+
+This document is append-only, so this section records a later grant rather than editing §1–§3.
+
+I asked Mura on Discord whether the informal grant could be formalised:
+
+**VixyGrey:**
+
+> Quick question for you: You said do as you please with credit. Can I formalise that as Apache-2.0
+> license and CC BY 4.0 (creative commons license) so other modders have defined terms — and does it
+> cover Noble Lark's sprites?
+
+**Mura:**
+
+> I think that would be fine, I don't know a lot about them but after a quick google search and some
+> reading I don't see a problem with them
+
+So **Mura's own work in this mod is licensed Apache-2.0 for code and CC BY 4.0 for content**, the
+same terms as my contributions. That closes the gap §1–§3 left open: the earlier grants were broad
+in substance but named no licence, so they gave no defined terms for anyone downstream to rely on.
+
+### 8.1 Noble Lark is "chirps" — one person, not two
+
+In the same conversation:
+
+> Also chirps is Noble Lark's steam name, so you can put a.k.a. chirps on the Github, I just noticed
+> that.
+
+Every credit list in this project had named **Noble Lark** and **chirps** as separate contributors,
+because Mura's original Workshop page listed both. They are the same person. Corrected everywhere,
+including `mod/workshop.json`, which ships.
+
+His pronouns are **he/him**, from his Discord profile.
+
+### 8.2 The sprites still need his own confirmation
+
+Mura was explicit that their approval does not settle this:
+
+> I would reach out to them directly for confirmation just to be sure, but I don't think that will
+> be an issue. If they don't answer just let me know and I'll reach out as well.
+>
+> @noblelark is their discord handle
+
+That is the right instinct and I have taken it: Mura naming Noble Lark inside the original grant
+shows Mura believed the sprites were theirs to open up, but Noble Lark has never said so himself.
+
+**I have reached out to him.** Until he answers, the 18 subtype sprites in `mod/Textures/Subtypes/`
+are *not* covered by the licences here — they remain his, used with credit, exactly as they have
+been all along. Mura offered to follow up if Noble Lark does not reply.
