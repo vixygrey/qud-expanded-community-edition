@@ -188,6 +188,15 @@ squash merge, and what each pull request needs before I can take it.
 
 ---
 
+## Licence
+
+My contributions are **Apache-2.0** for code ([`LICENSE`](LICENSE)) and **CC BY 4.0** for content
+and documentation ([`LICENSE-CONTENT`](LICENSE-CONTENT)).
+
+The inherited work is Mura's and the subtype sprites are Noble Lark's — neither is mine to license,
+so neither is covered. [`COPYING.md`](COPYING.md) says exactly what you may reuse and from whom, and
+[`NOTICE`](NOTICE) carries the credit that has to travel with any redistribution.
+
 ## Layout
 
 ```

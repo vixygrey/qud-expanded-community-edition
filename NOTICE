@@ -1,0 +1,81 @@
+Qud Expanded Community Edition
+Copyright 2026 VixyGrey
+
+This product includes work by, and builds upon work by, the people named below.
+Anyone redistributing this work — in whole or in part, modified or not — must
+keep this file intact and reproduce its contents, as required by section 4(d)
+of the Apache License, Version 2.0.
+
+--------------------------------------------------------------------------------
+CREDIT
+--------------------------------------------------------------------------------
+
+Mura (@mura_raven)
+    Created Caves of Qud Expanded and maintained it for years. This project is
+    that mod, continued. Mura opened it to the community on one condition —
+    that credit is given where due — and that condition is treated as permanent
+    here. See docs/PERMISSION.md.
+
+Noble Lark
+    All 18 psionic subtype sprites in mod/Textures/Subtypes/. Mura named Noble
+    Lark specifically when opening the mod to the community, and asked that the
+    credit carry forward. It does, permanently.
+
+Scrolldier (also known as Parzival)
+    Taught Mura to mod Caves of Qud.
+
+Arendeth
+    Population table fixes, including the <removetable> syntax recorded in
+    docs/STYLEGUIDE.md.
+
+Tyrir
+    Bug reports, including the 2.2 typo batch.
+
+Crow, chirps
+    Contributors to the original mod.
+
+Jah-yee
+    Fixed the tag typos that stopped the advanced hoversled floating and the
+    sphere of negative weight registering as a trinket. This fork's first
+    outside contribution.
+
+VixyGrey
+    Maintainer of this fork.
+
+--------------------------------------------------------------------------------
+SCOPE — WHAT THE LICENCES IN THIS REPOSITORY COVER
+--------------------------------------------------------------------------------
+
+Read this before reusing anything. The repository is not uniformly licensed,
+and it cannot be, because not all of it is mine to license.
+
+COVERED by LICENSE (Apache License 2.0) and LICENSE-CONTENT (CC BY 4.0):
+
+    My own contributions to this fork — the code, data, tooling and
+    documentation I have written since forking Caves of Qud Expanded 2.2.
+    Code is Apache-2.0; content, data and documentation are CC BY 4.0.
+    `git diff upstream-2.2` shows what that covers.
+
+NOT COVERED — inherited work:
+
+    Everything present in the upstream-2.2 tag is Mura's. I hold their
+    permission to fork and continue it, given publicly and explicitly and
+    recorded in docs/PERMISSION.md, on the condition that credit is given.
+    That is a permission, not a copyright licence, and it does not let me
+    license their work to anyone else. If you want to reuse it, ask Mura.
+
+NOT COVERED — artwork:
+
+    The 18 subtype sprites are Noble Lark's. mod/preview.png is derived from
+    Mura's original logo, preserved unmodified at tools/preview-base.png. No
+    licence here applies to either; they remain governed by their creators'
+    terms. Ask before reusing them.
+
+If Mura chooses to license the original work, this file will say so and the
+scope above will widen. Until then it is an accurate description of what I can
+actually offer you, which seemed better than a licence file implying more.
+
+--------------------------------------------------------------------------------
+
+Caves of Qud is a game by Freehold Games. This project is an unofficial,
+community-made modification and is not affiliated with or endorsed by them.

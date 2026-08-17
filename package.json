@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Dev tooling only. The mod itself is mod/, which Qud loads directly and which has no build step (docs/CHARTER.md rule 4). Nothing here ships to subscribers.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
   "scripts": {
     "format:xml": "prettier --write \"mod/**/*.xml\" \"mod/**/*.rpm\"",
     "check:xml": "prettier --check \"mod/**/*.xml\" \"mod/**/*.rpm\""
