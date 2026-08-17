@@ -45,8 +45,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="A phial of thickened blaze rides in the socket behind the head, sloshing and warm against the shaft."
+      Short="A phial of thickened blaze rides in the socket behind the arrowhead, sloshing and warm."
     />
+    <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileBlazeArrow" Inherits="BaseArrowProjectile">
@@ -62,8 +63,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="Frost creeps down the shaft from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
+      Short="Frost creeps down the wooden shank from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
     />
+    <part Name="RulesDescription" Text="Chills what it strikes. Repeated hits will freeze a target solid." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
@@ -79,8 +81,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="The head is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
+      Short="The arrowhead is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
     />
+    <part Name="RulesDescription" Text="Bursts into a cloud of sleep gas where it lands." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileDreamDewArrow" Inherits="BaseArrowProjectile">
@@ -96,8 +99,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="A quillipede's barb lashed to a shaft with sinew. The backward teeth are meant to lodge and tear."
+      Short="A quillipede's barb lashed to a wooden shank with sinew. The backward teeth are meant to lodge and tear."
     />
+    <part Name="RulesDescription" Text="May start a target bleeding on impact." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileQuillArrow" Inherits="BaseArrowProjectile">
@@ -113,8 +117,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="A thin wax shell packed with white powder caps the shaft. It goes off with a clap and a scouring light."
+      Short="A thin wax shell packed with white powder caps the wooden shank. It goes off with a clap and a scouring light."
     />
+    <part Name="RulesDescription" Text="Bursts with a blinding flash where it lands, dazing those caught in it." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileStarshellArrow" Inherits="BaseArrowProjectile">
@@ -130,8 +135,9 @@
     <part Name="Commerce" Value="0.20" />
     <part
       Name="Description"
-      Short="A hollowed stinger caps the shaft, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
+      Short="A hollowed stinger caps the wooden shank, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
     />
+    <part Name="RulesDescription" Text="Bursts into a cloud of poison gas where it lands." />
     <part Name="TinkerItem" Bits="00" CanBuild="true" CanDisassemble="false" NumberMade="1" />
   </object>
   <object Name="Raven_ProjectileStingerArrow" Inherits="BaseArrowProjectile">
