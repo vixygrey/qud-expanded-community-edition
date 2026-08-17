@@ -56,7 +56,15 @@ fork's Workshop description and in-repo documentation:
 | **Scrolldier / Parzival** | Taught Mura to mod Caves of Qud |
 | **Arendeth** | Population-table fixes (credited in `2.2 changelog.txt`) |
 | **Tyrir** | Found the 2.2 typo batch and an invalid blueprint (credited in `2.2 changelog.txt`) |
-| **Crow**, ***chirps*** | Contributors named on the Workshop page |
+| **Crow** | Contributor named on the Workshop page |
+
+> **Names and pronouns.** *chirps* was listed here as a separate contributor until Mura pointed out
+> it is **Noble Lark's** Steam name — one person, credited twice. Corrected everywhere in §8.1.
+>
+> **Mura** uses **any/all pronouns**; this project writes *they/them* for them, which they have not
+> asked for but which is the safest of the set to use in writing about someone. **Noble Lark** uses
+> **he/him**, per his Discord profile. Getting these right is part of crediting someone properly,
+> so they are recorded here rather than left to whoever writes the next paragraph.
 
 Mura also offered an open line for questions via Steam DM, and gave `@mura_raven` on Discord as
 the preferred contact in the mod description.
@@ -148,4 +156,4 @@ shows Mura believed the sprites were theirs to open up, but Noble Lark has never
 
 **I have reached out to him.** Until he answers, the 18 subtype sprites in `mod/Textures/Subtypes/`
 are *not* covered by the licences here — they remain his, used with credit, exactly as they have
-been all along. Mura offered to follow up if he does not reply.
+been all along. Mura offered to follow up if Noble Lark does not reply.

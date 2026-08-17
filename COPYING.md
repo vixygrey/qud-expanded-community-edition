@@ -45,8 +45,8 @@ It doesn't cover Noble Lark's sprites, and Mura said as much:
 
 That's the right instinct. Mura naming the sprites inside the original grant shows Mura believed
 they were theirs to open up, but **Noble Lark has never said so himself**, and an artist's work
-shouldn't be relicensed on someone else's say-so. I've asked him; Mura offered to follow up if he
-doesn't reply.
+shouldn't be relicensed on someone else's say-so. I've asked Noble Lark directly; Mura offered to
+follow up if he doesn't reply.
 
 Until he answers, the sprites are his, used with credit. If you want to reuse them, ask him.
 
