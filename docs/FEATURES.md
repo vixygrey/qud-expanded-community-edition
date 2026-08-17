@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **360** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -385,8 +385,8 @@ doubles max charge and stacks with High Capacity.
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 12 (42 disabled) | 0 |
-| **Total** | **360 active** | **211** |
+| `Ammo.xml` | 12 (42 disabled) | 1 |
+| **Total** | **360 active** | **212** |
 
 ### 6.2 Melee weapons
 
@@ -1020,6 +1020,35 @@ reliable route rather than waiting on floor drops. See §7.
 **Three of the nine were cut**: the vibro arrow (`Vorpal`, which vanilla grants only to the tier-7
 Linear Cannon), the sunder arrow (flat `BasePenetration="10"`, above every vanilla arrow), and the
 stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have suppressed it).
+
+**None of them can end up in a turret** — all six carry `ExcludeFromTurretStock`, and vanilla's
+`Boomrose Arrow` gains it by merge. Turret ammunition is supplied by the game, not from anyone's
+pack, and `MagazineAmmoLoader.GetAmmoBlueprints` is **opt-out**: every blueprint with the matching
+ammo part is a candidate unless tagged, and an untagged one gets one entry in the pool while a
+`TurretStockWeight="N"` gets N.
+
+| Arrow | Pool entries |
+|---|---|
+| Steel | 9 |
+| Carbide | 3 |
+| Folded Carbide | 2 |
+| Fullerite, Crysteel, Flawless Crysteel, Zetachrome | 1 each |
+| Wooden, **Boomrose**, **all six of ours** | 0 |
+
+Two reasons, covering different arrows. **Three of the six burst** — dream dew, starshell and
+stinger carry area payloads — and a turret cannot choose its engagement range, so a target closing
+to point blank puts the cloud or the flash on the turret and on whoever deployed it. Boomrose is
+the vanilla case of the same problem. Blaze, cryo and quill are single-target and that argument
+does not reach them.
+
+**What reaches all six is that they are hand-made.** A quill lashed to a shank with sinew, a
+hollowed stinger with the sac still in it, a scored gas bulb, a phial, a wax shell — none of that
+survives being cycled through a magazine and a feed mechanism. A vanilla arrow is a shaft and a
+metal head, which does.
+
+Only the blast case is merged into vanilla. Fullerite, crysteel, flawless crysteel and zetachrome
+arrows are also untagged and therefore also stocked, at one entry each — but they are better
+sticks, not hazards, and where Freehold draws its value ceiling is their economy to set. See #147.
 
 ---
 
