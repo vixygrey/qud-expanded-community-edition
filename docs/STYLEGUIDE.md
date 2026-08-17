@@ -480,6 +480,7 @@ seconds rather than after a round trip.
 | No committed secrets | `gitleaks` over full history, plus GitHub push protection |
 | Conventional PR title, and a changelog entry | The `conventions` job in `.github/workflows/ci.yml` |
 | No direct commits to `main`, linear history, squash-only merges | GitHub ruleset, plus a local `pre-commit` hook that fails first |
+| Every CI job being required or deliberately not, and this section's count | `required-checks` in `tools/check_docs.py`, against `tools/required-checks.json` |
 
 The `merge-discipline` check is the important one: it turns this fork's headline compatibility rule
 into something mechanically enforced rather than remembered, and it would have caught #3 on the
@@ -488,3 +489,11 @@ commit that introduced it.
 **What none of them do is read a sentence and ask whether it's still true.** Every check above
 inspects a machine-readable property, which is why the documentation here has gone quietly stale
 three times (#93, #96, #106) with everything green. See `docs/LESSONS.md`.
+
+The count in this section is itself the fourth instance, and the one that shows the shape most
+clearly. It said **ten** while **nine** were enforced — `Tests` ran and passed on every pull
+request and was simply not in the ruleset, so a failing test suite could have merged. Six
+documents carried the number and nothing counted it, because a number in prose is prose. It is
+checked now (#152), and the fix has a sting worth remembering: when `Tests` was made required, the
+obvious next move was to update the documented count — which would have turned a correct ten into
+an incorrect eleven. The documents were only right again *because* of the fix.
