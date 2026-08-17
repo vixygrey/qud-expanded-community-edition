@@ -80,9 +80,12 @@ the Workshop.
 I'd be glad of the help, and I credit every outside contribution by name in the pull request that
 merges it — you shouldn't have to ask.
 
-The rules I maintain this fork under are in [`CLAUDE.md`](CLAUDE.md) — six of them, covering
-compatibility, causality, credit, developer experience, safety, and configurability. I mean them as
-constraints rather than aspirations, and most are mechanically enforced.
+The rules I maintain this fork under are in [`docs/CHARTER.md`](docs/CHARTER.md) — six of them,
+covering compatibility, causality, credit, developer experience, safety, and configurability. I mean
+them as constraints rather than aspirations, and most are mechanically enforced.
+
+[`docs/LESSONS.md`](docs/LESSONS.md) collects the traps I've hit, mostly about Qud itself. Worth a
+skim before a first change.
 
 [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout, and formatting. **Read §1 before
 renaming anything** — several conventions look like mess and are load-bearing identifiers, and

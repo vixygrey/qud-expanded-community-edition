@@ -20,7 +20,7 @@ Applied literally to the features below, someone would install *Qud Expanded* an
 mostly does not do anything. The skill retunes off, the mutation points vanilla, the
 starting reputations vanilla. That is not configurability, it is a mod that fails to arrive.
 
-**Settled (#45), and `CLAUDE.md` rule 6 now reads:**
+**Settled (#45), and `docs/CHARTER.md` rule 6 now reads:**
 
 > **Defaults reproduce the mod's established behaviour. Options let players opt out.**
 > "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
@@ -287,7 +287,7 @@ Two candidate approaches, both unproven:
 
 **Approach 1, built and verified.** An earlier draft recommended splitting, on the grounds that
 the patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in
-isolation and wrong for this mod, which is deliberately self-contained (`CLAUDE.md` rule 6).
+isolation and wrong for this mod, which is deliberately self-contained (`docs/CHARTER.md` rule 6).
 
 A map merge cannot be gated on an option — it happens as data loads, long before any option is
 read — so the building is **removed after the fact**, on `ZoneActivatedEvent`, by a scribed
@@ -416,7 +416,7 @@ Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
   documentation, 898 documented members
 - Installed Workshop mods under `steamapps/workshop/content/333640/` — 87 mods, 12 with
   `Options.xml`, all 12 shipping C#
-- `CLAUDE.md` — charter rules 2, 5 and 6
+- `docs/CHARTER.md` — rules 2, 5 and 6
 - `../design-docs/DESIGN_difficulty.md` §1 and §5 — argues the opposite conclusion (split into
   separate mods) for a *new* mod with no existing audience. The difference is deliberate: that
   doc is designing a mod from scratch, this one is continuing a mod players already subscribe to
