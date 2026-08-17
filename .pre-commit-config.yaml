@@ -65,6 +65,13 @@ repos:
         pass_filenames: false
         files: ^mod/
 
+      - id: check-docs
+        name: check docs (counts, links, sections, preserved files)
+        entry: python3 tools/check_docs.py
+        language: system
+        pass_filenames: false
+        files: ^(mod/|docs/|tools/validate_mod\.py$|[A-Z]+\.md$|NOTICE$)
+
       - id: no-commit-to-main
         # GitHub protects main server-side, but failing here beats a rejected push. See #20.
         name: refuse commits on main

@@ -32,6 +32,12 @@ jobs:
       - name: Validate mod
         run: python3 tools/validate_mod.py --all
 
+      # Checks the documents that describe the mod, which nothing did until #131. It cannot read a
+      # sentence and ask whether it is still true, but a figure quoted in prose can be recounted
+      # from mod/, and three staleness sweeps found exactly that class of error.
+      - name: Check documentation
+        run: python3 tools/check_docs.py
+
   python:
     name: Python lint
     runs-on: ubuntu-latest
