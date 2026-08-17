@@ -23,8 +23,12 @@ in them applies to a contribution you're helping someone else write.
 - **There is no build step.** Qud loads the XML directly. Don't add one.
 - **`Load="Merge"` on every touch of a vanilla record.** A redeclaration silently discards whatever
   future Qud patches add. The validator's `merge-discipline` check enforces it.
-- **The C# has no compile gate.** There's no `.csproj` and CodeQL can't cover it, so a syntax error
-  surfaces as the mod failing to load in game. Be correspondingly careful.
+- **The C# is compiled by a local hook, not by CI.** `tools/compile_scripting.py` builds
+  `mod/Scripting/` against the game's own assemblies in about half a second, and runs automatically on
+  any commit touching it. But it needs Caves of Qud installed and skips where it isn't, CodeQL still
+  can't cover the C#, and nothing on a runner ever compiles it. There's still no `.csproj` — the
+  compile needs four DLLs from a Qud install and nothing else. If you changed C# and couldn't compile
+  it, say so in the pull request.
 - **Verify claims about Qud against the game's own files** rather than from memory — the installed
   mods under `steamapps/workshop/content/333640/` and the vanilla data under
   `StreamingAssets/Base`. `docs/LESSONS.md` explains where both are and which vanilla files aren't
@@ -36,7 +40,7 @@ in them applies to a contribution you're helping someone else write.
 python3 tools/validate_mod.py
 ```
 
-Nine checks run on every pull request and all nine must pass. Never commit to `main` — branch, then
+Ten checks run on every pull request and all ten must pass. Never commit to `main` — branch, then
 open a pull request.
 
 ## Writing

@@ -55,8 +55,12 @@ sat permanently below CodeQL's threshold. The two checks above are what stands i
 they enforce a project policy CodeQL's generic queries could never express. `docs/CHARTER.md` rule 5
 has the full reasoning.
 
-**The C# has no compile gate either.** There's deliberately no `.csproj`, so a syntax error surfaces
-as the mod failing to load in game rather than as a failing build.
+**The C# is compiled locally, not here.** `tools/compile_scripting.py` builds `mod/Scripting/` against
+the game's own assemblies as a pre-commit hook, so a syntax error is caught before it ships. It cannot
+run in CI, though — compiling needs Freehold's proprietary `Assembly-CSharp.dll`, which is the same
+wall CodeQL hit — and it skips where the game isn't installed. So no check on a runner ever compiles
+this C#, and a review of a contributor's scripting change is still a human reading it. There remains
+deliberately no `.csproj`: the compile needs four DLLs from a Qud install and nothing else.
 
 ## Supported versions
 
