@@ -1,8 +1,10 @@
 # Caves of Qud Expanded — Complete Feature Reference
 
-*Generated from a full read of the mod source (all XML blueprints, population tables, skills,
-genotypes, subtypes, bodies, C# scripts, and the Joppa map patch). This is the exhaustive
-list the original mod never had.*
+*I reconstructed this by reading the whole mod source — every XML blueprint, population table,
+skill, genotype, subtype, body, C# script, and the Joppa map patch. No complete list of what this
+mod does had ever existed, including for Mura, and I needed one before I could safely change
+anything. Where this document and the XML disagree, **the XML is what ships**; §10 tabulates the
+disagreements I know about.*
 
 **Original author:** Mura (`@mura_raven`) — with contributions from Noble Lark (subtype sprites),
 Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship).
@@ -196,7 +198,7 @@ against `.png` assets — but worth knowing if you ever rename them.
 
 ## 3. The Chip Interface & psionic chips
 
-This is the mod's headline system: **equipment that grants real, working mutations to genotypes
+This is the mod's headline system, and the reason I picked the fork up: **equipment that grants real, working mutations to genotypes
 that cannot mutate.**
 
 ### 3.1 Body slots (`Bodies.xml`)
@@ -912,7 +914,9 @@ is the single largest block of ready-made content sitting unused.
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-76 table definitions: **48 merged** into vanilla, **28 declared fresh**.
+76 table definitions: **54 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
+was corrected in #95 and this line was missed.
 
 ### 7.1 Starting gear (18 new tables)
 
@@ -1087,7 +1091,9 @@ The mod deliberately flattens the top of the price curve so high-tier gear is at
 
 ## 10. Known issues & fork checklist
 
-Ordered roughly by impact.
+Ordered roughly by impact. Rows marked ✅ are done and stay here as a record — each was a real
+defect, and the shape of it is worth not reintroducing. I'd sooner keep a closed row than have
+someone rediscover the problem from scratch.
 
 | # | Severity | Issue | Where |
 |---|---|---|---|
