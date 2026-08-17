@@ -181,6 +181,43 @@ command answers it. Ask.
 It's also why `serializable-shape` and `subtype-tile` were written: each exists because nothing else
 was looking at that property, and "nothing was looking" is not the same as "nothing is wrong".
 
+## A hook that was never installed protects nothing, and this one failed to install quietly
+
+I committed straight to `main` in #119. The GitHub ruleset rejected the push so nothing was lost,
+but `.pre-commit-config.yaml` carries a `no-commit-to-main` hook written for exactly that mistake,
+and it never ran — because `pre-commit install` had never succeeded in that clone.
+
+It hadn't succeeded because it can't, on my machine:
+
+```
+[ERROR] Cowardly refusing to install hooks with `core.hooksPath` set.
+```
+
+`core.hooksPath` points at a global hooks directory, and `pre-commit` won't write `.git/hooks/`
+while it's set — reasonable in general, because git would normally ignore the file it just wrote.
+My global hook *does* delegate to the per-repo one, so the arrangement works; `pre-commit` just
+can't tell. Unset it for the length of the install and put it straight back:
+
+```bash
+saved=$(git config --global --get core.hooksPath)
+git config --global --unset core.hooksPath
+pre-commit install --install-hooks
+git config --global core.hooksPath "$saved"
+```
+
+Two things make this worth writing down rather than filing under "install your tools":
+
+- **The repository had no way to know.** A missing hook produces no output, no warning, and no
+  difference in any check. It's the same shape as a missing `[PlayerMutator]` attribute — the
+  feature simply doesn't happen. The only signal was the mistake it was meant to prevent.
+- **`core.hooksPath` also silently disables per-repo hooks it has no delegator for.** Git consults
+  *only* that directory. My global directory holds a single `pre-commit` file, so `.git/hooks/`
+  `pre-push` is never read, and `default_install_hook_types: [pre-commit, pre-push]` is half inert.
+  Harmless while no hook declares `stages: [pre-push]`, and a trap the moment one does.
+
+> **After installing hooks, prove one fires.** Attempt the thing it forbids. `git commit` on `main`
+> takes a second and is the only evidence that any of it is wired up.
+
 ## `git checkout <file>` restores from the index, not from HEAD
 
 While testing a new check in #80, `git checkout mod/Subtypes.xml` — which I used to undo a
