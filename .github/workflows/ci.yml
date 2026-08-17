@@ -61,6 +61,21 @@ jobs:
       - name: ruff format --check
         run: ruff format --check tools/
 
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # tools/check_build_log.py reads a verdict the game wrote on a developer's machine, so the
+      # check itself can never run here (#134). Its guards can, and they are the part worth
+      # covering: that script's whole job is refusing a stale or unrelated verdict, and a guard
+      # that has quietly stopped firing is indistinguishable from one that passes. The tests
+      # build synthetic save directories, so they need no game and no dependencies.
+      - name: unittest
+        run: python3 -m unittest discover -s tools -v
+
   xml-format:
     name: XML format
     runs-on: ubuntu-latest

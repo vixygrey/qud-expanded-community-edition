@@ -13,7 +13,7 @@ the parts of a document that are *not* prose:
   counts        a figure quoted in the docs, against the same figure recomputed from mod/
   links         every relative link resolves to a file that exists
   sections      every "FILE.md §N" cross-reference names a section that exists there
-  checks        every validator check name quoted in the docs is one the validator emits
+  checks        every check name quoted in the docs is one a script in tools/ actually emits
   preserved     Mura's two documents are still byte-identical to the upstream import
 
 The counts check is the one that matters most and the one with a real limitation: it can only
@@ -254,15 +254,20 @@ def check_sections(f: Findings) -> None:
 
 
 def check_check_names(f: Findings) -> None:
-    """A doc naming a validator check that does not exist teaches a contributor a false name."""
-    emitted = set(
-        re.findall(
-            r'f\.add\(\s*"([a-z-]+)"', (Path("tools") / "validate_mod.py").read_text()
+    """A doc naming a check that does not exist teaches a contributor a false name."""
+    # Every script that emits named checks, not just the validator: the moment one of them is
+    # left out, documenting its checks correctly reports as an error. That is a worse failure
+    # than the one this guards against, because it punishes the person doing the right thing.
+    sources = ("validate_mod.py", "check_build_log.py")
+    emitted: set[str] = set()
+    for name in sources:
+        emitted |= set(
+            re.findall(r'f\.add\(\s*"([a-z-]+)"', (Path("tools") / name).read_text())
         )
-    )
     if not emitted:
         f.add(
-            "check-names", "could not read any check names out of tools/validate_mod.py"
+            "check-names",
+            f"could not read any check names out of {' or '.join(sources)}",
         )
         return
     # Only consider names that look like a check and are claimed as one.
@@ -284,7 +289,7 @@ def check_check_names(f: Findings) -> None:
             if name not in emitted:
                 f.add(
                     "check-names",
-                    f"{doc}: calls `{name}` a check, but tools/validate_mod.py emits no such name",
+                    f"{doc}: calls `{name}` a check, but no script in tools/ emits that name",
                 )
 
 
