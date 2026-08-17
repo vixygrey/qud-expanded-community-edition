@@ -22,13 +22,18 @@
        wooden and forged object it ships. See #154 for the separate question of whether this fork
        should add a mundane crafting system of its own.
 
-       All six also carry ExcludeFromTurretStock, and the reason is that a turret is fed by the
-       game rather than by a person. Two arguments, and they cover different arrows:
+       All six also carry ExcludeFromTurretStock. Two arguments, and they cover different arrows.
 
        Three of the six burst - dream dew, starshell and stinger carry area payloads - and a turret
-       cannot choose its engagement range. A target that closes to point blank puts the cloud or the
-       flash on the turret and on whoever set it there. Blaze, cryo and quill are single-target and
-       that argument does not reach them.
+       the game stocked is one nobody chose the ammunition for. A target that closes to point blank
+       puts the cloud or the flash on the turret and on anything beside it. Blaze, cryo and quill
+       are single-target and that argument does not reach them.
+
+       Note the scope carefully, because it is narrower than "turrets". Auto-stocking runs off a
+       GenerateIntegratedHostInitialAmmo event, and only TurretTinker (wild turrets) and
+       PlaceTurretGoal (an AI placing one) raise it. Tinkering_DeployTurret does not: a turret you
+       deploy yourself arrives EMPTY and you load it from your own pack, so you pick what goes in
+       and the hazard argument does not apply to it. Confirmed in game, not just read.
 
        What reaches all six is that they are hand-made and fragile in a way no vanilla arrow is. A
        quill lashed to a shank with sinew, a hollowed stinger with the sac still in it, a scored gas
@@ -186,12 +191,20 @@
     <part Name="GasGrenade" Density="20" GasObject="PoisonGas" />
   </object>
 
-  <!-- Boomrose Arrow is the one vanilla arrow that carries a blast, and turret ammunition is
-       stocked by the game rather than drawn from anyone's pack. MagazineAmmoLoader.GetAmmoBlueprints
-       is opt-out: every blueprint with the ammo part is a candidate unless tagged, and an untagged
-       one gets a single entry in the pool. So a bow turret can currently be loaded with boomrose
-       arrows, and a turret cannot choose its engagement range - a target that closes to point blank
-       puts the blast on the turret, and on whoever deployed it.
+  <!-- Boomrose Arrow is the one vanilla arrow that carries a blast, and a wild or AI-placed turret
+       is stocked by the game with nobody choosing the ammunition.
+       MagazineAmmoLoader.GetAmmoBlueprints is opt-out: every blueprint with the ammo part is a
+       candidate unless tagged, and an untagged one gets a single entry in the pool.
+
+       It is not a chance of getting a bad arrow - it is a guaranteed share of them. Short Bow and
+       Compound Bow both carry MagazineAmmoLoader MaxAmmo="1" AmmoPart="AmmoArrow";
+       GetDesiredAmmoCount asks for AmmoPerAction * 50 = 50 arrows, and the fill is
+       (desired / entries) of EVERY entry rather than a weighted pick. At 25 entries that was 2
+       apiece, so a wild bow turret carried twelve effect arrows and one boomrose, every time.
+       At 18 it is 18 steel, 6 carbide, 4 folded carbide and 2 of each end-game arrow.
+
+       The Turbow is not affected either way: it uses EnergyAmmoLoader, so a Turbow turret stocks
+       no arrows at all.
 
        Only the blast case is merged. The high-value arrows vanilla also leaves untagged - fullerite,
        crysteel, flawless crysteel, zetachrome - are left exactly as they are. They are better
