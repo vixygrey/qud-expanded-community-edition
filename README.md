@@ -274,8 +274,9 @@ squash merge, and what each pull request needs before I can take it.
 What's actually in flight is on the [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1),
 which is public. Issues are grouped there by track — Ammo, Content, Systems, Sub-mod merges,
 Upstream, Tooling & docs — and nothing reaches **Done** until it is live on the Workshop *and* a
-release is cut for players who don't use Steam. **QA** covers everything in between: the code is
-written, and it is either being tested in game or waiting on a release.
+release is cut for players who don't use Steam. Two columns sit in between: **QA** is a change that
+is written and being tested, and **Staging** is everything merged since the last release, whether it
+needed testing or never did.
 
 ---
 

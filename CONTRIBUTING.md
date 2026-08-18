@@ -75,12 +75,14 @@ An item only reaches **Done** on the board once the change is live on the Steam 
 release has been cut for everyone else — GOG, itch, and Linux players outside Steam install from
 the release zip, and a change that exists only in `main` hasn't reached them.
 
-**QA** is everything between "the code is written" and that: being tested in game, or merged and
-waiting on a release. The validators can prove an object is well-formed and reachable; only playing
-can prove it does what it says, so an item can sit in QA while its pull request is still open.
+Two columns cover the gap. **QA** means the code is written and someone is testing it — the
+validators can prove an object is well-formed and reachable, but only playing can prove it does what
+it says, so an item can sit in QA while its pull request is still open. **Staging** is everything
+merged since the last release: changes that passed QA, and changes that never needed it, like this
+sentence.
 
-So if your change merges and the board doesn't move to Done, nothing is wrong — it's being tested
-or waiting on a release, and you'll see it in the changelog when one is cut.
+So if your change merges and the board doesn't move to Done, nothing is wrong — it's in Staging, and
+you'll see it in the changelog when a release is cut.
 
 ### Pull requests
 
