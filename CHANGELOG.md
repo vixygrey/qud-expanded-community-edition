@@ -16,6 +16,11 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records that an empty result has two explanations, and one of them is the search. It happened twice in one day while building the part-attribute checks. `strings` on `Assembly-CSharp.dll` returned nothing for `Builder` — and nothing for every other name tried, including ones that certainly exist, which was the tell — because macOS `strings` reads ASCII while .NET keeps user strings as UTF-16; trusting it would have put `Builder` into the documents as a defect in Freehold's own data when it is a real mechanism. And a test that was supposed to prove `snapshot_qud_api.py` refuses an unlocatable citation exited 0, because `ruff format` had split the tuple being patched across several lines, so the replacement matched nothing and the run was an ordinary clean one. The gate worked; the test had not run.
+
+  Both have the same shape: a check reporting **zero** of something is indistinguishable from a check that did not execute, while a check reporting a problem at least proves it ran. It is the positive-control lesson one level out, applied to any search or patch whose silence is about to be read as evidence.
+  ([#196](https://github.com/vixygrey/qud-expanded-community-edition/issues/196))
+
 - **(internal)** A `<part Builder="…">` naming a class that does not exist now fails the build. `Builder` does not set a member — it names a class in `XRL.World.PartBuilders` that post-processes the part once it is built, which is how #151 came to treat it as an attribute of the element rather than of the part class. That settled the *attribute* and left the *value* unchecked, so a builder that does not exist failed the way this whole family fails: the part loads, the builder never runs, and nothing anywhere says so.
 
   `tools/dump_part_members.cs` already walked every type in the assembly, so emitting the 21 names in `XRL.World.PartBuilders` alongside the members map cost a few lines and no new tool. Vanilla is held to the rule at generation time, and passes. The mod sets `Builder` on no part today, so this finds nothing now — it is a guard against a future edit, which is the same reason `unknown-part` exists.
