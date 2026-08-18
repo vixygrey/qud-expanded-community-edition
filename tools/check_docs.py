@@ -150,6 +150,41 @@ def facts() -> dict[str, int]:
     return out
 
 
+QUD_API_PATH = Path("tools/qud-api.json")
+
+# Figures the documents quote *from vanilla*, paired with the phrasing each is written in. The
+# values come from tools/qud-api.json's `figures` map, which snapshot_qud_api.py reads out of the
+# installed game - so this checks a citation against its source rather than against another
+# document.
+#
+# Same limitation as CLAIMS, and the same bargain: a figure written in a phrasing no pattern
+# matches is not checked. Numbers are compared with thousands separators stripped, because the
+# prose writes 1,200 where the XML says 1200 and the comma is the document's to keep.
+VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
+    (r"thermal mk I is `ThermalGrenade (-?\d+)`", ["heat-grenade-delta"]),
+    (r"freeze mk I is `ThermalGrenade (-?\d+)`", ["cold-grenade-delta"]),
+    (r"`HeatGrenade1` at `TemperatureDelta=\"(-?\d+)\"`", ["heat-grenade-delta"]),
+    (r"`ColdGrenade1` at `(-?\d+)`", ["cold-grenade-delta"]),
+    (r"poison gas mk I is (\d+)", ["poison-gas-density"]),
+    (r"sleep gas mk I is (\d+)", ["sleep-gas-density"]),
+    (
+        r"flashbang mk I is R(\d+), (\d+d\d+\+\d+)",
+        ["flashbang-radius", "flashbang-duration"],
+    ),
+    (
+        r"force ([\d,]+) against ([\d,]+); (\d+d\d+) against (\d+d\d+)",
+        ["boomrose-force", "he-grenade-force", "boomrose-damage", "he-grenade-damage"],
+    ),
+    # Anchored on "All are", not on the attribute alone: the bare phrasing also matches
+    # §6.3's note about this mod's carbideweave cloak, which has nothing to do with Boomrose.
+    (r"All are `Commerce Value=\"([\d.]+)\"`", ["boomrose-value"]),
+    (
+        r"`StrengthPenetration=\"(\d+)\"` over `(\d+d\d+)` damage",
+        ["boomrose-penetration", "boomrose-base-damage"],
+    ),
+]
+
+
 # Each pattern's capture groups map, in order, to the facts they must equal.
 CLAIMS: list[tuple[str, list[str]]] = [
     # Required checks. Written as words in every document that carries them, so the patterns
@@ -232,6 +267,48 @@ class Findings:
 
     def add(self, check: str, detail: str) -> None:
         self.items.append((check, detail))
+
+
+def vanilla_figures() -> dict[str, str]:
+    """The figures snapshot_qud_api.py read out of the game. Absent snapshot, absent check."""
+    if not QUD_API_PATH.is_file():
+        return {}
+    try:
+        return json.loads(QUD_API_PATH.read_text()).get("figures") or {}
+    except json.JSONDecodeError:
+        return {}
+
+
+def check_vanilla_figures(f: Findings) -> int:
+    """Hold every quoted vanilla figure to what the game actually says."""
+    figures = vanilla_figures()
+    if not figures:
+        return 0
+    checked = 0
+    for doc in DOCS:
+        if not doc.is_file():
+            continue
+        text = doc.read_text()
+        for pattern, names in VANILLA_CLAIMS:
+            for m in re.finditer(pattern, text):
+                for group, name in enumerate(names, start=1):
+                    expected = figures.get(name)
+                    if expected is None:
+                        f.add(
+                            "vanilla-figure",
+                            f"{doc}: no figure called {name} in {QUD_API_PATH} - "
+                            f"add it to CITED_FIGURES and regenerate",
+                        )
+                        continue
+                    checked += 1
+                    written = m.group(group).replace(",", "")
+                    if written != expected.replace(",", ""):
+                        f.add(
+                            "vanilla-figure",
+                            f"{doc}: quotes {name} as {m.group(group)}, but the game says "
+                            f"{expected}. Either Qud changed it or the sentence is wrong.",
+                        )
+    return checked
 
 
 def check_counts(f: Findings, known: dict[str, int]) -> int:
@@ -510,6 +587,7 @@ def main() -> int:
     f = Findings()
     known = facts()
     checked = check_counts(f, known)
+    from_game = check_vanilla_figures(f)
     check_links(f)
     check_sections(f)
     check_check_names(f)
@@ -522,14 +600,15 @@ def main() -> int:
             print(f"  [{check}] {detail}", file=sys.stderr)
         print(
             "\nIf a figure changed legitimately, update the document. If a claim is written in a "
-            "phrasing this script cannot find, add it to CLAIMS.",
+            "phrasing this script cannot find, add it to CLAIMS - or to VANILLA_CLAIMS when the "
+            "figure is quoted from the game.",
             file=sys.stderr,
         )
         return 1
 
     print(
-        f"OK - {checked} documented figure(s) match the mod; links, sections, check names and "
-        f"preserved documents all clean"
+        f"OK - {checked} documented figure(s) match the mod, {from_game} match the game; "
+        f"links, sections, check names and preserved documents all clean"
     )
     return 0
 

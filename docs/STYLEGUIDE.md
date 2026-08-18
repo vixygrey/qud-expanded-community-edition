@@ -489,6 +489,7 @@ seconds rather than after a round trip.
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
+| Figures the documents quote **from vanilla** | `vanilla-figure` in `tools/check_docs.py`, against the snapshot's `figures` map |
 | Tier and value curve consistency | `item-curve` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
@@ -522,3 +523,25 @@ documents carried the number and nothing counted it, because a number in prose i
 checked now (#152), and the fix has a sting worth remembering: when `Tests` was made required, the
 obvious next move was to update the documented count — which would have turned a correct ten into
 an incorrect eleven. The documents were only right again *because* of the fix.
+
+### 10.1 Where checking stops
+
+Worth stating, so the boundary is not rediscovered by someone building the wrong tool.
+
+**Checkable, and now checked:** figures quoted from the game. A number copied out of Freehold's
+data is mechanical, and `vanilla-figure` holds every one of them to its source (#159).
+
+**Not checkable:** claims about how the game *behaves*. "Resistance does not apply on this branch."
+"Only `TurretTinker` and `PlaceTurretGoal` raise that event." Both were wrong in #147, both were
+about control flow, and both were caught by deploying a turret and looking. Grepping decompiled
+source for a pattern would produce a check harder to trust than the sentence it guards. **Do not
+build that.**
+
+**Should not be checked:** design rationale. "Cold has no gradient, so halving moderates nothing"
+is a judgment, not a fact. Mechanising it would pad the check until it stops meaning anything —
+the failure `.typos.toml`'s own policy warns about.
+
+What actually catches the second and third kinds is an acceptance criterion that requires
+**running the game**. #144 carried one and it earned its place twice: once finding the cryo arrow
+too weak, once finding that turrets deploy empty. That habit is the lever. The tooling above is
+worth having because quoted numbers are genuinely mechanical — not because it closes the gap.

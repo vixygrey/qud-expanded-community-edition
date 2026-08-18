@@ -108,6 +108,55 @@ def member_tfm() -> str:
 # the holes are the right shape - it re-establishes on every regeneration that vanilla passes.
 ELEMENT_ATTRS = ("Name", "Namespace", "ChanceOneIn", "Reflector", "Builder")
 
+# Figures the documents quote *from vanilla*, and where each one lives. Every entry exists
+# because a document depends on it - this is a list of citations, not a dump of the game.
+#
+# The gap it closes: check_docs.py recomputes 45 figures from `mod/`, and qud-api.json checks
+# names against the game, but a number copied out of Freehold's data was checked by nobody and
+# goes stale on any update. #144 shipped saying the thermal and freeze grenades do not exist.
+# They do, in Items.xml, and the arrow payloads were scaled against the wrong anchors as a result.
+#
+# (key, blueprint, "part" or "tag", element name, attribute)
+CITED_FIGURES = (
+    (
+        "heat-grenade-delta",
+        "HeatGrenade1",
+        "part",
+        "ThermalGrenade",
+        "TemperatureDelta",
+    ),
+    (
+        "cold-grenade-delta",
+        "ColdGrenade1",
+        "part",
+        "ThermalGrenade",
+        "TemperatureDelta",
+    ),
+    ("poison-gas-density", "PoisonGasGrenade1", "part", "GasGrenade", "Density"),
+    ("sleep-gas-density", "SleepGasGrenade1", "part", "GasGrenade", "Density"),
+    ("flashbang-radius", "FlashbangGrenade1", "part", "FlashbangGrenade", "Radius"),
+    ("flashbang-duration", "FlashbangGrenade1", "part", "FlashbangGrenade", "Duration"),
+    ("he-grenade-force", "HEGrenade1", "part", "HEGrenade", "Force"),
+    ("he-grenade-damage", "HEGrenade1", "part", "HEGrenade", "Damage"),
+    ("boomrose-force", "ProjectileExplosiveArrow", "part", "HEGrenade", "Force"),
+    ("boomrose-damage", "ProjectileExplosiveArrow", "part", "HEGrenade", "Damage"),
+    ("boomrose-value", "Boomrose Arrow", "part", "Commerce", "Value"),
+    (
+        "boomrose-penetration",
+        "ProjectileExplosiveArrow",
+        "part",
+        "Projectile",
+        "StrengthPenetration",
+    ),
+    (
+        "boomrose-base-damage",
+        "ProjectileExplosiveArrow",
+        "part",
+        "Projectile",
+        "BaseDamage",
+    ),
+)
+
 DEFAULT_ASSEMBLIES = [
     "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll",
     "~/.steam/steam/steamapps/common/Caves of Qud/CoQ_Data/Managed/Assembly-CSharp.dll",
@@ -257,6 +306,44 @@ def collect_members(assembly: Path) -> dict[str, list[str]]:
     return {name: sorted(vals) for name, vals in sorted(members.items())}
 
 
+def collect_figures(game: Path) -> dict[str, str]:
+    """Read every figure in CITED_FIGURES out of vanilla's own data.
+
+    A figure that cannot be located fails generation rather than resolving to nothing. That is the
+    whole point: a citation the game no longer supports should be loud at the moment someone
+    regenerates, not silently absent from a check that then passes.
+
+    Values are read where they are written, without following `Inherits`. Every citation so far
+    sits on the blueprint that declares it, and resolving the chain would let a figure keep
+    checking out after the specific object stopped saying it.
+    """
+    wanted: dict[str, dict[str, tuple[str, str, str]]] = {}
+    for key, blueprint, kind, element, attr in CITED_FIGURES:
+        wanted.setdefault(blueprint, {})
+        wanted[blueprint][key] = (kind, element, attr)
+
+    figures: dict[str, str] = {}
+    for root in load_all(game, lenient=True):
+        for obj in root.iter("object"):
+            spec = wanted.get(obj.get("Name") or "")
+            if not spec:
+                continue
+            for key, (kind, element, attr) in spec.items():
+                for el in obj.iter(kind):
+                    if el.get("Name") == element and el.get(attr) is not None:
+                        figures[key] = el.get(attr)
+
+    missing = [key for key, *_ in CITED_FIGURES if key not in figures]
+    if missing:
+        raise SystemExit(
+            "error: these cited figures could not be found in the installed game:\n  "
+            + "\n  ".join(missing)
+            + "\n\nEither Qud moved them, or CITED_FIGURES is wrong. Fix the citation and the "
+            "document that depends on it - do not drop the entry."
+        )
+    return figures
+
+
 def collect_blueprints(game: Path) -> list[str]:
     names = set()
     for root in load_all(game, lenient=True):
@@ -350,6 +437,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         parts, part_source = collect_parts_from_xml(game), "vanilla-xml"
     blueprints = collect_blueprints(game)
     members = collect_members(member_assembly)
+    figures = collect_figures(game)
 
     problems = verify(game, set(parts), set(blueprints), members)
     if problems:
@@ -370,8 +458,17 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         raise SystemExit(1)
 
     member_repr = "\n".join(f"{k}:{','.join(v)}" for k, v in members.items())
+    figure_repr = "\n".join(f"{k}={v}" for k, v in sorted(figures.items()))
     digest = hashlib.sha256(
-        ("\n".join(parts) + "\0" + "\n".join(blueprints) + "\0" + member_repr).encode()
+        (
+            "\n".join(parts)
+            + "\0"
+            + "\n".join(blueprints)
+            + "\0"
+            + member_repr
+            + "\0"
+            + figure_repr
+        ).encode()
     ).hexdigest()[:16]
     return {
         "_comment": (
@@ -391,10 +488,12 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "blueprints": len(blueprints),
             "member_types": len(members),
             "members": sum(len(v) for v in members.values()),
+            "figures": len(figures),
         },
         "parts": parts,
         "blueprints": blueprints,
         "members": members,
+        "figures": dict(sorted(figures.items())),
     }
 
 
