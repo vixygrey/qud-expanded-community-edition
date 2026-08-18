@@ -488,6 +488,7 @@ seconds rather than after a round trip.
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
+| Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
 | Tier and value curve consistency | `item-curve` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
