@@ -1028,10 +1028,18 @@ stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have su
 anything — with no error anywhere, which is why it survived a release. Found while working #145,
 whose razor shell had the identical defect.
 
-Bleeding is melee-only **by design**, not oversight: vanilla puts `BleedingOnHit` on exactly two
-objects, `Lamprey Bite` and `Sharpened Polyp`, both natural melee weapons. So #201 changed the
-payload rather than adding the mechanic in C#; whether the mod should own a bleeding-at-range part
-is #210, and it needs charter rule 2's argument rather than arriving inside a bug fix.
+The **part** is melee-only; the **mechanic** is not. `BleedingOnHit` sits on exactly two vanilla
+objects, `Lamprey Bite` and `Sharpened Polyp` — and only the first is a natural weapon, the second
+being a wieldable `LongBlades` item. Bleeding itself reaches much further:
+`XRL.World.Parts.Skill.ShortBlades`, the tree's *root* class, bleeds on every critical hit with no
+power purchased, and `Rifle_WoundingFire` applies `Bleeding` at range from `MissileWeapon.cs`. This
+section previously said the opposite; corrected in #219.
+
+So #201 changed the payload because `BleedingOnHit` cannot fire from a projectile — which remains
+true — not because Qud declines to bleed things at range. Whether the mod should own a
+bleeding-at-range part is #210, and charter rule 2's question there is not whether to invent a
+mechanic but whether ammunition should deliver one that vanilla gates behind 250 skill points and a
+marking turn.
 
 The replacement is the **hulk honey arrow**, and `StickyOnHit` is the one payload for which being a
 single projectile is an *advantage* — it was rejected for the takedown shell precisely because eight

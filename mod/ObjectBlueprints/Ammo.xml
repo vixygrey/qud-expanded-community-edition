@@ -162,10 +162,18 @@
        neither - it raises "ProjectileHit". The arrow flew, hit, dealt its 1d2, and the bleed never
        happened, with no error anywhere. Same defect that cut the razor shell in #145.
 
-       Bleeding is melee-only by design rather than by oversight: vanilla puts BleedingOnHit on
-       exactly two objects, Lamprey Bite and Sharpened Polyp, and both are natural melee weapons. So
-       #201 did not add the mechanic in C# - that is #210, and it needs its own argument under
-       charter rule 2 rather than arriving as a side effect of a bug fix.
+       The PART is melee-only. The MECHANIC is not, and an earlier version of this comment had that
+       wrong - corrected in #219. BleedingOnHit sits on two vanilla objects, Lamprey Bite and
+       Sharpened Polyp, and the second is a wieldable LongBlades item rather than a natural weapon.
+       Bleeding itself reaches much further: XRL.World.Parts.Skill.ShortBlades - the tree's ROOT
+       class, no power purchased - bleeds on every critical hit, and Rifle_WoundingFire applies
+       Bleeding at range from MissileWeapon.cs. Vanilla has not declined this mechanic; it ships it
+       twice.
+
+       So #201 did not add it in C# because BleedingOnHit could not fire from a projectile, which is
+       still true. Whether the mod should own a bleeding-at-range part is #210, and the question
+       there is not "invent a mechanic" but "should ammunition deliver what vanilla delivers through
+       a 250-point skill sequence gated behind a marking turn".
 
        The name is reserved deliberately. A quillipede's barb is the right fiction for bleeding and
        the wrong one for anything else, so the replacement arrow got its own blueprint rather than
