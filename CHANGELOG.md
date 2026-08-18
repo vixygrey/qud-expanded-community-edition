@@ -14,6 +14,22 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** A `<part>` attribute that names nothing on the part class now fails the build. Qud applies attributes by name and discards the ones that match no member — the part loads, the object validates, and the setting you wrote does nothing. `<part Name="TemperatureOnHit" Amount="250" Radius="2" />` is a working part with a dead attribute on it, and nothing anywhere says so. It is the third of the three checks scoped while reviving the effect arrows, and the one that was deferred because a naive version produced 29 findings against a clean codebase, every one of them wrong.
+
+  The three reasons it was hard are all in the member list, so the fix is to build that list properly. **Properties** — `Armor.AV`, `Description.Short` and `TinkerItem.Bits` have bodies rather than being fields. **Inheritance** — `ChargeUse` lives on `IPoweredPart`, not on the five parts the mod sets it on. **Generic bases** — `ModImprovedConfusion` extends a constructed generic, so its `Tier` is one blob-decode away rather than one handle away. `tools/dump_part_members.cs` handles all three and flattens the result at generation time, which keeps `part-attribute` in `tools/validate_mod.py` a plain lookup that needs no game and no SDK in CI.
+
+  It reads the assembly's **metadata**, not its code: `System.Reflection.Metadata` is in-box in the .NET SDK, so there is no `ilspycmd`, no package restore, no network, and nothing executed. What comes back is member names.
+
+  Vanilla is the gate, and it earned its keep on the first run. Four attribute names in Freehold's own data resolved to no member, and each one corrected the rule instead of being waved through: `ChanceOneIn` and `Builder` turned out to belong to the `<part>` **element** rather than the part class — `ChanceOneIn` is a public field of `XRL.World.GamePartBlueprint`, and every value vanilla gives `Builder` resolves to a type in `XRL.World.PartBuilders` — while the two `Tier` hits were the generic-base gap above. With those understood, vanilla passes on all **50,075** of its part attributes and the mod on all **5,371**, which is the evidence that the rule is safe to enforce rather than a hope that it is.
+
+  One limit worth stating: the check is case-sensitive. Vanilla matches its members' casing exactly in all 50,075, so this costs nothing today, and if Qud does fold case then a mismatch is still worth fixing.
+  ([#151](https://github.com/vixygrey/qud-expanded-community-edition/issues/151))
+
+- **(internal)** `tools/qud-api.json` carries a `members` map — 21,957 settable names across 1,371 part classes — and the snapshot's digest covers it, so a stale members map is as loud as a stale part list. There is deliberately no flag to skip generating it: a snapshot quietly missing the map would disable the new check in CI and still look green, which is the failure mode this whole family of tools exists to prevent.
+  ([#151](https://github.com/vixygrey/qud-expanded-community-edition/issues/151))
+
 ### Fixed
 
 - **(internal)** Four documents no longer say that `"WorkshopId": 0` makes Qud's uploader create a new Workshop item. It does not: the uploader reads a zero as an id, looks up item zero, and answers *Item not found* with every field blank and no way forward. That is what blocked this fork's first upload, and the guidance that caused it was in `docs/STYLEGUIDE.md` §7.1, `docs/FEATURES.md` §10 row 0b, `docs/CHARTER.md`'s release-blocker table, and `docs/PERMISSION.md` §7 — each of them confidently wrong, and one of them the file I would have checked first.

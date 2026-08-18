@@ -80,6 +80,12 @@ CURVE_EXEMPT = {
 # uploading with this ID in workshop.json would publish over their page. See docs/PERMISSION.md §5.
 UPSTREAM_WORKSHOP_ID = 1134036260
 
+# Attributes that belong to the `<part>` element rather than to the part class, so they are valid
+# on every part and resolve against no member. Read from the snapshot when it carries them; this
+# is the fallback for an older snapshot. See ELEMENT_ATTRS in tools/snapshot_qud_api.py for the
+# evidence behind each name.
+ELEMENT_ATTRS = ("Name", "Namespace", "ChanceOneIn", "Reflector", "Builder")
+
 # Steam's own ceiling on a published item's description. Steamworks caps it at 8000 characters,
 # and the installed mods agree: of the 72 that ship a workshop.json, the longest description is
 # Caves of Qud Expanded's own at 7943 — right against the wall. Qud's uploader does not warn, so
@@ -789,6 +795,43 @@ def check_table_targets(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 f.add("dangling-blueprint", f"{path}: table references undefined {bp}")
 
 
+def check_part_attributes(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A `<part>` attribute must name something the part class can actually be set to.
+
+    Qud applies attributes by name. One that matches no member is discarded in silence - the part
+    loads, the object validates, and the setting does nothing:
+
+        <part Name="TemperatureOnHit" Amount="250" Radius="2" />
+                                                   ^^^^^^^^^^ ignored, no error anywhere
+
+    Same failure shape as `unknown-part` and `dangling-blueprint-ref`, and the same class of defect
+    that put all of Ammo.xml behind a comment for the whole of 2.2.
+
+    The member list comes from tools/qud-api.json, so this runs in CI with no game and no SDK. A
+    part missing from the snapshot is skipped rather than guessed at: `unknown-part` is what
+    reports a name that resolves to nothing, and reporting it twice would only look like two
+    problems. See issue #151.
+    """
+    api = load_qud_api()
+    if not api or not api.get("members"):
+        return
+    members = api["members"]
+    element_attrs = set(api.get("element_attributes") or ELEMENT_ATTRS)
+    for path, root in all_roots.items():
+        for part in object_parts(root):
+            name = part.get("Name")
+            if name not in members:
+                continue
+            allowed = set(members[name]) | element_attrs
+            for attr in sorted(part.attrib):
+                if attr not in allowed:
+                    f.add(
+                        "part-attribute",
+                        f'{path}: <part Name="{name}" {attr}="…"> - {name} has no settable '
+                        f"member called {attr}, so Qud discards it without an error",
+                    )
+
+
 def load_qud_api() -> dict | None:
     """The committed snapshot of names Qud exposes. See tools/snapshot_qud_api.py."""
     if not QUD_API_PATH.exists():
@@ -908,6 +951,7 @@ def run() -> Findings:
     check_table_targets(f, roots)
     check_part_names(f, roots)
     check_blueprint_refs(f, roots)
+    check_part_attributes(f, roots)
     return f
 
 

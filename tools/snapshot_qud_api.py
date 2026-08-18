@@ -8,6 +8,10 @@
 2. **Which blueprint names exist.** A part attribute naming a blueprint that isn't there fails the
    same way — #144 found `GasObject="GasPoison"` where the blueprint is `PoisonGas` (`GasPoison`
    is a *part* on it), which would have fired an arrow that released no gas at all.
+3. **Which members a part attribute can land on.** `<part Name="TemperatureOnHit" Radius="2" />`
+   is discarded whole: the part loads, the object is valid, and the setting does nothing. That
+   list only exists in `Assembly-CSharp.dll`, so `tools/dump_part_members.cs` reads it out of the
+   metadata — no decompiler, no packages, nothing executed.
 
 GitHub runners have no copy of the game, so neither check can run in CI directly. This tool writes
 the answers to `tools/qud-api.json`, which **is committed**. The validator reads that file and runs
@@ -28,9 +32,13 @@ Usage:
 
 `--check` verifies the committed snapshot still matches the installed game and writes nothing.
 
-`--assembly` reads part names from `Assembly-CSharp.dll` instead of from vanilla's usage. Only
+`--assembly` reads part *names* from `Assembly-CSharp.dll` instead of from vanilla's usage. Only
 needed if the mod adopts a real part that vanilla declares and never uses — the default list covers
 every part in use today. That path wants `ilspycmd` (`dotnet tool install -g ilspycmd`).
+
+Part *members* always come from the assembly, which is located automatically, and need the .NET
+SDK — the same one `tools/compile_scripting.py` uses. There is deliberately no flag to skip them:
+a snapshot silently missing its `members` map would disable `part-attribute` in CI and look green.
 """
 
 from __future__ import annotations
@@ -43,6 +51,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -56,6 +65,48 @@ SNAPSHOT_PATH = Path("tools/qud-api.json")
 # XRL.Collections.Container and XRL.World.Parts.Container. Widening the scope would let a typo
 # land on an unrelated class and pass.
 PART_NAMESPACE = "XRL.World.Parts"
+
+# The member dumper, and the throwaway project that builds it. System.Reflection.Metadata is
+# in-box in the .NET SDK, so this needs no package, no network and no ilspycmd - and the SDK is
+# already required by tools/compile_scripting.py, which the pre-commit hook runs.
+MEMBER_DUMPER = Path(__file__).resolve().parent / "dump_part_members.cs"
+MEMBER_PROJECT = """<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>{tfm}</TargetFramework>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>dump_part_members</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup><Compile Include="{source}" /></ItemGroup>
+</Project>
+"""
+
+
+def member_tfm() -> str:
+    """Target whatever SDK is installed rather than pinning a version.
+
+    A pinned `net8.0` fails on a machine that only has 10 - the SDK compiles it and then finds no
+    matching runtime. The dumper uses nothing version-specific, so the installed major is always
+    the right answer.
+    """
+    proc = subprocess.run(
+        ["dotnet", "--version"], capture_output=True, text=True, check=False
+    )
+    major = proc.stdout.strip().split(".")[0] if proc.returncode == 0 else ""
+    return f"net{major}.0" if major.isdigit() else "net8.0"
+
+
+# Attributes that belong to the `<part>` element rather than to the part class, so they are valid
+# on every part and resolve against no member at all. Not a guess: `Name`, `Namespace`,
+# `ChanceOneIn` and `Reflector` are the public fields of `XRL.World.GamePartBlueprint`, which is
+# the loader's own representation of the element. `Builder` is here on separate evidence - every
+# value vanilla gives it (`InventoryChestJunk`, `InventoryChestJunk1R`, …) resolves to a type in
+# `XRL.World.PartBuilders`, so it names a builder class rather than setting a member.
+#
+# Keep this list evidence-backed. Each entry is a hole in the check, and verify() is what proves
+# the holes are the right shape - it re-establishes on every regeneration that vanilla passes.
+ELEMENT_ATTRS = ("Name", "Namespace", "ChanceOneIn", "Reflector", "Builder")
 
 DEFAULT_ASSEMBLIES = [
     "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll",
@@ -160,6 +211,52 @@ def collect_parts(assembly: Path) -> list[str]:
     return sorted(names)
 
 
+def collect_members(assembly: Path) -> dict[str, list[str]]:
+    """Every settable member of every part class, inherited members flattened in.
+
+    Shells out to `tools/dump_part_members.cs` through a throwaway project, because the answer
+    lives in the assembly's metadata and nothing in the shipped XML carries it. See that file for
+    what counts as settable and why properties, inheritance and generic bases each need handling.
+    """
+    if not shutil.which("dotnet"):
+        raise SystemExit(
+            "error: the .NET SDK is needed to read part members from the assembly.\n"
+            "  brew install dotnet          (or https://dotnet.microsoft.com/download)\n"
+            "It is the same SDK tools/compile_scripting.py already uses."
+        )
+    if not MEMBER_DUMPER.is_file():
+        raise SystemExit(f"error: {MEMBER_DUMPER} is missing")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        project = Path(tmp) / "dump_part_members.csproj"
+        project.write_text(
+            MEMBER_PROJECT.format(tfm=member_tfm(), source=MEMBER_DUMPER)
+        )
+        proc = subprocess.run(
+            ["dotnet", "run", "--project", str(project), "--", str(assembly)],
+            capture_output=True,
+            text=True,
+            check=False,
+            env={
+                **os.environ,
+                "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+                "DOTNET_NOLOGO": "1",
+            },
+        )
+    if proc.returncode != 0:
+        raise SystemExit(f"error: reading part members failed:\n{proc.stderr.strip()}")
+    payload = proc.stdout[proc.stdout.index("{") :] if "{" in proc.stdout else ""
+    try:
+        members = json.loads(payload)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(
+            f"error: the member dumper did not return JSON: {exc}"
+        ) from exc
+    if not members:
+        raise SystemExit(f"error: no members found in {PART_NAMESPACE}")
+    return {name: sorted(vals) for name, vals in sorted(members.items())}
+
+
 def collect_blueprints(game: Path) -> list[str]:
     names = set()
     for root in load_all(game, lenient=True):
@@ -172,7 +269,9 @@ def collect_blueprints(game: Path) -> list[str]:
     return sorted(names)
 
 
-def verify(game: Path, parts: set[str], blueprints: set[str]) -> list[str]:
+def verify(
+    game: Path, parts: set[str], blueprints: set[str], members: dict[str, list[str]]
+) -> list[str]:
     """Hold vanilla to the rules we are about to hold the mod to.
 
     If vanilla fails them, the rule is wrong and the snapshot must not ship — a rule that flags
@@ -185,9 +284,16 @@ def verify(game: Path, parts: set[str], blueprints: set[str]) -> list[str]:
     verification. The rule stays sound (a part vanilla uses is a part that exists) and the check
     against the mod stays meaningful; it is the self-test that goes trivial, and it is worth
     knowing that rather than reading a green line as more assurance than it carries. The blueprint
-    half is a genuine test either way.
+    and member halves are genuine tests either way.
+
+    The member half earned its keep immediately. It found four attribute names vanilla sets that
+    are not members of the part class, and each one taught the rule something rather than being
+    waved through: `ChanceOneIn` and `Builder` belong to the element (see ELEMENT_ATTRS), and
+    `Tier` on the ModImproved* parts is inherited through a *generic* base, which the dumper now
+    decodes. Vanilla is clean on all 50,075 of its part attributes.
     """
     problems = []
+    element_attrs = set(ELEMENT_ATTRS)
     for root in load_all(game, lenient=True):
         for part in object_parts(root):
             name = part.get("Name")
@@ -195,6 +301,14 @@ def verify(game: Path, parts: set[str], blueprints: set[str]) -> list[str]:
                 problems.append(
                     f'vanilla uses <part Name="{name}"> which is not a class'
                 )
+            if name in members:
+                allowed = set(members[name]) | element_attrs
+                for attr in part.attrib:
+                    if attr not in allowed:
+                        problems.append(
+                            f'vanilla sets <part Name="{name}" {attr}="…">, '
+                            f"which is not a settable member of {name}"
+                        )
         for el in root.iter():
             if el.tag in BLUEPRINT_CONTEXTS:
                 for attr in BLUEPRINT_ATTRS:
@@ -229,14 +343,15 @@ def collect_parts_from_xml(game: Path) -> list[str]:
     return sorted(names)
 
 
-def build(game: Path, assembly: Path | None) -> dict:
+def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     if assembly is not None:
         parts, part_source = collect_parts(assembly), f"assembly:{PART_NAMESPACE}"
     else:
         parts, part_source = collect_parts_from_xml(game), "vanilla-xml"
     blueprints = collect_blueprints(game)
+    members = collect_members(member_assembly)
 
-    problems = verify(game, set(parts), set(blueprints))
+    problems = verify(game, set(parts), set(blueprints), members)
     if problems:
         print(
             f"REFUSING to write: the rules do not hold for vanilla itself "
@@ -248,14 +363,15 @@ def build(game: Path, assembly: Path | None) -> dict:
         if len(problems) > 20:
             print(f"  … and {len(problems) - 20} more", file=sys.stderr)
         print(
-            "\nNarrow BLUEPRINT_ATTRS or BLUEPRINT_CONTEXTS until vanilla is clean, "
-            "then regenerate.",
+            "\nNarrow BLUEPRINT_ATTRS, BLUEPRINT_CONTEXTS or ELEMENT_ATTRS until vanilla is "
+            "clean, then regenerate.",
             file=sys.stderr,
         )
         raise SystemExit(1)
 
+    member_repr = "\n".join(f"{k}:{','.join(v)}" for k, v in members.items())
     digest = hashlib.sha256(
-        ("\n".join(parts) + "\0" + "\n".join(blueprints)).encode()
+        ("\n".join(parts) + "\0" + "\n".join(blueprints) + "\0" + member_repr).encode()
     ).hexdigest()[:16]
     return {
         "_comment": (
@@ -269,9 +385,16 @@ def build(game: Path, assembly: Path | None) -> dict:
         "part_source": part_source,
         "blueprint_attributes": list(BLUEPRINT_ATTRS),
         "blueprint_contexts": list(BLUEPRINT_CONTEXTS),
-        "counts": {"parts": len(parts), "blueprints": len(blueprints)},
+        "element_attributes": list(ELEMENT_ATTRS),
+        "counts": {
+            "parts": len(parts),
+            "blueprints": len(blueprints),
+            "member_types": len(members),
+            "members": sum(len(v) for v in members.values()),
+        },
         "parts": parts,
         "blueprints": blueprints,
+        "members": members,
     }
 
 
@@ -312,11 +435,19 @@ def main() -> int:
             )
             return 2
 
+    member_assembly = assembly or find_assembly(None)
+    if member_assembly is None:
+        print(
+            "Could not find Assembly-CSharp.dll, which is where part members live.\n"
+            "Pass --assembly PATH.",
+            file=sys.stderr,
+        )
+        return 2
+
     print(f"game:     {game}")
-    print(
-        f"parts:    {assembly if assembly else 'vanilla XML usage (no decompiler)'}\n"
-    )
-    fresh = build(game, assembly)
+    print(f"parts:    {assembly if assembly else 'vanilla XML usage (no decompiler)'}")
+    print(f"members:  {member_assembly}\n")
+    fresh = build(game, assembly, member_assembly)
 
     if args.check:
         if not SNAPSHOT_PATH.exists():
@@ -328,7 +459,8 @@ def main() -> int:
         if current.get("digest") == fresh["digest"]:
             print(
                 f"Snapshot is current ({fresh['counts']['parts']} parts, "
-                f"{fresh['counts']['blueprints']} blueprints, digest {fresh['digest']})."
+                f"{fresh['counts']['blueprints']} blueprints, "
+                f"{fresh['counts']['members']} members, digest {fresh['digest']})."
             )
             return 0
         print(
@@ -342,9 +474,13 @@ def main() -> int:
     print(
         f"wrote {SNAPSHOT_PATH}: {fresh['counts']['parts']} parts, "
         f"{fresh['counts']['blueprints']} blueprints, "
+        f"{fresh['counts']['members']} members across "
+        f"{fresh['counts']['member_types']} part classes, "
         f"steam build {fresh['steam_build_id']}, digest {fresh['digest']}"
     )
-    print("Vanilla satisfies both rules, so they are safe to enforce against the mod.")
+    print(
+        "Vanilla satisfies all three rules, so they are safe to enforce against the mod."
+    )
     return 0
 
 

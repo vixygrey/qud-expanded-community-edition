@@ -161,7 +161,8 @@ python3 tools/validate_mod.py
 ```
 
 It checks XML and JSON well-formedness, blueprint reachability, `Load="Merge"` discipline on every
-vanilla record, C# part resolution, the Workshop upload target, and the manifest's credit field.
+vanilla record, C# part resolution, part attributes against the members that back them, the
+Workshop upload target, and the manifest's credit field.
 It also enforces charter rule 5 against `mod/Scripting/` — no file I/O, network, reflection,
 shelling out, external assemblies or Harmony — and flags any instance field on a `[Serializable]`
 type, since that layout is written into every player save.
@@ -185,8 +186,12 @@ It regenerates `tools/qud-api.json`, the committed list of the part and blueprin
 uses. That snapshot is what lets `validate_mod.py` check part names and blueprint references **in
 CI**, where there is no game to read — so the answer is committed rather than computed on demand.
 
-Everything in it comes from the plain-text XML the game ships; no decompiler is involved and none
-is needed. `--assembly` will widen the part list from `Assembly-CSharp.dll` if you ever need a part
+Most of it comes from the plain-text XML the game ships. The exception is the `members` map —
+which member names each part class will actually accept — because that exists only inside
+`Assembly-CSharp.dll`. `tools/dump_part_members.cs` reads it out of the assembly's *metadata*
+using the in-box `System.Reflection.Metadata`: nothing is decompiled, nothing is executed, no
+package is restored, and what comes back is identifiers. That step needs the .NET SDK, the same
+one the C# pre-commit hook uses. `--assembly` will widen the part list from `Assembly-CSharp.dll` if you ever need a part
 vanilla declares but never uses, and that path needs `ilspycmd` — but the default does not.
 
 The snapshot records the Steam build it came from, and `--check` compares it against what is
