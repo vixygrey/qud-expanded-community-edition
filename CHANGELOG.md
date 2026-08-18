@@ -14,6 +14,10 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.4.0] - 2026-08-18
+
 ### Fixed
 
 - **(internal)** `docs/STYLEGUIDE.md` §1.1b no longer tells contributors that shipped identifiers are free to rename. It was written before the fork released and still opened *"this fork has no saves yet"*, with a table marking CoQE-original blueprint names *"verified free"*. That stopped being true on 2026-08-17 when `v2.3.0` shipped, and nothing mechanical noticed — `check_docs.py` verifies counts, links and section references, none of which is a sentence about the state of the world.
@@ -645,6 +649,7 @@ Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.
 **Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
 named explicitly as the one condition of the fork permission.
 
-[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.3.1...main
+[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.4.0...main
+[2.4.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.4.0
 [2.3.1]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.1
 [2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0
