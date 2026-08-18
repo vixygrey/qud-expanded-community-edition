@@ -342,6 +342,21 @@ compatibility hazard in the mod", and §3.4's drop-rate arithmetic still read `1
 only correct under the table *replacement* that #34 had removed. That last one is a wrong number
 anyone trusting the doc would have repeated as fact.
 
+**The worst case is not a stale figure but a stale permission.** `docs/STYLEGUIDE.md` §1.1b spent a
+day telling contributors that CoQE-original blueprint names were *"verified free"* to rename,
+because it was written before `v2.3.0` and still opened with *"this fork has no saves yet"*. That
+sentence stopped being true on 2026-08-17 and nothing anywhere noticed. #201 needed to replace a
+shipped arrow, read §1.1b, and got the wrong answer from the one document whose job it is to give
+the right one — the correct answer came from `git tag`.
+
+A wrong number gets repeated. A wrong *permission* gets acted on, and this one authorises the
+silent-failure class the same section exists to prevent: rename a shipped blueprint and
+`GameObject.GetBlueprint` logs through `MetricsManager` and falls back to the generic `Object`, so
+every player's copy degrades without crashing and without telling anyone. When a document grants
+leave to do something dangerous **on the basis of a state of the world**, the grant needs the state
+written next to it — a date, a version, a tag — so the reader can check the premise rather than
+trusting the conclusion.
+
 **The emphasis is the tell.** A 🔴 callout, a "highest-value fix in the codebase", a numbered
 priority list — I write those when a defect is freshest and most irritating, and that same emphasis
 is what stops me revisiting them. They read as settled background rather than as claims under

@@ -17,9 +17,9 @@ stated — those are the ones that look arbitrary and are not.
 > **Some names are identifiers, not labels. Renaming them orphans data, breaks other mods, or
 > breaks the mod itself — silently, with no error.**
 
-Sort them into three groups before touching any of them: permanently frozen (§1.1), frozen only
-once this fork has released (§1.1b), and free (§1.3). Conflating the first two is how a fork
-either paralyses itself or breaks its own merges.
+Sort them into three groups before touching any of them: permanently frozen (§1.1), frozen since
+this fork released (§1.1b), and free (§1.3). Conflating the first two is how a fork either
+paralyses itself or breaks its own merges.
 
 Qud resolves modded XML by **root element, not by filename**. Verified across the 87 mods
 installed locally: `ObjectBlueprints.xml`, `Objectblueprints.xml`, and
@@ -96,23 +96,46 @@ changes them.**
 | **Options filename pattern** | Qud only treats a file as mod options if the filename **contains `Option`**. `ModOptions.xml` and `Options.xml` both work; `Settings.xml` does not. |
 | **The `Raven_` prefix** | Charter rule 3 — policy, not technology. Mura's signature in the namespace, and the attribution future contributors actually read. |
 
-### 1.1b Frozen after first release — free until then
+### 1.1b Frozen since first release
 
-These are frozen only by **save compatibility**, and this fork has no saves yet.
+These are frozen by **save compatibility**, and that freeze is now in force.
 
-It publishes as a **new Workshop item** and its release notes state that a new character is
-required, so nothing carries over from the original. That makes the following free to change
-today — and expensive the moment this fork ships its own v1, because at that point it has players
-with saves of its own.
-
-> **This is a closing window, not a standing freedom.** If a rename is wanted, it happens before
-> first release. See #24.
+**The window closed on 2026-08-17, when `v2.3.0` shipped** as this fork's first release. Until
+then these were genuinely free — the fork publishes as a new Workshop item and its notes require a
+new character, so nothing carried over from Mura's original and there were no saves of its own to
+protect. That is no longer true. There are players with saves now, and #24, which tracked the
+window, is closed.
 
 | Thing | Note |
 |---|---|
 | **Body part type strings** (`Chip Interface`) | Written into save state on every character that has one. Settled in #13: `Chipset Interface` → **`Chip Interface`**. |
 | **Anatomy and body-object names** (`PsionicAdept`) | Settled in #13: `Yttrian` → **`PsionicAdept`**, matching the `TrueKin` convention. |
-| **CoQE-original blueprint names** (`Raven_Iron Maceth`) | **Verified free:** no installed mod references a `Raven_` blueprint. The 11 names the Grand Bazaar sub-mod shares with CoQE are all *vanilla* blueprints CoQE merges, not CoQE originals. The `Raven_` prefix itself still stays — see above. |
+| **CoQE-original blueprint names** (`Raven_Iron Maceth`) | Was *"verified free"* before release, on the evidence that no installed mod references a `Raven_` blueprint — true, and no longer the point. Saves reference them now. The `Raven_` prefix itself stays regardless — see §1.1. |
+
+**What breaking this actually does, which is the reason it reads as a rule rather than a
+preference.** Renaming or removing a blueprint that shipped does not crash and does not error where
+anyone will see it. `GameObject.GetBlueprint` looks the name up, misses, logs through
+`MetricsManager` and returns the generic `Object` blueprint:
+
+```csharp
+if (_BlueprintCache != null || GameObjectFactory.Factory.Blueprints.TryGetValue(Blueprint, out _BlueprintCache))
+    return _BlueprintCache;
+...
+MetricsManager.LogError(new Exception("GameObject::GetBlueprint() Unknown Blueprint " + Blueprint));
+return GameObjectFactory.Factory.Blueprints["Object"];
+```
+
+The player's object survives — its parts are serialised on the object itself, so a weapon still
+swings and an arrow still fires — but every blueprint-level lookup (`GetTag`, `HasTagOrProperty`,
+`IsWall`) silently answers as `Object` instead. Degraded, not broken, and invisible to whoever
+caused it. The same silent-failure family as an orphaned `Load="Merge"`.
+
+**If a shipped name genuinely has to go**, do what #201 did rather than renaming in place: comment
+the old blueprint out with a note saying why and what would restore it, and give the replacement a
+**new** name. Existing copies degrade rather than vanish, nothing new spawns, and the old
+definition stays in the file for whoever revives it. Weigh that degradation against how long the
+name has been out and how common the object is — #201 judged one day of exposure on a weight-2 drop
+acceptable, which is not a general licence.
 
 ### 1.2 Coupled — renameable, but only in lockstep
 
