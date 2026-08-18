@@ -1348,6 +1348,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 - **Scrolldier / Parzival** — taught Mura to mod Caves of Qud (credited in the Workshop description)
 - **Arendeth** — population-table fixes (credited in `2.2 changelog.txt`)
 - **Tyrir** — found the 2.2 typo batch and the invalid blueprint in Other Equipment (credited in `2.2 changelog.txt`)
+- **Crow** — helped with bug fixes on the original (credited on the Workshop page)
 
 > 📌 **Fork permission — granted publicly.** The live Workshop description now reads:
 > *"Despite my original apprehension, I've decided to make the mod open to the community to
@@ -1359,9 +1360,6 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 >
 > **The one condition is credit** — and Noble Lark is named explicitly. Keep the list above intact
 > in your Workshop description and in-repo.
->
-> ⚠️ Note that the `workshop.json` **in this folder is stale**: it still contains the older
-> "please don't fork this" description. See §10 row 0b.
 
 ---
 
