@@ -25,6 +25,13 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `tools/sync_mod.py` installs `mod/` into the game, as either a dev build or a publish build. The directory Qud loads a mod from is the one the Workshop uploader publishes from, so testing a branch and shipping a release wanted opposite things from the same folder, and the difference was something to remember rather than something to see.
+
+  A dev build has its **`WorkshopId` removed**, which is the only thing binding an upload to the published item — without it the uploader can only offer to create a *new* item, so experimental content cannot overwrite the live page no matter which branch it came from. The title gains a `(dev)` suffix so the mod list says which build is loaded. A publish build refuses unless the tree is clean, on `main`, and level with `origin/main`, and runs the validator before copying anything.
+
+  It came out of #145: the install held `main` while the shells lived on a branch, and wishing for `Raven_Cryo Shell` returned a `Raven_Cryo Arrow` — a blueprint that does not exist does not fail, `WishSearcher` fuzzy-matches to the nearest one that does. Twenty minutes went into a wish command that had been correct all along. The obvious fix, symlinking the folder to `mod/`, would have made `git checkout` decide what ships to subscribers.
+  ([#208](https://github.com/vixygrey/qud-expanded-community-edition/issues/208))
+
 - **(internal)** A **Staging** column on the project board, between QA and Done, and a narrower **QA** to go with it. QA was doing two jobs — a change being tested, and a merged change waiting to ship — which meant the column could not answer the only question worth asking of it: is anyone still checking this? QA is now testing alone, Staging is everything merged since the last release, and Done still means live on the Workshop *and* released for players outside Steam.
 
   Staging is where most items will spend most of their time, because it collects changes that passed QA and changes that never needed it. `README.md`, `CONTRIBUTING.md` and the entry above were corrected to match, since nothing mechanical checks that the board and the documents describing it still agree.
