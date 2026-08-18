@@ -21,7 +21,7 @@ This mod exists because of other people's work, so I'd rather you saw that befor
 | **Scrolldier** (a.k.a. Parzival) | Taught Mura to mod Caves of Qud. |
 | **Arendeth** | Population table fixes. |
 | **Tyrir** | Bug reports, including the 2.2 typo batch. |
-| **Crow** | Contributor to the original. |
+| **Crow** | Helped with bug fixes on the original. |
 
 ### Contributors to this fork
 

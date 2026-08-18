@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 Nothing yet.
 
+## [2.3.1] - 2026-08-17
+
+### Fixed
+
+- **Crow helped with bug fixes, and is credited for that rather than as a contributor.** Mura corrected the line after this fork's first release: *"Crow (in the credits) helped with bug fixes, they didn't contribute to the mod itself."* Every credit list here said "contributor to the original" — `README.md`, `NOTICE`, `docs/PERMISSION.md` §4, and `mod/workshop.json`, which ships to subscribers and was live on the Workshop when the correction came in. Mura writes *they* for Crow, so this project does too. The exchange is recorded in `docs/PERMISSION.md` §8.3, which is append-only.
+
+  Crow was also missing from `docs/FEATURES.md` §12 entirely, which is how the wrong wording survived a check against that list. Added there too, so the six credit lists finally agree with each other. Credit is the one condition attached to this fork, so overstating what someone did is the same class of error as leaving them out.
+  ([#163](https://github.com/vixygrey/qud-expanded-community-edition/issues/163))
+
+- **The Workshop description's fixes list reads less like an audit.** Each entry now leads with what is true in the mod today and mentions the old behaviour second, where it needs mentioning at all: "all 144 psionic chips can be found now" rather than "72 of the 144 could not be found", "ten more items are findable" rather than "ten items had no route into the world". A few words doing more work than they earned are gone — tables "replaced vanilla's cascade rather than adding to it" instead of "severed" it, and the hit points line drops "as every writeup always said".
+
+  Nothing about the facts changed and no item left the list. The page is read by people deciding whether to trust a fork of someone else's mod, and a list of corrections written in the register of a defect report says something about the original that I do not mean and that is not true. Mura maintained this for years across many Qud versions; I read the whole thing at once with no deadline and their own documentation to check it against, which is a far easier position to find these from than the one they were in.
+  ([#163](https://github.com/vixygrey/qud-expanded-community-edition/issues/163))
+
+- **(internal)** `mod/workshop.json` carries the fork's real Workshop item id, `3785441196`, in place of the placeholder `0`. The placeholder is what blocked the first upload: Qud's uploader writes this file itself, and a `0` reads as a lookup for item zero rather than as "no item yet", so it reported the item as not found and never offered to create one. The fix was to remove the file entirely and let the uploader's "Create Workshop Id for Mod..." button write it, then merge the description back in. Two published mods installed locally ship a `workshop.json` with no `WorkshopId` key at all, which is what an unpublished one actually looks like. `docs/STYLEGUIDE.md` §7.1 still says "empty on first upload" and the validator still accepts a zero; both are tracked separately.
+  ([#163](https://github.com/vixygrey/qud-expanded-community-edition/issues/163))
+
+- **(internal)** `docs/FEATURES.md` §12 no longer warns that `mod/workshop.json` "is stale: it still contains the older 'please don't fork this' description." That was fixed in #2, long before the first release, and §10 row 0b already records the history. The note sat directly under the credit list it contradicted.
+  ([#163](https://github.com/vixygrey/qud-expanded-community-edition/issues/163))
+
 ## [2.3.0] - 2026-08-17
 
 The fork's first release. Version numbering continues Mura's lineage rather than resetting —
@@ -511,5 +531,6 @@ Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.
 **Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
 named explicitly as the one condition of the fork permission.
 
-[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.3.0...main
+[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.3.1...main
+[2.3.1]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.1
 [2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0

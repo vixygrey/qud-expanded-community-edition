@@ -56,7 +56,7 @@ fork's Workshop description and in-repo documentation:
 | **Scrolldier / Parzival** | Taught Mura to mod Caves of Qud |
 | **Arendeth** | Population-table fixes (credited in `2.2 changelog.txt`) |
 | **Tyrir** | Found the 2.2 typo batch and an invalid blueprint (credited in `2.2 changelog.txt`) |
-| **Crow** | Contributor named on the Workshop page |
+| **Crow** | Helped with bug fixes — not a contributor to the mod's content (§8.3) |
 
 > **Names and pronouns.** *chirps* was listed here as a separate contributor until Mura pointed out
 > it is **Noble Lark's** Steam name — one person, credited twice. Corrected everywhere in §8.1.
@@ -157,3 +157,15 @@ shows Mura believed the sprites were theirs to open up, but Noble Lark has never
 **I have reached out to him.** Until he answers, the 18 subtype sprites in `mod/Textures/Subtypes/`
 are *not* covered by the licences here — they remain his, used with credit, exactly as they have
 been all along. Mura offered to follow up if Noble Lark does not reply.
+
+### 8.3 Crow helped with bug fixes
+
+After this fork's first release, Mura corrected one line of the credit list:
+
+> Crow (in the credits) helped with bug fixes, they didn't contribute to the mod itself
+
+Crow had been credited here, in `README.md`, in `NOTICE` and in the shipped Workshop description
+as a contributor to the original mod, which claims more than they did. Corrected everywhere,
+including `mod/workshop.json`, which ships to subscribers.
+
+Mura writes **they** for Crow, so this project does too.
