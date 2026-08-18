@@ -70,12 +70,7 @@
       WeaponAccuracy="30"
       RangeIncrement="12"
     />
-    <part
-      Name="MagazineAmmoLoader"
-      ProjectileObject="Raven_ProjectileHandCannonMod"
-      AmmoPart="AmmoShotgunShell"
-      MaxAmmo="4"
-    />
+    <part Name="MagazineAmmoLoader" ProjectileObject="" AmmoPart="AmmoShotgunShell" MaxAmmo="4" />
     <part
       Name="Description"
       Short="This is what happens when genius meets insanity. Someone decided to modify this handcannon to allow for shotgun shells. Whilst obviously incapable of long range shootouts, it can shred any foes who attempt to get a little too close and personal with its relatively tight spread for something that shoots shotgun shells."
@@ -90,6 +85,43 @@
   </object>
   <object Name="Raven_ProjectileHandCannonMod" Inherits="BaseShotgunProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
+  </object>
+
+  <!-- Shell-firing weapons defer to the shell, revived in #145.
+
+       A shotgun never asked its ammunition what to fire. MagazineAmmoLoader.HandleEvent(LoadAmmoEvent)
+       consults the ammo's own ProjectileObject ONLY when the weapon leaves its own blank, and all four
+       weapons that take a shell hardcoded a pellet - so every effect shell in Ammo.xml was inert, which
+       is the "degraded to plain ammo" symptom recorded in #14.
+
+       An empty ProjectileObject is vanilla's own way of saying "fire whatever is loaded". It appears
+       exactly three times in the game - the Grenade Launcher and the Dart Gun, both weapons whose
+       ammunition carries the payload - and the merge chain applies it verbatim: ObjectBlueprintXMLChildNode
+       .Merge assigns attributes as written, and GamePartBlueprint builds a setter for the empty string
+       with no skip, so the field really is blanked rather than left inherited.
+
+       Plain Shotgun Shell is unaffected. ProjectileShotgunShell, ProjectileShotgunPellet and
+       ProjectileCombatShotgunPellet are the same object three times over - BasePenetration 4 over 1d2,
+       all inheriting BaseShotgunProjectile - so ordinary shot behaves identically before and after. The
+       weapon's damage readout improves as a side effect: with the field empty, MagazineAmmoLoader's
+       GetDisplayNameEvent reads the performance of the shell actually loaded.
+
+       The cost, stated plainly: if Freehold ever differentiates the combat shotgun's pellet from the
+       pump's, this merge discards it for anyone running the mod. That is charter rule 1's own failure
+       mode, accepted deliberately here because the alternative is a whole category of ammunition that
+       cannot exist. Both vanilla pellet blueprints are left declared and untouched.
+
+       Our two shotguns are edited in place above rather than merged, since they are ours.
+       Raven_ProjectileDrumShotgunPellet and Raven_ProjectileHandCannonMod are kept declared: they are
+       now unreferenced, but deleting a shipped blueprint is a save-compatibility question of its own
+       and they cost nothing where they stand. -->
+
+  <object Name="Pump Shotgun" Load="Merge">
+    <part Name="MagazineAmmoLoader" ProjectileObject="" AmmoPart="AmmoShotgunShell" MaxAmmo="1" />
+  </object>
+
+  <object Name="Combat Shotgun" Load="Merge">
+    <part Name="MagazineAmmoLoader" ProjectileObject="" AmmoPart="AmmoShotgunShell" MaxAmmo="6" />
   </object>
 
   <object Name="Chain Pistol" Load="Merge">
@@ -118,12 +150,7 @@
       WeaponAccuracy="36"
       RangeIncrement="6"
     />
-    <part
-      Name="MagazineAmmoLoader"
-      ProjectileObject="Raven_ProjectileDrumShotgunPellet"
-      AmmoPart="AmmoShotgunShell"
-      MaxAmmo="20"
-    />
+    <part Name="MagazineAmmoLoader" ProjectileObject="" AmmoPart="AmmoShotgunShell" MaxAmmo="20" />
     <part
       Name="Description"
       Short="A nutwood stock reinforced with metal framing, rapid firing will tear foes limb from limb."

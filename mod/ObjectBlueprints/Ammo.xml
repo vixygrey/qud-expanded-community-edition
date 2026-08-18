@@ -214,30 +214,269 @@
     <tag Name="ExcludeFromTurretStock" />
   </object>
 
-  <!-- Bullets and shells are still disabled, and are the subject of #145 (shotgun shells) and #146
-       (slugs). They are held back rather than deleted because those issues need the originals to
-       work from; each one is a separate reachability and balance claim, and #146 in particular
-       touches 12 vanilla weapons plus 7 relic bases.
+  <!-- Effect shells, revived in #145.
 
-       Do not revive these as-is. They carry the same defects #144 found in the arrows: they
-       inherit Projectile rather than the shell/slug bases, so they lose the tile, sounds and VFX;
-       both gas variants name a part (GasPoison, GasSleep) where a blueprint belongs (PoisonGas,
-       SleepGas) and would emit nothing; and Shotgun Shell below redeclares a vanilla record
-       instead of merging it, which charter rule 1 forbids.
+       These were dead on arrival, and not because of anything Mura wrote. A shotgun never asks its
+       ammunition what to fire. MagazineAmmoLoader.HandleEvent(LoadAmmoEvent) reads the WEAPON:
 
-  <object Name="Shotgun Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="shotgun shell" ColorString="&amp;y" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileShotgunShell" />
+           if (ProjectileObject.IsNullOrEmpty())
+               E.Projectile = GetProjectileObjectEvent.GetFor(E.LoadedAmmo, ParentObject);
+           else
+               E.Projectile = GameObject.Create(ProjectileObject, ...);
+
+       and all four weapons that take a shell hardcode one - ProjectileShotgunPellet on the Pump
+       Shotgun, ProjectileCombatShotgunPellet on the Combat Shotgun, and our own two. So a shell's
+       AmmoShotgunShell ProjectileObject was thrown away and the payload never existed. That is
+       exactly the symptom recorded in #14: the ammo "degraded to plain ammo".
+
+       The fix is vanilla's own, and it is the only three uses of an empty ProjectileObject in the
+       game: the Grenade Launcher and the Dart Gun blank it to say "fire whatever is loaded". We
+       merge the same blank onto both vanilla shotguns and set it on ours, in RangedWeapons.xml.
+       Plain Shotgun Shell is unaffected - ProjectileShotgunShell and the two pellet blueprints are
+       identical, BasePenetration 4 over 1d2, all inheriting BaseShotgunProjectile.
+
+       THE PAYLOAD IS PER PELLET, and that governs every number below. MissileWeapon.Fire raises
+       LoadAmmoEvent AmmoPerAction times and then DeepCopies the result up to ShotsPerAction, so one
+       shell becomes eight projectiles (twenty-four from four shells in the Drum Shotgun), each with
+       its own spread roll and its own copy of the payload part. Eight deliveries, not one.
+
+       That is why only four of Mura's ten survive, and the mechanism did the sorting.
+
+       AREA PAYLOADS CANNOT BE SCALED DOWN, because eight pellets multiply the geometry rather than
+       the magnitude. GasGrenade.DoDetonate fills the impact cell AND all eight adjacent cells at
+       the full Density, and Density is per cell - so dividing it thins the gas without shrinking
+       anything. Eight pellets across a WeaponAccuracy 45 cone reach up to 72 gas cells from one
+       shell, which no vanilla grenade at any tier approaches. FlashbangGrenade bottoms out at
+       Radius 1 / Duration 1 per pellet. HEGrenade is worst: Explode deals Force/250 and propagates
+       only while (Force - dealt) / 8 > 100, so Boomrose's 1,200 divided by eight is 150 - zero
+       damage and no propagation at all, an explosion in name only. Worse, IGrenade detonates on the
+       projectile's DEATH (BeforeDeathRemovalEvent, when Primed), so a pellet that hits nothing still
+       goes off where it lands. Eight detonations regardless of aim. Cut: explosive, flash, poison
+       gas, sleep gas.
+
+       BLEEDING IS NOT AVAILABLE TO A PROJECTILE AT ALL. BleedingOnHit registers "WeaponHit" and
+       "WieldedWeaponHit", and WeaponHit is raised in Combat.cs on the melee path - MissileWeapon
+       never raises it, it raises "ProjectileHit". The razor shell would have fired and done nothing.
+       So would the quill arrow we already shipped; that is #201. Cut: razor.
+
+       Vibro, sunder and stasis are cut for the reasons #144 cut their arrows, each worse here
+       because it would ride eight pellets from a tier 3 gun. Vorpal exists on three objects in the
+       game and the nearest is a tier 7 heavy weapon. BasePenetration 10 is above every vanilla
+       firearm projectile including the sniper rifle's 7. The stasis shell omitted
+       IsRealityDistortionBased, which all three vanilla stasis grenades set, so normality would not
+       have suppressed it.
+
+       What survives is what a shotgun already is - many small hits - so the payload rides the hit.
+
+       Heat and cold divide the arrow budget by eight. The arrows are +250 and -50 per action and a
+       shell also spends one piece of ammunition per action, so parity per action is the right
+       target: +30 and -6 a pellet give +240 and -48 a shot. The cold arithmetic in FEATURES 6.7
+       carries over unchanged - ambient regression is a flat 5 a turn at these magnitudes, so a shell
+       nets -43 and freezes on the third shot exactly as the cryo arrow does.
+
+       One thing worth knowing about both: ProjectileHit fires even when a pellet FAILS to penetrate
+       (the Penetrations = 0 branch raises it too) and TemperatureOnHit never checks penetration.
+       Armour stops the damage, not the heat or the cold. It is also why the cryo shell is the
+       family's answer to everything the takedown shell cannot touch: Physics.IsFrozen is nothing but
+       Temperature <![CDATA[<=]]> -100 and Frozen.Apply has no conditions whatsoever, so an ooze, a
+       slug or a worm freezes exactly as well as a humanoid.
+
+       The flechette shell is new, and it is here because a real slug shell is not expressible. Shot
+       count belongs to the gun - num9 is read straight off MissileWeapon.ShotsPerAction with no
+       event in between, and GetMissileWeaponPerformanceEvent, the one event ammunition can reach,
+       carries penetration and damage but no count. That is filed upstream as #200. So the
+       anti-armour round reaches its role through penetration instead: eight steel darts rather than
+       one slug. Pen 6 over flat 1 damage was picked by simulating Stat.RollDamagePenetrations
+       directly - it lands within 10% of standard shot everywhere below AV 10 and 48% ahead at AV 12,
+       which is the most populous declared AV in the game. Pen 7 and 1d2 damage were both tried and
+       both beat standard shot nearly everywhere, which makes them upgrades rather than trades.
+
+       The takedown shell carries two parts because they partition cleanly and neither can stack:
+       Prone.Apply opens with a HasEffect<Prone> guard, and GroundOnHit extends a Grounded duration
+       rather than adding a second one. So eight pellets buy reliability, never magnitude - which is
+       what makes Chance an honest dial here and is exactly what StickyOnHit could not offer. That
+       part reaches every anatomy and grounds fliers by itself, but it has no Chance field, Stuck has
+       no anti-stack guard, and GameObject.ApplyEffect does not deduplicate, so one shell would apply
+       eight separate Stuck effects and escaping rolls a save against each. No dial, so no shell.
+
+       Chance 12 a pellet is about a 64% takedown per shell at close range, degrading with distance
+       as fewer pellets connect. GroundOnHit needs ChargeUse="0" written out: it is an IPoweredPart
+       whose constructor sets ChargeUse 100, and on a projectile with no power source IsReady fails
+       and the part does nothing, silently. Vanilla's only user, ProjectileNaserCannon, writes the
+       same zero for the same reason.
+
+       Unlike the arrows these ARE craftable, and that is the same rule read the other way: tinkering
+       is the artifact skill, and a cartridge serves a firearm, which is recovered technology. Vanilla
+       agrees - Shotgun Shell and Lead Slug both have recipes while no arrow in the game does.
+
+       Where the RECIPE sits is a separate decision from what it costs, and both are set here.
+       TinkerItem.LoadBlueprint reads Tier from the BuildTier parameter, defaulting to the highest bit
+       level in the cost, and DataDisk.GetRequiredSkill needs Tinker 2 past tier 3. Plain shot is one
+       scrap electronics for five at tier 0 - the same slot as every grenade mk I - and a payload has
+       no business being learnable there.
+
+       All four cost 003: two scrap metal and one pure alloy, for three shells. That sits between
+       vanilla's two anchors, a grenade mk I at two bits for one and plain shot at one bit for five,
+       which is where a shell carrying an arrow's payload belongs. Bits alone would then put every
+       shell at tier 3, with the Pump Shotgun, inside Tinker 1.
+
+       That is right for the takedown shell and too early for the other three, so incendiary, cryo and
+       flechette carry BuildTier="4" and sit with the Combat Shotgun behind Tinker 2 while still
+       costing 003. The less-lethal round is the one anybody who can build the gun can also load;
+       burning, freezing and defeating armour wait for the second skill.
+
+       BuildTier is a real public field on TinkerItem that vanilla never writes, so it is worth saying
+       why it is safe: it is read as a blueprint parameter by LoadBlueprint, and it is in the API
+       snapshot the part-attributes check validates against. Its only effect is the recipe's tier, and
+       decoupling that from the cost is the entire point here - the alternative, 004, would have
+       charged pristine electronics for a paper cartridge.
+
+       All four carry ExcludeFromTurretStock, and the case is stronger here than it was for arrows.
+       Shotgun Shell is the ONLY blueprint in the game with AmmoShotgunShell and it carries no
+       exclusive tag, so the shell pool is a single entry: untagged, these four would be four fifths
+       of every shotgun turret's ammunition. TurretTinker also falls back to "Pump Shotgun" twice,
+       which makes shotgun turrets the game's default. Note the scope, which is narrower than
+       "turrets" - only TurretTinker and PlaceTurretGoal raise GenerateIntegratedHostInitialAmmo, so
+       a turret you deploy yourself arrives empty and you load it from your own pack. -->
+
+  <object Name="Raven_Incendiary Shell" Inherits="Projectile">
+    <part
+      Name="Render"
+      DisplayName="{{blaze|incendiary}} shell"
+      ColorString="&amp;R"
+      DetailColor="w"
+      Tile="items/sw_shotgun_shell.bmp"
+    />
+    <part Name="AmmoShotgunShell" ProjectileObject="Raven_ProjectileIncendiaryShell" />
     <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="A handful of pellets encased in a thick wax-paper and plastic shell." />
-    <part Name="TinkerItem" Bits="C" CanBuild="true" CanDisassemble="false" NumberMade="5" />
+    <part Name="MissileStatusColor" Color="R" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A crimped paper shell stencilled with a flame. The shot inside is jacketed in a compound that lights as it leaves the barrel."
+    />
+    <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
+    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
+    <tag Name="ExcludeFromTurretStock" />
   </object>
-  <object Name="ProjectileShotgunShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
+  <object Name="Raven_ProjectileIncendiaryShell" Inherits="BaseShotgunProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" Attributes="Fire" ColorString="&amp;R" />
+    <part Name="TemperatureOnHit" Amount="30" Max="false" OnWielderHit="true" />
   </object>
+
+  <object Name="Raven_Cryo Shell" Inherits="Projectile">
+    <part
+      Name="Render"
+      DisplayName="{{cryogenic|cryo}} shell"
+      ColorString="&amp;C"
+      DetailColor="w"
+      Tile="items/sw_shotgun_shell.bmp"
+    />
+    <part Name="AmmoShotgunShell" ProjectileObject="Raven_ProjectileCryoShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="MissileStatusColor" Color="C" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="Frost beads along the crimp. The shot is a cluster of scored gas bulbs, each one built to split rather than deform."
+    />
+    <part
+      Name="RulesDescription"
+      Text="Chills what it strikes. Repeated hits will freeze a target solid, whatever its shape."
+    />
+    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="ExcludeFromTurretStock" />
+  </object>
+  <object Name="Raven_ProjectileCryoShell" Inherits="BaseShotgunProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" Attributes="Cold" ColorString="&amp;C" />
+    <part Name="TemperatureOnHit" Amount="-6" Max="false" OnWielderHit="true" />
+  </object>
+
+  <object Name="Raven_Flechette Shell" Inherits="Projectile">
+    <part
+      Name="Render"
+      DisplayName="{{w|flechette}} shell"
+      ColorString="&amp;w"
+      DetailColor="K"
+      Tile="items/sw_shotgun_shell.bmp"
+    />
+    <part Name="AmmoShotgunShell" ProjectileObject="Raven_ProjectileFlechetteShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="MissileStatusColor" Color="w" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="No shot in this one. A bundle of finned steel darts stands packed nose-forward behind the wad, sized to slip between plates rather than dent them."
+    />
+    <part
+      Name="RulesDescription"
+      Text="Trades stopping power for penetration. Tells against armor and wastes itself on anything without any."
+    />
+    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="ExcludeFromTurretStock" />
+  </object>
+  <object Name="Raven_ProjectileFlechetteShell" Inherits="BaseShotgunProjectile">
+    <part Name="Projectile" BasePenetration="6" BaseDamage="1" ColorString="&amp;w" />
+  </object>
+
+  <object Name="Raven_Takedown Shell" Inherits="Projectile">
+    <part
+      Name="Render"
+      DisplayName="{{o|takedown}} shell"
+      ColorString="&amp;o"
+      DetailColor="w"
+      Tile="items/sw_shotgun_shell.bmp"
+    />
+    <part Name="AmmoShotgunShell" ProjectileObject="Raven_ProjectileTakedownShell" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="MissileStatusColor" Color="o" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="Dyed orange along its whole length so that no one loads it by mistake. It throws weighted batons trailing filament, and they wrap what they land on."
+    />
+    <part
+      Name="RulesDescription"
+      Text="Knocks targets off their feet, and brings fliers down for a while. Nothing to a legless creature that was never flying."
+    />
+    <part Name="TinkerItem" Bits="003" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <tag Name="AlwaysStack" Value="Yes" />
+    <tag Name="ExcludeFromTurretStock" />
+  </object>
+  <object Name="Raven_ProjectileTakedownShell" Inherits="BaseShotgunProjectile">
+    <part Name="Projectile" BasePenetration="4" BaseDamage="1" ColorString="&amp;o" />
+    <part Name="ProneOnHit" Chance="12" SaveTarget="25" SaveVs="Knockdown" SaveStat="Strength" />
+    <part
+      Name="GroundOnHit"
+      ChargeUse="0"
+      Chance="12"
+      SaveTarget="25"
+      SaveStat="Agility"
+      SaveVs="Takedown Grounding"
+      FlyingLevelAidsSave="true"
+      Duration="20-30"
+    />
+  </object>
+
+  <!-- Bullets are still disabled, and are the subject of #146 (slugs). They are held back rather
+       than deleted because that issue needs the originals to work from, and it is a much larger
+       reachability claim than this one: 12 vanilla weapons plus 7 relic bases.
+
+       Do not revive these as-is. Every defect #145 found in the shells applies, and #146 must run
+       the same test first: does the weapon hardcode MagazineAmmoLoader ProjectileObject? If it
+       does, the payload never fires. Beyond that they inherit Projectile rather than
+       BaseLeadSlugProjectile, so they lose the tile, the sounds and the Slug tag; both gas variants
+       name a part where a blueprint belongs (GasPoison and GasSleep are parts ON the PoisonGas and
+       SleepGas blueprints) and would emit nothing; the razor bullet's BleedingOnHit cannot fire on
+       a projectile at all (#201); and vibro, sunder and stasis were cut from both the arrows and
+       the shells for reasons that do not change here.
+
+       One difference worth knowing before starting: Lead Slug carries TurretStockExclusive, which
+       clears the candidate list of everything else, so slugs are excluded from turret stock
+       automatically and need no tagging. Shells had no such guard.
 
   <object Name="Raven_Vibro Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;cvibro &amp;ybullet" ColorString="&amp;c" />
@@ -253,22 +492,6 @@
     <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
     <part Name="Physics" IsReal="false" />
   </object>
-
-  <object Name="Raven_Vibro Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;cvibro &amp;yshell" ColorString="&amp;c" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileVibroShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="A shotgun shell containing shimmering, white pellets." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileVibroShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" BaseDamage="1d6" Attributes="Vorpal" ColorString="&amp;c" />
-    <part Name="Physics" IsReal="false" />
-  </object>
-
   <object Name="Raven_Sunder Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Ksunder &amp;ybullet" ColorString="&amp;K" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileSunderBullet" />
@@ -287,26 +510,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="SunderGrenade" Radius="1" Level="2" />
   </object>
-
-  <object Name="Raven_Sunder Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Ksunder &amp;yshell" ColorString="&amp;K" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileSunderShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="A shotgun shell containing chrome pellets, each humming with power.
-
-          &amp;C2d100+20 damage to inorganic matter.
-          &amp;C2d10+20 damage to organic matter." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileSunderShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="10" BaseDamage="1d6" ColorString="&amp;K" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="SunderGrenade" Radius="1" Level="2" />
-  </object>
-
   <object Name="Raven_Incendiary Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;oincendiary &amp;ybullet" ColorString="&amp;o" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileIncendiaryBullet" />
@@ -322,23 +525,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
   </object>
-
-  <object Name="Raven_Incendiary Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;oincendiary &amp;yshell" ColorString="&amp;o" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileIncendiaryShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="An odd shotgun shell containing strange orange pellets, they emanate a hot aura, and burst in a blast of heat on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileIncendiaryShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;o" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="TemperatureOnHit" Amount="400" Max="false" OnWielderHit="true" />
-  </object>
-
   <object Name="Raven_Sleep Gas Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Msleep gas &amp;ybullet" ColorString="&amp;M" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileSleepBullet" />
@@ -354,23 +540,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
   </object>
-
-  <object Name="Raven_Sleep Gas Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Msleep gas &amp;yshell" ColorString="&amp;M" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileSleepShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing strange purple pellets, which burst into a cloud of sleeping gas on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileSleepShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;M" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="GasGrenade" Density="40" GasObject="GasSleep" />
-  </object>
-
   <object Name="Raven_Poison Gas Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;gpoison gas &amp;ybullet" ColorString="&amp;g" />
     <part Name="AmmoSlug" ProjectileObject="ProjectilePoisonBullet" />
@@ -386,23 +555,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
   </object>
-
-  <object Name="Raven_Poison Gas Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;gpoison gas &amp;yshell" ColorString="&amp;g" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectilePoisonShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing strange purple pellets, which burst into a cloud of poison gas on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectilePoisonShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;g" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="GasGrenade" Density="40" GasObject="GasPoison" />
-  </object>
-
   <object Name="Raven_Razor Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;rrazor &amp;ybullet" ColorString="&amp;r" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileRazorBullet" />
@@ -418,23 +570,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
   </object>
-
-  <object Name="Raven_Razor Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;rrazor &amp;yshell" ColorString="&amp;r" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileRazorShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing jagged pieces of metal to cause maximum bleeding." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileRazorShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;r" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
-  </object>
-
   <object Name="Raven_Frozen Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;ybullet" ColorString="&amp;c" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileFrozenBullet" />
@@ -450,23 +585,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
   </object>
-
-  <object Name="Raven_Frozen Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;cf&amp;Cr&amp;co&amp;Cz&amp;ce&amp;Cn &amp;yshell" ColorString="&amp;c" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileFrozenShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Description" Short="An odd shotgun shell containing strange blue pellets, they emanate a cold aura, and burst in a blast of cold on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <part Name="Commerce" Value="0.20" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileFrozenShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="0" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;c" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="TemperatureOnHit" Amount="-400" Max="false" OnWielderHit="true" />
-  </object>
-
   <object Name="Raven_Explosive Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Wexplosive &amp;ybullet" ColorString="&amp;W" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileExplosiveBullet" />
@@ -482,23 +600,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="HEGrenade" Force="1200" Damage="1d6" />
   </object>
-
-  <object Name="Raven_Explosive Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Wexplosive &amp;yshell" ColorString="&amp;W" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileExplosiveShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing strange red pellets, which create a small explosions on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileExplosiveShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="HEGrenade" Force="1200" Damage="1d6" />
-  </object>
-
   <object Name="Raven_Flash Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;ybullet" ColorString="&amp;R" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileFlashBullet" />
@@ -514,23 +615,6 @@
     <part Name="Physics" IsReal="false" />
     <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
   </object>
-
-  <object Name="Raven_Flash Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;Mf&amp;Rl&amp;ra&amp;Rs&amp;Mh &amp;yshell" ColorString="&amp;R" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileFlashShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing strange white pellets, which burst with a loud pop and white flash on impact." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileFlashShell" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="FlashbangGrenade" Radius="1" Duration="1d3" />
-  </object>
-
   <object Name="Raven_Stasis Bullet" Inherits="Projectile">
     <part Name="Render" DisplayName="&amp;mstasis &amp;ybullet" ColorString="&amp;m" />
     <part Name="AmmoSlug" ProjectileObject="ProjectileStasisBullet" />
@@ -542,22 +626,6 @@
     <tag Name="DynamicObjectsTable:Ammo" />
   </object>
   <object Name="ProjectileStasisBullet" Inherits="TemporaryProjectile">
-    <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
-    <part Name="Physics" IsReal="false" />
-    <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
-  </object>
-
-  <object Name="Raven_Stasis Shell" Inherits="Projectile">
-    <part Name="Render" DisplayName="&amp;mstasis &amp;yshell" ColorString="&amp;m" />
-    <part Name="AmmoShotgunShell" ProjectileObject="ProjectileStasisShell" />
-    <part Name="Physics" Category="Ammo" />
-    <part Name="Commerce" Value="0.20" />
-    <part Name="Description" Short="An odd shotgun shell containing strange yellow pellets, which expand on impact to engulf whatever they hit." />
-    <part Name="TinkerItem" Bits="BC" CanBuild="true" CanDisassemble="false" NumberMade="6" />
-    <tag Name="AlwaysStack" Value="Yes" />
-    <tag Name="DynamicObjectsTable:Ammo" />
-  </object>
-  <object Name="ProjectileStasisShell" Inherits="TemporaryProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" ColorString="&amp;y" />
     <part Name="Physics" IsReal="false" />
     <part Name="DeploymentGrenade" Blueprint="Stasisfield" Radius="1" Duration="1d3" UsabilityEvent="CheckStasisUsability" AccessibilityEvent="CheckStasisAccessibility" ActivationVerb="detonates" BlockedBySolid="false" BlockedByNonEmpty="false" DustPuff="false" DustPuffEach="false" />
