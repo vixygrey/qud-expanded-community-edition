@@ -41,6 +41,13 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The Workshop description now states the version, says whether your save carries forward, and carries a **Known issues** section. It described 2.3.1 and listed a quill arrow that does nothing.
+
+  Two caveats go on the page rather than being left for players to trip over. The quill arrow is disabled and the hulk honey arrow replaces it. And **effect shells will not work in a shotgun you already own** — `MagazineAmmoLoader.ProjectileObject` is serialised per object, so a gun created before the update keeps the hardcoded shot it was built with, and only one obtained afterwards defers to the shell. That cannot be fixed in data, and it would read as a bug to anyone who updates and tries the new ammunition with the shotgun already in their hands.
+
+  Fitting four additions into a page with 994 characters of headroom meant cutting something, and `docs/STYLEGUIDE.md` §7.4 says which: the page says what changed, the repository says why. So two sentences of reasoning came out of **Compatibility**, and the standalone *Requires a new character* section merged into **Version and saves**, which now distinguishes updating from 2.3.x (no new character) from arriving from Mura's original (new character). Final length 7,837 with 163 spare.
+  ([#214](https://github.com/vixygrey/qud-expanded-community-edition/issues/214))
+
 - **Four effect shotgun shells** — an **incendiary shell**, a **cryo shell**, a **flechette shell** and a **takedown shell**, for the pump shotgun, the combat shotgun, the drum shotgun and the modified handcannon. They drop from `Ammo 2` upward and are craftable once you find the disk.
 
   These were the second block of `Ammo.xml` to come back, and unlike the arrows in #144 I found out *why* they had never worked. A shotgun never asked its ammunition what to fire: every shell-firing weapon in the game hardcodes its own pellet, and the game only consults the shell's projectile when the weapon leaves that field blank. So each of Mura's shells was loaded, fired, and had its payload thrown away. That is the "degraded to plain ammo" note in #14, and it was structural rather than a bug — which is why nobody could have fixed it by editing the shells.
