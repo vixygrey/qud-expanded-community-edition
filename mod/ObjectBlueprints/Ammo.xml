@@ -268,11 +268,67 @@
 
        What survives is what a shotgun already is - many small hits - so the payload rides the hit.
 
-       Heat and cold divide the arrow budget by eight. The arrows are +250 and -50 per action and a
-       shell also spends one piece of ammunition per action, so parity per action is the right
-       target: +30 and -6 a pellet give +240 and -48 a shot. The cold arithmetic in FEATURES 6.7
-       carries over unchanged - ambient regression is a flat 5 a turn at these magnitudes, so a shell
-       nets -43 and freezes on the third shot exactly as the cryo arrow does.
+       Heat and cold do NOT simply divide the arrow budget by eight, and the first attempt did,
+       which is worth writing down because it shipped a payload that measurably did nothing.
+
+       +30 and -6 a pellet look like parity: the arrows are +250 and -50 per action, a shell also
+       spends one piece of ammunition per action, and eight pellets at -6 is -48. Play-testing found
+       eight cryo shells into a 500 HP target that never got cold. The mechanism was fine - a probe
+       build confirmed the shell's own projectile fires and TemperatureOnHit applies from it - and
+       the number was the defect.
+
+       Ambient regression is a FLOOR, not a curve. Temperature returns by Math.Max(5, |diff| * 0.02)
+       every turn, a flat 5 at these magnitudes, and a shotgun connects with only a fraction of its
+       pellets. So the ÷8 lands on top of a second division nobody chose, and what is left is
+       measured against a fixed 5 a turn:
+
+           -6 a pellet, 3 of 8 connect:  -18 a shot, and a turn spent moving hands +5 straight back
+           -6 a pellet, 1 connects:      -6, which nets -1. The effect cannot accumulate.
+
+       The arrow never had this problem because -50 against -5 is decisive on any single hit.
+
+       The divisor is not eight either, and that is the second half of the same mistake. Play-testing
+       -12 at point blank, standing still, took FIVE shots to freeze - about -150 delivered over five
+       turns of regression, so roughly -30 a shot, so only about 2.5 of the eight pellets connect.
+       MissileWeapon rolls Stat.Random(-WeaponAccuracy, WeaponAccuracy) per pellet at accuracy 45 on
+       the Pump Shotgun, and that scatters most of them whatever the range.
+
+       So the budget divides by the pellets that LAND, not the pellets fired. Two play-tests put that
+       at about two - five shots at -12, then four at -20 - so -50 and +250 over 2 give -25 and +125
+       a pellet. Three shots to freeze and two to ignite, which are the arrows' own figures reached
+       the way a shotgun reaches them.
+
+       Freeze DURATION is a second thing the per-pellet value sets, and it is easy to miss. What
+       matters is how far past -100 the last shot lands, because regression claws back 5 a turn: at
+       -20 a pellet the target tipped over to about -102 and thawed in one turn. At -25 a shot
+       delivers about -50, so the run is 25 -> -20 -> -65 -> -110 and it stays down two to three
+       turns, which is where the arrow sits. Tune the overshoot, not just the crossing.
+
+       That still left DURATION unbounded, and play-testing found it: two shots at true point blank
+       connected with about 4.4 pellets each, landed the target near -185, and held it frozen for
+       roughly 17 turns. Duration is pure overshoot at 5 a turn, so it scales with however many
+       pellets happen to land - and the measured rate runs anywhere from 1.8 to 4.4. No single Amount
+       fixes that, because shaving it only moves which end of the variance is wrong.
+
+       Max and MaxTemp bound it. TemperatureOnHit applies only while the target is still short of
+       MaxTemp, on whichever side the Amount points:
+
+           (Amount.RollMaxCached() >= 0) ? (Temperature < MaxTemp) : (Temperature > MaxTemp)
+
+       Vanilla uses this for heat on four objects, always Max="true" MaxTemp="400", so the incendiary
+       shell takes that verbatim. The cold side has no vanilla precedent but the same branch supports
+       it, and the value has one trap: MaxTemp MUST sit below the -100 brittle line. At -90 the cold
+       would stop applying around -95, above the line, and the target would never freeze at all - the
+       cap would silently defeat the payload. At -110 the last applicable pellet lands between -110
+       and -135, so the freeze is guaranteed and it holds two to seven turns rather than seventeen.
+
+       A perfect eight-pellet hit is still the fastest freeze; it is the duration that no longer runs
+       away with it.
+
+       The general form, because #146 will meet it with a chaingun dividing by six: a per-action
+       budget cannot be rescaled to per-hit without checking the result against whatever decays per
+       turn. Division eventually falls under a fixed floor, and below it the part fires, the event
+       reaches the target, and nothing observable happens.
 
        One thing worth knowing about both: ProjectileHit fires even when a pellet FAILS to penetrate
        (the Penetrations = 0 branch raises it too) and TemperatureOnHit never checks penetration.
@@ -299,8 +355,40 @@
        no anti-stack guard, and GameObject.ApplyEffect does not deduplicate, so one shell would apply
        eight separate Stuck effects and escaping rolls a save against each. No dial, so no shell.
 
-       Chance 12 a pellet is about a 64% takedown per shell at close range, degrading with distance
-       as fewer pellets connect. GroundOnHit needs ChargeUse="0" written out: it is an IPoweredPart
+       Chance 40 a pellet is about a 64% takedown per shell with the two pellets that typically land,
+       degrading with distance as fewer connect. It was 12, sized against all eight pellets, which is
+       the same arithmetic error the temperature values made: at 12 a shell had a 22% chance of doing
+       anything at all before the save was even rolled, and play-testing saw nothing fire.
+
+       The two SaveTargets are deliberately different, and copying one to the other was the second
+       defect here. ProneOnHit rolls against 25 flat. GroundOnHit subtracts the target's flying level
+       first, because FlyingLevelAidsSave is exactly what its name says:
+
+           num2 = SaveTarget; if (FlyingLevelAidsSave) num2 -= flyingLevel;
+           if (target.MakeSave(SaveStat, num2, ...)) return;   // passed, no grounding
+
+       So 25 against a Gamma Moth, which carries Wings at level 10, is a save of 15 - trivial for a
+       level 39 creature, and six point-blank shells failed to ground it. Vanilla's only user of the
+       part writes SaveTarget="40" for precisely this reason, and that is what it takes here too: a
+       strong flier still resists, which is the intent, but an ordinary one does not walk it.
+
+       Worth knowing what Prone is and is not, because the name promises more than Qud delivers:
+       -6 Agility, -5 DV, -80 move speed, and a turn spent standing up, for Duration 1. It does NOT
+       stop the target attacking, so a prone creature next to you still bites. Prone.Apply also opens
+       with a HasEffect<Prone> guard, so it neither stacks nor refreshes - a second shell into a
+       target already down is wasted. The shell buys a window and an action, not an incapacitation.
+
+       And the anatomy exclusion is wider than "creatures without legs". LimbSupportsProneness wants a
+       Feet or Roots part with Mobility above zero, and Legs - the variant every insect, spider and
+       crab is built from - is declared VariantOf="Feet" with Mobility="0". So a fire ant queen has
+       six legs in its anatomy and cannot be knocked off any of them. The Mobility clause excludes as
+       much as the missing-limb one does.
+
+       Grounding is SILENT unless the target is airborne when it lands. Grounded.Apply prints nothing
+       itself; the "falls to the ground" line comes from Flight.Fall, which only fires on a live
+       Flying effect. Play-testing read as three failures in a row before examining a target showed
+       the Grounded status sitting there the whole time. Anything written about this shell should say
+       so, because a player will draw the same wrong conclusion. GroundOnHit needs ChargeUse="0" written out: it is an IPoweredPart
        whose constructor sets ChargeUse 100, and on a projectile with no power source IsReady fails
        and the part does nothing, silently. Vanilla's only user, ProjectileNaserCannon, writes the
        same zero for the same reason.
@@ -362,7 +450,7 @@
   </object>
   <object Name="Raven_ProjectileIncendiaryShell" Inherits="BaseShotgunProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" Attributes="Fire" ColorString="&amp;R" />
-    <part Name="TemperatureOnHit" Amount="30" Max="false" OnWielderHit="true" />
+    <part Name="TemperatureOnHit" Amount="125" Max="true" MaxTemp="400" OnWielderHit="true" />
   </object>
 
   <object Name="Raven_Cryo Shell" Inherits="Projectile">
@@ -391,7 +479,7 @@
   </object>
   <object Name="Raven_ProjectileCryoShell" Inherits="BaseShotgunProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1d2" Attributes="Cold" ColorString="&amp;C" />
-    <part Name="TemperatureOnHit" Amount="-6" Max="false" OnWielderHit="true" />
+    <part Name="TemperatureOnHit" Amount="-25" Max="true" MaxTemp="-110" OnWielderHit="true" />
   </object>
 
   <object Name="Raven_Flechette Shell" Inherits="Projectile">
@@ -440,7 +528,7 @@
     />
     <part
       Name="RulesDescription"
-      Text="Knocks targets off their feet, and brings fliers down for a while. Nothing to a legless creature that was never flying."
+      Text="Knocks targets off their feet, and brings fliers down for a while. Insects, oozes and anything else without usable legs stay standing."
     />
     <part Name="TinkerItem" Bits="003" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
@@ -448,12 +536,12 @@
   </object>
   <object Name="Raven_ProjectileTakedownShell" Inherits="BaseShotgunProjectile">
     <part Name="Projectile" BasePenetration="4" BaseDamage="1" ColorString="&amp;o" />
-    <part Name="ProneOnHit" Chance="12" SaveTarget="25" SaveVs="Knockdown" SaveStat="Strength" />
+    <part Name="ProneOnHit" Chance="40" SaveTarget="25" SaveVs="Knockdown" SaveStat="Strength" />
     <part
       Name="GroundOnHit"
       ChargeUse="0"
-      Chance="12"
-      SaveTarget="25"
+      Chance="40"
+      SaveTarget="40"
       SaveStat="Agility"
       SaveVs="Takedown Grounding"
       FlyingLevelAidsSave="true"

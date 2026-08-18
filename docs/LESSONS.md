@@ -481,3 +481,107 @@ a *problem* at least proves it ran.
 This is the same principle as the positive control two lessons up, one level out: there it is a
 test suite that needs a case which must pass, here it is any search, grep or patch whose silence
 you are about to treat as evidence.
+
+## Rescaling a per-action budget to per-hit has to clear whatever decays per turn
+
+The cryo arrow puts −50 on a target per action. A shell spends one piece of ammunition per action
+too, and fires eight pellets, so eight pellets at −6 looked like the same budget. It shipped, and
+eight shells into a 500 HP target left it never getting cold.
+
+The mechanism was fine — a probe build renamed the shell's projectile and confirmed the game was
+firing *ours*, and that `TemperatureOnHit` applied from it. The number was the defect, and the
+reason was quoted in my own design comment three paragraphs above the number:
+
+> temperature returns to ambient by `Math.Max(5, |diff| * 0.02)` every turn — a flat 5 a turn at
+> these magnitudes
+
+**That is a floor, not a curve.** Divide a payload far enough and it lands under the rate at which
+the game undoes it. At −6 a pellet with three of eight connecting, a turn spent moving hands back
++5 of the −18 just delivered; with one connecting, the net is −1 and the effect cannot accumulate
+at all. The arrow never had the problem because −50 against −5 is decisive on any single hit.
+
+> Before dividing an effect across hits, find what the game restores per turn and check the result
+> against it. Below that line the part fires, the event reaches the target, and nothing observable
+> happens — which is indistinguishable from being broken, and costs an evening to tell apart.
+
+#146 will meet this directly: a chaingun divides by six.
+
+## The divisor is the projectiles that land, not the projectiles fired
+
+The same tuning pass got the divisor wrong twice. Eight pellets leave a Pump Shotgun, so ÷8 looks
+right — but `MissileWeapon.Fire` rolls `Stat.Random(-WeaponAccuracy, WeaponAccuracy)` **per
+projectile**, and at `WeaponAccuracy="45"` that scatters most of them whatever the range.
+
+Measured across three play-tests, by working backwards from how many shots a freeze took and how
+far past the brittle line it landed:
+
+| Run | pellets that connected, of 8 |
+|---|---|
+| −12 a pellet, five shots to freeze | ~2.5 |
+| −20 a pellet, four shots | ~1.8 |
+| −25 a pellet, two shots at true point blank | ~4.4 |
+
+So the real divisor is about **2**, with a spread of roughly 2 to 4. Accuracy varies the rate as
+well as range does — the Pump Shotgun at 45 is the worst of the four shell weapons, the modified
+handcannon at 30 the best — so tune against the loosest gun and the rest over-deliver slightly.
+
+> A multi-projectile weapon delivers a *fraction* of its payload, and the fraction is both small
+> and variable. Derive it from a measurement, not from the shot count in the blueprint.
+
+**It applies to probabilities as much as magnitudes**, which I did not generalise the first time.
+The takedown shell's `Chance="40"` per pellet started life as `12` — sized against eight pellets,
+so a shell had a 22% chance of doing anything at all, and play-testing saw nothing fire. Same
+arithmetic, third occurrence in one feature.
+
+## A magnitude cap must sit past the threshold it is bounding
+
+Duration and intensity are the same number for temperature: how far past the line you land, at 5 a
+turn back. Two point-blank shells put a target near −185 and held it frozen about seventeen turns,
+where the arrow sits at −115 for three. No `Amount` fixes that, because the overshoot scales with
+however many pellets happen to connect — shaving it only moves which end of the variance is wrong.
+
+`TemperatureOnHit` already has the tool. With `Max="true"` it applies only while the target is
+short of `MaxTemp`, on whichever side `Amount` points:
+
+```csharp
+(Amount.RollMaxCached() >= 0) ? (Temperature < MaxTemp) : (Temperature > MaxTemp)
+```
+
+The trap is the value. `MaxTemp="-90"` reads like a reasonable cap and would stop the cold applying
+around −95 — *above* the −100 brittle line — so the target would never freeze at all. The cap would
+silently defeat the payload it exists to limit. At −110 the last applicable pellet lands between
+−110 and −135: the freeze is guaranteed and the overshoot is bounded.
+
+> A cap on an effect that crosses a threshold has to sit on the far side of that threshold, with
+> room for one more application. Put it on the near side and you have not limited the effect, you
+> have removed it.
+
+Vanilla writes `Max="true" MaxTemp="400"` on four objects, all heat. The cold side has no
+precedent, which is exactly why the value needed working out rather than copying.
+
+## An effect that reports nothing is not an effect that did nothing
+
+Three consecutive play-tests of the takedown shell's `GroundOnHit` read as total failures: no
+message, no visible change, targets flying away unbothered. The part was working the entire time.
+
+`Grounded.Apply` prints nothing itself. The *"falls to the ground"* line a player expects comes from
+`Flight.Fall`, and that only fires when the target has a live `Flying` effect at the moment of
+impact:
+
+```csharp
+foreach (Flying item in Object.YieldEffects<Flying>())
+    if ((item as Flying)?.Source != null) FailFlying(flying.Source, Object);
+```
+
+A target that happened to be walking gets grounded — genuinely unable to fly for 20–30 turns — in
+complete silence. It took *examining* a creature and finding the `Grounded` status sitting in its
+effect list to establish that anything had happened at all.
+
+> When an effect appears not to fire, check the target's state before concluding anything about the
+> mechanism. A status list is evidence; an empty message log is not.
+
+Two chased bugs came out of this session's testing that were never bugs — this one, and a wish
+returning a `Raven_Cryo Arrow` because the shell it asked for was not loaded. Both looked exactly
+like broken code and both were the observation being wrong. The cost of the wrong diagnosis is
+worse than the cost of checking: the first thing I did on this one was start reading `IsReady` for
+a fault that did not exist.

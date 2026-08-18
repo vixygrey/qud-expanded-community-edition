@@ -1093,17 +1093,49 @@ because the alternative is a category of ammunition that cannot exist.
 `LoadAmmoEvent` `AmmoPerAction` times, then `DeepCopy`s the result up to `ShotsPerAction` — so one
 shell becomes **eight** projectiles, each with its own spread roll and its own copy of the payload.
 
-| Displayed as | Blueprint | Payload | Per shot |
-|---|---|---|---|
-| incendiary shell | `Raven_Incendiary Shell` | `TemperatureOnHit 30` | +240, against the blaze arrow's +250 |
-| cryo shell | `Raven_Cryo Shell` | `TemperatureOnHit -6` | −48, against the cryo arrow's −50 |
-| flechette shell | `Raven_Flechette Shell` | pen 6 over flat `1` damage | — |
-| takedown shell | `Raven_Takedown Shell` | `GroundOnHit` + `ProneOnHit`, both `Chance="12"` | ~64% takedown |
+| Displayed as | Blueprint | Payload |
+|---|---|---|
+| incendiary shell | `Raven_Incendiary Shell` | `TemperatureOnHit 125`, `Max="true" MaxTemp="400"` |
+| cryo shell | `Raven_Cryo Shell` | `TemperatureOnHit -25`, `Max="true" MaxTemp="-110"` |
+| flechette shell | `Raven_Flechette Shell` | pen 6 over flat `1` damage |
+| takedown shell | `Raven_Takedown Shell` | `GroundOnHit` + `ProneOnHit`, both `Chance="12"` |
 
-Parity per action is the right target because a shell and an arrow each cost one piece of
-ammunition per action. The cold arithmetic in the arrows section carries over unchanged — a flat 5
-a turn of ambient regression means the shell nets **−43** and freezes on the third shot, exactly as
-the cryo arrow does.
+**The temperature figures came out of play-testing, and the first two attempts were wrong in ways
+worth recording**, because both traps generalise and #146 meets them again with a chaingun.
+
+Parity per action is the right *target* — a shell and an arrow each cost one piece of ammunition
+per action — but ÷8 is the wrong way to reach it, twice over. `MissileWeapon.Fire` rolls
+`Stat.Random(-WeaponAccuracy, WeaponAccuracy)` per pellet, and at the Pump Shotgun's
+`WeaponAccuracy="45"` only about **two of eight** connect, ranging from 1.8 to 4.4 across
+measured runs. And ambient regression is a **flat 5 a turn** — a floor, not a curve — so −6 a
+pellet with a couple connecting was erased about as fast as it landed. Eight shells into a 500 HP
+target never got it cold.
+
+So the divisor is the pellets that *land*: −50 and +250 over two gives **−25** and **+125**, which
+is three shots to freeze and two to ignite — the arrows' own figures, reached the way a shotgun
+reaches them. Measured: 3 shots, ~4 turns frozen, against the arrow's 3 hits and ~3 turns.
+
+**`Max`/`MaxTemp` bound the duration**, which no `Amount` can. Overshoot past −100 *is* the freeze
+duration at 5 a turn, and it scales with however many pellets happen to connect — two point-blank
+shots once reached −185 and held for ~17 turns. The cap stops the payload applying once the target
+is past the line. Its value has a trap: it must sit **beyond** the threshold. `MaxTemp="-90"` would
+stop the cold at about −95, above the brittle line, and the target would never freeze at all.
+Vanilla writes `Max="true" MaxTemp="400"` on four objects, all heat; the cold side has no
+precedent.
+
+**Heat and cold are asymmetric by nature, not by tuning.** `Physics.Temperature` is clamped to
+±10,000, and the thresholds are not mirror images:
+
+| | trigger | what happens |
+|---|---|---|
+| `Frozen` | ≤ −100 | *"Can't take physical actions."* — and **nothing** below it, all the way to the −10,000 floor |
+| `Burning` | ≥ 350 | damage per turn, scaling with distance above |
+| `Vaporized` | ≥ 10,000 | `ParentObject.Die(…, "You were vaporized.")` |
+
+So heat is a damage type with a runaway top end and a kill line; cold is a control effect that
+plateaus, where every point past −100 buys only duration. That is why the two shells' numbers are
+not mirror images, and why #144 could cut the arrow's cold from −400 to −50 without losing anything
+— there was no deeper tier to buy.
 
 **Six of Mura's ten were cut, and the mechanism did the sorting.**
 
@@ -1153,13 +1185,57 @@ populous declared AV in the game — 70 blueprints, all cherubim, plus Rodanis Y
 damage were both tried and both beat standard shot nearly everywhere, making them upgrades rather
 than trades.
 
+**Every penetration figure above is the raw XML value, which is not what the game shows.** Qud adds
+`RuleSettings.VISUAL_PENETRATION_BONUS`, a flat **+4**, to every penetration it displays anywhere —
+melee, thrown, arrows, mutations and missiles alike:
+
+```csharp
+stringBuilder.Append(Math.Max(E.Penetration + RuleSettings.VISUAL_PENETRATION_BONUS, 1));
+```
+
+| | XML | on screen |
+|---|---|---|
+| vanilla shotgun pellet | 4 | →8 |
+| **flechette shell** | **6** | **→10** |
+| sniper rifle, vanilla's firearm ceiling | 7 | →11 |
+
+The offset is not arbitrary and the manual explains the result without naming it: *"Each weapon has
+a penetration value (→4, for example). This value represents the armor value (AV) that your weapon
+will usually penetrate with ease."* The penetration die is `Random(1, 10) - 2`, which averages
+**3.89** — so folding 4 into the display makes `displayed penetration > target AV` the comparison a
+player can make by eye. The flechette reads as *usually penetrates AV 10*, which is where it was
+aimed, arrived at independently from the cherub arithmetic above.
+
+Worth remembering when reading this document against a screenshot: everything here is XML values,
+and the game is always four higher.
+
 **The takedown shell carries two parts because neither can stack.** `Prone.Apply` opens with a
 `HasEffect<Prone>` guard and `GroundOnHit` extends a `Grounded` duration rather than adding a
-second, so eight pellets buy reliability and never magnitude — which is what makes `Chance` an
-honest dial. They partition cleanly: `Prone` needs a `Feet` or `Roots` limb, which only **22 of 78
-anatomies** have, while `Grounded` reaches any flier. Insects and snakes are not immune as a class —
-their flying members are exactly the target. Legless creatures that cannot fly are the dead
-matchup, and the rules text says so.
+second, so pellets buy reliability and never magnitude — which is what makes `Chance` an honest
+dial. Both sit at `Chance="40"`, sized against the ~2 pellets that land rather than the 8 fired;
+`Chance="12"` shipped first and gave a shell a 22% chance of doing anything at all.
+
+**Three things about it that play-testing corrected, all of which a player will also meet.**
+
+*`Prone` promises more than Qud delivers.* Its own summary is `-6 Agility, -5 DV, -80 move speed,
+must spend a turn to stand up`, at `Duration = 1`. It does **not** stop the target attacking — a
+prone creature adjacent to you still bites — and it neither stacks nor refreshes, so a second shell
+into a downed target is wasted. It buys a window and an action.
+
+*The anatomy exclusion is wider than "no legs".* `LimbSupportsProneness` wants a `Feet` or `Roots`
+part with `Mobility` above zero, and **`Legs` — the variant every insect, spider and crab is built
+from — is `VariantOf="Feet"` with `Mobility="0"`.** A fire ant queen has six legs in its anatomy and
+cannot be knocked off any of them. The `Mobility` clause excludes as much as the missing-limb one.
+
+*Grounding is silent unless the target is airborne.* `Grounded.Apply` prints nothing; the *"falls to
+the ground"* line comes from `Flight.Fall`, which only fires on a live `Flying` effect. Three
+play-tests read as failures before examining a target showed the `Grounded` status had been there
+all along.
+
+`GroundOnHit` also needs `SaveTarget="40"`, not `ProneOnHit`'s 25, because `FlyingLevelAidsSave`
+subtracts the target's flying level first — and nearly every flier in the game carries `Wings` at
+level 10. At 25 that is a save against 15, which is why six point-blank shells failed to ground a
+gamma moth. Vanilla's only user of the part writes 40 for exactly this reason.
 
 `StickyOnHit` was the obvious alternative and fails the same test the gas shells did: it reaches
 every anatomy and grounds fliers by itself, but it has no `Chance` field, `Stuck` has no anti-stack
