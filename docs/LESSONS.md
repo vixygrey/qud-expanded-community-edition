@@ -428,3 +428,25 @@ have been if the second variable had taken effect. Put assignments directly on t
 > **After running a scenario, confirm it actually took effect** — assert on something that must differ
 > between cases, such as a count, an exit code or a reason string. A green result from a check that
 > never ran is worse than a red one, because it is filed as evidence.
+
+## A placeholder is a value, and something will look it up
+
+`mod/workshop.json` carried `"WorkshopId": 0` for months, meaning "no item yet, create one". Four
+documents said so. Qud's uploader disagreed: it read the zero as an item id, looked up item zero,
+and reported *Item not found* with every field blank and no offer to create anything. The first
+upload of this fork failed on it (#163).
+
+The correct state was not a different value but **no key at all**. The uploader writes
+`workshop.json` itself — "Create Workshop Id for Mod…" creates the Steam item and writes a file
+containing nothing but the new id — so a hand-authored file with a placeholder pre-empts the one
+step that would have worked.
+
+The evidence was sitting on disk the whole time. Of the 72 installed mods that ship a
+`workshop.json`, two have no `WorkshopId` key and **none** has a zero. That is the same check
+`docs/LESSONS.md` already recommends for Qud's behaviour generally, applied one file over.
+
+**Before inventing a sentinel, find out whether the consumer distinguishes absent from empty.**
+Zero, `""` and `null` are all real values to whatever parses them, and a field that means "none"
+is only safe if something documents it as meaning that. `workshop-target` in
+`tools/validate_mod.py` now rejects a non-positive id, so this particular placeholder cannot come
+back.

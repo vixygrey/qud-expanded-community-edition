@@ -92,9 +92,14 @@ absolute ones. The capture date at the top of this file is the anchor.
 
 ## 7. Action required before first upload
 
-✅ **Done (#2).** `WorkshopId` is now `0`, so the uploader creates a new item, and the validation
-script fails the build if it is ever set back to `1134036260`. The description, title and credits
-were rewritten for this fork.
+✅ **Done (#2).** `WorkshopId` was cleared, and the validation script fails the build if it is
+ever set back to `1134036260`. The description, title and credits were rewritten for this fork.
+
+> **Correction (#163).** This section read *"`WorkshopId` is now `0`, so the uploader creates a new
+> item"* until the first upload proved otherwise: a zero is a lookup for item zero, not an absent
+> id, and the uploader answers *Item not found*. The file was removed so the uploader could write
+> it, and the fork's item is **3785441196**. Nothing about Mura's page was ever at risk — the
+> danger this section was written against is the *upstream* id, and that guard held.
 
 Original note, kept for the record:
 

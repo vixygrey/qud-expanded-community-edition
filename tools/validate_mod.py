@@ -127,10 +127,15 @@ def check_json(f: Findings) -> None:
 
 
 def check_workshop_target(f: Findings) -> None:
-    """The uploader publishes to whatever WorkshopId names. It must never be Mura's.
+    """The uploader publishes to whatever WorkshopId names. Two ways that goes wrong.
 
-    0 means "create a new item". Once this fork is published, Qud writes its own ID here, which
-    is fine — the only forbidden value is the upstream one.
+    It must never be Mura's item, which would publish over their page.
+
+    And it must never be a placeholder. `0` is not "create a new item" — the uploader reads it as
+    a lookup for item zero, fails with "Item not found", and offers no way forward (#163). An
+    unpublished mod has **no WorkshopId key at all**: the uploader writes the file itself, via
+    "Create Workshop Id for Mod...". Two of the installed mods ship one with the key absent; none
+    ships a zero. Once published, Qud writes the real id here and it stays.
     """
     path = MOD / "workshop.json"
     if not path.is_file():
@@ -139,11 +144,25 @@ def check_workshop_target(f: Findings) -> None:
         data = json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return  # check_json reports this
-    if data.get("WorkshopId") == UPSTREAM_WORKSHOP_ID:
+    if "WorkshopId" not in data:
+        return  # unpublished, and correctly so — the uploader writes the key
+    workshop_id = data["WorkshopId"]
+    if workshop_id == UPSTREAM_WORKSHOP_ID:
         f.add(
             "workshop-target",
             f"workshop.json WorkshopId is {UPSTREAM_WORKSHOP_ID} — Mura's original item. "
             f"Uploading would publish over their page. This fork releases separately.",
+        )
+    elif (
+        not isinstance(workshop_id, int)
+        or isinstance(workshop_id, bool)
+        or workshop_id <= 0
+    ):
+        f.add(
+            "workshop-target",
+            f"workshop.json WorkshopId is {workshop_id!r}, which is not a Workshop item. "
+            f'A placeholder does not mean "create a new item" — the uploader looks it up and '
+            f"reports Item not found. Omit the key entirely until Steam assigns one.",
         )
 
 
