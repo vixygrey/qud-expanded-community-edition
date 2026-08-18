@@ -436,6 +436,13 @@ credit for the eleven releases that came before.
 - **Minor** — new content, new tables, rebalancing
 - **Major** — reserved for a change that breaks saves or removes content
 
+"Removes content" means content that *goes away*, not content that is **replaced in function**.
+Settled by 2.4.0, which disabled the quill arrow and shipped the hulk honey arrow in its place:
+saves still load, the shipped blueprint is commented out rather than deleted so existing copies
+keep working (§1.1b), and the release adds four shells besides — so content net-grows and nothing
+a player owns stops functioning. That is **minor**. Reserve major for a release that genuinely
+takes something away and leaves a hole, or that breaks saves outright.
+
 Note that "requires a new character" applies to the **first** release regardless, because
 save-baked identifiers changed during the fork.
 
