@@ -14,7 +14,18 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- **(internal)** `docs/LESSONS.md` records four traps from the investigation into reviving the effect slugs ([#146](https://github.com/vixygrey/qud-expanded-community-edition/issues/146), [#210](https://github.com/vixygrey/qud-expanded-community-edition/issues/210)). Each cost real time, and one of them put a false claim into an issue where it sat looking authoritative.
+
+  **Containment is not dispatch.** Putting `MissilePerformance` on a round looked like a free way to let ammunition modify a shot without touching a single vanilla weapon. It would have loaded, fired and done nothing: `GetMissileWeaponPerformanceEvent` dispatches only to launcher, projectile and actor, and `MagazineAmmoLoader` forwards to the round it is holding only when `CascadeTo(cascade, 4)` — while the event declares `CascadeLevel = 1`. Being held by something is not the same as being dispatched to.
+
+  **`Priority` can only move a part earlier.** `AddPartInternals` inserts by `IPart.Priority`, equal priorities append and a higher one walks backwards, so nothing can be placed *after* a part already in the list — and `ObjectBlueprintLoader.Bake` adds inherited parts before the blueprint's own. When a part must run after another, the answer is never a knob; it is a second event.
+
+  **Search where the effect is applied, not where the part is used.** I argued on #210 that bleeding is melee-only in Qud by design, on the evidence that `BleedingOnHit` sits on two melee objects. Enumerating every `new Bleeding(` call site instead returns the Short Blades critical-hit bleed — from the tree's root class, no power purchased — and the Bow and Rifle tree's Wounding Fire, which is bleeding at range and always has been. A part census answers a much narrower question than it appears to.
+
+  **A boolean's name is not its semantics.** `Bleeding.Stack = true` *merges* into an existing bleed and adds no new effect; `false` — the default on `BleedingOnHit` — piles independent ones on, so an XML payload that omits the attribute quietly gets the compounding version. The same trap runs through the skill data, where one power is the tree *Bow and Rifle*, the entry *Draw a Bead*, and the ability *Mark Target*.
+  ([#217](https://github.com/vixygrey/qud-expanded-community-edition/issues/217))
 
 ## [2.4.0] - 2026-08-18
 

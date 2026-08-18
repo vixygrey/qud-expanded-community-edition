@@ -612,3 +612,128 @@ returning a `Raven_Cryo Arrow` because the shell it asked for was not loaded. Bo
 like broken code and both were the observation being wrong. The cost of the wrong diagnosis is
 worse than the cost of checking: the first thing I did on this one was start reading `IsReady` for
 a fault that did not exist.
+
+## Containment is not dispatch — check the cascade level before assuming a part is reached
+
+`MissilePerformance` is a real vanilla part with exactly the dials an effect round wants —
+`PenetrationModifier`, `DamageDieModifier`, `DamageModifier`, `AddAttributes` — and vanilla puts it on
+the Turbow. Putting it on a *round* looked like a free way to let ammunition modify a shot without
+touching a single vanilla weapon. It would have loaded, fired, and done nothing.
+
+`GetMissileWeaponPerformanceEvent.GetFor` dispatches to three objects, and the round is not one:
+
+```csharp
+Launcher.HandleEvent(e)     // Subject = Launcher
+Projectile.HandleEvent(e)   // Subject = Projectile
+Actor.HandleEvent(e)        // Subject = Actor
+```
+
+The one plausible back door is `MagazineAmmoLoader` forwarding to what it is holding, and it is gated:
+
+```csharp
+private bool AmmoWantsEvent(int ID, int cascade) {
+    …
+    if (!MinEvent.CascadeTo(cascade, 4)) return false;
+```
+```csharp
+if (E.CascadeTo(4) && GameObject.Validate(ref Ammo) && !E.Dispatch(Ammo))
+```
+
+`CascadeTo(Cascade, Level)` is `(Cascade & Level) != 0`, and this event declares `CascadeLevel = 1`.
+`1 & 4 == 0`, so the loaded round never sees it. The chambered round is *inside* the weapon and is
+still not part of the weapon's event surface.
+
+> **Before putting a part on a contained object, find the event's `CascadeLevel` and the container's
+> forwarding gate, and AND them together.** Being held by something is not the same as being
+> dispatched to.
+
+Same silent-failure family as `TurretStockWeight="0"` and the melee-only `BleedingOnHit`: nothing
+errors, nothing logs, the item simply does less than it says.
+
+## `Priority` can only move a part earlier, so design for the order you get
+
+The obvious way to let ammunition carry a payload is a part on the weapon that reads `E.Projectile`
+after `MagazineAmmoLoader` has set it during `LoadAmmoEvent`. That ordering is not available, and no
+attribute buys it.
+
+Part order *is* dispatch order — `GameObject.HandleEventInner` walks `PartsList.GetArray()` in index
+order — and the list is built by `AddPartInternals`:
+
+```csharp
+int priority = P.Priority;                    // IPart.Priority => 45000 by default
+if (priority == int.MinValue) PartsList.Add(P);
+else {
+    int num = PartsList.Count;
+    while (num > 0 && PartsList[num - 1].Priority < priority) num--;
+    PartsList.Insert(num, P);
+}
+```
+
+Equal priorities append, so blueprint order survives — and a *higher* priority only walks the part
+**backwards**, toward the front. Nothing can push a part later than what is already in the list.
+Meanwhile `ObjectBlueprintLoader.Bake` calls `Inherit(obj.Inherits, …)` before overlaying the object's
+own children, so parts declared on an abstract base are always added first. `MagazineAmmoLoader` is
+declared on the concrete weapons, never on `BaseFirearm`, so a part merged onto the base runs *before*
+the loader, permanently.
+
+The fix is not a knob, it is a different shape: read what you need while you are early — the loader's
+`Ammo` field still holds the round it is about to chamber, before `RemoveOne()` — and do the work at a
+later event. `MissileWeapon.SetupProjectile` fires `ProjectileSetup` on the launcher once per
+projectile, after the projectile exists, which is order-independent because it is a separate dispatch.
+
+> **When a part must run "after" another, stop looking for a priority and find a second event.**
+> Ordering within one dispatch is fixed by blueprint inheritance; ordering *between* dispatches is free.
+
+## Search where the effect is applied, not where the part is used
+
+I told the maintainer of this repo — myself — that bleeding is melee-only in Qud by design, and put it
+in #210 as a charter rule 2 argument against ever projecting it. The evidence was that `BleedingOnHit`
+appears on exactly two vanilla objects, both melee.
+
+That is a fact about one part. The question was about a mechanic. Grepping every `new Bleeding(` call
+site in the decompiled assembly takes one command and returns about twenty, including two that
+demolish the claim:
+
+- `XRL.World.Parts.Skill.ShortBlades.WeaponMadeCriticalHit` — the tree's **root** class, so every
+  critical hit with any short blade bleeds, with no power purchased and, via
+  `Skills.GetGenericSkill(Skill, Attacker)`'s reflection fallback, no requirement that the attacker
+  have the skill at all.
+- `MissileWeapon.cs:1862` — the Bow and Rifle tree's **Wounding Fire**, which is bleeding at range and
+  has been all along.
+
+Both were reachable from the start. Neither was reachable from the part.
+
+> **For "does vanilla do X", search for the thing X *is* — the effect class, the constructor, the
+> applied state — not the one part you happen to have found doing it.** A part census answers "how is
+> this part used", which is a different and much narrower question than it looks.
+
+The cost here was not a bug, it was a design argument built on a false premise and written into an
+issue, where it sat looking authoritative until someone questioned it.
+
+## A boolean's name is not its semantics, and neither is a skill's
+
+`Bleeding.Stack` reads as "this bleed stacks". It means the opposite:
+
+```csharp
+if (Stack) {
+    foreach (Effect effect in Object.Effects)
+        if (effect is Bleeding bleeding && bleeding.GetType() == GetType() && bleeding.Stack) {
+            // raise SaveTarget / Damage to the better of the two, clear Bandaged
+            return false;              // …and add no new effect
+        }
+}
+// otherwise: add an independent effect
+```
+
+`Stack = true` **merges** into an existing bleed. `Stack = false` piles a separate one on. And
+`BleedingOnHit.Stack` is a bare `public bool Stack;` — default **false** — while both vanilla users
+write `Stack="true"` explicitly. So an inherited XML payload that omits the attribute quietly gets the
+compounding version, which on a six-round burst is six independent effects rather than one.
+
+The same trap runs through the skill data, where one power carries three different names: the tree is
+`Name="Bow and Rifle"` with `Class="Rifles"`, its entry is **Draw a Bead**, and the activated ability
+it grants is displayed as **Mark Target** (`AddMyActivatedAbility("Mark Target", "CommandMarkTarget", …)`).
+Prose that quotes any one of those and expects a reader to find it in the game is a coin flip.
+
+> **Read the field, do not read the field name** — and when documenting a vanilla mechanic, write down
+> which of its names the player actually sees.
