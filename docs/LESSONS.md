@@ -450,3 +450,34 @@ Zero, `""` and `null` are all real values to whatever parses them, and a field t
 is only safe if something documents it as meaning that. `workshop-target` in
 `tools/validate_mod.py` now rejects a non-positive id, so this particular placeholder cannot come
 back.
+
+## A search that finds nothing has two explanations, and one of them is the search
+
+Twice in one day a check reported nothing and I read it as an answer.
+
+**`strings` on a .NET assembly.** Deciding whether `Builder` was dead data in vanilla, I searched
+`Assembly-CSharp.dll` for the literal and got zero hits — for `Builder`, and for every other name I
+tried, including ones that certainly exist. That last part was the tell and I nearly missed it.
+macOS `strings` reads ASCII runs; .NET keeps user strings in the `#US` heap as **UTF-16**, so the
+search could not have found anything. Had I trusted it, `Builder` would have gone into the
+documents as a defect in Freehold's own data. It is a real mechanism: every value resolves to a
+type in `XRL.World.PartBuilders`.
+
+**A test edit that never applied.** Verifying that `snapshot_qud_api.py` refuses to write when a
+cited figure cannot be found, I patched a line of `CITED_FIGURES` in a temporary copy, ran the
+tool, and got exit 0. The conclusion — that the gate does not work — was wrong twice over: `ruff
+format` had already split those tuples across several lines, so the single-line replacement target
+matched nothing, the file was never modified, and the run I read was an ordinary clean one. The
+gate works. The test did not run.
+
+Both had the same shape. A check that reports **zero of something** is indistinguishable from a
+check that did not execute, and the second is far more common than it feels. A check that reports
+a *problem* at least proves it ran.
+
+> **Before believing an empty result, prove the search can find anything at all.** Probe for
+> something you know is present, or assert the edit landed before running the thing that reads it —
+> `assert old in text` costs one line and converts a silent no-op into a loud failure.
+
+This is the same principle as the positive control two lessons up, one level out: there it is a
+test suite that needs a case which must pass, here it is any search, grep or patch whose silence
+you are about to treat as evidence.
