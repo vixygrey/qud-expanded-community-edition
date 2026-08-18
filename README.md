@@ -271,6 +271,12 @@ Then check it took, by trying to commit on `main` and being told no.
 [`CONTRIBUTING.md`](CONTRIBUTING.md) has it in full — issue first, short-lived branch, small PR,
 squash merge, and what each pull request needs before I can take it.
 
+What's actually in flight is on the [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1),
+which is public. Issues are grouped there by track — Ammo, Content, Systems, Sub-mod merges,
+Upstream, Tooling & docs — and nothing reaches **Done** until it is live on the Workshop *and* a
+release is cut for players who don't use Steam. **QA** covers everything in between: the code is
+written, and it is either being tested in game or waiting on a release.
+
 ---
 
 ## Licence
