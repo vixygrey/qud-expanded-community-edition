@@ -223,6 +223,33 @@ both the documented count and that every CI job is either required or deliberate
 thing it cannot check on its own is whether GitHub still agrees, which is what this command is
 for. It needs `gh` and a network, so it is deliberately not part of the normal run.
 
+### Installing it to play, and to publish
+
+The directory Qud loads a mod from is the same one the Workshop uploader publishes from, which
+puts testing and releasing in direct conflict. `tools/sync_mod.py` resolves it by making the two
+builds tell themselves apart rather than asking you to remember which is which:
+
+```bash
+python3 tools/sync_mod.py --dev       # whatever branch you're on
+python3 tools/sync_mod.py --publish   # main only, validated first
+```
+
+**A dev build has its `WorkshopId` removed**, and that key is the only thing binding an upload to
+the published item — without it the uploader treats the mod as unpublished and offers *"Create
+Workshop Id for Mod…"* rather than overwriting anything. So experimental content **cannot** reach
+the live page, whatever branch it came from. Its `manifest.json` title also gains a `(dev)` suffix,
+so the in-game mod list says which build is loaded.
+
+`--publish` refuses unless you're on `main`, the tree is clean, and local `main` is level with
+`origin/main` — publishing an unpulled `main` ships a state you haven't seen. It runs
+`validate_mod.py` first and copies nothing if that fails. Both modes refuse a destination that
+isn't empty and doesn't carry this mod's own `manifest.json` id, so a mistyped `--dest` can't
+delete somebody else's mod.
+
+Restart Qud after either: it reads the XML at load, so a running session still holds the previous
+blueprints. And note the failure mode this exists to prevent — a wish for a blueprint that isn't
+loaded doesn't fail, it hands you the nearest one that does.
+
 ### Regenerating the Workshop preview image
 
 `mod/preview.png` is committed, so you only need this if you're changing it:
