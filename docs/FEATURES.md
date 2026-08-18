@@ -1272,9 +1272,21 @@ someone rediscover the problem from scratch.
 ### Things the changelog references that are **not** in this folder
 
 The 2.2 changelog mentions fixes to **Experience Curve Beta**, the **Grand Bazaar**, and
-**Saving Joppa**. Those are separate sub-mods by the same author — no `.cs` or map files for
-them exist in this directory. The only C# here is the 36 one-line mutation-mod classes. If you
-want to carry those sub-mods forward, you'll need to pull them separately.
+**Saving Joppa**. The first two are separate sub-mods by the same author — no `.cs` or map files
+for them exist in this directory, and carrying them forward means pulling them separately
+(#174, #175). The only C# here is the 36 one-line mutation-mod classes.
+
+**Saving Joppa is the exception, and it is partly here already.** Mura's standalone listing says
+so outright — *"there's no point in installing both as it is already incorporated into the base
+mod"* — and the shared parts check out: `Raven_Empty Weapon Rack`, `Raven_Empty Gun Rack`,
+`Raven_Empty Armor Rack` and `Raven_Rusted Door` are declared in `Furniture.xml` **identically** to
+the standalone's own copies, attribute for attribute.
+
+What did *not* come across is the part the sub-mod is named for: `TerrainJoppaRuins` and the
+96 KB `JoppaRuins.rpm` map are in the standalone and absent here. So "incorporated" describes the
+furniture rather than the ruins, and anyone planning around that should verify the claim against
+the current standalone rather than the sentence. It is also the fork's own precedent for #174 and
+#175: absorbing a sub-mod is something this mod's author has already done.
 
 ### Mura's three partial feature lists — and how far to trust them
 

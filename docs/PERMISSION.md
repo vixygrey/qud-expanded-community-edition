@@ -174,3 +174,20 @@ as a contributor to the original mod, which claims more than they did. Corrected
 including `mod/workshop.json`, which ships to subscribers.
 
 Mura writes **they** for Crow, so this project does too.
+
+### 8.4 Mura has folded a sub-mod in before — the Saving Joppa precedent
+
+Relevant to #174 and #175, which propose absorbing the Grand Bazaar and the Experience Curve.
+Mura's own listing for **Caves of Qud Expanded - Saving Joppa Standalone** (Workshop item
+`1461098960`) says:
+
+> As a standalone mod, this mod does not require the base mod, in fact there's no point in
+> installing both as it is already incorporated into the base mod.
+
+So consolidation is the original author's own practice, not a departure from it. It is also
+partly visible in this fork: four `Raven_` furniture blueprints are declared here identically to
+the standalone's copies. The `JoppaRuins` terrain and map are not — see `docs/FEATURES.md` §10.
+
+**This is precedent, not permission.** §8's licence grant is worded as *"their work in this
+mod"*, and the Bazaar and the Experience Curve are separate Workshop items. Whether that grant
+reaches them is Mura's to say, and the answer belongs in this file when it comes.
