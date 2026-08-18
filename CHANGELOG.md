@@ -16,6 +16,15 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **The quill arrow did nothing, and now it is a hulk honey arrow.** It shipped in 2.3.0 with a bleed that could never fire: bleeding in Qud is a melee effect, and an arrow is not a melee weapon. It flew, hit, dealt its damage, and that was all — no error, no clue, which is how it got through a release.
+
+  I found it while working on the shotgun shells, whose razor shell had exactly the same defect and was cut for it. Bleeding is melee-only on purpose rather than by accident — the whole game puts it on two things, a lamprey's bite and a sharpened polyp, both natural weapons — so rather than invent a mechanic Qud has declined to have, the arrow got a payload that works at range.
+
+  It is now a **hulk honey arrow**: a waxed bulb of honey behind the head that bursts and sets, miring whatever it hits until the target pulls free. Hulk honey is already the game's own sticky substance, so the thing on the arrowhead explains what the arrow does. It is also the only arrow that works on everything — being stuck needs no legs, so it holds oozes and insects that nothing else in the family can touch, and it drags fliers down as well.
+
+  The quill arrow is not gone, only set aside. Its barb was always the right image for bleeding, so the name is being kept for the day bleeding at range is possible ([#210](https://github.com/vixygrey/qud-expanded-community-edition/issues/210)) rather than spent on something else. If you are holding quill arrows from 2.3.0 they still fire; they simply stop appearing.
+  ([#201](https://github.com/vixygrey/qud-expanded-community-edition/issues/201))
+
 - **(internal)** `docs/FEATURES.md` §10 no longer files **Saving Joppa** alongside the two sub-mods that really are separate. Mura's standalone listing says the opposite outright — *"there's no point in installing both as it is already incorporated into the base mod"* — and the shared parts check out: `Raven_Empty Weapon Rack`, `Raven_Empty Gun Rack`, `Raven_Empty Armor Rack` and `Raven_Rusted Door` are declared in `Furniture.xml` identically to the standalone's own copies, attribute for attribute.
 
   The incorporation is partial, which is the part worth writing down rather than rounding off. `TerrainJoppaRuins` and the 96 KB `JoppaRuins.rpm` — the content the sub-mod is actually named for — are in the standalone and absent here. So "incorporated" describes the furniture, not the ruins.
