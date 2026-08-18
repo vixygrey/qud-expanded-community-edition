@@ -27,6 +27,13 @@ recorded because contributors need them, not because subscribers do.
   **A boolean's name is not its semantics.** `Bleeding.Stack = true` *merges* into an existing bleed and adds no new effect; `false` — the default on `BleedingOnHit` — piles independent ones on, so an XML payload that omits the attribute quietly gets the compounding version. The same trap runs through the skill data, where one power is the tree *Bow and Rifle*, the entry *Draw a Bead*, and the ability *Mark Target*.
   ([#217](https://github.com/vixygrey/qud-expanded-community-edition/issues/217))
 
+### Fixed
+
+- **(internal)** Three documents claimed that bleeding in Qud is melee-only *by design* and that putting it at range would invent a mechanic the game had declined to have. Both halves are false, and I had repeated them in `docs/FEATURES.md`, in the `Ammo.xml` comment above the reserved quill arrow, and in the released 2.4.0 entry below. `XRL.World.Parts.Skill.ShortBlades` — the tree's root class, no power purchased — bleeds on every critical hit, and `Rifle_WoundingFire` applies `Bleeding` at range from `MissileWeapon.cs`. `Sharpened Polyp`, cited as a natural weapon, is a wieldable `LongBlades` item.
+
+  The claim came from surveying where `BleedingOnHit` is used rather than where the `Bleeding` effect is applied — a part census answering a much narrower question than it appeared to. What survives is the distinction the prose had collapsed: the **part** is melee-only, which is genuinely why the quill arrow was inert and why #201's fix was right; the **mechanic** is not. The 2.4.0 entry is corrected in place with a note saying so, rather than quietly rewritten.
+  ([#219](https://github.com/vixygrey/qud-expanded-community-edition/issues/219))
+
 ## [2.4.0] - 2026-08-18
 
 ### Fixed
@@ -40,7 +47,7 @@ recorded because contributors need them, not because subscribers do.
 
 - **The quill arrow did nothing, and now it is a hulk honey arrow.** It shipped in 2.3.0 with a bleed that could never fire: bleeding in Qud is a melee effect, and an arrow is not a melee weapon. It flew, hit, dealt its damage, and that was all — no error, no clue, which is how it got through a release.
 
-  I found it while working on the shotgun shells, whose razor shell had exactly the same defect and was cut for it. Bleeding is melee-only on purpose rather than by accident — the whole game puts it on two things, a lamprey's bite and a sharpened polyp, both natural weapons — so rather than invent a mechanic Qud has declined to have, the arrow got a payload that works at range.
+  I found it while working on the shotgun shells, whose razor shell had exactly the same defect and was cut for it. The bleeding *part* only works in melee — it listens for events the melee path raises and a fired arrow never does — so the arrow got a payload that works at range instead. (This paragraph originally said bleeding at range was something Qud had declined to have. That was wrong, and it is corrected here rather than left standing: short blades bleed on a critical hit, and the Bow and Rifle tree's Wounding Fire bleeds at range. See [#219](https://github.com/vixygrey/qud-expanded-community-edition/issues/219).)
 
   It is now a **hulk honey arrow**: a waxed bulb of honey behind the head that bursts and sets, miring whatever it hits until the target pulls free. Hulk honey is already the game's own sticky substance, so the thing on the arrowhead explains what the arrow does. It is also the only arrow that works on everything — being stuck needs no legs, so it holds oozes and insects that nothing else in the family can touch, and it drags fliers down as well.
 
