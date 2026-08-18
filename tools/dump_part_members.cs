@@ -22,7 +22,11 @@
 //
 // Fields that cannot be assigned are excluded: static, const (Literal) and readonly (InitOnly).
 //
-// Usage:  dotnet run -- <path to Assembly-CSharp.dll>   ->   JSON on stdout, {"Part": ["Member"]}
+// It also emits the type names in XRL.World.PartBuilders. A <part Builder="X"> names one of
+// those rather than setting a member, and an X that does not exist fails the same silent way (#168).
+//
+// Usage:  dotnet run -- <path to Assembly-CSharp.dll>
+//         -> JSON on stdout: {"members": {"Part": ["Member"]}, "part_builders": ["Name"]}
 
 using System;
 using System.Collections.Generic;
@@ -37,6 +41,11 @@ internal static class DumpPartMembers
 {
     // Parts resolve from this namespace exactly, matching PART_NAMESPACE in snapshot_qud_api.py.
     private const string PartNamespace = "XRL.World.Parts";
+
+    // Where a <part Builder="…"> value resolves. Exactly this namespace, not its children, for
+    // the same reason PartNamespace is exact: a wider scope lets a typo land on an unrelated
+    // class and pass.
+    private const string BuilderNamespace = "XRL.World.PartBuilders";
 
     private static MetadataReader md;
     private static readonly Dictionary<string, TypeDefinitionHandle> ByFullName = new();
@@ -59,21 +68,33 @@ internal static class DumpPartMembers
             ByFullName[Qualify(md.GetString(td.Namespace), md.GetString(td.Name))] = handle;
         }
 
-        var result = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
+        var members = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
+        var builders = new SortedSet<string>(StringComparer.Ordinal);
         foreach (var handle in md.TypeDefinitions)
         {
             var td = md.GetTypeDefinition(handle);
-            if (md.GetString(td.Namespace) != PartNamespace || td.IsNested) continue;
-            result[md.GetString(td.Name)] = Settable(handle);
+            if (td.IsNested) continue;
+            var ns = md.GetString(td.Namespace);
+            if (ns == PartNamespace) members[md.GetString(td.Name)] = Settable(handle);
+            else if (ns == BuilderNamespace) builders.Add(md.GetString(td.Name));
         }
 
-        if (result.Count == 0)
+        if (members.Count == 0)
         {
             Console.Error.WriteLine($"error: no types found in {PartNamespace}");
             return 1;
         }
+        if (builders.Count == 0)
+        {
+            Console.Error.WriteLine($"error: no types found in {BuilderNamespace}");
+            return 1;
+        }
 
-        Console.WriteLine(JsonSerializer.Serialize(result));
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            members,
+            part_builders = builders.ToList(),
+        }));
         return 0;
     }
 

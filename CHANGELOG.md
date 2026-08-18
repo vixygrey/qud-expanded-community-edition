@@ -16,6 +16,11 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** A `<part Builder="…">` naming a class that does not exist now fails the build. `Builder` does not set a member — it names a class in `XRL.World.PartBuilders` that post-processes the part once it is built, which is how #151 came to treat it as an attribute of the element rather than of the part class. That settled the *attribute* and left the *value* unchecked, so a builder that does not exist failed the way this whole family fails: the part loads, the builder never runs, and nothing anywhere says so.
+
+  `tools/dump_part_members.cs` already walked every type in the assembly, so emitting the 21 names in `XRL.World.PartBuilders` alongside the members map cost a few lines and no new tool. Vanilla is held to the rule at generation time, and passes. The mod sets `Builder` on no part today, so this finds nothing now — it is a guard against a future edit, which is the same reason `unknown-part` exists.
+  ([#168](https://github.com/vixygrey/qud-expanded-community-edition/issues/168))
+
 - **(internal)** `README.md` says where the mod is published and how to install it without Steam. It carried install paths but no link to the Workshop item, and no route at all for anyone on GOG, itch, or Linux outside Steam — for whom the Workshop is not an option and the release zip is the whole answer. The three routes are now named for who each is for, along with the detail that decides whether an install worked: the folder is right when `Mods/QudExpandedCommunityEdition/manifest.json` exists. Manual installs do not auto-update, so that route points at the releases page and the changelog rather than leaving people to notice on their own.
   ([#185](https://github.com/vixygrey/qud-expanded-community-edition/issues/185))
 

@@ -832,6 +832,33 @@ def check_part_attributes(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                     )
 
 
+def check_part_builders(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A `<part Builder="…">` must name a class that exists in XRL.World.PartBuilders.
+
+    `Builder` does not set a member - it names a class that post-processes the part once it is
+    built, which is why #151 treats it as an attribute of the element rather than of the part.
+    That established the attribute is legitimate and left the *value* unchecked, so a builder that
+    does not exist fails the way everything in this family fails: the part loads, the builder
+    never runs, and nothing anywhere says so.
+
+    This mod sets `Builder` on no part today. The check is a guard against a future edit, which is
+    the same reason `unknown-part` exists. See issue #168.
+    """
+    api = load_qud_api()
+    if not api or not api.get("part_builders"):
+        return
+    builders = set(api["part_builders"])
+    for path, root in all_roots.items():
+        for part in object_parts(root):
+            builder = part.get("Builder")
+            if builder and builder not in builders:
+                f.add(
+                    "part-builder",
+                    f'{path}: <part Name="{part.get("Name")}" Builder="{builder}"> - '
+                    f"{builder} is not a class in XRL.World.PartBuilders, so nothing runs",
+                )
+
+
 def load_qud_api() -> dict | None:
     """The committed snapshot of names Qud exposes. See tools/snapshot_qud_api.py."""
     if not QUD_API_PATH.exists():
@@ -952,6 +979,7 @@ def run() -> Findings:
     check_part_names(f, roots)
     check_blueprint_refs(f, roots)
     check_part_attributes(f, roots)
+    check_part_builders(f, roots)
     return f
 
 
