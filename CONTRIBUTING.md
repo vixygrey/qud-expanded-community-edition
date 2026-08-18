@@ -73,13 +73,14 @@ Three of those are less obvious than they look:
 
 An item only reaches **Done** on the board once the change is live on the Steam Workshop *and* a
 release has been cut for everyone else — GOG, itch, and Linux players outside Steam install from
-the release zip, and a change that exists only in `main` hasn't reached them. Until both have
-happened the item sits in **QA**, which is also where anything waits whose behaviour hasn't been
-confirmed in the actual game. The validators can prove an object is well-formed and reachable; only
-playing can prove it does what it says.
+the release zip, and a change that exists only in `main` hasn't reached them.
 
-So if your change merges and the board doesn't move to Done, nothing is wrong — it's waiting on a
-release, and you'll see it in the changelog when one is cut.
+**QA** is everything between "the code is written" and that: being tested in game, or merged and
+waiting on a release. The validators can prove an object is well-formed and reachable; only playing
+can prove it does what it says, so an item can sit in QA while its pull request is still open.
+
+So if your change merges and the board doesn't move to Done, nothing is wrong — it's being tested
+or waiting on a release, and you'll see it in the changelog when one is cut.
 
 ### Pull requests
 
