@@ -237,7 +237,13 @@ every script, hook and CI step that touches them. Do not reintroduce any.
 
 New blueprints follow Mura's existing scheme, which the charter requires preserving:
 
-- **`Raven_` prefix** on every new object. This is attribution, not decoration — see §6.
+- **A prefix on every new object**, and which one is a question of credit rather than of
+  namespacing — see §6. `Raven_` is Mura's, and stays on everything inherited from CoQE; content
+  added to this fork takes **`Vixy_`**. Never re-prefix an existing `Raven_` object: that would
+  both break the attribution and spend the identifier-rename window described in §1.1b.
+- `tools/validate_mod.py` enforces both through `MOD_PREFIXES`, and treats any other name as a
+  vanilla record. A third prefix means updating that constant, or four of its six checks stop
+  guarding in silence (#224).
 - Vanilla merges use the **vanilla name** with `Load="Merge"` and **no prefix**.
 - Display names are lowercase (`basic kindle chip`), matching Qud's convention.
 - Tier suffixes follow vanilla's pattern where extending a vanilla family (`Battle Axe3th`), and
@@ -248,7 +254,8 @@ New blueprints follow Mura's existing scheme, which the charter requires preserv
 Mura was consistent, and these tables are what make charter rule 2's "derived, not invented"
 possible in practice. Match them when adding anything.
 
-- **Blueprint prefix `Raven_`** on every new object. Merges into vanilla objects use the vanilla
+- **Blueprint prefix `Raven_` or `Vixy_`** on every new object, per §3.1 — `Raven_` on Mura's,
+  `Vixy_` on this fork's. Merges into vanilla objects use the vanilla
   name with `Load="Merge"` and no prefix. **No exceptions remain:** `SteelFist` and the 18
   `Projectile*` objects were the last, renamed in #66 before the save window closed; the
   Recoilers turned out to be vanilla objects the mod was replacing, fixed in #29. The only

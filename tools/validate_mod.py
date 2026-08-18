@@ -30,9 +30,22 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
 
-# New objects the mod declares WITHOUT the Raven_ prefix. They are new declarations, not vanilla
-# replacements, so merge-discipline does not apply. Anything not listed here and not
-# Raven_-prefixed is treated as a vanilla record.
+# Prefixes the mod owns. Raven_ is Mura's attribution, carried by everything inherited from CoQE;
+# Vixy_ marks content added to this fork. docs/STYLEGUIDE.md §3.1 has the reasoning - it is a credit
+# line, not namespace hygiene. Every check below needs only one thing from a prefix: "ours, not
+# vanilla's", so both belong in the same tuple.
+#
+# Adding a prefix here without adding it to every site is the failure this constant exists to
+# prevent: four of the six sites fail SILENTLY when a prefix is missing, by skipping the object
+# rather than reporting it (#224).
+MOD_PREFIXES = ("Raven_", "Vixy_")
+
+# Mutation-part classes the mod defines in Scripting/, by prefix.
+MOD_PART_PREFIXES = tuple(p + "Mod" for p in MOD_PREFIXES)
+
+# New objects the mod declares WITHOUT one of the MOD_PREFIXES. They are new declarations, not
+# vanilla replacements, so merge-discipline does not apply. Anything not listed here and not
+# mod-prefixed is treated as a vanilla record.
 #
 # Keep this list minimal: an entry here is a hole in merge-discipline, so a stale name silently
 # exempts anything later declared under it. Both remaining entries are body objects, unprefixed
@@ -371,7 +384,7 @@ def blueprint_sources(roots: dict[Path, ET.Element]):
 def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Charter rule 1, mechanically enforced.
 
-    Any record whose name lacks the fork's Raven_ prefix is a vanilla record, so touching it
+    Any record whose name lacks one of the fork's prefixes (MOD_PREFIXES) is a vanilla record, so touching it
     without Load="Merge" replaces it outright — conflicting with other mods and silently
     discarding future vanilla additions. This is the check that would have caught #3 on the
     commit that introduced it.
@@ -381,7 +394,7 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
         for tag, kind in (("object", "object"), ("population", "table")):
             for el in root.iter(tag):
                 name = el.get("Name")
-                if not name or name.startswith("Raven_"):
+                if not name or name.startswith(MOD_PREFIXES):
                     continue
                 if name in NEW_UNPREFIXED or name.startswith(ABSTRACT_MARKERS):
                     continue
@@ -395,7 +408,7 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
 
 
 def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every Raven_Mod* part referenced by a blueprint needs a matching C# class."""
+    """Every mod-prefixed Mod* part referenced by a blueprint needs a matching C# class."""
     roots = blueprint_sources(all_roots)
     defined = set()
     for cs in (MOD / "Scripting").glob("*.cs"):
@@ -413,7 +426,7 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     for path, root in roots.items():
         for part in root.iter("part"):
             name = part.get("Name", "")
-            if name.startswith("Raven_Mod") and name not in defined:
+            if name.startswith(MOD_PART_PREFIXES) and name not in defined:
                 f.add(
                     "missing-script",
                     f"{path}: part {name} has no class in mod/Scripting/",
@@ -710,7 +723,7 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     f"{path}: {name} is tier {tier} by material, but tagged Tier {tag}",
                 )
 
-            if not name.startswith("Raven_"):
+            if not name.startswith(MOD_PREFIXES):
                 continue  # vanilla sets its own prices
             commerce = next(
                 (e for e in obj.iter("part") if e.get("Name") == "Commerce"), None
@@ -748,7 +761,11 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     for path, root in roots.items():
         for obj in root.iter("object"):
             name = obj.get("Name")
-            if not name or not name.startswith("Raven_") or obj.get("Load") == "Merge":
+            if (
+                not name
+                or not name.startswith(MOD_PREFIXES)
+                or obj.get("Load") == "Merge"
+            ):
                 continue
             if any(m in name for m in ABSTRACT_MARKERS):
                 continue
@@ -781,7 +798,7 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
 
 
 def check_table_targets(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """A table entry naming a Raven_ blueprint that doesn't exist can never spawn."""
+    """A table entry naming a mod blueprint that doesn't exist can never spawn."""
     roots = blueprint_sources(all_roots)
     defined = set()
     for root in roots.values():
@@ -791,7 +808,7 @@ def check_table_targets(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     for path, root in roots.items():
         for el in root.iter():
             bp = el.get("Blueprint")
-            if bp and bp.startswith("Raven_") and bp not in defined:
+            if bp and bp.startswith(MOD_PREFIXES) and bp not in defined:
                 f.add("dangling-blueprint", f"{path}: table references undefined {bp}")
 
 
@@ -884,7 +901,7 @@ def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every `<part Name="…">` must resolve to a real class.
 
     Qud silently ignores a part it cannot resolve: the object still loads, still validates, and
-    simply does not do the thing you wrote. The mod's own Raven_Mod* parts are check_scripting_parts'
+    simply does not do the thing you wrote. The mod's own Mod* parts are check_scripting_parts'
     job; this covers the vanilla ones.
     """
     api = load_qud_api()
@@ -902,7 +919,7 @@ def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             owner = obj.get("Name") or "<unnamed>"
             for part in obj.iter("part"):
                 name = part.get("Name")
-                if not name or name.startswith("Raven_"):
+                if not name or name.startswith(MOD_PREFIXES):
                     continue
                 if name not in known:
                     f.add(
