@@ -837,7 +837,7 @@
       <object Weight="2" Number="1" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Dream Dew Arrow" />
-      <object Weight="2" Number="1" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1" Blueprint="Raven_Hulk Honey Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Starshell Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Stinger Arrow" />
     </group>
@@ -852,7 +852,7 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
-      <object Weight="2" Number="1d4" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Hulk Honey Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Starshell Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Stinger Arrow" />
     </group>
@@ -868,7 +868,7 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
-      <object Weight="2" Number="1d4" Blueprint="Raven_Quill Arrow" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Hulk Honey Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Starshell Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Stinger Arrow" />
     </group>

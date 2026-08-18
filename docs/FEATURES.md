@@ -924,7 +924,7 @@ Those figures are vanilla's `Boomrose Arrow`, the only effect arrow the game shi
 | blaze arrow | `Raven_Blaze Arrow` | `TemperatureOnHit 250` | single target | thermal mk I is `ThermalGrenade 500`, **area** |
 | cryo arrow | `Raven_Cryo Arrow` | `TemperatureOnHit -50` | single target | freeze mk I is `ThermalGrenade -400`, **area** |
 | dream dew arrow | `Raven_Dream Dew Arrow` | `GasGrenade Density=20 GasObject=SleepGas` | area | sleep gas mk I is 40 |
-| quill arrow | `Raven_Quill Arrow` | `BleedingOnHit Amount=1d1 SaveTarget=20` | single target | none |
+| hulk honey arrow | `Raven_Hulk Honey Arrow` | `StickyOnHit Duration=6 SaveTarget=17` | single target | `CastNet` is 12 / 20 |
 | starshell arrow | `Raven_Starshell Arrow` | `FlashbangGrenade Radius=1 Duration=1d3` | area | flashbang mk I is R2, 1d4+4 |
 | stinger arrow | `Raven_Stinger Arrow` | `GasGrenade Density=20 GasObject=PoisonGas` | area | poison gas mk I is 40 |
 
@@ -1022,6 +1022,44 @@ reliable route rather than waiting on floor drops. See §7.
 Linear Cannon), the sunder arrow (flat `BasePenetration="10"`, above every vanilla arrow), and the
 stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have suppressed it).
 
+**A fourth was replaced after release.** The quill arrow shipped in 2.3.0 **doing nothing**:
+`BleedingOnHit` registers `WeaponHit` and `WieldedWeaponHit`, both raised on the melee path, and
+`MissileWeapon` raises `ProjectileHit` instead. It flew, hit, dealt its `1d2`, and never bled
+anything — with no error anywhere, which is why it survived a release. Found while working #145,
+whose razor shell had the identical defect.
+
+Bleeding is melee-only **by design**, not oversight: vanilla puts `BleedingOnHit` on exactly two
+objects, `Lamprey Bite` and `Sharpened Polyp`, both natural melee weapons. So #201 changed the
+payload rather than adding the mechanic in C#; whether the mod should own a bleeding-at-range part
+is #210, and it needs charter rule 2's argument rather than arriving inside a bug fix.
+
+The replacement is the **hulk honey arrow**, and `StickyOnHit` is the one payload for which being a
+single projectile is an *advantage* — it was rejected for the takedown shell precisely because eight
+pellets applied eight separate `Stuck` effects. It is also the only arrow that reaches every
+anatomy: `Stuck` has no limb requirement, so it holds oozes and insects that `Prone` cannot touch,
+and `Stuck.Apply` calls `Flight.Fall`, so it grounds fliers too.
+
+Named for Qud's own sticky substance, which the game already models — `LiquidHoney` sets
+`StickyWhenWet`, `StickyDuration = 12` and `StickySaveVs = "Honey Stuck Restraint"` — so the
+substance on the tip explains the mechanic rather than decorating it, which is the naming rule
+above. `Duration="6" SaveTarget="17"` is half the hold of `CastNet` and hulk honey itself (both 12 /
+20), with the save midway between vanilla's light restraint (freezing liquid, 5 / 15) and its heavy
+one. An arrow fires at bow range from a stack; a net must be closed with and thrown once.
+
+Measured: an oddly-hued glowpad held for **~4.3 turns against the cap of 6**. Its Strength is 6, so
+its modifier is −5 and `d20 − 5 ≥ 17` is unreachable — only a natural 20 frees it, and `Duration`
+becomes the binding constraint. `CastNet` would hold the same target the full 12, so the arrow is
+half a net in practice as well as on paper. `SaveTarget` governs the other end instead: a
+Strength-16 target escapes in about two attempts.
+
+**`Raven_Quill Arrow` is commented out rather than deleted**, so #210 can restore it verbatim — the
+quillipede barb is the right fiction for bleeding and the wrong one for anything else, so the
+replacement took a new blueprint instead of the name. Commenting out a blueprint that shipped is not
+free: `GameObject.GetBlueprint` falls back to the generic `Object` blueprint and logs an error, so
+anyone still holding one keeps a working arrow (its parts are serialised on the object) whose
+blueprint-level tag lookups answer as `Object`. One day of release exposure on a weight-2 drop,
+against leaving an arrow in the tables that does nothing.
+
 **None of them can end up in a turret the game stocked** — all six carry `ExcludeFromTurretStock`,
 and vanilla's `Boomrose Arrow` gains it by merge. `MagazineAmmoLoader.GetAmmoBlueprints` is
 **opt-out**: every blueprint with the matching ammo part is a candidate unless tagged, and an
@@ -1049,10 +1087,10 @@ arrows at all.
 Two reasons, covering different arrows. **Three of the six burst** — dream dew, starshell and
 stinger carry area payloads — and a turret stocked by the game is one nobody picked the ammunition
 for, so a target closing to point blank puts the cloud or the flash on the turret and on anything
-beside it. Boomrose is the vanilla case of the same problem. Blaze, cryo and quill are
+beside it. Boomrose is the vanilla case of the same problem. Blaze, cryo and hulk honey are
 single-target and that argument does not reach them.
 
-**What reaches all six is that they are hand-made.** A quill lashed to a shank with sinew, a
+**What reaches all six is that they are hand-made.** A waxed bulb of honey, a
 hollowed stinger with the sac still in it, a scored gas bulb, a phial, a wax shell — none of that
 survives being cycled through a magazine and a feed mechanism. A vanilla arrow is a shaft and a
 metal head, which does.
@@ -1152,7 +1190,7 @@ still goes off where it lands. Cut: explosive, flash, poison gas, sleep gas.
 *Bleeding is not available to a projectile at all.* `BleedingOnHit` registers `WeaponHit` and
 `WieldedWeaponHit`; `WeaponHit` is raised in `Combat.cs` on the melee path, and `MissileWeapon`
 raises `ProjectileHit` instead. The razor shell would have fired and done nothing — **and so does
-the quill arrow already shipped in 2.3.0**, which is #201. Cut: razor.
+the quill arrow shipped in 2.3.0**, replaced in #201. Cut: razor.
 
 *Vibro, sunder and stasis* go for the reasons #144 cut their arrows, each worse on eight pellets
 from a tier-3 gun: `Vorpal` exists on three objects in the game and the nearest is a tier-7 heavy

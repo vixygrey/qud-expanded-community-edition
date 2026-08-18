@@ -26,7 +26,7 @@
 
        Three of the six burst - dream dew, starshell and stinger carry area payloads - and a turret
        the game stocked is one nobody chose the ammunition for. A target that closes to point blank
-       puts the cloud or the flash on the turret and on anything beside it. Blaze, cryo and quill
+       puts the cloud or the flash on the turret and on anything beside it. Blaze, cryo and hulk honey
        are single-target and that argument does not reach them.
 
        Note the scope carefully, because it is narrower than "turrets". Auto-stocking runs off a
@@ -36,7 +36,7 @@
        and the hazard argument does not apply to it. Confirmed in game, not just read.
 
        What reaches all six is that they are hand-made and fragile in a way no vanilla arrow is. A
-       quill lashed to a shank with sinew, a hollowed stinger with the sac still in it, a scored gas
+       waxed bulb of honey, a hollowed stinger with the sac still in it, a scored gas
        bulb, a phial, a wax shell - none of that survives being cycled through a magazine and a
        feed mechanism intact. Vanilla's arrows are a shaft and a metal head, which does.
 
@@ -137,6 +137,46 @@
     <part Name="GasGrenade" Density="20" GasObject="SleepGas" />
   </object>
 
+  <object Name="Raven_Hulk Honey Arrow" Inherits="BaseArrow">
+    <part Name="Render" DisplayName="{{G|hulk}} {{w|honey}} arrow" ColorString="&amp;w" />
+    <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileHulkHoneyArrow" />
+    <part Name="MissileStatusColor" Color="w" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="A waxed bulb of hulk honey rides behind the arrowhead, so thick it barely moves when the shaft does. It bursts on impact and sets fast."
+    />
+    <part Name="RulesDescription" Text="Mires what it strikes. A target must pull free before it can move or attack." />
+    <tag Name="ExcludeFromTurretStock" />
+  </object>
+  <object Name="Raven_ProjectileHulkHoneyArrow" Inherits="BaseArrowProjectile">
+    <part Name="Render" DisplayName="{{G|hulk}} {{w|honey}} arrow" ColorString="&amp;w" />
+    <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;w" />
+    <part Name="StickyOnHit" Duration="6" SaveTarget="17" SaveVs="Honey Stuck Restraint" />
+  </object>
+
+  <!-- The quill arrow is held here, not deleted, because #210 wants it back exactly as written.
+
+       It shipped in 2.3.0 doing nothing. BleedingOnHit registers "WeaponHit" and
+       "WieldedWeaponHit", both raised in Combat.cs on the melee path, and MissileWeapon raises
+       neither - it raises "ProjectileHit". The arrow flew, hit, dealt its 1d2, and the bleed never
+       happened, with no error anywhere. Same defect that cut the razor shell in #145.
+
+       Bleeding is melee-only by design rather than by oversight: vanilla puts BleedingOnHit on
+       exactly two objects, Lamprey Bite and Sharpened Polyp, and both are natural melee weapons. So
+       #201 did not add the mechanic in C# - that is #210, and it needs its own argument under
+       charter rule 2 rather than arriving as a side effect of a bug fix.
+
+       The name is reserved deliberately. A quillipede's barb is the right fiction for bleeding and
+       the wrong one for anything else, so the replacement arrow got its own blueprint rather than
+       taking this one over. When #210 lands, uncomment this and put it back in Ammo 2-4.
+
+       Commenting out a blueprint that shipped is not free, and the cost is worth writing down:
+       GameObject.GetBlueprint falls back to the generic "Object" blueprint and logs an error, so
+       anyone still holding one keeps a working arrow - its parts are serialised on the object - but
+       every blueprint-level tag lookup answers as "Object" instead. One day of release exposure on
+       a weight-2 drop, judged acceptable against leaving an arrow in the tables that does nothing.
+
   <object Name="Raven_Quill Arrow" Inherits="BaseArrow">
     <part Name="Render" DisplayName="{{r|quill}} arrow" ColorString="&amp;r" />
     <part Name="AmmoArrow" ProjectileObject="Raven_ProjectileQuillArrow" />
@@ -154,6 +194,7 @@
     <part Name="Projectile" StrengthPenetration="1" BaseDamage="1d2" ColorString="&amp;r" />
     <part Name="BleedingOnHit" Amount="1d1" SaveTarget="20" />
   </object>
+-->
 
   <object Name="Raven_Starshell Arrow" Inherits="BaseArrow">
     <part Name="Render" DisplayName="{{Y|starshell}} arrow" ColorString="&amp;Y" />
@@ -257,7 +298,7 @@
        BLEEDING IS NOT AVAILABLE TO A PROJECTILE AT ALL. BleedingOnHit registers "WeaponHit" and
        "WieldedWeaponHit", and WeaponHit is raised in Combat.cs on the melee path - MissileWeapon
        never raises it, it raises "ProjectileHit". The razor shell would have fired and done nothing.
-       So would the quill arrow we already shipped; that is #201. Cut: razor.
+       So did the quill arrow shipped in 2.3.0, replaced in #201 by the hulk honey arrow. Cut: razor.
 
        Vibro, sunder and stasis are cut for the reasons #144 cut their arrows, each worse here
        because it would ride eight pellets from a tier 3 gun. Vorpal exists on three objects in the
