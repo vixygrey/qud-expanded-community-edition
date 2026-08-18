@@ -489,6 +489,7 @@ seconds rather than after a round trip.
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
+| `<part Builder="…">` naming a class in `XRL.World.PartBuilders` | `part-builder`, against the snapshot's `part_builders` list |
 | Figures the documents quote **from vanilla** | `vanilla-figure` in `tools/check_docs.py`, against the snapshot's `figures` map |
 | Tier and value curve consistency | `item-curve` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |

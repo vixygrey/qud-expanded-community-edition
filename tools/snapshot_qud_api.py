@@ -66,6 +66,10 @@ SNAPSHOT_PATH = Path("tools/qud-api.json")
 # land on an unrelated class and pass.
 PART_NAMESPACE = "XRL.World.Parts"
 
+# Where a `<part Builder="…">` value resolves. Exactly this namespace, not its children - the same
+# rule PART_NAMESPACE follows and for the same reason.
+BUILDER_NAMESPACE = "XRL.World.PartBuilders"
+
 # The member dumper, and the throwaway project that builds it. System.Reflection.Metadata is
 # in-box in the .NET SDK, so this needs no package, no network and no ilspycmd - and the SDK is
 # already required by tools/compile_scripting.py, which the pre-commit hook runs.
@@ -260,8 +264,8 @@ def collect_parts(assembly: Path) -> list[str]:
     return sorted(names)
 
 
-def collect_members(assembly: Path) -> dict[str, list[str]]:
-    """Every settable member of every part class, inherited members flattened in.
+def collect_members(assembly: Path) -> tuple[dict[str, list[str]], list[str]]:
+    """Every settable member of every part class, plus the part-builder type names.
 
     Shells out to `tools/dump_part_members.cs` through a throwaway project, because the answer
     lives in the assembly's metadata and nothing in the shipped XML carries it. See that file for
@@ -296,14 +300,19 @@ def collect_members(assembly: Path) -> dict[str, list[str]]:
         raise SystemExit(f"error: reading part members failed:\n{proc.stderr.strip()}")
     payload = proc.stdout[proc.stdout.index("{") :] if "{" in proc.stdout else ""
     try:
-        members = json.loads(payload)
+        payload_obj = json.loads(payload)
     except json.JSONDecodeError as exc:
         raise SystemExit(
             f"error: the member dumper did not return JSON: {exc}"
         ) from exc
-    if not members:
+    if not payload_obj.get("members"):
         raise SystemExit(f"error: no members found in {PART_NAMESPACE}")
-    return {name: sorted(vals) for name, vals in sorted(members.items())}
+    if not payload_obj.get("part_builders"):
+        raise SystemExit(f"error: no types found in {BUILDER_NAMESPACE}")
+    members = {
+        name: sorted(vals) for name, vals in sorted(payload_obj["members"].items())
+    }
+    return members, sorted(payload_obj["part_builders"])
 
 
 def collect_figures(game: Path) -> dict[str, str]:
@@ -357,7 +366,11 @@ def collect_blueprints(game: Path) -> list[str]:
 
 
 def verify(
-    game: Path, parts: set[str], blueprints: set[str], members: dict[str, list[str]]
+    game: Path,
+    parts: set[str],
+    blueprints: set[str],
+    members: dict[str, list[str]],
+    part_builders: set[str],
 ) -> list[str]:
     """Hold vanilla to the rules we are about to hold the mod to.
 
@@ -387,6 +400,12 @@ def verify(
             if name and name not in parts:
                 problems.append(
                     f'vanilla uses <part Name="{name}"> which is not a class'
+                )
+            builder = part.get("Builder")
+            if builder and builder not in part_builders:
+                problems.append(
+                    f'vanilla sets <part Builder="{builder}">, which is not a type in '
+                    f"{BUILDER_NAMESPACE}"
                 )
             if name in members:
                 allowed = set(members[name]) | element_attrs
@@ -436,10 +455,10 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     else:
         parts, part_source = collect_parts_from_xml(game), "vanilla-xml"
     blueprints = collect_blueprints(game)
-    members = collect_members(member_assembly)
+    members, part_builders = collect_members(member_assembly)
     figures = collect_figures(game)
 
-    problems = verify(game, set(parts), set(blueprints), members)
+    problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
     if problems:
         print(
             f"REFUSING to write: the rules do not hold for vanilla itself "
@@ -459,6 +478,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
 
     member_repr = "\n".join(f"{k}:{','.join(v)}" for k, v in members.items())
     figure_repr = "\n".join(f"{k}={v}" for k, v in sorted(figures.items()))
+    builder_repr = "\n".join(part_builders)
     digest = hashlib.sha256(
         (
             "\n".join(parts)
@@ -468,6 +488,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + member_repr
             + "\0"
             + figure_repr
+            + "\0"
+            + builder_repr
         ).encode()
     ).hexdigest()[:16]
     return {
@@ -489,10 +511,12 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "member_types": len(members),
             "members": sum(len(v) for v in members.values()),
             "figures": len(figures),
+            "part_builders": len(part_builders),
         },
         "parts": parts,
         "blueprints": blueprints,
         "members": members,
+        "part_builders": part_builders,
         "figures": dict(sorted(figures.items())),
     }
 
@@ -575,6 +599,7 @@ def main() -> int:
         f"{fresh['counts']['blueprints']} blueprints, "
         f"{fresh['counts']['members']} members across "
         f"{fresh['counts']['member_types']} part classes, "
+        f"{fresh['counts']['part_builders']} part builders, "
         f"steam build {fresh['steam_build_id']}, digest {fresh['digest']}"
     )
     print(
