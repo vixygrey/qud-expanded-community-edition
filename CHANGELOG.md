@@ -14,6 +14,15 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **(internal)** `docs/FEATURES.md` §10 no longer files **Saving Joppa** alongside the two sub-mods that really are separate. Mura's standalone listing says the opposite outright — *"there's no point in installing both as it is already incorporated into the base mod"* — and the shared parts check out: `Raven_Empty Weapon Rack`, `Raven_Empty Gun Rack`, `Raven_Empty Armor Rack` and `Raven_Rusted Door` are declared in `Furniture.xml` identically to the standalone's own copies, attribute for attribute.
+
+  The incorporation is partial, which is the part worth writing down rather than rounding off. `TerrainJoppaRuins` and the 96 KB `JoppaRuins.rpm` — the content the sub-mod is actually named for — are in the standalone and absent here. So "incorporated" describes the furniture, not the ruins.
+
+  It matters beyond the correction: absorbing a sub-mod is something this mod's own author has already done, which makes it precedent for #174 and #175 rather than a departure. Recorded in `docs/PERMISSION.md` §8.4, which is append-only, together with the distinction that precedent is not permission — §8's licence grant is worded as *"their work in this mod"*, and the Bazaar and the Experience Curve are separate Workshop items.
+  ([#198](https://github.com/vixygrey/qud-expanded-community-edition/issues/198))
+
 ### Added
 
 - **(internal)** `docs/LESSONS.md` records that an empty result has two explanations, and one of them is the search. It happened twice in one day while building the part-attribute checks. `strings` on `Assembly-CSharp.dll` returned nothing for `Builder` — and nothing for every other name tried, including ones that certainly exist, which was the tell — because macOS `strings` reads ASCII while .NET keeps user strings as UTF-16; trusting it would have put `Builder` into the documents as a defect in Freehold's own data when it is a real mechanism. And a test that was supposed to prove `snapshot_qud_api.py` refuses an unlocatable citation exited 0, because `ruff format` had split the tuple being patched across several lines, so the replacement matched nothing and the run was an ordinary clean one. The gate worked; the test had not run.
