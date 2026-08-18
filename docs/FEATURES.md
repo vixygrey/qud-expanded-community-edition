@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **360** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
+| **New item blueprints** | **368** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **214** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -385,8 +385,8 @@ doubles max charge and stacks with High Capacity.
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 12 (42 disabled) | 1 |
-| **Total** | **360 active** | **212** |
+| `Ammo.xml` | 20 (20 disabled) | 1 |
+| **Total** | **368 active** | **214** |
 
 ### 6.2 Melee weapons
 
@@ -907,12 +907,13 @@ them changes.
 | `Raven_Empty Armor Rack` | Weapon Rack | Recolored |
 | `Raven_Rusted Door` | Metal Door | Non-occluding, renders in dark |
 
-### 6.7 Ammo — arrows live, bullets and shells still disabled
+### 6.7 Ammo — arrows and shells live, bullets still disabled
 
 `ObjectBlueprints/Ammo.xml` was 524 lines with **every one of its 62 objects inside a single XML
 comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud change broke the
-effects and the ammo degraded to plain ammo. #144 revived the arrows; the **42 bullet and shell
-objects remain commented** for #145 and #146, which are separate balance and reachability claims.
+effects and the ammo degraded to plain ammo. #144 revived the arrows and #145 the shells; the
+**20 bullet objects remain commented** for #146, which is a much larger reachability claim — 12
+vanilla weapons plus 7 relic bases.
 
 **The six effect arrows.** All are `Commerce Value="0.20"`, carry **no `TinkerItem`**, inherit
 `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over `1d2` damage.
@@ -1059,6 +1060,232 @@ metal head, which does.
 Only the blast case is merged into vanilla. Fullerite, crysteel, flawless crysteel and zetachrome
 arrows are also untagged and therefore also stocked, at one entry each — but they are better
 sticks, not hazards, and where Freehold draws its value ceiling is their economy to set. See #147.
+
+#### The four effect shells
+
+**Why they never worked, and it was not Mura's doing.** A shotgun never asks its ammunition what
+to fire. `MagazineAmmoLoader.HandleEvent(LoadAmmoEvent)` reads the *weapon*:
+
+```csharp
+if (ProjectileObject.IsNullOrEmpty())
+    E.Projectile = GetProjectileObjectEvent.GetFor(E.LoadedAmmo, ParentObject);
+else
+    E.Projectile = GameObject.Create(ProjectileObject, ...);
+```
+
+and all four weapons that take a shell hardcoded a pellet — `ProjectileShotgunPellet` on the Pump
+Shotgun, `ProjectileCombatShotgunPellet` on the Combat Shotgun, and this mod's own two. Every
+shell's `AmmoShotgunShell ProjectileObject` was discarded and the payload never existed. That is
+the *"degraded to plain ammo"* symptom #14 recorded, and it is structural rather than a bug.
+
+**The fix is vanilla's own.** An empty `ProjectileObject` means "fire whatever is loaded", and it
+appears exactly three times in the game — the **Grenade Launcher** and the **Dart Gun**, both
+weapons whose ammunition carries the payload. #145 merges that blank onto both vanilla shotguns
+and sets it on this mod's two. Plain `Shotgun Shell` is unaffected: `ProjectileShotgunShell` and
+the two pellet blueprints are the same object three times over — `BasePenetration` 4 over `1d2`,
+all inheriting `BaseShotgunProjectile`.
+
+The cost is stated rather than hidden: if Freehold ever differentiates the combat shotgun's pellet
+from the pump's, this merge discards it. That is charter rule 1's own failure mode, accepted
+because the alternative is a category of ammunition that cannot exist.
+
+**The payload is per pellet, and that governs every number.** `MissileWeapon.Fire` raises
+`LoadAmmoEvent` `AmmoPerAction` times, then `DeepCopy`s the result up to `ShotsPerAction` — so one
+shell becomes **eight** projectiles, each with its own spread roll and its own copy of the payload.
+
+| Displayed as | Blueprint | Payload |
+|---|---|---|
+| incendiary shell | `Raven_Incendiary Shell` | `TemperatureOnHit 125`, `Max="true" MaxTemp="400"` |
+| cryo shell | `Raven_Cryo Shell` | `TemperatureOnHit -25`, `Max="true" MaxTemp="-110"` |
+| flechette shell | `Raven_Flechette Shell` | pen 6 over flat `1` damage |
+| takedown shell | `Raven_Takedown Shell` | `GroundOnHit` + `ProneOnHit`, both `Chance="12"` |
+
+**The temperature figures came out of play-testing, and the first two attempts were wrong in ways
+worth recording**, because both traps generalise and #146 meets them again with a chaingun.
+
+Parity per action is the right *target* — a shell and an arrow each cost one piece of ammunition
+per action — but ÷8 is the wrong way to reach it, twice over. `MissileWeapon.Fire` rolls
+`Stat.Random(-WeaponAccuracy, WeaponAccuracy)` per pellet, and at the Pump Shotgun's
+`WeaponAccuracy="45"` only about **two of eight** connect, ranging from 1.8 to 4.4 across
+measured runs. And ambient regression is a **flat 5 a turn** — a floor, not a curve — so −6 a
+pellet with a couple connecting was erased about as fast as it landed. Eight shells into a 500 HP
+target never got it cold.
+
+So the divisor is the pellets that *land*: −50 and +250 over two gives **−25** and **+125**, which
+is three shots to freeze and two to ignite — the arrows' own figures, reached the way a shotgun
+reaches them. Measured: 3 shots, ~4 turns frozen, against the arrow's 3 hits and ~3 turns.
+
+**`Max`/`MaxTemp` bound the duration**, which no `Amount` can. Overshoot past −100 *is* the freeze
+duration at 5 a turn, and it scales with however many pellets happen to connect — two point-blank
+shots once reached −185 and held for ~17 turns. The cap stops the payload applying once the target
+is past the line. Its value has a trap: it must sit **beyond** the threshold. `MaxTemp="-90"` would
+stop the cold at about −95, above the brittle line, and the target would never freeze at all.
+Vanilla writes `Max="true" MaxTemp="400"` on four objects, all heat; the cold side has no
+precedent.
+
+**Heat and cold are asymmetric by nature, not by tuning.** `Physics.Temperature` is clamped to
+±10,000, and the thresholds are not mirror images:
+
+| | trigger | what happens |
+|---|---|---|
+| `Frozen` | ≤ −100 | *"Can't take physical actions."* — and **nothing** below it, all the way to the −10,000 floor |
+| `Burning` | ≥ 350 | damage per turn, scaling with distance above |
+| `Vaporized` | ≥ 10,000 | `ParentObject.Die(…, "You were vaporized.")` |
+
+So heat is a damage type with a runaway top end and a kill line; cold is a control effect that
+plateaus, where every point past −100 buys only duration. That is why the two shells' numbers are
+not mirror images, and why #144 could cut the arrow's cold from −400 to −50 without losing anything
+— there was no deeper tier to buy.
+
+**Six of Mura's ten were cut, and the mechanism did the sorting.**
+
+*Area payloads cannot be scaled down*, because eight pellets multiply the geometry rather than the
+magnitude. `GasGrenade.DoDetonate` fills the impact cell **and all eight adjacent cells** at the
+full `Density`, and density is per cell — so dividing it thins the gas without shrinking anything.
+Eight pellets across a `WeaponAccuracy="45"` cone reach up to **72 gas cells** from one shell.
+`FlashbangGrenade` bottoms out at radius 1 / duration 1 per pellet. `HEGrenade` is worst: `Explode`
+deals `Force / 250` and propagates only while `(Force − dealt) / 8 > 100`, so Boomrose's 1,200
+divided by eight is **150 — zero damage and no propagation at all**. And `IGrenade` detonates on
+the projectile's *death* (`BeforeDeathRemovalEvent`, when `Primed`), so a pellet that hits nothing
+still goes off where it lands. Cut: explosive, flash, poison gas, sleep gas.
+
+*Bleeding is not available to a projectile at all.* `BleedingOnHit` registers `WeaponHit` and
+`WieldedWeaponHit`; `WeaponHit` is raised in `Combat.cs` on the melee path, and `MissileWeapon`
+raises `ProjectileHit` instead. The razor shell would have fired and done nothing — **and so does
+the quill arrow already shipped in 2.3.0**, which is #201. Cut: razor.
+
+*Vibro, sunder and stasis* go for the reasons #144 cut their arrows, each worse on eight pellets
+from a tier-3 gun: `Vorpal` exists on three objects in the game and the nearest is a tier-7 heavy
+weapon; `BasePenetration="10"` is above every vanilla firearm projectile including the sniper
+rifle's 7; and the stasis shell omitted `IsRealityDistortionBased`, which all three vanilla stasis
+grenades set.
+
+What survives is what a shotgun already is — many small hits — so the payload rides the hit.
+
+**Armour stops the damage, not the temperature.** `ProjectileHit` fires even when a pellet fails to
+penetrate (the `Penetrations = 0` branch raises it too) and `TemperatureOnHit` never checks
+penetration. It is also why the cryo shell answers everything the takedown shell cannot touch:
+`Physics.IsFrozen()` is nothing but `Temperature <= -100` and `Frozen.Apply` has no conditions
+whatsoever, so an ooze, a slug or a worm freezes exactly as well as a humanoid.
+
+**The flechette shell is new, because a real slug shell is not expressible.** Shot count belongs to
+the gun — `num9` is read straight off `MissileWeapon.ShotsPerAction` with no event between, and
+`GetMissileWeaponPerformanceEvent`, the one event ammunition can reach, carries penetration and
+damage but no count. That is filed upstream as #200. So the anti-armour round reaches its role
+through penetration instead: eight steel darts rather than one slug. Pen 6 over flat 1 damage came
+from simulating `Stat.RollDamagePenetrations` directly:
+
+| Mean damage per pellet | AV 0 | AV 4 | AV 8 | AV 10 | **AV 12** |
+|---|---|---|---|---|---|
+| standard pellet — pen 4 / `1d2` | 5.34 | 2.34 | 1.22 | 0.73 | **0.33** |
+| flechette — pen 6 / `1` | 4.56 | 2.56 | 1.11 | 0.82 | **0.49** |
+
+Within 10% of standard shot everywhere below AV 10 and **48% ahead at AV 12**, which is the most
+populous declared AV in the game — 70 blueprints, all cherubim, plus Rodanis Y. Pen 7 and `1d2`
+damage were both tried and both beat standard shot nearly everywhere, making them upgrades rather
+than trades.
+
+**Every penetration figure above is the raw XML value, which is not what the game shows.** Qud adds
+`RuleSettings.VISUAL_PENETRATION_BONUS`, a flat **+4**, to every penetration it displays anywhere —
+melee, thrown, arrows, mutations and missiles alike:
+
+```csharp
+stringBuilder.Append(Math.Max(E.Penetration + RuleSettings.VISUAL_PENETRATION_BONUS, 1));
+```
+
+| | XML | on screen |
+|---|---|---|
+| vanilla shotgun pellet | 4 | →8 |
+| **flechette shell** | **6** | **→10** |
+| sniper rifle, vanilla's firearm ceiling | 7 | →11 |
+
+The offset is not arbitrary and the manual explains the result without naming it: *"Each weapon has
+a penetration value (→4, for example). This value represents the armor value (AV) that your weapon
+will usually penetrate with ease."* The penetration die is `Random(1, 10) - 2`, which averages
+**3.89** — so folding 4 into the display makes `displayed penetration > target AV` the comparison a
+player can make by eye. The flechette reads as *usually penetrates AV 10*, which is where it was
+aimed, arrived at independently from the cherub arithmetic above.
+
+Worth remembering when reading this document against a screenshot: everything here is XML values,
+and the game is always four higher.
+
+**The takedown shell carries two parts because neither can stack.** `Prone.Apply` opens with a
+`HasEffect<Prone>` guard and `GroundOnHit` extends a `Grounded` duration rather than adding a
+second, so pellets buy reliability and never magnitude — which is what makes `Chance` an honest
+dial. Both sit at `Chance="40"`, sized against the ~2 pellets that land rather than the 8 fired;
+`Chance="12"` shipped first and gave a shell a 22% chance of doing anything at all.
+
+**Three things about it that play-testing corrected, all of which a player will also meet.**
+
+*`Prone` promises more than Qud delivers.* Its own summary is `-6 Agility, -5 DV, -80 move speed,
+must spend a turn to stand up`, at `Duration = 1`. It does **not** stop the target attacking — a
+prone creature adjacent to you still bites — and it neither stacks nor refreshes, so a second shell
+into a downed target is wasted. It buys a window and an action.
+
+*The anatomy exclusion is wider than "no legs".* `LimbSupportsProneness` wants a `Feet` or `Roots`
+part with `Mobility` above zero, and **`Legs` — the variant every insect, spider and crab is built
+from — is `VariantOf="Feet"` with `Mobility="0"`.** A fire ant queen has six legs in its anatomy and
+cannot be knocked off any of them. The `Mobility` clause excludes as much as the missing-limb one.
+
+*Grounding is silent unless the target is airborne.* `Grounded.Apply` prints nothing; the *"falls to
+the ground"* line comes from `Flight.Fall`, which only fires on a live `Flying` effect. Three
+play-tests read as failures before examining a target showed the `Grounded` status had been there
+all along. The reason is worth knowing when testing: **a wished creature is not flying** —
+`Flight.StartFlying` is only reached from the `Wings` mutation's `CommandEvent` handler, so flight
+is an activated ability rather than a spawn state, and a fresh gamma moth is standing on the ground.
+
+Measured on a moth that had taken off: grounded on the shell, **~20 turns unable to fly** against
+the configured `Duration="20-30"`, with the *"falls to the ground"* message appearing as expected.
+`Grounded` refuses `CanChangeMovementModeEvent` for `"Flying"` throughout, so the target spends that
+window trying to take off and failing.
+
+`GroundOnHit` also needs `SaveTarget="40"`, not `ProneOnHit`'s 25, because `FlyingLevelAidsSave`
+subtracts the target's flying level first — and nearly every flier in the game carries `Wings` at
+level 10. At 25 that is a save against 15, which is why six point-blank shells failed to ground a
+gamma moth. Vanilla's only user of the part writes 40 for exactly this reason.
+
+`StickyOnHit` was the obvious alternative and fails the same test the gas shells did: it reaches
+every anatomy and grounds fliers by itself, but it has no `Chance` field, `Stuck` has no anti-stack
+guard, and `GameObject.ApplyEffect` does not deduplicate — so one shell applies **eight separate
+`Stuck` effects** and escaping rolls a save against each. No dial, so no shell.
+
+`GroundOnHit` needs `ChargeUse="0"` written out: it is an `IPoweredPart` whose constructor sets
+`ChargeUse` 100, so on a projectile with no power source `IsReady` fails and the part does nothing,
+silently. Vanilla's only user, `ProjectileNaserCannon`, writes the same zero.
+
+**Unlike the arrows these are craftable, and that is the same rule read the other way.** Tinkering
+is the artifact skill, and a cartridge serves a firearm, which is recovered technology — vanilla
+agrees, giving `Shotgun Shell` and `Lead Slug` recipes while no arrow in the game has one.
+
+Cost and availability are set separately. `TinkerItem.LoadBlueprint` reads the recipe tier from
+`BuildTier`, defaulting to the highest bit level in the cost, and `DataDisk.GetRequiredSkill` needs
+Tinker 2 past tier 3:
+
+| Shell | Bits | `BuildTier` | Recipe tier | Skill |
+|---|---|---|---|---|
+| incendiary, cryo, flechette | `003` | **4** | 4 | **Tinker 2** |
+| takedown | `003` | — | 3 | Tinker 1 |
+
+All four cost two scrap metal and one pure alloy for three shells, which sits between vanilla's two
+anchors — a grenade mk I is two bits for one, plain shot is one bit for five. `BuildTier` is a real
+public field on `TinkerItem` that vanilla never writes; using it keeps the materials cheap while
+putting burning, freezing and armour-defeating behind the second skill. The less-lethal round is the
+one anybody who can build the gun can also load. The wider inconsistency in vanilla's own recipe
+tiers is #202.
+
+**All four carry `ExcludeFromTurretStock`, and the case is stronger than it was for arrows.**
+`Shotgun Shell` is the *only* blueprint in the game with `AmmoShotgunShell` and carries no exclusive
+tag, so the shell pool is a single entry — untagged, these four would be four fifths of every
+shotgun turret's ammunition. `TurretTinker` also falls back to `"Pump Shotgun"` twice, which makes
+shotgun turrets the game's default. The scope is the same narrow one as for arrows: only
+`TurretTinker` and `PlaceTurretGoal` raise `GenerateIntegratedHostInitialAmmo`, so a turret you
+deploy yourself still arrives empty.
+
+**Reachability is both routes.** Weight 2 apiece in `Ammo 2` through `Ammo 8`, at Boomrose's
+quantities (1 at tier 2, `1d4` above). Unlike the arrows they run the full range, because shells
+have no tier ladder — Boomrose stops at 4 because fullerite, crysteel and zetachrome arrows take
+over, and there is no better shell to replace these. Vanilla keeps plain `Shotgun Shell` at weight
+25 in every pool from `Ammo 2` to `Ammo 8`.
 
 ---
 
@@ -1253,7 +1480,7 @@ someone rediscover the problem from scratch.
 | 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe** — half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
 | 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
 | 2b | ✅ Fixed | **Nine new armor pieces were unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `unreachable` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
-| 3 | 🟠 Part | **All of `Ammo.xml` (62 objects) was commented out** — "removed temporarily". Mura pulled it when a Qud change broke the effects and the ammo degraded to plain ammo. The six effect **arrows** are live as of #144, retuned against `Boomrose Arrow` and renamed; three of the nine were cut rather than revived. The **42 bullet and shell objects are still disabled**, pending #145 (shells) and #146 (slugs) — they carry the same defects the arrows had, including two gas payloads that name a part where a blueprint belongs and so would emit nothing. | `ObjectBlueprints/Ammo.xml` |
+| 3 | 🟠 Part | **All of `Ammo.xml` (62 objects) was commented out** — "removed temporarily". Mura pulled it when a Qud change broke the effects and the ammo degraded to plain ammo. The six effect **arrows** are live as of #144 and the four effect **shells** as of #145, both retuned and renamed, with three of nine arrows and six of ten shells cut rather than revived. #145 also established *why* the shells were dead: every shell-firing weapon hardcoded its pellet, so the ammunition's projectile was discarded — fixed by deferring the weapon to its ammo, as vanilla's own grenade launcher does. The **20 bullet objects are still disabled**, pending #146 (slugs), which must run the same test first. | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
 | 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
 | 6 | 🟠 Med | **`<stag>` used instead of `<tag>`** twice — the advanced hoversled's `Floating` tag and the sphere of negative weight's `Trinket` tag are almost certainly not being applied | `ObjectBlueprints/OtherEquipment.xml` lines 95, 196 |
@@ -1335,12 +1562,12 @@ mod/                            # the only directory uploaded to the Workshop
 ├── ObjectBlueprints/
 │   ├── MeleeWeapons.xml        # 71 new / 79 merged
 │   ├── Armor.xml               # 61 new / 38 merged
-│   ├── RangedWeapons.xml       # 49 new / 8 merged
+│   ├── RangedWeapons.xml       # 49 new / 10 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 9 new / 16 merged
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Ammo.xml                # 12 new + 1 merge; 42 bullets/shells still disabled
+│   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges

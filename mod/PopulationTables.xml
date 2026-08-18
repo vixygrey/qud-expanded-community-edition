@@ -805,7 +805,22 @@
     </group>
   </population>
 
-  <!-- Ammo/Cell Tables: new cell types, plus the effect arrows revived in #144.
+  <!-- Ammo/Cell Tables: new cell types, the effect arrows revived in #144, and the effect shells
+       revived in #145.
+
+       Shell weights follow Boomrose Arrow for the same reason the arrows' do - it is vanilla's only
+       effect ammunition, and it sits at weight 10 in Ammo 2-4. Each shell takes weight 2 so the set
+       of four is worth less than Boomrose alone rather than four times as much, with Boomrose's own
+       quantities: 1 at tier 2, 1d4 above it.
+
+       Unlike the arrows they run all the way to Ammo 8, because shells have no tier ladder. Boomrose
+       stops at 4 since fullerite, crysteel and zetachrome arrows take over above it; there is no
+       better shell to replace these, and vanilla keeps plain Shotgun Shell at weight 25 in every pool
+       from Ammo 2 to Ammo 8. A shotgun stays a shotgun.
+
+       They are craftable as well, so this is the second route rather than the only one - see the
+       recipe tiers in Ammo.xml, which put three of the four behind Tinker 2.
+
 
        Arrow weights follow Boomrose Arrow, vanilla's own effect arrow, which sits at weight 10 in
        Ammo 2-4 and only 1 in Ammo 1. Each arrow here takes weight 2 so the whole set of six is
@@ -815,6 +830,10 @@
 
   <population Name="Ammo 2" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1" Blueprint="Raven_Takedown Shell" />
       <object Weight="2" Number="1" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1" Blueprint="Raven_Dream Dew Arrow" />
@@ -826,6 +845,10 @@
 
   <population Name="Ammo 3" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
@@ -837,6 +860,10 @@
 
   <population Name="Ammo 4" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
@@ -849,6 +876,10 @@
 
   <population Name="Ammo 5" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
     </group>
@@ -856,6 +887,10 @@
 
   <population Name="Ammo 6" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
     </group>
@@ -863,6 +898,10 @@
 
   <population Name="Ammo 7" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
       <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
@@ -871,6 +910,10 @@
 
   <population Name="Ammo 8" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
+      <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
       <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
       <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
       <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
