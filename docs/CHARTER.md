@@ -253,7 +253,7 @@ of this was ever about getting it to run.
 
 | What it was | Where it landed |
 |---|---|
-| `mod/workshop.json` carried `"WorkshopId": 1134036260` — Mura's item — plus their pre-handoff description asking that the mod not be forked | `WorkshopId` cleared to `0` so the uploader creates a **new** item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2) |
+| `mod/workshop.json` carried `"WorkshopId": 1134036260` — Mura's item — plus their pre-handoff description asking that the mod not be forked | `WorkshopId` cleared so the fork publishes as a **new** item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). The placeholder `0` it was cleared to blocked the first upload and is a defect in its own right (#163) |
 | `Artifact 3`–`8` were full table replacements, not merges | All six merge, each contributing one `Raven_Chips Tier N` entry (#3, fixed in #34). See `docs/FEATURES.md` §7.3 |
 | `mod/Skills.xml` failed a strict XML parse — a duplicate `Tile` attribute on Berserk! | Cosmetic, and settled before the fix: Qud's loader tolerated it, so §4's skill changes had been shipping all along. Attribute removed (#5) |
 | 72 of 144 psionic chips could not drop | `Raven_Chips Tier 1/2/3` now hold 48 entries each (#6, fixed in #36) |

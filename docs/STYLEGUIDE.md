@@ -354,12 +354,27 @@ appears in all of them:
 
 | Field | Notes |
 |---|---|
-| `WorkshopId` | The published item ID. **Empty on first upload** — Qud fills it in. A non-empty value targets *that* item, which is how a fork can accidentally publish over the original (#2). |
+| `WorkshopId` | The published item ID. **Omit the key entirely until Steam has assigned one** — see below. A value targets *that* item, which is how a fork can accidentally publish over the original (#2). |
 | `Title` | Item title |
 | `Description` | **Steam BBCode**, not Markdown — `[h1]`, `[i]`, `[b]`, `[url]`, `[list]` |
 | `Tags` | Comma-separated, from Qud's published tag set |
 | `Visibility` | `0` public · `1` friends · `2` private |
 | `ImagePath` | Relative path to the preview, normally `preview.png` |
+
+**Before the first upload, `workshop.json` should not exist at all.** The uploader writes it: you
+select the mod in *Modding Utilities → Steam Workshop Uploader*, click **Create Workshop Id for
+Mod…**, and it creates the item and writes the file, containing nothing but the new id. Only then
+does **Upload Content…** have somewhere to publish to.
+
+**Never write `"WorkshopId": 0` as a placeholder.** `0` is not "no item" to the uploader — it is a
+lookup for item zero, which fails as *Item not found*, with the path and id fields blank and no
+offer to create anything. That cost this fork its first upload attempt (#163). Two of the installed
+mods ship a `workshop.json` with **no `WorkshopId` key at all**, which is what an unpublished file
+actually looks like; none of the 72 carries a zero. `workshop-target` in `tools/validate_mod.py`
+rejects a placeholder now, so the trap cannot be laid again.
+
+Once Steam has assigned an id, keep it. It is how every later upload finds the same item, and
+`Title`, `Description`, `Tags`, `Visibility` and `ImagePath` are merged back in beside it.
 
 ### 7.2 `manifest.json`
 

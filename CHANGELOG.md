@@ -14,7 +14,19 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- **(internal)** Four documents no longer say that `"WorkshopId": 0` makes Qud's uploader create a new Workshop item. It does not: the uploader reads a zero as an id, looks up item zero, and answers *Item not found* with every field blank and no way forward. That is what blocked this fork's first upload, and the guidance that caused it was in `docs/STYLEGUIDE.md` §7.1, `docs/FEATURES.md` §10 row 0b, `docs/CHARTER.md`'s release-blocker table, and `docs/PERMISSION.md` §7 — each of them confidently wrong, and one of them the file I would have checked first.
+
+  The correct pre-publish state is **no `WorkshopId` key at all**. The uploader writes the file itself: "Create Workshop Id for Mod..." creates the item and writes a file containing nothing but the new id, after which the description and the rest are merged back in beside it. `docs/STYLEGUIDE.md` §7.1 now says that, with the recovery steps. `docs/PERMISSION.md` is append-only, so its correction is a note under the original text rather than a rewrite of it.
+
+  The evidence was on disk the whole time: of the 72 installed mods that ship a `workshop.json`, two have no `WorkshopId` key and none carries a zero. Recorded in `docs/LESSONS.md` as the general form — before inventing a sentinel, find out whether the consumer distinguishes absent from empty.
+  ([#165](https://github.com/vixygrey/qud-expanded-community-edition/issues/165))
+
+### Added
+
+- **(internal)** `workshop-target` rejects a `WorkshopId` that is not a real item — a zero, a negative, a string, a boolean — alongside the existing guard against Mura's id. Verified in all five directions, including that an absent key passes, since that is the state an unpublished mod is supposed to be in. The check that already existed would have caught the catastrophic failure (publishing over the original) and said nothing about the merely wasted afternoon.
+  ([#165](https://github.com/vixygrey/qud-expanded-community-edition/issues/165))
 
 ## [2.3.1] - 2026-08-17
 
