@@ -1230,7 +1230,14 @@ cannot be knocked off any of them. The `Mobility` clause excludes as much as the
 *Grounding is silent unless the target is airborne.* `Grounded.Apply` prints nothing; the *"falls to
 the ground"* line comes from `Flight.Fall`, which only fires on a live `Flying` effect. Three
 play-tests read as failures before examining a target showed the `Grounded` status had been there
-all along.
+all along. The reason is worth knowing when testing: **a wished creature is not flying** —
+`Flight.StartFlying` is only reached from the `Wings` mutation's `CommandEvent` handler, so flight
+is an activated ability rather than a spawn state, and a fresh gamma moth is standing on the ground.
+
+Measured on a moth that had taken off: grounded on the shell, **~20 turns unable to fly** against
+the configured `Duration="20-30"`, with the *"falls to the ground"* message appearing as expected.
+`Grounded` refuses `CanChangeMovementModeEvent` for `"Flying"` throughout, so the target spends that
+window trying to take off and failing.
 
 `GroundOnHit` also needs `SaveTarget="40"`, not `ProneOnHit`'s 25, because `FlyingLevelAidsSave`
 subtracts the target's flying level first — and nearly every flier in the game carries `Wings` at

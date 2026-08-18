@@ -580,6 +580,18 @@ effect list to establish that anything had happened at all.
 > When an effect appears not to fire, check the target's state before concluding anything about the
 > mechanism. A status list is evidence; an empty message log is not.
 
+The cause turned out to be sharper still, and it is a trap for anyone testing a flight-related
+effect: **a creature you wish into existence is not flying.** `Flight.StartFlying` is reached only
+from the `Wings` mutation's `CommandEvent` handler — flight is an *activated ability*, not a state
+things spawn in — so a freshly wished gamma moth stands on the ground until its AI decides to take
+off. Ground it in that window and `Flight.Fall` has no live `Flying` effect to fail, so it applies
+in silence.
+
+Wait for it to fly and shoot it again and the message appears exactly as documented. The same test
+also measured `Grounded`'s duration for free: the moth spent ~20 turns unable to take off, because
+`Grounded` refuses `CanChangeMovementModeEvent` for `"Flying"` the whole time, against a configured
+`Duration="20-30"`.
+
 Two chased bugs came out of this session's testing that were never bugs — this one, and a wish
 returning a `Raven_Cryo Arrow` because the shell it asked for was not loaded. Both looked exactly
 like broken code and both were the observation being wrong. The cost of the wrong diagnosis is
