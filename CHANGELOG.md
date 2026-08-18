@@ -16,6 +16,13 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/STYLEGUIDE.md` §1.1b no longer tells contributors that shipped identifiers are free to rename. It was written before the fork released and still opened *"this fork has no saves yet"*, with a table marking CoQE-original blueprint names *"verified free"*. That stopped being true on 2026-08-17 when `v2.3.0` shipped, and nothing mechanical noticed — `check_docs.py` verifies counts, links and section references, none of which is a sentence about the state of the world.
+
+  It surfaced because #201 relied on it. Replacing the quill arrow needed to know whether its blueprint name could be renamed, §1.1b said yes, and `git tag` said the fork had released the day before. The section now states when the window closed, keeps the reasoning for why those names were once free, and records what breaking the rule actually does: `GameObject.GetBlueprint` logs through `MetricsManager` and falls back to the generic `Object` blueprint, so a player's object keeps working while every blueprint-level tag lookup silently answers as something else. It also documents the escape hatch #201 used — comment the shipped blueprint out and give the replacement a new name, rather than renaming in place.
+
+  `docs/LESSONS.md` gains the general form, which is sharper than "documentation goes stale": the dangerous case is not a stale *figure* but a stale *permission*. A wrong number gets repeated; a wrong permission gets acted on. Where a document grants leave to do something risky on the basis of a state of the world, the state belongs next to the grant — a date, a version, a tag — so a reader can check the premise instead of trusting the conclusion.
+  ([#211](https://github.com/vixygrey/qud-expanded-community-edition/issues/211))
+
 - **The quill arrow did nothing, and now it is a hulk honey arrow.** It shipped in 2.3.0 with a bleed that could never fire: bleeding in Qud is a melee effect, and an arrow is not a melee weapon. It flew, hit, dealt its damage, and that was all — no error, no clue, which is how it got through a release.
 
   I found it while working on the shotgun shells, whose razor shell had exactly the same defect and was cut for it. Bleeding is melee-only on purpose rather than by accident — the whole game puts it on two things, a lamprey's bite and a sharpened polyp, both natural weapons — so rather than invent a mechanic Qud has declined to have, the arrow got a payload that works at range.
