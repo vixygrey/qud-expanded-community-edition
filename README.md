@@ -2,6 +2,9 @@
 
 A community-maintained fork of **[Caves of Qud Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=1134036260)** by **Mura**.
 
+**On the Steam Workshop:** [Qud Expanded Community Edition](https://steamcommunity.com/sharedfiles/filedetails/?id=3785441196) ·
+**Not on Steam?** [Download the latest release](https://github.com/vixygrey/qud-expanded-community-edition/releases/latest)
+
 I publish this as a **separate mod**. It doesn't replace, modify, or take over the original, which
 is still Mura's and still available.
 
@@ -116,9 +119,13 @@ promise this fork is built on, and I'd want to know.
 
 ## Installing
 
-**From the Workshop** — subscribe, and enable the mod in Qud's mod menu.
+**On Steam** — [subscribe on the Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3785441196)
+and enable the mod in Qud's mod menu. Updates arrive on their own.
 
-**Manually** — copy the **`mod/` directory** into Qud's Mods folder:
+**On GOG, itch, or Linux without Steam** — the Workshop isn't available to you, so take the zip
+from the [latest release](https://github.com/vixygrey/qud-expanded-community-edition/releases/latest).
+It contains the mod and nothing else — no development tooling — and unzips to a single
+`QudExpandedCommunityEdition/` folder. Drop that folder into Qud's Mods directory:
 
 | Platform | Path |
 |---|---|
@@ -126,8 +133,12 @@ promise this fork is built on, and I'd want to know.
 | Windows | `%USERPROFILE%\AppData\LocalLow\Freehold Games\CavesOfQud\Mods\` |
 | Linux | `~/.config/unity3d/Freehold Games/CavesOfQud/Mods/` |
 
-Only `mod/` is the mod. Everything else in this repository is development tooling and never reaches
-the Workshop.
+The folder is right when `Mods/QudExpandedCommunityEdition/manifest.json` exists. Then enable the
+mod in Qud's mod menu. Updating means replacing the folder, so watch the releases page — or the
+[changelog](CHANGELOG.md), which says what changed and why.
+
+**From a clone** — copy this repository's `mod/` directory in as above. Only `mod/` is the mod;
+everything else here is development tooling and never reaches subscribers.
 
 ---
 
