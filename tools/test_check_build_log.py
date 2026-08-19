@@ -35,10 +35,15 @@ MOD_ID = "QudExpandedCommunityEdition"
 TITLE_CAPS = "QUD EXPANDED COMMUNITY EDITION"
 ANCIENT = "[2020-01-01T00:00:00] "
 
+# The number of scripts the game would report compiling. Counted from the directory rather than
+# written out, because the fixture describes those files: hardcoding it means every script added to
+# the mod fails this test for a reason that has nothing to do with build logs (#146 added the 41st).
+SCRIPT_COUNT = len(list(SCRIPTING.glob("*.cs")))
+
 # What a successful build looks like, in the game's words.
 BUILT = [
     "Loading path: /",
-    "Compiling 40 files...",
+    f"Compiling {SCRIPT_COUNT} files...",
     "Success :)",
     f"Location: /x/{MOD_ID}.dll",
     f"Defined symbol: MOD_{MOD_ID.upper()}",
@@ -208,7 +213,7 @@ class BuildLogCheck(unittest.TestCase):
         code, out = self.run_check(
             body=[
                 "Loading path: /",
-                "Compiling 40 files...",
+                f"Compiling {SCRIPT_COUNT} files...",
                 "Failure :(",
                 "== COMPILER ERRORS ==",
                 "Raven_Options.cs(12,5): error CS0103: no such name",
@@ -222,7 +227,7 @@ class BuildLogCheck(unittest.TestCase):
         code, out = self.run_check(
             body=[
                 "Loading path: /",
-                "Compiling 40 files...",
+                f"Compiling {SCRIPT_COUNT} files...",
                 "Exception compiling mod assembly: boom",
             ]
         )
@@ -230,7 +235,9 @@ class BuildLogCheck(unittest.TestCase):
         self.assertFinding(out, "built")
 
     def test_no_verdict_either_way(self):
-        code, out = self.run_check(body=["Loading path: /", "Compiling 40 files..."])
+        code, out = self.run_check(
+            body=["Loading path: /", f"Compiling {SCRIPT_COUNT} files..."]
+        )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
 
@@ -241,7 +248,10 @@ class BuildLogCheck(unittest.TestCase):
 
     def test_file_count_disagrees(self):
         code, out = self.run_check(
-            body=[ln.replace("40 files", "39 files") for ln in BUILT]
+            body=[
+                ln.replace(f"{SCRIPT_COUNT} files", f"{SCRIPT_COUNT - 1} files")
+                for ln in BUILT
+            ]
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "count")

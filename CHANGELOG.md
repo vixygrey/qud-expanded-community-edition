@@ -16,9 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **The scour slug** — a bullet that ruins what your target is carrying rather than the target. It takes one random thing out of their pack or off their body and rusts it: a rusted weapon swings far slower, rusted gear is worth almost nothing until repaired, and a rusted **artifact stops working entirely**, so this is how you take a laser rifle out of someone's hands without out-shooting them. It does not need to punch through armour to do it, which makes it an answer to the thing you cannot hurt.
+
+  It asks for something back, and that is the point. Rust ruins the loot you were about to pick up — you can repair it, but rusted repair costs more than ordinary repair, and rusting an already-rusted item destroys it outright. And it is useless against most of the bestiary: nearly a third of creatures carry nothing at all, and plenty of the rest carry nothing metal. This is a round for the armed and the armoured, and dead weight against beasts.
+
+  Craftable at Tinker II, and found in the ammunition pools from tier 2 up.
+
+  Mura's ten effect bullets are **cut** rather than revived. Six had already gone from the arrows and the shells for reasons that did not change, and the razor bullet failed the test the rest of this ammunition is built on: 813 of 908 creatures bleed, robots included, so it had no matchup it was wrong for — a straight upgrade over a plain slug rather than a trade. The old blueprints stay commented out as a naming reference.
+  ([#146](https://github.com/vixygrey/qud-expanded-community-edition/issues/146))
+
+- **(internal)** `Vixy_AmmoPayload`, the mod's first combat part, and the reason the slug is possible at all. All 19 slug consumers name their own projectile on `MagazineAmmoLoader`, which only reads the round's `ProjectileObject` when that field is blank — so every effect bullet Mura wrote was loaded, fired, and had its payload thrown away. Blanking the field the way #145 did for the four shotguns was not available: for shotguns both pellet projectiles are identical to the round's own, while for slugs that field is where the weapon's ballistics live, and flattening all 19 would take the Sniper Rifle from 1d8/pen 7 and the Linear Cannon from 2d12 `Vorpal` down to `ProjectileLeadSlug`'s 1d6/pen 3.
+
+  So the part merges the round's payload *into* the weapon's projectile instead. One `Load="Merge"` on `BaseFirearm` reaches all 19 plus both Masterwork variants and anything a future Qud release adds, adding a part and replacing no attribute. It needs two events because one is not available: a part merged onto an abstract base is always dispatched *before* the concrete blueprint's own, and `IPart.Priority` can only move a part earlier — so it reads the round at `LoadAmmoEvent`, while the loader still holds the stack it is about to draw from, and applies the payload at `ProjectileSetup`, which is a separate dispatch where ordering stops mattering.
+  ([#146](https://github.com/vixygrey/qud-expanded-community-edition/issues/146))
+
 - **(internal)** `tools/check_docs.py` refuses a `CHANGELOG.md` release block that repeats a `###` section, or names one Keep a Changelog does not define. This has reached `main` twice — two `### Fixed` blocks corrected by hand before 2.4.0, then two `### Added` blocks I introduced in #236 by anchoring an insertion on `## [Unreleased]` without looking for the section already below it. The hand-fix is exactly what failed to prevent the second, which is why this is a check rather than a third correction. `tools/test_check_docs.py` is new alongside it, and was verified by stubbing the guard out and confirming the two reporting cases fail.
   ([#237](https://github.com/vixygrey/qud-expanded-community-edition/issues/237))
-
 - **(internal)** `docs/LESSONS.md` records the asymmetry behind both wrong claims in the ammunition work: an issue gets checked against the game, and the prose written afterwards does not. Re-reading #145 end to end found every claim in it correct — the weapon list, all ten shell configurations, the gas densities, the resonance figures including the non-obvious one that vanilla's mk I sets `Level="2"`, and the takedown shell's anatomy and save mechanics. What was wrong had been written later, in the commit messages, XML comments and changelog entries explaining the finished work, where nothing checks a factual sentence and the result reads as more authoritative than the issue did.
   ([#235](https://github.com/vixygrey/qud-expanded-community-edition/issues/235))
 
@@ -28,7 +41,6 @@ recorded because contributors need them, not because subscribers do.
 
   Recorded as two sentences and a snippet on the existing bullet rather than as a new lesson. The rule already has an owner, and a second entry describing the same trap is the duplication this repository has corrected four times.
   ([#233](https://github.com/vixygrey/qud-expanded-community-edition/issues/233))
-
 - **(internal)** `tools/validate_mod.py` recognises the `Vixy_` prefix as well as `Raven_`, and gains a test suite. The split is `docs/STYLEGUIDE.md` §3.1 — `Raven_` is Mura's attribution and stays on everything inherited from CoQE, while content added to this fork takes `Vixy_` — but the validator predated it and tested for `Raven_` literally, so a `Vixy_` object read as a *vanilla record*. Six sites, failing two different ways: `check_merge_discipline` and `check_part_names` would have reported new content as charter rule 1 violations and unknown classes, while `check_reachability`, `check_table_targets`, `check_scripting_parts` and the tier/value curve would simply have skipped it. Four of the six fail by staying silent, which is a clean green run over content nobody checked.
 
   Both prefixes now live in one `MOD_PREFIXES` constant, with `MOD_PART_PREFIXES` derived from it so a third prefix cannot update one and miss the other. New content is held to the tier and value curve like everything else — that check exists because #10 got prices wrong, and new content is where that recurs.

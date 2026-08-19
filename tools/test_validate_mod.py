@@ -220,15 +220,62 @@ class PrefixRecognition(unittest.TestCase):
         )
 
 
-class Constants(unittest.TestCase):
-    def test_part_prefixes_track_the_object_prefixes(self) -> None:
-        """MOD_PART_PREFIXES is derived, so adding a third prefix cannot update one and miss the
-        other — the exact half-update this constant exists to prevent."""
-        self.assertEqual(
-            validate_mod.MOD_PART_PREFIXES,
-            tuple(p + "Mod" for p in validate_mod.MOD_PREFIXES),
-        )
+class ScriptingParts(unittest.TestCase):
+    """Widened in #146 from Mod* to the whole prefix.
 
+    Until the scour slug there was no non-mutation part in mod/Scripting/, so Mod* covered every
+    case. A part named Vixy_AmmoPayload fell between this check and check_part_names, which skips
+    mod-prefixed names precisely because this one is supposed to cover them — so a typo in the part
+    name would have loaded as nothing at all.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _mod_with(self, part: str, cs: str | None) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            f'  <object Name="Vixy_Thing">\n    <part Name="{part}" />\n  </object>',
+        )
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        if cs:
+            (scripting / f"{cs}.cs").write_text(
+                f"namespace XRL.World.Parts {{ public class {cs} {{ }} }}",
+                encoding="utf-8",
+            )
+        return tmp
+
+    def test_non_mutation_part_without_a_class_is_reported(self) -> None:
+        for part in ("Vixy_AmmoPayload", "Raven_SomeCombatPart"):
+            with self.subTest(part=part):
+                items = findings_for(
+                    validate_mod.check_scripting_parts, self._mod_with(part, None)
+                )
+                self.assertTrue(
+                    any(part in detail for _, detail in items),
+                    f"{part} has no class and was not reported",
+                )
+
+    def test_part_with_a_matching_class_is_not_reported(self) -> None:
+        items = findings_for(
+            validate_mod.check_scripting_parts,
+            self._mod_with("Vixy_AmmoPayload", "Vixy_AmmoPayload"),
+        )
+        self.assertEqual(items, [])
+
+    def test_vanilla_part_name_is_not_required_to_have_a_class(self) -> None:
+        """The boundary: this check owns mod parts only. RustOnHit is the game's."""
+        items = findings_for(
+            validate_mod.check_scripting_parts, self._mod_with("RustOnHit", None)
+        )
+        self.assertEqual(items, [])
+
+
+class Constants(unittest.TestCase):
     def test_covers_every_prefix_the_validator_claims(self) -> None:
         """The tie between the tests' own list and the real constant.
 

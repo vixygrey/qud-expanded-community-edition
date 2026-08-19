@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **368** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **214** `Load="Merge"` edits to existing objects |
+| **New item blueprints** | **370** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **215** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -377,7 +377,7 @@ doubles max charge and stacks with High Capacity.
 |---|---|---|
 | `MeleeWeapons.xml` | 71 | 79 |
 | `Armor.xml` | 61 | 38 |
-| `RangedWeapons.xml` | 49 | 8 |
+| `RangedWeapons.xml` | 49 | 9 |
 | `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 9 | 16 |
 | `OtherEquipment.xml` | 7 | 16 |
@@ -385,8 +385,8 @@ doubles max charge and stacks with High Capacity.
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 20 (20 disabled) | 1 |
-| **Total** | **368 active** | **214** |
+| `Ammo.xml` | 22 (20 disabled) | 1 |
+| **Total** | **370 active** | **215** |
 
 ### 6.2 Melee weapons
 
@@ -1333,6 +1333,67 @@ have no tier ladder — Boomrose stops at 4 because fullerite, crysteel and zeta
 over, and there is no better shell to replace these. Vanilla keeps plain `Shotgun Shell` at weight
 25 in every pool from `Ammo 2` to `Ammo 8`.
 
+#### The scour slug
+
+Mura's ten effect bullets are **cut**, decided in #146. Six had already been cut from the arrows and
+the shells for reasons that did not change, and the razor bullet — the one worth arguing about —
+failed the test this whole line is built on. **813 of 908 creature blueprints bleed**, robots
+included, so it had no dead matchup: a straight upgrade over a plain slug rather than a trade.
+
+What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chance="5"`.
+
+| | |
+|---|---|
+| What it does | takes **one random item** from the target's equipment or inventory and applies `Rusted` |
+| Dead to | the **282 of 908** creature blueprints carrying nothing — `GetRandomItemFrom` returns `null` |
+| Dead to | anything carrying only non-metal — `Rusted.Apply` opens on `!HasPart<Metal>`, and only **24%** of item blueprints are `Metal` |
+| Costs you | `Rusted` drops an item to **1%** of its value, and a second one destroys it outright |
+
+It fills a real gap: **Bow and Rifle is the only tree with status-inflicting shots** — Wounding,
+Suppressive, Flattening, Sure, Beacon, Disorienting and Ultra Fire — while Pistol (30 weapons) and
+Heavy Weapon (16, including the Chaingun and Linear Cannon) have none. Slugs are eaten across all
+three, so ammunition is the only vehicle that reaches the two empty ones.
+
+**It does not need to penetrate.** `MissileWeapon` raises `ProjectileHit` inside the
+failed-to-penetrate branch as well, with `Penetrations` 0, and `RustOnHit` checks penetration
+nowhere — so this answers a target you cannot hurt. Deliberate, and the reason the chance is a third
+of vanilla's default.
+
+**Rust is repairable**, at a premium: `Tinkering_Repair` branches to `RustedRepairCost`, forcing the
+item's highest bit and including 75% of the rest against 50% for ordinary repair. So the round is an
+expensive setback rather than annihilation — except on an artifact, where `IActivePart.IsRustSensitive`
+defaults true and `IsReady` returns `ActivePartStatus.Rusted`, so a rusted laser rifle simply stops
+firing.
+
+#### Getting a payload past a weapon that hardcodes its projectile
+
+The mechanism that made the slug possible at all, and the reason #145's fix could not be reused.
+
+All 19 slug consumers — 12 weapons, 7 relic bases — name their projectile on `MagazineAmmoLoader`,
+which only consults the round's own `ProjectileObject` when that field is blank. That is why every
+effect bullet Mura wrote was loaded, fired, and had its payload discarded.
+
+For shotguns, blanking the field was free: both pellet projectiles are 1d2/pen 4, identical to
+`ProjectileShotgunShell`. For slugs that field is **where the weapon's ballistics live** — 1d6/pen 3
+for the Borderlands Revolver, 1d8/pen 7 for the Sniper Rifle, 2d12 `Vorpal` for the Linear Cannon —
+and blanking all 19 would flatten every one to `ProjectileLeadSlug`'s 1d6/pen 3.
+
+So `Vixy_AmmoPayload` merges the round's payload **into** the weapon's projectile instead. One part,
+merged onto `BaseFirearm`, which reaches all 19 plus both Masterwork variants and any firearm a
+future Qud release adds — one vanilla name on the compatibility surface rather than nineteen, adding
+a part and replacing no attribute.
+
+It needs two events, because one is not available:
+
+| Event | Order | Why |
+|---|---|---|
+| `LoadAmmoEvent` | **before** `MagazineAmmoLoader` | reads `loader.Ammo`, the stack about to be drawn from, while `RemoveOne()` has not yet run |
+| `ProjectileSetup` | after the projectile exists | fired by `MissileWeapon.SetupProjectile` once per projectile — a separate dispatch, so part order stops mattering |
+
+Running *after* the loader in one dispatch is not purchasable at any price: `ObjectBlueprintLoader.Bake`
+inherits a parent's parts before the object's own, and `AddPartInternals` orders `PartsList` by
+`IPart.Priority`, which can only move a part **earlier**. Running early is what makes the read valid.
+
 ---
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
@@ -1608,7 +1669,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── ObjectBlueprints/
 │   ├── MeleeWeapons.xml        # 71 new / 79 merged
 │   ├── Armor.xml               # 61 new / 38 merged
-│   ├── RangedWeapons.xml       # 49 new / 10 merged
+│   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 9 new / 16 merged
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
@@ -1617,7 +1678,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 40 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 41 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, and the chip-slot mutator
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 

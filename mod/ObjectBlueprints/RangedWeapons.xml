@@ -1,5 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
+  <!-- One part, on the one blueprint every firearm in the game descends from, so that a round can
+       carry a payload into a weapon that hardcodes its own projectile.
+
+       All 19 slug consumers name their projectile on MagazineAmmoLoader, and for slugs that field
+       is where the WEAPON'S BALLISTICS live: 1d6/pen 3 for the Borderlands Revolver, 1d8/pen 7 for
+       the Sniper Rifle, 2d12 Vorpal for the Linear Cannon. MagazineAmmoLoader only consults the
+       round's own ProjectileObject when the weapon leaves that field blank, which is why every
+       effect bullet Mura wrote was loaded, fired, and had its payload discarded (#14, #146).
+
+       Blanking the field the way #145 did for the four shotguns is not available here. Those two
+       pellet projectiles are identical to Shotgun Shell's own (1d2/pen 4 both ways), so blanking
+       changed nothing; doing it to the slug weapons would flatten all 19 to ProjectileLeadSlug's
+       1d6/pen 3 and take the Linear Cannon with them. Vixy_AmmoPayload merges the round's payload
+       into the weapon's projectile instead of replacing it - the gun keeps its ballistics, the
+       round adds its effect.
+
+       BaseFirearm rather than 19 concrete records: one vanilla name on the compatibility surface
+       instead of nineteen, it reaches the seven relic bases and both Masterwork variants for free,
+       and any firearm a future Qud release adds inherits it. Charter rule 1 holds because this adds
+       a part and replaces no attribute of the vanilla record.
+
+       Harmless on the weapons that do not need it. The part's first act is to check whether the
+       weapon hardcoded a projectile at all, and does nothing when it did not - which is the branch
+       the four shotguns take, since vanilla already builds their round's projectile in full. -->
+  <object Name="BaseFirearm" Load="Merge">
+    <part Name="Vixy_AmmoPayload" />
+  </object>
+
   <object Name="Musket" Load="Merge">
     <part Name="Physics" Weight="12" UsesTwoSlots="true" />
   </object>

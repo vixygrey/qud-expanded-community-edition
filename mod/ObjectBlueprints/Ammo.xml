@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <!-- Effect arrows, revived in #144.
 
@@ -598,13 +598,92 @@
     />
   </object>
 
-  <!-- Bullets are still disabled, and are the subject of #146 (slugs). They are held back rather
-       than deleted because that issue needs the originals to work from, and it is a much larger
-       reachability claim than this one: 12 vanilla weapons plus 7 relic bases.
+  <!-- The scour slug, decided in #146.
 
-       Do not revive these as-is. Every defect #145 found in the shells applies, and #146 must run
-       the same test first: does the weapon hardcode MagazineAmmoLoader ProjectileObject? If it
-       does, the payload never fires. Beyond that they inherit Projectile rather than
+       Mura's ten effect bullets are all cut. Six were already cut from the arrows and the shells for
+       reasons that did not change here, and the razor bullet - the one that looked most worth
+       keeping - failed the test this ammunition line is built on: 813 of 908 creature blueprints
+       bleed, robots included, so it had no dead matchup and was a straight upgrade over a plain
+       slug rather than a trade. The commented block below is kept as reference for naming and
+       colour, not as a queue.
+
+       What survives is the gap the razor round was going to fill. The Bow and Rifle tree is the
+       only one with status-inflicting shots - Wounding, Suppressive, Flattening, Sure, Beacon,
+       Disorienting and Ultra Fire - while Pistol (30 weapons) and Heavy Weapon (16, including the
+       Chaingun and the Linear Cannon) have none at all. Slugs are eaten across all three trees, so
+       ammunition is the only vehicle that reaches the two empty ones.
+
+       RustOnHit passes the test three times over. It takes ONE random item from the target's
+       equipment or inventory and applies Rusted, so it does nothing to the 282 of 908 creature
+       blueprints that carry nothing (GetRandomItemFrom returns null, silently), nothing to a target
+       carrying only non-metal (Rusted.Apply opens on !HasPart<Metal>, and only 24% of item
+       blueprints are Metal), and it can draw a waterskin while a carbide axe sits in the same pack.
+
+       And it costs the player something real: Rusted drops an item to 1% of its value, and a second
+       Rusted on the same item destroys it outright. This round ruins the loot it is used on. Rust
+       IS repairable - Tinkering_Repair branches to RustedRepairCost, which forces the item's highest
+       bit and includes 75% of the rest against 50% for ordinary repair - so it is an expensive
+       setback rather than annihilation.
+
+       Chance 5, flat, one roll a hit. Flat rather than divided by the weapon's rate of fire, because
+       under a flat chance every weapon already pays the SAME ammunition per rusted item - the
+       chaingun buys time, not effect - and because dividing has no fiction: nothing explains why a
+       round corrodes less from a faster gun, and Qud's convention is the opposite, with Wounding
+       Fire bleeding per penetration and gas stacking per projectile. At 5 a musket needs about 24
+       hits and a chaingun about 3.9 actions and 24 slugs.
+
+       Worth knowing that this does NOT need to penetrate. MissileWeapon fires ProjectileHit inside
+       the failed-to-penetrate branch too, with Penetrations 0, and RustOnHit checks penetration
+       nowhere - so the round answers a target you cannot hurt. That is deliberate, and it is the
+       main reason the chance is a third of vanilla's default.
+
+       Reachable through Ammo 2-8 only. NOT tagged DynamicObjectsTable:Ammo: that pool feeds
+       GunsmithInventory_Legendary at Number="20-30" and RandomItem at Weight="5", which would
+       bypass the weighting below entirely. See #223, which covers the fact that the arrows are in
+       that pool by inheritance from BaseArrow and the shells are not.
+
+       No turret tagging needed, unlike the shells: Lead Slug carries TurretStockExclusive, which
+       clears the candidate list, so slugs cannot enter turret stock at all. -->
+
+  <object Name="Vixy_Scour Slug" Inherits="Projectile">
+    <part
+      Name="Render"
+      DisplayName="{{r|scour}} slug"
+      ColorString="&amp;r"
+      DetailColor="w"
+      Tile="items/sw_bullet.bmp"
+    />
+    <part Name="AmmoSlug" ProjectileObject="Vixy_ProjectileScourSlug" />
+    <part Name="Physics" Category="Ammo" />
+    <part Name="MissileStatusColor" Color="r" />
+    <part Name="Commerce" Value="0.20" />
+    <part
+      Name="Description"
+      Short="The jacket is blistered and weeping at the crimp. Sealed inside is a measure of decanted sludge, which eats iron the way air and rain do and does not wait a year about it."
+    />
+    <part
+      Name="RulesDescription"
+      Text="Rusts a piece of what the target is carrying. Rusted gear is slow and nearly worthless until repaired, and a rusted artifact stops working entirely. Wasted on anything carrying nothing, or nothing made of metal."
+    />
+    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <tag Name="AlwaysStack" Value="Yes" />
+  </object>
+  <object Name="Vixy_ProjectileScourSlug" Inherits="BaseLeadSlugProjectile">
+    <!-- The Projectile part here is never used by a slug weapon: Vixy_AmmoPayload copies the
+         payload onto the WEAPON'S projectile and skips anything that defines a projectile's
+         identity, ballistics first among them. It is set to Lead Slug's own 1d6/pen 3 anyway, so
+         that a weapon which leaves MagazineAmmoLoader.ProjectileObject blank - none today, but our
+         own guns could - fires something sane rather than BaseLeadSlugProjectile's 1d2/pen 1. -->
+    <part Name="Projectile" BasePenetration="3" BaseDamage="1d6" ColorString="&amp;r" />
+    <part Name="RustOnHit" Chance="5" Amount="1" />
+  </object>
+
+  <!-- Mura's ten bullets, all CUT in #146 and kept only as reference for the naming and colour
+       conventions. This is not a queue: nothing below is coming back.
+
+       The test they had to pass was run and answered. Every slug weapon hardcodes
+       MagazineAmmoLoader ProjectileObject, so the payload never fired - which is why none of this
+       ever worked - and the fix is Vixy_AmmoPayload above rather than blanking the field. Beyond that they inherit Projectile rather than
        BaseLeadSlugProjectile, so they lose the tile, the sounds and the Slug tag; both gas variants
        name a part where a blueprint belongs (GasPoison and GasSleep are parts ON the PoisonGas and
        SleepGas blueprints) and would emit nothing; the razor bullet's BleedingOnHit cannot fire on
