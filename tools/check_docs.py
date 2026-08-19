@@ -454,6 +454,49 @@ def check_sections(f: Findings) -> None:
                 )
 
 
+# Keep a Changelog's section set, in its order. A heading outside this set, or a repeat of one
+# inside a release, is a structural defect rather than a style preference: entries under the second
+# copy read as a separate group, so a reader scanning for what changed can stop at the first and
+# miss half of it.
+CHANGELOG_SECTIONS = ("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
+
+
+def check_changelog_sections(f: Findings) -> None:
+    """One `###` section of each kind per release block.
+
+    This has now happened twice — two `### Fixed` blocks corrected by hand before 2.4.0, and two
+    `### Added` blocks introduced in #236 — because inserting an entry means anchoring on
+    `## [Unreleased]` and it is easy not to look for the section already below it. The hand-fix did
+    not stop the second one; this does.
+    """
+    path = Path("CHANGELOG.md")
+    if not path.is_file():
+        return
+    release = None
+    seen: dict[str, int] = {}
+    for lineno, line in enumerate(path.read_text().splitlines(), 1):
+        if m := re.match(r"^##\s+\[([^\]]+)\]", line):
+            release, seen = m.group(1), {}
+            continue
+        if not (m := re.match(r"^###\s+(.+?)\s*$", line)) or release is None:
+            continue
+        name = m.group(1)
+        if name not in CHANGELOG_SECTIONS:
+            f.add(
+                "changelog-sections",
+                f"CHANGELOG.md:{lineno}: [{release}] has a '### {name}' section, which is not one "
+                f"of Keep a Changelog's: {', '.join(CHANGELOG_SECTIONS)}",
+            )
+        elif name in seen:
+            f.add(
+                "changelog-sections",
+                f"CHANGELOG.md:{lineno}: [{release}] has a second '### {name}' section - the first "
+                f"is at line {seen[name]}. Entries under the second read as a separate group.",
+            )
+        else:
+            seen[name] = lineno
+
+
 def check_check_names(f: Findings) -> None:
     """A doc naming a check that does not exist teaches a contributor a false name."""
     # Every script that emits named checks, not just the validator: the moment one of them is
@@ -590,6 +633,7 @@ def main() -> int:
     from_game = check_vanilla_figures(f)
     check_links(f)
     check_sections(f)
+    check_changelog_sections(f)
     check_check_names(f)
     check_required_checks(f)
     check_preserved(f)
