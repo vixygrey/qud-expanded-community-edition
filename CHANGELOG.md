@@ -55,6 +55,11 @@ recorded because contributors need them, not because subscribers do.
   That second half is the fix. `282 of 908 creature blueprints` sat in an `Ammo.xml` comment through review and a release, and the denominator turns out to be unreproducible under any filter I can construct — while 813, the numerator beside it, comes out exactly. Nothing caught it because nothing had ever read an XML comment, and `CITED_FIGURES` could not express a census anyway: it reads one attribute off one blueprint. The definition now lives in a docstring beside the code implementing it, and the buckets are asserted to partition the set, so a category added without its arithmetic fails generation instead of quietly summing to the wrong thing.
   ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
 
+- **(internal)** The creature census gains the **humanoid subset** — 340 blueprints, of which 134 have a rustable item against 202 that do not. Quoting only the whole-bestiary share reads as a round that does nothing; the pair is the honest claim, because "a round for the armed and the armoured, and dead weight against beasts" is a statement about two populations and needs both numbers to be checkable.
+
+  Measuring it also killed my own assumption. I expected the blueprint census to *overstate* how dead the scour slug is, since it weights a unique legendary the same as a snapjaw. Restricting to creatures reachable from a vanilla population table moves the rustable share from 18.8% to 17.4%, and weighting by how many table entries name them takes it to 13.6%. The census was generous, not harsh — so `Chance="5"` stands, and what needed correcting was the description rather than the value.
+  ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
+
 ### Fixed
 
 - **(internal)** `CHANGELOG.md` had **four** malformed release blocks, not the one that prompted the check. `[Unreleased]` and `[2.4.0]` each carried two `### Added` sections, `[2.4.0]` two `### Fixed`, and `[2.3.0]` two `### Changed` — so entries under the second copy read as a separate group, and anyone scrolling for what changed could stop at the first and miss half of it. Every duplicate is merged into its first section with entry order preserved.

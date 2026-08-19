@@ -355,16 +355,24 @@ def collect_figures(game: Path) -> dict[str, str]:
 
 # The seven counts collect_census emits. Named here so a claim in check_docs.py can be read
 # against the list without opening the function.
+# The buckets every population is counted into. `creature-` covers all creature blueprints;
+# `humanoid-` the subset carrying the `Humanoid` tag, which is the population the scour slug is
+# actually aimed at - "a round for the armed and the armoured, and dead weight against beasts".
+# Quoting only the overall share reads as "this round does nothing"; the pair is the honest claim.
+BUCKETS = (
+    "inventory-none",
+    "inventory-natural",
+    "inventory-nonmetal",
+    "inventory-popref",
+    "rust-dead",
+    "rustable",
+)
+CENSUS_POPULATIONS = ("creature", "humanoid")
 CENSUS_KEYS = (
     "creature-blueprints",
     "creature-blueprints-bleeding",
-    "creature-inventory-none",
-    "creature-inventory-natural",
-    "creature-inventory-nonmetal",
-    "creature-inventory-popref",
-    "creature-rust-dead",
-    "creature-rustable",
-)
+    "humanoid-blueprints",
+) + tuple(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS)
 
 
 def collect_census(game: Path) -> dict[str, str]:
@@ -391,6 +399,11 @@ def collect_census(game: Path) -> dict[str, str]:
                     `GetEquippedObjects` collects `Equipped` only. A creature whose gear is all
                     natural has an empty pool however armed it looks.
       metal         a `<part Name="Metal">`, which is what `Rusted.Apply` opens on.
+      humanoid      the `Humanoid` tag, resolved the same way. Counted as its own population
+                    because the overall share answers "what does this round do to the bestiary"
+                    and the humanoid share answers "what does it do to the things it is for",
+                    and only the pair is honest. Quoting the first alone reads as a round that
+                    does nothing.
 
     This is a census of *blueprints*, which is a floor and not the number - docs/LESSONS.md
     records a wished creature arming itself after spawning with a weapon its blueprint never
@@ -443,48 +456,55 @@ def collect_census(game: Path) -> dict[str, str]:
             "than dropping the census, or every figure that cites it stops being checked."
         )
 
+    humanoids = [name for name in creatures if has_tag(name, "Humanoid")]
+
+    def count_into(tally: dict, prefix: str, names: list) -> None:
+        """Sort one population into the buckets and check the result partitions it."""
+        for name in names:
+            carried = [
+                e.get("Blueprint")
+                for o in chain(name)
+                for e in o.findall("inventoryobject")
+                if e.get("Blueprint")
+            ]
+            if not carried:
+                tally[f"{prefix}-inventory-none"] += 1
+            elif all(b[0] in "@*" for b in carried):
+                tally[f"{prefix}-inventory-popref"] += 1
+            else:
+                real = [b for b in carried if b[0] not in "@*" and not is_natural(b)]
+                if not real:
+                    tally[f"{prefix}-inventory-natural"] += 1
+                elif not any(has_part(b, "Metal") for b in real):
+                    tally[f"{prefix}-inventory-nonmetal"] += 1
+                else:
+                    tally[f"{prefix}-rustable"] += 1
+        tally[f"{prefix}-rust-dead"] = (
+            tally[f"{prefix}-inventory-none"]
+            + tally[f"{prefix}-inventory-natural"]
+            + tally[f"{prefix}-inventory-nonmetal"]
+        )
+        # Every member lands in exactly one bucket. If it does not, a category was added without
+        # its arithmetic and the totals would look plausible while summing to the wrong thing.
+        partitioned = (
+            tally[f"{prefix}-rust-dead"]
+            + tally[f"{prefix}-inventory-popref"]
+            + tally[f"{prefix}-rustable"]
+        )
+        if partitioned != len(names):
+            raise SystemExit(
+                f"error: the {prefix} census buckets sum to {partitioned}, not {len(names)}. "
+                f"The categories no longer partition the set."
+            )
+
     tally = dict.fromkeys(CENSUS_KEYS, 0)
     tally["creature-blueprints"] = len(creatures)
-    for name in creatures:
-        if intprop(name, "Bleeds") == "1":
-            tally["creature-blueprints-bleeding"] += 1
-        carried = [
-            e.get("Blueprint")
-            for o in chain(name)
-            for e in o.findall("inventoryobject")
-            if e.get("Blueprint")
-        ]
-        if not carried:
-            tally["creature-inventory-none"] += 1
-        elif all(b[0] in "@*" for b in carried):
-            tally["creature-inventory-popref"] += 1
-        else:
-            real = [b for b in carried if b[0] not in "@*" and not is_natural(b)]
-            if not real:
-                tally["creature-inventory-natural"] += 1
-            elif not any(has_part(b, "Metal") for b in real):
-                tally["creature-inventory-nonmetal"] += 1
-            else:
-                tally["creature-rustable"] += 1
-
-    tally["creature-rust-dead"] = (
-        tally["creature-inventory-none"]
-        + tally["creature-inventory-natural"]
-        + tally["creature-inventory-nonmetal"]
+    tally["humanoid-blueprints"] = len(humanoids)
+    tally["creature-blueprints-bleeding"] = sum(
+        1 for name in creatures if intprop(name, "Bleeds") == "1"
     )
-
-    # Every creature lands in exactly one bucket. If it does not, a category was added without
-    # its arithmetic and the totals would look plausible while summing to the wrong thing.
-    partitioned = (
-        tally["creature-rust-dead"]
-        + tally["creature-inventory-popref"]
-        + tally["creature-rustable"]
-    )
-    if partitioned != tally["creature-blueprints"]:
-        raise SystemExit(
-            f"error: the census buckets sum to {partitioned}, not "
-            f"{tally['creature-blueprints']}. The categories no longer partition the set."
-        )
+    count_into(tally, "creature", creatures)
+    count_into(tally, "humanoid", humanoids)
     return {key: str(value) for key, value in tally.items()}
 
 

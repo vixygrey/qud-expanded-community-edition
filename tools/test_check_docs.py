@@ -122,6 +122,9 @@ SNAPSHOT = {
         "creature-blueprints": "897",
         "creature-blueprints-bleeding": "813",
         "creature-rustable": "169",
+        "humanoid-blueprints": "340",
+        "humanoid-rustable": "134",
+        "humanoid-rust-dead": "202",
     }
 }
 
@@ -234,6 +237,61 @@ class CheckNameSources(unittest.TestCase):
             [i for i in f.items if "vanilla-figure" in i[1]],
             [],
             "check_docs.py cannot see the check names it emits itself",
+        )
+
+
+class HumanoidCensusClaims(unittest.TestCase):
+    """The humanoid subset shares a denominator-shaped phrasing with the whole-bestiary claims,
+    which is exactly how a figure gets quoted against the wrong population."""
+
+    def test_a_correct_humanoid_figure_is_quiet(self) -> None:
+        self.assertEqual(
+            figure_findings(
+                {
+                    "docs/FEATURES.md": "134 of 340 humanoid creature blueprints have a "
+                    "rustable item"
+                }
+            ),
+            [],
+        )
+
+    def test_a_humanoid_count_against_the_bestiary_denominator_is_reported(
+        self,
+    ) -> None:
+        """The failure this pattern pair exists to catch."""
+        items = figure_findings(
+            {
+                "docs/FEATURES.md": "134 of 897 humanoid creature blueprints have a "
+                "rustable item"
+            }
+        )
+        self.assertTrue(items, "a humanoid count against the wrong denominator passed")
+        self.assertIn("340", items[0][1])
+
+    def test_the_creature_pattern_does_not_swallow_a_humanoid_sentence(self) -> None:
+        """`(\\d+) creature blueprints` requires the digits adjacent to `creature`, so the word
+        `humanoid` in between keeps the two claims apart. If that ever stops holding, 134 would be
+        compared against creature-rustable (169) and this goes red."""
+        self.assertEqual(
+            figure_findings(
+                {
+                    "mod/ObjectBlueprints/Ammo.xml": "<objects><!-- 134 of 340 humanoid "
+                    "creature blueprints have a rustable item --></objects>"
+                }
+            ),
+            [],
+            "a humanoid sentence was matched by the whole-bestiary pattern",
+        )
+
+    def test_both_populations_can_be_quoted_in_one_document(self) -> None:
+        self.assertEqual(
+            figure_findings(
+                {
+                    "docs/FEATURES.md": "169 of 897 creature blueprints have a rustable item, "
+                    "but 134 of 340 humanoid creature blueprints have a rustable item"
+                }
+            ),
+            [],
         )
 
 
