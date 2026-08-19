@@ -16,6 +16,13 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` now says that the parser which copes with vanilla's malformed XML is **importable**, not just that the drift checker owns one. Five of the game's own files embed control characters as numeric references that XML 1.0 forbids, and the lesson has warned about them — and about never swallowing the failure — since the 208 phantom orphaned-merge defects that found them. It described what `tools/check_vanilla_drift.py` does, though, rather than what a new script should do, and I read it as a property of that tool.
+
+  So I wrote my own `ET.parse` inside a `try/except` anyway, and got two empty results that read as discoveries: that vanilla has no shield with an armour value above 2, and that nothing at all occupies its `Arm` slot. Both false — the second by 46 items — and both were about to go onto the wiki as fact. Routing the same scan through `parse(path, lenient=True)` took it from 1,913 blueprints to 5,202, because everything `Items.xml` defines had been silently absent.
+
+  Recorded as two sentences and a snippet on the existing bullet rather than as a new lesson. The rule already has an owner, and a second entry describing the same trap is the duplication this repository has corrected four times.
+  ([#233](https://github.com/vixygrey/qud-expanded-community-edition/issues/233))
+
 - **(internal)** `tools/validate_mod.py` recognises the `Vixy_` prefix as well as `Raven_`, and gains a test suite. The split is `docs/STYLEGUIDE.md` §3.1 — `Raven_` is Mura's attribution and stays on everything inherited from CoQE, while content added to this fork takes `Vixy_` — but the validator predated it and tested for `Raven_` literally, so a `Vixy_` object read as a *vanilla record*. Six sites, failing two different ways: `check_merge_discipline` and `check_part_names` would have reported new content as charter rule 1 violations and unknown classes, while `check_reachability`, `check_table_targets`, `check_scripting_parts` and the tier/value curve would simply have skipped it. Four of the six fail by staying silent, which is a clean green run over content nobody checked.
 
   Both prefixes now live in one `MOD_PREFIXES` constant, with `MOD_PART_PREFIXES` derived from it so a third prefix cannot update one and miss the other. New content is held to the tier and value curve like everything else — that check exists because #10 got prices wrong, and new content is where that recurs.
