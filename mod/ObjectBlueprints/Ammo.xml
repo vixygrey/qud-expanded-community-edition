@@ -452,21 +452,27 @@
        scrap electronics for five at tier 0 - the same slot as every grenade mk I - and a payload has
        no business being learnable there.
 
-       All four cost 003: two scrap metal and one pure alloy, for three shells. That sits between
-       vanilla's two anchors, a grenade mk I at two bits for one and plain shot at one bit for five,
-       which is where a shell carrying an arrow's payload belongs. Bits alone would then put every
-       shell at tier 3, with the Pump Shotgun, inside Tinker 1.
+       All four cost 001: two scrap metal and one phasic power systems, for three shells. That is
+       exactly what vanilla charges for a gas, flashbang, thermal, freeze or high explosive grenade
+       mk III - the same payloads these shells carry, dialled down - so the material bracket matches
+       the thing being imitated rather than sitting above it.
 
-       That is right for the takedown shell and too early for the other three, so incendiary, cryo and
-       flechette carry BuildTier="4" and sit with the Combat Shotgun behind Tinker 2 while still
-       costing 003. The less-lethal round is the one anybody who can build the gun can also load;
+       It was 003 until #146, which is a pure alloy: a level-3 bit vanilla reserves for its exotic
+       grenades (plasma, gravity, time dilation) and never asks for on a payload of this kind. The
+       rarity was doing gating work that BuildTier already does better, and it read as a tax on the
+       whole line rather than a decision about any shell.
+
+       Bits alone put these at tier 1, well inside Tinker 1, so the gate is entirely BuildTier's now.
+       Incendiary, cryo and flechette carry BuildTier="4" and sit with the Combat Shotgun behind
+       Tinker 2; the less-lethal round is the one anybody who can build the gun can also load, and
        burning, freezing and defeating armour wait for the second skill.
 
        BuildTier is a real public field on TinkerItem that vanilla never writes, so it is worth saying
        why it is safe: it is read as a blueprint parameter by LoadBlueprint, and it is in the API
        snapshot the part-attributes check validates against. Its only effect is the recipe's tier, and
        decoupling that from the cost is the entire point here - the alternative, 004, would have
-       charged pristine electronics for a paper cartridge.
+       charged pristine electronics for a paper cartridge. It matters more since #146 dropped the
+       cost to 001, because the bits no longer reach tier 3 on their own at all.
 
        All four carry ExcludeFromTurretStock, and the case is stronger here than it was for arrows.
        Shotgun Shell is the ONLY blueprint in the game with AmmoShotgunShell and it carries no
@@ -493,7 +499,7 @@
       Short="A crimped paper shell stencilled with a flame. The shot inside is jacketed in a compound that lights as it leaves the barrel."
     />
     <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
-    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <part Name="TinkerItem" Bits="001" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
@@ -522,7 +528,7 @@
       Name="RulesDescription"
       Text="Chills what it strikes. Repeated hits will freeze a target solid, whatever its shape."
     />
-    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <part Name="TinkerItem" Bits="001" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
@@ -551,7 +557,7 @@
       Name="RulesDescription"
       Text="Trades stopping power for penetration. Tells against armor and wastes itself on anything without any."
     />
-    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <part Name="TinkerItem" Bits="001" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
@@ -579,7 +585,7 @@
       Name="RulesDescription"
       Text="Knocks targets off their feet, and brings fliers down for a while. Insects, oozes and anything else without usable legs stay standing."
     />
-    <part Name="TinkerItem" Bits="003" CanBuild="true" CanDisassemble="false" NumberMade="3" />
+    <part Name="TinkerItem" Bits="001" CanBuild="true" CanDisassemble="false" NumberMade="3" />
     <tag Name="AlwaysStack" Value="Yes" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
@@ -665,7 +671,7 @@
       Name="RulesDescription"
       Text="Rusts a piece of what the target is carrying. Rusted gear is slow and nearly worthless until repaired, and a rusted artifact stops working entirely. Wasted on anything carrying nothing, or nothing made of metal."
     />
-    <part Name="TinkerItem" Bits="003" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="6" />
+    <part Name="TinkerItem" Bits="001" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="6" />
     <tag Name="AlwaysStack" Value="Yes" />
   </object>
   <object Name="Vixy_ProjectileScourSlug" Inherits="BaseLeadSlugProjectile">

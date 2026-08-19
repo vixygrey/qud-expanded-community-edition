@@ -1309,15 +1309,23 @@ Tinker 2 past tier 3:
 
 | Shell | Bits | `BuildTier` | Recipe tier | Skill |
 |---|---|---|---|---|
-| incendiary, cryo, flechette | `003` | **4** | 4 | **Tinker 2** |
-| takedown | `003` | — | 3 | Tinker 1 |
+| incendiary, cryo, flechette | `001` | **4** | 4 | **Tinker 2** |
+| takedown | `001` | — | 1 | Tinker 1 |
 
-All four cost two scrap metal and one pure alloy for three shells, which sits between vanilla's two
-anchors — a grenade mk I is two bits for one, plain shot is one bit for five. `BuildTier` is a real
-public field on `TinkerItem` that vanilla never writes; using it keeps the materials cheap while
-putting burning, freezing and armour-defeating behind the second skill. The less-lethal round is the
-one anybody who can build the gun can also load. The wider inconsistency in vanilla's own recipe
-tiers is #202.
+All four cost two scrap metal and one phasic power systems for three shells — **exactly what vanilla
+charges for a gas, flashbang, thermal, freeze or high explosive grenade mk III**, which are the
+payloads these shells carry dialled down. The material bracket matches the thing being imitated.
+
+They cost `003` until #146, a **pure alloy**: a level-3 bit vanilla reserves for its exotic grenades
+— plasma, gravity, time dilation — and never asks for on a payload of this kind. The rarity was
+doing gating work `BuildTier` already does, and it read as a tax on the line rather than a decision
+about any shell.
+
+`BuildTier` is a real public field on `TinkerItem` that vanilla never writes; using it keeps the
+materials cheap while putting burning, freezing and armour-defeating behind the second skill. The
+less-lethal round is the one anybody who can build the gun can also load. Since the bits no longer
+reach tier 3 on their own, the gate is now entirely `BuildTier`'s. The wider inconsistency in
+vanilla's own recipe tiers is #202.
 
 **All four carry `ExcludeFromTurretStock`, and the case is stronger than it was for arrows.**
 `Shotgun Shell` is the *only* blueprint in the game with `AmmoShotgunShell` and carries no exclusive

@@ -20,7 +20,7 @@ recorded because contributors need them, not because subscribers do.
 
   It asks for something back, and that is the point. Rust ruins the loot you were about to pick up — you can repair it, but rusted repair costs more than ordinary repair, and rusting an already-rusted item destroys it outright. And it is useless against most of the bestiary: nearly a third of creatures carry nothing at all, and plenty of the rest carry nothing metal. This is a round for the armed and the armoured, and dead weight against beasts.
 
-  Craftable at Tinker II, and found in the ammunition pools from tier 2 up.
+  Craftable at Tinker II for two scrap metal and one phasic power systems per six rounds — the same materials vanilla charges for a grenade mk III — and found in the ammunition pools from tier 2 up.
 
   Mura's ten effect bullets are **cut** rather than revived. Six had already gone from the arrows and the shells for reasons that did not change, and the razor bullet failed the test the rest of this ammunition is built on: 813 of 908 creatures bleed, robots included, so it had no matchup it was wrong for — a straight upgrade over a plain slug rather than a trade. The old blueprints stay commented out as a naming reference.
   ([#146](https://github.com/vixygrey/qud-expanded-community-edition/issues/146))
@@ -58,6 +58,13 @@ recorded because contributors need them, not because subscribers do.
 
   **A boolean's name is not its semantics.** `Bleeding.Stack = true` *merges* into an existing bleed and adds no new effect; `false` — the default on `BleedingOnHit` — piles independent ones on, so an XML payload that omits the attribute quietly gets the compounding version. The same trap runs through the skill data, where one power is the tree *Bow and Rifle*, the entry *Draw a Bead*, and the ability *Mark Target*.
   ([#217](https://github.com/vixygrey/qud-expanded-community-edition/issues/217))
+
+### Changed
+
+- **The four effect shells are cheaper to craft.** They cost two scrap metal and one **pure alloy** for three, and pure alloy is a bit the game hands out for plasma, gravity and time dilation grenades — not for a paper cartridge carrying a dialled-down payload. They now cost two scrap metal and one **phasic power systems**, which is exactly what vanilla charges for the gas, flashbang, thermal, freeze and high explosive grenades mk III whose effects they borrow.
+
+  Nothing else about them moves. Incendiary, cryo and flechette still sit behind Tinker II and takedown still does not, because that gate was always `BuildTier` rather than the materials — which is clearer now that the bits no longer reach the third tier on their own. Decided while pricing the scour slug, which had inherited the same mistake before it shipped.
+  ([#146](https://github.com/vixygrey/qud-expanded-community-edition/issues/146))
 
 ### Fixed
 
