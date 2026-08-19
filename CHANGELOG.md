@@ -99,6 +99,17 @@ recorded because contributors need them, not because subscribers do.
   The claim came from surveying where `BleedingOnHit` is used rather than where the `Bleeding` effect is applied — a part census answering a much narrower question than it appeared to. What survives is the distinction the prose had collapsed: the **part** is melee-only, which is genuinely why the quill arrow was inert and why #201's fix was right; the **mechanic** is not. The 2.4.0 entry is corrected in place with a note saying so, rather than quietly rewritten.
   ([#219](https://github.com/vixygrey/qud-expanded-community-edition/issues/219))
 
+- **The fullerite greathammer is two-handed now**, like every other greathammer. It was the only one in the family missing `UsesTwoSlots`, so it could be swung one-handed alongside a shield or a second weapon — a 3d6 weapon with a penetration bonus getting a slot it was never meant to have. If you are carrying one, expect it to need both hands from now on.
+
+  Inherited from upstream 2.2 rather than introduced here. The reason it slipped is visible in the shape of the file: every other tier is a merge onto a vanilla two-handed blueprint that already carries the attribute, and fullerite is the one tier with no vanilla counterpart to merge onto, so it had to be written by hand. Found while playtesting the scour slug, when a Wraith-Knight Templar turned up holding a one-handed sword and a hammer at once.
+
+- **The flawless crysteel greathammer drops "two-handed" from its name.** Every other greathammer in
+  the family is just `<material> greathammer`, and this one alone kept vanilla's older phrasing — so
+  it read as though it were a different kind of weapon when it is the same kind at a different tier.
+  Nothing about it changes but the label; it was already two-handed, and the word was doing no work
+  the family's naming does not already do.
+  ([#239](https://github.com/vixygrey/qud-expanded-community-edition/issues/239))
+
 ## [2.4.0] - 2026-08-18
 
 ### Fixed
