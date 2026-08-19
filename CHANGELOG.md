@@ -16,10 +16,11 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `tools/check_docs.py` refuses a `CHANGELOG.md` release block that repeats a `###` section, or names one Keep a Changelog does not define. This has reached `main` twice — two `### Fixed` blocks corrected by hand before 2.4.0, then two `### Added` blocks I introduced in #236 by anchoring an insertion on `## [Unreleased]` without looking for the section already below it. The hand-fix is exactly what failed to prevent the second, which is why this is a check rather than a third correction. `tools/test_check_docs.py` is new alongside it, and was verified by stubbing the guard out and confirming the two reporting cases fail.
+  ([#237](https://github.com/vixygrey/qud-expanded-community-edition/issues/237))
+
 - **(internal)** `docs/LESSONS.md` records the asymmetry behind both wrong claims in the ammunition work: an issue gets checked against the game, and the prose written afterwards does not. Re-reading #145 end to end found every claim in it correct — the weapon list, all ten shell configurations, the gas densities, the resonance figures including the non-obvious one that vanilla's mk I sets `Level="2"`, and the takedown shell's anatomy and save mechanics. What was wrong had been written later, in the commit messages, XML comments and changelog entries explaining the finished work, where nothing checks a factual sentence and the result reads as more authoritative than the issue did.
   ([#235](https://github.com/vixygrey/qud-expanded-community-edition/issues/235))
-
-### Added
 
 - **(internal)** `docs/LESSONS.md` now says that the parser which copes with vanilla's malformed XML is **importable**, not just that the drift checker owns one. Five of the game's own files embed control characters as numeric references that XML 1.0 forbids, and the lesson has warned about them — and about never swallowing the failure — since the 208 phantom orphaned-merge defects that found them. It described what `tools/check_vanilla_drift.py` does, though, rather than what a new script should do, and I read it as a property of that tool.
 
@@ -47,6 +48,11 @@ recorded because contributors need them, not because subscribers do.
   ([#217](https://github.com/vixygrey/qud-expanded-community-edition/issues/217))
 
 ### Fixed
+
+- **(internal)** `CHANGELOG.md` had **four** malformed release blocks, not the one that prompted the check. `[Unreleased]` and `[2.4.0]` each carried two `### Added` sections, `[2.4.0]` two `### Fixed`, and `[2.3.0]` two `### Changed` — so entries under the second copy read as a separate group, and anyone scrolling for what changed could stop at the first and miss half of it. Every duplicate is merged into its first section with entry order preserved.
+
+  `[2.3.0]`'s `### Internal — tooling` section is also gone, its 29 entries redistributed into that release's existing **Added** (10), **Changed** (11) and **Fixed** (8). It predated the `**(internal)**` marker that now does the same job, and a section name Keep a Changelog does not define is one the new check cannot let past. All 137 entries in the file are unchanged in wording and none was lost — verified by diffing the entry set before and after.
+  ([#237](https://github.com/vixygrey/qud-expanded-community-edition/issues/237))
 
 - **(internal)** Three documents claimed that bleeding in Qud is melee-only *by design* and that putting it at range would invent a mechanic the game had declined to have. Both halves are false, and I had repeated them in `docs/FEATURES.md`, in the `Ammo.xml` comment above the reserved quill arrow, and in the released 2.4.0 entry below. `XRL.World.Parts.Skill.ShortBlades` — the tree's root class, no power purchased — bleeds on every critical hit, and `Rifle_WoundingFire` applies `Bleeding` at range from `MissileWeapon.cs`. `Sharpened Polyp`, cited as a natural weapon, is a wieldable `LongBlades` item.
 
@@ -79,6 +85,14 @@ recorded because contributors need them, not because subscribers do.
 
   It matters beyond the correction: absorbing a sub-mod is something this mod's own author has already done, which makes it precedent for #174 and #175 rather than a departure. Recorded in `docs/PERMISSION.md` §8.4, which is append-only, together with the distinction that precedent is not permission — §8's licence grant is worded as *"their work in this mod"*, and the Bazaar and the Experience Curve are separate Workshop items.
   ([#198](https://github.com/vixygrey/qud-expanded-community-edition/issues/198))
+
+- **(internal)** Four documents no longer say that `"WorkshopId": 0` makes Qud's uploader create a new Workshop item. It does not: the uploader reads a zero as an id, looks up item zero, and answers *Item not found* with every field blank and no way forward. That is what blocked this fork's first upload, and the guidance that caused it was in `docs/STYLEGUIDE.md` §7.1, `docs/FEATURES.md` §10 row 0b, `docs/CHARTER.md`'s release-blocker table, and `docs/PERMISSION.md` §7 — each of them confidently wrong, and one of them the file I would have checked first.
+
+  The correct pre-publish state is **no `WorkshopId` key at all**. The uploader writes the file itself: "Create Workshop Id for Mod..." creates the item and writes a file containing nothing but the new id, after which the description and the rest are merged back in beside it. `docs/STYLEGUIDE.md` §7.1 now says that, with the recovery steps. `docs/PERMISSION.md` is append-only, so its correction is a note under the original text rather than a rewrite of it.
+
+  The evidence was on disk the whole time: of the 72 installed mods that ship a `workshop.json`, two have no `WorkshopId` key and none carries a zero. Recorded in `docs/LESSONS.md` as the general form — before inventing a sentinel, find out whether the consumer distinguishes absent from empty.
+  ([#165](https://github.com/vixygrey/qud-expanded-community-edition/issues/165))
+
 
 ### Added
 
@@ -157,19 +171,9 @@ recorded because contributors need them, not because subscribers do.
 - **(internal)** `tools/qud-api.json` carries a `members` map — 21,957 settable names across 1,371 part classes — and the snapshot's digest covers it, so a stale members map is as loud as a stale part list. There is deliberately no flag to skip generating it: a snapshot quietly missing the map would disable the new check in CI and still look green, which is the failure mode this whole family of tools exists to prevent.
   ([#151](https://github.com/vixygrey/qud-expanded-community-edition/issues/151))
 
-### Fixed
-
-- **(internal)** Four documents no longer say that `"WorkshopId": 0` makes Qud's uploader create a new Workshop item. It does not: the uploader reads a zero as an id, looks up item zero, and answers *Item not found* with every field blank and no way forward. That is what blocked this fork's first upload, and the guidance that caused it was in `docs/STYLEGUIDE.md` §7.1, `docs/FEATURES.md` §10 row 0b, `docs/CHARTER.md`'s release-blocker table, and `docs/PERMISSION.md` §7 — each of them confidently wrong, and one of them the file I would have checked first.
-
-  The correct pre-publish state is **no `WorkshopId` key at all**. The uploader writes the file itself: "Create Workshop Id for Mod..." creates the item and writes a file containing nothing but the new id, after which the description and the rest are merged back in beside it. `docs/STYLEGUIDE.md` §7.1 now says that, with the recovery steps. `docs/PERMISSION.md` is append-only, so its correction is a note under the original text rather than a rewrite of it.
-
-  The evidence was on disk the whole time: of the 72 installed mods that ship a `workshop.json`, two have no `WorkshopId` key and none carries a zero. Recorded in `docs/LESSONS.md` as the general form — before inventing a sentinel, find out whether the consumer distinguishes absent from empty.
-  ([#165](https://github.com/vixygrey/qud-expanded-community-edition/issues/165))
-
-### Added
-
 - **(internal)** `workshop-target` rejects a `WorkshopId` that is not a real item — a zero, a negative, a string, a boolean — alongside the existing guard against Mura's id. Verified in all five directions, including that an absent key passes, since that is the state an unpublished mod is supposed to be in. The check that already existed would have caught the catastrophic failure (publishing over the original) and said nothing about the merely wasted afternoon.
   ([#165](https://github.com/vixygrey/qud-expanded-community-edition/issues/165))
+
 
 ## [2.3.1] - 2026-08-17
 
@@ -216,6 +220,119 @@ upstream's last release was 2.2, and this is a continuation of it, not a new mod
 
   Worth recording alongside it: both temperature arrows are subject to the target's cold and heat resistance. The glowpad used for testing resists heat by a quarter and cold not at all — so the blaze arrow igniting it in two hits is a figure measured against something that was actively resisting, while the cryo figures assume no resistance at all and will stretch against anything that has it.
   ([#144](https://github.com/vixygrey/qud-expanded-community-edition/issues/144))
+
+- **The Workshop description now describes the mod as it currently stands.** It gained a **New features** section covering the eleven options and the six revived effect arrows, and a **Tweaks and fixes** section listing what this fork has corrected — the 72 unobtainable psionic chips, the ten items with no route into the world, the hit points per level, the severed armor cascade, the merges that stopped replacing vanilla records, and Jah-yee's tag fix. Neither existed before, so a subscriber had no way to learn from the page that the mod is now configurable at all.
+
+  Three smaller changes came with it. **Development note** became **Development notes**, with the AI disclaimer joined by a line saying the mod is actively developed. The compatibility section now asks for reports through Steam or a GitHub issue rather than only stating the merge guarantee. And the fixes are listed plainly, with no commentary on how they came to be there — the reasoning belongs here, and the page is a summary that points at it rather than a second copy of it, which is now a constraint rather than a preference. See below.
+  ([#160](https://github.com/vixygrey/qud-expanded-community-edition/issues/160))
+
+- **Akimbo's removal is now a line in the fixes list rather than its own section.** The full account — the shared implementation, the Gunslinger calling, the skills screen that would not close — stays here in the changelog, which is where the reasoning belongs. What a subscriber needs from the page is that the power moved, not why it took three attempts to find out.
+  ([#160](https://github.com/vixygrey/qud-expanded-community-edition/issues/160))
+
+- **(internal)** The `pre-commit` hooks are current: `pre-commit-hooks` v5.0.0 → v6.0.0, `ruff` v0.16.2 → v0.16.3, `gitleaks` v8.23.1 → v8.30.1. `pre-commit-hooks` v6 is a major release that removes `check-byte-order-marker` and `fix-encoding-pragma` and requires Python 3.9, none of which this repository uses — but it was worth checking rather than assuming, because a hook that strips byte-order marks would quietly break the 13 BOMs the mod's XML depends on. Verified by running every hook against the whole tree on the new versions: all 13 pass, nothing was modified, and the BOM count is unchanged. The bump also needed a second file Dependabot cannot see: `ci.yml` installs ruff by an explicit `pipx install ruff==` pin, so bumping the hook alone would have left CI's formatter one version behind the one contributors run, and `ruff format --check` disagreeing with the hook that just formatted your code is worse than having neither. That pin now carries a comment saying it must move in step.
+  ([#110](https://github.com/vixygrey/qud-expanded-community-edition/pull/110))
+
+- **(internal)** The three GitHub Actions CI uses are on their Node 24 releases: `actions/checkout` v4.4.0 → v7.0.1, `actions/setup-node` v4.4.0 → v7.0.0, and `gitleaks/gitleaks-action` v2.3.9 → v3.0.0. Not optional maintenance — GitHub removes the Node 20 runtime from hosted runners on **16 September 2026**, at which point the old versions stop working regardless of any opt-out flag, and runs on the previous pins were already printing the deprecation warning. `gitleaks-action` v3 is a runtime change only, with no change to inputs, outputs or behaviour, so the secret scan still does exactly what it did. Each pin is a full commit SHA with the tag in a trailing comment, as `ci.yml` requires; all three SHAs were checked against the tags they claim to be, because a comment saying `# v7.0.1` is not evidence that the SHA beside it is that release.
+  ([#111](https://github.com/vixygrey/qud-expanded-community-edition/pull/111))
+
+- **The dark matter cell is priced for what it holds**, at 1200 rather than 300. It stores 500,000 charge against the advanced chem cell's 50,000 and cost exactly the same, so the ordering was simply wrong.
+  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+
+- **Wristblade prices follow the tier curve end to end.** Tiers 0–5 ran 15/25/35/55/105 while tiers 6–8 already sat exactly on the doubling curve at 320/640/1280 — two progressions in one family. The low tiers are now 5/10/20/40/160, which makes cheap wristblades cheaper. The vibro wristblade keeps its 300; vibro weapons price by their own convention.
+  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+
+- **The Psionic Adept genotype is now named `Psionic Adept` internally**, matching its display
+  name. It was `Psionic`. Vanilla's convention is that a genotype's internal and display names
+  agree — `Mutated Human`, `True Kin` — and this was the last identifier in the mod that didn't
+  follow one of vanilla's own patterns.
+  ([#24](https://github.com/vixygrey/qud-expanded-community-edition/issues/24))
+
+- **Workshop metadata now describes this fork.** `WorkshopId` is cleared so the uploader creates
+  a **new** item — it previously still pointed at Mura's original, which would have published
+  over their page. The description was Mura's pre-handoff notice asking that the mod *not* be
+  forked; it is replaced with one that credits everyone in `docs/PERMISSION.md` §4, names
+  **Noble Lark** explicitly for the subtype sprites as Mura asked, links the original mod, and
+  states plainly that a new character is required.
+  ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
+
+- **Nineteen blueprints gained the `Raven_` prefix they were missing** — `SteelFist` and the 18
+  psionic-weapon projectiles are now `Raven_SteelFist` and `Raven_Projectile*`. They were the
+  mod's own objects wearing vanilla-style names, which is a live risk rather than an untidiness:
+  vanilla owns `CarbideFist`, `CrysteelFist` and `FulleriteFist`, and **steel is the obvious gap
+  in that series**, so a future Qud patch filling it would have collided. The mod was also
+  inconsistent with itself, since its other new fist was already `Raven_ZetachromeFist`. Landed
+  now because blueprint names are written into saves, and this is the last release where changing
+  them costs nothing.
+  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+
+- **The disintegration rifle's projectile is spelled correctly.** `ProjectileDisintegationRifle`
+  was missing its second `r` while the pistol's was spelled correctly. It worked, because the
+  misspelling was consistent — but it is a blueprint name, so it was fixed as part of the rename
+  above rather than left to become a second save-breaking change later.
+  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+
+- **The Workshop preview image now marks this as the Community Edition.** It was Mura's original
+  *CoQ / Expanded / by TLR* logo, which gave a subscriber no way to tell the fork from the
+  original in a search listing. A green `- CE` now follows "Expanded", and `& VixyGrey` sits under
+  "by TLR". Both are in a marker face deliberately unlike Mura's chrome lettering, so they read as
+  additions rather than as part of the original logo — Mura's artwork is untouched and still the
+  dominant element, per charter rule 3.
+  ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
+
+- **The chip slot is now `Chip Interface`** (was `Chipset Interface`). The slot holds 108 chips
+  against 36 chipsets, so it was named after the minority item; a chipset is a set of chips, so
+  the new name is accurate for the whole catalogue. `Psionic Interface` — the name Mura's
+  documentation used — was rejected because 13 of the 36 mutations these chips grant are physical
+  rather than mental, and because the slot exists on every humanoid rather than only on Psionic
+  Adepts. ([#13](https://github.com/vixygrey/qud-expanded-community-edition/issues/13))
+- **The Psionic Adept anatomy and body object are now `PsionicAdept`** (was `Yttrian`, a leftover
+  from before the genotype was renamed). Follows the convention already set by True Kin →
+  `TrueKin`: the display name with spaces removed.
+  ([#13](https://github.com/vixygrey/qud-expanded-community-edition/issues/13))
+
+- **(internal)** **Mura has licensed their work under the same terms as mine** — Apache-2.0 for code, CC BY 4.0 for content — so the licences now cover the inherited mod rather than stopping at my own contributions. Their earlier grant was broad in substance (*"generally do with as they please, all I ask is that you give credit"*) but named no licence, which left anyone downstream without defined terms. The exchange is recorded in `docs/PERMISSION.md` §8, which is append-only.
+
+  **The 18 subtype sprites are still not covered.** Mura's advice was to ask Noble Lark directly rather than assume, which is right — Mura naming the sprites inside the original grant shows Mura believed they were theirs to open up, but Noble Lark has never said so himself. He's been asked; until he answers, the sprites are his, used with credit.
+  ([#126](https://github.com/vixygrey/qud-expanded-community-edition/issues/126))
+
+- **(internal)** The content conventions and the Chip Interface naming decision moved into `docs/STYLEGUIDE.md`, where naming and identifiers already lived, and its enforcement table was rewritten because it had drifted badly. That table claimed XML well-formedness came from a `check-xml` pre-commit hook that is deliberately absent, that `detect-secrets` runs when it doesn't, that `commitlint` checks commit format when it's a grep in CI, and that "GitHub protection [is] unavailable on private free tier" — this repository is public with nine required checks, linear history and squash-only merges. It's the one table someone would read to decide whether a rule is real, so being wrong there is worse than saying nothing. Every check name in the replacement was verified against `tools/validate_mod.py` rather than written from memory, which caught one I'd got wrong myself in #100.
+  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
+
+- **(internal)** The charter now lives in `docs/CHARTER.md` — the six rules I maintain this fork under, the cleared release blockers, the things not to break, and the source-document index. `README.md` and `docs/STYLEGUIDE.md` point at it instead of at `CLAUDE.md`, which is where it had been sitting: a file named after one assistant, holding the rules of the project. Converted to my voice as it moved, and verified to lose nothing — all 15 issue references, both code blocks, the link and the URL are identical. Five references into checkouts only I have were dropped, along with the three section numbers that belonged to them; the reasoning each one carried is kept, since it was never the citation that mattered. Also corrected two stale claims found in passing: rule 4 still asked for the validation script to be written, years after `tools/validate_mod.py` existed, and `docs/FEATURES.md` and `docs/DESIGN_options.md` pointed at charter rules by the old filename.
+  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
+
+- **(internal)** The lessons I've collected maintaining this fork now live in `docs/LESSONS.md`, out of `CLAUDE.md` and in a file that isn't named after one particular tool. Seventeen of them, most about Caves of Qud itself and useful to anyone modding it: where the game keeps its own API documentation, which five vanilla data files aren't valid XML, how `[PlayerMutator]` fails by doing nothing, why a public field isn't a supported setter when something caches what it derives, and how to read a method's IL without a decompiler. The rest cover git, GitHub and the tooling here. Two stay private because they're about my own setup rather than about Qud. Converted to my voice as they moved, and the move was verified to lose nothing: every number, identifier, path and issue reference is accounted for.
+  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
+
+- **(internal)** The documentation is moving to my own voice — first person, warm, direct — instead of an impersonal register that reports decisions as though they made themselves. I decided these things, and charter rule 2 is about stating reasons, which "I decided X because Y" carries better than "X was decided". It also continues Mura's voice rather than replacing it: `docs/2.2-changelog.txt` is already written this way. `README.md` is the first file converted; the convention is recorded in `CLAUDE.md` § Voice, and `docs/STYLEGUIDE.md` §8 tells contributors plainly that it describes how *I* write and that they should write however comes naturally to them. The AI disclosure in `README.md` and the Workshop description stays, along with the `Co-Authored-By:` trailer — that disclosure is what makes writing in my voice honest rather than misleading. The rewrite was verified to change nothing but voice: every number, identifier, file path, link target and issue reference in `README.md` is identical before and after.
+  ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
+
+- **(internal)** **Every GitHub Action is pinned to a full commit SHA**, and Dependabot now keeps the pins current. A git tag is mutable: whoever controls an action's repository can repoint it, and the next CI run executes different code with this repository's token. `gitleaks/gitleaks-action@v2` was the sharpest case, a *major* tag that moves on every release. Charter rule 5 already takes that threat model seriously for the mod's own C#, where `validate_mod.py` enforces a banned-API list rather than trusting review — third-party CI actions had none of that scrutiny and run with more privilege than anything in `mod/Scripting/`. Each pin carries a `# vX.Y.Z` comment so it stays readable, and `.github/dependabot.yml` covers `github-actions`, `npm` and `pre-commit` on a weekly grouped schedule. Every job also gained `timeout-minutes`, replacing the 360-minute default. **Behaviour is unchanged**: each action is pinned to the SHA its *current* tag already resolved to, so no version moved — upstream majors (checkout and setup-node v7, gitleaks-action v3) are deliberately left for Dependabot to raise as reviewable PRs rather than smuggled in under a change described as pinning.
+  ([#103](https://github.com/vixygrey/qud-expanded-community-edition/issues/103))
+
+- **(internal)** **All nine CI checks are now required to merge**, and four repository settings changed. The branch ruleset required only four — `Validate mod`, `Spelling`, `Secret scan`, `PR conventions` — so a pull request with unformatted mod XML or a failing `ruff check` merged green. That made the two PRs whose whole purpose was enforcement, #75 (ruff) and #79 (XML formatting), add jobs that reported rather than gates that blocked. `XML format`, `Python lint`, `Analyze (actions)`, `Analyze (python)` and `CodeQL` are now required too; all five were first confirmed to report on every kind of PR, including `mod/`-only ones, since a required check that stays pending blocks a branch forever. Alongside: branches are deleted automatically on merge, secret scanning and push protection are enabled (gitleaks catches a secret after it is committed; push protection stops it landing), the repository has a description and topics, and the unused Projects tab is disabled. The wiki stays enabled — it holds nothing yet, but it is where the mod's mechanics will be documented in depth.
+  ([#102](https://github.com/vixygrey/qud-expanded-community-edition/issues/102),
+  [#106](https://github.com/vixygrey/qud-expanded-community-edition/issues/106))
+
+- **(internal)** `.gitignore` now covers `.claude/worktrees/`. Claude Code agent worktrees are created inside the repository and each is a complete second copy of the working tree, so leaving them untracked meant one `git add -A` would stage the whole duplicate. Worse than ordinary untracked noise because it is intermittent: the worktree is removed when the agent finishes, so it exists only while someone is mid-task. Scoped to `worktrees/` rather than all of `.claude/`, so any agent or skill configuration this project checks in later stays visible. Same reasoning as #63 — a repo's `.gitignore` has to stand on its own.
+  ([#98](https://github.com/vixygrey/qud-expanded-community-edition/issues/98))
+
+- **All mod files normalised to LF line endings**, enforced by `.gitattributes`. Upstream was
+  CRLF throughout. Diff against the pre-normalisation baseline with
+  `git diff --ignore-cr-at-eol upstream-2.2`, and `git blame` skips the conversion via
+  `.git-blame-ignore-revs`. Mura's original documents are exempted from normalisation and stay
+  byte-for-byte.
+  ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
+
+- **Repository restructured** so the shipped mod is isolated in `mod/`, with documentation in
+  `docs/` and tooling at the repo root. Development files were previously destined to ship to
+  every subscriber — measured across 87 installed mods, 8 ship a `README.md`, 5 a `LICENSE` and 4
+  a `.csproj` by accident. ([#15](https://github.com/vixygrey/qud-expanded-community-edition/issues/15))
+
+- **Spaces removed from blueprint filenames** — `MeleeWeapons.xml`, `OtherEquipment.xml`,
+  `PsionicChips.xml`, `RangedWeapons.xml`. Safe because Qud resolves modded XML by root element
+  rather than by filename.
+
 
 ### Added
 
@@ -310,76 +427,52 @@ upstream's last release was 2.2, and this is a continuation of it, not a new mod
   that appends, wraps or composites, not just images.
   ([#62](https://github.com/vixygrey/qud-expanded-community-edition/issues/62))
 
-### Changed
+- **(internal)** `tools/check_docs.py` checks the documentation against the mod, and runs in CI and `pre-commit`. Three staleness sweeps (#93, #96, #130) all found documents asserting things that had stopped being true, and every one was me reading rather than anything checking — the last found four documents claiming 350 new blueprints and 209 vanilla merges when #35 had made them 348 and 211 five months earlier. It can't read a sentence and ask whether it's still true, but it recounts **36 figures** quoted in prose against `mod/` itself, resolves every relative link, checks every `FILE.md §N` cross-reference against real headings, catches a document attributing a check name to the validator when it emits no such name, and confirms Mura's two preserved documents are still byte-identical to the upstream import — comparing against their pre-#23 filenames, since using the current ones reports both as modified when they're untouched.
+  ([#131](https://github.com/vixygrey/qud-expanded-community-edition/issues/131))
 
-- **The Workshop description now describes the mod as it currently stands.** It gained a **New features** section covering the eleven options and the six revived effect arrows, and a **Tweaks and fixes** section listing what this fork has corrected — the 72 unobtainable psionic chips, the ten items with no route into the world, the hit points per level, the severed armor cascade, the merges that stopped replacing vanilla records, and Jah-yee's tag fix. Neither existed before, so a subscriber had no way to learn from the page that the mod is now configurable at all.
+- **(internal)** The repository has licences: **Apache-2.0** for code, **CC BY 4.0** for content and documentation, both covering my own contributions. `package.json` had claimed `"SEE LICENSE IN LICENSE"` since the fork began, pointing at a file that never existed, and a public repository with no licence is all-rights-reserved by default — which contradicted everything this project says about being a community fork. Apache rather than MIT deliberately: its `NOTICE` file is one downstream redistributors must reproduce, where MIT's attribution requirement only reaches the source, and credit surviving redistribution is the entire point here. What is **not** covered is stated just as plainly in `NOTICE` and `COPYING.md` — the inherited work is Mura's and the subtype sprites are Noble Lark's, and a permission to fork is not a copyright licence I can pass on. `CONTRIBUTING.md` now also says what terms a contribution arrives under, which it never did.
+  ([#101](https://github.com/vixygrey/qud-expanded-community-edition/issues/101))
 
-  Three smaller changes came with it. **Development note** became **Development notes**, with the AI disclaimer joined by a line saying the mod is actively developed. The compatibility section now asks for reports through Steam or a GitHub issue rather than only stating the merge guarantee. And the fixes are listed plainly, with no commentary on how they came to be there — the reasoning belongs here, and the page is a summary that points at it rather than a second copy of it, which is now a constraint rather than a preference. See below.
-  ([#160](https://github.com/vixygrey/qud-expanded-community-edition/issues/160))
+- **(internal)** `CODE_OF_CONDUCT.md` added — the Contributor Covenant 2.1, verbatim apart from the contact method it leaves blank. Reports go through the repository's private reporting form, which keeps them private without publishing a personal email address on a project that will get Workshop traffic; the file also points at GitHub's own abuse reporting, since the person someone needs to report might be me. Linked from `README.md` and `CONTRIBUTING.md`.
+  ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
 
-- **Akimbo's removal is now a line in the fixes list rather than its own section.** The full account — the shared implementation, the Gunslinger calling, the skills screen that would not close — stays here in the changelog, which is where the reasoning belongs. What a subscriber needs from the page is that the power moved, not why it took three attempts to find out.
-  ([#160](https://github.com/vixygrey/qud-expanded-community-edition/issues/160))
+- **(internal)** `SECURITY.md`, issue forms and a pull request template added, finishing the contributor-facing documentation begun with `CONTRIBUTING.md`. The security policy is not boilerplate here: this mod ships C# that Qud runs with full process privileges, and any `mod/Scripting/` directory makes the game ask every subscriber to approve it. It states what's in scope, what `scripting-policy` and `serializable-shape` already enforce, and — plainly — that neither is a security boundary but a drift detector, that CodeQL cannot cover the C#, and that there's no compile gate either. Private vulnerability reporting is enabled, so reports have somewhere to go that isn't a public issue. The three issue forms route to the labels that exist and ask for the things I actually need: mod and Qud versions, the full mod list, and where the log lives on each platform. Compatibility gets its own form because charter rule 1 makes it the fork's headline claim rather than a flavour of "bug". Also indexed `docs/DESIGN_options.md`, which had been referenced only from a changelog entry.
+  ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
 
-- **(internal)** The `pre-commit` hooks are current: `pre-commit-hooks` v5.0.0 → v6.0.0, `ruff` v0.16.2 → v0.16.3, `gitleaks` v8.23.1 → v8.30.1. `pre-commit-hooks` v6 is a major release that removes `check-byte-order-marker` and `fix-encoding-pragma` and requires Python 3.9, none of which this repository uses — but it was worth checking rather than assuming, because a hook that strips byte-order marks would quietly break the 13 BOMs the mod's XML depends on. Verified by running every hook against the whole tree on the new versions: all 13 pass, nothing was modified, and the BOM count is unchanged. The bump also needed a second file Dependabot cannot see: `ci.yml` installs ruff by an explicit `pipx install ruff==` pin, so bumping the hook alone would have left CI's formatter one version behind the one contributors run, and `ruff format --check` disagreeing with the hook that just formatted your code is worse than having neither. That pin now carries a comment saying it must move in step.
-  ([#110](https://github.com/vixygrey/qud-expanded-community-edition/pull/110))
+- **(internal)** `CONTRIBUTING.md` and `AGENTS.md` added, and `CLAUDE.md` is no longer in version control — which completes the split begun in #115. The workflow rules now live in `CONTRIBUTING.md` where a contributor will actually find them, with the label list corrected to include `security`, `upstream-qud` and `dependencies`. `AGENTS.md` points any coding agent at the charter, styleguide, lessons and contributing guide, and carries none of my preferences. `CLAUDE.md` keeps only how I want prose written, which is exactly what shouldn't travel: it loads automatically for anyone working in this repository, so a contributor using Claude Code would have inherited my voice and ended up with their own pull requests written in it. The obsolete *Validating changes* section was dropped rather than moved — it presented a heredoc as the minimum bar and listed as "useful follow-up checks" things `tools/validate_mod.py` has enforced for months. Every reference to the old file was repointed, including one in `mod/Options.xml`, which ships.
+  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115), [#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
 
-- **(internal)** The three GitHub Actions CI uses are on their Node 24 releases: `actions/checkout` v4.4.0 → v7.0.1, `actions/setup-node` v4.4.0 → v7.0.0, and `gitleaks/gitleaks-action` v2.3.9 → v3.0.0. Not optional maintenance — GitHub removes the Node 20 runtime from hosted runners on **16 September 2026**, at which point the old versions stop working regardless of any opt-out flag, and runs on the previous pins were already printing the deprecation warning. `gitleaks-action` v3 is a runtime change only, with no change to inputs, outputs or behaviour, so the secret scan still does exactly what it did. Each pin is a full commit SHA with the tag in a trailing comment, as `ci.yml` requires; all three SHAs were checked against the tags they claim to be, because a comment saying `# v7.0.1` is not evidence that the SHA beside it is that release.
-  ([#111](https://github.com/vixygrey/qud-expanded-community-edition/pull/111))
+- **Validation script** (`tools/validate_mod.py`) — XML and JSON well-formedness, blueprint
+  reachability, `Load="Merge"` discipline, C# part resolution, and filename rules. Python 3
+  standard library only, so it adds no toolchain. Known inherited defects are enumerated in
+  `tools/validation-baseline.json` against the issue tracking each, so new violations fail while
+  catalogued debt does not.
+  ([#8](https://github.com/vixygrey/qud-expanded-community-edition/issues/8))
 
-- **The dark matter cell is priced for what it holds**, at 1200 rather than 300. It stores 500,000 charge against the advanced chem cell's 50,000 and cost exactly the same, so the ordering was simply wrong.
-  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+- **CI on every pull request** — validation, spelling, secret scanning, conventional PR titles,
+  and a changelog check.
+  ([#19](https://github.com/vixygrey/qud-expanded-community-edition/issues/19))
 
-- **Wristblade prices follow the tier curve end to end.** Tiers 0–5 ran 15/25/35/55/105 while tiers 6–8 already sat exactly on the doubling curve at 320/640/1280 — two progressions in one family. The low tiers are now 5/10/20/40/160, which makes cheap wristblades cheaper. The vibro wristblade keeps its 300; vibro weapons price by their own convention.
-  ([#9](https://github.com/vixygrey/qud-expanded-community-edition/issues/9))
+- **Vanilla drift checker** (`tools/check_vanilla_drift.py`) — a maintainer tool, run after each
+  Qud update, that verifies every `Load="Merge"` still has a vanilla target and that the copied
+  anatomies still match vanilla's `Humanoid`. Both failure modes are otherwise completely silent.
 
-- **The Psionic Adept genotype is now named `Psionic Adept` internally**, matching its display
-  name. It was `Psionic`. Vanilla's convention is that a genotype's internal and display names
-  agree — `Mutated Human`, `True Kin` — and this was the last identifier in the mod that didn't
-  follow one of vanilla's own patterns.
-  ([#24](https://github.com/vixygrey/qud-expanded-community-edition/issues/24))
+- **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
+  ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
 
-- **Workshop metadata now describes this fork.** `WorkshopId` is cleared so the uploader creates
-  a **new** item — it previously still pointed at Mura's original, which would have published
-  over their page. The description was Mura's pre-handoff notice asking that the mod *not* be
-  forked; it is replaced with one that credits everyone in `docs/PERMISSION.md` §4, names
-  **Noble Lark** explicitly for the subtype sprites as Mura asked, links the original mod, and
-  states plainly that a new character is required.
-  ([#2](https://github.com/vixygrey/qud-expanded-community-edition/issues/2))
+- I put the repository under version control with the pristine upstream 2.2 import tagged
+  `upstream-2.2`, so `git diff upstream-2.2` always shows exactly what the fork changed.
 
-- **Nineteen blueprints gained the `Raven_` prefix they were missing** — `SteelFist` and the 18
-  psionic-weapon projectiles are now `Raven_SteelFist` and `Raven_Projectile*`. They were the
-  mod's own objects wearing vanilla-style names, which is a live risk rather than an untidiness:
-  vanilla owns `CarbideFist`, `CrysteelFist` and `FulleriteFist`, and **steel is the obvious gap
-  in that series**, so a future Qud patch filling it would have collided. The mod was also
-  inconsistent with itself, since its other new fist was already `Raven_ZetachromeFist`. Landed
-  now because blueprint names are written into saves, and this is the last release where changing
-  them costs nothing.
-  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+## Credits
 
-- **The disintegration rifle's projectile is spelled correctly.** `ProjectileDisintegationRifle`
-  was missing its second `r` while the pistol's was spelled correctly. It worked, because the
-  misspelling was consistent — but it is a blueprint name, so it was fixed as part of the rename
-  above rather than left to become a second save-breaking change later.
-  ([#66](https://github.com/vixygrey/qud-expanded-community-edition/issues/66))
+Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.md) §4 —
+**Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
+named explicitly as the one condition of the fork permission.
 
-- **The Workshop preview image now marks this as the Community Edition.** It was Mura's original
-  *CoQ / Expanded / by TLR* logo, which gave a subscriber no way to tell the fork from the
-  original in a search listing. A green `- CE` now follows "Expanded", and `& VixyGrey` sits under
-  "by TLR". Both are in a marker face deliberately unlike Mura's chrome lettering, so they read as
-  additions rather than as part of the original logo — Mura's artwork is untouched and still the
-  dominant element, per charter rule 3.
-  ([#60](https://github.com/vixygrey/qud-expanded-community-edition/issues/60))
-
-- **The chip slot is now `Chip Interface`** (was `Chipset Interface`). The slot holds 108 chips
-  against 36 chipsets, so it was named after the minority item; a chipset is a set of chips, so
-  the new name is accurate for the whole catalogue. `Psionic Interface` — the name Mura's
-  documentation used — was rejected because 13 of the 36 mutations these chips grant are physical
-  rather than mental, and because the slot exists on every humanoid rather than only on Psionic
-  Adepts. ([#13](https://github.com/vixygrey/qud-expanded-community-edition/issues/13))
-- **The Psionic Adept anatomy and body object are now `PsionicAdept`** (was `Yttrian`, a leftover
-  from before the genotype was renamed). Follows the convention already set by True Kin →
-  `TrueKin`: the display name with spaces removed.
-  ([#13](https://github.com/vixygrey/qud-expanded-community-edition/issues/13))
+[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.4.0...main
+[2.4.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.4.0
+[2.3.1]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.1
+[2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0
 
 ### Removed
 
@@ -580,18 +673,8 @@ upstream's last release was 2.2, and this is a continuation of it, not a new mod
   (The misspellings are described rather than quoted here on purpose — the spell check in CI
   reads this file too, and quoting them fails the build.)
 
-### Internal — tooling
-
-- **(internal)** **Mura has licensed their work under the same terms as mine** — Apache-2.0 for code, CC BY 4.0 for content — so the licences now cover the inherited mod rather than stopping at my own contributions. Their earlier grant was broad in substance (*"generally do with as they please, all I ask is that you give credit"*) but named no licence, which left anyone downstream without defined terms. The exchange is recorded in `docs/PERMISSION.md` §8, which is append-only.
-
-  **The 18 subtype sprites are still not covered.** Mura's advice was to ask Noble Lark directly rather than assume, which is right — Mura naming the sprites inside the original grant shows Mura believed they were theirs to open up, but Noble Lark has never said so himself. He's been asked; until he answers, the sprites are his, used with credit.
-  ([#126](https://github.com/vixygrey/qud-expanded-community-edition/issues/126))
-
 - **Noble Lark and "chirps" are one person, and had been credited as two.** Mura pointed out that chirps is his Steam name. Every credit list here named both separately, following Mura's original Workshop page — `README.md`, `NOTICE`, `docs/PERMISSION.md` §4, and `mod/workshop.json`, which ships to subscribers. All corrected to **Noble Lark (a.k.a. chirps)**, with Crow listed on his own. Credit is the one condition attached to this fork, so getting a contributor's identity wrong is the worst kind of error this project can make.
   ([#126](https://github.com/vixygrey/qud-expanded-community-edition/issues/126))
-
-- **(internal)** `tools/check_docs.py` checks the documentation against the mod, and runs in CI and `pre-commit`. Three staleness sweeps (#93, #96, #130) all found documents asserting things that had stopped being true, and every one was me reading rather than anything checking — the last found four documents claiming 350 new blueprints and 209 vanilla merges when #35 had made them 348 and 211 five months earlier. It can't read a sentence and ask whether it's still true, but it recounts **36 figures** quoted in prose against `mod/` itself, resolves every relative link, checks every `FILE.md §N` cross-reference against real headings, catches a document attributing a check name to the validator when it emits no such name, and confirms Mura's two preserved documents are still byte-identical to the upstream import — comparing against their pre-#23 filenames, since using the current ones reports both as modified when they're untouched.
-  ([#131](https://github.com/vixygrey/qud-expanded-community-edition/issues/131))
 
 - **(internal)** Audited every documentation file against the mod itself and fixed what had drifted. The headline counts — **350 new blueprints and 209 vanilla merges** — were wrong in four places, including `README.md` and `docs/CHARTER.md`. They're **348 and 211**: #35 converted two Recoilers from new declarations to merges, and no document was updated. `docs/FEATURES.md` §11's file map was the worst of it, still describing the mod as it stood at the fork — the pre-#23 filenames with spaces, the `Yttrian` anatomy renamed in #13, `48 merge / 28 new` tables, `Scripting/` as "36 one-line classes" when it's 40 and does far more, no `Options.xml` or `manifest.json`, and Mura's documents listed *inside* `mod/` when they live in `docs/`, which matters because `mod/` is what ships. Also corrected §6.1's per-file table, where `OtherEquipment.xml` read 9 new / 14 merged against an actual 7 and 16.
   ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
@@ -605,88 +688,11 @@ upstream's last release was 2.2, and this is a continuation of it, not a new mod
 - **(internal)** This changelog had two `### Fixed` sections and two internal ones under a single `## [Unreleased]`, so anyone scrolling for fixes would have found half of them and stopped. Merged, and put in the order [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) specifies — which this file's own header says it follows. Entries where I'm the one who did the work now say so rather than reporting it as though it happened by itself. The reorganisation was verified to move nothing: 367 numbers, 280 identifiers, 89 issue references, 79 links and 78 URLs identical before and after.
   ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
 
-- **(internal)** The repository has licences: **Apache-2.0** for code, **CC BY 4.0** for content and documentation, both covering my own contributions. `package.json` had claimed `"SEE LICENSE IN LICENSE"` since the fork began, pointing at a file that never existed, and a public repository with no licence is all-rights-reserved by default — which contradicted everything this project says about being a community fork. Apache rather than MIT deliberately: its `NOTICE` file is one downstream redistributors must reproduce, where MIT's attribution requirement only reaches the source, and credit surviving redistribution is the entire point here. What is **not** covered is stated just as plainly in `NOTICE` and `COPYING.md` — the inherited work is Mura's and the subtype sprites are Noble Lark's, and a permission to fork is not a copyright licence I can pass on. `CONTRIBUTING.md` now also says what terms a contribution arrives under, which it never did.
-  ([#101](https://github.com/vixygrey/qud-expanded-community-edition/issues/101))
-
-- **(internal)** `CODE_OF_CONDUCT.md` added — the Contributor Covenant 2.1, verbatim apart from the contact method it leaves blank. Reports go through the repository's private reporting form, which keeps them private without publishing a personal email address on a project that will get Workshop traffic; the file also points at GitHub's own abuse reporting, since the person someone needs to report might be me. Linked from `README.md` and `CONTRIBUTING.md`.
-  ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
-
-- **(internal)** `SECURITY.md`, issue forms and a pull request template added, finishing the contributor-facing documentation begun with `CONTRIBUTING.md`. The security policy is not boilerplate here: this mod ships C# that Qud runs with full process privileges, and any `mod/Scripting/` directory makes the game ask every subscriber to approve it. It states what's in scope, what `scripting-policy` and `serializable-shape` already enforce, and — plainly — that neither is a security boundary but a drift detector, that CodeQL cannot cover the C#, and that there's no compile gate either. Private vulnerability reporting is enabled, so reports have somewhere to go that isn't a public issue. The three issue forms route to the labels that exist and ask for the things I actually need: mod and Qud versions, the full mod list, and where the log lives on each platform. Compatibility gets its own form because charter rule 1 makes it the fork's headline claim rather than a flavour of "bug". Also indexed `docs/DESIGN_options.md`, which had been referenced only from a changelog entry.
-  ([#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
-
 - **(internal)** `README.md` now says the mod is configurable. It listed the genotype, the chips and the item families without mentioning that eleven options exist, so the people most likely to want the mod — someone who wants the weapons but not the chip economy, or vanilla's skill requirements back — had no way to tell from the front page. Charter rule 6 exists so nobody has to swallow the whole mod to get one part of it, and the README gave no hint that was true. It also spells out the three scopes, since when a change takes effect is the part people get caught by.
   ([#113](https://github.com/vixygrey/qud-expanded-community-edition/issues/113))
 
 - **(internal)** `README.md` stops calling the local hooks optional and explains how to install them when `core.hooksPath` is set. `pre-commit install` refuses outright in that case, which is the common arrangement for anyone whose dotfiles wire in global hooks — so the instruction as written didn't work on my own machine, and the `no-commit-to-main` hook had therefore never been installed. I found that out by committing to `main` in #119 and having the ruleset reject the push. Recorded in `docs/LESSONS.md`, along with the related trap that `core.hooksPath` silently disables any per-repo hook it has no delegator for.
   ([#120](https://github.com/vixygrey/qud-expanded-community-edition/issues/120))
 
-- **(internal)** `CONTRIBUTING.md` and `AGENTS.md` added, and `CLAUDE.md` is no longer in version control — which completes the split begun in #115. The workflow rules now live in `CONTRIBUTING.md` where a contributor will actually find them, with the label list corrected to include `security`, `upstream-qud` and `dependencies`. `AGENTS.md` points any coding agent at the charter, styleguide, lessons and contributing guide, and carries none of my preferences. `CLAUDE.md` keeps only how I want prose written, which is exactly what shouldn't travel: it loads automatically for anyone working in this repository, so a contributor using Claude Code would have inherited my voice and ended up with their own pull requests written in it. The obsolete *Validating changes* section was dropped rather than moved — it presented a heredoc as the minimum bar and listed as "useful follow-up checks" things `tools/validate_mod.py` has enforced for months. Every reference to the old file was repointed, including one in `mod/Options.xml`, which ships.
-  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115), [#104](https://github.com/vixygrey/qud-expanded-community-edition/issues/104))
-
-- **(internal)** The content conventions and the Chip Interface naming decision moved into `docs/STYLEGUIDE.md`, where naming and identifiers already lived, and its enforcement table was rewritten because it had drifted badly. That table claimed XML well-formedness came from a `check-xml` pre-commit hook that is deliberately absent, that `detect-secrets` runs when it doesn't, that `commitlint` checks commit format when it's a grep in CI, and that "GitHub protection [is] unavailable on private free tier" — this repository is public with nine required checks, linear history and squash-only merges. It's the one table someone would read to decide whether a rule is real, so being wrong there is worse than saying nothing. Every check name in the replacement was verified against `tools/validate_mod.py` rather than written from memory, which caught one I'd got wrong myself in #100.
-  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
-
-- **(internal)** The charter now lives in `docs/CHARTER.md` — the six rules I maintain this fork under, the cleared release blockers, the things not to break, and the source-document index. `README.md` and `docs/STYLEGUIDE.md` point at it instead of at `CLAUDE.md`, which is where it had been sitting: a file named after one assistant, holding the rules of the project. Converted to my voice as it moved, and verified to lose nothing — all 15 issue references, both code blocks, the link and the URL are identical. Five references into checkouts only I have were dropped, along with the three section numbers that belonged to them; the reasoning each one carried is kept, since it was never the citation that mattered. Also corrected two stale claims found in passing: rule 4 still asked for the validation script to be written, years after `tools/validate_mod.py` existed, and `docs/FEATURES.md` and `docs/DESIGN_options.md` pointed at charter rules by the old filename.
-  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
-
-- **(internal)** The lessons I've collected maintaining this fork now live in `docs/LESSONS.md`, out of `CLAUDE.md` and in a file that isn't named after one particular tool. Seventeen of them, most about Caves of Qud itself and useful to anyone modding it: where the game keeps its own API documentation, which five vanilla data files aren't valid XML, how `[PlayerMutator]` fails by doing nothing, why a public field isn't a supported setter when something caches what it derives, and how to read a method's IL without a decompiler. The rest cover git, GitHub and the tooling here. Two stay private because they're about my own setup rather than about Qud. Converted to my voice as they moved, and the move was verified to lose nothing: every number, identifier, path and issue reference is accounted for.
-  ([#115](https://github.com/vixygrey/qud-expanded-community-edition/issues/115))
-
-- **(internal)** The documentation is moving to my own voice — first person, warm, direct — instead of an impersonal register that reports decisions as though they made themselves. I decided these things, and charter rule 2 is about stating reasons, which "I decided X because Y" carries better than "X was decided". It also continues Mura's voice rather than replacing it: `docs/2.2-changelog.txt` is already written this way. `README.md` is the first file converted; the convention is recorded in `CLAUDE.md` § Voice, and `docs/STYLEGUIDE.md` §8 tells contributors plainly that it describes how *I* write and that they should write however comes naturally to them. The AI disclosure in `README.md` and the Workshop description stays, along with the `Co-Authored-By:` trailer — that disclosure is what makes writing in my voice honest rather than misleading. The rewrite was verified to change nothing but voice: every number, identifier, file path, link target and issue reference in `README.md` is identical before and after.
-  ([#112](https://github.com/vixygrey/qud-expanded-community-edition/issues/112))
-
-- **(internal)** **Every GitHub Action is pinned to a full commit SHA**, and Dependabot now keeps the pins current. A git tag is mutable: whoever controls an action's repository can repoint it, and the next CI run executes different code with this repository's token. `gitleaks/gitleaks-action@v2` was the sharpest case, a *major* tag that moves on every release. Charter rule 5 already takes that threat model seriously for the mod's own C#, where `validate_mod.py` enforces a banned-API list rather than trusting review — third-party CI actions had none of that scrutiny and run with more privilege than anything in `mod/Scripting/`. Each pin carries a `# vX.Y.Z` comment so it stays readable, and `.github/dependabot.yml` covers `github-actions`, `npm` and `pre-commit` on a weekly grouped schedule. Every job also gained `timeout-minutes`, replacing the 360-minute default. **Behaviour is unchanged**: each action is pinned to the SHA its *current* tag already resolved to, so no version moved — upstream majors (checkout and setup-node v7, gitleaks-action v3) are deliberately left for Dependabot to raise as reviewable PRs rather than smuggled in under a change described as pinning.
-  ([#103](https://github.com/vixygrey/qud-expanded-community-edition/issues/103))
-
-- **(internal)** **All nine CI checks are now required to merge**, and four repository settings changed. The branch ruleset required only four — `Validate mod`, `Spelling`, `Secret scan`, `PR conventions` — so a pull request with unformatted mod XML or a failing `ruff check` merged green. That made the two PRs whose whole purpose was enforcement, #75 (ruff) and #79 (XML formatting), add jobs that reported rather than gates that blocked. `XML format`, `Python lint`, `Analyze (actions)`, `Analyze (python)` and `CodeQL` are now required too; all five were first confirmed to report on every kind of PR, including `mod/`-only ones, since a required check that stays pending blocks a branch forever. Alongside: branches are deleted automatically on merge, secret scanning and push protection are enabled (gitleaks catches a secret after it is committed; push protection stops it landing), the repository has a description and topics, and the unused Projects tab is disabled. The wiki stays enabled — it holds nothing yet, but it is where the mod's mechanics will be documented in depth.
-  ([#102](https://github.com/vixygrey/qud-expanded-community-edition/issues/102),
-  [#106](https://github.com/vixygrey/qud-expanded-community-edition/issues/106))
-
 - **(internal)** Three more clusters of stale documentation corrected, the second sweep after #93. `docs/FEATURES.md` §10 still listed five closed defects as open — two of them 🔴 Critical — and §3.3 and §7.2 still described the 72 chips and nine armor pieces as unobtainable, though both were fixed in #36 and #38. §0, §4 and the file tree still credited Akimbo to Multiweapon Fighting while §10 row 7 recorded its removal in #88, so the file contradicted itself; the class-collision account is kept as settled history rather than deleted, because it is the repo's clearest demonstration that `Class=` is an identifier. And `CLAUDE.md` still said there was no remote, no issue tracker, and that the validation script was "the only automated gate that exists" — all three untrue, and the middle one told contributors the repo's own stated workflow was not yet in force.
   ([#96](https://github.com/vixygrey/qud-expanded-community-edition/issues/96))
-
-- **(internal)** `.gitignore` now covers `.claude/worktrees/`. Claude Code agent worktrees are created inside the repository and each is a complete second copy of the working tree, so leaving them untracked meant one `git add -A` would stage the whole duplicate. Worse than ordinary untracked noise because it is intermittent: the worktree is removed when the agent finishes, so it exists only while someone is mid-task. Scoped to `worktrees/` rather than all of `.claude/`, so any agent or skill configuration this project checks in later stays visible. Same reasoning as #63 — a repo's `.gitignore` has to stand on its own.
-  ([#98](https://github.com/vixygrey/qud-expanded-community-edition/issues/98))
-
-- **All mod files normalised to LF line endings**, enforced by `.gitattributes`. Upstream was
-  CRLF throughout. Diff against the pre-normalisation baseline with
-  `git diff --ignore-cr-at-eol upstream-2.2`, and `git blame` skips the conversion via
-  `.git-blame-ignore-revs`. Mura's original documents are exempted from normalisation and stay
-  byte-for-byte.
-  ([#17](https://github.com/vixygrey/qud-expanded-community-edition/issues/17))
-
-
-- **Repository restructured** so the shipped mod is isolated in `mod/`, with documentation in
-  `docs/` and tooling at the repo root. Development files were previously destined to ship to
-  every subscriber — measured across 87 installed mods, 8 ship a `README.md`, 5 a `LICENSE` and 4
-  a `.csproj` by accident. ([#15](https://github.com/vixygrey/qud-expanded-community-edition/issues/15))
-- **Spaces removed from blueprint filenames** — `MeleeWeapons.xml`, `OtherEquipment.xml`,
-  `PsionicChips.xml`, `RangedWeapons.xml`. Safe because Qud resolves modded XML by root element
-  rather than by filename.
-- **Validation script** (`tools/validate_mod.py`) — XML and JSON well-formedness, blueprint
-  reachability, `Load="Merge"` discipline, C# part resolution, and filename rules. Python 3
-  standard library only, so it adds no toolchain. Known inherited defects are enumerated in
-  `tools/validation-baseline.json` against the issue tracking each, so new violations fail while
-  catalogued debt does not.
-  ([#8](https://github.com/vixygrey/qud-expanded-community-edition/issues/8))
-- **CI on every pull request** — validation, spelling, secret scanning, conventional PR titles,
-  and a changelog check.
-  ([#19](https://github.com/vixygrey/qud-expanded-community-edition/issues/19))
-- **Vanilla drift checker** (`tools/check_vanilla_drift.py`) — a maintainer tool, run after each
-  Qud update, that verifies every `Load="Merge"` still has a vanilla target and that the copied
-  anatomies still match vanilla's `Humanoid`. Both failure modes are otherwise completely silent.
-- **Pre-commit hooks** running the same gates locally, plus a guard against committing to `main`.
-  ([#18](https://github.com/vixygrey/qud-expanded-community-edition/issues/18))
-- I put the repository under version control with the pristine upstream 2.2 import tagged
-  `upstream-2.2`, so `git diff upstream-2.2` always shows exactly what the fork changed.
-
-## Credits
-
-Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.md) §4 —
-**Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
-named explicitly as the one condition of the fork permission.
-
-[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.4.0...main
-[2.4.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.4.0
-[2.3.1]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.1
-[2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0
