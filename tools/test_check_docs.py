@@ -295,5 +295,28 @@ class HumanoidCensusClaims(unittest.TestCase):
         )
 
 
+class WrappedClaims(unittest.TestCase):
+    """A pattern with a literal space stops matching when prose reflows, and reports nothing while
+    doing it - the check failing in exactly the way it exists to prevent. Every census claim was
+    unbound in `docs/FEATURES.md` for this reason before `wrapped` existed."""
+
+    def test_a_claim_survives_a_line_break(self) -> None:
+        wrapped_text = "**134 of 340 humanoid creature blueprints have\na rustable item**, against 202 that do not."
+        self.assertEqual(figure_findings({"docs/FEATURES.md": wrapped_text}), [])
+
+    def test_a_wrong_figure_is_still_caught_across_a_line_break(self) -> None:
+        """Tolerating the wrap must not have turned the check into one that always passes."""
+        items = figure_findings(
+            {
+                "docs/FEATURES.md": "134 of 897 humanoid creature blueprints have\na rustable item"
+            }
+        )
+        self.assertTrue(items, "a wrong figure survived because the sentence wrapped")
+        self.assertIn("340", items[0][1])
+
+    def test_wrapped_joins_on_whitespace(self) -> None:
+        self.assertEqual(check_docs.wrapped("a b c"), r"a\s+b\s+c")
+
+
 if __name__ == "__main__":
     unittest.main()

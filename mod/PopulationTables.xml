@@ -830,6 +830,7 @@
 
   <population Name="Ammo 2" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="2d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1" Blueprint="Raven_Flechette Shell" />
@@ -845,6 +846,7 @@
 
   <population Name="Ammo 3" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
@@ -860,6 +862,7 @@
 
   <population Name="Ammo 4" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
@@ -876,6 +879,7 @@
 
   <population Name="Ammo 5" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
@@ -887,6 +891,7 @@
 
   <population Name="Ammo 6" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
@@ -898,6 +903,7 @@
 
   <population Name="Ammo 7" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
@@ -910,6 +916,7 @@
 
   <population Name="Ammo 8" Load="Merge">
     <group Name="Items" Load="Merge">
+      <object Weight="2" Number="4d6" Blueprint="Vixy_Scour Slug" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Incendiary Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />

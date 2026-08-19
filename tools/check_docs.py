@@ -169,6 +169,7 @@ def facts() -> dict[str, int]:
 
 QUD_API_PATH = Path("tools/qud-api.json")
 
+
 # Figures the documents quote *from vanilla*, paired with the phrasing each is written in. The
 # values come from tools/qud-api.json's `figures` map, which snapshot_qud_api.py reads out of the
 # installed game - so this checks a citation against its source rather than against another
@@ -177,28 +178,39 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Same limitation as CLAIMS, and the same bargain: a figure written in a phrasing no pattern
 # matches is not checked. Numbers are compared with thousands separators stripped, because the
 # prose writes 1,200 where the XML says 1200 and the comma is the document's to keep.
+def wrapped(phrase: str) -> str:
+    """A claim pattern that survives being reflowed.
+
+    Prose wraps, by prettier and by hand, and a pattern with a literal space stops matching the
+    moment a sentence moves across a line. It then reports nothing - which is the same silence
+    this whole check exists to break, arriving through the check itself. Every space becomes
+    `\\s+` so where the line happens to break stops mattering.
+    """
+    return r"\s+".join(phrase.split(" "))
+
+
 VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
     # The creature census (#242). Each phrasing carries its own denominator so a sentence cannot
     # quote a share of one total against a count from another - which is the shape of the defect
     # these replace, where 813 and 282 were correct against two different populations.
     (
-        r"(\d+) of (\d+) creature blueprints bleed",
+        wrapped(r"(\d+) of (\d+) creature blueprints bleed"),
         ["creature-blueprints-bleeding", "creature-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) creature blueprints carry nothing at all",
+        wrapped(r"(\d+) of (\d+) creature blueprints carry nothing at all"),
         ["creature-inventory-none", "creature-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) creature blueprints carry only natural gear",
+        wrapped(r"(\d+) of (\d+) creature blueprints carry only natural gear"),
         ["creature-inventory-natural", "creature-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) creature blueprints are dead to `RustOnHit`",
+        wrapped(r"(\d+) of (\d+) creature blueprints are dead to `RustOnHit`"),
         ["creature-rust-dead", "creature-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) creature blueprints have a rustable item",
+        wrapped(r"(\d+) of (\d+) creature blueprints have a rustable item"),
         ["creature-rustable", "creature-blueprints"],
     ),
     # The humanoid subset. "humanoid creature blueprints" cannot collide with the patterns above:
@@ -206,15 +218,15 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
     # the way. Kept explicit rather than made optional so a sentence cannot quote a humanoid count
     # against the whole-bestiary denominator.
     (
-        r"(\d+) of (\d+) humanoid creature blueprints have a rustable item",
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints have a rustable item"),
         ["humanoid-rustable", "humanoid-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`",
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`"),
         ["humanoid-rust-dead", "humanoid-blueprints"],
     ),
     (
-        r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all",
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all"),
         ["humanoid-inventory-none", "humanoid-blueprints"],
     ),
     (r"thermal mk I is `ThermalGrenade (-?\d+)`", ["heat-grenade-delta"]),

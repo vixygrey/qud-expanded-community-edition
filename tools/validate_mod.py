@@ -40,9 +40,6 @@ ABSTRACT_MARKERS = ("Base", "Projectile")
 # rather than reporting it (#224).
 MOD_PREFIXES = ("Raven_", "Vixy_")
 
-# Mutation-part classes the mod defines in Scripting/, by prefix.
-MOD_PART_PREFIXES = tuple(p + "Mod" for p in MOD_PREFIXES)
-
 # New objects the mod declares WITHOUT one of the MOD_PREFIXES. They are new declarations, not
 # vanilla replacements, so merge-discipline does not apply. Anything not listed here and not
 # mod-prefixed is treated as a vanilla record.
@@ -408,7 +405,13 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
 
 
 def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every mod-prefixed Mod* part referenced by a blueprint needs a matching C# class."""
+    """Every mod-prefixed part referenced by a blueprint needs a matching C# class.
+
+    Widened from Mod* to the whole prefix in #146. Until then every script here was a mutation
+    stub, so Mod* covered them all — but a part named Vixy_AmmoPayload would have fallen between
+    this check and check_part_names, which skips mod-prefixed names on the grounds that this one
+    covers them. A part naming a class that does not exist loads as nothing at all.
+    """
     roots = blueprint_sources(all_roots)
     defined = set()
     for cs in (MOD / "Scripting").glob("*.cs"):
@@ -426,7 +429,7 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     for path, root in roots.items():
         for part in root.iter("part"):
             name = part.get("Name", "")
-            if name.startswith(MOD_PART_PREFIXES) and name not in defined:
+            if name.startswith(MOD_PREFIXES) and name not in defined:
                 f.add(
                     "missing-script",
                     f"{path}: part {name} has no class in mod/Scripting/",
