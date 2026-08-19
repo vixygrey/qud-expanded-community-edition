@@ -16,6 +16,11 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records the asymmetry behind both wrong claims in the ammunition work: an issue gets checked against the game, and the prose written afterwards does not. Re-reading #145 end to end found every claim in it correct — the weapon list, all ten shell configurations, the gas densities, the resonance figures including the non-obvious one that vanilla's mk I sets `Level="2"`, and the takedown shell's anatomy and save mechanics. What was wrong had been written later, in the commit messages, XML comments and changelog entries explaining the finished work, where nothing checks a factual sentence and the result reads as more authoritative than the issue did.
+  ([#235](https://github.com/vixygrey/qud-expanded-community-edition/issues/235))
+
+### Added
+
 - **(internal)** `docs/LESSONS.md` now says that the parser which copes with vanilla's malformed XML is **importable**, not just that the drift checker owns one. Five of the game's own files embed control characters as numeric references that XML 1.0 forbids, and the lesson has warned about them — and about never swallowing the failure — since the 208 phantom orphaned-merge defects that found them. It described what `tools/check_vanilla_drift.py` does, though, rather than what a new script should do, and I read it as a property of that tool.
 
   So I wrote my own `ET.parse` inside a `try/except` anyway, and got two empty results that read as discoveries: that vanilla has no shield with an armour value above 2, and that nothing at all occupies its `Arm` slot. Both false — the second by 46 items — and both were about to go onto the wiki as fact. Routing the same scan through `parse(path, lenient=True)` took it from 1,913 blueprints to 5,202, because everything `Items.xml` defines had been silently absent.

@@ -752,3 +752,42 @@ Prose that quotes any one of those and expects a reader to find it in the game i
 
 > **Read the field, do not read the field name** — and when documenting a vanilla mechanic, write down
 > which of its names the player actually sees.
+
+## The issue gets checked against the game; the prose written afterwards does not
+
+Two claims in the ammunition work turned out to be wrong, and both survived review and shipped.
+
+**"Bleeding is melee-only in Qud by design."** Written into #210 as a charter rule 2 argument, and
+from there into `docs/FEATURES.md`, an `Ammo.xml` comment and a released changelog entry. It came
+from noting that `BleedingOnHit` sits on exactly two vanilla objects, both melee. Grepping every
+`new Bleeding(` call site instead — one command — returns about twenty, including the Short Blades
+critical-hit bleed on the tree's *root* class and `Rifle_WoundingFire`, which is bleeding at range and
+always was. Corrected in #219.
+
+**The effect shells costing `003`.** Decided while implementing #145, on the reasoning that two scrap
+metal and one pure alloy "sits between vanilla's two anchors, a grenade mk I at two bits for one and
+plain shot at one bit for five". Both anchors are real; neither is the right comparison. Vanilla
+charges `001` for every gas, flashbang, thermal, freeze and high explosive grenade mk III — the exact
+payloads those shells carry, dialled down — and reserves pure alloy for plasma, gravity and time
+dilation. Corrected in #146.
+
+The thing worth noticing is where they came from. **Neither was in the issue.** I re-read #145 end to
+end afterwards and checked every claim in it: the weapon list, all ten shell configurations, the gas
+densities, the stasis inconsistency, all twelve weapon stats, the resonance damage figures — including
+the non-obvious one, that vanilla's mk I sets `Level="2"` so `2d10+4` really is its non-structural
+damage — and the takedown shell's anatomy and save mechanics. Every one held.
+
+What was wrong got written *later*, in the commit messages, XML comments, `FEATURES.md` sections and
+changelog entries that explain the finished work. Those are written from what the author now believes,
+after the investigation has ended and while attention has moved to whether the code runs. Nothing
+checks them, and they read as more authoritative than the issue did, because they are specific,
+detailed and sitting next to working code.
+
+> **Prose that explains a decision needs the same evidence the decision did.** When writing up
+> finished work, treat every factual sentence as a claim to verify, not a summary of one already
+> verified — especially the ones that begin "vanilla does…" or "the game declines to…". The check is
+> one grep. The failure ships, gets quoted forward into three more documents, and is corrected in
+> public.
+
+The general form: an investigation has a natural check — you are looking things up, so you look this
+up too. A write-up has none, because by then you are describing rather than discovering.
