@@ -106,6 +106,21 @@ Two gotchas when reading it:
   look absent — which surfaced as *208 phantom "orphaned merge" defects* before I surfaced the
   parse errors. `tools/check_vanilla_drift.py` strips the invalid refs and reports anything it
   still cannot read.
+- **Reuse that parser rather than writing another.** `parse(path, lenient=True)` in
+  `tools/check_vanilla_drift.py` is importable, and anything reading the game's blueprints should go
+  through it:
+
+  ```python
+  import sys; sys.path.insert(0, "tools")
+  from check_vanilla_drift import parse
+  root = parse(path, lenient=True)
+  ```
+
+  Knowing the drift checker copes is not the same as knowing the fix is one import away. I read the
+  warning above, wrote my own `ET.parse` inside a `try/except` anyway, and got two empty results that
+  looked like findings — that vanilla has no shield above AV 2, and no items in the `Arm` slot at
+  all. Both are false; the second is wrong by 46 items. Going through `parse` took the same scan
+  from **1,913** blueprints to **5,202**, because everything `Items.xml` defines was missing.
 
 ## Verify Qud's behaviour against installed mods, not from memory
 
