@@ -11,6 +11,9 @@ It cannot read a sentence and ask whether it is still true; nothing can. What it
 the parts of a document that are *not* prose:
 
   counts          a figure quoted in the docs, against the same figure recomputed from mod/
+  vanilla-figure  a figure quoted about the game, against qud-api.json's snapshot of it. These
+                  are read from the mod's XML comments as well as from the documents, because
+                  that is where the reasoning behind a value is written down.
   links           every relative link resolves to a file that exists
   sections        every "FILE.md §N" cross-reference names a section that exists there
   checks          every check name quoted in the docs is one a script in tools/ actually emits
@@ -88,6 +91,20 @@ PRESERVED = {
     "docs/mura-feature-notes-wip.txt": "What Does the Mod Do (WIP).txt",
 }
 
+# A figure gets quoted where the reasoning for it lives, and for this mod that is often a comment
+# in the XML rather than a document. Nothing read those until #242, where "282 of 908 creature
+# blueprints" sat in `mod/ObjectBlueprints/Ammo.xml` through review and a release with a
+# denominator that cannot be reproduced under any filter. Only the vanilla-figure check reads
+# these: the link and section checks stay pointed at the documents, where those ideas mean
+# something.
+
+
+def figure_sources() -> list[Path]:
+    """Everything a vanilla figure may be quoted in. Globbed per call, not at import, so the
+    answer follows the working directory rather than whatever it was when this module loaded."""
+    return DOCS + sorted(Path("mod").rglob("*.xml"))
+
+
 # Documents whose figures describe a *past* state on purpose. The changelog records what was true
 # when each entry was written, so recomputing its numbers would be wrong.
 COUNT_EXEMPT = {Path("CHANGELOG.md"), Path("docs/DESIGN_options.md")}
@@ -152,6 +169,7 @@ def facts() -> dict[str, int]:
 
 QUD_API_PATH = Path("tools/qud-api.json")
 
+
 # Figures the documents quote *from vanilla*, paired with the phrasing each is written in. The
 # values come from tools/qud-api.json's `figures` map, which snapshot_qud_api.py reads out of the
 # installed game - so this checks a citation against its source rather than against another
@@ -160,7 +178,57 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Same limitation as CLAIMS, and the same bargain: a figure written in a phrasing no pattern
 # matches is not checked. Numbers are compared with thousands separators stripped, because the
 # prose writes 1,200 where the XML says 1200 and the comma is the document's to keep.
+def wrapped(phrase: str) -> str:
+    """A claim pattern that survives being reflowed.
+
+    Prose wraps, by prettier and by hand, and a pattern with a literal space stops matching the
+    moment a sentence moves across a line. It then reports nothing - which is the same silence
+    this whole check exists to break, arriving through the check itself. Every space becomes
+    `\\s+` so where the line happens to break stops mattering.
+    """
+    return r"\s+".join(phrase.split(" "))
+
+
 VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
+    # The creature census (#242). Each phrasing carries its own denominator so a sentence cannot
+    # quote a share of one total against a count from another - which is the shape of the defect
+    # these replace, where 813 and 282 were correct against two different populations.
+    (
+        wrapped(r"(\d+) of (\d+) creature blueprints bleed"),
+        ["creature-blueprints-bleeding", "creature-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) creature blueprints carry nothing at all"),
+        ["creature-inventory-none", "creature-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) creature blueprints carry only natural gear"),
+        ["creature-inventory-natural", "creature-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) creature blueprints are dead to `RustOnHit`"),
+        ["creature-rust-dead", "creature-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) creature blueprints have a rustable item"),
+        ["creature-rustable", "creature-blueprints"],
+    ),
+    # The humanoid subset. "humanoid creature blueprints" cannot collide with the patterns above:
+    # those require the digits to sit immediately before " creature", and here "humanoid" is in
+    # the way. Kept explicit rather than made optional so a sentence cannot quote a humanoid count
+    # against the whole-bestiary denominator.
+    (
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints have a rustable item"),
+        ["humanoid-rustable", "humanoid-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`"),
+        ["humanoid-rust-dead", "humanoid-blueprints"],
+    ),
+    (
+        wrapped(r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all"),
+        ["humanoid-inventory-none", "humanoid-blueprints"],
+    ),
     (r"thermal mk I is `ThermalGrenade (-?\d+)`", ["heat-grenade-delta"]),
     (r"freeze mk I is `ThermalGrenade (-?\d+)`", ["cold-grenade-delta"]),
     (r"`HeatGrenade1` at `TemperatureDelta=\"(-?\d+)\"`", ["heat-grenade-delta"]),
@@ -285,7 +353,7 @@ def check_vanilla_figures(f: Findings) -> int:
     if not figures:
         return 0
     checked = 0
-    for doc in DOCS:
+    for doc in figure_sources():
         if not doc.is_file():
             continue
         text = doc.read_text()
@@ -502,7 +570,10 @@ def check_check_names(f: Findings) -> None:
     # Every script that emits named checks, not just the validator: the moment one of them is
     # left out, documenting its checks correctly reports as an error. That is a worse failure
     # than the one this guards against, because it punishes the person doing the right thing.
-    sources = ("validate_mod.py", "check_build_log.py")
+    # This script included: it emits named checks too, and leaving itself out is the very trap
+    # the paragraph above describes. #242 walked into it - documenting `vanilla-figure`, a name
+    # this file has emitted since it was written, failed here.
+    sources = ("validate_mod.py", "check_build_log.py", "check_docs.py")
     emitted: set[str] = set()
     for name in sources:
         emitted |= set(

@@ -353,6 +353,161 @@ def collect_figures(game: Path) -> dict[str, str]:
     return figures
 
 
+# The seven counts collect_census emits. Named here so a claim in check_docs.py can be read
+# against the list without opening the function.
+# The buckets every population is counted into. `creature-` covers all creature blueprints;
+# `humanoid-` the subset carrying the `Humanoid` tag, which is the population the scour slug is
+# actually aimed at - "a round for the armed and the armoured, and dead weight against beasts".
+# Quoting only the overall share reads as "this round does nothing"; the pair is the honest claim.
+BUCKETS = (
+    "inventory-none",
+    "inventory-natural",
+    "inventory-nonmetal",
+    "inventory-popref",
+    "rust-dead",
+    "rustable",
+)
+CENSUS_POPULATIONS = ("creature", "humanoid")
+CENSUS_KEYS = (
+    "creature-blueprints",
+    "creature-blueprints-bleeding",
+    "humanoid-blueprints",
+) + tuple(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS)
+
+
+def collect_census(game: Path) -> dict[str, str]:
+    """Count vanilla's creature blueprints by what an effect can actually reach.
+
+    CITED_FIGURES cannot express this: it reads one attribute off one blueprint, and a census is
+    an aggregate over all of them. That gap is what #242 cost. "282 of 908 creature blueprints"
+    sat in an `Ammo.xml` comment through review and a release, and the denominator turned out to
+    be unreproducible under any filter - while the numerator of the neighbouring claim, 813, came
+    out exactly. Nothing could have caught it, because nothing could recompute it.
+
+    The definition lives here, beside the code implementing it, so the two cannot drift:
+
+      creature      the `Creature` tag resolved through `Inherits`, minus blueprints carrying
+                    their own `<tag Name="BaseObject">`. Those are the abstract bases - templates
+                    rather than things that spawn.
+      bleeds        `<intproperty Name="Bleeds" Value="1">`, nearest declaration winning.
+      inventory     every `<inventoryobject>` on the chain. Entries opening with `@` or `*` are
+                    population references and are counted apart: they are not empty, they draw
+                    real items at runtime, and nothing static can say which.
+      natural gear  `<intproperty Name="Natural" Value="1">` or the `NaturalGear` tag. An effect
+                    reaching for a creature's belongings cannot see it - `BodyPart.DoEquip` sends
+                    anything `IsNatural()` to `DefaultBehavior` rather than `Equipped`, and
+                    `GetEquippedObjects` collects `Equipped` only. A creature whose gear is all
+                    natural has an empty pool however armed it looks.
+      metal         a `<part Name="Metal">`, which is what `Rusted.Apply` opens on.
+      humanoid      the `Humanoid` tag, resolved the same way. Counted as its own population
+                    because the overall share answers "what does this round do to the bestiary"
+                    and the humanoid share answers "what does it do to the things it is for",
+                    and only the pair is honest. Quoting the first alone reads as a round that
+                    does nothing.
+
+    This is a census of *blueprints*, which is a floor and not the number - docs/LESSONS.md
+    records a wished creature arming itself after spawning with a weapon its blueprint never
+    mentions. Anything quoting these figures should say so.
+    """
+    objects: dict = {}
+    for root in load_all(game, lenient=True):
+        for obj in root.iter("object"):
+            name = obj.get("Name")
+            if name:
+                objects[name] = obj
+
+    def chain(name: str) -> list:
+        seen: set[str] = set()
+        out = []
+        while name and name in objects and name not in seen:
+            seen.add(name)
+            out.append(objects[name])
+            name = objects[name].get("Inherits")
+        return out
+
+    def has_tag(name: str, tag: str) -> bool:
+        return any(e.get("Name") == tag for o in chain(name) for e in o.findall("tag"))
+
+    def has_part(name: str, part: str) -> bool:
+        return any(
+            e.get("Name") == part for o in chain(name) for e in o.findall("part")
+        )
+
+    def intprop(name: str, prop: str) -> str | None:
+        for o in chain(name):
+            for e in o.findall("intproperty"):
+                if e.get("Name") == prop:
+                    return e.get("Value")
+        return None
+
+    def is_natural(name: str) -> bool:
+        return intprop(name, "Natural") == "1" or has_tag(name, "NaturalGear")
+
+    creatures = [
+        name
+        for name in objects
+        if has_tag(name, "Creature")
+        and not any(e.get("Name") == "BaseObject" for e in objects[name].findall("tag"))
+    ]
+    if not creatures:
+        raise SystemExit(
+            "error: no creature blueprints found. Either the game moved its data or the "
+            "definition in collect_census no longer matches it - fix the definition rather "
+            "than dropping the census, or every figure that cites it stops being checked."
+        )
+
+    humanoids = [name for name in creatures if has_tag(name, "Humanoid")]
+
+    def count_into(tally: dict, prefix: str, names: list) -> None:
+        """Sort one population into the buckets and check the result partitions it."""
+        for name in names:
+            carried = [
+                e.get("Blueprint")
+                for o in chain(name)
+                for e in o.findall("inventoryobject")
+                if e.get("Blueprint")
+            ]
+            if not carried:
+                tally[f"{prefix}-inventory-none"] += 1
+            elif all(b[0] in "@*" for b in carried):
+                tally[f"{prefix}-inventory-popref"] += 1
+            else:
+                real = [b for b in carried if b[0] not in "@*" and not is_natural(b)]
+                if not real:
+                    tally[f"{prefix}-inventory-natural"] += 1
+                elif not any(has_part(b, "Metal") for b in real):
+                    tally[f"{prefix}-inventory-nonmetal"] += 1
+                else:
+                    tally[f"{prefix}-rustable"] += 1
+        tally[f"{prefix}-rust-dead"] = (
+            tally[f"{prefix}-inventory-none"]
+            + tally[f"{prefix}-inventory-natural"]
+            + tally[f"{prefix}-inventory-nonmetal"]
+        )
+        # Every member lands in exactly one bucket. If it does not, a category was added without
+        # its arithmetic and the totals would look plausible while summing to the wrong thing.
+        partitioned = (
+            tally[f"{prefix}-rust-dead"]
+            + tally[f"{prefix}-inventory-popref"]
+            + tally[f"{prefix}-rustable"]
+        )
+        if partitioned != len(names):
+            raise SystemExit(
+                f"error: the {prefix} census buckets sum to {partitioned}, not {len(names)}. "
+                f"The categories no longer partition the set."
+            )
+
+    tally = dict.fromkeys(CENSUS_KEYS, 0)
+    tally["creature-blueprints"] = len(creatures)
+    tally["humanoid-blueprints"] = len(humanoids)
+    tally["creature-blueprints-bleeding"] = sum(
+        1 for name in creatures if intprop(name, "Bleeds") == "1"
+    )
+    count_into(tally, "creature", creatures)
+    count_into(tally, "humanoid", humanoids)
+    return {key: str(value) for key, value in tally.items()}
+
+
 def collect_blueprints(game: Path) -> list[str]:
     names = set()
     for root in load_all(game, lenient=True):
@@ -457,6 +612,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     blueprints = collect_blueprints(game)
     members, part_builders = collect_members(member_assembly)
     figures = collect_figures(game)
+    figures.update(collect_census(game))
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
     if problems:

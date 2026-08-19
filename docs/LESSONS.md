@@ -791,3 +791,48 @@ detailed and sitting next to working code.
 
 The general form: an investigation has a natural check — you are looking things up, so you look this
 up too. A write-up has none, because by then you are describing rather than discovering.
+
+## A creature's blueprint is where it starts, not what it is carrying
+
+Proving the scour slug's second-rust branch needed one number held still: how many things the target
+is carrying. `RustOnHit` draws one item at random from equipment and inventory together, so pool size
+*is* the experiment — with the chance temporarily at `100`, rust-then-dust on a pool of one is exactly
+two hits.
+
+I picked the target by reading XML. `Wraith-Knight Templar` → `Templar` → `BaseTrueKin` →
+`BaseHumanoid` declares exactly one `<inventoryobject>`, a `Long Sword7`. Nothing on that chain
+declares a `<builder>`. Across the whole of `StreamingAssets/Base` the creature's name appears in two
+files, `Creatures.xml` and `Naming.xml` — no population table, no outfitting. Every static source
+agreed on one item.
+
+It took five or six hits. I spent a decompiling session on the gap and disproved three hypotheses in a
+row: that `Crysteel` vetoes rust (it has no `ApplyRusted` handler and nothing rust-related at all),
+that natural weapons pad the selection pool (`BodyPart.GetEquippedObjectCount` counts only `Equipped`,
+never `DefaultBehavior`), and that the roll scales with level (`GetSpecialEffectChanceEvent.GetFor` is
+pure dispatch — no built-in scaling of any kind). All three were hypotheses about code, because the
+prediction I was defending had come from code.
+
+The answer came from looking at the creature. It had a second weapon equipped that its blueprint does
+not mention anywhere. Pool of two — and both runs, five or six and then four, are ordinary variance
+for a pool of two. Nothing was ever broken.
+
+A knight wished onto a bare floor has one weapon equipped. The one that had two had *both* equipped.
+So it armed itself after spawning, from whatever was lying around. No amount of blueprint reading was
+going to show that, because it is not a fact about the blueprint.
+
+> **When an experiment's arithmetic depends on the state of a live object, measure the live object
+> first.** A prediction read out of the XML is a prediction about a blueprint. The thing standing in
+> the zone has a history — it picks things up — and that history is the variable the experiment
+> actually rests on.
+
+Two costs, worth separating. The small one is a session spent debugging code that was working. The
+larger one is that I nearly wrote the result up with a cause attached — first that this fork's own
+population merges had armed it, then that a vanilla `<builder>` had. Both were checked and both were
+false. The section above says prose explaining a decision needs the same evidence the decision did;
+this is that rule applied to the explanation of a *test result*, which is just as tempting to write
+from the first mechanism that fits and has exactly as little checking it.
+
+One limitation to know before designing the next one: **examine shows only what a creature has
+equipped**, never its inventory, and no wish dumps another creature's pack — I read the whole command
+list looking for one. The only reliable census is killing it with an ordinary weapon and counting
+what drops.

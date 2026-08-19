@@ -608,7 +608,7 @@
 
        Mura's ten effect bullets are all cut. Six were already cut from the arrows and the shells for
        reasons that did not change here, and the razor bullet - the one that looked most worth
-       keeping - failed the test this ammunition line is built on: 813 of 908 creature blueprints
+       keeping - failed the test this ammunition line is built on: 813 of 897 creature blueprints
        bleed, robots included, so it had no dead matchup and was a straight upgrade over a plain
        slug rather than a trade. The commented block below is kept as reference for naming and
        colour, not as a queue.
@@ -619,11 +619,35 @@
        Chaingun and the Linear Cannon) have none at all. Slugs are eaten across all three trees, so
        ammunition is the only vehicle that reaches the two empty ones.
 
-       RustOnHit passes the test three times over. It takes ONE random item from the target's
-       equipment or inventory and applies Rusted, so it does nothing to the 282 of 908 creature
-       blueprints that carry nothing (GetRandomItemFrom returns null, silently), nothing to a target
-       carrying only non-metal (Rusted.Apply opens on !HasPart<Metal>, and only 24% of item
-       blueprints are Metal), and it can draw a waterskin while a carbide axe sits in the same pack.
+       RustOnHit passes the test, and by a far wider margin than #146 originally claimed. It takes
+       ONE random item from the target's equipment or inventory and applies Rusted, so it does
+       nothing to a creature carrying nothing (GetRandomItemFrom returns null, silently), nothing to
+       one carrying only non-metal (Rusted.Apply opens on !HasPart<Metal>), and it can draw a
+       waterskin while a carbide axe sits in the same pack.
+
+       The figures here were wrong until #242 and are now recomputed from the game by
+       tools/snapshot_qud_api.py, so they cannot quietly stop being true. 721 of 897 creature
+       blueprints are dead to RustOnHit. That number on its own describes a round that does nothing,
+       though, and the honest claim needs its other half: 134 of 340 humanoid creature blueprints
+       have a rustable item, against 202 that do not. Armed and armoured, yes; beasts, no.
+
+       The largest dead category is the one nobody would guess from reading RustOnHit: 351 of 897
+       creature blueprints carry only natural gear, and they are immune however armed they look.
+       NaturalWeapon sets Natural=1; BodyPart.DoEquip opens with EquipAsDefaultBehavior(), true for
+       anything IsNatural(), and that branch assigns DefaultBehavior rather than _Equipped;
+       GetEquippedObjects collects Equipped only. So a temple mecha holding a MachinedEdge that DOES
+       have a Metal part draws an empty pool and rusts never - confirmed in game across about fifty
+       hits at Chance 100. Armour is unaffected, because EquipAsDefaultBehavior refuses anything
+       with an Armor part, so armoured creatures stay rustable.
+
+       Narrower in play than in the bestiary, too. Restricting to creatures a vanilla population
+       table can spawn moves the rustable share from 18.8% to 17.4%, and weighting by how many table
+       entries name each takes it to 13.6%. Those two are NOT checked figures: resolving population
+       tables to spawn probabilities is a much bigger job than counting blueprints, and a figure
+       that is expensive to recompute is the kind that goes stale. They are working that supported a
+       decision, recorded on #242, not numbers to lean on. Against them stands the opposite
+       correction - a blueprint census is a floor, because a creature arms itself from what is lying
+       around, which is what a Wraith-Knight Templar did in the #240 session.
 
        And it costs the player something real: Rusted drops an item to 1% of its value, and a second
        Rusted on the same item destroys it outright. This round ruins the loot it is used on. Rust
@@ -638,10 +662,19 @@
        Fire bleeding per penetration and gas stacking per projectile. At 5 a musket needs about 24
        hits and a chaingun about 3.9 actions and 24 slugs.
 
+       Chance 5 was RE-EXAMINED under the corrected census in #242 and kept. The reasoning above
+       never rested on how dead the round is, and the correction makes 5 easier to justify rather
+       than harder: the round pays a far larger applicability tax than #146 believed, so the per-hit
+       rate does not also need to be punishing. Raising it would land almost entirely on the
+       chaingun, which already gets many rolls per action under a flat chance, and against exactly
+       the targets where one rust is decisive because a rusted artifact stops working entirely.
+
        Worth knowing that this does NOT need to penetrate. MissileWeapon fires ProjectileHit inside
        the failed-to-penetrate branch too, with Penetrations 0, and RustOnHit checks penetration
        nowhere - so the round answers a target you cannot hurt. That is deliberate, and it is the
-       main reason the chance is a third of vanilla's default.
+       main reason the chance is a third of vanilla's default. Confirmed in game against a Leering
+       Stalker at AV 25, where every shot failed to penetrate and its blast cannon rusted and then
+       turned to dust.
 
        Reachable through Ammo 2-8 only. NOT tagged DynamicObjectsTable:Ammo: that pool feeds
        GunsmithInventory_Legendary at Number="20-30" and RandomItem at Weight="5", which would

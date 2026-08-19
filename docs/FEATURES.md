@@ -1345,7 +1345,7 @@ over, and there is no better shell to replace these. Vanilla keeps plain `Shotgu
 
 Mura's ten effect bullets are **cut**, decided in #146. Six had already been cut from the arrows and
 the shells for reasons that did not change, and the razor bullet — the one worth arguing about —
-failed the test this whole line is built on. **813 of 908 creature blueprints bleed**, robots
+failed the test this whole line is built on. **813 of 897 creature blueprints bleed**, robots
 included, so it had no dead matchup: a straight upgrade over a plain slug rather than a trade.
 
 What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chance="5"`.
@@ -1353,9 +1353,36 @@ What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chanc
 | | |
 |---|---|
 | What it does | takes **one random item** from the target's equipment or inventory and applies `Rusted` |
-| Dead to | the **282 of 908** creature blueprints carrying nothing — `GetRandomItemFrom` returns `null` |
-| Dead to | anything carrying only non-metal — `Rusted.Apply` opens on `!HasPart<Metal>`, and only **24%** of item blueprints are `Metal` |
+| Dead to | creatures carrying nothing — `GetRandomItemFrom` returns `null`, silently |
+| Dead to | creatures whose gear is all **natural** — see below, and this is the big one |
+| Dead to | anything carrying only non-metal — `Rusted.Apply` opens on `!HasPart<Metal>` |
 | Costs you | `Rusted` drops an item to **1%** of its value, and a second one destroys it outright |
+
+**This is a narrow round, and that is the trade it is priced on.** 721 of 897 creature blueprints
+are dead to `RustOnHit` — but that number alone describes a round that does nothing, and the useful
+half is the other one: **134 of 340 humanoid creature blueprints have a rustable item**, against
+202 that do not. It is a round for the armed and the armoured and dead weight against beasts, and
+those are the two figures that say so. Both are recomputed from the game by
+`tools/snapshot_qud_api.py`, so neither can quietly stop being true.
+
+Worth knowing that it is narrower still in play than in the bestiary. Restricting the count to
+creatures a vanilla population table can actually spawn moves the rustable share from 18.8% to
+17.4%, and weighting by how many table entries name each one takes it to 13.6%. And a blueprint
+census is a *floor* in the other direction — a creature arms itself from what is lying around, so
+what a blueprint declares is the least it can be carrying.
+
+##### Natural gear is invisible to it
+
+The largest dead category is not creatures carrying nothing. It is **351 of 897 creature blueprints
+carry only natural gear**, and they are immune however armed they look — a temple mecha holding a
+`MachinedEdge` that *has* `<part Name="Metal" />` cannot be rusted at all.
+
+`NaturalWeapon` sets `<intproperty Name="Natural" Value="1">`. `BodyPart.DoEquip` opens with
+`GameObject.EquipAsDefaultBehavior()`, which is true for anything `IsNatural()`, and that branch
+assigns `bodyPart.DefaultBehavior` rather than `bodyPart._Equipped`. `GetEquippedObjects` collects
+`Equipped` only. So the pool `GetRandomItemFrom` draws from is empty, it returns `null`, and
+`?.ApplyEffect` does nothing without a message. Armour is unaffected — `EquipAsDefaultBehavior`
+refuses anything with an `Armor` part — so armoured creatures stay rustable.
 
 It fills a real gap: **Bow and Rifle is the only tree with status-inflicting shots** — Wounding,
 Suppressive, Flattening, Sure, Beacon, Disorienting and Ultra Fire — while Pistol (30 weapons) and

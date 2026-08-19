@@ -18,7 +18,7 @@ recorded because contributors need them, not because subscribers do.
 
 - **The scour slug** — a bullet that ruins what your target is carrying rather than the target. It takes one random thing out of their pack or off their body and rusts it: a rusted weapon swings far slower, rusted gear is worth almost nothing until repaired, and a rusted **artifact stops working entirely**, so this is how you take a laser rifle out of someone's hands without out-shooting them. It does not need to punch through armour to do it, which makes it an answer to the thing you cannot hurt.
 
-  It asks for something back, and that is the point. Rust ruins the loot you were about to pick up — you can repair it, but rusted repair costs more than ordinary repair, and rusting an already-rusted item destroys it outright. And it is useless against most of the bestiary: nearly a third of creatures carry nothing at all, and plenty of the rest carry nothing metal. This is a round for the armed and the armoured, and dead weight against beasts.
+  It asks for something back, and that is the point. Rust ruins the loot you were about to pick up — you can repair it, but rusted repair costs more than ordinary repair, and rusting an already-rusted item destroys it outright. And it is useless against most of the bestiary — far more of it than I first thought. Roughly four creatures in five have nothing it can touch: they carry nothing, or nothing metal, or their claws and cannons are natural weapons the rust cannot reach however armed they look. Against the things it is *for* — the armed and the armoured — about two in five are worth shooting with it. This is a round for the armed and the armoured, and dead weight against beasts.
 
   Craftable at Tinker II for two scrap metal and one phasic power systems per six rounds — the same materials vanilla charges for a grenade mk III — and found in the ammunition pools from tier 2 up.
 
@@ -58,6 +58,22 @@ recorded because contributors need them, not because subscribers do.
 
   **A boolean's name is not its semantics.** `Bleeding.Stack = true` *merges* into an existing bleed and adds no new effect; `false` — the default on `BleedingOnHit` — piles independent ones on, so an XML payload that omits the attribute quietly gets the compounding version. The same trap runs through the skill data, where one power is the tree *Bow and Rifle*, the entry *Draw a Bead*, and the ability *Mark Target*.
   ([#217](https://github.com/vixygrey/qud-expanded-community-edition/issues/217))
+
+- **(internal)** `docs/LESSONS.md` records why a playtest of the scour slug read as a broken effect for a session. `RustOnHit` picks one item at random from equipment and inventory together, so the target's pool size is the whole experiment — and I sized it by reading XML. `Wraith-Knight Templar` declares one `<inventoryobject>`, nothing on its chain declares a `<builder>`, and the creature appears in no population table, so a pool of one predicted rust-then-dust in two hits. It took five or six. Three hypotheses about code fell before the answer arrived from looking at the creature: it had armed itself after spawning with a second weapon its blueprint never mentions, and both runs are ordinary variance for a pool of two. Nothing was broken. The entry also notes that examine shows only equipped items and no wish dumps another creature's pack, so the only reliable census is killing it and counting what drops.
+  ([#240](https://github.com/vixygrey/qud-expanded-community-edition/issues/240))
+
+- **(internal)** The creature census the scour slug's design rests on is now **recomputed from the game rather than written down**. `tools/snapshot_qud_api.py` gains `collect_census`, which counts vanilla's creature blueprints by what an effect reaching for a target's belongings can actually touch, and `check_docs.py`'s `vanilla-figure` check now reads the mod's own **XML comments** as well as the documents.
+
+  That second half is the fix. `282 of 908 creature blueprints` sat in an `Ammo.xml` comment through review and a release, and the denominator turns out to be unreproducible under any filter I can construct — while 813, the numerator beside it, comes out exactly. Nothing caught it because nothing had ever read an XML comment, and `CITED_FIGURES` could not express a census anyway: it reads one attribute off one blueprint. The definition now lives in a docstring beside the code implementing it, and the buckets are asserted to partition the set, so a category added without its arithmetic fails generation instead of quietly summing to the wrong thing.
+  ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
+
+- **(internal)** The creature census gains the **humanoid subset** — 340 blueprints, of which 134 have a rustable item against 202 that do not. Quoting only the whole-bestiary share reads as a round that does nothing; the pair is the honest claim, because "a round for the armed and the armoured, and dead weight against beasts" is a statement about two populations and needs both numbers to be checkable.
+
+  Measuring it also killed my own assumption. I expected the blueprint census to *overstate* how dead the scour slug is, since it weights a unique legendary the same as a snapjaw. Restricting to creatures reachable from a vanilla population table moves the rustable share from 18.8% to 17.4%, and weighting by how many table entries name them takes it to 13.6%. The census was generous, not harsh — so `Chance="5"` stands, and what needed correcting was the description rather than the value.
+  ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
+
+- **(internal)** `check_docs.py`'s figure patterns now tolerate a line break. A pattern with a literal space stops matching the moment prose reflows — and reports nothing while doing it, which is the check failing in precisely the way it exists to prevent. Every census claim in `docs/FEATURES.md` was silently unbound for that reason before I noticed the checked-figure count had not risen as far as it should have.
+  ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
 
 ### Changed
 
