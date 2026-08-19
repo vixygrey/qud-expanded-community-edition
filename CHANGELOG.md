@@ -14,6 +14,10 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.5.0] - 2026-08-19
+
 ### Added
 
 - **The scour slug** — a bullet that ruins what your target is carrying rather than the target. It takes one random thing out of their pack or off their body and rusts it: a rusted weapon swings far slower, rusted gear is worth almost nothing until repaired, and a rusted **artifact stops working entirely**, so this is how you take a laser rifle out of someone's hands without out-shooting them. It does not need to punch through armour to do it, which makes it an answer to the thing you cannot hurt.
