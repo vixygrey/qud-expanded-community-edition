@@ -30,7 +30,13 @@ Usage:
     python3 tools/snapshot_qud_api.py [--game PATH] [--check]
     python3 tools/snapshot_qud_api.py --assembly          # widen the part list; needs ilspycmd
 
-`--check` verifies the committed snapshot still matches the installed game and writes nothing.
+`--check` verifies the committed snapshot still matches the installed game and writes nothing. It
+runs as a pre-commit hook (`snapshot-check`), with `always_run` rather than a file pattern: what it
+catches is a *Qud update*, which correlates with nothing in a diff. Where the game, the .NET SDK or
+ilspycmd is absent it skips loudly and passes, so a contributor without them is not blocked by a
+hook they cannot satisfy; `--require` turns that skip into a failure. A genuinely stale snapshot
+always fails, on every machine that could tell - the skip is for what this machine cannot reach, not
+for what it found.
 
 `--assembly` reads part *names* from `Assembly-CSharp.dll` instead of from vanilla's usage, which
 is 1605 names against 949 — vanilla declares far more parts than it uses. **The committed snapshot
@@ -610,6 +616,22 @@ def collect_parts_from_xml(game: Path) -> list[str]:
     return sorted(names)
 
 
+def unavailable(reason: str, remedy: str, require: bool) -> int:
+    """Report a dependency this machine does not have, and say whether that is fatal.
+
+    Same shape as `tools/compile_scripting.py`, deliberately: a contributor without Caves of Qud
+    cannot act on a red hook, so the absence of the game is a skip rather than a failure. `--require`
+    turns it into one, for when you mean to be sure the check actually ran.
+
+    Loud on purpose, and it never prints beside the word OK. `docs/LESSONS.md` records that a check
+    which quietly passes when it could not reach anything is worse than no check at all - and #244
+    is a whole issue about this script answering confidently when it should not have answered.
+    """
+    stream = sys.stderr if require else sys.stdout
+    print(f"{'ERROR' if require else 'SKIPPED'} - {reason}\n{remedy}", file=stream)
+    return 2 if require else 0
+
+
 def part_source_for(assembly: Path | None) -> str:
     """What `part_source` a run with these arguments produces. One definition, so the guard below
     and the snapshot itself cannot disagree about what kind of build this is."""
@@ -755,34 +777,61 @@ def main() -> int:
         action="store_true",
         help="compare the committed snapshot against the install; write nothing",
     )
+    ap.add_argument(
+        "--require",
+        action="store_true",
+        help="fail instead of skipping when the game, the .NET SDK or ilspycmd is missing. The "
+        "skip exists so the pre-commit hook is harmless on a machine without Caves of Qud; pass "
+        "this when you mean to be sure the check ran.",
+    )
     args = ap.parse_args()
+
+    # Absences are skips rather than failures, so the hook is harmless without the game. Only
+    # under --check: a WRITE with a missing dependency has to be an error, because silently
+    # writing nothing and returning 0 is how a regeneration gets believed to have happened.
+    def missing(what: str, remedy: str) -> int:
+        """One dependency absent. A skip under --check, an error on the write path.
+
+        Never a skip when writing: a regeneration that quietly does nothing and returns 0 is how
+        a snapshot comes to be believed current when it was never rebuilt.
+        """
+        reason = (
+            f"cannot {'check' if args.check else 'regenerate'} the snapshot: {what}"
+        )
+        if not args.check:
+            print(f"{reason}\n{remedy}", file=sys.stderr)
+            return 2
+        return unavailable(reason, remedy, args.require)
 
     game = find_game(args.game)
     if game is None:
-        print(
-            "Could not find the installed game data. Pass --game PATH pointing at\n"
-            "StreamingAssets/Base (on macOS this lives inside CoQ.app/Contents/Resources/Data).",
-            file=sys.stderr,
+        return missing(
+            "the installed game data was not found",
+            "Pass --game PATH pointing at StreamingAssets/Base (on macOS this lives inside\n"
+            "CoQ.app/Contents/Resources/Data). Nothing else verifies tools/qud-api.json.",
         )
-        return 2
+
     assembly = None
     if args.assembly:
+        # Checked before find_assembly so the message names the thing that is actually absent:
+        # most machines have the game and not the decompiler, not the other way round.
+        if not shutil.which("ilspycmd"):
+            return missing(
+                "ilspycmd is not on PATH",
+                "  dotnet tool install -g ilspycmd\n"
+                '  export PATH="$PATH:$HOME/.dotnet/tools"\n'
+                "It is needed because the committed snapshot's part list comes from the assembly.",
+            )
         assembly = find_assembly(None if args.assembly == "auto" else args.assembly)
         if assembly is None:
-            print(
-                "Could not find Assembly-CSharp.dll. Pass --assembly PATH.",
-                file=sys.stderr,
-            )
-            return 2
+            return missing("Assembly-CSharp.dll was not found", "Pass --assembly PATH.")
 
     member_assembly = assembly or find_assembly(None)
     if member_assembly is None:
-        print(
-            "Could not find Assembly-CSharp.dll, which is where part members live.\n"
+        return missing(
+            "Assembly-CSharp.dll was not found, and it is where part members live",
             "Pass --assembly PATH.",
-            file=sys.stderr,
         )
-        return 2
 
     mismatch = guard_part_source(assembly)
     if mismatch:

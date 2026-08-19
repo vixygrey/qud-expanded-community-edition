@@ -202,13 +202,19 @@ which member names each part class will actually accept — because that exists 
 `Assembly-CSharp.dll`. `tools/dump_part_members.cs` reads it out of the assembly's *metadata*
 using the in-box `System.Reflection.Metadata`: nothing is decompiled, nothing is executed, no
 package is restored, and what comes back is identifiers. That step needs the .NET SDK, the same
-one the C# pre-commit hook uses. `--assembly` will widen the part list from `Assembly-CSharp.dll` if you ever need a part
-vanilla declares but never uses, and that path needs `ilspycmd` — but the default does not.
+one the C# pre-commit hook uses. The part list comes from that assembly too, via `--assembly`,
+which needs [`ilspycmd`](https://github.com/icsharpcode/ILSpy) — 1605 names against the 949 vanilla's
+own XML happens to use, because vanilla declares far more parts than it uses. **That flag is not
+optional**: the committed snapshot is built with it, so it is what reproduces it. Regenerating
+without it is refused rather than silently narrowing the file.
 
 The snapshot records the Steam build it came from, and `--check` compares it against what is
-installed without writing anything. A stale snapshot fails as a false positive on a newly added
-vanilla name, which is loud; that is the intended failure direction, since silence is the thing
-these checks exist to catch.
+installed without writing anything. It runs as a pre-commit hook, on every commit rather than on a
+file pattern, because what it catches is a Qud update — which correlates with nothing in a diff.
+Where the game, the SDK or `ilspycmd` is missing it skips loudly and passes, so a contributor
+without them is not blocked by a hook they cannot satisfy; a stale snapshot always fails. A stale
+one otherwise surfaces as a false positive on a newly added vanilla name, which is loud; that is the
+intended failure direction, since silence is the thing these checks exist to catch.
 
 After changing which checks are required to merge, run:
 
