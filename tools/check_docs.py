@@ -201,6 +201,22 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
         r"(\d+) of (\d+) creature blueprints have a rustable item",
         ["creature-rustable", "creature-blueprints"],
     ),
+    # The humanoid subset. "humanoid creature blueprints" cannot collide with the patterns above:
+    # those require the digits to sit immediately before " creature", and here "humanoid" is in
+    # the way. Kept explicit rather than made optional so a sentence cannot quote a humanoid count
+    # against the whole-bestiary denominator.
+    (
+        r"(\d+) of (\d+) humanoid creature blueprints have a rustable item",
+        ["humanoid-rustable", "humanoid-blueprints"],
+    ),
+    (
+        r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`",
+        ["humanoid-rust-dead", "humanoid-blueprints"],
+    ),
+    (
+        r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all",
+        ["humanoid-inventory-none", "humanoid-blueprints"],
+    ),
     (r"thermal mk I is `ThermalGrenade (-?\d+)`", ["heat-grenade-delta"]),
     (r"freeze mk I is `ThermalGrenade (-?\d+)`", ["cold-grenade-delta"]),
     (r"`HeatGrenade1` at `TemperatureDelta=\"(-?\d+)\"`", ["heat-grenade-delta"]),
