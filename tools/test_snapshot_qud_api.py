@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Tests for tools/snapshot_qud_api.py.
 
-Only `guard_part_source`, because it is the part that can be tested without a copy of the game:
-it reads the committed snapshot and the run's own arguments, and nothing else.
+`guard_part_source`, because it is the part that can be tested without a copy of the game: it
+reads the committed snapshot and the run's own arguments, and nothing else.
+
+And the skip/fail split added for #246, which is the invariant the pre-commit hook rests on. A
+missing dependency must skip so a contributor without Caves of Qud is not blocked by a hook they
+cannot satisfy; a genuinely stale snapshot must NOT, because that is a real finding. Collapsing the
+two in either direction breaks the check - one way it blocks everyone, the other way it never fires.
 
 It is also the part worth testing. #244 found that mixing the two part sources breaks both paths -
 a plain write over an assembly-built snapshot silently drops 656 part names, and `--check` across
@@ -15,6 +20,8 @@ No game, no network, no dependencies.
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import sys
@@ -22,6 +29,7 @@ import tempfile
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -116,6 +124,99 @@ class GuardPartSource(unittest.TestCase):
         self.assertEqual(snapshot_qud_api.part_source_for(None), "vanilla-xml")
         source = Path(snapshot_qud_api.__file__).read_text(encoding="utf-8")
         self.assertIn("part_source = part_source_for(assembly)", source)
+
+
+@contextmanager
+def stub(**attrs):
+    """Replace module attributes for one test, restoring them afterwards."""
+    previous = {k: getattr(snapshot_qud_api, k) for k in attrs}
+    for k, v in attrs.items():
+        setattr(snapshot_qud_api, k, v)
+    try:
+        yield
+    finally:
+        for k, v in previous.items():
+            setattr(snapshot_qud_api, k, v)
+
+
+def run_main(argv: list[str]) -> tuple[int, str]:
+    out, err = io.StringIO(), io.StringIO()
+    argv_previous = sys.argv
+    sys.argv = ["snapshot_qud_api.py"] + argv
+    try:
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = snapshot_qud_api.main()
+    finally:
+        sys.argv = argv_previous
+    return code, out.getvalue() + err.getvalue()
+
+
+class Unavailable(unittest.TestCase):
+    def test_a_skip_passes_and_says_so(self) -> None:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = snapshot_qud_api.unavailable("no game", "install it", require=False)
+        self.assertEqual(code, 0)
+        self.assertIn("SKIPPED", out.getvalue())
+        self.assertNotIn("OK", out.getvalue())
+
+    def test_require_turns_the_skip_into_a_failure(self) -> None:
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = snapshot_qud_api.unavailable("no game", "install it", require=True)
+        self.assertEqual(code, 2)
+        self.assertIn("ERROR", err.getvalue())
+
+
+class MissingDependencies(unittest.TestCase):
+    """The hook must be harmless on a machine without the game."""
+
+    def test_check_skips_when_the_game_is_absent(self) -> None:
+        with snapshot("assembly:XRL.World.Parts"), stub(find_game=lambda _: None):
+            code, text = run_main(["--check", "--assembly"])
+        self.assertEqual(code, 0, "an absent game blocked the hook")
+        self.assertIn("SKIPPED", text)
+
+    def test_check_require_fails_when_the_game_is_absent(self) -> None:
+        with snapshot("assembly:XRL.World.Parts"), stub(find_game=lambda _: None):
+            code, text = run_main(["--check", "--assembly", "--require"])
+        self.assertEqual(code, 2)
+        self.assertIn("ERROR", text)
+
+    def test_a_write_never_skips(self) -> None:
+        """A regeneration that quietly does nothing and returns 0 is how a snapshot comes to be
+        believed current when it was never rebuilt."""
+        with snapshot("assembly:XRL.World.Parts"), stub(find_game=lambda _: None):
+            code, text = run_main(["--assembly"])
+        self.assertEqual(code, 2, "a write skipped instead of failing")
+        self.assertIn("regenerate", text)
+        self.assertNotIn("SKIPPED", text)
+
+
+class StaleIsNotASkip(unittest.TestCase):
+    """The other half of the invariant: a stale snapshot is a finding, not an unavailability."""
+
+    def test_a_stale_snapshot_blocks(self) -> None:
+        fake = Path("/fake/Assembly-CSharp.dll")
+        built = {
+            "digest": "different-from-committed",
+            "counts": {"parts": 1, "blueprints": 1, "members": 1},
+        }
+        with (
+            snapshot("assembly:XRL.World.Parts"),
+            stub(
+                find_game=lambda _: Path("/fake/Base"),
+                find_assembly=lambda _: fake,
+                build=lambda *a, **k: built,
+            ),
+            mock.patch.object(
+                snapshot_qud_api.shutil, "which", lambda _: "/fake/ilspycmd"
+            ),
+        ):
+            code, text = run_main(["--check", "--assembly"])
+        self.assertEqual(code, 1, "a stale snapshot did not block")
+        self.assertIn("STALE", text)
+        self.assertNotIn("SKIPPED", text)
 
 
 if __name__ == "__main__":

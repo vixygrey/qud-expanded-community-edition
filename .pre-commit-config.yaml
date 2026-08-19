@@ -88,6 +88,22 @@ repos:
         pass_filenames: false
         files: ^mod/(Scripting/.*\.cs|manifest\.json)$
 
+      # always_run, not a files pattern, and that is the whole point. What this catches is a Qud
+      # UPDATE, which correlates with nothing in the diff - the case that matters most is "Qud
+      # updated last night and today's commit is a docs change", which any files pattern misses.
+      # ~1.5s where the game is installed, and an immediate skip where it is not.
+      #
+      # --assembly because that is how the committed snapshot is built; without it the comparison
+      # is between two different kinds of snapshot and means nothing (#244). Skips loudly when the
+      # game, the .NET SDK or ilspycmd is absent, so a contributor without them is not blocked by
+      # a hook they cannot satisfy. Pass --require to turn that skip into a failure.
+      - id: snapshot-check
+        name: check the API snapshot matches the installed game (skips without Qud)
+        entry: python3 tools/snapshot_qud_api.py --check --assembly
+        language: system
+        pass_filenames: false
+        always_run: true
+
       # Manual stage deliberately. This reads a verdict Caves of Qud wrote on the last launch, so
       # as an automatic hook it would fail in two situations that are not defects: mid-work, when
       # C# has been edited but the game not relaunched, and on any machine without the game

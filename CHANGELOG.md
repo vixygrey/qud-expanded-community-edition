@@ -80,6 +80,19 @@ recorded because contributors need them, not because subscribers do.
   Both paths now stop before doing any work and name the flag that reproduces the committed snapshot. `tools/test_snapshot_qud_api.py` is new and covers both directions plus the two cases that must stay quiet: a first generation with nothing to compare against, and a snapshot too broken to read.
   ([#244](https://github.com/vixygrey/qud-expanded-community-edition/issues/244))
 
+- **(internal)** `tools/snapshot_qud_api.py --check` now runs as a pre-commit hook. Nothing ever ran it, so `tools/qud-api.json` going stale after a Qud update was invisible until it misfired — as `validate_mod.py` rejecting mod XML that is perfectly correct, or worse, quietly accepting a name the new build removed.
+
+  `always_run` rather than a file pattern, deliberately: what it catches is a *Qud update*, which correlates with nothing in a diff, and the case that matters most is the one any pattern misses — Qud updated last night and today's commit is a docs change. About 1.5 seconds where the game is installed. Where the game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, in the same shape `compile-scripting` already uses, so a contributor without them is not blocked by a hook they cannot satisfy. `--require` turns that skip into a failure.
+
+  The split is the whole point and is what the new tests hold: a missing dependency skips, a stale snapshot does not. Collapsing them either way breaks the check — one way it blocks everyone, the other way it never fires.
+
+  `README.md` is corrected in the same pass. It still said `--assembly` was for "if you ever need a
+  part vanilla declares but never uses — but the default does not", which #244 made false: the
+  committed snapshot is built with that flag, so it is what reproduces it, and a plain run is now
+  refused. I fixed that framing in the script's docstring and its `--help` when I wrote #244 and
+  missed the third place it was written down.
+  ([#246](https://github.com/vixygrey/qud-expanded-community-edition/issues/246))
+
 ### Changed
 
 - **The four effect shells are cheaper to craft.** They cost two scrap metal and one **pure alloy** for three, and pure alloy is a bit the game hands out for plasma, gravity and time dilation grenades — not for a paper cartridge carrying a dialled-down payload. They now cost two scrap metal and one **phasic power systems**, which is exactly what vanilla charges for the gas, flashbang, thermal, freeze and high explosive grenades mk III whose effects they borrow.
