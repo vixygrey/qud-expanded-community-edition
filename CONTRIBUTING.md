@@ -143,6 +143,53 @@ relaunching. Set `QUD_SAVE_DIR` if your save directory isn't in the macOS defaul
 
 If you changed C# and couldn't run either, say so in the pull request and I'll run them.
 
+### After a Qud update
+
+**[`tools/snapshot_qud_api.py`](tools/snapshot_qud_api.py) records the names Qud exposes**, so
+`tools/validate_mod.py` can check part names, blueprint names and part attributes on a runner that
+has no copy of the game. The answers are committed to `tools/qud-api.json`; the validator reads that
+file and runs everywhere.
+
+The snapshot goes stale when Qud updates, so **regenerate it after every game update**, alongside
+`tools/check_vanilla_drift.py`:
+
+```bash
+python3 tools/snapshot_qud_api.py --assembly
+```
+
+`--assembly` is not an optional extra — the committed snapshot is built that way, and mixing the two
+sources is refused outright, because a plain run drops 656 part names in silence (#244).
+
+A `snapshot-check` pre-commit hook runs `--check` on **every** commit, `always_run` rather than on a
+file pattern: what it catches is a Qud update, which correlates with nothing in a diff. Where the
+game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
+contributor who has none of them. `--require` turns that skip into a failure.
+
+It needs the .NET SDK (`brew install dotnet`) and `ilspycmd`:
+
+```bash
+dotnet tool install -g ilspycmd
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+
+**That `export` is required even though you just installed the tool, and the reason is worth
+knowing**, because everything looks correct without it. The .NET installer writes its own PATH
+entry to `/etc/paths.d/dotnet-cli-tools`, and the contents are the *literal* string
+`~/.dotnet/tools`. `path_helper` copies entries out of that directory verbatim and never expands
+`~`, so the entry resolves to a directory named `~` and matches nothing. The result is a path that
+is visibly present in `echo $PATH` while every binary under it stays unreachable:
+
+```bash
+$ echo $PATH | tr ':' '\n' | grep dotnet
+/usr/local/share/dotnet
+~/.dotnet/tools          # present, and inert
+$ command -v ilspycmd    # nothing
+```
+
+Put the `export` in your shell profile with `$HOME` spelled out, not `~`. Until you do, the hook
+skips on every commit — which it does loudly, so it is a visible no-op rather than a false pass, but
+it is still a check that never runs.
+
 ## Two things that will save you pain
 
 **Anything you put in `mod/` ships to subscribers.** That directory is uploaded verbatim; 8 of the

@@ -123,6 +123,12 @@ recorded because contributors need them, not because subscribers do.
   the family's naming does not already do.
   ([#239](https://github.com/vixygrey/qud-expanded-community-edition/issues/239))
 
+- **(internal) The snapshot check's dependencies are documented, and the PATH export now explains itself.** `CONTRIBUTING.md` had nothing about `tools/snapshot_qud_api.py` at all — `compile_scripting.py` and `check_build_log.py` were both covered, but the one that runs on *every* commit was not, so a contributor's first encounter with it was a skip with no page to turn to. It now has a section: what the snapshot is for, that it is regenerated after every Qud update, that `--assembly` is how the committed one is built rather than an optional extra, and what it needs.
+
+  The `ilspycmd` remedy also gained the reason it is necessary. Both messages already said `export PATH="$PATH:$HOME/.dotnet/tools"`, which is correct advice that reads as redundant to anyone who has already installed the tool — because the path *looks* configured. The .NET installer writes `/etc/paths.d/dotnet-cli-tools` containing the **literal** string `~/.dotnet/tools`, and `path_helper` copies entries from that directory verbatim without expanding `~`, so the entry resolves to a directory named `~` and matches nothing. `echo $PATH` shows it; `command -v ilspycmd` finds nothing. Saying so turns advice that looks already-done into advice that is obviously needed.
+
+  Found because the hook had been skipping on every commit on the machine it was written for — loudly, so a visible no-op rather than a false pass, but a check that never ran (#251)
+
 ## [2.4.0] - 2026-08-18
 
 ### Fixed

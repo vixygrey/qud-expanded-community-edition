@@ -250,7 +250,10 @@ def collect_parts(assembly: Path) -> list[str]:
         raise SystemExit(
             "error: ilspycmd not found on PATH.\n"
             "  dotnet tool install -g ilspycmd\n"
-            '  export PATH="$PATH:$HOME/.dotnet/tools"'
+            '  export PATH="$PATH:$HOME/.dotnet/tools"\n'
+            "The export is needed even if you installed it: the .NET installer's own\n"
+            "/etc/paths.d/dotnet-cli-tools holds the literal string `~/.dotnet/tools`,\n"
+            "and path_helper never expands `~`, so that entry has never resolved."
         )
     proc = subprocess.run(
         ["ilspycmd", "-l", "c", str(assembly)],
@@ -820,7 +823,11 @@ def main() -> int:
                 "ilspycmd is not on PATH",
                 "  dotnet tool install -g ilspycmd\n"
                 '  export PATH="$PATH:$HOME/.dotnet/tools"\n'
-                "It is needed because the committed snapshot's part list comes from the assembly.",
+                "The export is needed even if you installed it: the .NET installer's own\n"
+                "/etc/paths.d/dotnet-cli-tools holds the literal string `~/.dotnet/tools`, and\n"
+                "path_helper never expands `~`, so that entry has never resolved.\n"
+                "ilspycmd is needed because the committed snapshot's part list comes from the\n"
+                "assembly.",
             )
         assembly = find_assembly(None if args.assembly == "auto" else args.assembly)
         if assembly is None:
