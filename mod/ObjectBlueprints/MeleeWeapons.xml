@@ -1648,6 +1648,11 @@
     <part Name="Physics" Weight="6" />
   </object>
 
+  <!-- UsesTwoSlots is load-bearing and was missing until #239, which made this the only
+       one-handed greathammer in the family. Every other tier is a Load="Merge" onto a vanilla
+       `*th` blueprint, which already carries the attribute; fullerite is the one tier with no
+       vanilla two-handed counterpart merged, so this is a fresh object inheriting BaseCudgel -
+       and BaseCudgel does not set it. It had to be written by hand and was not. -->
   <object Name="Raven_Fullerite Greathammer" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{K|fullerite}} greathammer" Tile="Items/sw_cudgel_3.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="3d6" Stat="Agility" />
@@ -1657,7 +1662,7 @@
       Short="A large and roughly shaped hammerhead of dusky metal hangs from the end of a steel haft."
     />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight="9" />
+    <part Name="Physics" Weight="9" UsesTwoSlots="true" />
   </object>
 
   <object Name="Raven_Crysteel War Hammer" Inherits="BaseCudgel">
@@ -1694,11 +1699,7 @@
   </object>
 
   <object Name="Cudgel7th" Load="Merge">
-    <part
-      Name="Render"
-      DisplayName="two-handed {{K|flawless {{crysteel|crysteel}} greathammer}}"
-      Tile="Items/sw_cudgel_7.bmp"
-    />
+    <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="5d4+2" Stat="Agility" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
