@@ -14,14 +14,6 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
-### Fixed
-
-- **(internal) The snapshot check's dependencies are documented, and the PATH export now explains itself.** `CONTRIBUTING.md` had nothing about `tools/snapshot_qud_api.py` at all — `compile_scripting.py` and `check_build_log.py` were both covered, but the one that runs on *every* commit was not, so a contributor's first encounter with it was a skip with no page to turn to. It now has a section: what the snapshot is for, that it is regenerated after every Qud update, that `--assembly` is how the committed one is built rather than an optional extra, and what it needs.
-
-  The `ilspycmd` remedy also gained the reason it is necessary. Both messages already said `export PATH="$PATH:$HOME/.dotnet/tools"`, which is correct advice that reads as redundant to anyone who has already installed the tool — because the path *looks* configured. The .NET installer writes `/etc/paths.d/dotnet-cli-tools` containing the **literal** string `~/.dotnet/tools`, and `path_helper` copies entries from that directory verbatim without expanding `~`, so the entry resolves to a directory named `~` and matches nothing. `echo $PATH` shows it; `command -v ilspycmd` finds nothing. Saying so turns advice that looks already-done into advice that is obviously needed.
-
-  Found because the hook had been skipping on every commit on the machine it was written for — loudly, so a visible no-op rather than a false pass, but a check that never ran (#251)
-
 ### Added
 
 - **The scour slug** — a bullet that ruins what your target is carrying rather than the target. It takes one random thing out of their pack or off their body and rusts it: a rusted weapon swings far slower, rusted gear is worth almost nothing until repaired, and a rusted **artifact stops working entirely**, so this is how you take a laser rifle out of someone's hands without out-shooting them. It does not need to punch through armour to do it, which makes it an answer to the thing you cannot hurt.
@@ -130,6 +122,12 @@ recorded because contributors need them, not because subscribers do.
   Nothing about it changes but the label; it was already two-handed, and the word was doing no work
   the family's naming does not already do.
   ([#239](https://github.com/vixygrey/qud-expanded-community-edition/issues/239))
+
+- **(internal) The snapshot check's dependencies are documented, and the PATH export now explains itself.** `CONTRIBUTING.md` had nothing about `tools/snapshot_qud_api.py` at all — `compile_scripting.py` and `check_build_log.py` were both covered, but the one that runs on *every* commit was not, so a contributor's first encounter with it was a skip with no page to turn to. It now has a section: what the snapshot is for, that it is regenerated after every Qud update, that `--assembly` is how the committed one is built rather than an optional extra, and what it needs.
+
+  The `ilspycmd` remedy also gained the reason it is necessary. Both messages already said `export PATH="$PATH:$HOME/.dotnet/tools"`, which is correct advice that reads as redundant to anyone who has already installed the tool — because the path *looks* configured. The .NET installer writes `/etc/paths.d/dotnet-cli-tools` containing the **literal** string `~/.dotnet/tools`, and `path_helper` copies entries from that directory verbatim without expanding `~`, so the entry resolves to a directory named `~` and matches nothing. `echo $PATH` shows it; `command -v ilspycmd` finds nothing. Saying so turns advice that looks already-done into advice that is obviously needed.
+
+  Found because the hook had been skipping on every commit on the machine it was written for — loudly, so a visible no-op rather than a false pass, but a check that never ran (#251)
 
 ## [2.4.0] - 2026-08-18
 
