@@ -75,6 +75,11 @@ recorded because contributors need them, not because subscribers do.
 - **(internal)** `check_docs.py`'s figure patterns now tolerate a line break. A pattern with a literal space stops matching the moment prose reflows — and reports nothing while doing it, which is the check failing in precisely the way it exists to prevent. Every census claim in `docs/FEATURES.md` was silently unbound for that reason before I noticed the checked-figure count had not risen as far as it should have.
   ([#242](https://github.com/vixygrey/qud-expanded-community-edition/issues/242))
 
+- **(internal)** `tools/snapshot_qud_api.py` now **refuses to mix its two part sources**, in either direction. The committed snapshot is built with `--assembly` — 1605 part names against the 949 vanilla's own XML happens to use — and the digest covers that list, so a run using the other source is not comparable. Two failures came out of that, and the second is the one that matters: a plain regeneration over an assembly-built snapshot dropped 656 names in silence, surfacing much later as `validate_mod.py` rejecting a mod part that is perfectly real; and `--check` across the same mismatch reported a current file as **STALE**, exited 1, and advised *"Re-run without `--check` to update"* — the exact command that performs the drop. The tool handed you the wrong fix for a problem you did not have.
+
+  Both paths now stop before doing any work and name the flag that reproduces the committed snapshot. `tools/test_snapshot_qud_api.py` is new and covers both directions plus the two cases that must stay quiet: a first generation with nothing to compare against, and a snapshot too broken to read.
+  ([#244](https://github.com/vixygrey/qud-expanded-community-edition/issues/244))
+
 ### Changed
 
 - **The four effect shells are cheaper to craft.** They cost two scrap metal and one **pure alloy** for three, and pure alloy is a bit the game hands out for plasma, gravity and time dilation grenades — not for a paper cartridge carrying a dialled-down payload. They now cost two scrap metal and one **phasic power systems**, which is exactly what vanilla charges for the gas, flashbang, thermal, freeze and high explosive grenades mk III whose effects they borrow.

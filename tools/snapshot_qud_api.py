@@ -32,9 +32,15 @@ Usage:
 
 `--check` verifies the committed snapshot still matches the installed game and writes nothing.
 
-`--assembly` reads part *names* from `Assembly-CSharp.dll` instead of from vanilla's usage. Only
-needed if the mod adopts a real part that vanilla declares and never uses — the default list covers
-every part in use today. That path wants `ilspycmd` (`dotnet tool install -g ilspycmd`).
+`--assembly` reads part *names* from `Assembly-CSharp.dll` instead of from vanilla's usage, which
+is 1605 names against 949 — vanilla declares far more parts than it uses. **The committed snapshot
+is built this way**, so `--assembly` is how you reproduce it, not an optional extra. That path wants
+`ilspycmd` (`dotnet tool install -g ilspycmd`).
+
+Mixing the two is refused outright, in both directions, because the digest covers the part list and
+the two sources produce different ones. #244 found this the hard way twice over: a plain run over an
+assembly-built snapshot drops 656 names in silence, and `--check` across the same mismatch calls a
+current file STALE and then advises the very command that performs the drop.
 
 Part *members* always come from the assembly, which is located automatically, and need the .NET
 SDK — the same one `tools/compile_scripting.py` uses. There is deliberately no flag to skip them:
@@ -604,11 +610,65 @@ def collect_parts_from_xml(game: Path) -> list[str]:
     return sorted(names)
 
 
+def part_source_for(assembly: Path | None) -> str:
+    """What `part_source` a run with these arguments produces. One definition, so the guard below
+    and the snapshot itself cannot disagree about what kind of build this is."""
+    return f"assembly:{PART_NAMESPACE}" if assembly is not None else "vanilla-xml"
+
+
+def committed_part_source() -> str | None:
+    """The `part_source` of the snapshot on disk, or None if there isn't one to compare against."""
+    if not SNAPSHOT_PATH.exists():
+        return None
+    try:
+        return json.loads(SNAPSHOT_PATH.read_text()).get("part_source")
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def guard_part_source(assembly: Path | None) -> str | None:
+    """Refuse to write or check across a change of part source. Returns an error, or None to go on.
+
+    The digest covers the part list, and the two sources produce different lists - 1605 names from
+    the assembly against 949 from vanilla's own usage, because vanilla declares far more parts than
+    it uses. So mixing them breaks both paths, and #244 caught both:
+
+      writing   a plain run over an assembly-built snapshot drops 656 names. Nothing errors. The
+                consequence surfaces later as validate_mod rejecting a mod part that is perfectly
+                real, with nothing pointing back here.
+      checking  worse, because it is confidently wrong. `--check` without `--assembly` compares an
+                assembly-built snapshot to a vanilla-xml one, calls a current file STALE, exits 1,
+                and advises "Re-run without --check to update" - which is the exact command that
+                performs the corruption above. The tool hands you the wrong fix for a problem you
+                do not have.
+
+    Hence refusing in BOTH directions rather than only the narrowing one. A snapshot built one way
+    and checked the other is not a check, whichever way round it is.
+    """
+    committed = committed_part_source()
+    running = part_source_for(assembly)
+    if committed is None or committed == running:
+        return None
+    remedy = (
+        "add --assembly (it needs ilspycmd: dotnet tool install -g ilspycmd)"
+        if committed.startswith("assembly:")
+        else "drop --assembly"
+    )
+    return (
+        f"{SNAPSHOT_PATH} was built with part_source {committed!r}, but this run would use "
+        f"{running!r}.\nThe digest covers the part list and the two sources produce different "
+        f"lists, so comparing or overwriting across them is meaningless.\n\nTo match the "
+        f"committed snapshot, {remedy}."
+    )
+
+
 def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
-    if assembly is not None:
-        parts, part_source = collect_parts(assembly), f"assembly:{PART_NAMESPACE}"
-    else:
-        parts, part_source = collect_parts_from_xml(game), "vanilla-xml"
+    part_source = part_source_for(assembly)
+    parts = (
+        collect_parts(assembly)
+        if assembly is not None
+        else collect_parts_from_xml(game)
+    )
     blueprints = collect_blueprints(game)
     members, part_builders = collect_members(member_assembly)
     figures = collect_figures(game)
@@ -686,8 +746,9 @@ def main() -> int:
         "--assembly",
         nargs="?",
         const="auto",
-        help="widen the part list from Assembly-CSharp.dll instead of vanilla's XML usage; "
-        "needs ilspycmd. Pass bare to auto-locate, or give a path.",
+        help="read the part list from Assembly-CSharp.dll instead of vanilla's XML usage. This "
+        "is how the committed snapshot is built, so it is what reproduces it. Needs ilspycmd. "
+        "Pass bare to auto-locate, or give a path.",
     )
     ap.add_argument(
         "--check",
@@ -721,6 +782,11 @@ def main() -> int:
             "Pass --assembly PATH.",
             file=sys.stderr,
         )
+        return 2
+
+    mismatch = guard_part_source(assembly)
+    if mismatch:
+        print(mismatch, file=sys.stderr)
         return 2
 
     print(f"game:     {game}")
