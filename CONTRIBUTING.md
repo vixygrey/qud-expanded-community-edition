@@ -40,10 +40,10 @@ progress, and every issue carries a **Track** — Ammo, Content, Systems, Sub-mo
 Tooling & docs — which is how the work is grouped in practice. If you file something, I'll add it to
 the board and set its track; you don't have to.
 
-Labels: `bug` · `feature` · `chore` · `docs` · `tech-debt` · `compat` · `upstream-defect` ·
-`upstream-qud` · `security` · `dependencies`.
+Labels: `bug` · `feature` · `chore` · `docs` · `tech-debt` · `balance` · `compat` ·
+`upstream-defect` · `upstream-qud` · `security` · `dependencies`.
 
-Three of those are less obvious than they look:
+Four of those are less obvious than they look:
 
 - **`compat`** earns its own label because charter rule 1 makes cross-mod and future-patch
   compatibility a distinct class of work rather than a flavour of `bug`.
@@ -51,6 +51,11 @@ Three of those are less obvious than they look:
   Caves of Qud itself — the distinction matters, because one is ours to fix and the other is ours to
   work around.
 - **`security`** covers charter rule 5: the mod ships C# that runs with full process privileges.
+- **`balance`** means the change moves a number a player feels — damage, weight, a release duration,
+  a drop weight. It is orthogonal to `bug` rather than a softer version of it: a value can be plainly
+  wrong *and* correcting it can change how the mod plays, and the second half wants deciding against
+  the value curves in [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) §3.2 rather than riding along with
+  the fix.
 
 ### Branches and commits
 
