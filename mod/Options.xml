@@ -227,7 +227,7 @@
 
             Your own slots are controlled separately, by the option above.
 
-            {{y;Set this before creating a character.}} Bodies are built once, when a creature is generated, so this cannot change humanoids that already exist in a save.
+            {{y|Set this before creating a character.}} Bodies are built once, when a creature is generated, so this cannot change humanoids that already exist in a save.
         </helptext>
   </option>
 </options>

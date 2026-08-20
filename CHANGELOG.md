@@ -16,6 +16,13 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- The help text for **Chip Interface slots on other humanoids** opened with `{{y;` where Qud's
+  colour markup wants `{{y|`. It is the only semicolon form in the mod — against 46 pipe forms in
+  `mod/Options.xml` alone, and none anywhere in the game's own data — and the sibling option
+  directly above it writes the same sentence correctly, which is the signature of a slip rather than
+  a decision. Whether a player saw raw markup in the settings menu or the parser quietly tolerated it,
+  the line now matches its neighbours.
+  ([#229](https://github.com/vixygrey/qud-expanded-community-edition/issues/229))
 - **(internal)** `docs/FEATURES.md` §7.2 said nine new melee blueprints reach no table and named
   `Raven_Iron Maceth` as neither dropped nor tinkerable. The Maceth has been dropped since #38, at
   `PopulationTables.xml:431` — and §10 row 2b said so, in the same document. The count is eight, and
