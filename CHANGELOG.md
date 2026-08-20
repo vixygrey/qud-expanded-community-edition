@@ -16,6 +16,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `tools/report_dynamic_tables.py` says what a `DynamicObjectsTable:` tag actually
+  distributes. A tag is a route into merchant stock, creature inventories or a machine socket with
+  no weight, no entry and nothing in a diff to review — and it inherits, so the blueprint carrying
+  it is usually not the blueprint being distributed. That is why #223 described `BaseArrow` putting
+  six arrows in the ammunition pool and missed two psionic bases putting eighteen firearms into
+  legendary gunsmith stock, on the same page.
+
+  It separates what this fork declares from what it inherits, because only the first is a decision
+  anyone made here: `DynamicObjectsTable:Items` reaches 325 of the fork's 370 new blueprints, and
+  that is just how vanilla distributes items. Three tags are ours — `EnergyCells`, `Headwear` and
+  `Guns` — and only `Guns` is flagged, because 18 of the 23 it reaches inherit it from a base rather
+  than declaring it.
+
+  Running it corrected #262, which said 22 from a hand count. The true reach is 23: the extra is
+  `Raven_Compact Flamethrower`, which takes the tag from vanilla's `Flamethrower` rather than from
+  anything this fork wrote. A number arrived at by grepping was wrong by one in the direction that
+  hides content, which is the argument for the tool in a sentence.
+  ([#264](https://github.com/vixygrey/qud-expanded-community-edition/issues/264))
 - **(internal)** `docs/LESSONS.md` records a third way a search can find nothing, and
   `AGENTS.md` warns about it in the traps list. `command -v ilspycmd` returns nothing on a machine
   where `ilspycmd` is installed, because the .NET installer writes the literal `~/.dotnet/tools`

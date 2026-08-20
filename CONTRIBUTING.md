@@ -170,6 +170,25 @@ file pattern: what it catches is a Qud update, which correlates with nothing in 
 game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
 contributor who has none of them. `--require` turns that skip into a failure.
 
+### Seeing what a `DynamicObjectsTable:` tag distributes
+
+A tag on a blueprint is a distribution route, and nothing at the tag site says where it goes. The
+validator cannot see it: it checks that every `Blueprint="…"` in `PopulationTables.xml` resolves and
+that every new blueprint is reachable, and a tag is neither. Worse, tags inherit, so the blueprint
+carrying one is usually not the blueprint being distributed.
+
+```bash
+python3 tools/report_dynamic_tables.py
+```
+
+It reports rather than fails — [#263](https://github.com/vixygrey/qud-expanded-community-edition/issues/263)
+has yet to decide which tags should stay. Output separates what this fork declares from what it
+inherits from vanilla, because only the first is a decision anyone here made: `DynamicObjectsTable:Items`
+reaches 325 of the fork's blueprints and that is simply how vanilla distributes items.
+
+Like the compile hook, it needs the game — `BaseArrow` is vanilla, so a mod-only run would miss the
+tag that matters most — and skips loudly without it. `--require` turns the skip into a failure.
+
 It needs the .NET SDK (`brew install dotnet`) and `ilspycmd`:
 
 ```bash
