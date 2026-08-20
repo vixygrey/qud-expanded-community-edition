@@ -29,6 +29,12 @@ in them applies to a contribution you're helping someone else write.
   can't cover the C#, and nothing on a runner ever compiles it. There's still no `.csproj` — the
   compile needs four DLLs from a Qud install and nothing else. If you changed C# and couldn't compile
   it, say so in the pull request.
+- **`command -v` finding nothing does not mean a tool is missing.** The .NET installer puts the
+  literal `~/.dotnet/tools` in `/etc/paths.d/dotnet-cli-tools` and `path_helper` never expands the
+  `~`, so `ilspycmd` and friends are invisible while `$PATH` looks correct. `export
+  PATH="$HOME/.dotnet/tools:$PATH"` first, then decide whether a tool is absent — see
+  [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full reason. Concluding "not installed" here has
+  already sent one investigation down the wrong road.
 - **Verify claims about Qud against the game's own files** rather than from memory — the installed
   mods under `steamapps/workshop/content/333640/` and the vanilla data under
   `StreamingAssets/Base`. `docs/LESSONS.md` explains where both are and which vanilla files aren't
