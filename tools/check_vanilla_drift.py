@@ -107,6 +107,62 @@ def load_all(root_dir: Path, lenient: bool = False) -> list[ET.Element]:
     return out
 
 
+class BlueprintIndex:
+    """Blueprint lookups resolved through `Inherits`, honouring `*noinherit`.
+
+    Qud has two inheritance rules for tags and this resolves both. A tag declared on a blueprint
+    applies to everything inheriting from it — *except* when its value is `*noinherit`, which
+    confines it to the blueprint that declares it. That is how `Raven_Base Psionic Pistol` marks
+    itself a base object without making its nine descendants base objects too.
+
+    Matching on tag name alone gets those descendants exactly backwards. Resolving
+    `IsEligibleForDynamicEncounters` over the mod's psionic firearms returns 0 of 20 without the
+    rule and 18 of 20 with it — a silent zero, which is the failure `docs/LESSONS.md` describes
+    under *A search that finds nothing has two explanations*. See #265.
+
+    Takes parsed roots rather than a path, so it works over the mod's own XML with no game
+    installed. `tools/validate_mod.py` runs in CI where there is none.
+    """
+
+    def __init__(self, roots: list[ET.Element]) -> None:
+        self.objects: dict[str, ET.Element] = {}
+        for root in roots:
+            for obj in root.iter("object"):
+                name = obj.get("Name")
+                if name:
+                    self.objects[name] = obj
+
+    def chain(self, name: str) -> list[ET.Element]:
+        """The blueprint and its ancestors, nearest first. Cycles terminate rather than hang."""
+        seen: set[str] = set()
+        out: list[ET.Element] = []
+        while name and name in self.objects and name not in seen:
+            seen.add(name)
+            out.append(self.objects[name])
+            name = self.objects[name].get("Inherits")
+        return out
+
+    def has_tag(self, name: str, tag: str) -> bool:
+        """True when `tag` reaches `name`, whether declared on it or inherited.
+
+        The nearest declaration decides. A `*noinherit` value found on an ancestor means the tag
+        stops there and does not reach `name`; the same value on `name` itself still applies.
+        """
+        for depth, obj in enumerate(self.chain(name)):
+            for el in obj.findall("tag"):
+                if el.get("Name") == tag:
+                    return not (depth > 0 and el.get("Value") == "*noinherit")
+        return False
+
+    def has_part(self, name: str, part: str) -> bool:
+        """True when `part` is declared anywhere on the chain. Parts have no `*noinherit`."""
+        return any(
+            el.get("Name") == part
+            for obj in self.chain(name)
+            for el in obj.findall("part")
+        )
+
+
 def anatomy(roots: list[ET.Element], name: str) -> ET.Element | None:
     for r in roots:
         for a in r.iter("anatomy"):

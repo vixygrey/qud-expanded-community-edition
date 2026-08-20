@@ -68,7 +68,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from check_vanilla_drift import find_game, load_all
+from check_vanilla_drift import BlueprintIndex, find_game, load_all
 
 SNAPSHOT_PATH = Path("tools/qud-api.json")
 
@@ -401,9 +401,11 @@ def collect_census(game: Path) -> dict[str, str]:
 
     The definition lives here, beside the code implementing it, so the two cannot drift:
 
-      creature      the `Creature` tag resolved through `Inherits`, minus blueprints carrying
-                    their own `<tag Name="BaseObject">`. Those are the abstract bases - templates
-                    rather than things that spawn.
+      creature      the `Creature` tag resolved through `Inherits`, minus the blueprints the
+                    `BaseObject` tag reaches. Those are the abstract bases - templates rather
+                    than things that spawn. Both tags resolve through BlueprintIndex, which
+                    honours `*noinherit` - and `BaseObject` is nearly always declared that way,
+                    so a base is excluded while everything inheriting from it is not (#265).
       bleeds        `<intproperty Name="Bleeds" Value="1">`, nearest declaration winning.
       inventory     every `<inventoryobject>` on the chain. Entries opening with `@` or `*` are
                     population references and are counted apart: they are not empty, they draw
@@ -424,29 +426,9 @@ def collect_census(game: Path) -> dict[str, str]:
     records a wished creature arming itself after spawning with a weapon its blueprint never
     mentions. Anything quoting these figures should say so.
     """
-    objects: dict = {}
-    for root in load_all(game, lenient=True):
-        for obj in root.iter("object"):
-            name = obj.get("Name")
-            if name:
-                objects[name] = obj
-
-    def chain(name: str) -> list:
-        seen: set[str] = set()
-        out = []
-        while name and name in objects and name not in seen:
-            seen.add(name)
-            out.append(objects[name])
-            name = objects[name].get("Inherits")
-        return out
-
-    def has_tag(name: str, tag: str) -> bool:
-        return any(e.get("Name") == tag for o in chain(name) for e in o.findall("tag"))
-
-    def has_part(name: str, part: str) -> bool:
-        return any(
-            e.get("Name") == part for o in chain(name) for e in o.findall("part")
-        )
+    index = BlueprintIndex(load_all(game, lenient=True))
+    objects = index.objects
+    chain, has_tag, has_part = index.chain, index.has_tag, index.has_part
 
     def intprop(name: str, prop: str) -> str | None:
         for o in chain(name):
@@ -461,8 +443,7 @@ def collect_census(game: Path) -> dict[str, str]:
     creatures = [
         name
         for name in objects
-        if has_tag(name, "Creature")
-        and not any(e.get("Name") == "BaseObject" for e in objects[name].findall("tag"))
+        if has_tag(name, "Creature") and not has_tag(name, "BaseObject")
     ]
     if not creatures:
         raise SystemExit(

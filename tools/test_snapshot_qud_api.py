@@ -27,6 +27,7 @@ import os
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from contextlib import contextmanager
 from pathlib import Path
 from unittest import mock
@@ -34,6 +35,7 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import snapshot_qud_api
+from check_vanilla_drift import BlueprintIndex
 
 ASSEMBLY = Path(
     "/nonexistent/Assembly-CSharp.dll"
@@ -63,6 +65,103 @@ def snapshot(part_source: str | None):
             )
         with chdir(root):
             yield
+
+
+class NoInheritTagResolution(unittest.TestCase):
+    """`*noinherit` confines a tag to the blueprint declaring it.
+
+    Matching on tag name alone inverts the answer for every descendant, and inverts it to
+    *nothing found* - the failure docs/LESSONS.md warns about under "A search that finds nothing
+    has two explanations". See #265.
+    """
+
+    def index(self, xml: str) -> BlueprintIndex:
+        return BlueprintIndex([ET.fromstring(xml)])
+
+    def test_an_ordinary_tag_reaches_descendants(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="Base"><tag Name="Guns" /></object>'
+            '  <object Name="Child" Inherits="Base" />'
+            "</objects>"
+        )
+        self.assertTrue(i.has_tag("Child", "Guns"))
+
+    def test_noinherit_stops_at_the_declaring_blueprint(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="Base"><tag Name="BaseObject" Value="*noinherit" /></object>'
+            '  <object Name="Child" Inherits="Base" />'
+            "</objects>"
+        )
+        self.assertTrue(i.has_tag("Base", "BaseObject"))
+        self.assertFalse(i.has_tag("Child", "BaseObject"))
+
+    def test_a_nearer_declaration_wins_over_a_noinherit_ancestor(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="Base"><tag Name="X" Value="*noinherit" /></object>'
+            '  <object Name="Mid" Inherits="Base"><tag Name="X" /></object>'
+            '  <object Name="Child" Inherits="Mid" />'
+            "</objects>"
+        )
+        self.assertTrue(i.has_tag("Child", "X"))
+
+    def test_parts_have_no_noinherit_and_reach_descendants(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="Base"><part Name="Render" /></object>'
+            '  <object Name="Child" Inherits="Base" />'
+            "</objects>"
+        )
+        self.assertTrue(i.has_part("Child", "Render"))
+
+    def test_a_cycle_terminates(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="A" Inherits="B" />'
+            '  <object Name="B" Inherits="A" />'
+            "</objects>"
+        )
+        self.assertFalse(i.has_tag("A", "Anything"))
+
+
+class PsionicFirearmRegression(unittest.TestCase):
+    """The real case #265 was found through, reduced to its shape.
+
+    `Raven_Base Psionic Pistol` declares both `BaseObject` (as `*noinherit`) and
+    `DynamicObjectsTable:Guns` (inheritable). A resolver ignoring `*noinherit` reports every
+    descendant as a base blueprint and therefore ineligible - 0 of 20 rather than 18.
+    """
+
+    def test_descendants_are_eligible_and_the_base_is_not(self) -> None:
+        i = BlueprintIndex(
+            [
+                ET.fromstring(
+                    "<objects>"
+                    '  <object Name="Raven_Base Psionic Pistol" Inherits="BaseRifle">'
+                    '    <part Name="Render" />'
+                    '    <tag Name="DynamicObjectsTable:Guns" />'
+                    '    <tag Name="BaseObject" Value="*noinherit" />'
+                    "  </object>"
+                    '  <object Name="Raven_Ice Psionic Pistol" Inherits="Raven_Base Psionic Pistol" />'
+                    "</objects>"
+                )
+            ]
+        )
+
+        def eligible(name: str) -> bool:
+            return (
+                not i.has_tag(name, "BaseObject")
+                and i.has_part(name, "Render")
+                and not i.has_tag(name, "ExcludeFromDynamicEncounters")
+            )
+
+        self.assertFalse(eligible("Raven_Base Psionic Pistol"))
+        self.assertTrue(eligible("Raven_Ice Psionic Pistol"))
+        self.assertTrue(
+            i.has_tag("Raven_Ice Psionic Pistol", "DynamicObjectsTable:Guns")
+        )
 
 
 class GuardPartSource(unittest.TestCase):

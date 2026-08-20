@@ -32,6 +32,28 @@ recorded because contributors need them, not because subscribers do.
   that rides along with the fix. #248 was already waiting for the same distinction.
   `CONTRIBUTING.md` documents it beside the other three labels that need explaining.
 
+### Changed
+
+- **(internal)** Blueprint tag resolution honours `*noinherit`, and lives in one place. A tag
+  declared `Value="*noinherit"` applies to the blueprint declaring it and not to anything
+  inheriting from it — the rule that lets `Raven_Base Psionic Pistol` mark itself a base without
+  making its nine descendants bases. `snapshot_qud_api.py` matched on tag name alone, which
+  inverts the answer for every descendant, and inverts it to *nothing found*: resolving dynamic-
+  encounter eligibility over the mod's psionic firearms returns 0 of 20 without the rule and 18
+  of 20 with it.
+
+  **No figure moved.** The helper was only ever called with `Creature`, `Humanoid` and
+  `NaturalGear`, and I checked all 13,105 vanilla objects — none of those three is ever declared
+  `*noinherit`. Only six tag names are, `ExcludeFromDynamicEncounters` and `BaseObject` the
+  common ones. So the census was right by coincidence rather than by construction, which is a
+  poor thing for a general-looking helper to be. The snapshot's digest is unchanged, and since
+  the 28 cited figures feed that digest, that is the proof rather than a hope.
+
+  It is now `BlueprintIndex` in `check_vanilla_drift.py`, beside the parser everything already
+  shares. It takes parsed roots rather than a game path, so `validate_mod.py` can use it in CI
+  where there is no game — which is what #264 needs.
+  ([#265](https://github.com/vixygrey/qud-expanded-community-edition/issues/265))
+
 ### Fixed
 
 - **Corrosive gas chips now last twice as long**, because they were granting the wrong mutation.
