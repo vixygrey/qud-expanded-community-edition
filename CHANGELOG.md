@@ -14,6 +14,14 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** A `balance` label, for a change that moves a number a player feels. `bug` says a
+  value is wrong and `balance` says correcting it changes how the mod plays — #226 is both, and the
+  second half is a decision against the curves in `docs/STYLEGUIDE.md` §3.2 rather than something
+  that rides along with the fix. #248 was already waiting for the same distinction.
+  `CONTRIBUTING.md` documents it beside the other three labels that need explaining.
+
 ### Fixed
 
 - The help text for **Chip Interface slots on other humanoids** opened with `{{y;` where Qud's
