@@ -483,7 +483,9 @@ back.
 
 ## A search that finds nothing has two explanations, and one of them is the search
 
-Twice in one day a check reported nothing and I read it as an answer.
+Three times now a check has reported nothing and I have read it as an answer. Twice in one day,
+and once again much later — and the late one is the one that should worry me, because by then the
+trap was already written down in this repository.
 
 **`strings` on a .NET assembly.** Deciding whether `Builder` was dead data in vanilla, I searched
 `Assembly-CSharp.dll` for the literal and got zero hits — for `Builder`, and for every other name I
@@ -500,7 +502,18 @@ format` had already split those tuples across several lines, so the single-line 
 matched nothing, the file was never modified, and the run I read was an ordinary clean one. The
 gate works. The test did not run.
 
-Both had the same shape. A check that reports **zero of something** is indistinguishable from a
+**`command -v` on an installed tool.** Investigating #226 I wanted to decompile
+`Assembly-CSharp.dll`, ran `command -v ilspycmd`, got nothing, and filed the issue saying the tool
+was not installed and the question therefore needed a play session. It was installed — version
+11.0.0.9375, sitting in `~/.dotnet/tools`. The .NET installer writes the **literal** string
+`~/.dotnet/tools` into `/etc/paths.d/dotnet-cli-tools`, and `path_helper` copies entries verbatim
+without expanding `~`, so the entry resolves to a directory named `~` and matches nothing. The path
+is visible in `$PATH` and every binary under it is unreachable. One `export
+PATH="$HOME/.dotnet/tools:$PATH"` and the whole of #226 fell out statically, including the duration
+formula that turned out to be the actual defect. `CONTRIBUTING.md` had explained this in full since
+#252; I had not read it, because I was not working on the snapshot check it is filed under.
+
+All three had the same shape. A check that reports **zero of something** is indistinguishable from a
 check that did not execute, and the second is far more common than it feels. A check that reports
 a *problem* at least proves it ran.
 

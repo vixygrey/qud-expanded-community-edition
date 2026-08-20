@@ -16,6 +16,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records a third way a search can find nothing, and
+  `AGENTS.md` warns about it in the traps list. `command -v ilspycmd` returns nothing on a machine
+  where `ilspycmd` is installed, because the .NET installer writes the literal `~/.dotnet/tools`
+  into `/etc/paths.d/dotnet-cli-tools` and `path_helper` never expands the `~`. I filed #226 saying
+  the tool was absent and that settling the question needed a play session; it did not, and one
+  `export` produced the whole answer. `CONTRIBUTING.md` had explained this since #252 — filed under
+  the snapshot check, which is not where I was standing. It goes in beside the two existing examples
+  rather than becoming its own lesson, because the shape is identical and a third instance is what
+  turns a coincidence into a pattern.
+  ([#259](https://github.com/vixygrey/qud-expanded-community-edition/issues/259))
 - **(internal)** A `balance` label, for a change that moves a number a player feels. `bug` says a
   value is wrong and `balance` says correcting it changes how the mod plays — #226 is both, and the
   second half is a decision against the curves in `docs/STYLEGUIDE.md` §3.2 rather than something
