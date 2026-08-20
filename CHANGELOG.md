@@ -24,6 +24,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Corrosive gas chips now last twice as long**, because they were granting the wrong mutation.
+  Every chip in the acid family — the three corrosive gas chips and the three acid chipsets — named
+  the base class `GasGeneration` rather than `CorrosiveGasGeneration`. The gas itself was always
+  right: both resolve to `AcidGas`. But the base class releases gas for `1 + Level / 2` rounds where
+  the real mutation gives `Level + 2`, so the perfected chip ran 6 rounds instead of 12, and the
+  basic one 2 instead of 5.
+
+  Three things came with it. The ability was called "Gas Generation" rather than "Release Corrosive
+  Gas"; the mutation contributed no `salt` to your item elements, which it should; and because
+  nothing in the game declares `Class="GasGeneration"`, Qud logged an error every time it tried to
+  look the mutation up — naming the exact fix, in a log nobody reads.
+
+  These were the only chips affected. Thirty-four of the thirty-five mutations the chips grant name a
+  class the game actually catalogues, so the acid family was alone in handing out a quietly degraded
+  copy of its mutation. Inherited unchanged from Mura's 2.2, and invisible to every gate: the part
+  name is real, so `unknown-part` passes, and the class is real, so it compiles. Nothing looked
+  inside the generic — #256 is about making something do so.
+
+  Chips already worn in a save keep the old behaviour until you take one off and put it back on,
+  which is enough to fix it. Nothing needs migrating.
+  ([#226](https://github.com/vixygrey/qud-expanded-community-edition/issues/226))
 - The help text for **Chip Interface slots on other humanoids** opened with `{{y;` where Qud's
   colour markup wants `{{y|`. It is the only semicolon form in the mod — against 46 pipe forms in
   `mod/Options.xml` alone, and none anywhere in the game's own data — and the sibling option
