@@ -5,7 +5,7 @@ using XRL.World.Parts.Mutation;
 namespace XRL.World.Parts
 {
     [Serializable]
-    public class Raven_ModGasGeneration : ModImprovedMutationBase<GasGeneration>
+    public class Raven_ModGasGeneration : ModImprovedMutationBase<CorrosiveGasGeneration>
     {
     }
 }
