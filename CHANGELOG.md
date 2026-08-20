@@ -14,7 +14,25 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- **(internal)** `docs/FEATURES.md` §7.2 said nine new melee blueprints reach no table and named
+  `Raven_Iron Maceth` as neither dropped nor tinkerable. The Maceth has been dropped since #38, at
+  `PopulationTables.xml:431` — and §10 row 2b said so, in the same document. The count is eight, and
+  the eight are the vibro weapons, which are tinkerable. This is the shape #93, #96, #106 and #139
+  all had: the fix landed, the prose describing the defect stayed, and the document disagreed with
+  itself. The row written *about* the fix knew; the section describing the tables did not.
+  ([#231](https://github.com/vixygrey/qud-expanded-community-edition/issues/231))
+- **(internal)** `docs/FEATURES.md` §6.3 got two of its six bullets wrong about what vanilla
+  already has. Vanilla does not "only put bucklers" in the arm slot — 46 blueprints resolve to
+  `Armor WornOn="Arm"`, and bucklers are not among them, carrying `Shield` rather than `Armor`. The
+  true claim is stronger than the one I had: no arm item in the game grants more than a single point
+  of AV and vanilla's tier ladder there climbs in DV, so vambraces are the first arm line that trades
+  DV for AV. And nanoweave and flexi are not new concepts — vanilla ships `Nanoweave Vest` and
+  `Flexivest`; what this mod adds is the rest of both sets. That bullet now sits under a second
+  heading for families completed rather than concepts introduced, beside the weave cloaks, and the
+  summary table at the top of the document no longer calls either one a new armor class.
+  ([#232](https://github.com/vixygrey/qud-expanded-community-edition/issues/232))
 
 ## [2.5.0] - 2026-08-19
 
