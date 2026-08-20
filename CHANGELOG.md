@@ -74,6 +74,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Character creation now tells you the chip system exists.** It never did — the word "chip"
+  appeared nowhere in `Genotypes.xml`, for any genotype. The slots were there from the first turn
+  and nothing in front of you at chargen said so.
+
+  Each genotype's panel now names its slots and what raises them: one for a mutated human, **two for
+  a True Kin**, **four for a Psionic Adept**, alongside the reputation and skill-point lines already
+  there. And the Psionic Adept's **Ego** description no longer says Ego has nothing to do with
+  mental mutations — it carried vanilla's True Kin sentence verbatim, which is right for a genotype
+  that cannot mutate and wrong for one wearing a psionic chip. Twenty-three of the thirty-six
+  mutations chips grant are Mental, and Qud scales that category with Ego.
+
+  This matters at chargen and nowhere else: **Ego is allocated before you have ever seen a chip, and
+  cannot be reallocated afterwards.** A player building toward chips could read that Ego was for
+  haggling and domination, spend accordingly, and find out much later. The Adept has the most slots
+  in the game and was told the least about them.
+
+  True Kin get the same line by a different route, because vanilla's own stat descriptions cannot be
+  changed additively — a `<stat>` merge carries three integers and silently discards the
+  description. `docs/LESSONS.md` records that, since the diff for the attempt looks perfectly
+  correct.
+  ([#227](https://github.com/vixygrey/qud-expanded-community-edition/issues/227))
 - **Corrosive gas chips now last twice as long**, because they were granting the wrong mutation.
   Every chip in the acid family — the three corrosive gas chips and the three acid chipsets — named
   the base class `GasGeneration` rather than `CorrosiveGasGeneration`. The gas itself was always
