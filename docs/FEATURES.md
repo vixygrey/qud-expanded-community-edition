@@ -23,7 +23,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
-| **New armor classes** | Greatshield, vambrace (arm armor), weave cloaks at every tier, nanoweave/flexi gear |
+| **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
 | **Loot tables** | **56** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
@@ -566,12 +566,15 @@ Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
 
 New concepts introduced:
 
-- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla only puts bucklers in that slot, so this is the first real armor line for arms.
+- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla fills that slot with bracelets and gadgets and never with armor — no arm item in the game grants more than a single point of AV, and its tier ladder climbs in DV — so this is the first arm line that trades DV for AV.
 - **Greatshields** — a full tier 0–8 line of two-handed-feel `Hand` shields with the highest AV in the game (3 → 10) at a DV cost.
-- **Weave cloaks** at every tier (bronzeweave → zetachromeweave), filling out the vanilla ironweave cloak.
-- **Nanoweave** and **Flexi** gear — a tier 5–6 "light armor" alternative that trades AV for **positive DV**, which vanilla metal armor never gives.
 - **Bio-scanner mask** and **mutating mask** — two `Face`-slot artifacts.
 - **Reinforced suspension** — `Tread`-slot accessory for the mechanical-legs build.
+
+Vanilla families completed:
+
+- **Weave cloaks** at every tier (bronzeweave → zetachromeweave), filling out the vanilla ironweave cloak.
+- **Nanoweave** and **Flexi** sets — vanilla ships the vest of each and nothing to go with it; helmet, gloves, boots and cloak complete both lines. They trade AV for **positive DV**, which vanilla's metal armor never gives.
 
 
 #### Feet
@@ -1483,9 +1486,9 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
 - **Melee Weapons 1C–8C / 1R–8R** — new melee blueprints are slotted into their tier's Common
   (one-handed) and Rare (two-handed) tables, mostly at weight 20. Tier-1 tables seed bronze gear
   at weight 20 and iron at weight 10; `Raven_Bronze Wristblade` is weight 5 in Melee Weapons 1C.
-  **Nine new melee blueprints appear in no table at all:** the eight vibro weapons
-  (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade — all
-  tinkerable, so still reachable) and `Raven_Iron Maceth`, which is neither dropped nor tinkerable.
+  **Eight new melee blueprints appear in no table at all:** the vibro weapons
+  (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade) — all
+  tinkerable, so still reachable.
 - **Armor 1C–8C / 1R–8R** — all new armor is reachable. Upstream 2.2 left **ten pieces in no
   table** — the four nanoweave pieces, the four flexi pieces, the bio-scanner mask and the mutating
   mask — and since only the bio-scanner mask is tinkerable, nine of them were unobtainable in play.
