@@ -286,7 +286,11 @@
     <part Name="Physics" Weight="4" />
     <tag Name="MissileFireSound" Value="pistol_laser" />
     <tag Name="Mods" Value="MissileWeaponMods,FirearmMods,CommonMods,PistolMods,ElectronicsMods,BeamWeaponMods" />
-    <tag Name="DynamicObjectsTable:Guns" />
+    <!-- *noinherit: a legendary gunsmith stocks 6-8 from this pool at once, and the
+         eighteen psionic firearms are meant to be rare - weight 1 apiece in Missile 2
+         and 3, against vanilla's 29 and 125. Inheriting the tag handed a single shop
+         more of them than the world does. See #262. -->
+    <tag Name="DynamicObjectsTable:Guns" Value="*noinherit" />
     <tag Name="BaseObject" Value="*noinherit" />
     <tag Name="TinkerCategory" Value="pistols" />
   </object>
@@ -304,7 +308,11 @@
     <part Name="Physics" Weight="10" UsesTwoSlots="True" />
     <tag Name="MissileFireSound" Value="laser_medium_1" />
     <tag Name="Mods" Value="MissileWeaponMods,FirearmMods,CommonMods,RifleMods,ElectronicsMods,BeamWeaponMods" />
-    <tag Name="DynamicObjectsTable:Guns" />
+    <!-- *noinherit: a legendary gunsmith stocks 6-8 from this pool at once, and the
+         eighteen psionic firearms are meant to be rare - weight 1 apiece in Missile 2
+         and 3, against vanilla's 29 and 125. Inheriting the tag handed a single shop
+         more of them than the world does. See #262. -->
+    <tag Name="DynamicObjectsTable:Guns" Value="*noinherit" />
     <tag Name="BaseObject" Value="*noinherit" />
     <tag Name="TinkerCategory" Value="rifles" />
   </object>
