@@ -275,6 +275,67 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class MutationTypeArguments(unittest.TestCase):
+    """#256. Compiling proves the class exists; it does not prove the game will grant it.
+
+    `GasGeneration` compiled cleanly and passed `unknown-part` for two years while six chips ran at
+    roughly half their intended duration, because nothing looked inside the generic (#226).
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _findings(self, source: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp)
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        (scripting / "Raven_ModThing.cs").write_text(source, encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_mutation_type_arguments(f)
+        return [c for c, _ in f.items]
+
+    def test_a_catalogued_mutation_passes(self) -> None:
+        codes = self._findings(
+            "public class Raven_ModThing : ModImprovedMutationBase<CorrosiveGasGeneration> { }"
+        )
+        self.assertNotIn("unknown-mutation", codes)
+
+    def test_a_class_with_no_catalogue_entry_is_reported(self) -> None:
+        codes = self._findings(
+            "public class Raven_ModThing : ModImprovedMutationBase<GasGeneration> { }"
+        )
+        self.assertIn(
+            "unknown-mutation",
+            codes,
+            "GasGeneration has no <mutation Class=...> and must be reported - this is #226",
+        )
+
+    def test_an_invented_class_is_reported(self) -> None:
+        codes = self._findings(
+            "public class Raven_ModThing : ModImprovedMutationBase<NotAMutationAtAll> { }"
+        )
+        self.assertIn("unknown-mutation", codes)
+
+    def test_a_commented_out_declaration_is_ignored(self) -> None:
+        """The mod keeps dormant scripts and blueprints commented out, so this is not academic."""
+        for source in (
+            "// public class X : ModImprovedMutationBase<GasGeneration> { }",
+            "/* public class X : ModImprovedMutationBase<GasGeneration> { } */",
+        ):
+            with self.subTest(source=source):
+                self.assertNotIn("unknown-mutation", self._findings(source))
+
+    def test_whitespace_inside_the_generic_is_tolerated(self) -> None:
+        codes = self._findings(
+            "public class Raven_ModThing : ModImprovedMutationBase< GasGeneration > { }"
+        )
+        self.assertIn("unknown-mutation", codes)
+
+
 class Constants(unittest.TestCase):
     def test_covers_every_prefix_the_validator_claims(self) -> None:
         """The tie between the tests' own list and the real constant.
