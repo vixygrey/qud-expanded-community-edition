@@ -483,6 +483,111 @@ def check_required_checks(f: Findings) -> None:
             )
 
 
+MUTATION_PART = re.compile(r"ModImprovedMutationBase<(\w+)>")
+COLOUR_MARKUP = re.compile(r"\{\{[^|}]*\|([^}]*)\}\}")
+
+
+def _plain(text: str) -> str:
+    """A display name with Qud's colour markup taken off."""
+    return COLOUR_MARKUP.sub(r"\1", text or "").replace("{{", "").replace("}}", "")
+
+
+def chips_from_blueprints() -> dict[str, tuple[str, str, list[str]]]:
+    """Recompute Appendix B from the blueprints: name -> (item tier, value, grants).
+
+    Every column is data that was typed into the document by hand, and typed data drifts. Three
+    rows still named `GasGeneration` months after #258 renamed it, and I corrected the three
+    single-chip rows earlier the same day while missing the three chipsets - which is how well
+    re-reading a 144-row table works.
+
+    Mod-only, so this runs in CI where there is no game. The armour and weapon tables in 6 and 7
+    are the obvious next targets and are not this: 43 of their rows are `merge` edits to vanilla
+    blueprints, so recomputing those needs an installed game and a different bargain.
+    """
+    granted: dict[str, str] = {}
+    for cs in sorted((MOD / "Scripting").glob("Raven_Mod*.cs")):
+        found = MUTATION_PART.search(cs.read_text(encoding="utf-8-sig"))
+        if found:
+            granted[cs.stem] = found.group(1)
+
+    chips: dict[str, tuple[str, str, list[str]]] = {}
+    for path in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+        try:
+            root = ET.parse(path).getroot()
+        except ET.ParseError:
+            continue  # check_wellformed in validate_mod.py owns this failure
+        for obj in root.iter("object"):
+            name = value = tier = None
+            grants: list[str] = []
+            for part in obj.iter("part"):
+                which = part.get("Name", "")
+                if which == "Render" and part.get("DisplayName"):
+                    name = _plain(part.get("DisplayName"))
+                elif which == "Commerce":
+                    value = part.get("Value")
+                elif which in granted:
+                    grants.append(f"{granted[which]} @ {part.get('Tier')}")
+            for tag in obj.iter("tag"):
+                if tag.get("Name") == "Tier":
+                    tier = tag.get("Value")
+            if grants and name:
+                chips[name] = (tier, value, sorted(grants))
+    return chips
+
+
+def check_appendix_b(f: Findings) -> int:
+    """Every row of FEATURES.md's chip appendix must match the blueprint it describes."""
+    doc = Path("docs/FEATURES.md")
+    if not doc.is_file():
+        return 0
+
+    chips = chips_from_blueprints()
+    lines = doc.read_text().splitlines()
+    start = next(
+        (i for i, line in enumerate(lines) if line.startswith("## Appendix B")), None
+    )
+    if start is None:
+        f.add("appendix-b", "docs/FEATURES.md has no '## Appendix B' heading to check")
+        return 0
+
+    seen, rows = set(), 0
+    for offset, line in enumerate(lines[start:], start=start):
+        if line.startswith("## ") and not line.startswith("## Appendix B"):
+            break
+        if not line.startswith("|") or "---" in line or "Item tier" in line:
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if len(cells) != 4:
+            continue
+        rows += 1
+        name, tier, value, grants = cells
+        seen.add(name)
+        if name not in chips:
+            f.add(
+                "appendix-b",
+                f"docs/FEATURES.md:{offset + 1}: no blueprint renders as {name!r}",
+            )
+            continue
+        want_tier, want_value, want_grants = chips[name]
+        # Order-insensitive: a chipset grants three mutations and the document's order is its own.
+        have_grants = sorted(g.strip() for g in grants.split(","))
+        for label, have, want in (
+            ("item tier", tier, want_tier),
+            ("value", value, want_value),
+            ("grants", ", ".join(have_grants), ", ".join(want_grants)),
+        ):
+            if have != want:
+                f.add(
+                    "appendix-b",
+                    f"docs/FEATURES.md:{offset + 1}: {name} {label} is {have!r}, "
+                    f"blueprints say {want!r}",
+                )
+
+    for missing in sorted(set(chips) - seen):
+        f.add("appendix-b", f"docs/FEATURES.md Appendix B has no row for {missing!r}")
+    return rows
+
+
 def check_links(f: Findings) -> None:
     for doc in DOCS:
         if not doc.is_file():
@@ -702,6 +807,7 @@ def main() -> int:
     known = facts()
     checked = check_counts(f, known)
     from_game = check_vanilla_figures(f)
+    appendix = check_appendix_b(f)
     check_links(f)
     check_sections(f)
     check_changelog_sections(f)
@@ -722,8 +828,9 @@ def main() -> int:
         return 1
 
     print(
-        f"OK - {checked} documented figure(s) match the mod, {from_game} match the game; "
-        f"links, sections, check names and preserved documents all clean"
+        f"OK - {checked} documented figure(s) match the mod, {from_game} match the game, "
+        f"{appendix} chip row(s) match their blueprints; links, sections, check names and "
+        f"preserved documents all clean"
     )
     return 0
 
