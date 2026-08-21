@@ -101,6 +101,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **The fine-tuned handgun is a rarer find in `Missile 4`**, at draw weight 2 instead of 5. This is
+  its odds of being picked from that table, not its physical weight, which is unchanged.
+
+  It declares `Tier="6"` and drops from a tier-4 table, which #284 flagged as an unexplained
+  two-tier span. Checking vanilla settles it: vanilla's own `Missile 4` carries the `Hypertractor`
+  at tier 6, the identical span, so a tier-6 gun appearing there is vanilla's idiom rather than a
+  defect — and the handgun's tier is right as it stands.
+
+  What vanilla also does is make that item the rarest thing in the table. The `Hypertractor` sits
+  at weight 2 against neighbours at 5 and 10; *allowed but rare* is the whole shape of the idiom,
+  and the handgun was following only half of it. It is the most valuable of the four conventional
+  guns this fork puts in that table at 600, so being the least likely of them to turn up is the
+  right way round.
+  ([#284](https://github.com/vixygrey/qud-expanded-community-edition/issues/284))
 - **(internal)** Blueprint tag resolution honours `*delete`, and `tools/report_dynamic_tables.py`
   stops counting deletions as routes. `*noinherit` confines a tag to the blueprint declaring it;
   `*delete` removes an inherited one outright, and vanilla uses it 126 times — including to take
