@@ -275,6 +275,21 @@ separate git repository and not one of the ten checks reaches it.** No `typos`, 
 that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails — which makes it
 the highest-risk place in this project to write a number down.
 
+**When a change lands, grep the wiki for what it describes.** `docs/LESSONS.md` already carries that
+rule for the documents in this repository, and it does not reach the wiki for a practical reason: the
+wiki is a separate repository most contributors have never cloned. It clones anonymously and takes a
+moment:
+
+```bash
+git clone https://github.com/vixygrey/qud-expanded-community-edition.wiki.git
+```
+
+This has already cost something. While the ammunition page was being written, the scour slug landed
+and a page pushed an hour earlier still described this mod's ammunition as "arrows and shells". That
+sentence went from true to incomplete with no signal of any kind, and nothing in this repository would
+have prompted anyone reviewing that change to think about it. `--wiki` above would not have caught it
+either — no anchor broke.
+
 One practical trap: a wiki page **cannot** use a relative link to a file in this repository, because it
 is a different repository. Figures need a full `https://github.com/…/blob/main/docs/FEATURES.md` URL.
 That extra friction is exactly what tempts people to paste the number instead. Pay it.

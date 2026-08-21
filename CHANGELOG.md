@@ -26,8 +26,13 @@ recorded because contributors need them, not because subscribers do.
   a network, and a check that passes quietly when it could not reach anything is worse than none.
   It clones the wiki itself, or takes `--wiki-path` for a clone you already have.
 
-  It closes the half of #230 that is silent *and* mechanical. Whether a page is still true is the
-  other half, and no check will answer that one.
+  It closes the half of #230 that is silent *and* mechanical. For the other half, `CONTRIBUTING.md`
+  now carries the wiki's clone URL and the rule that a change to what a player sees should be
+  grepped there, and the pull request template asks for it — conditionally, because most changes
+  cannot affect the wiki and a checklist line with a poor hit rate is just noise.
+
+  `docs/LESSONS.md` records the three ways a wiki page goes wrong, and that only two of them look
+  like anything.
   ([#230](https://github.com/vixygrey/qud-expanded-community-edition/issues/230))
 - **(internal)** `check_docs.py` recomputes `docs/FEATURES.md`'s chip appendix from the blueprints
   rather than trusting it. All 144 rows — item tier, value, and which mutation at which level — are

@@ -344,6 +344,30 @@ decompiling, and I read the assembly for an hour first.
 > broken mechanism, and Qud tends to expose its own arithmetic in the UI — check that before
 > reasoning about the code, and certainly before filing.
 
+## Being in step with a document is not the same as being right
+
+The wiki is written from `docs/FEATURES.md`, so there are three ways a page goes wrong and only two
+of them look like anything:
+
+1. **A link rots.** GitHub derives an anchor from the heading text, so renaming a heading breaks
+   every wiki link to it — and a bad fragment still returns HTTP 200, so neither repository reports
+   it. Renaming one heading breaks five links. `tools/check_docs.py --wiki` catches this.
+2. **The page goes stale.** The repository moved and the page did not. The scour slug landed while
+   the ammunition page was being written, and a page pushed an hour earlier still said "arrows and
+   shells". No check will catch this; the remedy is grepping the wiki when a change lands.
+3. **The page faithfully repeats something false.** Nothing is stale, no anchor is broken, every
+   figure matches its source — and the source is wrong.
+
+The third is the dangerous one, because it is invisible from both sides. **This fork's documents were
+about 5% verified when that was measured** — 74 checked claims against roughly 713 data rows and 583
+numbers in `docs/FEATURES.md` — and a single session turned up nine claims that did not match the mod
+or the game, three of them introduced while fixing the other six.
+
+> **Do not treat a repository document as a source of truth for a figure you are about to publish.**
+> Recompute it, or check it against the game. Where a table is data rather than prose, make something
+> recompute it — `check_docs.py` does that for the 144 rows of Appendix B, and found three wrong ones
+> on its first run that two careful reads that same day had missed.
+
 ## A public field is not a supported setter if something caches what it derives
 
 `PowerEntry.Attribute` and `.Minimum` are public and writable, so I assumed retuning a skill
