@@ -204,6 +204,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/FEATURES.md` §6.7's heading said *"arrows and shells live, bullets still
+  disabled"*, wrong on both halves — the scour slug shipped in v2.5.0, and #146 cut the bullets
+  rather than pausing them. It now reads *"arrows, shells and one slug live, bullets cut"*.
+
+  The paragraph under it was worse than the heading: it said the bullets *"remain commented for
+  #146"*, contradicting *The scour slug* subsection four hundred lines below it in the same section,
+  which describes the cut and the measurement behind it. A section disagreeing with itself is harder
+  to catch than a stale sentence, because both halves look authored.
+
+  Renaming the heading moved its anchor, and the wiki linked to it three times across two pages —
+  so those were updated in the same sitting rather than left to rot, which is the whole shape of
+  #230. `check_docs.py --wiki` passes against a fresh clone.
+  ([#297](https://github.com/vixygrey/qud-expanded-community-edition/issues/297))
 - **(internal)** `docs/FEATURES.md` §10 rows 3 and 12 are marked fixed, finishing the sweep #291
   opened. Row 3 said the bullets were *"pending #146"*; #146 is closed and did not defer them, it
   **cut** them — it measured what rate of fire does to area and status effects and kept one slug

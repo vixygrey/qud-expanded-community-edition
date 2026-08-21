@@ -913,13 +913,15 @@ them changes.
 | `Raven_Empty Armor Rack` | Weapon Rack | Recolored |
 | `Raven_Rusted Door` | Metal Door | Non-occluding, renders in dark |
 
-### 6.7 Ammo — arrows and shells live, bullets still disabled
+### 6.7 Ammo — arrows, shells and one slug live, bullets cut
 
 `ObjectBlueprints/Ammo.xml` was 524 lines with **every one of its 62 objects inside a single XML
 comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud change broke the
-effects and the ammo degraded to plain ammo. #144 revived the arrows and #145 the shells; the
-**20 bullet objects remain commented** for #146, which is a much larger reachability claim — 12
-vanilla weapons plus 7 relic bases.
+effects and the ammo degraded to plain ammo. #144 revived the arrows and #145 the shells. #146 was
+the largest reachability claim of the three — 12 vanilla weapons plus 7 relic bases consume slugs —
+and it resolved by **cutting all 20 bullet objects** and adding one new round in their place, the
+scour slug. Those 20 stay commented as a record of what was tried, with `Raven_Quill Arrow` and its
+projectile. See *The scour slug* below for the measurement that decided it.
 
 **The six effect arrows.** All are `Commerce Value="0.20"`, carry **no `TinkerItem`**, inherit
 `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over `1d2` damage.
