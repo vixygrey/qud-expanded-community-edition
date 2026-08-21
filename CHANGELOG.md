@@ -90,6 +90,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **True Kin are told about Ego on the attribute screen too, and only while they have chip slots.**
+  The genotype panel gained a Chip Interface line in the same release, but Ego is spent one screen
+  later — and there a True Kin still read vanilla's sentence saying Ego governs haggling and
+  domination and nothing else. That is right for a genotype that cannot mutate and wrong for one
+  wearing a psionic chip. Both screens should say it.
+
+  It could not be done in the XML: a genotype `<stat>` merge carries three integers and silently
+  discards the description, which is why the first attempt stopped at the panel. Setting the field
+  the game has already loaded is the same thing the mod has done to `GenotypeEntry` since 2.3.0.
+
+  Doing it that way turned out better than the static text. The description now **follows the
+  option**: turn your own Chip Interface slots off and vanilla's sentence comes back, because
+  without slots Ego really does not drive a mental mutation for you. Turn them on and it returns.
+  Vanilla's wording is captured from the installed game rather than written into the mod, so what
+  comes back is whatever Qud actually ships.
+  ([#227](https://github.com/vixygrey/qud-expanded-community-edition/issues/227))
 - **Character creation now tells you the chip system exists.** It never did — the word "chip"
   appeared nowhere in `Genotypes.xml`, for any genotype. The slots were there from the first turn
   and nothing in front of you at chargen said so.
