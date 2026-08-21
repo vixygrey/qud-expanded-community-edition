@@ -228,6 +228,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **The scour slug now tells you it is a 5% chance.** Its rules text read *"Rusts a piece of what
+  the target is carrying"*, which reads as something that happens when you hit. It happens about one
+  hit in twenty — roughly two dozen slugs per rusted item, which is the tuning #146 chose
+  deliberately. A player loading them to strip a target's gear had no way to know that from the item.
+
+  It now opens *"Has a 5% chance on hit to rust a piece of what the target is carrying."* The rest
+  of the text is unchanged.
+
+  Vanilla settles this rather than my preference: `Rank Fangs` carries the same `RustOnHit` part at
+  the same `Chance="5"` and states the percentage outright, as does every other vanilla object with
+  a chance-based on-hit effect. It also matters more here than it looks, because
+  `Precision Nanon Fingers` multiplies percentage-based effects — a player with those installed was
+  tripling a number the item never showed them.
+
+  **No precedent for the other rounds.** The arrows and shells describe their effects without
+  figures and are accurate as written; this one was not.
+  ([#295](https://github.com/vixygrey/qud-expanded-community-edition/issues/295))
 - **(internal)** Nine figures in `docs/FEATURES.md`'s item tables disagreed with the blueprints they
   describe, and the document was wrong in all nine. Four were stale — #86 corrected the zetachrome
   greataxe and wristblade to 1280, removed the `Flawless Crysteel Boots` tier override, and put the

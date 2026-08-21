@@ -768,7 +768,7 @@
     />
     <part
       Name="RulesDescription"
-      Text="Rusts a piece of what the target is carrying. Rusted gear is slow and nearly worthless until repaired, and a rusted artifact stops working entirely. Wasted on anything carrying nothing, or nothing made of metal."
+      Text="Has a 5% chance on hit to rust a piece of what the target is carrying. Rusted gear is slow and nearly worthless until repaired, and a rusted artifact stops working entirely. Wasted on anything carrying nothing, or nothing made of metal."
     />
     <part Name="TinkerItem" Bits="001" BuildTier="4" CanBuild="true" CanDisassemble="false" NumberMade="6" />
     <tag Name="AlwaysStack" Value="Yes" />
