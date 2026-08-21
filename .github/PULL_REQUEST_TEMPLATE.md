@@ -30,6 +30,8 @@ Closes #
       nothing for subscribers
 - [ ] The PR title is a conventional commit (`fix(tables): …`) — it becomes the squash commit
 - [ ] Nothing new was added under `mod/` that shouldn't ship to subscribers
+- [ ] **If this changes what a player sees or does** — the wiki has been grepped for what it
+      describes. It's a separate repository and not one of these checks reaches it
 
 <!--
 Two things worth knowing:
@@ -41,5 +43,7 @@ Two things worth knowing:
   a compiler can't answer.
 
 - Ten checks run here and all ten must pass. None of them reads prose, so if you changed
-  documentation, the accuracy is on us rather than on CI.
+  documentation, the accuracy is on us rather than on CI. The wiki is documentation that isn't even
+  in this repository — CONTRIBUTING.md has the clone URL and `tools/check_docs.py --wiki` checks
+  that its links still land, though not that its pages are still true.
 -->

@@ -16,6 +16,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `python3 tools/check_docs.py --wiki` verifies that the wiki's links into this
+  repository still resolve. The wiki cites `docs/FEATURES.md` and three other files 56 times, and
+  GitHub derives an anchor from the heading text — so renaming a heading breaks every link to it
+  while a bad fragment still returns HTTP 200 and neither repository says a word. Renaming one
+  heading breaks five links across three pages; that is measured, not guessed.
+
+  Outside the normal run, like `--ruleset` and for the same reason: it needs a second repository and
+  a network, and a check that passes quietly when it could not reach anything is worse than none.
+  It clones the wiki itself, or takes `--wiki-path` for a clone you already have.
+
+  It closes the half of #230 that is silent *and* mechanical. For the other half, `CONTRIBUTING.md`
+  now carries the wiki's clone URL and the rule that a change to what a player sees should be
+  grepped there, and the pull request template asks for it — conditionally, because most changes
+  cannot affect the wiki and a checklist line with a poor hit rate is just noise.
+
+  `docs/LESSONS.md` records the three ways a wiki page goes wrong, and that only two of them look
+  like anything.
+  ([#230](https://github.com/vixygrey/qud-expanded-community-edition/issues/230))
 - **(internal)** `check_docs.py` recomputes `docs/FEATURES.md`'s chip appendix from the blueprints
   rather than trusting it. All 144 rows — item tier, value, and which mutation at which level — are
   data somebody typed out, and typed data drifts.

@@ -44,6 +44,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -734,6 +735,124 @@ def check_preserved(f: Findings) -> None:
             )
 
 
+WIKI_URL = "https://github.com/vixygrey/qud-expanded-community-edition.wiki.git"
+
+# Every wiki link into this repository, as GitHub writes them: blob/<ref>/<path>#<anchor>.
+WIKI_LINK = re.compile(r"blob/[^/]+/([^)#\s]+)(?:#([A-Za-z0-9\-_]+))?")
+
+
+def github_anchor(heading: str) -> str:
+    """Derive a heading's anchor the way GitHub does.
+
+    Lowercase, markdown stripped, anything but letters, digits, spaces, hyphens and underscores
+    dropped, spaces to hyphens. An em dash therefore leaves the two spaces around it as a double
+    hyphen, which is why `## Appendix B - every psionic chip` anchors as
+    `appendix-b--every-psionic-chip` rather than the single hyphen it looks like.
+
+    This is a reimplementation of someone else's rule and can drift from it. It agrees with all 23
+    anchors the wiki uses today, and the awkward shapes are pinned in tools/test_check_docs.py.
+    """
+    text = re.sub(r"^#+\s*", "", heading.strip())
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"\*\*?([^*]*)\*\*?", r"\1", text)
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = text.lower()
+    text = "".join(c for c in text if c.isalnum() or c in " -_")
+    return text.strip().replace(" ", "-")
+
+
+def anchors_of(path: Path) -> set[str]:
+    """Every anchor a markdown file offers, duplicates suffixed the way GitHub suffixes them."""
+    found: set[str] = set()
+    seen: dict[str, int] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("#"):
+            continue
+        base = github_anchor(line)
+        n = seen.get(base, 0)
+        seen[base] = n + 1
+        found.add(base if n == 0 else f"{base}-{n}")
+    return found
+
+
+def check_wiki_links(wiki: Path, f: Findings) -> int:
+    """Every anchor the wiki links to must still exist in the file it names."""
+    cache: dict[Path, set[str] | None] = {}
+    checked = 0
+    for page in sorted(wiki.glob("*.md")):
+        for target, anchor in WIKI_LINK.findall(page.read_text(encoding="utf-8")):
+            path = Path(target)
+            if path not in cache:
+                cache[path] = anchors_of(path) if path.is_file() else None
+            if cache[path] is None:
+                f.add(
+                    "wiki-link", f"{page.name}: links to {target}, which does not exist"
+                )
+                continue
+            if not anchor:
+                continue  # a link to the file with no fragment cannot rot this way
+            checked += 1
+            if anchor not in cache[path]:
+                f.add(
+                    "wiki-link",
+                    f"{page.name}: {target}#{anchor} - no heading in {target} anchors there",
+                )
+    return checked
+
+
+def check_wiki(explicit: str | None) -> int:
+    """Clone the wiki and verify its links into this repository still resolve.
+
+    Kept out of the normal run for the same reason as --ruleset: it needs a second repository and a
+    network, and a check that passes quietly when it could not reach anything is worse than none.
+
+    It catches the failure that is silent and mechanical. GitHub derives an anchor from the heading
+    text, so renaming a heading breaks every wiki link to it - a bad fragment still returns HTTP 200
+    and neither repository reports a thing. Renaming one heading in FEATURES.md broke five links
+    across two pages when this was written. It cannot tell whether a page is still *true*; that is
+    #230's other half and no check will ever answer it.
+    """
+    if explicit:
+        wiki = Path(explicit)
+        if not wiki.is_dir():
+            print(f"error: {wiki} is not a directory", file=sys.stderr)
+            return 2
+    else:
+        tmp = tempfile.mkdtemp(prefix="qud-wiki-")
+        wiki = Path(tmp) / "wiki"
+        try:
+            subprocess.run(
+                ["git", "clone", "--depth", "1", "--quiet", WIKI_URL, str(wiki)],
+                check=True,
+                capture_output=True,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            print(f"could not clone the wiki: {exc}", file=sys.stderr)
+            return 2
+
+    pages = sorted(wiki.glob("*.md"))
+    if not pages:
+        print(f"error: no markdown pages found in {wiki}", file=sys.stderr)
+        return 2
+
+    f = Findings()
+    checked = check_wiki_links(wiki, f)
+    if f.items:
+        print(f"FAIL - {len(f.items)} broken wiki link(s):", file=sys.stderr)
+        for check, detail in sorted(f.items):
+            print(f"  [{check}] {detail}", file=sys.stderr)
+        print(
+            "\nThe wiki is a separate repository and does not know this one changed. Either put "
+            "the heading back, or update the page - it clones from\n  " + WIKI_URL,
+            file=sys.stderr,
+        )
+        return 1
+    print(
+        f"OK - {checked} wiki anchor link(s) across {len(pages)} page(s) still resolve"
+    )
+    return 0
+
+
 def compare_ruleset() -> int:
     """Compare the committed list against GitHub's live ruleset. Needs gh and network.
 
@@ -791,11 +910,22 @@ def compare_ruleset() -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
+        "--wiki",
+        action="store_true",
+        help="clone the wiki and verify its links into this repository still resolve",
+    )
+    ap.add_argument(
+        "--wiki-path",
+        help="check an existing wiki clone instead of cloning one (implies --wiki)",
+    )
+    ap.add_argument(
         "--ruleset",
         action="store_true",
         help="compare tools/required-checks.json against GitHub's live ruleset (needs gh)",
     )
     args = ap.parse_args()
+    if args.wiki or args.wiki_path:
+        return check_wiki(args.wiki_path)
     if args.ruleset:
         return compare_ruleset()
 
