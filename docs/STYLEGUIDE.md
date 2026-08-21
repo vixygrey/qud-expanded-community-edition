@@ -315,6 +315,32 @@ additive way into tier-appropriate distribution.
 reads that pool, so it is what lets a cell this fork adds be found already installed in a machine.
 Nothing written in `PopulationTables.xml` can express that. **Do not tidy it away.**
 
+**An item entered in more than one tier of a table family must be anchored at its own tier at one
+end of the run, and its weight must move toward that anchor.** Spanning tiers is not itself a
+defect — vanilla does it freely, and `Missile 4` carries vanilla's own `Hypertractor` at tier 6.
+But every span in this fork is one of two shapes, and a new one should be too:
+
+- **A consumable anchors at its own tier and tails upward at flat weight.** `Raven_Solar Cell Array`
+  (tier 4) runs `Ammo 4`–`Ammo 8` at weight 10 throughout, and `Raven_Advanced Chem Cell` (tier 5)
+  runs `Ammo 5`–`Ammo 8` at 20. A cell stays useful past its tier, so finding one late is a weak
+  result rather than a strong one, and flat weight says exactly that.
+- **An artifact ramps upward toward its own tier.** `Raven_Advanced Hoversled` (tier 6) runs
+  `Artifact 3R`–`6R` at 1, 1, 5, 10, and `Raven_Large Sphere of Negative Weight` (tier 8) runs the
+  same four at 5, 10, 15, 15. The ramp is what makes an early find rare rather than impossible;
+  without it a tier-8 artifact turns up at tier 3 as readily as at tier 6.
+
+Both shapes are deliberate and neither is a defect to be tidied away. An audit that reads only the
+entries furthest from their table will re-flag them, because the anchor is the entry that looks
+unremarkable.
+
+**A single entry off its own tier is vanilla's idiom rather than this fork's, and needs vanilla's
+rarity with it.** `Raven_Fine-Tuned Handgun` (tier 6) sits only in `Missile 4` — no run, so no
+anchor. Vanilla's `Hypertractor` does the same and carries weight 2 against neighbours at 5 and 10,
+which is *allowed but rare*. The handgun matches that weight for that reason (#284, #286). Write a
+span with no run and it should be the rarest thing in its table.
+
+Nothing checks any of this.
+
 **Whichever you use, run `tools/report_dynamic_tables.py`.** A tag inherits, so the blueprint
 carrying it is usually not the blueprint being distributed: `BaseArrow` is vanilla and puts six of
 this fork's arrows in the ammunition pool, and two psionic *base* blueprints put all eighteen psionic
