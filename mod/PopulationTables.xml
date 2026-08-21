@@ -799,7 +799,7 @@
       <object Weight="10" Number="1" Blueprint="Raven_Compact Flamethrower" />
       <object Weight="10" Number="1" Blueprint="Raven_Cryocannon" />
       <object Weight="5" Number="1" Blueprint="Raven_Net Gun" />
-      <object Weight="5" Number="1" Blueprint="Raven_Fine-Tuned Handgun" />
+      <object Weight="2" Number="1" Blueprint="Raven_Fine-Tuned Handgun" />
       <object Weight="5" Number="1" Blueprint="Raven_HandCannonMod" />
       <object Weight="5" Number="1" Blueprint="Raven_Drum Shotgun" />
     </group>

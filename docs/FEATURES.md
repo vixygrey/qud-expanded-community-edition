@@ -1504,7 +1504,7 @@ tonic, one themed single chip, a **basic neutral body chipset**, a **basic menta
   vanilla's 8.6%.
 - **Missile 2** — all 9 psionic pistols, weight 1 each.
 - **Missile 3** — all 9 psionic rifles, weight 1 each.
-- **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (5), modified handcannon (5), drum shotgun (5).
+- **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (2), modified handcannon (5), drum shotgun (5).
 - **Ammo 4–8** — solar cell array from tier 4; advanced chem cell from tier 5; solar cell nexus from tier 7; dark matter cell via a nested chance table at tier 8.
 - **Implants_1and2Pointers** — steel dermal plating, omni pass, steel hand bones.
 - **Implants_3Pointers** — air filtration system, crysteel dermal plating.
