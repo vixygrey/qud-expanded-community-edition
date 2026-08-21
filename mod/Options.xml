@@ -93,19 +93,11 @@
     SearchKeywords="qud expanded skill requirements attribute axe cudgel long blade multiweapon tinkering"
   >
     <helptext>
-            Keeps the eased attribute requirements this mod has always used:
+            Keeps this mod's eased attribute requirements on {{W|Axe}}, {{W|Cudgel}}, {{W|Long Blade}}, {{W|Multiweapon Fighting}} and {{W|Tinkering}}.
 
-            {{W|Axe}} and {{W|Cudgel}} accept {{G|Strength or Agility}} for every power, so an Agility build can buy Cleave, Berserk!, Slam and the rest. The numbers themselves are unchanged.
+            Turn this off for vanilla's. Skills you already own are never taken back.
 
-            {{W|Long Blade}} lowers Dueling Stance to {{G|15}} Intelligence from 17, and En Garde! asks for 29 in Strength {{G|or}} Agility rather than 29 in one and 23 in the other.
-
-            {{W|Multiweapon Fighting}} lowers Expertise to {{G|21}} from 23 and Mastery to {{G|25}} from 27.
-
-            {{W|Tinkering}} lowers Tinker I to {{G|17}} Intelligence, II to {{G|21}} and III to {{G|25}}, from 19, 23 and 29.
-
-            Turn this off to face vanilla's requirements. No power is removed either way, and skills you already own are never taken back.
-
-            {{y|Takes effect when you restart the game.}} Qud builds each power's requirement list once and keeps it for the session.
+            {{y|Takes effect when you restart the game.}}
         </helptext>
   </option>
 

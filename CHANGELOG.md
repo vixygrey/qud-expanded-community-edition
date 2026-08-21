@@ -112,9 +112,10 @@ recorded because contributors need them, not because subscribers do.
   *"set this before creating a character"* warning survives word for word, because those are the
   sentences that stop a run being wasted.
 
-  **Eased skill requirements is deliberately left long.** It is the one option whose detail a player
-  genuinely wants in front of them while deciding, and sending them out of the game to find which
-  twenty powers changed would be the wrong trade.
+  *Eased skill requirements* was the one I meant to leave long, on the argument that its detail is
+  what a player most wants while deciding. In game it was still unreadable, so it came down with the
+  rest: it now names the five skills it touches and sends you to the documentation for the twenty
+  powers. A help text nobody can read is not a kindness.
   ([#271](https://github.com/vixygrey/qud-expanded-community-edition/issues/271))
 - **Character creation stops promising features you switched off.** Every line this mod adds to a
   genotype's panel was static text, while the options deciding whether those things happen are read
