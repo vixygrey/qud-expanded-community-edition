@@ -101,6 +101,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **The mod's options are readable in the settings menu again.** Every one of them showed its help
+  text squashed into a thin box running off the bottom of the screen, because the text was written
+  at a scale the menu was never given: vanilla's longest help text is 352 characters and ten of the
+  eleven here were longer, the worst of them 953 across seven paragraphs.
+
+  Most of that length was a reference table written as prose — the exact attribute requirement each
+  skill changed, the vanilla number beside it — and all of it is already in the mod's documentation,
+  in a real table. So the trim loses nothing: nine options are now within vanilla's range, and every
+  *"set this before creating a character"* warning survives word for word, because those are the
+  sentences that stop a run being wasted.
+
+  **Eased skill requirements is deliberately left long.** It is the one option whose detail a player
+  genuinely wants in front of them while deciding, and sending them out of the game to find which
+  twenty powers changed would be the wrong trade.
+  ([#271](https://github.com/vixygrey/qud-expanded-community-edition/issues/271))
 - **Character creation stops promising features you switched off.** Every line this mod adds to a
   genotype's panel was static text, while the options deciding whether those things happen are read
   at runtime — so a player who turned off starting skills was still told *"May use Menacing Stare"*,

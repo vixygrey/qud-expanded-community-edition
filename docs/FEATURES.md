@@ -1781,7 +1781,7 @@ for rather than opted out of.
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | your own Chip Interface slots | Checkbox | **Yes** | The player's slots — 1 mutant, 2 True Kin. §3.1. |
-| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. |
+| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing here ever fills those slots, so the reason to turn it off is to stop another mod — or a later version of this one — being able to. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
