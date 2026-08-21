@@ -93,6 +93,17 @@
       Short="A phial of thickened blaze rides in the socket behind the arrowhead, sloshing and warm."
     />
     <part Name="RulesDescription" Text="Heats what it strikes. Repeated hits will set a target alight." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileBlazeArrow" Inherits="BaseArrowProjectile">
@@ -111,6 +122,17 @@
       Short="Frost creeps down the wooden shank from a bulb of pressurized cryo gas. The bulb is scored to split cleanly."
     />
     <part Name="RulesDescription" Text="Chills what it strikes. Repeated hits will freeze a target solid." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileCryoArrow" Inherits="BaseArrowProjectile">
@@ -129,6 +151,17 @@
       Short="The arrowhead is grooved and damp with dream dew. Struck hard enough, it beads off into a sweet fog."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of sleep gas where it lands." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileDreamDewArrow" Inherits="BaseArrowProjectile">
@@ -147,6 +180,17 @@
       Short="A waxed bulb of hulk honey rides behind the arrowhead, so thick it barely moves when the shaft does. It bursts on impact and sets fast."
     />
     <part Name="RulesDescription" Text="Mires what it strikes. A target must pull free before it can move or attack." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileHulkHoneyArrow" Inherits="BaseArrowProjectile">
@@ -214,6 +258,17 @@
       Short="A thin wax shell packed with white powder caps the wooden shank. It goes off with a clap and a scouring light."
     />
     <part Name="RulesDescription" Text="Bursts with a blinding flash where it lands, dazing those caught in it." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileStarshellArrow" Inherits="BaseArrowProjectile">
@@ -232,6 +287,17 @@
       Short="A hollowed stinger caps the wooden shank, its sac still swollen behind the barb. It splits on impact and breathes out a green haze."
     />
     <part Name="RulesDescription" Text="Bursts into a cloud of poison gas where it lands." />
+    <!-- Vanilla BaseArrow carries DynamicObjectsTable:Ammo, and tags inherit, so these
+         landed in a pool a legendary gunsmith draws 20-30 from - against the weight-2,
+         one-at-a-time entries in Ammo 2 and 3 that #144 tuned. The four shells were never
+         in it: vanilla tags Shotgun Shell itself rather than Projectile, so that split was
+         vanilla's structure rather than a decision here.
+
+         *delete removes the inherited tag and nothing else. Vanilla uses it the same way to
+         take Corpse out of DynamicObjectsTable:Items. ExcludeFromDynamicEncounters would
+         also work and is blanket - it would drop these six from :Items and :MeleeWeapons
+         too, which is a cost with nothing to buy it. See #261. -->
+    <tag Name="DynamicObjectsTable:Ammo" Value="*delete" />
     <tag Name="ExcludeFromTurretStock" />
   </object>
   <object Name="Raven_ProjectileStingerArrow" Inherits="BaseArrowProjectile">

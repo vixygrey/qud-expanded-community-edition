@@ -161,6 +161,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **A legendary gunsmith no longer stocks twenty to thirty of this mod's arrows.** The six revived
+  arrows are meant to be an occasional find — weight 2 apiece in `Ammo 2` and `Ammo 3`, one or `1d4`
+  at a time, which is what #144 tuned. A second route was handing over twenty to thirty in a single
+  shop, and putting them in `RandomItem` besides.
+
+  Nobody chose it. Vanilla's `BaseArrow` carries `DynamicObjectsTable:Ammo` and tags inherit, so
+  every arrow built on it was in that pool. The four shells never were — vanilla tags `Shotgun Shell`
+  itself rather than `Projectile`, and the shells are built on `Projectile`. That asymmetry is
+  vanilla's structure, not a decision anyone made here, and #145 tuned the shells against the arrows
+  without either of us being able to see it.
+
+  The arrows now match the shells. `Boomrose Arrow` is vanilla's and is untouched, still distributed
+  vanilla's way. Nothing becomes harder to find: all six keep their three drop entries apiece.
+
+  Nothing else changes. The tag is removed with `*delete`, which vanilla uses the same way to take
+  `Corpse` out of `DynamicObjectsTable:Items` — so these six leave the ammunition pool and stay in
+  every other one they were in.
+  ([#261](https://github.com/vixygrey/qud-expanded-community-edition/issues/261))
 - **A legendary gunsmith no longer stocks six to eight psionic firearms at once.** The eighteen
   psionic pistols and rifles are meant to be rare — one entry apiece at weight 1 in `Missile 2` and
   `Missile 3`, which against vanilla's own 29 and 125 makes any one of them a 2.6% find at tier 2 and
