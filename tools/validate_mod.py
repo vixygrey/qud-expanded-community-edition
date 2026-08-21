@@ -933,6 +933,51 @@ def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     )
 
 
+def check_mutation_type_arguments(f: Findings) -> None:
+    """Every `ModImprovedMutationBase<T>` must name a `T` the game will actually grant.
+
+    Existing in the assembly is not the same as being grantable. `GasGeneration` is a real,
+    concrete, instantiable class — so it compiles, and `unknown-part` passes because
+    `Raven_ModGasGeneration` is a genuine part — but nothing declares `Class="GasGeneration"` in
+    either mutation catalogue. `BaseMutation.GetMutationEntry()` finds no entry, logs
+    `Mutation entry not found`, and synthesises a fallback. Six chips ran at roughly half their
+    intended gas duration from upstream 2.2 until #226, invisible to every gate we had, because no
+    gate looked *inside* the generic.
+
+    The catalogue is the authority rather than the `XRL.World.Parts.Mutation` namespace, because
+    the namespace is what made the defect look fine.
+
+    The mod declares no mutations of its own — there is no `<mutation>` element anywhere in `mod/`.
+    Should that ever change, this must union the mod's own `Class` values with vanilla's, or it
+    will report a mod-declared mutation as unknown.
+    """
+    api = load_qud_api()
+    if api is None:
+        return  # check_part_names already reported the missing snapshot
+    known = api.get("mutation_classes")
+    if not known:
+        f.add(
+            "qud-api-snapshot",
+            f"{QUD_API_PATH} has no mutation_classes - regenerate with "
+            "tools/snapshot_qud_api.py --assembly",
+        )
+        return
+    known = set(known)
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        # Comments are stripped so a commented-out declaration cannot invent a violation; the
+        # mod keeps blocks of dormant blueprints and scripts exactly like that.
+        src = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
+        for match in re.finditer(r"ModImprovedMutationBase<\s*(\w+)\s*>", src):
+            arg = match.group(1)
+            if arg not in known:
+                f.add(
+                    "unknown-mutation",
+                    f"{cs.name}: ModImprovedMutationBase<{arg}> names a class no mutation "
+                    f'declares - nothing has <mutation Class="{arg}">, so the game logs '
+                    f"'Mutation entry not found' and grants a fallback (see #226)",
+                )
+
+
 def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Blueprint-valued attributes must name a blueprint that exists.
 
@@ -1000,6 +1045,7 @@ def run() -> Findings:
     check_blueprint_refs(f, roots)
     check_part_attributes(f, roots)
     check_part_builders(f, roots)
+    check_mutation_type_arguments(f)
     return f
 
 

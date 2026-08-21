@@ -68,7 +68,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from check_vanilla_drift import BlueprintIndex, find_game, load_all
+from check_vanilla_drift import BlueprintIndex, find_game, load_all, parse
 
 SNAPSHOT_PATH = Path("tools/qud-api.json")
 
@@ -516,6 +516,35 @@ def collect_blueprints(game: Path) -> list[str]:
     return sorted(names)
 
 
+def collect_mutation_classes(game: Path) -> list[str]:
+    """Every `Class` the game's mutation catalogue declares.
+
+    This is the authority for whether a mutation can be *granted*, which is not the same question
+    as whether its class exists. `GasGeneration` is a real, concrete, instantiable class with no
+    catalogue entry, so `BaseMutation.GetMutationEntry()` logs an error and synthesises a fallback -
+    which is #226, six shipped chips at roughly half their intended gas duration. A check against
+    the `XRL.World.Parts.Mutation` namespace would have passed it.
+
+    Both files matter: Mutations.xml carries the selectable ones and HiddenMutations.xml the rest,
+    and a chip can name either.
+    """
+    classes = set()
+    for name in ("Mutations.xml", "HiddenMutations.xml"):
+        path = game / name
+        if not path.is_file():
+            raise SystemExit(
+                f"error: {path} not found - the game moved its mutation catalogue"
+            )
+        for mutation in parse(path, lenient=True).iter("mutation"):
+            if cls := mutation.get("Class"):
+                classes.add(cls)
+    if not classes:
+        raise SystemExit(
+            "error: no mutation classes found; the catalogue's shape has changed"
+        )
+    return sorted(classes)
+
+
 def verify(
     game: Path,
     parts: set[str],
@@ -678,6 +707,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     blueprints = collect_blueprints(game)
     members, part_builders = collect_members(member_assembly)
     figures = collect_figures(game)
+    mutation_classes = collect_mutation_classes(game)
     figures.update(collect_census(game))
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
@@ -712,6 +742,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + figure_repr
             + "\0"
             + builder_repr
+            + "\0"
+            + "\n".join(mutation_classes)
         ).encode()
     ).hexdigest()[:16]
     return {
@@ -734,7 +766,9 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "members": sum(len(v) for v in members.values()),
             "figures": len(figures),
             "part_builders": len(part_builders),
+            "mutation_classes": len(mutation_classes),
         },
+        "mutation_classes": mutation_classes,
         "parts": parts,
         "blueprints": blueprints,
         "members": members,

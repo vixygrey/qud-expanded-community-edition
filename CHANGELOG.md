@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `validate_mod.py` refuses a `ModImprovedMutationBase<T>` naming a mutation the game
+  will not grant. Existing as a class and being grantable are different things, and only the second
+  matters: `GasGeneration` compiles, and `unknown-part` passes it because `Raven_ModGasGeneration`
+  is a genuine part, but nothing declares `<mutation Class="GasGeneration">`, so the game logs
+  `Mutation entry not found` and hands out a fallback. Six chips ran at roughly half their intended
+  gas duration from Mura's 2.2 until #226, through every gate this repository had, because no gate
+  looked *inside* the generic.
+
+  The catalogue is the authority rather than the `XRL.World.Parts.Mutation` namespace — the
+  namespace is what made the defect look fine. Its 130 classes join `tools/qud-api.json` (1.9 KB,
+  and inside the digest, so a Qud update that renames a mutation reads as a stale snapshot rather
+  than as a silent gap), which keeps the check running in CI where no game exists.
+
+  It reports nothing on `main`. Reverting #226's one-word fix makes it fire and name the cause,
+  which is the only test of a gate that means anything.
+  ([#256](https://github.com/vixygrey/qud-expanded-community-edition/issues/256))
 - **(internal)** `tools/report_dynamic_tables.py` says what a `DynamicObjectsTable:` tag actually
   distributes. A tag is a route into merchant stock, creature inventories or a machine socket with
   no weight, no entry and nothing in a diff to review — and it inherits, so the blueprint carrying
