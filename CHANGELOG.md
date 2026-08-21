@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.3 states the rule this fork's spanning drop entries follow:
+  an item entered in more than one tier of a table family is anchored at its own tier at one end of
+  the run, and its weight moves toward that anchor. Two shapes — a consumable anchors at the bottom
+  and tails upward at flat weight (`Raven_Solar Cell Array`, `Raven_Advanced Chem Cell`), an
+  artifact ramps upward toward its tier (`Raven_Advanced Hoversled`, `Raven_Large Sphere of Negative
+  Weight`).
+
+  #284 read the four as two deliberate spans and two benign ones and asked that the deliberate pair
+  be recorded so a later audit would not re-open them. Laying out the full runs rather than only the
+  entries furthest from their table showed all four are one rule, which records them better than a
+  list of exceptions would: the anchor is the entry that looks unremarkable, so an audit reading
+  only outliers will always miss it.
+
+  A single entry off its own tier is noted as vanilla's idiom rather than this fork's, needing
+  vanilla's rarity with it — which is what `Raven_Fine-Tuned Handgun` now does.
+  ([#284](https://github.com/vixygrey/qud-expanded-community-edition/issues/284))
 - **(internal)** `docs/LESSONS.md` records that a closing keyword next to an issue number closes it
   even inside a denial. `## Why this doesn't close #284` registered a closing reference and shut
   #284 on the #286 merge, against a paragraph, a commit trailer and an issue comment all saying it
