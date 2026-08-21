@@ -204,6 +204,12 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/FEATURES.md` §10 row 6 is marked fixed, which it has been since #50. It
+  described the `<stag>` typo on the advanced hoversled's `Floating` tag and the sphere of negative
+  weight's `Trinket` tag as live at 🟠 Med, and carried line references two hundred lines out of
+  date. `AGENTS.md` points contributors at §10 as the place to seed work from, so a row describing a
+  fixed defect sends someone to fix it a second time.
+  ([#291](https://github.com/vixygrey/qud-expanded-community-edition/issues/291))
 - The zetachrome greathammer weighed 5 lbs where the family's rule puts it at 6. Every other war
   hammer in this fork weighs its one-handed counterpart plus 3 — bronze 4→7 through flawless
   crysteel 3→6 — and zetachrome was the only one off it, by one.
