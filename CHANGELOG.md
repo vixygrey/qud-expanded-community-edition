@@ -204,6 +204,18 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** The closing-keyword entry in `docs/LESSONS.md` listed six of GitHub's nine keywords,
+  omitting the past-tense `closed`, `fixed` and `resolved` as a set — and one of the three caught me
+  the next day, in the pull request for #291. It now lists all nine and is rewritten around
+  adjacency rather than around denial.
+
+  The original was built on the case that produced it: a heading arguing that a pull request did
+  *not* close an issue. That framing asks the reader whether they are arguing with the parser, and
+  the second instance was not arguing with anything — it was a sentence narrating what an earlier
+  pull request had done, referring to an issue the pull request was not even about.
+
+  Both examples are kept, because they fail differently and the ordinary one is the second.
+  ([#293](https://github.com/vixygrey/qud-expanded-community-edition/issues/293))
 - **(internal)** `docs/FEATURES.md` §10 row 6 is marked fixed, which it has been since #50. It
   described the `<stag>` typo on the advanced hoversled's `Floating` tag and the sphere of negative
   weight's `Trinket` tag as live at 🟠 Med, and carried line references two hundred lines out of

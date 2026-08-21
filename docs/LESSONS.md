@@ -47,26 +47,48 @@ deleting its branch. Recover with
 *before* merging, because it's painful to find afterwards. Better still, don't stack when the base
 will merge soon.
 
-## A closing keyword next to an issue number closes it, even inside a denial
+## A closing keyword next to an issue number links it, whatever the sentence is doing
 
-GitHub scans a pull request body for `close`/`closes`/`fix`/`fixes`/`resolve`/`resolves` followed by
-an issue reference, matching it as a **bare substring**. The surrounding grammar is not read. A
-heading written to deny the link still creates it:
+GitHub scans a pull request body for a closing keyword followed by an issue reference and matches it
+as a **bare substring**. The surrounding grammar is not read — not the tense, not the subject, not
+whether the sentence is about this pull request at all. There are **nine** keywords, and the
+past-tense forms are the ones most likely to be written by accident:
 
 ```
-## Why this doesn't close #284      <- registers #284 as a closing reference
+close   closes   closed
+fix     fixes    fixed
+resolve resolves resolved
 ```
 
-#286 was written to advance #284 without finishing it and closed it on merge anyway. Nothing else in
-the pull request counted: not the paragraph below that heading listing which acceptance boxes were
-still open, not the commit trailer saying the issue stays open, not a comment on the issue itself
-saying the same. Prose does not outvote a keyword match, and negation, quotes and question marks all
-buy exactly nothing.
+Two ways this has bitten, and they fail differently:
 
-**Do instead:** keep the keyword away from the reference in every form — **"Why #N stays open"**,
-**"Part of #N"**, **"advances #N"**. Before merging a pull request that only advances an issue,
-`gh pr view <n> --json closingIssuesReferences` should come back empty; on #286 it returned #284,
-and it would have said so at any point beforehand.
+```
+## Why this doesn't close #284     <- a denial. Registered #284; #286 closed it on merge.
+... and closed #10                 <- narrating history. Registered #10 in #292.
+```
+
+The first is the memorable one and the second is the ordinary one. #286 was written to advance #284
+without finishing it, and nothing in it counted: not the paragraph listing which acceptance boxes
+were still open, not the commit trailer saying the issue stays open, not a comment on the issue
+saying the same. #292 was not arguing with the parser at all — it was a sentence about what an
+earlier pull request had done, and the reference was not even to the issue the pull request was
+about.
+
+So the rule is adjacency, not intent. Denial, narration, quotation and questions all buy exactly
+nothing, and an entry that lists the ways a sentence can be shaped will always miss one — the first
+version of this entry omitted the three past-tense keywords, and `closed` caught me the next day.
+
+**Do instead:** keep the keyword away from the reference in every form. **"Why #N stays open"**,
+**"Part of #N"**, **"advances #N"**; and when narrating, name the issue without the keyword —
+*"resolved issue 10"*, *"#50 fixed that"*. Before merging a pull request that only advances an
+issue:
+
+```bash
+gh pr view <n> --json closingIssuesReferences
+```
+
+It should come back empty. It found both instances above, and would have found either at any point
+before the merge.
 
 Afterwards, the close event on the issue timeline carries `commit_id: null`. That distinguishes a
 linked-reference close from a commit-message close, and it is the fastest way to find out why an
