@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using XRL;
 using XRL.UI;
 using XRL.World.Anatomy;
@@ -95,6 +96,30 @@ namespace QudExpandedCE
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
         private const string Ego = "Ego";
+
+        /// <summary>
+        /// The chargen panel lines this mod owns, paired with the option that delivers each.
+        ///
+        /// Every one is an <extrainfo> element in mod/Genotypes.xml and must match its text
+        /// exactly: the list holds strings and there is nothing else to match on. A line the
+        /// options do not govern is deliberately absent - the Psionic Adept's four chip slots and
+        /// its Mechanimist standing are the genotype rather than an addition to one, and the HP
+        /// and stat-point lines describe vanilla.
+        /// </summary>
+        private const string MenacingStareInfo = "May use {{r|Menacing Stare}}";
+        private const string JoppaReputationInfo = "+300 reputation with {{C|Joppa}}";
+        private const string MutantChipSlotInfo =
+            "{{C|1}} Chip Interface slot; {{W|Ego}} raises the mental mutations chips grant";
+        private const string TrueKinChipSlotInfo =
+            "{{C|2}} Chip Interface slots; {{W|Ego}} raises the mental mutations chips grant";
+
+        /// <summary>
+        /// Where each managed line sat when first seen, so restoring one puts it back rather than
+        /// at the bottom. List.Add appends, so without this a player toggling an option twice
+        /// would watch the panel reorder itself.
+        /// </summary>
+        private static readonly Dictionary<string, int> ChargenInfoIndex =
+            new Dictionary<string, int>();
 
         /// <summary>
         /// Vanilla's own True Kin Ego description, captured the first time it is seen.
@@ -350,6 +375,7 @@ namespace QudExpandedCE
             ApplyStartingReputation();
             ApplyChipSlots();
             ApplyTrueKinEgoDescription();
+            ApplyChargenInfo();
             ApplyChipDrops();
             ApplySkillRequirements();
             ApplySkillCosts();
@@ -369,6 +395,78 @@ namespace QudExpandedCE
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
             SetChipSlots(HumanoidAnatomy, NPCChipSlots);
+        }
+
+        /// <summary>
+        /// Make the chargen genotype panel match the options.
+        ///
+        /// Every line this mod adds is static XML, so without this the panel promises things the
+        /// player has switched off - "May use Menacing Stare" with starting skills disabled, and so
+        /// on. Charter rule 6 makes these options a promise, and the panel is where a player reads
+        /// it while choosing.
+        ///
+        /// Only this mod's own four lines are touched. Rebuilding the list from a captured copy
+        /// would be simpler and would discard <extrainfo> another mod had added since, which
+        /// charter rule 1 does not allow.
+        ///
+        /// Both chip lines follow the player's option rather than the NPC one, even though the
+        /// Mutated Human's slot comes from the shared Humanoid anatomy that SetChipSlots governs
+        /// with the NPC option: Raven_ChipSlotPlayerMutator corrects the player's own slot to
+        /// PlayerChipSlots afterwards, so that is what the reader of this panel ends up with.
+        /// </summary>
+        private static void ApplyChargenInfo()
+        {
+            SetChargenInfo(Mutant, MenacingStareInfo, Enabled(StartingSkillsID, "Yes"));
+            SetChargenInfo(Mutant, JoppaReputationInfo, Enabled(StartingReputationID, "Yes"));
+            SetChargenInfo(Mutant, MutantChipSlotInfo, PlayerChipSlots);
+            SetChargenInfo(TrueKin, TrueKinChipSlotInfo, PlayerChipSlots);
+        }
+
+        /// <summary>
+        /// Make one panel line present or absent to match its option, in either direction.
+        ///
+        /// Sets state rather than toggling it, like SetChipSlots: option handlers run repeatedly
+        /// and in any order, so removing when already removed and restoring when already present
+        /// are both no-ops.
+        /// </summary>
+        private static void SetChargenInfo(string genotype, string line, bool wanted)
+        {
+            // Try rather than Get: options are read before XRL.GenotypeFactory.Init() on some
+            // paths, and this becomes a no-op instead of throwing.
+            if (!GenotypeFactory.TryGetGenotypeEntry(genotype, out GenotypeEntry entry))
+            {
+                return;
+            }
+
+            List<string> info = entry.ExtraInfo;
+            if (info == null)
+            {
+                return;
+            }
+
+            int at = info.IndexOf(line);
+            if (wanted)
+            {
+                if (at >= 0)
+                {
+                    return;
+                }
+
+                // Back where it started, or at the end if the list has since grown shorter.
+                int want = ChargenInfoIndex.TryGetValue(line, out int remembered)
+                    ? Math.Min(remembered, info.Count)
+                    : info.Count;
+                info.Insert(want, line);
+                return;
+            }
+
+            if (at < 0)
+            {
+                return;
+            }
+
+            ChargenInfoIndex[line] = at;
+            info.RemoveAt(at);
         }
 
         /// <summary>
