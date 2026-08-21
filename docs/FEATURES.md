@@ -1903,7 +1903,7 @@ not touch that field (the vanilla value is inherited).
 | Cudgel6th | 6 | 3d6+1 | 1 | 11 | Agility | 320 | 6 |
 | Cudgel7th | 7 | 5d4+2 | 1 | 8 | Agility | 640 | 6 |
 | Cudgel8 | 8 | 3d6+2 |  | 9 | Agility | 1200 | 3 |
-| Cudgel8th | 8 | 5d6+2 | 1 | 9 | Agility | 1200 | 5 |
+| Cudgel8th | 8 | 5d6+2 | 1 | 9 | Agility | 1200 | 6 |
 
 ---
 
