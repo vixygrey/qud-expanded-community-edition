@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records what it actually costs to play-test a change to a
+  `DynamicObjectsTable` pool. `DynamicObjectsTable:Guns` has exactly one consumer,
+  `GunsmithInventory_Legendary`, which `Gunsmith` carries as a `HeroTable` — so an ordinary gunsmith
+  never touches the pool, and reading his stock tests nothing while looking exactly like a test that
+  passed. There is no wish that makes a hero and none that rolls a population table; both were read
+  out of the assembly after going to look for them.
+
+  The other half is that these changes are removals, so a single sighting proves almost nothing: a
+  pool six arrows were taken out of looks the same as one they were left in, in any sample where the
+  roll would not have picked them. It takes several legendary merchants before an absence means
+  anything.
+
+  #261 and #262 sat in QA on the assumption they were ordinary gameplay changes awaiting a play
+  test. They were verified from `tools/report_dynamic_tables.py` instead and moved to Staging.
+  ([#304](https://github.com/vixygrey/qud-expanded-community-edition/issues/304))
 - **(internal)** `tools/check_docs.py` recomputes `docs/FEATURES.md`'s item tables instead of
   trusting them. The new `item-tables` check compares every Tier, Value and Weight across all 254
   rows — **739 figures** — against the blueprint each row describes, and fails CI on a mismatch.
