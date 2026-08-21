@@ -94,6 +94,27 @@ namespace QudExpandedCE
             new Dictionary<string, List<AnatomyPart>>();
         private const string Mutant = "Mutated Human";
         private const string TrueKin = "True Kin";
+        private const string Ego = "Ego";
+
+        /// <summary>
+        /// Vanilla's own True Kin Ego description, captured the first time it is seen.
+        ///
+        /// Captured rather than written out here so that turning chip slots off restores whatever
+        /// Qud actually ships, not whatever it shipped the day this was written.
+        /// </summary>
+        private static string VanillaTrueKinEgo;
+
+        /// <summary>
+        /// The True Kin Ego description while the player has chip slots.
+        ///
+        /// Word for word the Psionic Adept's, so the two genotypes read alike on the attribute
+        /// screen. "Should you acquire any" is the honest qualifier: chargen hands out no chips,
+        /// and a character may never find one.
+        /// </summary>
+        private const string TrueKinEgoWithChips =
+            "Your {{W|Ego}} score determines the potency of your mental mutations, should you "
+            + "acquire any, your ability to haggle with merchants, and your ability to dominate "
+            + "the wills of other living creatures.";
 
         /// <summary>
         /// This mod's long-standing value, and the option's default. Vanilla Qud gives 12.
@@ -328,6 +349,7 @@ namespace QudExpandedCE
             ApplyStartingSkills();
             ApplyStartingReputation();
             ApplyChipSlots();
+            ApplyTrueKinEgoDescription();
             ApplyChipDrops();
             ApplySkillRequirements();
             ApplySkillCosts();
@@ -347,6 +369,48 @@ namespace QudExpandedCE
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
             SetChipSlots(HumanoidAnatomy, NPCChipSlots);
+        }
+
+        /// <summary>
+        /// Make the True Kin's Ego description match whether the player has chip slots.
+        ///
+        /// Vanilla tells a True Kin that Ego governs haggling and domination and says nothing of
+        /// mental mutations. That is right for a genotype that cannot mutate and wrong for one
+        /// wearing a psionic chip: 23 of the 36 mutations the chips grant are Mental, and Qud
+        /// scales that category with Ego. Ego is spent at chargen and cannot be reallocated, so
+        /// the sentence is read at the one moment it can still change a decision.
+        ///
+        /// This cannot be done in XML. GenotypeStat.MergeWith carries Minimum, Maximum and Bonus
+        /// and never touches ChargenDescription, so a merge setting one is a silent no-op - see
+        /// docs/LESSONS.md. Writing the public field is the same operation ApplyMutationPoints
+        /// performs on the same type, and charter rule 5 names it.
+        ///
+        /// Sets state rather than toggling it, like SetChipSlots: option handlers run repeatedly
+        /// and in any order, so this assigns a value derived from the option instead of editing
+        /// what is there.
+        /// </summary>
+        private static void ApplyTrueKinEgoDescription()
+        {
+            // Try rather than Get: options are read before XRL.GenotypeFactory.Init() on some
+            // paths, and this becomes a no-op instead of throwing.
+            if (!GenotypeFactory.TryGetGenotypeEntry(TrueKin, out GenotypeEntry entry))
+            {
+                return;
+            }
+
+            if (entry.Stats == null || !entry.Stats.TryGetValue(Ego, out GenotypeStat ego))
+            {
+                return;
+            }
+
+            // The first run that can capture is the first run that can write, so there is no
+            // window where this restores null.
+            if (VanillaTrueKinEgo == null)
+            {
+                VanillaTrueKinEgo = ego.ChargenDescription;
+            }
+
+            ego.ChargenDescription = PlayerChipSlots ? TrueKinEgoWithChips : VanillaTrueKinEgo;
         }
 
         /// <summary>
