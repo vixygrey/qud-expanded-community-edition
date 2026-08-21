@@ -204,6 +204,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/FEATURES.md` §10 rows 3 and 12 are marked fixed, finishing the sweep #291
+  opened. Row 3 said the bullets were *"pending #146"*; #146 is closed and did not defer them, it
+  **cut** them — it measured what rate of fire does to area and status effects and kept one slug
+  with a payload that survives being fired in volume. Row 12 quoted chargen text that #276 replaced
+  more than a week ago.
+
+  The 22 objects those decisions covered stay commented in `Ammo.xml` rather than being deleted,
+  per the note above that table: a closed row beats someone rediscovering the problem, and the same
+  reasoning applies to the blueprints the row is about.
+  ([#291](https://github.com/vixygrey/qud-expanded-community-edition/issues/291))
 - **(internal)** The closing-keyword entry in `docs/LESSONS.md` listed six of GitHub's nine keywords,
   omitting the past-tense `closed`, `fixed` and `resolved` as a set — and one of the three caught me
   the next day, in the pull request for #291. It now lists all nine and is rewritten around
