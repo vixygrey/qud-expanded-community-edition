@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `tools/check_docs.py` recomputes `docs/FEATURES.md`'s item tables instead of
+  trusting them. The new `item-tables` check compares every Tier, Value and Weight across all 254
+  rows — **739 figures** — against the blueprint each row describes, and fails CI on a mismatch.
+  It found nine on its first run, fixed separately in #299.
+
+  **It runs in CI with no game installed, which is not what I expected.** `chips_from_blueprints`
+  had said for months that these tables would need one, because 43 of their rows are `merge` edits
+  to vanilla blueprints. Measuring rather than reasoning turned that around: a merge that changes a
+  figure *declares* it, so of the 121 cells on those 43 rows exactly **one** is not in the mod's own
+  XML — `Flawless Crysteel Boots`, whose tier #86 corrected by *removing* the override so vanilla's
+  would apply. The fix that made it right is what puts it out of reach, and 739 of 740 is a good
+  trade for that.
+
+  Rows are matched three ways, which is what takes it from partial to every row: the blueprint name,
+  the name with its `Raven_`/`Vixy_` prefix dropped, and the rendered display name.
+
+  Mismatch-only, unlike the chip appendix, which also reports blueprints with no row. That appendix
+  means to be complete; these tables are curated selections, and demanding a row per blueprint would
+  invent a rule the document never made.
+
+  `BlueprintIndex` gains `tag_value` and `part_attr` beside the existing `has_tag` and `has_part`,
+  honouring the same `*noinherit` and `*delete` rules. Ten tests cover the check, including that a
+  figure the mod never declares is skipped rather than reported.
+  ([#287](https://github.com/vixygrey/qud-expanded-community-edition/issues/287))
 - **(internal)** `docs/STYLEGUIDE.md` §3.3 states the rule this fork's spanning drop entries follow:
   an item entered in more than one tier of a table family is anchored at its own tier at one end of
   the run, and its weight moves toward that anchor. Two shapes — a consumable anchors at the bottom

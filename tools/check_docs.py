@@ -16,6 +16,8 @@ the parts of a document that are *not* prose:
                   that is where the reasoning behind a value is written down.
   links           every relative link resolves to a file that exists
   sections        every "FILE.md §N" cross-reference names a section that exists there
+  appendix-b      every row of FEATURES' chip appendix, against the blueprint it describes
+  item-tables     every Tier, Value and Weight in FEATURES' item tables, against the same
   checks          every check name quoted in the docs is one a script in tools/ actually emits
   required-checks every CI job is required or deliberately not, and the documented count agrees
   preserved       Mura's two documents are still byte-identical to the upstream import
@@ -47,6 +49,8 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+from check_vanilla_drift import BlueprintIndex
 
 MOD = Path("mod")
 REQUIRED_CHECKS_PATH = Path("tools/required-checks.json")
@@ -502,8 +506,11 @@ def chips_from_blueprints() -> dict[str, tuple[str, str, list[str]]]:
     re-reading a 144-row table works.
 
     Mod-only, so this runs in CI where there is no game. The armour and weapon tables in 6 and 7
-    are the obvious next targets and are not this: 43 of their rows are `merge` edits to vanilla
-    blueprints, so recomputing those needs an installed game and a different bargain.
+    were the obvious next targets, and this used to say they needed an installed game because 43 of
+    their rows are `merge` edits to vanilla blueprints. That was the wrong way round, and measuring
+    rather than reasoning is what showed it: a merge that changes a figure *declares* it, so of the
+    121 cells on those 43 rows exactly one is not in the mod's own XML. `check_item_tables` does
+    them on the same bargain as this, not a different one (#287).
     """
     granted: dict[str, str] = {}
     for cs in sorted((MOD / "Scripting").glob("Raven_Mod*.cs")):
@@ -587,6 +594,122 @@ def check_appendix_b(f: Findings) -> int:
     for missing in sorted(set(chips) - seen):
         f.add("appendix-b", f"docs/FEATURES.md Appendix B has no row for {missing!r}")
     return rows
+
+
+ITEM_COLUMNS = (
+    ("Tier", "tag", "Tier"),
+    ("Value", "part", "Commerce"),
+    ("Weight", "part", "Physics"),
+)
+# A cell holding one of these is documenting an absence, not a figure, and has nothing to compare.
+NOT_A_FIGURE = {"", "-", "\u2014", "(inh)"}
+
+
+def item_table_index() -> tuple[BlueprintIndex, dict[str, str]]:
+    """The mod's blueprints, plus a map from how a table writes a name to the blueprint's own.
+
+    The tables name things three different ways and all three are in use: the blueprint itself
+    (`Cudgel8th`), the blueprint with its prefix dropped (`Fullerite Greathammer` for
+    `Raven_Fullerite Greathammer`), and the rendered display name. Resolving all three is what
+    takes this from partial to every row - 254 of 254.
+    """
+    roots = []
+    for path in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+        try:
+            roots.append(ET.parse(path).getroot())
+        except ET.ParseError:
+            continue
+    index = BlueprintIndex(roots)
+    names: dict[str, str] = {}
+
+    def key(text: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", text.lower())
+
+    for name in index.objects:
+        names.setdefault(key(name), name)
+        names.setdefault(key(re.sub(r"^(?:Raven_|Vixy_)", "", name)), name)
+        shown = index.part_attr(name, "Render", "DisplayName")
+        if shown:
+            names.setdefault(key(re.sub(r"\{\{[^|]*\|([^}]*)\}\}", r"\1", shown)), name)
+    return index, names
+
+
+def check_item_tables(f: Findings) -> int:
+    """Every Tier, Value and Weight in FEATURES' item tables, against the blueprint it describes.
+
+    The same argument as Appendix B one section up: 254 rows of typed figures, and typed figures
+    drift. These had done worse than drift. Nine cells disagreed with their blueprints when this
+    was first run, four of them fixes from #86 that reached the blueprint and the §10 row but never
+    the table, and five - the low-tier wristblades - that had never been right at all, wrong since
+    the original import because nothing had ever looked (#299).
+
+    Mod-only, so it runs in CI where there is no game. `chips_from_blueprints` predicted this would
+    need one, on the reasoning that 43 of these rows are `merge` edits to vanilla blueprints. That
+    turned out to be the wrong way round: a merge that changes a figure *declares* it, so the mod's
+    own XML holds it. Of the 121 cells on those 43 rows, exactly one needs the game -
+    `Flawless Crysteel Boots`, whose tier #86 corrected by *removing* the mod's override so
+    vanilla's would apply. The fix that made it right is what makes it unverifiable here, which is
+    a fair trade for 739 of 740 cells.
+
+    Mismatch-only, deliberately. Appendix B also reports blueprints with no row, because it is an
+    appendix and means to be complete. These tables are curated selections, so demanding a row for
+    every blueprint would be inventing a rule the document never claimed.
+    """
+    doc = Path("docs/FEATURES.md")
+    if not doc.is_file():
+        return 0
+
+    index, names = item_table_index()
+    lines = doc.read_text().splitlines()
+    header: list[str] | None = None
+    compared = 0
+
+    for offset, line in enumerate(lines):
+        if line.startswith("|") and all(c in line for c in ("Tier", "Value", "Weight")):
+            header = [c.strip() for c in line.strip("|").split("|")]
+            continue
+        if header is None:
+            continue
+        if not line.startswith("|"):
+            header = None
+            continue
+        if re.fullmatch(r"\|[\s\-|]+\|", line):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if len(cells) != len(header):
+            continue
+
+        row = dict(zip(header, cells))
+        shown = row.get("Blueprint", "").strip("*").strip()
+        blueprint = names.get(re.sub(r"[^a-z0-9]", "", shown.lower()))
+        if not blueprint:
+            f.add(
+                "item-tables",
+                f"docs/FEATURES.md:{offset + 1}: no blueprint resolves from {shown!r}",
+            )
+            continue
+
+        for column, kind, source in ITEM_COLUMNS:
+            documented = row.get(column, "").strip()
+            if documented in NOT_A_FIGURE:
+                continue
+            if kind == "tag":
+                actual = index.tag_value(blueprint, source)
+            else:
+                actual = index.part_attr(blueprint, source, column)
+            # None means the mod never declares it, so the figure lives in the game's own files
+            # and this check cannot see it. Silence is right: reporting it would be reporting
+            # the absence of a game install, which is not what this checks.
+            if actual is None:
+                continue
+            compared += 1
+            if documented != actual:
+                f.add(
+                    "item-tables",
+                    f"docs/FEATURES.md:{offset + 1}: {shown} {column.lower()} is "
+                    f"{documented!r}, {blueprint} says {actual!r}",
+                )
+    return compared
 
 
 def check_links(f: Findings) -> None:
@@ -938,6 +1061,7 @@ def main() -> int:
     checked = check_counts(f, known)
     from_game = check_vanilla_figures(f)
     appendix = check_appendix_b(f)
+    items = check_item_tables(f)
     check_links(f)
     check_sections(f)
     check_changelog_sections(f)
@@ -959,8 +1083,8 @@ def main() -> int:
 
     print(
         f"OK - {checked} documented figure(s) match the mod, {from_game} match the game, "
-        f"{appendix} chip row(s) match their blueprints; links, sections, check names and "
-        f"preserved documents all clean"
+        f"{appendix} chip row(s) and {items} item-table figure(s) match their blueprints; "
+        f"links, sections, check names and preserved documents all clean"
     )
     return 0
 

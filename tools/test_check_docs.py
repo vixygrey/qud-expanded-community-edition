@@ -154,6 +154,125 @@ class AppendixB(unittest.TestCase):
         self.assertEqual(check_docs._plain("basic {{K|test}} chip"), "basic test chip")
 
 
+ITEM_BLUEPRINTS = """<objects>
+  <object Name="Raven_Test Blade" Inherits="BaseDagger">
+    <part Name="Render" DisplayName="{{y|test blade}}" />
+    <part Name="Commerce" Value="40" />
+    <part Name="Physics" Weight="3" />
+    <tag Name="Tier" Value="3" />
+  </object>
+  <object Name="Vanillaish Blade" Load="Merge">
+    <part Name="Commerce" Value="80" />
+  </object>
+</objects>
+"""
+
+ITEM_HEADER = (
+    "| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |\n"
+    "|---|---|---|---|---|---|---|---|---|---|\n"
+)
+
+
+def item_findings(row: str) -> list[tuple[str, str]]:
+    """Run check_item_tables over a one-blueprint fixture with the given table row."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "mod" / "ObjectBlueprints").mkdir(parents=True)
+        (root / "docs").mkdir()
+        (root / "mod" / "ObjectBlueprints" / "Items.xml").write_text(
+            ITEM_BLUEPRINTS, encoding="utf-8"
+        )
+        (root / "docs" / "FEATURES.md").write_text(
+            "### 6.1 Test\n\n" + ITEM_HEADER + row + "\n", encoding="utf-8"
+        )
+        with chdir(root):
+            f = check_docs.Findings()
+            check_docs.check_item_tables(f)
+            return f.items
+
+
+class ItemTables(unittest.TestCase):
+    """#287. 254 rows of typed figures that nothing recomputed, and they were worse than stale.
+
+    Nine cells disagreed with their blueprints when this first ran. Four were fixes from #86 that
+    reached the blueprint and the §10 row recording them but never the table. The other five - the
+    low-tier wristblades - had been wrong since the original import and had never once been right,
+    which is not drift: drift implies a moment when the document was true (#299).
+    """
+
+    def test_a_matching_row_passes(self) -> None:
+        row = "| Raven_Test Blade | new | 3 | 1d3 | +0 | 4 | (inh) | 40 | 3 |  |"
+        self.assertEqual(item_findings(row), [])
+
+    def test_a_wrong_value_is_reported(self) -> None:
+        codes = item_findings(
+            "| Test Blade | new | 3 | 1d3 | +0 | 4 | (inh) | 55 | 3 |  |"
+        )
+        self.assertTrue(codes, "a wrong value must be reported")
+        self.assertIn("value", codes[0][1])
+
+    def test_a_wrong_tier_is_reported(self) -> None:
+        codes = item_findings(
+            "| Test Blade | new | 7 | 1d3 | +0 | 4 | (inh) | 40 | 3 |  |"
+        )
+        self.assertTrue(codes)
+        self.assertIn("tier", codes[0][1])
+
+    def test_a_wrong_weight_is_reported(self) -> None:
+        codes = item_findings(
+            "| Test Blade | new | 3 | 1d3 | +0 | 4 | (inh) | 40 | 9 |  |"
+        )
+        self.assertTrue(codes)
+        self.assertIn("weight", codes[0][1])
+
+    def test_the_prefix_may_be_dropped(self) -> None:
+        """`Fullerite Greathammer` in the table is `Raven_Fullerite Greathammer` in the XML.
+
+        Written as a mismatch rather than a match: a match would also pass if the name failed to
+        resolve, because an unresolved row yields no comparison either. Only a reported mismatch
+        proves the prefix-dropped name actually reached the blueprint.
+        """
+        row = "| Test Blade | new | 3 | 1d3 | +0 | 4 | (inh) | 55 | 3 |  |"
+        codes = item_findings(row)
+        self.assertTrue(codes, "the prefix-dropped name must resolve")
+        self.assertIn("Raven_Test Blade", codes[0][1])
+
+    def test_colour_markup_is_stripped_before_matching(self) -> None:
+        codes = item_findings(
+            "| test blade | new | 3 | 1d3 | +0 | 4 | (inh) | 55 | 3 |  |"
+        )
+        self.assertTrue(codes, "the display name must resolve too")
+
+    def test_a_row_naming_no_blueprint_is_reported(self) -> None:
+        codes = item_findings(
+            "| Nothing Here | new | 3 | 1d3 | +0 | 4 | (inh) | 40 | 3 |  |"
+        )
+        self.assertTrue(codes)
+        self.assertIn("no blueprint resolves", codes[0][1])
+
+    def test_a_figure_the_mod_never_declares_is_skipped(self) -> None:
+        """Not silence about a mismatch - silence about a figure that lives in the game's files.
+
+        `Flawless Crysteel Boots` is the real case: #86 corrected its tier by *removing* the mod's
+        override so vanilla's would apply, which is exactly what puts it beyond a mod-only check.
+        """
+        row = "| Vanillaish Blade | merge | 6 | 1d3 | +0 | 4 | (inh) | 80 | 5 |  |"
+        self.assertEqual(
+            item_findings(row), [], "tier and weight are not in the mod's XML"
+        )
+
+    def test_a_merge_that_declares_a_figure_is_still_checked(self) -> None:
+        """The assumption this check was not built on for months, and it was wrong."""
+        row = "| Vanillaish Blade | merge | 6 | 1d3 | +0 | 4 | (inh) | 99 | 5 |  |"
+        codes = item_findings(row)
+        self.assertTrue(codes, "a merge declaring Value must still be compared")
+        self.assertIn("value", codes[0][1])
+
+    def test_an_em_dash_is_not_a_figure(self) -> None:
+        row = "| Test Blade | new | 3 | 1d3 | +0 | 4 | (inh) | \u2014 | 3 |  |"
+        self.assertEqual(item_findings(row), [])
+
+
 class GitHubAnchors(unittest.TestCase):
     """The slug is a reimplementation of someone else's rule, so the awkward shapes are pinned.
 
