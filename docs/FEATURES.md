@@ -1908,6 +1908,13 @@ not touch that field (the vanilla value is inherited).
 
 144 chips. `Mut. level` is the level of the granted mutation(s).
 
+> ⚠️ **These levels are the intent, not what the game currently produces.** Every chip grants its
+> mutation at **level 1** regardless of its tier — a basic corrosive gas chip and a perfected one
+> both release gas for three rounds, confirmed in game. The `@ N` figures below are what the
+> blueprints ask for and what §3.3 documents; see
+> [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272). This note comes
+> out when the levels are real.
+
 | Chip | Item tier | Value | Grants (mutation @ level) |
 |---|---|---|---|
 | basic disintegration chip | 4 | 20 | Disintegration @ 2 |
@@ -1970,9 +1977,9 @@ not touch that field (the vanilla value is inherited).
 | basic light chipset | 6 | 20 | PhotosyntheticSkin @ 2, LightManipulation @ 1, Teleportation @ 1 |
 | upgraded light chipset | 7 | 40 | PhotosyntheticSkin @ 4, LightManipulation @ 2, Teleportation @ 2 |
 | perfected light chipset | 8 | 60 | PhotosyntheticSkin @ 6, LightManipulation @ 3, Teleportation @ 3 |
-| basic corrosive gas chip | 4 | 20 | GasGeneration @ 3 |
-| upgraded corrosive gas chip | 6 | 40 | GasGeneration @ 6 |
-| perfected corrosive gas chip | 8 | 60 | GasGeneration @ 10 |
+| basic corrosive gas chip | 4 | 20 | CorrosiveGasGeneration @ 3 |
+| upgraded corrosive gas chip | 6 | 40 | CorrosiveGasGeneration @ 6 |
+| perfected corrosive gas chip | 8 | 60 | CorrosiveGasGeneration @ 10 |
 | basic confusion chip | 4 | 20 | Confusion @ 2 |
 | upgraded confusion chip | 6 | 40 | Confusion @ 4 |
 | perfected confusion chip | 8 | 60 | Confusion @ 6 |

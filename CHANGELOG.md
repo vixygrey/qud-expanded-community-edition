@@ -68,6 +68,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **(internal)** Corrected the figures in the corrosive gas entry below, and flagged Appendix B.
+  I wrote that a perfected chip went from six rounds to twelve, on the assumption that a chip's
+  `Tier` becomes its mutation's level. QA on #226 showed it does not — a basic chip at `Tier="3"`
+  and a perfected one at `Tier="10"` both release for three rounds, because every chip grants its
+  mutation at level 1. The real change is one round becoming three, across the whole acid family.
+
+  `docs/FEATURES.md` Appendix B lists a mutation level for all 144 chips and every one of them is
+  the intent rather than the behaviour, so it now says so until
+  [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272) makes them real.
+  The three corrosive rows also still named `GasGeneration`, which #258 changed.
+  ([#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272))
 - **(internal)** Blueprint tag resolution honours `*noinherit`, and lives in one place. A tag
   declared `Value="*noinherit"` applies to the blueprint declaring it and not to anything
   inheriting from it — the rule that lets `Raven_Base Psionic Pistol` mark itself a base without
@@ -127,12 +138,15 @@ recorded because contributors need them, not because subscribers do.
   description. `docs/LESSONS.md` records that, since the diff for the attempt looks perfectly
   correct.
   ([#227](https://github.com/vixygrey/qud-expanded-community-edition/issues/227))
-- **Corrosive gas chips now last twice as long**, because they were granting the wrong mutation.
-  Every chip in the acid family — the three corrosive gas chips and the three acid chipsets — named
-  the base class `GasGeneration` rather than `CorrosiveGasGeneration`. The gas itself was always
-  right: both resolve to `AcidGas`. But the base class releases gas for `1 + Level / 2` rounds where
-  the real mutation gives `Level + 2`, so the perfected chip ran 6 rounds instead of 12, and the
-  basic one 2 instead of 5.
+- **Corrosive gas chips release for three rounds instead of one**, because they were granting the
+  wrong mutation. Every chip in the acid family — the three corrosive gas chips and the three acid
+  chipsets — named the base class `GasGeneration` rather than `CorrosiveGasGeneration`. The gas
+  itself was always right: both resolve to `AcidGas`. But the base class releases gas for
+  `1 + Level / 2` rounds where the real mutation gives `Level + 2`, and the chips grant their
+  mutation at level 1, so one round became three across the whole family.
+
+  Three rounds of release, not three rounds of gas: the cloud disperses on its own schedule
+  afterwards, which this does not change.
 
   Three things came with it. The ability was called "Gas Generation" rather than "Release Corrosive
   Gas"; the mutation contributed no `salt` to your item elements, which it should; and because
@@ -147,6 +161,12 @@ recorded because contributors need them, not because subscribers do.
 
   Chips already worn in a save keep the old behaviour until you take one off and put it back on,
   which is enough to fix it. Nothing needs migrating.
+
+  The figures here were wrong when this shipped — I had written six rounds becoming twelve, on the
+  assumption that a chip's `Tier` becomes its mutation's level. It does not: a perfected chip and a
+  basic one both grant at level 1, which is [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272)
+  and affects every chip rather than these six. The defect described above is real and fixed; only
+  its scale was overstated.
   ([#226](https://github.com/vixygrey/qud-expanded-community-edition/issues/226))
 - The help text for **Chip Interface slots on other humanoids** opened with `{{y;` where Qud's
   colour markup wants `{{y|`. It is the only semicolon form in the mod — against 46 pipe forms in
