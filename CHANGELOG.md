@@ -16,6 +16,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records that a closing keyword next to an issue number closes it
+  even inside a denial. `## Why this doesn't close #284` registered a closing reference and shut
+  #284 on the #286 merge, against a paragraph, a commit trailer and an issue comment all saying it
+  should stay open. GitHub matches `close #N` as a substring and does not read the negation.
+
+  The entry names the safe phrasings, the pre-merge check
+  (`gh pr view <n> --json closingIssuesReferences`, which should be empty for a partial fix) and the
+  tell afterwards (`commit_id: null` on the close event, which means a linked reference closed it
+  rather than a commit message).
+
+  It sits next to the stacked-PR entry, since both are a squash merge closing something it
+  shouldn't and both are invisible until after the fact.
+  ([#288](https://github.com/vixygrey/qud-expanded-community-edition/issues/288))
 - **(internal)** `python3 tools/check_docs.py --wiki` verifies that the wiki's links into this
   repository still resolve. The wiki cites `docs/FEATURES.md` and three other files 56 times, and
   GitHub derives an anchor from the heading text — so renaming a heading breaks every link to it
