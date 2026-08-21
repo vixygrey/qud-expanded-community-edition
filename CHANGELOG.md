@@ -204,6 +204,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Nine figures in `docs/FEATURES.md`'s item tables disagreed with the blueprints they
+  describe, and the document was wrong in all nine. Four were stale — #86 corrected the zetachrome
+  greataxe and wristblade to 1280, removed the `Flawless Crysteel Boots` tier override, and put the
+  carbideweave cloak at 40, and the fix reached the blueprint and the §10 row but never the stat
+  table.
+
+  The other five had never been right. The low-tier wristblades were documented at 15, 25, 35, 55
+  and 105 against blueprints of 5, 10, 20, 40 and 160 — §3.2's stated curve, which the same table
+  already gets right from crysteel upward. `git log -S` puts both the values and the rows in the
+  original import with no edit since, so those cells were wrong for the whole life of the fork.
+
+  §10's below-curve note is corrected with them: it named four items and only `Cudgel8` and
+  `Cudgel8th` are still below curve.
+
+  No blueprint changed. Where the two disagreed the blueprint was both what ships and the one
+  following a stated convention.
+  ([#299](https://github.com/vixygrey/qud-expanded-community-edition/issues/299))
 - **(internal)** `docs/FEATURES.md` §6.7's heading said *"arrows and shells live, bullets still
   disabled"*, wrong on both halves — the scour slug shipped in v2.5.0, and #146 cut the bullets
   rather than pausing them. It now reads *"arrows, shells and one slug live, bullets cut"*.

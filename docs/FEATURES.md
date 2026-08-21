@@ -414,7 +414,7 @@ Conventions the mod follows:
 | Vibro Greataxe | new | 5 | 1d6+3 | +0 | 0 | (inh) | 300 | 6 | yes |
 | Crysteel Greataxe | new | 6 | 1d8+5 | +1 | 7 | (inh) | 320 | 5 | yes |
 | Flawless Crysteel Greataxe | new | 7 | 1d9+5 | +1 | 8 | (inh) | 640 | 5 | yes |
-| Zetachrome Greataxe | new | 8 | 1d10+6 | +1 | 9 | (inh) | 1200 | 4 | yes |
+| Zetachrome Greataxe | new | 8 | 1d10+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
 
 #### Halberds (Axe, two-handed, Agility) — **new family**
 
@@ -477,15 +477,15 @@ Conventions the mod follows:
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Wristblade | new | 0 | 1 | +0 | 1 | (inh) | 15 | 1 |  |
-| Iron Wristblade | new | 1 | 1d2 | +0 | 2 | (inh) | 25 | 1 |  |
-| Steel Wristblade | new | 2 | 1d3 | +0 | 3 | (inh) | 35 | 1 |  |
-| Carbide Wristblade | new | 3 | 2d2 | +0 | 4 | (inh) | 55 | 2 |  |
-| Fullerite Wristblade | new | 5 | 2d3+1 | +0 | 6 | (inh) | 105 | 3 |  |
+| Bronze Wristblade | new | 0 | 1 | +0 | 1 | (inh) | 5 | 1 |  |
+| Iron Wristblade | new | 1 | 1d2 | +0 | 2 | (inh) | 10 | 1 |  |
+| Steel Wristblade | new | 2 | 1d3 | +0 | 3 | (inh) | 20 | 1 |  |
+| Carbide Wristblade | new | 3 | 2d2 | +0 | 4 | (inh) | 40 | 2 |  |
+| Fullerite Wristblade | new | 5 | 2d3+1 | +0 | 6 | (inh) | 160 | 3 |  |
 | Vibro Wristblade | new | 5 | 1d4+1 | +0 | 0 | (inh) | 300 | 1 |  |
 | Crysteel Wristblade | new | 6 | 2d4 | +0 | 7 | (inh) | 320 | 1 |  |
 | Flawless Crysteel Wristblade | new | 7 | 2d4+1 | +0 | 8 | (inh) | 640 | 1 |  |
-| Zetachrome Wristblade | new | 8 | 2d6 | +0 | 9 | (inh) | 1200 | 1 |  |
+| Zetachrome Wristblade | new | 8 | 2d6 | +0 | 9 | (inh) | 1280 | 1 |  |
 
 #### Maces, one-handed (Cudgel, Strength)
 
@@ -589,7 +589,7 @@ Vanilla families completed:
 | Chain Boots | merge | 2 | Feet | 2 | -2 | — | 20 | 6 |
 | Steel Boots | merge | 2 | Feet | 3 | -3 | — | 20 | 7 |
 | Carbide Boots | merge | 3 | Feet | 3 | -2 | — | 40 | 9 |
-| Flawless Crysteel Boots | merge | 3 | Feet | 4 | 0 | 5/5/5/5 | 640 | 6 |
+| Flawless Crysteel Boots | merge | 7 | Feet | 4 | 0 | 5/5/5/5 | 640 | 6 |
 | Folded Carbide Boots | new | 4 | Feet | 3 | -1 | — | 80 | 8 |
 | Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 160 | 10 |
 | Flexiboots | new | 5 | Feet | 1 | 3 | — | 75 | 2 |
@@ -654,7 +654,7 @@ Vanilla families completed:
 | Bronzeweave Cloak | new | 0 | Back | 1 | -1 | — | 5 | 4 |
 | Ironweave Cloak | merge | 1 | Back | 1 | 0 | — | 10 | 3 |
 | Steelweave Cloak | new | 2 | Back | 2 | -2 | — | 20 | 3 |
-| Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 5 | 6 |
+| Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 40 | 6 |
 | Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | — | 80 | 5 |
 | Flexicloak | new | 5 | Back | 1 | 2 | — | 125 | 2 |
 | Fulleriteweave Cloak | new | 5 | Back | 3 | -2 | — | 160 | 6 |
@@ -1610,7 +1610,7 @@ The mod deliberately flattens the top of the price curve so high-tier gear is at
 - Standard tier progression for weapons/armor: **5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280**.
 - Body armor runs a parallel curve at 8/16/32/64/128/256/512/1024/2048.
 - Vambraces run at 4/8/16/32/64/128/256/512/1024 (half the standard curve — they're a partial slot).
-- Several tier-8 items are pulled *below* curve: zetachrome greataxe 1200, zetachrome wristblade 1200, Cudgel8/Cudgel8th 1200.
+- Two tier-8 items are pulled *below* curve: Cudgel8 and Cudgel8th, both 1200. The zetachrome greataxe and wristblade were also 1200 until #86 put them on the curve at 1280.
 - Vibro weapons are flat 300 across the board.
 - Laser pistol 250, laser rifle 550, chain pistol 100, borderlands revolver 25.
 - All grenades flattened to 10/20/30.
