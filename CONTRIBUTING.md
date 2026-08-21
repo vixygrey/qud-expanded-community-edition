@@ -170,6 +170,29 @@ file pattern: what it catches is a Qud update, which correlates with nothing in 
 game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
 contributor who has none of them. `--require` turns that skip into a failure.
 
+### Checking the wiki's links into this repository
+
+The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) links into this
+repository for its figures — 56 anchor links across 11 pages, almost all into `docs/FEATURES.md`.
+GitHub derives an anchor from the heading text, so **renaming a heading silently breaks every wiki
+link to it**: a bad fragment still returns HTTP 200 and neither repository reports anything. Renaming
+one heading breaks five links.
+
+```bash
+python3 tools/check_docs.py --wiki
+```
+
+It clones the wiki (public, no credentials) and verifies every anchor still resolves. Pass
+`--wiki-path PATH` to check a clone you already have.
+
+Deliberately outside the normal run, like `--ruleset` and for the same reason: it needs a second
+repository and a network, and a check that passes quietly when it could not reach anything is worse
+than no check. **Run it after renaming or removing a heading in any document the wiki cites.**
+
+It cannot tell whether a page is still *true* — only whether its links still land. That half stays
+judgement, and the rule is the same one that applies here: when a change lands, grep the wiki for
+what it describes.
+
 ### Seeing what a `DynamicObjectsTable:` tag distributes
 
 A tag on a blueprint is a distribution route, and nothing at the tag site says where it goes. The

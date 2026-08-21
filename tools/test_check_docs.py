@@ -154,6 +154,87 @@ class AppendixB(unittest.TestCase):
         self.assertEqual(check_docs._plain("basic {{K|test}} chip"), "basic test chip")
 
 
+class GitHubAnchors(unittest.TestCase):
+    """The slug is a reimplementation of someone else's rule, so the awkward shapes are pinned.
+
+    All five below are real headings this wiki links to. If GitHub ever changes how it derives an
+    anchor, these are what should fail rather than the whole check going quietly wrong.
+    """
+
+    def test_a_numbered_heading_drops_its_dots(self) -> None:
+        self.assertEqual(check_docs.github_anchor("## 6.3 Armor"), "63-armor")
+
+    def test_an_em_dash_leaves_a_double_hyphen(self) -> None:
+        """The two spaces around the dash survive as hyphens; the dash itself does not."""
+        self.assertEqual(
+            check_docs.github_anchor("## Appendix B \u2014 every psionic chip"),
+            "appendix-b--every-psionic-chip",
+        )
+
+    def test_backticked_code_keeps_its_text(self) -> None:
+        self.assertEqual(
+            check_docs.github_anchor("## 7. Loot tables (`PopulationTables.xml`)"),
+            "7-loot-tables-populationtablesxml",
+        )
+
+    def test_a_lettered_subsection(self) -> None:
+        self.assertEqual(
+            check_docs.github_anchor("### 1.0b `<removetable>` \u2014 the tool"),
+            "10b-removetable--the-tool",
+        )
+
+    def test_duplicate_headings_are_suffixed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            doc = Path(tmp, "D.md")
+            doc.write_text("## Same\n\n## Same\n", encoding="utf-8")
+            self.assertEqual(check_docs.anchors_of(doc), {"same", "same-1"})
+
+
+class WikiLinks(unittest.TestCase):
+    """#230. A renamed heading breaks every wiki link to it, silently from both sides."""
+
+    def _findings(
+        self, page: str, doc: str = "## 13.1 What each option does\n"
+    ) -> list:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "docs").mkdir()
+            (root / "docs" / "FEATURES.md").write_text(doc, encoding="utf-8")
+            wiki = root / "wiki"
+            wiki.mkdir()
+            (wiki / "Page.md").write_text(page, encoding="utf-8")
+            with chdir(root):
+                f = check_docs.Findings()
+                check_docs.check_wiki_links(wiki, f)
+                return f.items
+
+    LINK = (
+        "see [the options](https://github.com/vixygrey/qud-expanded-community-edition"
+        "/blob/main/docs/FEATURES.md#131-what-each-option-does)"
+    )
+
+    def test_a_resolving_anchor_passes(self) -> None:
+        self.assertEqual(self._findings(self.LINK), [])
+
+    def test_a_renamed_heading_is_reported(self) -> None:
+        found = self._findings(self.LINK, doc="## 13.1 What each option covers\n")
+        self.assertTrue(found, "a renamed heading must break the link")
+        self.assertIn("anchors there", found[0][1])
+
+    def test_a_missing_target_file_is_reported(self) -> None:
+        page = self.LINK.replace("docs/FEATURES.md", "docs/GONE.md")
+        found = self._findings(page)
+        self.assertTrue(found)
+        self.assertIn("does not exist", found[0][1])
+
+    def test_a_link_without_a_fragment_is_not_checked(self) -> None:
+        page = (
+            "[features](https://github.com/vixygrey/qud-expanded-community-edition"
+            "/blob/main/docs/FEATURES.md)"
+        )
+        self.assertEqual(self._findings(page), [])
+
+
 class ChangelogSections(unittest.TestCase):
     def test_a_well_formed_changelog_is_quiet(self) -> None:
         self.assertEqual(findings_for(CLEAN), [])
