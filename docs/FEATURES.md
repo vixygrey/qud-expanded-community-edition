@@ -1908,12 +1908,11 @@ not touch that field (the vanilla value is inherited).
 
 144 chips. `Mut. level` is the level of the granted mutation(s).
 
-> ⚠️ **These levels are the intent, not what the game currently produces.** Every chip grants its
-> mutation at **level 1** regardless of its tier — a basic corrosive gas chip and a perfected one
-> both release gas for three rounds, confirmed in game. The `@ N` figures below are what the
-> blueprints ask for and what §3.3 documents; see
-> [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272). This note comes
-> out when the levels are real.
+> 🗒️ **These are the ranks each chip grants, not necessarily the rank you will see.** Qud caps a
+> mutation's effective rank at `level / 2 + 1` — `BaseMutation.GetMutationCapForLevel`, applying to
+> every mutation from every source. So a perfected chip's rank 10 reads as rank 1 on a level-1
+> character and is fully yours at level 18. Your character sheet shows the arithmetic per mutation,
+> equipment bonus and cap both.
 
 | Chip | Item tier | Value | Grants (mutation @ level) |
 |---|---|---|---|
