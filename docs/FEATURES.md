@@ -1988,9 +1988,9 @@ not touch that field (the vanilla value is inherited).
 | basic acid slime glands chip | 4 | 20 | AcidSlimeGlands @ 3 |
 | upgraded acid slime glands chip | 6 | 40 | AcidSlimeGlands @ 6 |
 | perfected acid slime glands chip | 8 | 60 | AcidSlimeGlands @ 10 |
-| basic acid chipset | 6 | 20 | GasGeneration @ 2, Confusion @ 1, AcidSlimeGlands @ 2 |
-| upgraded acid chipset | 7 | 40 | GasGeneration @ 4, Confusion @ 2, AcidSlimeGlands @ 4 |
-| perfected acid chipset | 8 | 60 | GasGeneration @ 6, Confusion @ 3, AcidSlimeGlands @ 6 |
+| basic acid chipset | 6 | 20 | CorrosiveGasGeneration @ 2, Confusion @ 1, AcidSlimeGlands @ 2 |
+| upgraded acid chipset | 7 | 40 | CorrosiveGasGeneration @ 4, Confusion @ 2, AcidSlimeGlands @ 4 |
+| perfected acid chipset | 8 | 60 | CorrosiveGasGeneration @ 6, Confusion @ 3, AcidSlimeGlands @ 6 |
 | basic syphon vim chip | 4 | 20 | LifeDrain @ 2 |
 | upgraded syphon vim chip | 6 | 40 | LifeDrain @ 4 |
 | perfected syphon vim chip | 8 | 60 | LifeDrain @ 6 |

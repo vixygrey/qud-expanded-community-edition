@@ -69,6 +69,91 @@ CLEAN = """# Changelog
 """
 
 
+CHIP_BLUEPRINT = """<objects>
+  <object Name="Raven_Test Chip">
+    <part Name="Render" DisplayName="basic {{K|test}} chip" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModTesting" Tier="2" />
+    <tag Name="Tier" Value="4" />
+  </object>
+</objects>
+"""
+
+CHIP_SCRIPT = "public class Raven_ModTesting : ModImprovedMutationBase<Testing> { }"
+
+
+def appendix_findings(row: str) -> list[tuple[str, str]]:
+    """Run check_appendix_b over a one-chip fixture with the given table row."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "mod" / "ObjectBlueprints").mkdir(parents=True)
+        (root / "mod" / "Scripting").mkdir(parents=True)
+        (root / "docs").mkdir()
+        (root / "mod" / "ObjectBlueprints" / "Chips.xml").write_text(
+            CHIP_BLUEPRINT, encoding="utf-8"
+        )
+        (root / "mod" / "Scripting" / "Raven_ModTesting.cs").write_text(
+            CHIP_SCRIPT, encoding="utf-8"
+        )
+        (root / "docs" / "FEATURES.md").write_text(
+            "## Appendix B\n\n"
+            "| Chip | Item tier | Value | Grants (mutation @ level) |\n"
+            "|---|---|---|---|\n" + row + "\n",
+            encoding="utf-8",
+        )
+        with chdir(root):
+            f = check_docs.Findings()
+            check_docs.check_appendix_b(f)
+            return f.items
+
+
+class AppendixB(unittest.TestCase):
+    """#230. The document asserts 144 rows of data nobody recomputes.
+
+    Three of them still named GasGeneration months after #258 renamed it, and I corrected the
+    three single-chip rows while missing the three chipsets on the same pass - which is the
+    argument for a check rather than another careful read.
+    """
+
+    def test_a_matching_row_passes(self) -> None:
+        self.assertEqual(
+            appendix_findings("| basic test chip | 4 | 20 | Testing @ 2 |"), []
+        )
+
+    def test_a_wrong_item_tier_is_reported(self) -> None:
+        codes = appendix_findings("| basic test chip | 6 | 20 | Testing @ 2 |")
+        self.assertTrue(codes, "a wrong item tier must be reported")
+        self.assertIn("item tier", codes[0][1])
+
+    def test_a_wrong_value_is_reported(self) -> None:
+        codes = appendix_findings("| basic test chip | 4 | 40 | Testing @ 2 |")
+        self.assertTrue(codes)
+        self.assertIn("value", codes[0][1])
+
+    def test_a_stale_mutation_name_is_reported(self) -> None:
+        """The real defect: a class renamed in the code, not in the table."""
+        codes = appendix_findings("| basic test chip | 4 | 20 | Tested @ 2 |")
+        self.assertTrue(codes)
+        self.assertIn("grants", codes[0][1])
+
+    def test_a_wrong_mutation_level_is_reported(self) -> None:
+        codes = appendix_findings("| basic test chip | 4 | 20 | Testing @ 9 |")
+        self.assertTrue(codes)
+
+    def test_a_row_naming_no_blueprint_is_reported(self) -> None:
+        codes = appendix_findings("| basic ghost chip | 4 | 20 | Testing @ 2 |")
+        self.assertTrue(codes)
+        self.assertIn("no blueprint renders as", codes[0][1])
+
+    def test_a_chip_with_no_row_is_reported(self) -> None:
+        codes = appendix_findings("| unrelated | 1 | 1 | x |")
+        self.assertTrue(any("no row for" in d for _, d in codes))
+
+    def test_colour_markup_is_stripped_before_matching(self) -> None:
+        """The document writes plain names; the blueprint writes {{K|markup}}."""
+        self.assertEqual(check_docs._plain("basic {{K|test}} chip"), "basic test chip")
+
+
 class ChangelogSections(unittest.TestCase):
     def test_a_well_formed_changelog_is_quiet(self) -> None:
         self.assertEqual(findings_for(CLEAN), [])

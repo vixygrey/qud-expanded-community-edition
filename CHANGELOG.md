@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `check_docs.py` recomputes `docs/FEATURES.md`'s chip appendix from the blueprints
+  rather than trusting it. All 144 rows — item tier, value, and which mutation at which level — are
+  data somebody typed out, and typed data drifts.
+
+  It found three stale rows the moment it ran: the acid *chipsets* still named `GasGeneration`
+  months after #258 renamed it, and I had corrected the three single-chip rows earlier the same day
+  while missing these on the same pass. That is how well re-reading a 144-row table works, and it is
+  the whole argument for the check.
+
+  This is the first of the document's tables to be checked rather than believed. Of roughly 713 data
+  rows and 583 numbers in that file, 74 claims were verified before this — about one in twenty. The
+  armour and weapon tables are the obvious next targets and are a different bargain: 43 of their rows
+  are `merge` edits to vanilla blueprints, so recomputing those needs an installed game, where this
+  one is mod-only and runs in CI.
+  ([#230](https://github.com/vixygrey/qud-expanded-community-edition/issues/230))
 - **(internal)** `validate_mod.py` refuses a `ModImprovedMutationBase<T>` naming a mutation the game
   will not grant. Existing as a class and being grantable are different things, and only the second
   matters: `GasGeneration` compiles, and `unknown-part` passes it because `Raven_ModGasGeneration`
