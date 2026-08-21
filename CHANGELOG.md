@@ -146,6 +146,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **A legendary gunsmith no longer stocks six to eight psionic firearms at once.** The eighteen
+  psionic pistols and rifles are meant to be rare — one entry apiece at weight 1 in `Missile 2` and
+  `Missile 3`, which against vanilla's own 29 and 125 makes any one of them a 2.6% find at tier 2 and
+  0.7% at tier 3 — plus the one your subtype starts with. A second route was handing a single shop
+  more of them than the whole world offers.
+
+  That route was never chosen. Both psionic base blueprints carry `DynamicObjectsTable:Guns`, tags
+  inherit, and so all eighteen descendants were in the pool a legendary gunsmith draws six to eight
+  from. Inherited from Mura's 2.2 and invisible at the blueprints, because the tag is on something
+  they inherit from rather than on them.
+
+  The four conventional guns keep the tag; they were tagged directly and a legendary gunsmith
+  stocking them is what it is for. Nothing becomes harder to find — every psionic firearm keeps its
+  own drop entry at exactly the rarity it had.
+  ([#262](https://github.com/vixygrey/qud-expanded-community-edition/issues/262))
 - **The mod's options are readable in the settings menu again.** Every one of them showed its help
   text squashed into a thin box running off the bottom of the screen, because the text was written
   at a scale the menu was never given: vanilla's longest help text is 352 characters and ten of the
