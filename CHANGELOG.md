@@ -68,6 +68,18 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.3 records how this fork distributes an item, which was the
+  open question behind #223. Explicit `PopulationTables.xml` entries are for a chosen weight in a
+  named table and every new item should have one; a `DynamicObjectsTable:` tag is an addition on top
+  that puts the item in vanilla's specialist pool for its category — the hatter stocking helmets, the
+  legendary gunsmith stocking guns.
+
+  #223 argued the tags should all become explicit entries. They cannot: every consumer uses the
+  `:Tier{n}` form, and declaring one of those replaces vanilla's fabricated pool rather than joining
+  it, so the tag is the only additive route into tier-appropriate distribution. What #223 actually
+  wanted — a distribution route that something records — came from `tools/report_dynamic_tables.py`
+  instead, at the cost of one tool rather than reworking three families.
+  ([#263](https://github.com/vixygrey/qud-expanded-community-edition/issues/263))
 - **(internal)** Recorded Qud's mutation rank cap, and undid a wrong claim I had put in
   `docs/FEATURES.md` because of not knowing it. A mutation's effective rank is
   `min(what grants it, level / 2 + 1)` — `BaseMutation.GetMutationCapForLevel` — so a chip granting

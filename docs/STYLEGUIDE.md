@@ -278,6 +278,39 @@ possible in practice. Match them when adding anything.
 The tier and value curves are checked by `item-curve` in `tools/validate_mod.py`, so a mispriced or
 mistagged item fails CI rather than sitting in the loot pool at the wrong rarity.
 
+### 3.3 Two ways to distribute an item, and which to reach for
+
+A new item can reach the world by an explicit entry in `mod/PopulationTables.xml`, or by carrying a
+`DynamicObjectsTable:X` tag. They do different jobs and this fork uses both.
+
+**Reach for an explicit entry when you want a chosen weight in a named table.** That is what the
+other 56 merged tables are, it is reviewable as a number in a diff, and `validate_mod.py` checks the
+blueprint resolves. **Every new item should have one** — the tags below are additions on top, not
+substitutes, and today every tagged blueprint in this fork also has an explicit entry.
+
+**Reach for a tag when you want the item in vanilla's specialist pool for its category** — the hatter
+stocking your helmets, the legendary gunsmith stocking your guns. Only nineteen of vanilla's
+seventy-nine declared tables are consumed anywhere, and only a handful of those correspond to gear
+this fork adds: `Ammo`, `Guns`, `Headwear`, `EnergyCells`, `Daggers`, `Trinkets`. There is no vanilla
+pool for boots, gloves, body armour, shields, cloaks or most melee families, so for those an explicit
+entry is the only route and no decision arises.
+
+**A tag cannot be replaced by an explicit entry where the consumer is tiered.** Every one of these
+pools is consumed in the `:Tier{n}` form — `DynamicObjectsTable:Guns:Tier{zonetier+1}` and the like —
+and `PopulationManager.RequireTable` returns early when a table of that name already exists, so
+declaring one replaces vanilla's whole fabricated pool instead of joining it. The tag is the only
+additive way into tier-appropriate distribution.
+
+`EnergyCells` is the one that is genuinely load-bearing rather than flavour: `EnergyCellSocket`
+reads that pool, so it is what lets a cell this fork adds be found already installed in a machine.
+Nothing written in `PopulationTables.xml` can express that. **Do not tidy it away.**
+
+**Whichever you use, run `tools/report_dynamic_tables.py`.** A tag inherits, so the blueprint
+carrying it is usually not the blueprint being distributed: `BaseArrow` is vanilla and puts six of
+this fork's arrows in the ammunition pool, and two psionic *base* blueprints put all eighteen psionic
+firearms into legendary gunsmith stock. Both were invisible until that tool existed, and #223
+described the first while missing the second on the same page.
+
 ---
 
 ## 4. XML conventions
