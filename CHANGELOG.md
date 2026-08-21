@@ -101,6 +101,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **(internal)** Blueprint tag resolution honours `*delete`, and `tools/report_dynamic_tables.py`
+  stops counting deletions as routes. `*noinherit` confines a tag to the blueprint declaring it;
+  `*delete` removes an inherited one outright, and vanilla uses it 126 times — including to take
+  `Corpse` out of `DynamicObjectsTable:Items` and `FoldingChair` out of `:Trinkets`. Implementing
+  only the first meant the resolver reported blueprints as pool members that the game had explicitly
+  removed, and the report named `Corpse` as a route into a table it opts out of.
+
+  No published figure moves: the API snapshot's digest is unchanged, so the census and every cited
+  number are unaffected. What was wrong was the reach the report printed, which is what two content
+  decisions were about to be made from.
+
+  Those two directives are the complete set. Across every vanilla blueprint, the only tag values
+  beginning with `*` are `*noinherit` (951) and `*delete` (126), plus a bare `*` twice that is an
+  ordinary wildcard on `PaintWith` and `Species`.
+  ([#261](https://github.com/vixygrey/qud-expanded-community-edition/issues/261))
 - **(internal)** `docs/STYLEGUIDE.md` §3.3 records how this fork distributes an item, which was the
   open question behind #223. Explicit `PopulationTables.xml` entries are for a chosen weight in a
   named table and every new item should have one; a `DynamicObjectsTable:` tag is an addition on top
