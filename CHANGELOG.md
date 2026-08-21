@@ -68,16 +68,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
-- **(internal)** Corrected the figures in the corrosive gas entry below, and flagged Appendix B.
-  I wrote that a perfected chip went from six rounds to twelve, on the assumption that a chip's
-  `Tier` becomes its mutation's level. QA on #226 showed it does not — a basic chip at `Tier="3"`
-  and a perfected one at `Tier="10"` both release for three rounds, because every chip grants its
-  mutation at level 1. The real change is one round becoming three, across the whole acid family.
+- **(internal)** Recorded Qud's mutation rank cap, and undid a wrong claim I had put in
+  `docs/FEATURES.md` because of not knowing it. A mutation's effective rank is
+  `min(what grants it, level / 2 + 1)` — `BaseMutation.GetMutationCapForLevel` — so a chip granting
+  rank 10 shows rank 1 on a level-1 character and reaches 10 at level 18.
 
-  `docs/FEATURES.md` Appendix B lists a mutation level for all 144 chips and every one of them is
-  the intent rather than the behaviour, so it now says so until
-  [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272) makes them real.
-  The three corrosive rows also still named `GasGeneration`, which #258 changed.
+  Watching a level-1 character, I concluded chip tier did nothing and warned in Appendix B that its
+  144 documented mutation levels were aspirational. They are not: they are what each chip grants,
+  and the character level caps what you see of it. The warning is gone and the table says so
+  instead. `docs/LESSONS.md` carries the cap, which cost a wrongly-filed issue and two wrong
+  changelog entries before anyone looked at the rank breakdown the game was already showing.
   ([#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272))
 - **(internal)** Blueprint tag resolution honours `*noinherit`, and lives in one place. A tag
   declared `Value="*noinherit"` applies to the blueprint declaring it and not to anything
@@ -138,15 +138,24 @@ recorded because contributors need them, not because subscribers do.
   description. `docs/LESSONS.md` records that, since the diff for the attempt looks perfectly
   correct.
   ([#227](https://github.com/vixygrey/qud-expanded-community-edition/issues/227))
-- **Corrosive gas chips release for three rounds instead of one**, because they were granting the
-  wrong mutation. Every chip in the acid family — the three corrosive gas chips and the three acid
+- **Corrosive gas chips release for roughly twice as long**, because they were granting the wrong
+  mutation. Every chip in the acid family — the three corrosive gas chips and the three acid
   chipsets — named the base class `GasGeneration` rather than `CorrosiveGasGeneration`. The gas
-  itself was always right: both resolve to `AcidGas`. But the base class releases gas for
-  `1 + Level / 2` rounds where the real mutation gives `Level + 2`, and the chips grant their
-  mutation at level 1, so one round became three across the whole family.
+  itself was always right: both resolve to `AcidGas`. But the base class releases for
+  `1 + rank / 2` rounds where the real mutation gives `rank + 2`.
 
-  Three rounds of release, not three rounds of gas: the cloud disperses on its own schedule
-  afterwards, which this does not change.
+  How much you feel depends on where you are. A mutation's rank is capped at `level / 2 + 1` by your
+  own character level, so a perfected chip's rank 10 is only fully yours at level 18:
+
+  | Character level | Rank | Release, before → after |
+  |---|---|---|
+  | 1 | 1 | 1 → **3** rounds |
+  | 6 | 4 | 3 → **6** rounds |
+  | 12 | 7 | 4 → **9** rounds |
+  | 18+ | 10 | 6 → **12** rounds |
+
+  Release, not lingering: the cloud disperses on its own schedule afterwards, which this does not
+  change.
 
   Three things came with it. The ability was called "Gas Generation" rather than "Release Corrosive
   Gas"; the mutation contributed no `salt` to your item elements, which it should; and because
@@ -162,11 +171,11 @@ recorded because contributors need them, not because subscribers do.
   Chips already worn in a save keep the old behaviour until you take one off and put it back on,
   which is enough to fix it. Nothing needs migrating.
 
-  The figures here were wrong when this shipped — I had written six rounds becoming twelve, on the
-  assumption that a chip's `Tier` becomes its mutation's level. It does not: a perfected chip and a
-  basic one both grant at level 1, which is [#272](https://github.com/vixygrey/qud-expanded-community-edition/issues/272)
-  and affects every chip rather than these six. The defect described above is real and fixed; only
-  its scale was overstated.
+  This entry has been wrong twice. It first quoted only the rank-10 figures, as though every player
+  saw them; I then "corrected" it to only the rank-1 figures, having watched a level-1 character and
+  concluded chip tier did nothing. Both were one row of the table above. The cap is
+  `BaseMutation.GetMutationCapForLevel`, and it applies to every mutation from every source — not
+  something this fork does.
   ([#226](https://github.com/vixygrey/qud-expanded-community-edition/issues/226))
 - The help text for **Chip Interface slots on other humanoids** opened with `{{y;` where Qud's
   colour markup wants `{{y|`. It is the only semicolon form in the mod — against 46 pipe forms in

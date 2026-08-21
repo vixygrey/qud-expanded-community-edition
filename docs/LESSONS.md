@@ -315,6 +315,35 @@ is what #227 used in the end.
 > method for the specific element rather than the one above it — the failure here is silence, not an
 > error, and the diff looks correct.
 
+## A mutation's rank is capped by character level, and the game will show you the arithmetic
+
+`BaseMutation.GetMutationCapForLevel(level)` is `level / 2 + 1`, and `CalcLevel` applies it to the
+sum of every source — inherent rank, equipment, tonics, cooking, the lot. It is not something a mod
+opts into.
+
+So a chip granting rank 10 reads as **rank 1** on a level-1 character:
+
+| Character level | 1 | 6 | 12 | 18+ |
+|---|---|---|---|---|
+| Rank cap | 1 | 4 | 7 | 10 |
+
+I did not know this, and it cost more than knowing it would have. Testing #226 on a fresh character,
+a `Tier="3"` chip and a `Tier="10"` chip both produced rank 1, and I read that as chip tier doing
+nothing — filed an issue saying so, put a warning into `docs/FEATURES.md` calling 144 documented
+levels aspirational, and rewrote a changelog entry that had been right. Before that I had gone the
+other way, quoting the rank-10 figures as though every player saw them. Two opposite wrong claims,
+each true for exactly one row of that table.
+
+**The game was showing the answer the whole time.** `BaseMutation.GetLevelCalculations` builds a
+plain-language breakdown per mutation and the character sheet displays it — *"rank is increased by 10
+due to your equipped item"* beside *"rank is capped at 1 due to your level."* One screen, no
+decompiling, and I read the assembly for an hour first.
+
+> **When a number in game does not match the number in the data, look for what sits between them
+> before concluding either is wrong.** A cap, a clamp or a scale is a likelier explanation than a
+> broken mechanism, and Qud tends to expose its own arithmetic in the UI — check that before
+> reasoning about the code, and certainly before filing.
+
 ## A public field is not a supported setter if something caches what it derives
 
 `PowerEntry.Attribute` and `.Minimum` are public and writable, so I assumed retuning a skill
