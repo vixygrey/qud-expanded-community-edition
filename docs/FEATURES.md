@@ -134,9 +134,12 @@ the Rebuke Robot / Menacing Stare the other genotypes get.
 Because `IsTrueKin="True"` and cybernetics points are granted, Psionic Adepts can use the
 becoming nook and all cybernetics — they are mechanically a third "tech" genotype, not a mutant.
 
-> ⚠️ The genotype's chargen blurb reads `{{C|30}} bonus skill points each level`. The actual
-> delta versus vanilla True Kin is +25 (95 vs 70) or +10 vs the mod's own True Kin (95 vs 85).
-> The "30" is left over from an earlier tuning pass.
+> 🗒️ The chargen blurb reads `{{C|95}} skill points each level`, which is the Adept's
+> `BaseSPGain` and is true under every option. It used to read *30 bonus*, and a note here called
+> that stale — wrongly. **30 was the delta against this fork's own Mutated Human** (95 vs 65), which
+> is the genotype most players arrive from. What made it wrong was not the number but the baseline:
+> the Mutant's 65 is itself an option, so switching skill points off moved the real delta to 45
+> while the panel still said 30. An absolute figure needs no baseline and cannot drift (#275).
 
 ---
 

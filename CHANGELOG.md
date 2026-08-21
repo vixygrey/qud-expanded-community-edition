@@ -101,6 +101,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Character creation stops promising features you switched off.** Every line this mod adds to a
+  genotype's panel was static text, while the options deciding whether those things happen are read
+  at runtime — so a player who turned off starting skills was still told *"May use Menacing Stare"*,
+  and one who turned off the reputation bonus was still told *"+300 reputation with Joppa"*. Four
+  lines now appear only when the option that delivers them is on, and return to their original place
+  in the list when it goes back on.
+
+  Only lines this mod actually governs move. The Psionic Adept's four chip slots and its Mechanimist
+  standing are its genotype rather than additions to one, and the hit-point and stat-point lines
+  describe vanilla, so all of those stay put whatever the options say.
+
+  The Adept's skill-point line now reads **95 skill points each level** rather than *30 bonus*. The
+  30 was the difference against this fork's own Mutated Human, which is fair enough until you turn
+  the skill-point option off and that baseline moves to 50, leaving the panel quoting a bonus that
+  had become 45. An absolute figure is true under every setting.
+  ([#275](https://github.com/vixygrey/qud-expanded-community-edition/issues/275))
 - **True Kin are told about Ego on the attribute screen too, and only while they have chip slots.**
   The genotype panel gained a Chip Interface line in the same release, but Ego is spent one screen
   later — and there a True Kin still read vanilla's sentence saying Ego governs haggling and
