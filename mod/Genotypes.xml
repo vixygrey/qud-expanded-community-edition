@@ -21,6 +21,7 @@
     <extrainfo>Moderate HP gain and stat points to allocate</extrainfo>
     <extrainfo>+300 reputation with {{C|Joppa}}</extrainfo>
     <extrainfo>May use {{r|Menacing Stare}}</extrainfo>
+    <extrainfo>{{C|1}} Chip Interface slot; {{W|Ego}} raises the mental mutations chips grant</extrainfo>
   </genotype>
 
   <genotype
@@ -37,6 +38,7 @@
       <skill Name="CookingAndGathering_MealPreparation" />
     </skills>
     <extrainfo>Increased HP gain, fewer points to allocate</extrainfo>
+    <extrainfo>{{C|2}} Chip Interface slots; {{W|Ego}} raises the mental mutations chips grant</extrainfo>
   </genotype>
 
   <genotype
@@ -94,7 +96,7 @@
       Name="Ego"
       Minimum="12"
       Maximum="24"
-      ChargenDescription="Your {{W|Ego}} score determines the potency of your ability to haggle with merchants, and your ability to dominate the wills of other living creatures."
+      ChargenDescription="Your {{W|Ego}} score determines the potency of your mental mutations, should you acquire any, your ability to haggle with merchants, and your ability to dominate the wills of other living creatures."
     />
     <skills>
       <skill Name="Tactics_Run" />
@@ -111,5 +113,6 @@
     <extrainfo>Access to cybernetics, lower HP gain</extrainfo>
     <extrainfo>{{C|30}} bonus skill points each level</extrainfo>
     <extrainfo>+300 reputation with {{C|Mechanimists}}</extrainfo>
+    <extrainfo>{{C|4}} Chip Interface slots; {{W|Ego}} raises the mental mutations chips grant</extrainfo>
   </genotype>
 </genotypes>

@@ -285,6 +285,36 @@ This generalises to every attribute-driven extension point in the game, `[HasOpt
 `[OptionFlagUpdate]` included. **The failure mode for a missing registration marker is silence**, so
 check the marker against a working installed mod rather than assuming the interface is sufficient.
 
+## A genotype `<stat>` merge carries three integers, and drops the description
+
+`Load="Merge"` on a `<genotype>` does not merge a `<stat>` the way it merges everything around it.
+`GenotypeEntry.MergeWith` finds the existing stat by name and hands it to `GenotypeStat.MergeWith`,
+which is this in full:
+
+```csharp
+public void MergeWith(GenotypeStat newStat)
+{
+    if (newStat.Minimum != -999) { Minimum = newStat.Minimum; }
+    if (newStat.Maximum != -999) { Maximum = newStat.Maximum; }
+    if (newStat.Bonus   != -999) { Bonus   = newStat.Bonus;   }
+}
+```
+
+Three integers. **`ChargenDescription` is never touched**, so a merge that sets one is a silent
+no-op: well-formed XML, a clean diff, every gate green, and nothing different in game. The stat
+descriptions a player reads while allocating points cannot be changed on a vanilla genotype by any
+additive route.
+
+Found while deciding #227, which wanted True Kin told that Ego drives the mental mutations chips
+grant. It cannot be done that way. What *does* reach a vanilla genotype is **`<extrainfo>`**, which
+`MergeWith` appends to with a duplicate check — the same list holding vanilla's *"Access to
+cybernetics"* and *"May rebuke robots"*. That is the additive route into the chargen panel, and it
+is what #227 used in the end.
+
+> **A merge routine is not uniform across the elements it merges.** Before writing one, read the
+> method for the specific element rather than the one above it — the failure here is silence, not an
+> error, and the diff looks correct.
+
 ## A public field is not a supported setter if something caches what it derives
 
 `PowerEntry.Attribute` and `.Minimum` are public and writable, so I assumed retuning a skill
