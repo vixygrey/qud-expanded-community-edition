@@ -47,6 +47,31 @@ deleting its branch. Recover with
 *before* merging, because it's painful to find afterwards. Better still, don't stack when the base
 will merge soon.
 
+## A closing keyword next to an issue number closes it, even inside a denial
+
+GitHub scans a pull request body for `close`/`closes`/`fix`/`fixes`/`resolve`/`resolves` followed by
+an issue reference, matching it as a **bare substring**. The surrounding grammar is not read. A
+heading written to deny the link still creates it:
+
+```
+## Why this doesn't close #284      <- registers #284 as a closing reference
+```
+
+#286 was written to advance #284 without finishing it and closed it on merge anyway. Nothing else in
+the pull request counted: not the paragraph below that heading listing which acceptance boxes were
+still open, not the commit trailer saying the issue stays open, not a comment on the issue itself
+saying the same. Prose does not outvote a keyword match, and negation, quotes and question marks all
+buy exactly nothing.
+
+**Do instead:** keep the keyword away from the reference in every form — **"Why #N stays open"**,
+**"Part of #N"**, **"advances #N"**. Before merging a pull request that only advances an issue,
+`gh pr view <n> --json closingIssuesReferences` should come back empty; on #286 it returned #284,
+and it would have said so at any point beforehand.
+
+Afterwards, the close event on the issue timeline carries `commit_id: null`. That distinguishes a
+linked-reference close from a commit-message close, and it is the fastest way to find out why an
+issue you did not mean to close is shut.
+
 ## Squash merging invalidates blame-ignore SHAs
 
 `.git-blame-ignore-revs` must list the **squash commit on `main`**, not the commit from the
