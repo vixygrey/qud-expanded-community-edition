@@ -168,6 +168,35 @@ class BlueprintIndex:
                     return not (depth > 0 and value == "*noinherit")
         return False
 
+    def tag_value(self, name: str, tag: str) -> str | None:
+        """The value `tag` resolves to on `name`, or None when it does not reach it.
+
+        Same two directives as `has_tag`, and for the same reasons: `*delete` removes an inherited
+        tag outright, `*noinherit` confines one to the blueprint declaring it. Returning None for
+        both keeps this the value-shaped twin of that method rather than a second set of rules.
+        """
+        for depth, obj in enumerate(self.chain(name)):
+            for el in obj.findall("tag"):
+                if el.get("Name") == tag:
+                    value = el.get("Value")
+                    if value == "*delete" or (depth > 0 and value == "*noinherit"):
+                        return None
+                    return value
+        return None
+
+    def part_attr(self, name: str, part: str, attr: str) -> str | None:
+        """The nearest declaration of `part`'s `attr` on the chain, or None.
+
+        Nearest wins, which is what makes this work over a `Load="Merge"` blueprint: the merge
+        declares only what it changes, so a value the mod overrides is found on the mod's own
+        element and one it leaves alone falls through to the ancestor. Parts have no `*noinherit`.
+        """
+        for obj in self.chain(name):
+            for el in obj.findall("part"):
+                if el.get("Name") == part and el.get(attr) is not None:
+                    return el.get(attr)
+        return None
+
     def has_part(self, name: str, part: str) -> bool:
         """True when `part` is declared anywhere on the chain. Parts have no `*noinherit`."""
         return any(
