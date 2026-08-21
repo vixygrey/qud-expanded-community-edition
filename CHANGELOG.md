@@ -175,6 +175,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- The zetachrome greathammer weighed 5 lbs where the family's rule puts it at 6. Every other war
+  hammer in this fork weighs its one-handed counterpart plus 3 — bronze 4→7 through flawless
+  crysteel 3→6 — and zetachrome was the only one off it, by one.
+
+  Worth saying what this is *not*, because #248 asked whether the whole family was mistuned. It
+  is not. The greathammer curve looks like it wobbles only when read on its own; that shape is
+  vanilla's one-handed curve carried across with a constant added, and fullerite at 9 — the value
+  the issue proposed lowering — is the rule being followed, not broken. One weight was wrong and
+  the other eight were right.
+
+  The rule is now written down in `docs/STYLEGUIDE.md` §3.2, since nothing enforces it and the
+  only previous record of it was the numbers themselves.
+  ([#248](https://github.com/vixygrey/qud-expanded-community-edition/issues/248))
 - **A legendary gunsmith no longer stocks twenty to thirty of this mod's arrows.** The six revived
   arrows are meant to be an occasional find — weight 2 apiece in `Ammo 2` and `Ammo 3`, one or `1d4`
   at a time, which is what #144 tuned. A second route was handing over twenty to thirty in a single

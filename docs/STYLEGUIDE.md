@@ -267,6 +267,16 @@ possible in practice. Match them when adding anything.
   runs 8→2048; vambraces run 4→1024 (half curve, partial slot).
 - **Two-handed variants** get `PenBonus="1"` and a damage bump over the one-handed version, plus
   `UsesTwoSlots="true"`.
+- **Two-handed hammer `Physics` weight is the one-handed weight plus 3** — inventory pounds, not a
+  population table's draw weight — and the one-handed line sits below vanilla's throughout. Every
+  war hammer follows it: bronze 4→7, iron 3→6, steel 3→6, carbide 5→8, folded carbide 4→7,
+  fullerite 6→9, crysteel 3→6, flawless crysteel 3→6, zetachrome 3→6.
+  Read the greathammers on their own and the curve looks like it wobbles: it climbs to fullerite,
+  then falls to the lightest weapon in the family at the top tier. That shape is vanilla's own
+  one-handed curve, compressed and carried across with a constant added, so the wobble is
+  inherited rather than introduced and there is no monotonic curve here to restore. Nothing checks
+  this, so check it by hand when you add a tier — #248 read the two-handed half in isolation and
+  proposed bringing fullerite down from 9, which was the one value the rule required.
 - **Agility-scaling martials** are a deliberate theme: vinereapers, halberds, rapiers, katanas and
   war hammers all use `Stat="Agility"` while keeping their tree's skill.
 - **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
