@@ -1719,7 +1719,7 @@
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="5d6+2" Stat="Agility" />
     <part Name="Commerce" Value="1200" />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight="5" />
+    <part Name="Physics" Weight="6" />
   </object>
 
   <!-- rework these or remove them
