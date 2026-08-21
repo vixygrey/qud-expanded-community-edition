@@ -655,6 +655,34 @@ This is the same principle as the positive control two lessons up, one level out
 test suite that needs a case which must pass, here it is any search, grep or patch whose silence
 you are about to treat as evidence.
 
+## A change to a dynamic pool has one witness, and you have to go and find him
+
+A `DynamicObjectsTable:X` change is observable only through whatever consumes that pool, and the
+list is shorter than it looks. `DynamicObjectsTable:Guns` has **exactly one** consumer,
+`GunsmithInventory_Legendary`. `DynamicObjectsTable:Ammo` has that and `RandomItem` at weight 5.
+
+`Gunsmith` carries the legendary table as `HeroTable`, and `GenericInventoryRestocker` reaches for
+it only when `ParentObject.GetIntProperty("Hero") > 0`. **An ordinary gunsmith never touches it**,
+so wishing one and reading his stock tests nothing at all — which is the shape of mistake worth
+avoiding here, because it looks exactly like a test that passed.
+
+There is no shortcut to a hero. `HeroMaker.MakeHero` is a method with no wish exposing it, and no
+wish rolls a population table. Both read out of the assembly rather than assumed, after looking for
+one.
+
+**And one sighting is not a test, because these changes are removals.** Verifying a removal means
+confirming an absence, and a pool you took six arrows out of looks identical to one you did not in
+any sample where the roll would not have picked them anyway. It takes several legendary gunsmiths
+before an absence means anything, and they are not common.
+
+So the honest cost of play-testing a pool change is: find a legendary merchant of the right kind,
+repeatedly, and then reason carefully about what you did not see. That is why #303 exists — the
+membership belongs in a snapshot that fails loudly, not in a habit of looking. #261 and #262 were
+both verified from `tools/report_dynamic_tables.py` for this reason, and moved to Staging on it.
+
+Worth pairing with *A search that finds nothing has two explanations* above: an empty merchant stock
+and an empty search result fail the same way, by looking like an answer.
+
 ## Rescaling a per-action budget to per-hit has to clear whatever decays per turn
 
 The cryo arrow puts −50 on a target per action. A shell spends one piece of ammunition per action
