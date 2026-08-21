@@ -145,13 +145,27 @@ class BlueprintIndex:
     def has_tag(self, name: str, tag: str) -> bool:
         """True when `tag` reaches `name`, whether declared on it or inherited.
 
-        The nearest declaration decides. A `*noinherit` value found on an ancestor means the tag
-        stops there and does not reach `name`; the same value on `name` itself still applies.
+        The nearest declaration decides, and two values are directives rather than data. They are
+        the only two: across every vanilla blueprint, tag values beginning with `*` are
+        `*noinherit` (951) and `*delete` (126), plus a bare `*` twice that is an ordinary wildcard
+        value on `PaintWith` and `Species`.
+
+        `*noinherit` confines the tag to the blueprint declaring it - found on an ancestor it means
+        the tag stops there, found on `name` itself it still applies. That is how
+        `Raven_Base Psionic Pistol` marks itself a base without making its descendants bases.
+
+        `*delete` removes an inherited tag outright, so it is false wherever it is found. Vanilla
+        uses it to take `Corpse` out of `DynamicObjectsTable:Items` and `FoldingChair` out of
+        `:Trinkets`, among 126 others. Missing it made this over-report - counting blueprints as
+        pool members that the game had explicitly removed (#261).
         """
         for depth, obj in enumerate(self.chain(name)):
             for el in obj.findall("tag"):
                 if el.get("Name") == tag:
-                    return not (depth > 0 and el.get("Value") == "*noinherit")
+                    value = el.get("Value")
+                    if value == "*delete":
+                        return False
+                    return not (depth > 0 and value == "*noinherit")
         return False
 
     def has_part(self, name: str, part: str) -> bool:

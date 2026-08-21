@@ -116,6 +116,38 @@ class NoInheritTagResolution(unittest.TestCase):
         )
         self.assertTrue(i.has_part("Child", "Render"))
 
+    def test_delete_removes_an_inherited_tag(self) -> None:
+        """Vanilla takes Corpse out of DynamicObjectsTable:Items exactly this way."""
+        i = self.index(
+            "<objects>"
+            '  <object Name="Item"><tag Name="T" /></object>'
+            '  <object Name="Corpse" Inherits="Item"><tag Name="T" Value="*delete" /></object>'
+            "</objects>"
+        )
+        self.assertTrue(i.has_tag("Item", "T"))
+        self.assertFalse(i.has_tag("Corpse", "T"))
+
+    def test_delete_also_stops_it_reaching_descendants(self) -> None:
+        i = self.index(
+            "<objects>"
+            '  <object Name="Item"><tag Name="T" /></object>'
+            '  <object Name="Corpse" Inherits="Item"><tag Name="T" Value="*delete" /></object>'
+            '  <object Name="Robot Corpse" Inherits="Corpse" />'
+            "</objects>"
+        )
+        self.assertFalse(i.has_tag("Robot Corpse", "T"))
+
+    def test_a_nearer_plain_declaration_beats_a_deleted_ancestor(self) -> None:
+        """*delete is not permanent - a descendant may declare the tag again."""
+        i = self.index(
+            "<objects>"
+            '  <object Name="A"><tag Name="T" /></object>'
+            '  <object Name="B" Inherits="A"><tag Name="T" Value="*delete" /></object>'
+            '  <object Name="C" Inherits="B"><tag Name="T" /></object>'
+            "</objects>"
+        )
+        self.assertTrue(i.has_tag("C", "T"))
+
     def test_a_cycle_terminates(self) -> None:
         i = self.index(
             "<objects>"

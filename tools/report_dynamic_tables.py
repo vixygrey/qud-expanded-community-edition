@@ -123,6 +123,11 @@ def collect(
         for el in index.objects[name].findall("tag"):
             tag = el.get("Name") or ""
             if tag.startswith(TAG_PREFIX):
+                # A *delete is a declaration that the tag does NOT apply. Listing it as a route
+                # would name Corpse as putting things in DynamicObjectsTable:Items when vanilla
+                # explicitly takes it out (#261).
+                if el.get("Value") == "*delete":
+                    continue
                 tables.setdefault(
                     tag,
                     {
