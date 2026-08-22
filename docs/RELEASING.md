@@ -87,10 +87,35 @@ gh release create vX.Y.Z --title "X.Y.Z — short title" --notes-file <notes>
 ```
 
 **This is the step that serves everyone not on Steam.** The tag is also the third place the
-version
-lives, and the one nothing can check: on the release commit the manifest and changelog already say
-`X.Y.Z` while the tag does not exist yet, so a validator including it would fail the very commit
-that creates a release.
+version lives, and the one nothing can check: on the release commit the manifest and changelog
+already say `X.Y.Z` while the tag does not exist yet, so a validator including it would fail the
+very commit that creates a release.
+
+### Attach the zip, and do not skip this
+
+```bash
+cd "$(mktemp -d)"
+cp -R "$HOME/Library/Application Support/com.FreeholdGames.CavesOfQud/Mods/qud-expanded-community-edition" \
+      QudExpandedCommunityEdition
+zip -qr QudExpandedCommunityEdition-X.Y.Z.zip QudExpandedCommunityEdition
+gh release upload vX.Y.Z QudExpandedCommunityEdition-X.Y.Z.zip
+```
+
+The contents of `mod/`, under a folder named for the manifest id, built from the install step 6
+already verified. Around 175 KB and 86 entries.
+
+**A release without it is not empty, which is the trap.** GitHub generates a source zip for any tag,
+so the page still offers a download — of the whole repository, `tools/` and `docs/` and all. A
+player who takes that and drops it in `Mods/` gets the repo rather than the mod. The failure is not
+a missing file, it is a plausible wrong one, offered to exactly the players this step exists for.
+2.5.1 went out without the asset for twenty minutes for this reason (#312).
+
+Check two things before uploading, because they are the two ways it goes wrong quietly:
+
+```bash
+unzip -p <zip> QudExpandedCommunityEdition/manifest.json | grep version   # not a stale build
+unzip -l <zip> | grep -ciE 'tools/|docs/|\.github'                        # not the source tree
+```
 
 ## 8. Move the board
 
@@ -110,4 +135,6 @@ pull request is not Done, and neither is a Workshop upload on its own.
 - [ ] `python3 tools/sync_mod.py --publish`
 - [ ] Uploaded through Caves of Qud's uploader, notes pasted into the change note
 - [ ] Tagged, pushed, and a GitHub release created with the same notes
+- [ ] `QudExpandedCommunityEdition-X.Y.Z.zip` built and attached — **this is what non-Steam players
+      install**, and GitHub's auto source zip is not a substitute
 - [ ] Board: Staging → Done
