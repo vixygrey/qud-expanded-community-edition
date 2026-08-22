@@ -170,6 +170,32 @@ file pattern: what it catches is a Qud update, which correlates with nothing in 
 game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
 contributor who has none of them. `--require` turns that skip into a failure.
 
+To have that check run rather than skip, install both — the .NET SDK (`brew install dotnet`) and
+`ilspycmd`:
+
+```bash
+dotnet tool install -g ilspycmd
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+
+**That `export` is required even though you just installed the tool, and the reason is worth
+knowing**, because everything looks correct without it. The .NET installer writes its own PATH
+entry to `/etc/paths.d/dotnet-cli-tools`, and the contents are the *literal* string
+`~/.dotnet/tools`. `path_helper` copies entries out of that directory verbatim and never expands
+`~`, so the entry resolves to a directory named `~` and matches nothing. The result is a path that
+is visibly present in `echo $PATH` while every binary under it stays unreachable:
+
+```bash
+$ echo $PATH | tr ':' '\n' | grep dotnet
+/usr/local/share/dotnet
+~/.dotnet/tools          # present, and inert
+$ command -v ilspycmd    # nothing
+```
+
+Put the `export` in your shell profile with `$HOME` spelled out, not `~`. Until you do, the hook
+skips on every commit — which it does loudly, so it is a visible no-op rather than a false pass, but
+it is still a check that never runs.
+
 ### Checking the wiki's links into this repository
 
 The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) links into this
@@ -219,31 +245,6 @@ python3 tools/report_dynamic_tables.py --snapshot  # when the change is delibera
 
 Like the compile hook, it needs the game — `BaseArrow` is vanilla, so a mod-only run would miss the
 tag that matters most — and skips loudly without it. `--require` turns the skip into a failure.
-
-It needs the .NET SDK (`brew install dotnet`) and `ilspycmd`:
-
-```bash
-dotnet tool install -g ilspycmd
-export PATH="$PATH:$HOME/.dotnet/tools"
-```
-
-**That `export` is required even though you just installed the tool, and the reason is worth
-knowing**, because everything looks correct without it. The .NET installer writes its own PATH
-entry to `/etc/paths.d/dotnet-cli-tools`, and the contents are the *literal* string
-`~/.dotnet/tools`. `path_helper` copies entries out of that directory verbatim and never expands
-`~`, so the entry resolves to a directory named `~` and matches nothing. The result is a path that
-is visibly present in `echo $PATH` while every binary under it stays unreachable:
-
-```bash
-$ echo $PATH | tr ':' '\n' | grep dotnet
-/usr/local/share/dotnet
-~/.dotnet/tools          # present, and inert
-$ command -v ilspycmd    # nothing
-```
-
-Put the `export` in your shell profile with `$HOME` spelled out, not `~`. Until you do, the hook
-skips on every commit — which it does loudly, so it is a visible no-op rather than a false pass, but
-it is still a check that never runs.
 
 ## Two things that will save you pain
 
