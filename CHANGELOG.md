@@ -259,6 +259,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `CONTRIBUTING.md`'s .NET SDK and `ilspycmd` instructions sat under
+  *Seeing what a `DynamicObjectsTable:` tag distributes*, a section about a tool that needs neither
+  — `report_dynamic_tables.py` parses XML and runs fine under `PATH=/usr/bin:/bin`. They belong to
+  `snapshot_qud_api.py`, two sections up, and have moved there.
+
+  Both halves of that were doing harm. Someone reading about dynamic tables was told to install a
+  decompiler they do not need, and might reasonably conclude the tool was out of reach. And the
+  `path_helper` explanation — the reason `command -v` finding nothing does not mean a tool is
+  missing — was orphaned from the hook it explains, which is the one place the person who needs it
+  would look.
+
+  The block's own last line gave it away: *"Until you do, the hook skips on every commit"*,
+  singular, describing the `snapshot-check` hook. The dynamic-tables section had no hook at all
+  when that was written.
+  ([#307](https://github.com/vixygrey/qud-expanded-community-edition/issues/307))
 - **The scour slug now tells you it is a 5% chance.** Its rules text read *"Rusts a piece of what
   the target is carrying"*, which reads as something that happens when you hit. It happens about one
   hit in twenty — roughly two dozen slugs per rusted item, which is the tuning #146 chose
