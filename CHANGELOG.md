@@ -14,6 +14,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-08-21
+
 ### Added
 
 - **(internal)** `docs/RELEASING.md` writes down what a release takes, and a `Release` issue
