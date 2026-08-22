@@ -341,11 +341,17 @@ span with no run and it should be the rarest thing in its table.
 
 Nothing checks any of this.
 
-**Whichever you use, run `tools/report_dynamic_tables.py`.** A tag inherits, so the blueprint
-carrying it is usually not the blueprint being distributed: `BaseArrow` is vanilla and puts six of
-this fork's arrows in the ammunition pool, and two psionic *base* blueprints put all eighteen psionic
-firearms into legendary gunsmith stock. Both were invisible until that tool existed, and #223
-described the first while missing the second on the same page.
+**Whichever you use, `tools/report_dynamic_tables.py --check` runs on every commit.** A tag
+inherits, so the blueprint carrying it is usually not the blueprint being distributed. `BaseArrow`
+is vanilla and *did* put six of this fork's arrows in the ammunition pool, and two psionic *base*
+blueprints put all eighteen psionic firearms into legendary gunsmith stock. Both were invisible
+until that tool existed, #223 described the first while missing the second on the same page, and
+both were corrected in #261 and #262.
+
+Membership is now pinned in `tools/dynamic-pools.json`, so a blueprint arriving in a pool fails a
+commit rather than waiting to be noticed. Run the tool without `--check` to see the route, and
+`--snapshot` to accept a change deliberately. It needs the game and skips loudly without it — the
+tags that decide this live on vanilla blueprints, so nothing in CI can check it (#303).
 
 ---
 

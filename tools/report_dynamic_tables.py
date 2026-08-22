@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import json
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -35,6 +36,7 @@ from check_vanilla_drift import BlueprintIndex, find_game, load_all
 
 MOD_DIR = Path("mod")
 TAG_PREFIX = "DynamicObjectsTable:"
+SNAPSHOT_PATH = Path("tools/dynamic-pools.json")
 
 
 def merged_objects(
@@ -220,6 +222,42 @@ def report(tables: dict[str, dict]) -> None:
     print("^ inherits the tag from a base this mod wrote; ~ inherits it from vanilla.")
 
 
+def snapshot_of(tables: dict[str, dict]) -> dict[str, dict[str, list[str]]]:
+    """The comparable part of a report: which of this mod's blueprints each pool reaches.
+
+    Deliberately not `declared_on`, which names vanilla blueprints like `Item` and `MeleeWeapon`
+    and would turn any Qud update into a diff about vanilla's own structure. `reaches` already
+    catches the case that matters - a vanilla base gaining a pooled tag shows up as this mod's
+    blueprints arriving in a pool, which is the thing worth being told about.
+    """
+    return {
+        tag: {
+            "reaches": sorted(data["reaches"]),
+            "conditional": sorted(data["conditional"]),
+        }
+        for tag, data in sorted(tables.items())
+        if data["reaches"] or data["conditional"]
+    }
+
+
+def describe_drift(old: dict, new: dict) -> list[str]:
+    """Every difference between two snapshots, as lines a person can act on."""
+    out: list[str] = []
+    for tag in sorted(set(old) | set(new)):
+        if tag not in old:
+            out.append(f"{tag}: pool is new to this mod")
+        elif tag not in new:
+            out.append(f"{tag}: this mod no longer reaches this pool")
+        for field in ("reaches", "conditional"):
+            was = set(old.get(tag, {}).get(field, ()))
+            now = set(new.get(tag, {}).get(field, ()))
+            for name in sorted(now - was):
+                out.append(f"{tag}: {name} is now in this pool ({field})")
+            for name in sorted(was - now):
+                out.append(f"{tag}: {name} is no longer in this pool ({field})")
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--game", help="path to StreamingAssets/Base")
@@ -227,6 +265,16 @@ def main() -> int:
         "--require",
         action="store_true",
         help="fail instead of skipping when the game is missing",
+    )
+    ap.add_argument(
+        "--snapshot",
+        action="store_true",
+        help=f"rewrite {SNAPSHOT_PATH} (deliberate, reviewed in the diff)",
+    )
+    ap.add_argument(
+        "--check",
+        action="store_true",
+        help=f"compare against {SNAPSHOT_PATH} and fail on any difference",
     )
     args = ap.parse_args()
 
@@ -275,8 +323,49 @@ def main() -> int:
                     mod_declared.setdefault(tag, set()).add(obj.get("Name"))
 
     index = BlueprintIndex(merged_objects(van_roots, mod_roots))
+    tables = collect(index, new_names, mod_declared)
+
+    if args.snapshot:
+        SNAPSHOT_PATH.write_text(
+            json.dumps(snapshot_of(tables), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(f"Wrote {SNAPSHOT_PATH}. Review the diff before committing it.")
+        return 0
+
+    if args.check:
+        if not SNAPSHOT_PATH.exists():
+            print(
+                f"ERROR - {SNAPSHOT_PATH} is missing. Create it with:\n"
+                "  python3 tools/report_dynamic_tables.py --snapshot",
+                file=sys.stderr,
+            )
+            return 1
+        drift = describe_drift(
+            json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8")), snapshot_of(tables)
+        )
+        if drift:
+            print(
+                f"FAIL - {len(drift)} change(s) to dynamic pool membership:",
+                file=sys.stderr,
+            )
+            for line in drift:
+                print(f"  {line}", file=sys.stderr)
+            print(
+                "\nA tag inherits, so this is usually not the blueprint you edited - "
+                "run the report without --check to see the route.\nIf the change is intended:\n"
+                "  python3 tools/report_dynamic_tables.py --snapshot",
+                file=sys.stderr,
+            )
+            return 1
+        pools = len(snapshot_of(tables))
+        print(
+            f"OK - dynamic pool membership matches {SNAPSHOT_PATH} across {pools} pool(s)"
+        )
+        return 0
+
     print(f"{len(new_names)} blueprint(s) introduced by this mod\n")
-    report(collect(index, new_names, mod_declared))
+    report(tables)
     return 0
 
 

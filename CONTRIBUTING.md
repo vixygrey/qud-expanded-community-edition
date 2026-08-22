@@ -204,10 +204,18 @@ carrying one is usually not the blueprint being distributed.
 python3 tools/report_dynamic_tables.py
 ```
 
-It reports rather than fails — [#263](https://github.com/vixygrey/qud-expanded-community-edition/issues/263)
-has yet to decide which tags should stay. Output separates what this fork declares from what it
-inherits from vanilla, because only the first is a decision anyone here made: `DynamicObjectsTable:Items`
-reaches 325 of the fork's blueprints and that is simply how vanilla distributes items.
+Output separates what this fork declares from what it inherits from vanilla, because only the first
+is a decision anyone here made: `DynamicObjectsTable:Items` reaches 325 of the fork's blueprints and
+that is simply how vanilla distributes items.
+
+**`--check` fails.** Membership is pinned in `tools/dynamic-pools.json` and a `pre-commit` hook
+compares against it, so a blueprint arriving in or leaving a pool is reported rather than noticed
+later. When the change is intended, `--snapshot` rewrites the file and the diff is the review:
+
+```bash
+python3 tools/report_dynamic_tables.py --check     # the hook
+python3 tools/report_dynamic_tables.py --snapshot  # when the change is deliberate
+```
 
 Like the compile hook, it needs the game — `BaseArrow` is vanilla, so a mod-only run would miss the
 tag that matters most — and skips loudly without it. `--require` turns the skip into a failure.
