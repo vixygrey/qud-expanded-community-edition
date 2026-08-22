@@ -281,6 +281,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/RELEASING.md` and the release issue template now cover the release zip.
+  Step 7 said to tag and run `gh release create` and stopped, but every release also attaches
+  `QudExpandedCommunityEdition-X.Y.Z.zip` — the contents of `mod/` under a folder named for the
+  manifest id, and the thing players outside Steam actually install.
+
+  The omission is worse than a missing step. GitHub generates a source zip for any tag, so the
+  release page is never empty — it offers the whole repository, `tools/` and `docs/` included. A
+  player who takes that and drops it in `Mods/` gets the repo rather than the mod. The failure is a
+  plausible wrong file, not an absent one, aimed at exactly the players the GitHub release exists
+  for.
+
+  Found by following the document on 2.5.1, which is the first release cut against it, and noticed
+  only because 2.5.0 and 2.4.0 each show one asset where mine showed none.
+  ([#312](https://github.com/vixygrey/qud-expanded-community-edition/issues/312))
 - **(internal)** `CONTRIBUTING.md`'s .NET SDK and `ilspycmd` instructions sat under
   *Seeing what a `DynamicObjectsTable:` tag distributes*, a section about a tool that needs neither
   — `report_dynamic_tables.py` parses XML and runs fine under `PATH=/usr/bin:/bin`. They belong to
