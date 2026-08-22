@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/RELEASING.md` writes down what a release takes, and a `Release` issue
+  template tracks each one on the board. Four releases in, the process lived only in my head, and
+  two of its seven steps are invisible until somebody complains.
+
+  The one worth stating plainly is that **a release is two publications and neither implies the
+  other**. Steam is where the subscribers are, so it is easy to treat the Workshop upload as the
+  release — but GOG, itch and Linux players install from the GitHub release zip, and for them a
+  Workshop upload is not a release at all.
+
+  The template asks for save compatibility as a required field, because it is the first thing any
+  player wants and the easiest to leave until last.
+- **(internal)** `validate_mod.py` fails when `manifest.json`'s version and `CHANGELOG.md`'s newest
+  released heading disagree. The version is kept in three places by hand and nothing held any two
+  of them together.
+
+  The git tag is deliberately outside the check, and that is the interesting part: on the commit
+  that creates a release the manifest and changelog already say the new version while the tag does
+  not exist yet, so including it would fail the very commit that makes a release. Two of the three
+  is what can be held honestly, and `docs/RELEASING.md` carries the third.
+  ([#309](https://github.com/vixygrey/qud-expanded-community-edition/issues/309))
 - **(internal)** Dynamic pool membership is pinned in `tools/dynamic-pools.json`, and
   `tools/report_dynamic_tables.py --check` fails on any change to it. A `pre-commit` hook runs it on
   every commit in ~0.2s; `--snapshot` rewrites the file when a change is intended, so the diff is

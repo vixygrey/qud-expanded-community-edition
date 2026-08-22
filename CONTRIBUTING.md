@@ -89,6 +89,9 @@ sentence.
 So if your change merges and the board doesn't move to Done, nothing is wrong — it's in Staging, and
 you'll see it in the changelog when a release is cut.
 
+Cutting one is mine to do and [`docs/RELEASING.md`](docs/RELEASING.md) is how, if you ever want to
+know what your change is waiting on.
+
 ### Pull requests
 
 - **The title must be a conventional commit too.** It becomes the squash commit message, and CI

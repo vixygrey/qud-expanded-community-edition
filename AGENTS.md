@@ -15,6 +15,7 @@ in them applies to a contribution you're helping someone else write.
 | [`docs/LESSONS.md`](docs/LESSONS.md) | Traps already hit, mostly about Qud itself. Reading it will save you rediscovering them. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Workflow: issue first, conventional commits with repo-specific scopes, changelog entry required on every pull request. |
 | [`docs/FEATURES.md`](docs/FEATURES.md) | What the mod does. §10 is the backlog, with a file and line per row. |
+| [`docs/RELEASING.md`](docs/RELEASING.md) | How a release is cut. Two publications, and neither implies the other. |
 
 ## The things most likely to trip you
 

@@ -336,6 +336,52 @@ class MutationTypeArguments(unittest.TestCase):
         self.assertIn("unknown-mutation", codes)
 
 
+class VersionAgreesWithChangelog(unittest.TestCase):
+    """#309. The version lives in three places by hand and nothing held any two together.
+
+    The git tag is deliberately outside this. On the commit that creates a release the manifest
+    and the changelog both say the new version and the tag does not exist yet, so a check
+    including it would fail the release commit itself.
+    """
+
+    def findings(self, version: str, changelog: str) -> list[tuple[str, str]]:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "CHANGELOG.md").write_text(changelog, encoding="utf-8")
+            with chdir(root):
+                f = validate_mod.Findings()
+                validate_mod.check_version_matches_changelog(f, version)
+                return f.items
+
+    def test_agreement_passes(self) -> None:
+        self.assertEqual(
+            self.findings("2.5.0", "## [Unreleased]\n\n## [2.5.0] - 2026-08-19\n"), []
+        )
+
+    def test_a_manifest_bumped_alone_is_reported(self) -> None:
+        """The ordinary mistake: bump the manifest, forget to roll the changelog."""
+        items = self.findings("2.6.0", "## [Unreleased]\n\n## [2.5.0] - 2026-08-19\n")
+        self.assertTrue(items)
+        self.assertIn("2.6.0", items[0][1])
+        self.assertIn("2.5.0", items[0][1])
+
+    def test_unreleased_is_not_mistaken_for_a_release(self) -> None:
+        """`[Unreleased]` is always the first heading, and is never the answer."""
+        items = self.findings("2.5.0", "## [Unreleased]\n\n## [2.4.0] - 2026-08-18\n")
+        self.assertTrue(items, "the newest *released* heading is 2.4.0, not Unreleased")
+
+    def test_a_changelog_with_no_release_is_reported(self) -> None:
+        items = self.findings("2.5.0", "## [Unreleased]\n")
+        self.assertTrue(items)
+        self.assertIn("no released version heading", items[0][1])
+
+    def test_a_missing_changelog_is_not_this_check_s_business(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, chdir(Path(tmp)):
+            f = validate_mod.Findings()
+            validate_mod.check_version_matches_changelog(f, "2.5.0")
+            self.assertEqual(f.items, [])
+
+
 class Constants(unittest.TestCase):
     def test_covers_every_prefix_the_validator_claims(self) -> None:
         """The tie between the tests' own list and the real constant.

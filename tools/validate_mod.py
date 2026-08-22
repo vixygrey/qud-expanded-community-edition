@@ -233,6 +233,43 @@ def check_manifest(f: Findings) -> None:
     if "Mura" not in author:
         f.add("manifest", "manifest.json author does not credit Mura — charter rule 3")
 
+    check_version_matches_changelog(f, str(data.get("version", "")))
+
+
+def check_version_matches_changelog(f: Findings, version: str) -> None:
+    """manifest.json's version and CHANGELOG.md's newest released heading must agree.
+
+    The version lives in three places by hand - here, the changelog, and the git tag - and nothing
+    held any two of them together. Bumping one and forgetting another is an ordinary mistake that
+    ships a stale version to every subscriber's mod list.
+
+    The tag is deliberately not part of this. At the moment a release commit lands, the manifest
+    and the changelog both say the new version and the tag does not exist yet, so including it
+    would fail the very commit that creates a release. Two of the three is what can be held
+    honestly; the third is a line on the release checklist (#309).
+    """
+    changelog = Path("CHANGELOG.md")
+    if not version or not changelog.is_file():
+        return
+    released = [
+        m.group(1)
+        for m in re.finditer(
+            r"^## \[([^\]]+)\]", changelog.read_text(encoding="utf-8"), re.MULTILINE
+        )
+        if m.group(1).lower() != "unreleased"
+    ]
+    if not released:
+        f.add(
+            "manifest", "CHANGELOG.md has no released version heading to check against"
+        )
+        return
+    if released[0] != version:
+        f.add(
+            "manifest",
+            f"manifest.json version is {version!r} but CHANGELOG.md's newest release is "
+            f"{released[0]!r} - bump both together, or roll [Unreleased] into a new heading",
+        )
+
 
 def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Guard the slider constraint that crashes Qud.
