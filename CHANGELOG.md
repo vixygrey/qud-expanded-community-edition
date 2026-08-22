@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Dynamic pool membership is pinned in `tools/dynamic-pools.json`, and
+  `tools/report_dynamic_tables.py --check` fails on any change to it. A `pre-commit` hook runs it on
+  every commit in ~0.2s; `--snapshot` rewrites the file when a change is intended, so the diff is
+  the review.
+
+  Verified by reproducing the real defect: deleting one of the six `Value="*delete"` tags that
+  fixed #261 puts `Raven_Blaze Arrow` back in the ammunition pool, and the check names both the
+  blueprint and the newly-appearing pool.
+
+  **It cannot run in CI, and that is not an oversight.** The tags that decide membership sit on
+  *vanilla* blueprints — `BaseArrow` carries `DynamicObjectsTable:Ammo` — so no runner can see them.
+  A mod-only version would report the arrows out of the pool today and be right by luck, while
+  missing a new blueprint that inherits `BaseArrow` and forgets the `*delete`, which is the entire
+  regression. So it joins `compile_scripting.py` and the API snapshot as a local check that skips
+  loudly without the game.
+  ([#303](https://github.com/vixygrey/qud-expanded-community-edition/issues/303))
 - **(internal)** `docs/LESSONS.md` records what it actually costs to play-test a change to a
   `DynamicObjectsTable` pool. `DynamicObjectsTable:Guns` has exactly one consumer,
   `GunsmithInventory_Legendary`, which `Gunsmith` carries as a `HeroTable` — so an ordinary gunsmith

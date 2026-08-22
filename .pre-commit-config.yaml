@@ -104,6 +104,22 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # always_run for the same reason as the hook above, and it is the cheaper of the two at
+      # ~0.2s. Pool membership is decided by tags on VANILLA base blueprints - BaseArrow carries
+      # DynamicObjectsTable:Ammo - so a Qud update can move it with nothing in this repository's
+      # diff to notice. A files pattern would miss exactly that.
+      #
+      # Not in CI, and it cannot be: no runner has the game, and without it the vanilla half of
+      # the inheritance is invisible. A mod-only version of this check would report 0 arrows in
+      # the ammo pool and be right by luck, while missing a new blueprint inheriting BaseArrow -
+      # which is the regression it exists to catch (#303). Skips loudly without the game.
+      - id: dynamic-pools
+        name: check dynamic pool membership matches the snapshot (skips without Qud)
+        entry: python3 tools/report_dynamic_tables.py --check
+        language: system
+        pass_filenames: false
+        always_run: true
+
       # Manual stage deliberately. This reads a verdict Caves of Qud wrote on the last launch, so
       # as an automatic hook it would fail in two situations that are not defects: mid-work, when
       # C# has been edited but the game not relaunched, and on any machine without the game

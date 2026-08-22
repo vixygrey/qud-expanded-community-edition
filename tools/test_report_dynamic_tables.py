@@ -20,7 +20,14 @@ from unittest import mock
 
 import report_dynamic_tables
 from check_vanilla_drift import BlueprintIndex
-from report_dynamic_tables import collect, declarer, eligible, merged_objects
+from report_dynamic_tables import (
+    collect,
+    declarer,
+    describe_drift,
+    eligible,
+    merged_objects,
+    snapshot_of,
+)
 
 
 def roots(*xml: str) -> list[ET.Element]:
@@ -180,6 +187,62 @@ class Collect(unittest.TestCase):
         data = tables["DynamicObjectsTable:Guns"]
         self.assertEqual(data["conditional"], ["X"])
         self.assertEqual(data["reaches"], [])
+
+
+class Snapshot(unittest.TestCase):
+    """#303. Nothing enforced pool membership, so #261 and #262 could come back in silence.
+
+    The check has to see vanilla to work at all. `BaseArrow` carries `DynamicObjectsTable:Ammo`,
+    so a mod-only index would report the arrows out of the pool and be right by luck, while
+    missing a *new* blueprint inheriting `BaseArrow` - which is the whole regression. That is why
+    this is a local hook and not CI.
+    """
+
+    def index(self, extra: str = "") -> BlueprintIndex:
+        return BlueprintIndex(
+            roots(
+                "<objects>"
+                '<object Name="BaseArrow"><tag Name="DynamicObjectsTable:Ammo" />'
+                '<part Name="Render" /></object>'
+                '<object Name="ModArrow" Inherits="BaseArrow">'
+                '<tag Name="DynamicObjectsTable:Ammo" Value="*delete" /></object>'
+                + extra
+                + "</objects>"
+            )
+        )
+
+    def snap(self, index: BlueprintIndex, names: set[str]) -> dict:
+        return snapshot_of(collect(index, names, {}))
+
+    def test_a_deleted_tag_keeps_the_pool_out_of_the_snapshot(self) -> None:
+        self.assertEqual(self.snap(self.index(), {"ModArrow"}), {})
+
+    def test_a_new_blueprint_inheriting_a_vanilla_pool_is_caught(self) -> None:
+        """The #261 regression exactly: inherit `BaseArrow` and forget the `*delete`."""
+        before = self.snap(self.index(), {"ModArrow"})
+        after = self.snap(
+            self.index('<object Name="NewArrow" Inherits="BaseArrow" />'),
+            {"ModArrow", "NewArrow"},
+        )
+        drift = describe_drift(before, after)
+        self.assertTrue(drift, "a blueprint joining a pool must be reported")
+        self.assertIn("NewArrow", " ".join(drift))
+        self.assertIn("pool is new to this mod", " ".join(drift))
+
+    def test_a_removed_declaration_is_caught(self) -> None:
+        drift = describe_drift({"P": {"reaches": ["A"], "conditional": []}}, {})
+        self.assertIn("no longer reaches", " ".join(drift))
+
+    def test_snapshot_omits_pools_it_reaches_nothing_in(self) -> None:
+        """An empty pool is noise: vanilla declares many this mod never touches."""
+        snap = snapshot_of(
+            {"P": {"reaches": [], "conditional": [], "declared_on": ["X"], "via": {}}}
+        )
+        self.assertEqual(snap, {})
+
+    def test_identical_snapshots_report_no_drift(self) -> None:
+        one = {"P": {"reaches": ["A", "B"], "conditional": []}}
+        self.assertEqual(describe_drift(one, dict(one)), [])
 
 
 class WithoutTheGame(unittest.TestCase):
