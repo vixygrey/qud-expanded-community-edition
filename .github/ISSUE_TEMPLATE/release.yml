@@ -1,0 +1,79 @@
+name: Release
+description: Cut a release — Workshop upload and GitHub release, tracked in one place.
+title: "Release X.Y.Z"
+labels: ["chore"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For me rather than for contributors, but public like everything else here.
+
+        [`docs/RELEASING.md`](https://github.com/vixygrey/qud-expanded-community-edition/blob/main/docs/RELEASING.md)
+        carries the reasoning for each step. This is the tracking copy.
+
+        **A release is two publications and neither implies the other.** Steam is where the
+        subscribers are, but GOG, itch and Linux players install from the GitHub release zip — miss
+        the tag and they get nothing, silently.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Chosen against docs/STYLEGUIDE.md §7.2.1 — patch, minor, or major.
+      placeholder: "2.6.0"
+    validations:
+      required: true
+
+  - type: input
+    id: saves
+    attributes:
+      label: Save compatibility
+      description: What a player on the previous release needs to do. This is the first line of the notes.
+      placeholder: "A 2.5.x character carries over — no new character needed."
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Player-facing notes
+      description: |
+        One piece of prose used twice — the GitHub release body, and the change note pasted into
+        Caves of Qud's uploader. Written for a player: what changed and what it means for a
+        character they are already running. The reasoning lives in CHANGELOG.md and the issues.
+      placeholder: |
+        **A 2.5.x character carries over** — no new character needed.
+
+        ## Added
+        ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: prepare
+    attributes:
+      label: Prepare
+      options:
+        - label: "`CHANGELOG.md` rolled — `[Unreleased]` becomes `[X.Y.Z] - YYYY-MM-DD`, fresh `[Unreleased]` opened"
+        - label: "`manifest.json` version bumped (the validator holds this against the changelog)"
+        - label: "`workshop.json` — **New in X.Y.Z** replaced, the previous section removed, still under 8,000 characters"
+        - label: "`python3 tools/validate_mod.py` passes"
+
+  - type: checkboxes
+    id: publish
+    attributes:
+      label: Publish
+      options:
+        - label: "`python3 tools/sync_mod.py --publish`"
+        - label: "Uploaded through Caves of Qud's own uploader"
+        - label: "Player-facing notes pasted into the uploader's change note"
+        - label: "Tagged and pushed — `git tag -a vX.Y.Z && git push origin vX.Y.Z`"
+        - label: "GitHub release created with the same notes — **this is what non-Steam players install**"
+
+  - type: checkboxes
+    id: after
+    attributes:
+      label: After
+      options:
+        - label: "Board: everything in Staging moved to Done"
+        - label: "Wiki checked for anything this release makes true or false — it has no version selector"
