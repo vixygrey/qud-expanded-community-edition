@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9), two (§4) and three (§5) are all settled; question four (§6) is open.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). **All four questions are settled** — §3.9, §4, §5 and §6. What remains is implementation.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -936,20 +936,61 @@ where the floor of `13 + 2 × Level` is +15.
 
 ## 6. Question four — fix in place, or gate behind an option?
 
-**Open.** [#339](https://github.com/vixygrey/qud-expanded-community-edition/issues/339).
+**Settled: fix in place, and add no new options.** Tracked in
+[#339](https://github.com/vixygrey/qud-expanded-community-edition/issues/339), which this closes, and
+it answers [#336](https://github.com/vixygrey/qud-expanded-community-edition/issues/336) as well.
 
-The shape I think is right: **fix in place** anything that fails a *stated* convention, because
-charter rule 2's lower bar covers it — "this contradicts the mod's own stated convention". **Option**
-anything that is taste rather than contradiction.
+### 6.1 An item-stats option is not really available
 
-The catch is circular, and it is why the conventions come first: most of these findings do not
-currently *have* a convention to contradict, so until §7's first step lands they are design changes
-needing rule 2's higher bar rather than defect fixes needing its lower one.
+Every one of the eleven shipped options works by mutating a **small loaded record** —
+`GenotypeEntry` fields, `PowerEntry.Minimum`, an `Anatomy`, `PopulationManager.Populations`. Item
+stats are not that shape.
 
-Worth knowing before designing the option: item stats are read at load and baked into each object
-when it spawns, so an option here changes what spawns *next*, not what is already in a save.
+To offer "restore vanilla item stats" the mod would have to carry **183 blueprints and 386
+individual values**, and it **cannot read them back**: once Qud merges the mod's XML the in-memory
+blueprint holds the mod's value, and vanilla's exists only in the game's own files on disk — which
+charter rule 5 bans reaching, in as many words:
 
----
+> **Never — these do not move:** file I/O outside the mod's own directory
+
+So the option means 386 hardcoded numbers in C#, duplicating a dataset that already exists, drifting
+from it on every Qud patch, with nothing able to check the drift — `tools/check_vanilla_drift.py`
+reads the game's files, and the mod cannot. That is a maintenance liability rather than a feature,
+and it would be the largest C# addition the mod has ever made, against a rule that prefers XML.
+
+### 6.2 What is gateable mostly already has an option
+
+| finding | shape | gateable |
+|---|---|---|
+| weights, AV, Agility, cudgel damage, cybernetics, chip prices | blueprint values | **no** — §6.1 |
+| table weights (#325, #326, #327) | `PopulationManager` | yes, and `OptionQudExpandedCEChipDrops` is already this shape |
+| subtype grants (#330, #332) | `GenotypeEntry` | yes |
+| the Tinkering gate (#331) | `PowerEntry` | **already gated** |
+| the mutant's chip slot (#353) | `Anatomies` | **already gated** |
+
+### 6.3 And the charter points the same way
+
+Rule 6's exception is *"a change that **grants** power with no content attached"* — written for
+opinions the mod adds. Every fix in this sweep **removes** power and moves toward vanilla, which is
+the baseline a player already accepted by installing Caves of Qud. And the charter says of the six
+rules that where existing content violates one, *"that's debt to pay down, not precedent."*
+
+The circular catch this question was filed with is also gone. Questions one to three produced stated
+conventions, and [#340](https://github.com/vixygrey/qud-expanded-community-edition/issues/340) writes
+them into `docs/STYLEGUIDE.md` §3.2 — so most of the sweep becomes a **defect fix** under rule 2's
+lower bar rather than a design change needing its higher one.
+
+### 6.4 What this obliges instead
+
+No option means the changelog carries the whole burden of telling players. Charter rule 2 puts
+causality in the player-facing changelog precisely for this, and these are the largest player-visible
+numbers the fork has moved. Two things follow:
+
+- **Every fix states its before and after**, not just its reason. A player who liked a number should
+  be able to find out what it became.
+- **The sweep lands across a version boundary players can see**, rather than trickling into patch
+  releases. `docs/RELEASING.md` already treats a release as two publications; this wants to be one of
+  them, announced.
 
 ## 7. The findings
 
@@ -959,14 +1000,18 @@ severity ranking, the sequence, and the links. It is the live list; this documen
 
 The sequence, in short:
 
-1. **Write the curves** (#340) — AV, weight, damage, chip budget, table share, and when a vanilla
-   blueprint may change its `Stat`. Nothing above can be called a defect until there is something it
-   contradicts.
+**All four questions are settled**, so what is left is implementation:
+
+1. **Write the curves** (#340) — AV, weight, damage, the chip curve, table share, and when a vanilla
+   blueprint may change its `Stat`. Plus the two rules the questions produced: *the chip system
+   controls access and price, vanilla controls what a mutation is worth* (§5.2), and *a subtype
+   starts with its own affinity, not a generic chipset carrying someone else's steep passive* (§5.9).
+   Nothing else can be called a defect until there is something it contradicts.
 2. **The four critical findings** (#316, #317, #318, #319).
-3. **The validator checks** (#337) — what makes step 2 stick.
-4. **The systemic three** (#320, #321, #322), once their questions are answered.
+3. **The validator checks** (#337, #354) — what makes step 2 stick.
+4. **The systemic three** (#320, #321, #322). #320's magnitudes still wait on #176.
 5. **The rarity pass** (#325, #326, #327).
-6. Everything else, plus whatever option #339 settles.
+6. Everything else. No option work — §6 settles that there will be none.
 
 ---
 
