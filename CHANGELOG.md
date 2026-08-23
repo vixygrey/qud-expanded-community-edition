@@ -16,6 +16,37 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Graded burden** — carrying weight becomes a gradient instead of a cliff (#176). **Off by
+  default**, per charter rule 6: it is a genuinely new opinion this fork introduces rather than
+  anything the mod already was.
+
+  Vanilla has one threshold and nothing underneath it. Capacity is `15 × Strength`; exceed it and
+  `Overburdened` makes you unable to move, and below it nothing happens at all — so the best play is
+  to sit at 99% forever and never think about weight again. Four bands now fill that space: **−1 DV**
+  at half capacity, **−2 DV** at three quarters, and **−4 DV, −10 Quickness and no running** at nine
+  tenths. Vanilla's cliff is untouched and still stops you dead at full.
+
+  **The cliff stays where it is on purpose.** Moving it to 125%, as the original spec proposed, is
+  only possible by inflating `GetMaxCarriedWeightEvent` — and that figure is read by seven UI
+  surfaces and by **Pack Rat**, which forces a character to stay above 90% of whatever capacity
+  reports. Inflating it would pin a Pack Rat character permanently in the worst band. Leaving the
+  cliff alone costs one band and has no blast radius.
+
+  **Player only**, matching vanilla, where `IsOverburdened()` returns false for every non-player at
+  any load. **Safe to toggle mid-run**: the band is derived from carried weight each turn and the
+  effect stores nothing, so it adds nothing to the save.
+
+  Two items from the spec could not be built, and neither was a shortcut. There is **no stealth
+  system in Caves of Qud** — the word appears nowhere in the assembly — and there is no movement-cost
+  hook, so *"movement costs double"* would have to be spent through Quickness, which is the penalty
+  the band already applies. A fatigue rider waits on #179.
+
+  Worth keeping for whoever touches this next: the run block vetoes **`ApplyRunning`**, not
+  `CanChangeMovementModeEvent`. Refusing the latter is how vanilla's `Overburdened` blocks flight, so
+  it looks like the model — but that event's `To` carries the movement *message name*, `"sprinting"`
+  by default and configurable per `Run` part. Matching on `"Running"` would never have fired, and the
+  restriction would have shipped silently inert.
+
 - **(internal)** `docs/STYLEGUIDE.md` §3.2.1 carries the four curves the balance sweep was missing —
   AV, damage, weight and mod share of a loot table — derived from the installed game rather than
   chosen (#340). `docs/DESIGN_balance.md` §9 records what the derivation turned up, which is more

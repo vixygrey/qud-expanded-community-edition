@@ -1729,7 +1729,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 11 options (§13)
+├── Options.xml                 # 12 options (§13)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
@@ -1747,7 +1747,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 43 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 46 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, and the chip-slot mutator
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
@@ -1780,16 +1780,18 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Eleven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twelve options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
 
-Per charter rule 6, **defaults reproduce the mod's established behaviour**. The single exception is
-the starting reputation bonus, which grants power with no content attached and so must be asked
-for rather than opted out of.
+Per charter rule 6, **defaults reproduce the mod's established behaviour**. Two exceptions: the
+starting reputation bonus, which grants power with no content attached and so must be asked for
+rather than opted out of; and graded burden, which is a genuinely new opinion this fork introduces
+rather than anything the mod already was.
 
-> ✅ **Verified 2026-08-16: all eleven options work in game** (maintainer). Still the only evidence
+> ✅ **Verified 2026-08-16: eleven of the twelve options work in game** (maintainer). Graded burden
+> arrived after that pass and has not been played yet. Still the only evidence
 > that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
 > locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
 > proves the code builds, not that an option does the right thing to a run. CodeQL cannot cover the C#
@@ -1808,6 +1810,7 @@ for rather than opted out of.
 | starting reputation bonus | Checkbox | **No** | +300 Joppa for mutants. §1.2. |
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
+| graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | your own Chip Interface slots | Checkbox | **Yes** | The player's slots — 1 mutant, 2 True Kin. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing here ever fills those slots, so the reason to turn it off is to stop another mod — or a later version of this one — being able to. |
 
@@ -1823,7 +1826,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Live** — applies immediately | graded burden, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building additionally **cannot be rebuilt** once removed from a save. |
 
@@ -1843,6 +1846,62 @@ Anything that mutates loaded game data must also be **idempotent and reversible*
 repeatedly and in any order, so each one makes the data *match* the option rather than performing a
 one-way edit. That is why every toggle here stores the vanilla value it replaced — the mod's XML
 overwrote it at load, and the original is gone from memory by the time an option is read.
+
+---
+
+## 14. Graded burden (`Vixy_Burden`)
+
+**Off by default** — a genuinely new opinion this fork introduces, which is what charter rule 6
+reserves that default for.
+
+Vanilla has one weight threshold and nothing underneath it. Carry capacity is `15 × Strength`;
+exceed it and `Overburdened` applies, which makes you unable to move at all. Below it, nothing
+happens. So the optimal play is to sit at 99% of capacity forever and never think about weight
+again — a threshold that produces no decision.
+
+Four bands fill that space:
+
+| band | load | effect |
+| ------------------- | ------: | -------------------------------------------- |
+| unburdened | < 50% | none |
+| lightly burdened | 50–75% | −1 DV |
+| encumbered | 75–90% | −2 DV, −1 Quickness per 10% above 75 |
+| heavily burdened | 90–100% | −4 DV, −10 Quickness, cannot run |
+| *(vanilla)* | > 100% | `Overburdened` — unable to move, untouched |
+
+**Vanilla's cliff is deliberately left where it is.** Moving it to 125%, as the original spec
+proposed, is only possible by intercepting `GetMaxCarriedWeightEvent` — and that figure is read by
+seven UI surfaces and by the **Pack Rat** mutation, which forces a character to stay above 90% of
+whatever capacity reports. Inflating it would pin a Pack Rat permanently in the worst band. Leaving
+the cliff alone costs one band and has no blast radius at all.
+
+**Player only**, matching vanilla exactly: `GameObject.IsOverburdened()` opens with
+`if (!IsPlayerControlled()) return false;`, so no NPC is ever burdened at any load.
+
+**Safe to toggle mid-run.** The band is derived from carried weight on every turn and the effect
+stores nothing, so the option takes hold on the next tick and adds nothing to the save.
+
+### 14.1 Two spec items that could not be built
+
+Neither is a shortcut; Qud has nowhere to put them.
+
+- **A stealth penalty.** There is no stealth system in Caves of Qud — the word does not appear
+  anywhere in the game assembly.
+- **"Movement costs double."** There is no movement-cost hook. Movement is charged at fixed energy
+  and Quickness governs how fast it is earned back, so this would have to be spent through
+  Quickness — which is the penalty the band already applies. Listing both would double-count one
+  mechanism.
+
+A third, a fatigue rider on the heavy band, waits on the sleep work in
+[#179](https://github.com/vixygrey/qud-expanded-community-edition/issues/179).
+
+### 14.2 One implementation note worth keeping
+
+The heavy band's run block vetoes the **`ApplyRunning`** event, not
+`CanChangeMovementModeEvent`. Refusing the latter is how vanilla's own `Overburdened` blocks
+flight, so it looks like the obvious model — but that event's `To` carries the movement *message
+name*, which is `"sprinting"` by default and configurable per `Run` part. Matching on `"Running"`
+would never fire, and the restriction would have shipped silently inert.
 
 ---
 
