@@ -396,39 +396,39 @@
 
   <population Name="Melee Weapons 1C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Greataxe" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Vinereaper" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Halberd" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Rapier" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Katana" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze Maceth" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze War Hammer" />
-      <object Weight="20" Number="1" Blueprint="Raven_Bronze War Hammerth" />
-      <object Weight="5" Number="1" Blueprint="Raven_Bronze Wristblade" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Greataxe" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Vinereaper" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Halberd" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Rapier" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Katana" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze Maceth" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze War Hammer" />
+      <object Weight="16" Number="1" Blueprint="Raven_Bronze War Hammerth" />
+      <object Weight="4" Number="1" Blueprint="Raven_Bronze Wristblade" />
 
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="10" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="10" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="8" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="8" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron War Hammerth" />
     </group>
   </population>
 
   <population Name="Melee Weapons 1R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="20" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="20" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron War Hammerth" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Wristblade" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Maceth" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="12" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="12" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Wristblade" />
+      <object Weight="12" Number="1" Blueprint="Raven_Iron Maceth" />
     </group>
   </population>
 
@@ -580,28 +580,28 @@
 
   <population Name="Armor 2C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Boots" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Gauntlets" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Helmet" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Plate Armor" />
-      <object Weight="20" Number="1" Blueprint="Ironweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Iron Greatshield" />
+      <object Weight="13" Number="1" Blueprint="Raven_Iron Boots" />
+      <object Weight="13" Number="1" Blueprint="Raven_Iron Gauntlets" />
+      <object Weight="14" Number="1" Blueprint="Raven_Iron Helmet" />
+      <object Weight="14" Number="1" Blueprint="Raven_Iron Plate Armor" />
+      <object Weight="14" Number="1" Blueprint="Ironweave Cloak" />
+      <object Weight="14" Number="1" Blueprint="Raven_Iron Vambrace" />
+      <object Weight="14" Number="1" Blueprint="Raven_Iron Shield" />
+      <object Weight="14" Number="1" Blueprint="Raven_Iron Greatshield" />
     </group>
   </population>
 
   <population Name="Armor 2R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="10" Number="1" Blueprint="Steel Boots" />
-      <object Weight="10" Number="1" Blueprint="Steel Gauntlets" />
-      <object Weight="10" Number="1" Blueprint="Steel Helmet" />
-      <object Weight="10" Number="1" Blueprint="Steel Plate Mail" />
-      <object Weight="10" Number="1" Blueprint="Raven_Steelweave Cloak" />
-      <object Weight="10" Number="1" Blueprint="Raven_Steel Vambrace" />
-      <object Weight="10" Number="1" Blueprint="Steel Buckler" />
-      <object Weight="10" Number="1" Blueprint="Steel Shield" />
-      <object Weight="10" Number="1" Blueprint="Raven_Steel Greatshield" />
+      <object Weight="7" Number="1" Blueprint="Steel Boots" />
+      <object Weight="7" Number="1" Blueprint="Steel Gauntlets" />
+      <object Weight="7" Number="1" Blueprint="Steel Helmet" />
+      <object Weight="7" Number="1" Blueprint="Steel Plate Mail" />
+      <object Weight="7" Number="1" Blueprint="Raven_Steelweave Cloak" />
+      <object Weight="7" Number="1" Blueprint="Raven_Steel Vambrace" />
+      <object Weight="7" Number="1" Blueprint="Steel Buckler" />
+      <object Weight="7" Number="1" Blueprint="Steel Shield" />
+      <object Weight="7" Number="1" Blueprint="Raven_Steel Greatshield" />
     </group>
   </population>
 
@@ -633,27 +633,27 @@
 
   <population Name="Armor 4C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Carbide Boots" />
-      <object Weight="20" Number="1" Blueprint="Carbide Gauntlets" />
-      <object Weight="20" Number="1" Blueprint="Raven_Carbide Helmet" />
-      <object Weight="20" Number="1" Blueprint="Carbide Plate Armor" />
-      <object Weight="20" Number="1" Blueprint="Raven_Carbideweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Carbide Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Carbide Buckler" />
-      <object Weight="20" Number="1" Blueprint="Carbide Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Carbide Greatshield" />
+      <object Weight="10" Number="1" Blueprint="Carbide Boots" />
+      <object Weight="10" Number="1" Blueprint="Carbide Gauntlets" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Helmet" />
+      <object Weight="10" Number="1" Blueprint="Carbide Plate Armor" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbideweave Cloak" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Vambrace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Buckler" />
+      <object Weight="10" Number="1" Blueprint="Carbide Shield" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Greatshield" />
 
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Gauntlets" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Boots" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Helmet" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Plate Armor" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbideweave Cloak" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Vambrace" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Buckler" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Shield" />
-      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Greatshield" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Gauntlets" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Boots" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Helmet" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Plate Armor" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbideweave Cloak" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Vambrace" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Buckler" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Shield" />
+      <object Weight="5" Number="1" Blueprint="Raven_Folded Carbide Greatshield" />
 
-      <object Weight="10" Number="1" Blueprint="Raven_Reinforced Suspension" />
+      <object Weight="5" Number="1" Blueprint="Raven_Reinforced Suspension" />
     </group>
   </population>
 
@@ -673,17 +673,17 @@
 
   <population Name="Armor 5C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Fullerite Boots" />
-      <object Weight="20" Number="1" Blueprint="Fullerite Gauntlets" />
-      <object Weight="20" Number="1" Blueprint="Raven_Fulleriteweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Buckler" />
-      <object Weight="20" Number="1" Blueprint="Fullerite Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greatshield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Flexihelmet" />
-      <object Weight="20" Number="1" Blueprint="Raven_Flexicloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Flexigloves" />
-      <object Weight="20" Number="1" Blueprint="Raven_Flexiboots" />
+      <object Weight="12" Number="1" Blueprint="Fullerite Boots" />
+      <object Weight="12" Number="1" Blueprint="Fullerite Gauntlets" />
+      <object Weight="12" Number="1" Blueprint="Raven_Fulleriteweave Cloak" />
+      <object Weight="13" Number="1" Blueprint="Raven_Fullerite Vambrace" />
+      <object Weight="13" Number="1" Blueprint="Raven_Fullerite Buckler" />
+      <object Weight="13" Number="1" Blueprint="Fullerite Shield" />
+      <object Weight="13" Number="1" Blueprint="Raven_Fullerite Greatshield" />
+      <object Weight="13" Number="1" Blueprint="Raven_Flexihelmet" />
+      <object Weight="13" Number="1" Blueprint="Raven_Flexicloak" />
+      <object Weight="13" Number="1" Blueprint="Raven_Flexigloves" />
+      <object Weight="13" Number="1" Blueprint="Raven_Flexiboots" />
     </group>
   </population>
 
@@ -701,15 +701,15 @@
 
   <population Name="Armor 6C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Crysteelweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Buckler" />
-      <object Weight="20" Number="1" Blueprint="Crysteel Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greatshield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Helmet" />
-      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Gloves" />
-      <object Weight="20" Number="1" Blueprint="Raven_Nanoweave Boots" />
+      <object Weight="13" Number="1" Blueprint="Raven_Crysteelweave Cloak" />
+      <object Weight="13" Number="1" Blueprint="Raven_Crysteel Vambrace" />
+      <object Weight="13" Number="1" Blueprint="Raven_Crysteel Buckler" />
+      <object Weight="13" Number="1" Blueprint="Crysteel Shield" />
+      <object Weight="13" Number="1" Blueprint="Raven_Crysteel Greatshield" />
+      <object Weight="13" Number="1" Blueprint="Raven_Nanoweave Helmet" />
+      <object Weight="13" Number="1" Blueprint="Raven_Nanoweave Cloak" />
+      <object Weight="13" Number="1" Blueprint="Raven_Nanoweave Gloves" />
+      <object Weight="13" Number="1" Blueprint="Raven_Nanoweave Boots" />
     </group>
   </population>
 
@@ -745,22 +745,22 @@
 
   <population Name="Armor 8C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <object Weight="17" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="17" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="17" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="17" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="17" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
     </group>
   </population>
 
   <population Name="Armor 8R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="28" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
-      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
-      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Buckler" />
-      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Shield" />
-      <object Weight="28" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
-      <object Weight="28" Number="1" Blueprint="Raven_Mutating Mask" />
+      <object Weight="22" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="22" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="22" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="22" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="22" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <object Weight="22" Number="1" Blueprint="Raven_Mutating Mask" />
     </group>
   </population>
 
