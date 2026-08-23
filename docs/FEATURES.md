@@ -681,12 +681,12 @@ Vanilla families completed:
 |---|---|---|---|---|---|---|---|---|
 | Bronze Plate Armor | new | 0 | Body | 3 | -3 | — | 8 | 24 |
 | Iron Plate Armor | new | 1 | Body | 3 | -1 | — | 16 | 21 |
-| Chain Mail | merge | 2 | (inh) | - | - | — | 32 | 18 |
-| Steel Plate Mail | merge | 2 | Body | 4 | -4 | — | 32 | 21 |
-| Carbide Plate Armor | merge | 3 | Body | 4 | -2 | — | 64 | 27 |
+| Chain Mail | merge | 2 | (inh) | - | - | — | 32 | 15 |
+| Steel Plate Mail | merge | 2 | Body | 4 | -4 | — | 32 | 26 |
+| Carbide Plate Armor | merge | 3 | Body | 4 | -2 | — | 64 | 20 |
 | Folded Carbide Plate Armor | new | 4 | Body | 6 | -4 | — | 128 | 24 |
-| Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 256 | 30 |
-| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 256 | 36 |
+| Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 256 | 40 |
+| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 256 | 70 |
 | Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 512 | 18 |
 | Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1024 | 18 |
 | Zetachrome Lune | merge | 8 | Body | 8 | -2 | 10/10/10/10 | 2048 | 15 |
@@ -1988,7 +1988,7 @@ not touch that field (the vanilla value is inherited).
 | Long Sword7th | 7 | 2d10 | 1 | 8 |  | 640 | 5 |
 | Long Sword8 | 8 | 2d8 |  | 9 |  | 1280 | 2 |
 | Long Sword8th | 8 | 2d12 | 1 | 9 |  | 1280 | 4 |
-| Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 4 |
+| Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 2 |
 | BaseDagger |  |  |  |  |  |  | 1 |
 | Dagger | 0 | 1d2 |  | 1 |  | 5 | 1 |
 | Dagger2 | 1 | 1d3 |  | 2 |  | 10 | 1 |
@@ -1998,15 +1998,15 @@ not touch that field (the vanilla value is inherited).
 | Steel Utility Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
 | Steel Potter's Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
 | Steel Butcher Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
-| Dagger3 | 3 | 1d6 |  | 4 |  | 40 | 2 |
-| Dagger4 | 4 | 1d8 |  | 5 |  | 80 | 2 |
-| Obsidian Kris | 4 | 1d8 |  | 5 |  | 80 | 2 |
-| Dagger5 | 5 | 1d10 |  | 6 |  | 160 | 3 |
+| Dagger3 | 3 | 1d6 |  | 4 |  | 40 | 1 |
+| Dagger4 | 4 | 1d8 |  | 5 |  | 80 | 1 |
+| Obsidian Kris | 4 | 1d8 |  | 5 |  | 80 | 1 |
+| Dagger5 | 5 | 1d10 |  | 6 |  | 160 | 2 |
 | Dagger6 | 6 | 1d12 |  | 7 |  | 320 | 1 |
 | Dagger7 | 7 | 1d12+1 |  | 8 |  | 640 | 1 |
 | Dagger8 | 8 | 1d12+2 |  | 9 |  | 1280 | 1 |
 | Vibro Dagger | 5 | 2d4 |  | 0 |  | 300 | 1 |
-| ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 2 |
+| ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 1 |
 | BaseCudgel |  |  |  |  |  |  | 3 |
 | Club | 0 |  |  |  |  | 2 | 3 |
 | Mace2 | 0 | 1d3 |  | 1 |  | 5 | 5 |

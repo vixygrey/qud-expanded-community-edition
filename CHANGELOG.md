@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **Weight is fixed where weight is the balance** (#320). Twelve items, and the per-slot factors are
+  now written into `docs/STYLEGUIDE.md` §3.2.1.
+
+  **Body armour is held to ×0.44**, its own slot median. `Fullerite Plate Mail` goes **36 → 70 lb**:
+  vanilla puts it at 160 against a Strength-16 carry budget of 240 — two thirds of everything a
+  character can lift, and precisely what its AV 6 is priced against. Cut to 36 it was a factor of
+  **0.23**, which made that AV free. `Steel Plate Mail` 21 → 26, `Carbide Plate Armor` 27 → 20,
+  `Fullerite Flake Armor` 30 → 40, `Chain Mail` 18 → 15.
+
+  **Seven items the mod made *heavier* than vanilla go back.** That one needs no judgement: every
+  slot factor is below 1, so an item gaining weight contradicts the rule whatever the magnitudes turn
+  out to be. Five were short blades, leaving a line that ran **1, 1, 2, 2, 3, 1, 1, 1** by tier
+  against vanilla's 1, 1, 1, 1, 1, 2, 2, 2 — noise rather than a compression.
+
+  **The other hundred are left alone**, deliberately. #320's magnitudes waited on #176, and what
+  #176 settled is that the **cliff is still the default** — graded burden ships opt-in, so the
+  experience these factors are tuned against is unchanged, and under a binary threshold only the
+  extremes count. The remaining items sit close enough to their slot medians that re-deriving each
+  would be churn against a convention the content already follows.
+
+  Measured factors, across the 119 merged items carrying a weight on both sides: **Body 0.44, Feet
+  0.47, Hands 0.50, Head 0.57**, melee 0.60–0.75 one-handed and 0.62–0.67 two. `weight-curve` reports
+  nothing and leaves the baseline, which falls to **31**.
+
 - **Tinkering Gigantic now costs a tier that matches what it grants** (#317). `TinkerTier="7"`,
   alongside `ModNanon` and `ModSuspensor` — the top of what vanilla lets anyone build.
 

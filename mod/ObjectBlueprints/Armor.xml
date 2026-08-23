@@ -434,14 +434,14 @@
   <object Name="Steel Plate Mail" Load="Merge">
     <part Name="Armor" AV="4" DV="-4" WornOn="Body" />
     <part Name="Commerce" Value="32" />
-    <part Name="Physics" Weight="21" />
+    <part Name="Physics" Weight="26" />
     <tag Name="Tier" Value="2" />
   </object>
 
   <object Name="Carbide Plate Armor" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" WornOn="Body" />
     <part Name="Commerce" Value="64" />
-    <part Name="Physics" Weight="27" />
+    <part Name="Physics" Weight="20" />
     <tag Name="Tier" Value="3" />
   </object>
 
@@ -467,14 +467,14 @@
   <object Name="Fullerite Plate Mail" Load="Merge">
     <part Name="Armor" AV="6" DV="-2" WornOn="Body" />
     <part Name="Commerce" Value="256" />
-    <part Name="Physics" Weight="36" />
+    <part Name="Physics" Weight="70" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Fullerite Flake Armor" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="12" Cold="12" Elec="3" Acid="3" WornOn="Body" />
     <part Name="Commerce" Value="256" />
-    <part Name="Physics" Weight="30" />
+    <part Name="Physics" Weight="40" />
     <tag Name="Tier" Value="5" />
   </object>
 
@@ -501,7 +501,7 @@
 
   <object Name="Chain Mail" Load="Merge">
     <part Name="Commerce" Value="32" />
-    <part Name="Physics" Weight="18" />
+    <part Name="Physics" Weight="15" />
     <tag Name="Tier" Value="2" />
   </object>
 

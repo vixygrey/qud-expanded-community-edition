@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <!-- Merge Changes -->
 
@@ -23,7 +23,7 @@
   </object>
 
   <object Name="CrysteelHandBones" Load="Merge">
-    <part Name="Physics" Weight="10" />
+    <part Name="Physics" Weight="9" />
     <part Name="Examiner" Complexity="6" Difficulty="1" />
     <part Name="Commerce" Value="360" />
     <part Name="CyberneticsBaseItem" Slots="Hands" Cost="6" BehaviorDescription="Your fists deal 3d4 damage." />

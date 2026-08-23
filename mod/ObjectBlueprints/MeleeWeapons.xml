@@ -632,7 +632,7 @@
     <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d10" />
     <part Name="Commerce" Value="300" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight="4" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Vibro Greatsword" Inherits="BaseLongBlade">
@@ -1141,28 +1141,28 @@
     <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="1d6" />
     <part Name="Commerce" Value="40" />
     <tag Name="Tier" Value="3" />
-    <part Name="Physics" Weight="2" />
+    <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Dagger4" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d8" />
     <part Name="Commerce" Value="80" />
     <tag Name="Tier" Value="4" />
-    <part Name="Physics" Weight="2" />
+    <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Obsidian Kris" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d8" />
     <part Name="Commerce" Value="80" />
     <tag Name="Tier" Value="4" />
-    <part Name="Physics" Weight="2" />
+    <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Dagger5" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="1d10" />
     <part Name="Commerce" Value="160" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Dagger6" Load="Merge">
@@ -1244,7 +1244,7 @@
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="2d3" />
     <part Name="Commerce" Value="75" />
     <tag Name="Tier" Value="4" />
-    <part Name="Physics" Weight="2" />
+    <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Raven_Fullerite Wristblade" Inherits="BaseDagger">
