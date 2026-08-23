@@ -310,6 +310,18 @@ possible in practice. Match them when adding anything.
 The tier and value curves are checked by `item-curve` in `tools/validate_mod.py`, so a mispriced or
 mistagged item fails CI rather than sitting in the loot pool at the wrong rarity.
 
+**The value curve is this fork's convention, not vanilla's.** `item-curve` prices only `Raven_` and
+`Vixy_` objects, because vanilla sets its own values — and vanilla's are nowhere near a curve.
+So the test for whether the curve describes a category is whether *this mod* has ever followed it
+there. Measured across everything priced: melee weapons **63 of 73** on the curve and armour **50 of
+62**, against **0 of 5** ranged weapons, **0 of 4** energy cells and 0 of 1 trinket. Those three are
+exempt (#373) — a rule nothing has ever followed is not a rule being broken.
+
+Exemptions are decided by **part composition** rather than a word in the name, since a name match is
+the failure #354 removed from tier detection. A `MissileWeapon`, an `EnergyCell`, a `Backpack` or a
+`Trinket` tag exempts; so does an `Armor` part granting **no AV**, which is a slot occupier rather
+than armour. Anything else with a price is held to the curve.
+
 **An item's tier is its `Tier` tag**, and the material word in its name is only a fallback for the
 objects that predate the tag. That order used to be reversed, which meant anything not named after
 a metal was skipped before its price was ever compared — 144 psionic chips and 22 other items, all

@@ -98,7 +98,7 @@
   <object Name="Raven_Flexiboots" Inherits="BaseBoot">
     <part Name="Armor" AV="1" DV="3" WornOn="Feet" />
     <part Name="Render" DisplayName="flexiboots" Tile="Items/sw_metal_boots.bmp" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="75" />
+    <part Name="Commerce" Value="160" />
     <part Name="Description" Short="Boots cut from an elastyne mesh and reinforced with plastic." />
     <part Name="Physics" Weight="2" />
     <part Name="Springy" Factor="0.9" />
@@ -256,7 +256,7 @@
       ColorString="&amp;y"
       DetailColor="C"
     />
-    <part Name="Commerce" Value="125" />
+    <part Name="Commerce" Value="160" />
     <part Name="Description" Short="Gloves cut from an elastyne mesh and reinforced with plastic." />
     <part Name="Physics" Weight="2" />
     <part Name="Springy" Factor="0.9" />
@@ -376,7 +376,7 @@
   <object Name="Raven_Flexihelmet" Inherits="BaseHelmet">
     <part Name="Armor" AV="1" DV="2" WornOn="Head" />
     <part Name="Render" DisplayName="flexicap" Tile="Items/sw_metal_helmet.bmp" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="125" />
+    <part Name="Commerce" Value="160" />
     <part Name="Description" Short="Skullcap cut from an elastyne mesh and reinforced with plastic." />
     <part Name="Physics" Weight="2" />
     <part Name="Springy" Factor="0.9" />
@@ -673,7 +673,7 @@
   <object Name="Raven_Flexicloak" Inherits="BaseCloak">
     <part Name="Armor" AV="1" DV="2" WornOn="Back" />
     <part Name="Render" DisplayName="flexicloak" Tile="items/sw_cloak.bmp" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="125" />
+    <part Name="Commerce" Value="160" />
     <part Name="Description" Short="Cloak cut from an elastyne mesh and reinforced with plastic." />
     <part Name="Physics" Weight="2" />
     <tag Name="Tier" Value="5" />

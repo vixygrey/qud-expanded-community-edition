@@ -636,7 +636,7 @@ Vanilla families completed:
 | Flawless Crysteel Boots | merge | 7 | Feet | 4 | 0 | 5/5/5/5 | 640 | 6 |
 | Folded Carbide Boots | new | 4 | Feet | 3 | -1 | — | 80 | 8 |
 | Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 160 | 10 |
-| Flexiboots | new | 5 | Feet | 1 | 3 | — | 75 | 2 |
+| Flexiboots | new | 5 | Feet | 1 | 3 | — | 160 | 2 |
 | Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 320 | 6 |
 | Nanoweave Boots | new | 6 | Feet | 3 | 1 | — | 300 | 3 |
 | Zetachrome Pumps | merge | 8 | Feet | 4 | 0 | 6/6/6/6 | 1280 | 5 |
@@ -651,7 +651,7 @@ Vanilla families completed:
 | Carbide Gauntlets | merge | 3 | Hands | 3 | -2 | — | 40 | 9 |
 | Folded Carbide Gauntlets | new | 4 | Hands | 3 | -1 | — | 80 | 8 |
 | Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | — | 160 | 10 |
-| Flexigloves | new | 5 | Hands | 1 | 2 | — | 125 | 2 |
+| Flexigloves | new | 5 | Hands | 1 | 2 | — | 160 | 2 |
 | Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 320 | 6 |
 | Nanoweave Gloves | new | 6 | Hands | 2 | 1 | — | 300 | 3 |
 | Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 640 | 6 |
@@ -669,7 +669,7 @@ Vanilla families completed:
 | Carbide Helmet | new | 3 | Head | 3 | -2 | — | 40 | 11 |
 | Folded Carbide Helmet | new | 4 | Head | 3 | -1 | — | 80 | 10 |
 | Fullerite Armet | merge | 5 | Head | 4 | -4 | — | 160 | 12 |
-| Flexihelmet | new | 5 | Head | 1 | 2 | — | 125 | 2 |
+| Flexihelmet | new | 5 | Head | 1 | 2 | — | 160 | 2 |
 | Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 320 | 8 |
 | Nanoweave Helmet | new | 6 | Head | 2 | 1 | — | 300 | 3 |
 | Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 640 | 8 |
@@ -700,7 +700,7 @@ Vanilla families completed:
 | Steelweave Cloak | new | 2 | Back | 2 | -2 | — | 20 | 3 |
 | Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 40 | 6 |
 | Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | — | 80 | 5 |
-| Flexicloak | new | 5 | Back | 1 | 2 | — | 125 | 2 |
+| Flexicloak | new | 5 | Back | 1 | 2 | — | 160 | 2 |
 | Fulleriteweave Cloak | new | 5 | Back | 2 | -2 | — | 160 | 6 |
 | Crysteelweave Cloak | new | 6 | Back | 2 | -3 | 6/6/6/6 | 320 | 3 |
 | Nanoweave Cloak | new | 6 | Back | 2 | 1 | — | 300 | 3 |
