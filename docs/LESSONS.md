@@ -65,6 +65,7 @@ Two ways this has bitten, and they fail differently:
 ```
 ## Why this doesn't close #284     <- a denial. Registered #284; #286 closed it on merge.
 ... and closed #10                 <- narrating history. Registered #10 in #292.
+I would rather you close #339      <- delegating. Registered #339 in #360.
 ```
 
 The first is the memorable one and the second is the ordinary one. #286 was written to advance #284
@@ -74,9 +75,16 @@ saying the same. #292 was not arguing with the parser at all — it was a senten
 earlier pull request had done, and the reference was not even to the issue the pull request was
 about.
 
-So the rule is adjacency, not intent. Denial, narration, quotation and questions all buy exactly
-nothing, and an entry that lists the ways a sentence can be shaped will always miss one — the first
-version of this entry omitted the three past-tense keywords, and `closed` caught me the next day.
+So the rule is adjacency, not intent. Denial, narration, quotation, questions and **delegation** all
+buy exactly nothing, and an entry that lists the ways a sentence can be shaped will always miss one —
+the first version of this entry omitted the three past-tense keywords, and `closed` caught me the
+next day.
+
+The third example is the one worth staring at. The full sentence was *"No closing keyword —
+implementation is still to come, and I would rather **you close #339** than have a merge do it."* It
+declares the absence of a keyword and then contains one, nine words later, in the clause asking a
+human to do the closing by hand. Asking for something to be done manually is not a way of saying it
+should not happen automatically; the parser reads a verb and a number.
 
 **Do instead:** keep the keyword away from the reference in every form. **"Why #N stays open"**,
 **"Part of #N"**, **"advances #N"**; and when narrating, name the issue without the keyword —
@@ -93,6 +101,35 @@ before the merge.
 Afterwards, the close event on the issue timeline carries `commit_id: null`. That distinguishes a
 linked-reference close from a commit-message close, and it is the fastest way to find out why an
 issue you did not mean to close is shut.
+
+## The check you drop is the one that was working
+
+`gh pr view <n> --json closingIssuesReferences` is prescribed two sections above, by me, after it
+caught two accidental issue closures. I then ran it on five consecutive pull requests, found nothing,
+stopped running it, and the sixth closed an issue I had explicitly written that I did not want closed.
+
+The five clean results were not evidence the check was unnecessary. They were the check working.
+
+What made it stoppable was that the work had become routine — same shape of pull request, same
+sections, same body template, six times in an afternoon. Routine is exactly when a verification step
+feels redundant, and exactly when it is not, because it is also when nobody is reading their own
+boilerplate closely. The sentence that closed the issue was in a paragraph I had written five times
+before and skimmed on the sixth.
+
+> **A check that has never failed for you is indistinguishable from a check that cannot fail.** The
+> only difference is in the counterfactual, which you never see. Treat a run of clean results as the
+> reason to keep running it, not as permission to stop.
+
+Two things that would have caught it, in order of cost:
+
+- **Run the check.** It is one command and it reports the answer as a list.
+- **Put it where it cannot be skipped.** A check that lives in someone's habit is a check with an
+  expiry date. This one could be a `pre-push` hook or a CI job on any pull request whose body says
+  "Part of" — the repository already prefers mechanical enforcement to prose for exactly this reason,
+  and `docs/CHARTER.md` rule 4 says so: *"Keep new checks in the script rather than in prose."*
+
+That second point generalises past this check. Several of the habits in this document are still
+habits, and every one of them has the same failure mode.
 
 ## Squash merging invalidates blame-ignore SHAs
 

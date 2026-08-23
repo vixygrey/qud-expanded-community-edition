@@ -16,6 +16,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Two additions to `docs/LESSONS.md`, both from closing an issue by accident in #360.
+
+  The **closing-keyword** entry gains a third shape. Its examples were a denial and a narration; this
+  one is **delegation** — *"No closing keyword — … I would rather you close #339 than have a merge do
+  it."* The sentence declares the absence of a keyword and then contains one nine words later, in the
+  clause asking a human to do the closing by hand. Asking for something to be done manually is not a
+  way of telling the parser not to do it automatically.
+
+  And a new entry, **"The check you drop is the one that was working."** The command that would have
+  caught this is prescribed two sections above, by me, after it caught two earlier closures. I ran it
+  on five consecutive pull requests, found nothing, stopped, and the sixth closed an issue I had
+  explicitly written that I did not want closed. Five clean results were the check working, not
+  evidence it was unnecessary — and what made it stoppable was the work becoming routine, which is
+  also when nobody reads their own boilerplate.
+
+  #361 follows from it: charter rule 4 says to keep checks in the script rather than in prose, and
+  this one is still a habit.
+
+
 - **(internal)** The balance sweep's fourth and last question is settled: **fix in place, add no new
   options** (#339, and it answers #336). `docs/DESIGN_balance.md` §6 records it, and **all four
   questions are now closed** — what remains is implementation.
