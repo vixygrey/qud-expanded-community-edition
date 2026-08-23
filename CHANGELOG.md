@@ -14,6 +14,33 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** `docs/DESIGN_balance.md` — a balance audit of the whole mod against vanilla, and
+  the reasoning behind it. Twenty findings are filed and indexed under
+  [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315); nothing is changed
+  yet, and four questions are open.
+
+  Four of the findings are blatant by the plainest test there is: **vanilla already prices the same
+  effect, and prices it far higher.** A perfected Heightened Quickness chip grants +33 Quickness for
+  60 water, where vanilla's only two Quickness items are legendaries at +10 for 8,000 and 10,000.
+  Best-in-slot AV rises 32 → 48 while the loadout's weight halves. The zetachrome greatshield has
+  the same stat line as the Gear from the Great Machine at a seventh of the weight.
+
+  The document's §2 is the part worth keeping regardless of what gets changed: the combat, armour,
+  chip and tinkering mechanics **verified against the decompiled game** rather than inferred from
+  field names. `MeleeWeapon.Stat` names the penetration stat rather than a damage stat, and
+  penetration multiplies damage; Agility supplies melee to-hit on every weapon with no exemption;
+  every body part holding a weapon generates its own attack. Each of those changes what a
+  reasonable fix looks like, and none of them is what the field names suggest.
+
+  **The finding under the findings is that the checked conventions held and the unchecked ones did
+  not.** `docs/STYLEGUIDE.md` §3.2's value curve and tier→material table are followed everywhere,
+  because `item-curve` fails CI when they are not. Every number that drifted — AV, weight, damage,
+  drop weight — is a number §3.2 does not mention. So the sequence starts by writing those curves
+  down (#340) rather than by changing values, and the validator checks that would hold them (#337)
+  are the durable half of the work.
+
 ## [2.5.1] - 2026-08-21
 
 ### Added
