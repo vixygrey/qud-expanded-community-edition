@@ -216,6 +216,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 - **The psionic chips are repriced, the four steep passives made rare, and the Guardian starting
+- **(internal)** `docs/DESIGN_balance.md` §3.10 records the direction on #342: **the Axe and Cudgel
+  duplicate families get real differentiators**, and the skill-regating question **waits on that
+  design** rather than being answered first. Deferred deliberately — it is a project across four
+  nine-tier families, not a tidy-up.
+
+  The premise strengthened while the issue sat open. Re-derived after #321 and #322 landed, **7 of 21
+  pairs are byte-identical** on damage, penetration bonus, cap, weight and value, and 12 more differ
+  by a single pound. #322 equalised the damage that used to sit alongside the weight offset, so the
+  only signal left is the one §3.10 already called the weakest.
+
+  Two things recorded so they are not rediscovered. **Retiring the duplicates was never an option** —
+  §1.1 freezes blueprint names, and any save holding one would break on load. And **the regating is
+  not inert**, contrary to how #342 framed it: it lowers the attribute minimum to *buy* a power, and
+  Cleave's effect does not depend on the penetration stat, so an Agility build can buy Cleave and
+  swing an axe — just badly. A reduced benefit rather than a dead one.
+
   kits fixed** (#338, and it closes #316). The largest content change of the balance sweep, and a
   player-facing one.
 

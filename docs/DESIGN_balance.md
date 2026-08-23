@@ -472,7 +472,27 @@ Strength-only, an Agility character can now take Cleave and Dismember and has no
 with. The relaxation is inert rather than harmful, and it is documented intent — but charter rule 2
 does not like inert, so it wants a sentence either way.
 
-Both are tracked in [#342](https://github.com/vixygrey/qud-expanded-community-edition/issues/342).
+Both are tracked in [#342](https://github.com/vixygrey/qud-expanded-community-edition/issues/342),
+where the direction is now **settled and deferred**.
+
+**The families get real differentiators rather than being accepted as flavour** — a halberd that
+reaches, a war hammer that shreds AV, and so on. Retiring the duplicates was never available:
+`docs/STYLEGUIDE.md` §1.1 freezes blueprint names, so any save holding one would break.
+
+**The regating question waits on that design**, because a differentiator could be Agility-flavoured
+— tagging the one-handed lines `Finesse`, or keying a mechanic off Agility — and any of those makes
+the twelve regated powers meaningful again. Answering it first would pre-empt a decision nobody has
+made.
+
+One correction to carry into that answer: the regating is not inert. It lowers the attribute minimum
+to *buy* a power, and Cleave's effect does not depend on the penetration stat — so an Agility build
+can buy Cleave and swing an axe, just badly. A **reduced** benefit rather than a dead one, which is
+close to what Mura's note claims.
+
+And the case has strengthened since §3.10 was written. Re-derived after #321 and #322 landed, **7 of
+21 pairs are byte-identical** on damage, penetration bonus, cap, weight and value, and 12 more differ
+by a single pound — #322 equalised the damage that used to sit alongside the weight offset, so the
+one signal left is the one this section already called the weakest.
 
 ## 4. Question two — are the weight cuts a feature or a defect?
 
