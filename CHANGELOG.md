@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Question three of the balance sweep is **fully settled** — its fourth and last
+  decision covers starting chips (#338), recorded in `docs/DESIGN_balance.md` §5.9.
+
+  Two corrections to how it had been framed. **All eighteen subtypes start with three chips granting
+  five mutations**, not just the Guardians; and for scale, **vanilla hands out zero cybernetic
+  implants in starting gear**, across every caste and calling.
+
+  It collided with the decision before it: §5.3 made the four steep permanent passives three times
+  rarer to find, and starting gear hands one to **12 of the 18 subtypes**. The rule that separates
+  the deliberate cases from the accidental one:
+
+  > A subtype starts with its own affinity, whatever that affinity contains. It does not start with
+  > a *generic* chipset carrying someone else's steep passive.
+
+  So a Light Psionic keeps `PhotosyntheticSkin` — that is its affinity — and what goes is the
+  **Neutral Body chipset in all nine Guardian kits**, the only reason every martial subtype opens at
+  +15 Quickness. It is replaced by the Neutral Mind chipset, whose reflect-block-displace is closer
+  to what a Guardian is; the Mental Mirror chip already in the kit becomes a Precognition chip so the
+  duplicate does not stack.
+
+  Flagged for an in-game check: the **Light Guardian** starts with `PhotosyntheticSkin` *and*
+  `HeightenedSpeed`, two independent Quickness sources that look on the code like they stack.
+
+
 - **(internal)** Question three's third decision is settled — **price and rarity, not rank** (#338).
   `docs/DESIGN_balance.md` §5.3 records it.
 
