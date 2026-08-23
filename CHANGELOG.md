@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/DESIGN_balance.md` §5.8 models the three genotypes' **mutation power across a
+  whole run**, which turns out to be shaped almost entirely by a cap nobody had accounted for.
+  `GetMutationCapForLevel(level)` is `level / 2 + 1` and clamps the sum of every source, identically
+  for every genotype.
+
+  Three phases follow. **Below character level 18 the cap binds everyone equally** — a perfected chip
+  and a mutant's grown mutation are the same rank — so the Psionic Adept's advantage there is *count,
+  not rank*. **Level 18 is its peak**, because the cap reaches 10, which is exactly a perfected
+  chip's grade. **Above 18 it plateaus while a mutant keeps climbing**, since `1 MP = 1 rank` has no
+  ceiling below the cap and a single chip's grade is its ceiling.
+
+  So the Adept is front-loaded breadth that plateaus, against a mutant that starts level and ends
+  deeper — a coherent shape, and one no document stated. Its ledger is a real trade too: the fewest
+  stat points in the game (34 against 38 and 44), half the True Kin's cybernetics licence, the lowest
+  HP gain and no mutation points, bought with +10 skill points per level and two extra chip slots.
+
+  #350 is filed for the exception: chip levels **sum** before the cap, so two perfected chips of one
+  mutation track the cap indefinitely. That is the only way a chip build scales past level 18, and
+  nothing documents it.
+
 - **(internal)** `docs/DESIGN_balance.md` §5 now carries the **complete costing of all 36 mutations
   the psionic chips grant**, at every grade, read from the decompiled classes rather than from the
   documentation (#338). The question itself is still open; three structural findings are not.
@@ -34,13 +54,6 @@ recorded because contributors need them, not because subscribers do.
 
   **And no ladder reaches the Quickness pair.** `GetSpeedBonus` is `13 + 2 × Level`, so level 1 is
   already +15 against vanilla's best item at +10 for 10,000 water. The floor is the problem.
-
-### Fixed
-
-- Nothing yet — but #347 records six chips whose grades grant nothing at all. `Kindle` and
-  `FrostWebs` both return `false` from `CanLevel()` and never read their level, so basic, upgraded
-  and perfected are the same item in each case, and the Fire and Ice chipsets each carry a dead
-  third.
 
 - **(internal)** `docs/LESSONS.md`'s entry on reading a decompiled loop's tail now records the tell I
   missed. The wrong model's *first* symptom was not the absurd number in the output table — it was a
@@ -116,6 +129,19 @@ recorded because contributors need them, not because subscribers do.
   drop weight — is a number §3.2 does not mention. So the sequence starts by writing those curves
   down (#340) rather than by changing values, and the validator checks that would hold them (#337)
   are the durable half of the work.
+
+### Fixed
+
+- **(internal)** Two corrections to §5.1, both from the same cause — modelling a layered system from
+  a partial read. It claimed Ego scaling was uncapped; `GetMutationCap()` clamps it. And #316's
+  figures now need a character level attached: **+33 Quickness requires level 18**, and a Guardian's
+  starting chipset is +15 at level 1 rather than +17, because the cap is 1 there. The finding
+  survives — a 20-water chip is +19 from level 4 against an *uncapped* 10,000-water legendary at +10.
+
+- Nothing yet — but #347 records six chips whose grades grant nothing at all. `Kindle` and
+  `FrostWebs` both return `false` from `CanLevel()` and never read their level, so basic, upgraded
+  and perfected are the same item in each case, and the Fire and Ice chipsets each carry a dead
+  third.
 
 ## [2.5.1] - 2026-08-21
 
