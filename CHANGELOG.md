@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Question three's third decision is settled — **price and rarity, not rank** (#338).
+  `docs/DESIGN_balance.md` §5.3 records it.
+
+  First, a fact that changes what price can do: **chips cannot be bought.** They live in
+  `Artifact 3`–`8`, consumed only by `ChestBuilders.BuildSpecialChestInventory`, while village
+  tinkers stock `Artifact NR`, which carries none. So price sets what an unwanted chip *sells* for
+  and rarity is the access dial. Both are in scope, but they do different jobs.
+
+  **A stated chip curve** goes into `docs/STYLEGUIDE.md` §3.2 at a quarter of the item curve —
+  `1.25 × 2^tier` — with its reason written down, in the style of `CURVE_EXEMPT`'s vibro entry: chips
+  are not equipment, their slot competes with nothing, and they cannot be bought. That reprices 108
+  of the 144; the basic single chips at 20 are already on it. A perfected chip goes 60 → **320**.
+
+  **The four steep permanent passives become jackpots.** `HeightenedSpeed`, `PhotosyntheticSkin`,
+  `Regeneration` and `ElectricalGeneration` drop from weight 3 to weight 1 in all three chip tables —
+  0.227% to **0.081%** per artifact roll, or 305 rolls to 854 for a coin flip. The other chips get
+  marginally commoner as the table total falls from 120 to 112, which is the intended trade.
+
+  **And the Quickness pair stays.** Removal was the only dial reaching below their +15 floor and it
+  is not taken: a Mutated Human can take `Heightened Quickness` at chargen for 4 of 16 mutation
+  points, so the chip is the non-mutant's route to the same thing and pricing that route is what is
+  in scope. The floor is accepted as a consequence of the mutation's own vanilla design.
+
+
 - **(internal)** Question three's second decision is settled, and it gives the chip system the
   principle it was missing (#338):
 
