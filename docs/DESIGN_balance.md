@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled; question three is costed and partly settled (§5); question four is open.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9), two (§4) and three (§5) are all settled; question four (§6) is open.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -785,9 +785,13 @@ cooldown caps it; **INERT** means the level is not read at all.
 
 None of them reaches the starting chipset every Guardian holds, which is why that is its own decision.
 
-### 5.7 What still needs deciding
+### 5.7 The four decisions — all settled
 
-Four, and two of them are cheap. Everything else this question started with has either been answered
+All four are answered; each row links to the section carrying its reasoning. What remains is
+implementation, and a stated budget in `docs/STYLEGUIDE.md` §3.2, which is
+[#340](https://github.com/vixygrey/qud-expanded-community-edition/issues/340)'s job.
+
+Originally four, and two of them turned out cheap. Everything else this question started with has either been answered
 or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape is coherent),
 [#347](https://github.com/vixygrey/qud-expanded-community-edition/issues/347) (inert grades),
 [#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350) (duplicate stacking),
@@ -806,13 +810,65 @@ or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape i
 3. ~~**Price and rarity for the seven permanent passives.**~~ **Settled — see §5.3.** A stated chip
    curve at a quarter of the item curve (108 of 144 chips reprice), the four steep permanent passives
    drop to weight 1 in their tier tables, and the Quickness pair stays in the catalogue.
-4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
-   chipset. That is **+15 Quickness at character creation** — the chipset grants rank 2 but the cap
-   at level 1 is 1 — against The Kesil Face's uncapped +10 for 10,000 water.
+4. ~~**Do the Guardians keep starting with a chipset?**~~ **Settled — see §5.9.** A subtype starts
+   with its own affinity, whatever that contains, and not with a generic chipset carrying someone
+   else's steep passive. Nine edits, all replacing the same blueprint.
 
 **What closing this question requires** is a stated budget in `docs/STYLEGUIDE.md` §3.2, and writing
 it there is [#340](https://github.com/vixygrey/qud-expanded-community-edition/issues/340)'s job. So
 #338 closes when these four are decided; no code depends on it.
+
+### 5.9 Starting chips — settled
+
+**All eighteen subtypes start with three chips granting five mutations**, not just the Guardians as
+§5.7 originally had it. Guardians take their affinity's single chip, the Neutral Body chipset and a
+Mental Mirror chip; casters take their affinity chipset, a Mental Mirror chip and a Clairvoyance chip.
+
+That collides with §5.3. The four steep permanent passives were just made three times rarer to find,
+and starting gear hands one to **12 of the 18**:
+
+| subtype | steep passive | via |
+|---|---|---|
+| all nine Guardians | `HeightenedSpeed` | Neutral Body chipset |
+| Light Guardian | *also* `PhotosyntheticSkin` | its own affinity chip |
+| Light Psionic | `PhotosyntheticSkin` | Light chipset |
+| Blood Psionic | `Regeneration` | Blood chipset |
+| Lightning Psionic | `ElectricalGeneration` | Lightning chipset |
+
+For scale: **vanilla hands out zero cybernetic implants in starting gear**, across every caste and
+calling. The mod's equivalent gives every Adept five mutations at character creation.
+
+#### The rule
+
+> **A subtype starts with its own affinity, whatever that affinity contains. It does not start with a
+> *generic* chipset carrying someone else's steep passive.**
+
+That line separates the thematic cases from the accidental one. A Light Psionic beginning with
+`PhotosyntheticSkin` is its affinity expressing itself and stays; the Light Guardian's own affinity
+chip likewise. What goes is the **Neutral Body chipset in all nine Guardian kits** — generic, shared,
+and the only reason every martial subtype opens at +15 Quickness.
+
+#### The replacement
+
+`Raven_Simple Neutral Mind Chipset` — `MentalMirror(1)`, `TeleportOther(1)`, `ForceWall(1)`. No steep
+passive, and reflect-block-displace is closer to what a Guardian is than Quickness and hearing were.
+
+It duplicates the Mental Mirror chip already in the kit, and duplicates stack
+([#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350)), which should not be
+baked into starting gear. So that separate chip becomes a **Neutral Spirit single chip** —
+`Raven_Simple Precognition Chip` is the thematic pick. Still three chips, still five mutations, no
+duplicate and no steep passive.
+
+`Raven_Simple Neutral Spirit Chipset` is the alternative if the caster flavour is acceptable: it
+needs no second edit, because nothing in it duplicates anything the Guardians already carry.
+
+#### Worth confirming in game
+
+The **Light Guardian** starts with `PhotosyntheticSkin` *and* `HeightenedSpeed` — two independent
+Quickness sources, one a stat shift and one a metabolizing effect. On the code they look like they
+stack, which would open at +30 rather than +15. Removing the Neutral Body chipset resolves it either
+way, but the stacking question is worth an in-game check because it bears on
+[#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350) too.
 
 ### 5.8 Genotype power curves — the cap shapes everything
 
