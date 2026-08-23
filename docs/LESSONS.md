@@ -896,6 +896,33 @@ Both were reachable from the start. Neither was reachable from the part.
 The cost here was not a bug, it was a design argument built on a false premise and written into an
 issue, where it sat looking authoritative until someone questioned it.
 
+**It happened again, on the chip budget, in the opposite direction.** Costing the psionic chips
+(#338) I checked whether Mura's stated reason for the 3/6/10 physical ladder was true — that mental
+mutations keep scaling with Ego from a chip and physical ones do not — by grepping each of the 36
+mutation *classes* for `Stat("Ego")`. Seven matched, so I reported the rationale as holding for 7 of
+23, called the split broken in both directions, and shipped that into `docs/DESIGN_balance.md`, the
+changelog and two issue comments before catching it.
+
+The scaling is not in the classes. It is one line in a shared base:
+
+```csharp
+// BaseMutation.CalcLevel
+Statistic value = ParentObject.Statistics[mutationEntry?.GetStat()];
+num += value.Modifier;
+```
+
+and `GetStat()` falls through to the *category*, declared once in `Mutations.xml` as
+`<category Name="Mental" … Stat="Ego">`. All 23 mental mutations scale; the seven that named Ego
+themselves were doing something else with it. The rationale was correct, and the ladders turn out to
+be calibrated to meet exactly at Ego 24.
+
+Same shape as the bleeding case and the same fix — but note what made it *harder* to catch. The
+bleeding grep returned too few results and the claim was that the mechanic did not exist. Here the
+grep returned seven results, which looked like a finding rather than like a miss. **A partial match
+is more dangerous than no match**, because it furnishes a number, and a number reads as evidence that
+the search worked. When a categorical claim comes back "true for some", ask where the property is
+declared before believing the split is real.
+
 ## A boolean's name is not its semantics, and neither is a skill's
 
 `Bleeding.Stack` reads as "this bleed stacks". It means the opposite:
