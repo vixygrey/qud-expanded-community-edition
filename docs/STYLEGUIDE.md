@@ -265,6 +265,20 @@ possible in practice. Match them when adding anything.
   6 crysteel · 7 flawless crysteel · 8 zetachrome.
 - **Value curve doubles per tier:** 5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280. Body armor
   runs 8→2048; vambraces run 4→1024 (half curve, partial slot).
+- **Chips run a quarter of that curve: `1.25 × 2^tier`** — 20 · 40 · 80 · 160 · 320 across tiers
+  4–8. They are not equipment: their slot competes with nothing, and they **cannot be bought**,
+  because they live in `Artifact 3`–`8` and village tinkers stock `Artifact NR`. So price only sets
+  what an unwanted chip sells for, and **rarity is the access dial, not price.**
+  `docs/DESIGN_balance.md` §5.3.
+- **The chip system controls access and price. Vanilla controls what a mutation is worth.** A
+  chip's price and its drop weight are this fork's to set; the number of ranks a grade grants is
+  not. Every mutation behind a chip is a vanilla mutation Freehold already balanced, so re-tuning
+  one through the chip ladder is second-guessing Qud's own mutation design by proxy.
+  `docs/DESIGN_balance.md` §5.2.
+- **A subtype starts with its own affinity, whatever that affinity contains** — never a *generic*
+  chipset carrying someone else's steep passive. A Light Psionic opening with `PhotosyntheticSkin`
+  is its affinity expressing itself and stays; a shared chipset that hands every Guardian
+  `HeightenedSpeed` is an accident of kit-building. `docs/DESIGN_balance.md` §5.9.
 - **Two-handed variants** get `PenBonus="1"` and a damage bump over the one-handed version, plus
   `UsesTwoSlots="true"`.
 - **Two-handed hammer `Physics` weight is the one-handed weight plus 3** — inventory pounds, not a
@@ -277,8 +291,16 @@ possible in practice. Match them when adding anything.
   inherited rather than introduced and there is no monotonic curve here to restore. Nothing checks
   this, so check it by hand when you add a tier — #248 read the two-handed half in isolation and
   proposed bringing fullerite down from 9, which was the one value the rule required.
-- **Agility-scaling martials** are a deliberate theme: vinereapers, halberds, rapiers, katanas and
-  war hammers all use `Stat="Agility"` while keeping their tree's skill.
+- **`MeleeWeapon.Stat` is `Strength` on every new weapon, and a merge never changes vanilla's.**
+  `Stat=` names the *penetration* stat, and the damage die is rolled once per penetration, so it
+  multiplies a weapon's whole output rather than adding to it — while Agility already supplies
+  melee to-hit and DV on every weapon with no exemption. Vanilla declares `MeleeWeapon` 402 times:
+  191 `Strength`, 208 unset (which is Strength), 3 `Ego`, and **`Agility` never**. A weapon meant
+  to reward Agility carries `<tag Name="Finesse" />` instead, and the crossover is then bought as a
+  power in the Short Blades or Long Blades tree — never granted by the blueprint. Axe and Cudgel
+  stay Strength-only. `docs/DESIGN_balance.md` §3.9 has the reasoning and the tabletop precedent.
+  **61 blueprints still violate this**; [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321)
+  reverts them, so don't read them as precedent.
 - **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
   `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
 - **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables were the one

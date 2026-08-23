@@ -16,6 +16,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.2 gains the four conventions the balance sweep settled but
+  had not written down. This is #340 split in half: these four were *decided* by questions one and
+  three and cost a paragraph each, while the AV, weight, damage and table-share curves have to be
+  **derived** from vanilla's values first. Bundling them held the cheap half behind the expensive
+  one, and it was blocking #321, #338 and #354.
+
+  **`MeleeWeapon.Stat` is `Strength` on every new weapon, and a merge never changes vanilla's.** A
+  weapon meant to reward Agility carries a `Finesse` tag instead, and the crossover is bought as a
+  power in the Short Blades or Long Blades tree. Counted while writing it: vanilla declares
+  `MeleeWeapon` 402 times — 191 `Strength`, 208 unset, 3 `Ego`, and **`Agility` never**. This bullet
+  **replaces one that said the opposite** —
+  §3.2 described Agility-scaling vinereapers, halberds, rapiers, katanas and war hammers as a
+  deliberate theme, which is exactly what §3.9 decided to revert. Until now the styleguide endorsed
+  the behaviour the sweep's largest fix removes.
+
+  **Chips run a quarter of the item curve at `1.25 × 2^tier`** — 20 · 40 · 80 · 160 · 320 across
+  tiers 4–8 — because their slot competes with nothing and they cannot be bought, so rarity is the
+  access dial and price only sets what an unwanted chip sells for.
+
+  And the two principles: **the chip system controls access and price, vanilla controls what a
+  mutation is worth**; and **a subtype starts with its own affinity**, never a generic chipset
+  carrying someone else's steep passive.
+
+  `docs/DESIGN_balance.md` §7 is re-sequenced around the split.
+
 - **(internal)** Two additions to `docs/LESSONS.md`, both from closing an issue by accident in #360.
 
   The **closing-keyword** entry gains a third and fourth shape. Its examples were a denial and a narration; this
