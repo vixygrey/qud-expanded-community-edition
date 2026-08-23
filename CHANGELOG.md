@@ -16,6 +16,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/DESIGN_balance.md` §5 now carries the **complete costing of all 36 mutations
+  the psionic chips grant**, at every grade, read from the decompiled classes rather than from the
+  documentation (#338). The question itself is still open; three structural findings are not.
+
+  **The stated rationale holds for 7 of 23.** The 3/6/10 physical ladder exists to compensate for
+  mental mutations continuing to scale with Ego from a chip — but **16 of the 23 mental mutations
+  have no stat scaling at all**, and `ElectricalGeneration` is physical and scales off Willpower. The
+  split is broken in both directions, which is why the anchor question now has to be answered before
+  anything moves.
+
+  **The ladder is keyed on the wrong property.** What decides a level's worth is whether a cooldown
+  caps it, and the five permanent passives — the ones that receive the largest levels — have 100%
+  uptime. `AdrenalControl2` grants Quickness like `HeightenedSpeed` does, at 10% uptime, on the same
+  ladder.
+
+  **And no ladder reaches the Quickness pair.** `GetSpeedBonus` is `13 + 2 × Level`, so level 1 is
+  already +15 against vanilla's best item at +10 for 10,000 water. The floor is the problem.
+
+### Fixed
+
+- Nothing yet — but #347 records six chips whose grades grant nothing at all. `Kindle` and
+  `FrostWebs` both return `false` from `CanLevel()` and never read their level, so basic, upgraded
+  and perfected are the same item in each case, and the Fire and Ice chipsets each carry a dead
+  third.
+
 - **(internal)** `docs/LESSONS.md`'s entry on reading a decompiled loop's tail now records the tell I
   missed. The wrong model's *first* symptom was not the absurd number in the output table — it was a
   Monte Carlo run that could not terminate, sat backgrounded for seventeen hours pinning a core, and
