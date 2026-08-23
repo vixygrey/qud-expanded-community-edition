@@ -35,6 +35,7 @@ namespace QudExpandedCE
         public const string ChipDropsID = "OptionQudExpandedCEChipDrops";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
+        public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
@@ -391,6 +392,20 @@ namespace QudExpandedCE
 
         /// <summary>True when the player asked to leave other humanoids their chip slots.</summary>
         public static bool NPCChipSlots => Enabled(ChipSlotsNPCsID, "Yes");
+
+        /// <summary>
+        /// True when graded burden bands are switched on.
+        ///
+        /// Read live by Vixy_Burden every turn rather than applied here, because there is no
+        /// loaded record to write - the band is derived from carried weight, so the off-switch is
+        /// a runtime decision. Charter rule 6 prefers exactly that shape, and it means flipping
+        /// this mid-run takes effect on the next tick with no restart.
+        ///
+        /// Defaults off: rule 6 reserves "off by default" for genuinely new opinions this fork
+        /// introduces, and a burden gradient is one. Vanilla's cliff is what the mod has always
+        /// shipped.
+        /// </summary>
+        public static bool BurdenGradient => Enabled(BurdenGradientID, "No");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);

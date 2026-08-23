@@ -14,6 +14,36 @@
     -->
 
   <option
+    ID="OptionQudExpandedCEBurdenGradient"
+    DisplayText="{{C|Qud Expanded}}: graded burden"
+    Category="Mods"
+    Type="Checkbox"
+    Default="false"
+    SearchKeywords="qud expanded burden encumbrance weight carry capacity overburdened"
+  >
+    <helptext>
+            Makes carrying weight a gradient instead of a cliff.
+
+            Vanilla has one threshold: carry more than 15 pounds per point of Strength and you
+            become Overburdened, which means unable to move at all. Below that, nothing. So the
+            best play is to sit just under the limit forever and never think about it again.
+
+            With this on, four bands sit underneath that threshold:
+
+            Lightly burdened, at half capacity - minus 1 DV.
+            Encumbered, at three quarters - minus 2 DV.
+            Heavily burdened, at nine tenths - minus 4 DV, minus 10 Quickness, and you cannot run.
+
+            Vanilla's Overburdened is untouched and still stops you dead at full capacity. What
+            changes is that you feel the weight coming before it stops you.
+
+            Player only, as in vanilla, where no NPC is ever overburdened at any load.
+
+            Safe to switch on or off mid-run: the band is recalculated every turn.
+    </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEMutationPoints"
     DisplayText="{{C|Qud Expanded}}: Mutated Human mutation points"
     Category="Mods"
