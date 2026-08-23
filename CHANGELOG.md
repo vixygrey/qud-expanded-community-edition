@@ -16,6 +16,14 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** #354 records that **all 144 psionic chips are off `docs/STYLEGUIDE.md` §3.2's value
+  curve** — a perfected chip is a tier-8 item priced at 60 water where the curve says 1,280 — and
+  that `item-curve` cannot see them. The check finds an object's tier by matching a **material word**
+  in its blueprint name, so anything not named after a metal is skipped before its price is compared,
+  even when it carries an explicit `Tier` tag. That is the more general defect, and the chips are 144
+  instances of it.
+
+
 - **(internal)** `docs/DESIGN_balance.md` §5.8 models the three genotypes' **mutation power across a
   whole run**, which turns out to be shaped almost entirely by a cap nobody had accounted for.
   `GetMutationCapForLevel(level)` is `level / 2 + 1` and clamps the sum of every source, identically
@@ -131,6 +139,12 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+
+- **(internal)** `docs/DESIGN_balance.md` §5.7 was carrying two claims corrected elsewhere: that the
+  Ego gradient diverges "without limit" above Ego 24, which the rank cap bounds, and that the
+  Guardians' starting chipset is +17 Quickness at character creation, which is +15 because the cap
+  at level 1 is 1. Both are now right in the one section that still had them wrong, and the list is
+  scoped down to the four decisions that actually remain.
 
 - **(internal)** Two corrections to §5.1, both from the same cause — modelling a layered system from
   a partial read. It claimed Ego scaling was uncapped; `GetMutationCap()` clamps it. And #316's
