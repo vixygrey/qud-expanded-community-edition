@@ -62,11 +62,23 @@ resolve resolves resolved
 
 Two ways this has bitten, and they fail differently:
 
+Real examples, with the issue numbers **masked** — see the warning below, because writing them
+faithfully here would arm this document:
+
 ```
-## Why this doesn't close #284     <- a denial. Registered #284; #286 closed it on merge.
-... and closed #10                 <- narrating history. Registered #10 in #292.
-I would rather you close #339      <- delegating. Registered #339 in #360.
+## Why this doesn't close #NNN     <- a denial.      registered it; a later PR closed it on merge
+... and closed #NNN                <- narration.     the reference was to a different issue entirely
+I would rather you close #NNN      <- delegation.    in a body that also said "No closing keyword"
+> "...I would rather you close #NNN..."  <- quoting the above, in the PR that documented it
 ```
+
+Those were #286 against #284, #292 against #10, #360 against #339, and #362 against #339 again.
+
+> ⚠️ **Quoting an example arms it.** The fourth entry happened while writing the third: the pull
+> request documenting the mistake quoted the offending sentence verbatim, in both its body and its
+> commit message, and registered the same issue a second time. That is why the block above uses
+> `#NNN`. **When you write up a closing-keyword mistake, mask the number** — a bug report about a
+> live wire is still a live wire.
 
 The first is the memorable one and the second is the ordinary one. #286 was written to advance #284
 without finishing it, and nothing in it counted: not the paragraph listing which acceptance boxes
@@ -80,11 +92,10 @@ buy exactly nothing, and an entry that lists the ways a sentence can be shaped w
 the first version of this entry omitted the three past-tense keywords, and `closed` caught me the
 next day.
 
-The third example is the one worth staring at. The full sentence was *"No closing keyword —
-implementation is still to come, and I would rather **you close #339** than have a merge do it."* It
-declares the absence of a keyword and then contains one, nine words later, in the clause asking a
-human to do the closing by hand. Asking for something to be done manually is not a way of saying it
-should not happen automatically; the parser reads a verb and a number.
+The third example is the one worth staring at. The sentence declared *"No closing keyword"* and then
+contained one nine words later, in the clause asking a human to do the closing by hand. Asking for
+something to be done manually is not a way of saying it should not happen automatically; the parser
+reads a verb and a number, and there is no register of speech it declines to read.
 
 **Do instead:** keep the keyword away from the reference in every form. **"Why #N stays open"**,
 **"Part of #N"**, **"advances #N"**; and when narrating, name the issue without the keyword —

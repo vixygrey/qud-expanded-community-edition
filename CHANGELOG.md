@@ -18,11 +18,16 @@ recorded because contributors need them, not because subscribers do.
 
 - **(internal)** Two additions to `docs/LESSONS.md`, both from closing an issue by accident in #360.
 
-  The **closing-keyword** entry gains a third shape. Its examples were a denial and a narration; this
+  The **closing-keyword** entry gains a third and fourth shape. Its examples were a denial and a narration; this
   one is **delegation** — *"No closing keyword — … I would rather you close #339 than have a merge do
   it."* The sentence declares the absence of a keyword and then contains one nine words later, in the
   clause asking a human to do the closing by hand. Asking for something to be done manually is not a
   way of telling the parser not to do it automatically.
+
+  The fourth arrived while writing the third: **quoting an example arms it.** The pull request
+  documenting the mistake reproduced the offending sentence verbatim, in its body and its commit
+  message, and registered the same issue again. The entry's examples now mask their issue numbers,
+  because a bug report about a live wire is still a live wire.
 
   And a new entry, **"The check you drop is the one that was working."** The command that would have
   caught this is prescribed two sections above, by me, after it caught two earlier closures. I ran it
