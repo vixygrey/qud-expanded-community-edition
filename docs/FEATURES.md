@@ -1790,8 +1790,8 @@ starting reputation bonus, which grants power with no content attached and so mu
 rather than opted out of; and graded burden, which is a genuinely new opinion this fork introduces
 rather than anything the mod already was.
 
-> ✅ **Verified 2026-08-16: eleven of the twelve options work in game** (maintainer). Graded burden
-> arrived after that pass and has not been played yet. Still the only evidence
+> ✅ **Verified in game by the maintainer: eleven options on 2026-08-16, graded burden on
+> 2026-08-23.** Still the only evidence
 > that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
 > locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
 > proves the code builds, not that an option does the right thing to a run. CodeQL cannot cover the C#
@@ -1880,6 +1880,12 @@ the cliff alone costs one band and has no blast radius at all.
 
 **Safe to toggle mid-run.** The band is derived from carried weight on every turn and the effect
 stores nothing, so the option takes hold on the next tick and adds nothing to the save.
+
+> ✅ **Played and confirmed on 2026-08-23** (maintainer). All five behaviours the pull request left
+> open: the band appears by name at each threshold, DV and Quickness move, running is refused in the
+> heavy band, the option takes hold on the next turn in both directions, and — the case with no
+> compile-time proof — **an existing save picks the part up on load**, not just a fresh character.
+> That last one is the whole reason `Vixy_BurdenAttach` carries two hooks rather than one.
 
 ### 14.1 Two spec items that could not be built
 

@@ -16,6 +16,12 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Graded burden is played and confirmed, so `docs/FEATURES.md` §13 and §14 say so
+  rather than saying it is untested. All five behaviours the pull request left open check out —
+  including the one with no compile-time proof, that **an existing save picks the part up on load**.
+  That case is the entire reason `Vixy_BurdenAttach` carries two hooks: `[PlayerMutator]` fires only
+  at character creation, and `CallAfterGameLoaded` only inside `XRLGame.LoadGame`.
+
 - **Graded burden** — carrying weight becomes a gradient instead of a cliff (#176). **Off by
   default**, per charter rule 6: it is a genuinely new opinion this fork introduces rather than
   anything the mod already was.
