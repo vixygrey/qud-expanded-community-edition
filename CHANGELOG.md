@@ -43,7 +43,7 @@ recorded because contributors need them, not because subscribers do.
 
   Two implementation notes worth keeping. One class per tree, never a shared one — `PowersByClass`
   keeps only the first entry for a given `Class`, which is how #11 broke Akimbo. And the `Finesse`
-  tag on `BaseDagger` inherits to **54 melee blueprints**, 24 of them vanilla daggers and knives;
+  tag on `BaseDagger` inherits to **51 melee blueprints**, 24 of them vanilla daggers and knives;
   that reach is deliberate — 5e gives the dagger `finesse` too — but it is one line changing a lot of
   vanilla, and worth seeing as such.
 
@@ -340,6 +340,25 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+
+- **Finesse no longer overrides a weapon's own penetration stat** (#366). Three vanilla melee
+  weapons roll against something other than Strength, and one of them — `TauDagger`, the crystalline
+  jile, at `Stat="Ego"` — inherits `BaseDagger` and so carried the Finesse tag. The handler compared
+  Agility against the running `StatBonus`, which for that weapon held the *Ego* modifier, so any
+  character with the higher Agility silently turned a psionic artefact into an Agility weapon. That
+  is the same override #321 removed from the blueprints, arriving through a different door.
+
+  It now reads the weapon's own stat and applies only at `Stat == "Strength"`. Safe for the 20
+  vanilla merges that state no `Stat` at all, because `MeleeWeapon.Stat` is a field initialised to
+  `"Strength"` — so an omitted attribute matches, and anything Qud adds later is excluded without a
+  code change, which naming `TauDagger` would not have managed.
+
+  Two things found alongside it. The **three vibro blades were tagged but inert** — `MaxStrengthBonus`
+  is 0 and penetration adds `Math.Min(Bonus, MaxBonus)`, so Finesse could never contribute anything;
+  the tag is gone from all three, via `Value="*delete"` on the wristblade, which inherits rather than
+  declares it. And **nothing told the player a weapon was finesse-eligible** — the tag had no
+  player-facing surface, which is how this was found, since a silent feature and a broken one look
+  identical. Every finesse weapon now carries a `RulesDescription` saying so.
 
 - **(internal)** `docs/DESIGN_balance.md` §5.7 was carrying two claims corrected elsewhere: that the
   Ego gradient diverges "without limit" above Ego 24, which the rank cap bounds, and that the

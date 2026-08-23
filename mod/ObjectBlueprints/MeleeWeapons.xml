@@ -675,6 +675,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -689,6 +693,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
   </object>
@@ -700,6 +708,10 @@
     <part Name="Description" Short="Tiny pits mark the length of the thin blade like craters on an iron edge-world." />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -711,6 +723,10 @@
     <part Name="Description" Short="Pits mark the curved length of the blade like craters on an iron edge-world." />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="5" UsesTwoSlots="true" />
   </object>
@@ -725,6 +741,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -739,6 +759,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="5" UsesTwoSlots="true" />
   </object>
@@ -750,6 +774,10 @@
     <part Name="Description" Short="Salt and scars form a comet's tail along the length of the thin azure blade." />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="4" />
   </object>
@@ -764,6 +792,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="7" UsesTwoSlots="true" />
   </object>
@@ -783,6 +815,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -797,6 +833,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
   </object>
@@ -807,6 +847,10 @@
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A thin fullerite blade sharpened to a fine point." />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="4" />
   </object>
@@ -817,6 +861,10 @@
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A large fullerite blade with an unbelievably sharp edge." />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="9" UsesTwoSlots="true" />
   </object>
@@ -836,6 +884,10 @@
       Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
     />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="2" />
   </object>
@@ -855,6 +907,10 @@
       Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
     />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="4" UsesTwoSlots="true" />
   </object>
@@ -875,6 +931,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="2" />
   </object>
@@ -895,6 +955,10 @@
     />
     <part Name="Metal" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="4" UsesTwoSlots="true" />
   </object>
@@ -915,6 +979,10 @@
     />
     <part Name="Zetachrome" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
     <property Name="Role" Value="Rare" />
@@ -936,6 +1004,10 @@
     />
     <part Name="Zetachrome" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="3" UsesTwoSlots="true" />
     <property Name="Role" Value="Rare" />
@@ -965,7 +1037,6 @@
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="LongBladeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Finesse" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -994,7 +1065,6 @@
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="LongBladeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Finesse" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="6" UsesTwoSlots="true" />
   </object>
@@ -1004,6 +1074,10 @@
   <object Name="BaseDagger" Load="Merge">
     <part Name="MeleeWeapon" Skill="ShortBlades" />
     <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <part Name="Physics" Weight="1" />
   </object>
 
@@ -1268,6 +1342,9 @@
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
+    <!-- Inherited from BaseDagger, and inert here: MaxStrengthBonus is 0, and penetration adds
+         Math.Min(Bonus, MaxBonus). Deleted rather than left to do nothing quietly. See #366. -->
+    <tag Name="Finesse" Value="*delete" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="1" />
   </object>

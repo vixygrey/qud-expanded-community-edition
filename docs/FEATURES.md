@@ -344,7 +344,13 @@ requirements need a restart. See §13.
 > Finesse fixes that without handing it out free. A weapon tagged `Finesse` — **daggers, knives and
 > wristblades** in the Short Blade tree, **rapiers and katanas** in the Long Blade tree — rolls
 > penetration against your **Agility** modifier instead, whenever Agility is the higher of the two.
-> Axe and Cudgel stay Strength-only.
+> Axe and Cudgel stay Strength-only. Each finesse weapon says so in its own rules description.
+>
+> It applies only to weapons that roll against **Strength** in the first place. Vanilla has three
+> that do not, and one of them — the crystalline jile, at `Stat="Ego"` — is a dagger, so it would
+> otherwise have been converted into an Agility weapon by a power that never meant to touch it
+> (#366). The vibro blades are excluded too: their `MaxStrengthBonus` is 0, so no penetration bonus
+> of any kind reaches them.
 >
 > It costs 250 skill points and Agility 19, one purchase per tree. That price is the point: Agility
 > already buys melee to-hit and DV, so letting it buy penetration for free would make every other
