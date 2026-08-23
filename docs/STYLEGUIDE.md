@@ -321,12 +321,25 @@ grid, so an item well under a ceiling is fine and an item over one needs a reaso
 
 **AV per slot.** No item may exceed vanilla's best *ordinary* item in its slot:
 
-| Body | Head | Hands | Feet | Back | Arm | Face | Floating Nearby |
-| ---: | ---: | ----: | ---: | ---: | --: | ---: | --------------: |
-|    8 |    4 |     4 |    4 |    2 |   1 |    2 |               1 |
+| Body | Head | Hands | Feet | Back | Arm | Face | Floating Nearby | Shield |
+| ---: | ---: | ----: | ---: | ---: | --: | ---: | --------------: | -----: |
+|    8 |    4 |     4 |    4 |    2 |   1 |    2 |               1 |      7 |
 
 Named artefacts break vanilla's own ceiling on purpose — `Flange from the Great Machine` at AV 10,
-`Gigantic Chassis Plate` at 6 — and are not a benchmark this fork may match.
+`Gear from the Great Machine` at 10, `Gigantic Chassis Plate` at 6 — and are not a benchmark this
+fork may match.
+
+**Shields are the exception to look up separately.** They carry their AV on a `Shield` part rather
+than an `Armor` one, so any survey filtered on `Armor` misses them entirely — which is how the first
+version of this table shipped without a Shield column. They also carry the largest single AV of any
+ordinary item: `Flawless Crysteel Shield` at 7 beats every body armour but one. Vanilla ships no
+ordinary tier-8 shield at all; the only one is the artefact.
+
+**Shield AV is conditional, so it is not the same currency.** It applies only to an attack the
+shield blocks, and `Combat.HandleEvent(GetDefenderHitDiceEvent)` puts that at `25 * (1 +
+ImprovedBlock)` percent, plus 25 for `Shield_Block` and 25 for `Shield_DeftBlocking` — 25% bare,
+75% fully skilled, 100% under Shield Wall. Compare a shield against other shields, and treat any
+best-in-slot total that adds it to armour AV as an upper bound rather than a figure.
 
 **Count the slot, not the item.** A humanoid has **two** Arm slots, so Arm AV counts twice toward a
 loadout. That is why Arm is the tightest cap in the table, and why vanilla puts bracelets there

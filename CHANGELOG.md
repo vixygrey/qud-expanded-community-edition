@@ -374,6 +374,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.2.1's AV ceiling was missing shields, and
+  `docs/DESIGN_balance.md` §9.2 was wrong about #318 as a result.
+
+  **Shields carry AV on a `Shield` part, not an `Armor` one**, so the survey behind the curves never
+  saw one — all 14 of vanilla's, and 20 of this fork's. The table shipped with no Shield column at
+  all, in a document whose job was to give #319, *a finding about a shield*, something to be a defect
+  against. §3.2.1 now has a Shield row at **7** (`Flawless Crysteel Shield`, the largest single AV of
+  any ordinary item), and vanilla ships no ordinary tier-8 shield — only the artefact at 10, which is
+  what #319 reports the zetachrome greatshield matching.
+
+  §9.2 had claimed #318's "32 → 48" never stated its basis, and attributed it to #316. Both halves
+  were wrong: it states the basis in its opening sentence, and with the shield restored it
+  reconciles exactly — 8+4+4+4+2+(1×2)+1+**7** = 32, and 10+6+6+6+3+(3×2)+1+**10** = 48.
+
+  Also recorded, because it changes what a fix should aim at: **shield AV is conditional and armour
+  AV is not.** Block chance is `25 * (1 + ImprovedBlock)`, plus 25 each for `Shield_Block` and
+  `Shield_DeftBlocking` — 25% bare, 75% fully skilled, 100% under Shield Wall — so a best-in-slot
+  total that adds a shield to armour is an upper bound rather than a figure.
+
+  `docs/LESSONS.md` gains the trap: **a number that agrees because both sides share the error is not
+  a cross-check.** §9.1's per-slot maxima summed to 32, matching #318 exactly, which read as
+  independent confirmation from a second method. It was a coincidence — the missing shield's 7 and
+  two wrongly-included artefacts happened to cancel. The tell I ignored was that the survey had no
+  member in the slot the finding was about.
+
 - **Finesse no longer overrides a weapon's own penetration stat** (#366). Three vanilla melee
   weapons roll against something other than Strength, and one of them — `TauDagger`, the crystalline
   jile, at `Stat="Ego"` — inherits `BaseDagger` and so carried the Finesse tag. The handler compared
