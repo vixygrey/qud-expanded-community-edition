@@ -84,6 +84,7 @@ DOCS = [
         "docs/STYLEGUIDE.md",
         "docs/PERMISSION.md",
         "docs/DESIGN_options.md",
+        "docs/DESIGN_balance.md",
         ".github/PULL_REQUEST_TEMPLATE.md",
     )
 ]

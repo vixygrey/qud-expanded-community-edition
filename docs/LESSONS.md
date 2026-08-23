@@ -1007,3 +1007,72 @@ One limitation to know before designing the next one: **examine shows only what 
 equipped**, never its inventory, and no wish dumps another creature's pack — I read the whole command
 list looking for one. The only reliable census is killing it with an ordinary weapon and counting
 what drops.
+
+## `Stat=` on a weapon names the penetration stat, and penetration multiplies the damage
+
+`MeleeWeapon.Stat` looks like it should name the stat that adds damage. It does not. Reading
+`Combat.MeleeAttackWithWeaponInternal` end to end: `text2 = Part.Stat` feeds `Attacker.StatMod(text2)`
+into `Stat.RollDamagePenetrations`, and there is **no Strength term anywhere in the damage path**.
+Damage is `Σ over Penetrations of roll(BaseDamage)`.
+
+So the field sets penetration — but penetration decides how many times the damage die is rolled, so
+the stat is a **multiplier on the weapon's whole output** rather than a side statistic. On a
+`Long Sword8th` against AV 10, Strength 16 → 28 takes the same swing from 2.7 to 13.4 average damage.
+The damage line never changes.
+
+Two consequences that are easy to get backwards:
+
+- **"Strength does not set melee damage" and "a long sword is a Strength weapon" are both true.** I
+  wrote the second as a table of stat "affinities" and it read as a contradiction of the first.
+  Whatever you call the column, say penetration.
+- **Strength is not wired into combat at all.** Line 899 sets `string text2 = "Strength"` and line
+  907 overwrites it with the weapon's own value. Strength is the *default value of an attribute*, not
+  an engine assumption — which is exactly why a mod can move it and why the move is so large.
+
+Vanilla holds the line rigidly: `Stat` is Strength on 4,351 of 4,354 melee weapons, `ThrownWeapon`
+hardcodes `Stat("Strength")`, and the only two ranged weapons with a `ProjectilePenetrationStat` use
+Strength for draw weight. Agility never scales damage anywhere. Verify that before assuming any
+stat's role, because the field names do not tell you.
+
+## Read the whole loop before modelling it — this one decays its own bonus
+
+I modelled `Stat.RollDamagePenetrations` from its first thirty lines: three dice per wave, each
+penetrating die scoring a penetration, all three rolling another wave. That gives an unbounded chain
+and a curve about twice as steep as the real one, and it produced a table with a cell reading
+10<sup>40</sup> damage before I noticed.
+
+Both guards are in the tail, after the dice loop:
+
+```csharp
+if (num2 >= 1) num++;   // a wave scores ONE penetration, however many dice hit
+Bonus -= 2;             // the bonus decays every wave, so the chain terminates
+```
+
+Neither is visible from the part of the method that looks like the interesting part. The
+generalisable form: **a loop's termination condition and its accumulator are often nowhere near the
+arithmetic**, and a decompiled method is exactly where that is easiest to miss, because the shape
+that draws the eye is the innermost block.
+
+The tell was the absurd number, and only because the input happened to reach a degenerate case. Had
+I sampled a narrower range of stats the wrong model would have produced plausible figures and gone
+into a document. **A model of game arithmetic wants one deliberately extreme input** for that
+reason — the ordinary range will not tell you the model is wrong.
+
+## A weapon slot is any body part, not just a hand
+
+`BodyPart.ScanForWeapon` walks the **whole body** recursively, and any part whose equipped item has
+a `MeleeWeapon` passing `AttackFromPart` is added to the attack list. `Combat.PerformMeleeAttack`
+then makes one attack attempt per part in that list. Two hands and two arms is four attacks.
+
+`MeleeWeapon.Slot` is a restriction rather than a grant: `Slot="Arm"` means the weapon attacks
+*only* from an Arm, so it cannot be stacked into hands — but an Arm holding one is a genuine extra
+limb. Only the first part in the list is primary; the rest roll against
+`RuleSettings.BASE_SECONDARY_ATTACK_CHANCE`, which is 15, plus 20/15/15 from the three Multiweapon
+Fighting powers.
+
+The balance consequence is entirely about **what else wants that slot**, and that is not something
+the weapon's own blueprint shows you. Vanilla's Arm slot holds Kindrish, Otherpearl, the Transkinetic
+Cuffs and the rest of the utility artifacts, nearly all at AV 0 — so vanilla's one arm-mounted
+weapon, `ArmDagger4`, is trading an extra attack against a unique effect. Add ordinary armour to the
+slot and that trade quietly stops being a trade. Before pricing an item that occupies an unusual
+slot, enumerate what already lives there.
