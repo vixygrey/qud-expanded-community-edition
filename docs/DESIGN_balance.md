@@ -1037,10 +1037,11 @@ the expensive one.
    controls what a mutation is worth* (§5.2), and *a subtype starts with its own affinity, not a
    generic chipset carrying someone else's steep passive* (§5.9). **Done** — they are in
    `docs/STYLEGUIDE.md` §3.2, and they unblock #321, #338 and #354.
-2. **Derive the remaining curves** (#340) — AV and DV per slot per tier, weight per slot per tier,
-   damage per tier per family, and a ceiling on mod share of a vanilla table. Each needs vanilla's
-   own values collated first. Nothing they cover can be called a defect until there is something it
-   contradicts, which is what gates #318, #320, #322 and #325.
+2. **Derive the remaining curves** (#340) — **done**, in `docs/STYLEGUIDE.md` §3.2.1, with §9 here
+   recording what the derivation found. AV is a ceiling per slot rather than a curve; damage is a
+   ceiling per family, tier and handedness; `MaxStrengthBonus` is the tier plus one; weight is a
+   constant factor per slot whose magnitudes still wait on #176; and mod share of a vanilla table
+   stops at half. #318, #320, #322 and #325 now have something to be defects against.
 3. **The four critical findings** (#316, #317, #318, #319).
 4. **The validator checks** (#337, #354) — what makes step 3 stick.
 5. **The systemic three** (#320, #321, #322). #321 was unblocked by step 1; #320's magnitudes still
@@ -1069,6 +1070,101 @@ An audit that lists only faults misrepresents the thing.
 - **Subtype stat budgets.** Net +1 to +3 across all eighteen, against vanilla's +2 for callings and
   +3/+4 for castes. The comment at the top of `mod/Subtypes.xml` states the target and the file
   meets it.
+
+---
+
+## 9. The curves, derived
+
+[#340](https://github.com/vixygrey/qud-expanded-community-edition/issues/340)'s half of the work:
+collating vanilla's own values so the sweep's findings become defects rather than judgement calls.
+The result is in `docs/STYLEGUIDE.md` §3.2.1. This section is what the derivation found that the
+rules themselves do not say.
+
+### 9.1 Vanilla has ceilings, not curves
+
+The premise going in was "AV and DV per slot, per tier". That turned out to be underivable, because
+**vanilla does not have it.** Across 224 armour pieces the per-item values overlap heavily — tier-4
+body armour runs AV 0 to 5, tier-1 runs 0 to 3 — so there is no per-tier value to match. What
+vanilla does have is a clean **ceiling** per slot, and that is what the findings actually turn on:
+[#318](https://github.com/vixygrey/qud-expanded-community-edition/issues/318) and
+[#319](https://github.com/vixygrey/qud-expanded-community-edition/issues/319) are both ceiling
+violations, not curve violations.
+
+Two tighter rules looked promising and were **rejected against the data**, which is worth recording
+so nobody proposes them again:
+
+- **`AV + DV` capped per tier.** Vanilla's entire heavy-plate line sits at exactly 0 net — Steel
+  Plate Mail 4/−4, Carbide Plate Armor 5/−5, Fullerite Plate Mail 6/−6 — which looks like a rule.
+  It is not: the per-tier maximum runs 3, 3, 4, 5, 1, 6, 4, 6 and is not monotone.
+- **`AV + DV >= 0`.** Holds for all 33 body pieces and fails for 14 secondary-slot ones, from
+  `Steel Helmet` at 2/−3 to `Carbide Gauntlets` at 3/−5.
+
+Either would have failed real vanilla items, which is worse than having no rule at all.
+
+### 9.2 The Arm slot is worn twice
+
+`Bodies.xml` gives a humanoid **two** Arm slots. So an Arm-slot armour piece is equipped twice and
+its AV counts twice, which no finding had accounted for. It changes the arithmetic and it changes
+the recommendation: the vambrace line at AV 3 is worth **6** AV, more than the head, hands or feet.
+
+It also corrects this document's own earlier figures. Best-in-slot AV, counting Arm twice:
+
+| basis                     | vanilla | with the mod |
+| ------------------------- | ------: | -----------: |
+| including named artefacts |      33 |           43 |
+| ordinary items only       |      26 |           40 |
+
+[#316](https://github.com/vixygrey/qud-expanded-community-edition/issues/316)'s headline "32 → 48"
+is neither of these. The gap is method rather than arithmetic — that issue never said whether
+artefacts count or whether Arm doubles — so the issue wants restating against a stated basis rather
+than the number wants correcting.
+
+### 9.3 Cloaks stay, vambraces go back to flavour
+
+Vanilla makes Back and Arm **not** armour slots: ordinary cloaks are AV 1, and the Arm slot holds
+bracelets at AV 0 or 1. This fork turned both into full nine-tier armour lines reaching AV 3, which
+is most of why best-in-slot climbed — a structural change to how much armour a character can wear,
+not a tuning drift.
+
+Settled: **the cloaks stay, capped at AV 2; the vambraces go back to flavour at AV 1.** The split is
+priced. Keeping cloaks costs +1 AV against vanilla's best loadout, 26 to 27. Extending the same
+courtesy to vambraces would cost 4 more, because the slot is worn twice — and unlike cloaks, vanilla
+offers nothing to point at: there is no vanilla Arm item above AV 1 at any tier.
+
+### 9.4 The drift is one defect wearing three hats
+
+The single most useful thing the derivation found is that **almost every violation is a merge
+changing a vanilla number**, not new content overshooting.
+
+- **Damage:** 26 family/tier cells raised. Twenty-five are vanilla blueprints —
+  `Cudgel3` through `Cudgel8th`, `Long Sword6` through `8th`, `Battle Axe6th` through `8th`,
+  `Dagger7`. Exactly one, `Raven_Iron Mace`, is this fork's own.
+- **AV:** the ceiling rises on `Crysteel Shardmail` 6→8, `Zetachrome Lune` 8→10, and the whole
+  `Zetachrome Apex`/`Gloves`/`Pumps` set 4→6, all vanilla blueprints.
+- **`Stat`:** 20 of the 61 reverts in
+  [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321) were merges.
+
+§3.2 already outlaws this for `MeleeWeapon.Stat` — *a merge never changes vanilla's*. The derivation
+says that rule was never really about `Stat`. It is the general shape of everything the sweep found,
+and the validator work in
+[#337](https://github.com/vixygrey/qud-expanded-community-edition/issues/337) should be built around
+it rather than around any one field.
+
+### 9.5 Table share drifted on count, not weight
+
+The mod's per-item drop weights match vanilla's almost exactly, and in `Armor 1R` they are
+deliberately lighter. Share moved because completing every family and both handednesses puts more
+entries in a tier band than vanilla stocks — `Melee Weapons 1R` holds 6 vanilla entries against 10
+of this fork's. **Capping share and keeping completeness are the same lever pulled in opposite
+directions**, which is why the rule lowers per-item weight rather than dropping content.
+
+Half is a chosen number. Vanilla has no opinion on how much of its loot pool may belong to a mod, so
+§3.2.1 says plainly that this one is a texture decision rather than a derivation.
+
+**[#325](https://github.com/vixygrey/qud-expanded-community-edition/issues/325)'s list is
+incomplete.** Nine vanilla tables sit above half, not the six it names, and the worst is one it
+misses: `Armor 8C` at **71.7%**. `Armor 2R` at 57.7% and `Armor 8R` at 55.8% are the others. Of the
+54 tables in play, 41 are already compliant and 4 are this fork's own.
 
 ---
 
