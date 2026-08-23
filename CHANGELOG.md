@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **Best-in-slot AV comes back to vanilla's ceiling** (#318). Fifteen pieces, in three groups.
+
+  **Four vanilla merges stop raising vanilla's own armour.** `Zetachrome Apex`, `Gloves` and `Pumps`
+  go 6 → **4**, and `Zetachrome Lune` goes 10 → **8**. For Apex and Pumps the AV was the *only* thing
+  the merge changed about the armour, so the whole `Armor` part is deleted and vanilla's stands —
+  the discipline `stat-discipline` already enforces for `MeleeWeapon.Stat`.
+
+  **Seven vambraces drop to AV 1** and **four cloaks to AV 2**, per `docs/DESIGN_balance.md` §9.3.
+  Vanilla makes Back and Arm non-armour slots — ordinary cloaks are AV 1, and no vanilla Arm item
+  exceeds 1 at any tier — and this fork had turned both into nine-tier armour lines reaching 3. The
+  cloaks keep a deliberate **+1 over vanilla** so the weave line has somewhere to go; the vambraces
+  do not, because the Arm slot is **worn twice** and the same courtesy there would cost four.
+
+  Best-in-slot AV is now vanilla's in every slot but two: Back by the one point above, and Shield,
+  which is #319's remaining work. `armor-curve`'s baseline goes from 19 entries to **4**.
+
+  `docs/FEATURES.md`'s armour tables are brought back in step — **15 AV cells** were quoting the old
+  values, and **nothing checks that column**, which is the same silent-drift shape as `Stat` before
+  #375.
+
+  Two things found while reading vanilla's records and filed rather than folded in: the mod also
+  **rewrites vanilla's prices** through merges, unchecked, by up to −66% (#380); and the vambrace
+  line is now **nine near-identical items**, which is a content question rather than a defect (#381).
+
 ### Added
 - **The psionic chips are repriced, the four steep passives made rare, and the Guardian starting
   kits fixed** (#338, and it closes #316). The largest content change of the balance sweep, and a

@@ -70,7 +70,6 @@
   </object>
 
   <object Name="Zetachrome Pumps" Load="Merge">
-    <part Name="Armor" AV="6" DV="0" Heat="6" Cold="6" Acid="6" Elec="6" WornOn="Feet" />
     <part Name="Commerce" Value="1280" />
     <part Name="Physics" Weight="5" />
     <tag Name="Tier" Value="8" />
@@ -223,7 +222,7 @@
   </object>
 
   <object Name="Zetachrome Gloves" Load="Merge">
-    <part Name="Armor" AV="6" DV="0" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Hands" />
+    <part Name="Armor" AV="4" DV="0" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Hands" />
     <part Name="Commerce" Value="1280" />
     <part Name="Physics" Weight="5" />
     <tag Name="Tier" Value="8" />
@@ -349,7 +348,6 @@
   </object>
 
   <object Name="Zetachrome Apex" Load="Merge">
-    <part Name="Armor" AV="6" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Head" />
     <part Name="Commerce" Value="1280" />
     <part Name="Physics" Weight="7" />
     <tag Name="Tier" Value="8" />
@@ -495,7 +493,7 @@
   </object>
 
   <object Name="Zetachrome Lune" Load="Merge">
-    <part Name="Armor" AV="10" DV="-2" Elec="10" Cold="10" Heat="10" Acid="10" WornOn="Body" />
+    <part Name="Armor" AV="8" DV="-2" Elec="10" Cold="10" Heat="10" Acid="10" WornOn="Body" />
     <part Name="Commerce" Value="2048" />
     <part Name="Physics" Weight="15" />
     <tag Name="Tier" Value="8" />
@@ -583,7 +581,7 @@
   </object>
 
   <object Name="Raven_Fulleriteweave Cloak" Inherits="BaseCloak">
-    <part Name="Armor" AV="3" DV="-2" WornOn="Back" />
+    <part Name="Armor" AV="2" DV="-2" WornOn="Back" />
     <part
       Name="Render"
       DisplayName="{{K|fulleriteweave}} cloak"
@@ -598,7 +596,7 @@
   </object>
 
   <object Name="Raven_Crysteelweave Cloak" Inherits="BaseCloak">
-    <part Name="Armor" AV="3" DV="-3" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
+    <part Name="Armor" AV="2" DV="-3" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
     <part
       Name="Render"
       DisplayName="{{crysteel|crysteelweave}} cloak"
@@ -616,7 +614,7 @@
   </object>
 
   <object Name="Raven_Flawless Crysteelweave Cloak" Inherits="BaseCloak">
-    <part Name="Armor" AV="3" DV="-1" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
+    <part Name="Armor" AV="2" DV="-1" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
     <part
       Name="Render"
       DisplayName="{{K|flawless {{crysteel|crysteelweave}} cloak}}"
@@ -634,7 +632,7 @@
   </object>
 
   <object Name="Raven_Zetachromeweave Cloak" Inherits="BaseCloak">
-    <part Name="Armor" AV="3" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
+    <part Name="Armor" AV="2" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Back" />
     <part
       Name="Render"
       DisplayName="{{zetachrome|zetachromeweave}} cloak"
@@ -709,7 +707,7 @@
   </object>
 
   <object Name="Raven_Steel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="2" DV="-2" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="-2" WornOn="Arm" />
     <part Name="Render" DisplayName="{{Y|steel}} vambrace" ColorString="&amp;y" />
     <part Name="Description" Short="A steel vambrace, meant to be secured to the arm." />
     <part Name="Commerce" Value="16" />
@@ -719,7 +717,7 @@
   </object>
 
   <object Name="Raven_Carbide Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="2" DV="-1" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="-1" WornOn="Arm" />
     <part Name="Render" DisplayName="{{b|carbide}} vambrace" ColorString="&amp;b" />
     <part Name="Description" Short="A carbide vambrace, meant to be secured to the arm." />
     <part Name="Commerce" Value="32" />
@@ -729,7 +727,7 @@
   </object>
 
   <object Name="Raven_Folded Carbide Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="2" DV="0" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" WornOn="Arm" />
     <part Name="Render" DisplayName="{{B|folded carbide}} vambrace" ColorString="&amp;B" />
     <part Name="Commerce" Value="64" />
     <part Name="Description" Short="A folded carbide vambrace, meant to be secured to the arm." />
@@ -739,7 +737,7 @@
   </object>
 
   <object Name="Raven_Fullerite Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="3" DV="-3" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="-3" WornOn="Arm" />
     <part Name="Render" DisplayName="{{K|fullerite}} vambrace" ColorString="&amp;K" DetailColor="y" />
     <part Name="Commerce" Value="128" />
     <part Name="Description" Short="A fullerite vambrace, meant to be secured to the arm." />
@@ -748,7 +746,7 @@
   </object>
 
   <object Name="Raven_Crysteel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="3" DV="-2" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="-2" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
     <part Name="Render" DisplayName="{{crysteel|crysteel}} vambrace" ColorString="&amp;c" />
     <part Name="Commerce" Value="256" />
     <part
@@ -760,7 +758,7 @@
   </object>
 
   <object Name="Raven_Flawless Crysteel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="3" DV="-1" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="-1" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
     <part
       Name="Render"
       DisplayName="{{K|flawless {{crysteel|crysteel}} vambrace}}"
@@ -778,7 +776,7 @@
   </object>
 
   <object Name="Raven_Zetachrome Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="3" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Arm" />
     <part
       Name="Render"
       DisplayName="{{zetachrome|zetachrome}} vambrace"

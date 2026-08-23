@@ -621,7 +621,7 @@ Vanilla families completed:
 | Flexiboots | new | 5 | Feet | 1 | 3 | — | 75 | 2 |
 | Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 320 | 6 |
 | Nanoweave Boots | new | 6 | Feet | 3 | 1 | — | 300 | 3 |
-| Zetachrome Pumps | merge | 8 | Feet | 6 | 0 | 6/6/6/6 | 1280 | 5 |
+| Zetachrome Pumps | merge | 8 | Feet | 4 | 0 | 6/6/6/6 | 1280 | 5 |
 
 #### Hands
 
@@ -637,7 +637,7 @@ Vanilla families completed:
 | Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 320 | 6 |
 | Nanoweave Gloves | new | 6 | Hands | 2 | 1 | — | 300 | 3 |
 | Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 640 | 6 |
-| Zetachrome Gloves | merge | 8 | Hands | 6 | 0 | 5/5/5/5 | 1280 | 5 |
+| Zetachrome Gloves | merge | 8 | Hands | 4 | 0 | 5/5/5/5 | 1280 | 5 |
 | Chain Gauntlets | merge | - | Hands | 2 | -1 | — | - | 6 |
 
 #### Head
@@ -655,7 +655,7 @@ Vanilla families completed:
 | Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 320 | 8 |
 | Nanoweave Helmet | new | 6 | Head | 2 | 1 | — | 300 | 3 |
 | Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 640 | 8 |
-| Zetachrome Apex | merge | 8 | Head | 6 | 0 | 6/6/6/6 | 1280 | 7 |
+| Zetachrome Apex | merge | 8 | Head | 4 | 0 | 6/6/6/6 | 1280 | 7 |
 
 #### Body
 
@@ -671,7 +671,7 @@ Vanilla families completed:
 | Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 256 | 36 |
 | Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 512 | 18 |
 | Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1024 | 18 |
-| Zetachrome Lune | merge | 8 | Body | 10 | -2 | 10/10/10/10 | 2048 | 15 |
+| Zetachrome Lune | merge | 8 | Body | 8 | -2 | 10/10/10/10 | 2048 | 15 |
 
 #### Back (cloaks)
 
@@ -683,11 +683,11 @@ Vanilla families completed:
 | Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 40 | 6 |
 | Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | — | 80 | 5 |
 | Flexicloak | new | 5 | Back | 1 | 2 | — | 125 | 2 |
-| Fulleriteweave Cloak | new | 5 | Back | 3 | -2 | — | 160 | 6 |
-| Crysteelweave Cloak | new | 6 | Back | 3 | -3 | 6/6/6/6 | 320 | 3 |
+| Fulleriteweave Cloak | new | 5 | Back | 2 | -2 | — | 160 | 6 |
+| Crysteelweave Cloak | new | 6 | Back | 2 | -3 | 6/6/6/6 | 320 | 3 |
 | Nanoweave Cloak | new | 6 | Back | 2 | 1 | — | 300 | 3 |
-| Flawless Crysteelweave Cloak | new | 7 | Back | 3 | -1 | 6/6/6/6 | 640 | 3 |
-| Zetachromeweave Cloak | new | 8 | Back | 3 | 0 | 6/6/6/6 | 1280 | 2 |
+| Flawless Crysteelweave Cloak | new | 7 | Back | 2 | -1 | 6/6/6/6 | 640 | 3 |
+| Zetachromeweave Cloak | new | 8 | Back | 2 | 0 | 6/6/6/6 | 1280 | 2 |
 | Portable Beehive | merge | - | Back | 0 | 1 | — | - | - |
 
 #### Arm (vambraces — new slot usage)
@@ -696,13 +696,13 @@ Vanilla families completed:
 |---|---|---|---|---|---|---|---|---|
 | Bronze Vambrace | new | 0 | Arm | 1 | -1 | — | 4 | 4 |
 | Iron Vambrace | new | 1 | Arm | 1 | 0 | — | 8 | 3 |
-| Steel Vambrace | new | 2 | Arm | 2 | -2 | — | 16 | 3 |
-| Carbide Vambrace | new | 3 | Arm | 2 | -1 | — | 32 | 5 |
-| Folded Carbide Vambrace | new | 4 | Arm | 2 | 0 | — | 64 | 4 |
-| Fullerite Vambrace | new | 5 | Arm | 3 | -3 | — | 128 | 6 |
-| Crysteel Vambrace | new | 6 | Arm | 3 | -2 | 5/5/5/5 | 256 | 3 |
-| Flawless Crysteel Vambrace | new | 7 | Arm | 3 | -1 | 5/5/5/5 | 512 | 3 |
-| Zetachrome Vambrace | new | 8 | Arm | 3 | 0 | 6/6/6/6 | 1024 | 2 |
+| Steel Vambrace | new | 2 | Arm | 1 | -2 | — | 16 | 3 |
+| Carbide Vambrace | new | 3 | Arm | 1 | -1 | — | 32 | 5 |
+| Folded Carbide Vambrace | new | 4 | Arm | 1 | 0 | — | 64 | 4 |
+| Fullerite Vambrace | new | 5 | Arm | 1 | -3 | — | 128 | 6 |
+| Crysteel Vambrace | new | 6 | Arm | 1 | -2 | 5/5/5/5 | 256 | 3 |
+| Flawless Crysteel Vambrace | new | 7 | Arm | 1 | -1 | 5/5/5/5 | 512 | 3 |
+| Zetachrome Vambrace | new | 8 | Arm | 1 | 0 | 6/6/6/6 | 1024 | 2 |
 
 #### Face
 
