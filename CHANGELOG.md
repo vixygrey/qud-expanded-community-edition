@@ -16,6 +16,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Question two of the balance sweep is settled: **the weight compression is a method,
+  not noise, and it belongs in `docs/STYLEGUIDE.md` §3.2** (#320). `docs/DESIGN_balance.md` §4
+  records it.
+
+  Testing each slot against a single factor found that **61 of the 109 re-weighted items already
+  follow one cleanly** — melee one-handed at ×0.67, two-handed at ×0.62 and hands at ×0.47 have a
+  mean deviation under 1 lb and not a single item more than 2 lb off. That is the same shape #248
+  found in the greathammers: vanilla's own curve, compressed and carried across.
+
+  Two places it was not applied. **Body armour**, where six of eight sit off the slot's factor and
+  the spread collapsed from vanilla's 4.6× to 2.4× because the heaviest item was cut hardest — which
+  matters because Fullerite Plate Mail at 160 lb is **two-thirds of a Strength-16 character's entire
+  carry budget**, and that is vanilla's one real weight decision. And the **short blades**, which are
+  not a compression at all: five got heavier, leaving a line that runs 2, 2, 3, 1, 1, 1 by tier.
+
+  The magnitudes wait on #176, because a gradient and a cliff want different numbers — under today's
+  binary `Overburdened` a heavy item is free until it is catastrophic, so only the extremes matter.
+  That dependency is narrower than it sounds: #340 covers six curves and only weight is affected,
+  and every slot factor is below 1, so the seven items the mod made *heavier* contradict the rule
+  whatever the magnitudes turn out to be.
+
 - **(internal)** Question one of the balance sweep is settled: **Agility scaling becomes a purchased
   power rather than a property baked into blueprints** (#321). Every melee blueprint reverts to
   `Stat="Strength"`; a `Finesse` tag marks which weapons may cross over, and a power sold by Short
