@@ -16,6 +16,12 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md`'s entry on reading a decompiled loop's tail now records the tell I
+  missed. The wrong model's *first* symptom was not the absurd number in the output table — it was a
+  Monte Carlo run that could not terminate, sat backgrounded for seventeen hours pinning a core, and
+  looked exactly like a job still working. A background task producing no output is indistinguishable
+  from one making progress, and a job that prints only at the end has no liveness signal at all.
+
 - **(internal)** Question two of the balance sweep is settled: **the weight compression is a method,
   not noise, and it belongs in `docs/STYLEGUIDE.md` §3.2** (#320). `docs/DESIGN_balance.md` §4
   records it.
