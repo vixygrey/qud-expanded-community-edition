@@ -642,6 +642,27 @@ not scale off a stat — but not scaling off a stat is exactly what makes level 
 permanent passive is where a level is worth most. `AdrenalControl2` grants Quickness like
 `HeightenedSpeed` does, at a tenth of the uptime, and gets the same ladder.
 
+**Settled: this is a real inversion and the mod is not going to fix it by changing ranks.** Two
+principles collide here — the compensation logic from §5.1 says physical mutations get more ranks
+because they cannot gain any from Ego, and the uptime logic says permanent passives are worth more
+per rank. For the five physical permanent passives both apply at once and they point opposite ways.
+
+What breaks the tie is the same argument that settled §5.1:
+
+> **Every one of these is a vanilla mutation, balanced by Freehold.** A mutant with `Regeneration`
+> at rank 10 gets exactly what a chip user does. If the Ego gradient is vanilla's call rather than
+> the mod's, then so is what a rank of `Regeneration` is worth — and re-tuning it through the chip
+> ladder would be second-guessing Qud's own mutation design by proxy.
+
+Which gives §5 a principle it had been missing, and one that should go into
+`docs/STYLEGUIDE.md` §3.2 with the budget:
+
+> **The chip system controls access and price. Vanilla controls what a mutation is worth.**
+
+So no `Tier` value changes on account of uptime, and **§5.3's question widens from the Quickness
+pair to all seven permanent passives** — price and rarity become the whole answer rather than one
+dial of three.
+
 ### 5.3 No ladder fixes the Quickness pair
 
 `GetSpeedBonus(Level)` is `13 + 2 × Level`, shared by `HeightenedSpeed` and `PhotosyntheticSkin`.
@@ -735,14 +756,16 @@ or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape i
    vanilla's own mechanic reaching chips rather than a mod decision, and suppressing it would mean
    overriding behaviour that applies to every mental mutation in the game. See §5.1 for the reasoning
    and for the two things it leaves open rather than closes.
-2. **Which of the steep permanent passives get a cap?** With item 1 settled the ladders stay, so this
-   is no longer a re-key — it is a short list. The candidates are §5.2's five 100%-uptime mutations,
-   and the argument for capping each is that a level of a permanent passive is worth far more than a
-   level of a cooldown-gated ability on the same ladder: `HeightenedSpeed` and `AdrenalControl2` both
-   grant Quickness on 3/6/10, at 100% and 10% uptime respectively.
-3. **Which dial for the Quickness pair?** Price, rarity, or removal — and only removal reaches below
-   the `13 + 2 × Level` floor of +15. Price is the interesting one because #354 has to move these
-   numbers anyway.
+2. ~~**Which of the steep permanent passives get a cap?**~~ **Settled — none.** The uptime inversion
+   is real, but every mutation involved is a vanilla one, and re-tuning what a rank of it is worth
+   through the chip ladder second-guesses Freehold by proxy. §5.2 records the reasoning and the
+   principle it establishes: **the chip system controls access and price; vanilla controls what a
+   mutation is worth.**
+3. **Price and rarity for the seven permanent passives.** Widened from "the Quickness pair" by item
+   2, because price is now the only dial left. Three things to fix together: what a chip should cost
+   (#354 has to move all 144 anyway), how rare the steep ones should be within their tier table, and
+   whether `HeightenedSpeed` and `PhotosyntheticSkin` belong in the catalogue at all — only removal
+   reaches below their `13 + 2 × Level` floor of +15.
 4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
    chipset. That is **+15 Quickness at character creation** — the chipset grants rank 2 but the cap
    at level 1 is 1 — against The Kesil Face's uncapped +10 for 10,000 water.

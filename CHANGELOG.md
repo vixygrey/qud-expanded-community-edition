@@ -16,6 +16,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Question three's second decision is settled, and it gives the chip system the
+  principle it was missing (#338):
+
+  > **The chip system controls access and price. Vanilla controls what a mutation is worth.**
+
+  The question was which of the five 100%-uptime physical passives should have their granted rank
+  capped, since a level of `HeightenedSpeed` — always on — is worth far more than a level of
+  `AdrenalControl2`, which grants the same Quickness at a tenth of the uptime on the same ladder.
+
+  The answer is **none of them**. Two principles collide: §5.1's compensation says physical
+  mutations get more ranks because they cannot gain any from Ego, and uptime says permanent passives
+  are worth more per rank. What breaks the tie is that **every one of them is a vanilla mutation** —
+  a mutant with `Regeneration` at rank 10 gets exactly what a chip user does, so re-tuning it through
+  the chip ladder would be second-guessing Qud's own mutation design by proxy. That is the same
+  argument that settled decision one.
+
+  So no `Tier` value changes, and the remaining question widens from "the Quickness pair" to **all
+  seven permanent passives**, with price and rarity as the whole answer rather than one dial of
+  three. Worth noting for that: `Regeneration` at rank 10 is +110% healing against `NocturnalApex`'s
+  +10% for two licence points, and `ElectricalGeneration` at rank 10 is 1,000 charge per turn against
+  the mod's own Solar Cell Nexus at 50.
+
+
 - **(internal)** The first of question three's four decisions is settled: **the chip ladders stay as
   they are** (#338). `docs/DESIGN_balance.md` §5.1 is rewritten around it.
 
