@@ -438,9 +438,9 @@ Conventions the mod follows:
 | Bronze Greataxe | new | 0 | 1d2+1 | +1 | 1 | Strength | 5 | 6 | yes |
 | Iron Greataxe | new | 1 | 1d3+1 | +1 | 2 | Strength | 10 | 5 | yes |
 | Vibro Greataxe | new | 5 | 1d6+3 | +0 | 0 | (inh) | 300 | 6 | yes |
-| Crysteel Greataxe | new | 6 | 1d8+5 | +1 | 7 | (inh) | 320 | 5 | yes |
-| Flawless Crysteel Greataxe | new | 7 | 1d9+5 | +1 | 8 | (inh) | 640 | 5 | yes |
-| Zetachrome Greataxe | new | 8 | 1d10+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
+| Crysteel Greataxe | new | 6 | 1d8+4 | +1 | 7 | (inh) | 320 | 5 | yes |
+| Flawless Crysteel Greataxe | new | 7 | 1d8+5 | +1 | 8 | (inh) | 640 | 5 | yes |
+| Zetachrome Greataxe | new | 8 | 1d8+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
 
 #### Halberds (Axe, two-handed, Agility) — **new family**
 
@@ -477,12 +477,12 @@ Conventions the mod follows:
 | Iron Katana | new | 1 | 1d8 | +1 | 2 |  | 10 | 5 | yes |
 | Steel Katana | new | 2 | 1d10 | +1 | 3 |  | 20 | 5 | yes |
 | Carbide Katana | new | 3 | 1d12 | +1 | 4 |  | 40 | 7 | yes |
-| Folded Carbide Katana | new | 4 | 2d6+1 | +1 | 5 |  | 80 | 6 | yes |
-| Fullerite Katana | new | 5 | 2d8+1 | +1 | 6 |  | 160 | 9 | yes |
+| Folded Carbide Katana | new | 4 | 2d6 | +1 | 5 |  | 80 | 6 | yes |
+| Fullerite Katana | new | 5 | 2d6+1 | +1 | 6 |  | 160 | 9 | yes |
 | Vibro Katana | new | 5 | 2d8 | +0 | 0 |  | 300 | 6 | yes |
-| Crysteel Katana | new | 6 | 2d8+2 | +1 | 7 |  | 320 | 4 | yes |
-| Flawless Crysteel Katana | new | 7 | 2d10+1 | +1 | 8 |  | 640 | 4 | yes |
-| Zetachrome Katana | new | 8 | 2d12+1 | +1 | 9 |  | 1280 | 3 | yes |
+| Crysteel Katana | new | 6 | 2d8 | +1 | 7 |  | 320 | 4 | yes |
+| Flawless Crysteel Katana | new | 7 | 2d10 | +1 | 8 |  | 640 | 4 | yes |
+| Zetachrome Katana | new | 8 | 2d12 | +1 | 9 |  | 1280 | 3 | yes |
 
 #### Rapiers (Long Blades, one-handed, Agility) — **new family**
 
@@ -495,9 +495,9 @@ Conventions the mod follows:
 | Folded Carbide Rapier | new | 4 | 1d10 | +0 | 5 |  | 80 | 3 |  |
 | Fullerite Rapier | new | 5 | 1d12 | +0 | 6 |  | 160 | 4 |  |
 | Vibro Rapier | new | 5 | 1d10 | +0 | 0 |  | 300 | 3 |  |
-| Crysteel Rapier | new | 6 | 2d6+1 | +0 | 7 |  | 320 | 2 |  |
-| Flawless Crysteel Rapier | new | 7 | 2d8+1 | +0 | 8 |  | 640 | 2 |  |
-| Zetachrome Rapier | new | 8 | 2d8+2 | +0 | 9 |  | 1280 | 2 |  |
+| Crysteel Rapier | new | 6 | 2d6 | +0 | 7 |  | 320 | 2 |  |
+| Flawless Crysteel Rapier | new | 7 | 2d6+1 | +0 | 8 |  | 640 | 2 |  |
+| Zetachrome Rapier | new | 8 | 2d8 | +0 | 9 |  | 1280 | 2 |  |
 
 #### Wristblades / arm daggers (Short Blades) — **new family**
 
@@ -518,11 +518,11 @@ Conventions the mod follows:
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
 | Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 5 | 5 |  |
-| Iron Mace | new | 1 | 1d4 | +0 | 2 | (inh) | 10 | 4 |  |
-| Carbide Mace | new | 3 | 2d4 | +0 | 4 | (inh) | 40 | 6 |  |
-| Folded Carbide Mace | new | 4 | 2d4+1 | +0 | 5 | (inh) | 80 | 5 |  |
-| Fullerite Mace | new | 5 | 2d6 | +0 | 6 | (inh) | 160 | 7 |  |
-| Zetachrome Mace | new | 8 | 3d6+2 | +0 | 9 | (inh) | 1280 | 3 |  |
+| Iron Mace | new | 1 | 2 | +0 | 2 | (inh) | 10 | 4 |  |
+| Carbide Mace | new | 3 | 2d3 | +0 | 4 | (inh) | 40 | 6 |  |
+| Folded Carbide Mace | new | 4 | 2d4 | +0 | 5 | (inh) | 80 | 5 |  |
+| Fullerite Mace | new | 5 | 2d4+1 | +0 | 6 | (inh) | 160 | 7 |  |
+| Zetachrome Mace | new | 8 | 3d4+1 | +0 | 9 | (inh) | 1280 | 3 |  |
 
 #### Maces, two-handed (Cudgel, Strength) — **new family**
 
@@ -531,11 +531,11 @@ Conventions the mod follows:
 | Bronze Maceth | new | 0 | 2d2 | +1 | 1 | (inh) | 5 | 8 | yes |
 | Iron Maceth | new | 1 | 2d2+1 | +1 | 2 | (inh) | 10 | 7 | yes |
 | Steel Maceth | new | 2 | 3d2 | +1 | 3 | (inh) | 20 | 7 | yes |
-| Carbide Maceth | new | 3 | 3d4 | +1 | 4 | (inh) | 40 | 9 | yes |
-| Folded Carbide Maceth | new | 4 | 3d4+1 | +1 | 5 | (inh) | 80 | 8 | yes |
-| Crysteel Maceth | new | 6 | 3d6+1 | +1 | 7 | (inh) | 320 | 6 | yes |
-| Flawless Crysteel Maceth | new | 7 | 5d4+2 | +1 | 8 | (inh) | 640 | 6 | yes |
-| Zetachrome Maceth | new | 8 | 5d6+2 | +1 | 9 | (inh) | 1280 | 5 | yes |
+| Carbide Maceth | new | 3 | 2d4+1 | +1 | 4 | (inh) | 40 | 9 | yes |
+| Folded Carbide Maceth | new | 4 | 2d6 | +1 | 5 | (inh) | 80 | 8 | yes |
+| Crysteel Maceth | new | 6 | 3d4+1 | +1 | 7 | (inh) | 320 | 6 | yes |
+| Flawless Crysteel Maceth | new | 7 | 3d6 | +1 | 8 | (inh) | 640 | 6 | yes |
+| Zetachrome Maceth | new | 8 | 4d6 | +1 | 9 | (inh) | 1280 | 5 | yes |
 
 #### War hammers (Cudgel, Agility)
 
@@ -546,14 +546,14 @@ Conventions the mod follows:
 | Iron War Hammerth | new | 1 | 2d2+1 | +1 | 2 |  | 10 | 6 | yes |
 | Steel War Hammer | merge | 2 | 2d2 | +0 | 3 |  | 20 | 3 |  |
 | Steel War Hammerth | merge | 2 | 3d2 | +1 | 3 |  | 20 | 6 |  |
-| Crysteel War Hammer | new | 6 | 2d6+1 | +0 | 7 |  | 320 | 3 |  |
-| Flawless Crysteel War Hammer | new | 7 | 3d4+2 | +0 | 8 |  | 640 | 3 |  |
+| Crysteel War Hammer | new | 6 | 2d6 | +0 | 7 |  | 320 | 3 |  |
+| Flawless Crysteel War Hammer | new | 7 | 3d4 | +0 | 8 |  | 640 | 3 |  |
 
 #### Greathammers (Cudgel, Agility)
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Fullerite Greathammer | new | 5 | 3d6 | +1 | 6 |  | 160 | 9 |  |
+| Fullerite Greathammer | new | 5 | 6d2 | +1 | 6 |  | 160 | 9 |  |
 
 #### Greatswords (Long Blades)
 
@@ -1948,9 +1948,9 @@ not touch that field (the vanilla value is inherited).
 | Battle Axe8 | 8 | 1d10+3 |  | 9 |  | 1280 | 2 |
 | Iron Vinereaper | 1 | 1d3 |  | 2 |  | 10 | 2 |
 | Steel Vinereaper | 2 | 1d4 |  | 3 |  | 20 | 2 |
-| Battle Axe6th | 6 | 1d8+5 | 1 | 7 |  | 320 | 6 |
-| Battle Axe7th | 7 | 1d9+5 | 1 | 8 |  | 640 | 6 |
-| Battle Axe8th | 8 | 1d10+6 | 1 | 9 |  | 1280 | 5 |
+| Battle Axe6th | 6 | 1d8+4 | 1 | 7 |  | 320 | 6 |
+| Battle Axe7th | 7 | 1d8+5 | 1 | 8 |  | 640 | 6 |
+| Battle Axe8th | 8 | 1d8+6 | 1 | 9 |  | 1280 | 5 |
 | BaseLongBlade |  |  |  |  |  |  | 2 |
 | Long Sword | 0 | 1d3 |  | 1 |  | 5 | 4 |
 | Two-Handed Sword | 0 | 1d6 | 1 | 1 |  | 5 | 6 |
@@ -1961,15 +1961,15 @@ not touch that field (the vanilla value is inherited).
 | Long Sword3 | 3 | 1d8 |  | 4 |  | 40 | 5 |
 | Long Sword3th | 3 | 1d12 | 1 | 4 |  | 40 | 7 |
 | Long Sword4 | 4 | 1d10 |  | 5 |  | 80 | 4 |
-| Long Sword4th | 4 | 2d6+1 | 1 | 5 |  | 80 | 6 |
+| Long Sword4th | 4 | 2d6 | 1 | 5 |  | 80 | 6 |
 | Long Sword5 | 5 | 1d12 |  | 6 |  | 160 | 6 |
-| Long Sword5th | 5 | 2d8+1 | 1 | 6 |  | 160 | 9 |
-| Long Sword6 | 6 | 2d6+1 |  | 7 |  | 320 | 3 |
-| Long Sword6th | 6 | 2d8+2 |  | 7 |  | 320 | 5 |
-| Long Sword7 | 7 | 2d8+1 |  | 8 |  | 640 | 3 |
-| Long Sword7th | 7 | 2d10+1 | 1 | 8 |  | 640 | 5 |
-| Long Sword8 | 8 | 2d8+2 |  | 9 |  | 1280 | 2 |
-| Long Sword8th | 8 | 2d12+1 | 1 | 9 |  | 1280 | 4 |
+| Long Sword5th | 5 | 2d6+1 | 1 | 6 |  | 160 | 9 |
+| Long Sword6 | 6 | 2d6 |  | 7 |  | 320 | 3 |
+| Long Sword6th | 6 | 2d8 |  | 7 |  | 320 | 5 |
+| Long Sword7 | 7 | 2d6+1 |  | 8 |  | 640 | 3 |
+| Long Sword7th | 7 | 2d10 | 1 | 8 |  | 640 | 5 |
+| Long Sword8 | 8 | 2d8 |  | 9 |  | 1280 | 2 |
+| Long Sword8th | 8 | 2d12 | 1 | 9 |  | 1280 | 4 |
 | Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 4 |
 | BaseDagger |  |  |  |  |  |  | 1 |
 | Dagger | 0 | 1d2 |  | 1 |  | 5 | 1 |
@@ -1985,30 +1985,30 @@ not touch that field (the vanilla value is inherited).
 | Obsidian Kris | 4 | 1d8 |  | 5 |  | 80 | 2 |
 | Dagger5 | 5 | 1d10 |  | 6 |  | 160 | 3 |
 | Dagger6 | 6 | 1d12 |  | 7 |  | 320 | 1 |
-| Dagger7 | 7 | 2d6+1 |  | 8 |  | 640 | 1 |
-| Dagger8 | 8 | 2d6+2 |  | 9 |  | 1280 | 1 |
+| Dagger7 | 7 | 1d12+1 |  | 8 |  | 640 | 1 |
+| Dagger8 | 8 | 1d12+2 |  | 9 |  | 1280 | 1 |
 | Vibro Dagger | 5 | 2d4 |  | 0 |  | 300 | 1 |
 | ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 2 |
 | BaseCudgel |  |  |  |  |  |  | 3 |
 | Club | 0 |  |  |  |  | 2 | 3 |
 | Mace2 | 0 | 1d3 |  | 1 |  | 5 | 5 |
 | Steel Hammer | 2 | 2d2 |  | 3 |  | 20 | 4 |
-| Cudgel5th | 5 | 3d6 | 1 | 6 |  | 160 | 11 |
-| Cudgel6 | 6 | 2d6+1 |  | 7 |  | 320 | 3 |
-| Cudgel7 | 7 | 3d4+2 |  | 8 |  | 640 | 3 |
+| Cudgel5th | 5 | 3d4 | 1 | 6 |  | 160 | 11 |
+| Cudgel6 | 6 | 2d6 |  | 7 |  | 320 | 3 |
+| Cudgel7 | 7 | 3d4 |  | 8 |  | 640 | 3 |
 | Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 480 | 10 |
-| Warhammer2 | 1 | 1d4 |  | 2 |  | 10 | 3 |
+| Warhammer2 | 1 | 2 |  | 2 |  | 10 | 3 |
 | Steel War Hammer | 2 | 2d2 |  | 3 |  | 20 | 3 |
 | Steel War Hammerth | 2 | 3d2 | 1 | 3 |  | 20 | 6 |
-| Cudgel3 | 3 | 2d4 |  | 4 |  | 40 | 5 |
-| Cudgel3th | 3 | 3d4 | 1 | 4 |  | 40 | 8 |
-| Cudgel4 | 4 | 2d4+1 |  | 5 |  | 80 | 4 |
-| Cudgel4th | 4 | 3d4+1 | 1 | 5 |  | 80 | 7 |
-| Cudgel5 | 5 | 2d6 |  | 6 |  | 160 | 6 |
-| Cudgel6th | 6 | 3d6+1 | 1 | 11 |  | 320 | 6 |
-| Cudgel7th | 7 | 5d4+2 | 1 | 8 |  | 640 | 6 |
-| Cudgel8 | 8 | 3d6+2 |  | 9 |  | 1200 | 3 |
-| Cudgel8th | 8 | 5d6+2 | 1 | 9 |  | 1200 | 6 |
+| Cudgel3 | 3 | 2d3 |  | 4 |  | 40 | 5 |
+| Cudgel3th | 3 | 2d4+1 | 1 | 4 |  | 40 | 8 |
+| Cudgel4 | 4 | 2d4 |  | 5 |  | 80 | 4 |
+| Cudgel4th | 4 | 2d6 | 1 | 5 |  | 80 | 7 |
+| Cudgel5 | 5 | 2d4+1 |  | 6 |  | 160 | 6 |
+| Cudgel6th | 6 | 3d4+1 | 1 | 11 |  | 320 | 6 |
+| Cudgel7th | 7 | 3d6 | 1 | 8 |  | 640 | 6 |
+| Cudgel8 | 8 | 3d4+1 |  | 9 |  | 1200 | 3 |
+| Cudgel8th | 8 | 4d6 | 1 | 9 |  | 1200 | 6 |
 
 ---
 

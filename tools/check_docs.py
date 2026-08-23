@@ -606,6 +606,13 @@ ITEM_COLUMNS = (
     # deleted blueprints, not wrong values. Sixty-five stale cells is a larger drift than any
     # checked column has ever carried.
     ("Stat", "part", "MeleeWeapon"),
+    # Damage and AV, added after #322 and #318 respectively. Both are typed figures the documents
+    # quote and nothing verified: 50 damage cells and 15 AV cells had to be corrected by hand when
+    # their blueprints moved, which is a larger drift than any checked column has carried. The
+    # fourth element is the attribute name where it differs from the column heading.
+    ("Damage", "part", "MeleeWeapon", "BaseDamage"),
+    ("AV", "part", "Armor", "AV"),
+    ("AV", "part", "Shield", "AV"),
 )
 # A cell holding one of these is documenting an absence, not a figure, and has nothing to compare.
 NOT_A_FIGURE = {"", "-", "\u2014", "(inh)"}
@@ -695,14 +702,16 @@ def check_item_tables(f: Findings) -> int:
             )
             continue
 
-        for column, kind, source in ITEM_COLUMNS:
+        for spec in ITEM_COLUMNS:
+            column, kind, source = spec[0], spec[1], spec[2]
+            attribute = spec[3] if len(spec) > 3 else column
             documented = row.get(column, "").strip()
             if documented in NOT_A_FIGURE:
                 continue
             if kind == "tag":
                 actual = index.tag_value(blueprint, source)
             else:
-                actual = index.part_attr(blueprint, source, column)
+                actual = index.part_attr(blueprint, source, attribute)
             # None means the mod never declares it, so the figure lives in the game's own files
             # and this check cannot see it. Silence is right: reporting it would be reporting
             # the absence of a game install, which is not what this checks.
