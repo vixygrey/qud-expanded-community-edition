@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Question one is settled (§3.9); three remain open.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled; two remain open.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -451,18 +451,97 @@ Both are tracked in [#342](https://github.com/vixygrey/qud-expanded-community-ed
 
 ## 4. Question two — are the weight cuts a feature or a defect?
 
-**Open.** [#320](https://github.com/vixygrey/qud-expanded-community-edition/issues/320).
+**Settled: the method is a feature and belongs in `docs/STYLEGUIDE.md` §3.2; body armour and the
+short blades are defects against it. The factors' magnitudes wait on
+[#176](https://github.com/vixygrey/qud-expanded-community-edition/issues/176).**
+Tracked in [#320](https://github.com/vixygrey/qud-expanded-community-edition/issues/320).
 
-109 vanilla items re-weighted; **1,423 lb → 699 lb, a 51% cut**, and the heaviest were cut hardest.
-Heavy armour's cost in Qud *is* its weight, so cutting it makes the AV free — which is how this
-compounds with the AV ceiling rather than sitting beside it.
+### 4.1 Weight has exactly one consequence
 
-#248 asked exactly this question about greathammer weights, settled it as deliberate, and recorded
-the rule in `docs/STYLEGUIDE.md` §3.2. That is both the precedent and the template: decide, then
-write the curve down. #176 is the other half — burden is a cliff rather than a gradient, so weight
-only matters at the moment you cross the line.
+`GetMaxCarriedWeight()` returns `Stat("Strength") × RuleSettings.MAXIMUM_CARRIED_WEIGHT_PER_STRENGTH`,
+and that constant is **15**. `Overburdened` is binary — it blocks `IsMobile` and
+`CanChangeMovementModeEvent`, with no gradient. Equipped and carried both count toward the total.
 
----
+Nothing else in the game reads weight. So it is a pure budget against Strength with a cliff at the
+line, which is what makes the question answerable: the only thing a weight number does is decide how
+much of that budget an item spends.
+
+### 4.2 The compression is a real method, applied to most of the mod
+
+Testing each slot against a single per-slot factor:
+
+| slot | factor | mean deviation | items >2 lb off |
+|---|---:|---:|---|
+| Melee-1H *(excluding short blades)* | ×0.67 | **0.5 lb** | **0 / 31** |
+| Melee-2H | ×0.62 | **0.6 lb** | **0 / 23** |
+| Hands | ×0.47 | **1.0 lb** | **0 / 7** |
+| Head | ×0.59 | 1.5 lb | 1 / 6 |
+| Shield | ×0.51 | 1.9 lb | 1 / 7 |
+| Feet | ×0.39 | 2.1 lb | 2 / 7 |
+| **Body** | ×0.36 | **6.5 lb** | **6 / 8** |
+
+**61 items follow a clean constant-factor compression of vanilla's own curve.** That is derived work
+whether or not it was ever written down, and it is the same finding #248 reached about greathammers —
+vanilla's own curve, compressed and carried across. It is not noise, and "restore vanilla" would be
+throwing away a consistent pre-fork design choice.
+
+### 4.3 Where it was not applied
+
+**Body armour**, which is the one slot where it matters most. Six of eight sit more than 2 lb off the
+slot's own factor, and the spread collapsed from vanilla's 4.6× to 2.4× because the heaviest item was
+cut hardest.
+
+| | vanilla | % of a Str-16 budget | mod today | at the slot's own ×0.36 |
+|---|---:|---:|---:|---:|
+| Fullerite Plate Mail | 160 lb | **67%** | 36 lb (15%) | 58 lb (24%) |
+| full best-in-slot loadout | 99 lb | 41% | 50 lb | 21% |
+
+Even vanilla's whole loadout is only 41% of a Strength-16 budget, so **worn gear was never the
+binding constraint — single heavy items were.** Fullerite Plate Mail at two-thirds of a character's
+entire carry budget is vanilla's one real weight decision, and 36 lb deletes it.
+
+**Short blades**, which are not a compression at all. Five got *heavier*, and the resulting line is
+non-monotonic: T3 2, T4 2, T5 3, T6 1, T7 1, T8 1. Vibro is inconsistent with itself — Blade 2→4 up,
+Dagger 5→1 down. And the zetachrome set is treated three different ways: Apex ×0.88, Gloves and Pumps
+×0.50, Lune ×0.43.
+
+### 4.4 Settled
+
+**The rule is a constant factor per slot**, written into `docs/STYLEGUIDE.md` §3.2 beside the value
+curve, with every weight derived as `round(vanilla × factor)`. That ratifies what Mura already did in
+61 of 109 items, makes the remainder derivable rather than remembered, and restores body armour's
+lever without returning to vanilla's numbers.
+
+**Scrap and the two foods take the slot factor too**, floored at 1. Nothing that exists weighs
+nothing — weightless scrap means uncapped bit hauling, and #331 already makes Tinkering cheaper to
+reach.
+
+**The magnitudes wait on #176.** A gradient and a cliff want different numbers: under a cliff a heavy
+item is free until it is catastrophic, so only the extremes matter; under a gradient every pound bites
+continuously, and the same weights would bite considerably harder. Setting the factors before that is
+decided means setting them against a penalty curve that is about to change.
+
+### 4.5 What is not blocked
+
+The dependency is narrower than it looks, and worth stating precisely so the sequence does not stall.
+
+**#340 covers six curves and only one of them is weight.** AV/DV per slot, damage per tier per family,
+the chip budget, the table-share ceiling and the `Stat` rule all proceed. In #337 the same applies:
+`armor-curve`, `damage-parity`, `table-share` and `stat-discipline` are unaffected, and only
+`weight-curve` waits.
+
+**And every slot factor is below 1**, so any weight the mod *increased* contradicts the rule whatever
+the final magnitudes turn out to be. Those seven are fixable now:
+
+| item | vanilla | mod |
+|---|---:|---:|
+| `Dagger3` | 1 | 2 |
+| `Dagger4` | 1 | 2 |
+| `Dagger5` | 2 | 3 |
+| `Obsidian Kris` | 1 | 2 |
+| `ArmDagger4` | 1 | 2 |
+| `Vibro Blade` | 2 | 4 |
+| `CrysteelHandBones` | 9 | 10 |
 
 ## 5. Question three — what is a chip worth?
 
