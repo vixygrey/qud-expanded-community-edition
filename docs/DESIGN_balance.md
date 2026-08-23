@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled; two remain open.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled. Question three is costed but undecided (§5); question four is open.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -545,18 +545,144 @@ the final magnitudes turn out to be. Those seven are fixable now:
 
 ## 5. Question three — what is a chip worth?
 
-**Open.** [#338](https://github.com/vixygrey/qud-expanded-community-edition/issues/338).
+**Open. The catalogue is now fully costed (§5.5) and three structural findings are settled facts;
+what the budget should *be* is still undecided.**
+Tracked in [#338](https://github.com/vixygrey/qud-expanded-community-edition/issues/338).
 
-There is no stated budget. The 3/6/10 physical ladder has a documented reason in
-`docs/2.2-changelog.txt` — mental mutations keep scaling with Ego when granted by a chip, physical
-ones do not — and that reasoning is sound. What it did not account for is that some physical
-mutations have steep per-level curves and others do not, so a perfected Heightened Quickness chip is
-worth 3.3× a legendary while a perfected Temporal Fugue chip is worth three copies for 24 rounds.
+### 5.1 The stated rationale holds for 7 of 23
 
-The output should be a budget in `docs/STYLEGUIDE.md` §3.2, so the next chip is derivable rather
-than judged.
+`docs/2.2-changelog.txt` justifies the 3/6/10 physical ladder as compensation:
 
----
+> unlike mental mutations which scale with Ego even when obtained via a chip, physical mutations do
+> not scale at all. To compensate for this, psionic chips that give physical mutations now give
+> 3/6/10 levels
+
+Reading every one of the 36 classes for `Stat(...)`, `StatMod(...)` and `BaseStat(...)` references:
+
+| category | scales off any stat | no stat scaling |
+|---|---:|---:|
+| mental — ladder 2/4/6 | 7 | **16** |
+| physical — ladder 3/6/10 | 1 | 12 |
+
+Sixteen mental mutations have **no stat scaling at all** — Cryokinesis, Disintegration, ForceBubble,
+ForceWall, Kindle, LifeDrain, Precognition, Psychometry, Pyrokinesis, SpacetimeVortex, StunningForce,
+TeleportOther, Teleportation, TemporalFugue, TimeDilation and Clairvoyance. They sit on the lower
+ladder for a reason that does not apply to them. Meanwhile `ElectricalGeneration` is physical and
+scales off Willpower.
+
+**The split is therefore broken in both directions**, and which one is the anchor decides the fix:
+raising 16 mental mutations to 3/6/10 and lowering 12 physical to 2/4/6 are very different mods.
+
+### 5.2 The ladder is keyed on the wrong property, and inverted
+
+What decides whether a level is worth much is not the category. It is whether a cooldown caps the
+effect.
+
+| mutation | grants at perfected | duration | cooldown | uptime |
+|---|---|---:|---:|---:|
+| `HeightenedSpeed` | +33 Quickness | — | — | **100%** |
+| `PhotosyntheticSkin` | +33 Quickness, +120% healing | 3,600 | per bask | **100%** |
+| `Regeneration` | 100%/round limb regrow | — | — | **100%** |
+| `ForceBubble` | invulnerability | 28 | 100 | 28% |
+| `TemporalFugue` | 3 duplicates | 26 | 120 | 22% |
+| `Phasing` | phase out | 16 | 73 | 22% |
+| `AdrenalControl2` | +19 Quickness | 20 | 200 | 10% |
+
+The five permanent passives get the **largest** levels, precisely because they are the ones that do
+not scale off a stat — but not scaling off a stat is exactly what makes level the only dial, and a
+permanent passive is where a level is worth most. `AdrenalControl2` grants Quickness like
+`HeightenedSpeed` does, at a tenth of the uptime, and gets the same ladder.
+
+### 5.3 No ladder fixes the Quickness pair
+
+`GetSpeedBonus(Level)` is `13 + 2 × Level`, shared by `HeightenedSpeed` and `PhotosyntheticSkin`.
+
+| source | Quickness | price |
+|---|---:|---:|
+| The Kesil Face (vanilla) | +10 | 10,000 |
+| The Shemesh Face (vanilla) | +10 | 8,000 |
+| **the mutation at level 1** | **+15** | — |
+| Neutral Body chipset, basic — *starting gear, all 9 Guardians* | +17 | 20 |
+| Heightened Quickness chip, basic | +19 | 20 |
+| …perfected | +33 | 60 |
+
+**Level 1 already beats the best Quickness item in the game.** The floor is the problem, not the
+ceiling, so lowering the ladder cannot resolve these two — the dial has to be price, rarity, or
+removal.
+
+### 5.4 Six chips whose grades grant nothing — filed separately
+
+`Kindle` and `FrostWebs` both override `CanLevel()` to return `false` and never read their level.
+Kindle's `GetCooldown(int Level)` returns a literal `50` and `GetRange(int Level)` a literal `12`;
+FrostWebs' `CollectStats` sets range 12 and area 3×3 as constants.
+
+So all three Kindle chips are the same item, as are all three Frost Webs chips, and the Fire and Ice
+chipsets each carry a dead third. That is wrong under any budget, so it is
+[#347](https://github.com/vixygrey/qud-expanded-community-edition/issues/347) rather than part of
+this question.
+
+### 5.5 The complete costing
+
+All 36 at each grade. **permanent** means every level applies on every turn; **gated** means a
+cooldown caps it; **INERT** means the level is not read at all.
+
+| mutation | family | shipped | kind | scales off | basic | upgraded | perfected |
+|---|---|---|---|---|---|---|---|
+| `HeightenedSpeed` | Neutral Body | physical | permanent | — | +19 Qk | +25 Qk | +33 Qk |
+| `PhotosyntheticSkin` | Light | physical | permanent | — | +19 Qk, +50% | +25 Qk, +80% | +33 Qk, +120% |
+| `Regeneration` | Blood | physical | permanent | — | 30% / 40% | 60% / 70% | 100% / 110% |
+| `ElectricalGeneration` | Lightning | physical | permanent | Willpower | 8k, 300/t | 14k, 600/t | 22k, 1000/t |
+| `HeightenedHearing` | Neutral Body | physical | permanent | — | 9 | 15 | 23 |
+| `Clairvoyance` | Neutral Spirit | mental | permanent | — | 5 | 7 | 9 |
+| `Psychometry` | Neutral Spirit | mental | permanent | — | 3 / 1.5 | 5 / 3 | 7 / 4.5 |
+| `AdrenalControl2` | Blood | physical | gated 10% | — | +12 Qk | +15 Qk | +19 Qk |
+| `Phasing` | Lightning | physical | gated ~20% | — | 9t / 94cd | 12t / 85cd | 16t / 73cd |
+| `ElectromagneticPulse` | Lightning | physical | gated | — | r2 | r5 | r9 |
+| `CorrosiveGasGeneration` | Acid | physical | gated | — | 5 | 8 | 12 |
+| `FreezingRay` | Ice | physical | gated | — | -3d4 | -6d4 | -10d4 |
+| `FlamingRay` | Fire | physical | gated | — | 385° | 460° | 560° |
+| `AcidSlimeGlands` | Acid | physical | gated | — | — | — | — |
+| `Cryokinesis` | Ice | mental | gated | — | ~8 | ~16 | ~24 |
+| `Pyrokinesis` | Fire | mental | gated | — | ~8 | ~16 | ~24 |
+| `TemporalFugue` | Temporal | mental | gated 22% | — | 1 copy | 2 copies | 3 copies |
+| `ForceBubble` | Force | mental | gated 28% | — | 20t | 24t | 28t |
+| `ForceWall` | Neutral Mind | mental | gated 26% | — | 18t | 22t | 26t |
+| `LifeDrain` | Blood | mental | gated 10% | — | 12t | 16t | 20t |
+| `Domination` | Mental | mental | gated | Ego | — | — | — |
+| `SunderMind` | Mental | mental | gated | Ego, Wil | — | — | — |
+| `MassMind` | Mental | mental | gated | Willpower | — | — | — |
+| `Confusion` | Acid | mental | gated | Ego | — | — | — |
+| `Disintegration` | Force | mental | gated | — | — | — | — |
+| `StunningForce` | Force | mental | gated | — | — | — | — |
+| `MentalMirror` | Neutral Mind | mental | gated | Willpower | +3 MA | +6 MA | +9 MA |
+| `LightManipulation` | Light | mental | gated | Willpower | +2 / 12% | +4 / 20% | +6.5 / 28% |
+| `Teleportation` | Light | mental | gated | — | r3 | r5 | r7 |
+| `TeleportOther` | Neutral Mind | mental | gated | — | — | — | — |
+| `SpacetimeVortex` | Temporal | mental | gated | — | — | — | — |
+| `TimeDilation` | Temporal | mental | gated | — | — | — | — |
+| `Precognition` | Neutral Spirit | mental | gated | — | 20t | 28t | 36t |
+| `WillForce` | Neutral Body | mental | gated | Ego, Tou | 20-24t | 24-28t | 28-32t |
+| `Kindle` | Fire | mental | **INERT** | — | range 12 | range 12 | range 12 |
+| `FrostWebs` | Ice | physical | **INERT** | — | 3x3 | 3x3 | 3x3 |
+
+### 5.6 The three dials
+
+| dial | what it does | what it cannot do |
+|---|---|---|
+| **Level** | re-key the ladder on uptime rather than category | reach below +15 on the Quickness pair |
+| **Price** | chips are tier 4/6/8 at 20/40/60 where §3.2's curve says 80/320/1280 — **all 144 are off the curve**, and `item-curve` misses it because chip names carry no material word | stop a *found* chip being strong |
+| **Supply** | every chip is weight 3 in its tier table, chipsets 1; slots are 1 / 2 / 4 | reach the starting chipset, which bypasses both |
+
+### 5.7 What still needs deciding
+
+1. **Is 2/4/6 the anchor, or 3/6/10?** §5.1 breaks the split in both directions, and this decides
+   whether the fix raises 16 mutations or lowers 12.
+2. **Key the ladder on uptime, on a per-mutation cap list, or drop it for one uniform ladder?**
+   Uptime is a rule and the other two are exception lists, which charter rule 2 prefers — but uptime
+   needs all 36 classified once and defended.
+3. **Which dial for the Quickness pair?** Only removal gets below +15.
+4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
+   chipset, which is +17 Quickness at character creation whatever else is decided.
 
 ## 6. Question four — fix in place, or gate behind an option?
 
