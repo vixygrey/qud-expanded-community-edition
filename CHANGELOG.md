@@ -16,6 +16,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **Tinkering Gigantic now costs a tier that matches what it grants** (#317). `TinkerTier="7"`,
+  alongside `ModNanon` and `ModSuspensor` — the top of what vanilla lets anyone build.
+
+  Until now the merge set no tier at all, so `ModEntry` defaulted it to **1**. Nothing vanilla allows
+  at tier 1 is in the same company: `ModGigantic.ApplyModification` calls `AdjustDamage(3)` on a
+  melee weapon and damage is rolled **once per penetration**, so it is +3 *per penetration* rather
+  than +3 flat, and it doubles energy cell capacity, grenade radius and tonic dosage besides. Every
+  tinkerable vanilla mod at tier 6 or 7 carries a value multiplier of 1.3–1.5 and grants far less.
+
+  **The capability is kept rather than reverted, because reading the code changed what the defect
+  was.** #317 said Gigantic costs nothing: it costs a great deal, just not a mod slot.
+  `GetSlotsRequiredEvent` does `E.Increases++`, so a gigantic item takes **one more equipment slot**
+  unless the wielder is a gigantic creature — a gigantic one-handed sword needs both hands. And
+  `GetAddedWeight()` is the blueprint's weight **× 4**, floored at 4, so a 6 lb greataxe becomes
+  30 lb. Under graded burden that is now a cost paid every turn.
+
+  Also corrected: the `× 3.333` value multiplier is gated on `GetIntProperty("Currency") > 0`, so it
+  multiplies gigantic *currency*, not gigantic weapons. There is no money press. An ordinary item
+  gets the entry's `Value="1.5"`, in line with every tinkerable vanilla mod.
+
+  Verified rather than assumed: `ModificationFactory.LoadModNode` reads `TinkerTier` from the XML,
+  and `ModEntry.TinkerTier` is `= 1` by default — so this would otherwise have shipped inert.
+
 - **Melee damage comes back to vanilla's ceiling across all four families** (#322). Fifty weapons —
   the largest single change in the sweep, and considerably wider than the issue described.
 
