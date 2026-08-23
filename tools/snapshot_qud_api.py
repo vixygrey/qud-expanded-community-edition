@@ -504,6 +504,112 @@ def collect_census(game: Path) -> dict[str, str]:
     return {key: str(value) for key, value in tally.items()}
 
 
+MOD = Path("mod")
+
+
+def merged_record_names() -> tuple[list[str], list[str]]:
+    """Every vanilla record this mod edits: blueprints by `Load="Merge"`, and population tables.
+
+    The scope of the citation set, and the reason it is a citation set rather than a dump. Each
+    entry exists because this fork edits that record, which is the same standard CITED_FIGURES
+    holds itself to.
+
+    A consequence worth knowing: adding a new merge means regenerating this snapshot, and that
+    needs the game. That is the intended shape - a new merge is a new citation, and a record the
+    snapshot has never seen makes its check fail loudly rather than skip in silence.
+    """
+    blueprints: set[str] = set()
+    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+        for obj in parse(f, lenient=True).iter("object"):
+            if obj.get("Load") == "Merge" and obj.get("Name"):
+                blueprints.add(obj.get("Name"))
+    tables: set[str] = set()
+    pops = MOD / "PopulationTables.xml"
+    if pops.is_file():
+        for pop in parse(pops, lenient=True).iter("population"):
+            if pop.get("Name"):
+                tables.add(pop.get("Name"))
+    return sorted(blueprints), sorted(tables)
+
+
+def _chain_attr(chain, part: str, key: str) -> str | None:
+    """The nearest ancestor's value for one part attribute. Takes the chain explicitly rather
+    than closing over it - a nested function would capture the loop variable by reference, which
+    is correct only for as long as every call stays inside the iteration that made it."""
+    for ancestor in chain:
+        for el in ancestor.findall("part"):
+            if el.get("Name") == part and el.get(key) is not None:
+                return el.get(key)
+    return None
+
+
+def _chain_tag(chain, key: str) -> str | None:
+    """The nearest ancestor's value for one tag."""
+    for ancestor in chain:
+        for el in ancestor.findall("tag"):
+            if el.get("Name") == key:
+                return el.get("Value")
+    return None
+
+
+def collect_merged_records(game: Path) -> dict[str, dict]:
+    """What vanilla says about each record this mod merges into.
+
+    The checks in validate_mod.py run in CI, where there is no game, so a merge is opaque to them:
+    it carries no `Inherits` and usually no `Skill`, so `Cudgel8th` cannot be recognised as a
+    cudgel from the mod's own XML at all. That is why damage could drift 40% across a whole family
+    without failing anything.
+
+    Only the fields a check actually compares against are recorded, and `None` where vanilla does
+    not state one.
+    """
+    index = BlueprintIndex(load_all(game, lenient=True))
+    names, _ = merged_record_names()
+    out: dict[str, dict] = {}
+    for name in names:
+        chain = index.chain(name)
+        if not chain:
+            continue  # a merge whose target vanilla no longer has; check_vanilla_drift owns that
+
+        record = {
+            "skill": _chain_attr(chain, "MeleeWeapon", "Skill"),
+            "two_handed": (_chain_attr(chain, "Physics", "UsesTwoSlots") or "").lower()
+            == "true",
+            "slot": _chain_attr(chain, "Armor", "WornOn"),
+            "av": _chain_attr(chain, "Armor", "AV")
+            or _chain_attr(chain, "Shield", "AV"),
+            "weight": _chain_attr(chain, "Physics", "Weight"),
+            "tier": _chain_tag(chain, "Tier"),
+        }
+        if any(v not in (None, False) for v in record.values()):
+            out[name] = record
+    return out
+
+
+def collect_table_weights(game: Path) -> dict[str, int]:
+    """Vanilla's total drop weight for each population table this mod adds entries to.
+
+    docs/STYLEGUIDE.md 3.2.1 caps this fork's share of a vanilla table at half. Share is a ratio,
+    so the check cannot compute it without vanilla's side, and CI has no game.
+    """
+    _, wanted = merged_record_names()
+    totals: dict[str, int] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            name = pop.get("Name")
+            if name not in wanted:
+                continue
+            total = 0
+            for obj in pop.iter("object"):
+                if obj.get("Blueprint"):
+                    try:
+                        total += int(obj.get("Weight") or 0)
+                    except ValueError:
+                        pass
+            totals[name] = totals.get(name, 0) + total
+    return totals
+
+
 def collect_blueprints(game: Path) -> list[str]:
     names = set()
     for root in load_all(game, lenient=True):
@@ -709,6 +815,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     figures = collect_figures(game)
     mutation_classes = collect_mutation_classes(game)
     figures.update(collect_census(game))
+    merged_records = collect_merged_records(game)
+    table_weights = collect_table_weights(game)
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
     if problems:
@@ -744,14 +852,24 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + builder_repr
             + "\0"
             + "\n".join(mutation_classes)
+            + "\0"
+            + json.dumps(merged_records, sort_keys=True)
+            + "\0"
+            + json.dumps(table_weights, sort_keys=True)
         ).encode()
     ).hexdigest()[:16]
     return {
         "_comment": (
-            "Generated by tools/snapshot_qud_api.py from an installed Caves of Qud. Names only - "
-            "no descriptions, stats, text or art. Regenerate after every Qud update; a stale "
-            "snapshot shows up as a false positive on a newly added vanilla name, which is loud "
-            "rather than silent."
+            "Generated by tools/snapshot_qud_api.py from an installed Caves of Qud. Two kinds "
+            "of entry, and the distinction is the rule this file is kept to. Most of it is "
+            "IDENTIFIERS - part, blueprint, member and builder names, the same ones this mod's "
+            'own XML already writes in every Load="Merge". The rest is CITATIONS: figures, '
+            "merged_records and table_weights hold values read out of Freehold's data, and each "
+            "exists because something here depends on it - a document quotes it, or a check "
+            "compares against a vanilla record this fork edits. No descriptions, text or art, and "
+            "no value without a dependant: a list of citations, not a dump of the game. "
+            "Regenerate after every Qud update; a stale snapshot shows up as a false positive on "
+            "a newly added vanilla name, which is loud rather than silent."
         ),
         "steam_build_id": steam_build_id(),
         "digest": digest,
@@ -767,6 +885,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "figures": len(figures),
             "part_builders": len(part_builders),
             "mutation_classes": len(mutation_classes),
+            "merged_records": len(merged_records),
+            "table_weights": len(table_weights),
         },
         "mutation_classes": mutation_classes,
         "parts": parts,
@@ -774,6 +894,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "members": members,
         "part_builders": part_builders,
         "figures": dict(sorted(figures.items())),
+        "merged_records": dict(sorted(merged_records.items())),
+        "table_weights": dict(sorted(table_weights.items())),
     }
 
 
