@@ -599,8 +599,16 @@ rate — not a level bonus.
 
 **The two ladders converge exactly at Ego 24** — the Psionic Adept's stat maximum, since
 `Genotypes.xml` caps every Adept stat at 24. At that point a perfected mental chip and a perfected
-physical chip are both level 10. Below it mental trails; above it, mental overtakes and keeps going,
-because nothing caps the Ego contribution.
+physical chip are both level 10.
+
+> ⚠️ A second correction to this section. It previously ended *"above it, mental overtakes and keeps
+> going, because nothing caps the Ego contribution."* Something does:
+> `BaseMutation.GetMutationCap()` clamps the total to `character level / 2 + 1`, which
+> `docs/LESSONS.md` already records from #226 and which I failed to apply. Mental only overtakes
+> where the character's level lets it — see §5.8, where the cap turns out to shape everything.
+>
+> Twice wrong on one section, the same way both times: modelling from a partial read of a layered
+> system. The layers are per-class, then per-category, then the cap.
 
 Two things follow that the budget still has to answer:
 
@@ -723,6 +731,70 @@ cooldown caps it; **INERT** means the level is not read at all.
 3. **Which dial for the Quickness pair?** Only removal gets below +15.
 4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
    chipset, which is +17 Quickness at character creation whatever else is decided.
+
+### 5.8 Genotype power curves — the cap shapes everything
+
+Effective rank is `min(sum of every source, GetMutationCapForLevel(level))`, and that second term is
+`level / 2 + 1`. **It applies to every genotype identically**, which turns out to be the most
+important fact about the chip system.
+
+The other half of the economy: `1 MP = 1 rank` — `GameObject` spends a point and calls
+`LevelMutation(m, m.BaseLevel + 1)`. A mod Mutated Human has 16 points at chargen and
+`BaseMPGain="1-2"` thereafter, plus Rapid Advancement's +3 to one *physical* mutation at levels 5,
+15, 25 and 35. True Kin and Psionic Adepts get none of that: `Leveler` awards mutation points only
+`if (ParentObject.IsMutant())`.
+
+| char level | rank cap | mutant, 4 mutations — typical / best | Adept, 4 chips | True Kin, 2 chips |
+|---:|---:|---:|---:|---:|
+| 5 | 3 | 2.5 / 3.0 | 3 | 3 |
+| 10 | 6 | 4.4 / 6.0 | 6 | 6 |
+| **18** | **10** | 7.4 / 10.0 | **10** | **10** |
+| 25 | 13 | 10.0 / 13.0 | 10 | 10 |
+| 30 | 16 | 11.9 / **16.0** | 10 | 10 |
+| 35 | 18 | 13.8 / **18.0** | 10 | 10 |
+
+Three phases, and the shape is not the one the audit assumed:
+
+- **Below level 18 the cap binds everyone equally.** A perfected chip and a mutant's grown mutation
+  are the *same rank*, because both clamp to `level/2+1`. The Adept's advantage in this window is
+  **count, not rank** — four mutations against a mutant's four, but acquired from chests rather than
+  paid for at chargen.
+- **Level 18 is the Adept's peak.** The cap reaches 10, which is exactly the perfected chip's grade,
+  so a perfected chip finally shows its full value at the same moment the mutant is still behind.
+- **Above level 18 the Adept plateaus and the mutant keeps climbing.** Rank 10 is the ceiling of a
+  single chip; mutation-point income has no ceiling below the cap. By level 30 a mutant's best
+  mutation outranks any single chip by six.
+
+**Unless duplicates are stacked**, which is [#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350).
+Trackers sum before the cap, so two perfected chips of one mutation are tracker 20 and track the cap
+indefinitely — at half the mutation count.
+
+| char level | 4 distinct chips | 2 mutations, 2 chips each |
+|---:|---:|---:|
+| 24 | 4 at rank 10 | 2 at rank **13** |
+| 30 | 4 at rank 10 | 2 at rank **16** |
+| 36 | 4 at rank 10 | 2 at rank **19** |
+
+**What this means for the genotype's niche.** The Psionic Adept is front-loaded breadth that
+plateaus, with an undocumented depth mode. It is strongest relative to the others around level 18 and
+weakest at level 30+, which is the opposite shape to a mutant — and a coherent design, if an
+unstated one. Its ledger is a real trade rather than a free lunch: the **fewest stat points in the
+game** at 34 against 38 and 44, **half the mod True Kin's cybernetics licence** at 2 against 4, the
+lowest HP gain, and no mutation points — bought with +10 SP per level, two extra chip slots, and
+three extra starting skills.
+
+Two corrections to earlier sections follow from the cap, both recorded where they were wrong:
+
+- **§5.1** claimed Ego scaling was uncapped. It is not.
+- **[#316](https://github.com/vixygrey/qud-expanded-community-edition/issues/316)'s figures need a
+  character level attached.** +33 Quickness needs level 18. A Guardian's starting chipset is +15 at
+  level 1, not the +17 that issue states, because the cap is 1 there. The finding survives — a
+  20-water chip is +19 from level 4 against an *uncapped* 10,000-water legendary at +10 — but every
+  number in it wants "at level N" beside it.
+
+**One thing the cap does not touch.** `Armor.SpeedBonus` is not a mutation, so the Kesil Face's +10
+is uncapped and available the moment it is worn. The chips beat it anyway from character level 1,
+where the floor of `13 + 2 × Level` is +15.
 
 ## 6. Question four — fix in place, or gate behind an option?
 
