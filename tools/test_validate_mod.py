@@ -394,3 +394,103 @@ class Constants(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TierResolution(unittest.TestCase):
+    """`item-curve` must find a tier from the Tier tag, not only from a material word.
+
+    Every test here is a positive control in one direction or the other, for the reason this
+    file's docstring gives: the failure mode being fixed is a **skip**, and a check that skips
+    an object is indistinguishable from a check that approved it. #354 is 144 chips that sat
+    twenty times under the curve for exactly that reason.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _curve(self, blueprints: str) -> list[tuple[str, str]]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints)
+        return findings_for(validate_mod.check_item_curves, tmp)
+
+    def test_tier_tag_alone_is_enough_to_price_an_object(self) -> None:
+        """The defect #354 reports. No material word, an explicit tier, a wrong price."""
+        items = self._curve(
+            '  <object Name="Vixy_Widget">\n'
+            '    <part Name="Commerce" Value="7" />\n'
+            '    <tag Name="Tier" Value="3" />\n'
+            "  </object>"
+        )
+        self.assertTrue(
+            items, "an object with a Tier tag and no material was not priced"
+        )
+        self.assertIn("40", items[0][1], "tier 3 should price at 5 * 2^3")
+
+    def test_tier_tag_alone_stays_quiet_when_the_price_is_right(self) -> None:
+        """The other half of the control. Without this the test above passes on a check that
+        reports everything."""
+        self.assertEqual(
+            self._curve(
+                '  <object Name="Vixy_Widget">\n'
+                '    <part Name="Commerce" Value="40" />\n'
+                '    <tag Name="Tier" Value="3" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_material_word_still_works_without_a_tag(self) -> None:
+        """The fallback has to survive. Objects that predate the Tier tag rely on it."""
+        items = self._curve(
+            '  <object Name="Vixy_Carbide Widget">\n'
+            '    <part Name="Commerce" Value="7" />\n'
+            "  </object>"
+        )
+        self.assertTrue(
+            items, "a material-named object lost its tier when the tag was preferred"
+        )
+
+    def test_a_name_disagreeing_with_its_tag_is_reported(self) -> None:
+        """The Flawless Crysteel Boots defect from #9, which must survive the reordering."""
+        items = self._curve(
+            '  <object Name="Vixy_Carbide Widget">\n'
+            '    <part Name="Commerce" Value="1280" />\n'
+            '    <tag Name="Tier" Value="8" />\n'
+            "  </object>"
+        )
+        self.assertTrue(any("by material" in d for _, d in items))
+
+    def test_chips_are_priced_on_the_chip_curve(self) -> None:
+        """A chip at the item curve's price is wrong; §3.2.1 puts them at a quarter of it."""
+        chip = (
+            '  <object Name="Vixy_Test Chip" Inherits="Raven_Base Psionic Chip">\n'
+            '    <part Name="Commerce" Value="{}" />\n'
+            '    <tag Name="Tier" Value="8" />\n'
+            "  </object>"
+        )
+        self.assertEqual(
+            self._curve(chip.format(320)), [], "320 is the tier-8 chip curve"
+        )
+        items = self._curve(chip.format(1280))
+        self.assertTrue(items, "a chip priced on the item curve was not reported")
+        self.assertIn("chip curve", items[0][1])
+
+    def test_base_objects_are_not_priced(self) -> None:
+        """A base is a template. Nothing spawns one, so its price means nothing.
+
+        Only reachable once tier stopped depending on a material word: Raven_Base Psionic Pistol
+        carries Tier 3 and names no metal, so it was invisible here by accident rather than by
+        rule.
+        """
+        self.assertEqual(
+            self._curve(
+                '  <object Name="Vixy_Base Widget">\n'
+                '    <part Name="Commerce" Value="7" />\n'
+                '    <tag Name="Tier" Value="3" />\n'
+                '    <tag Name="BaseObject" Value="*noinherit" />\n'
+                "  </object>"
+            ),
+            [],
+        )

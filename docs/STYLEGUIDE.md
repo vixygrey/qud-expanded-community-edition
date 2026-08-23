@@ -310,6 +310,12 @@ possible in practice. Match them when adding anything.
 The tier and value curves are checked by `item-curve` in `tools/validate_mod.py`, so a mispriced or
 mistagged item fails CI rather than sitting in the loot pool at the wrong rarity.
 
+**An item's tier is its `Tier` tag**, and the material word in its name is only a fallback for the
+objects that predate the tag. That order used to be reversed, which meant anything not named after
+a metal was skipped before its price was ever compared — 144 psionic chips and 22 other items, all
+carrying an explicit tier the check declined to read (#354). If you add an item whose name carries
+no material, tag its tier and the curve will hold it.
+
 #### 3.2.1 The curves: AV, damage, weight and table share
 
 Derived from the installed game in #340, after the balance sweep found that **every number that
