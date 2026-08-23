@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled. Question three is costed but undecided (§5); question four is open.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Questions one (§3.9) and two (§4) are settled; question three is costed and partly settled (§5); question four is open.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -549,7 +549,7 @@ the final magnitudes turn out to be. Those seven are fixable now:
 what the budget should *be* is still undecided.**
 Tracked in [#338](https://github.com/vixygrey/qud-expanded-community-edition/issues/338).
 
-### 5.1 The stated rationale is correct, and calibrated to Ego 24
+### 5.1 The ladder split — settled, leave it alone
 
 `docs/2.2-changelog.txt` justifies the 3/6/10 physical ladder as compensation:
 
@@ -557,67 +557,70 @@ Tracked in [#338](https://github.com/vixygrey/qud-expanded-community-edition/iss
 > not scale at all. To compensate for this, psionic chips that give physical mutations now give
 > 3/6/10 levels
 
-**This is true, and the compensation is calibrated rather than approximate.**
+**The premise is true, the compensation is Mura's only decision in it, and the decision is to leave
+both ladders as they are.**
 
-> ⚠️ An earlier version of this section said the rationale held for only 7 of 23 mental mutations.
-> That was wrong. I searched for `Stat("Ego")` inside each mutation *class* and found seven. The
-> scaling is not there — it is in the shared base class, applied per *category*. This is exactly the
-> trap `docs/LESSONS.md` records as *"Search where the effect is applied, not where the part is
-> used"*, and I walked into it.
+> ⚠️ This section was wrong twice before reaching that, and the corrections are worth keeping
+> because the shape repeats. First I reported the premise as false, having grepped each mutation
+> *class* for `Stat("Ego")` and found seven of twenty-three — the scaling is not in the classes.
+> Then I described the result as uncapped, which `GetMutationCap` contradicts. Both are instances of
+> `docs/LESSONS.md`'s *"Search where the effect is applied, not where the part is used"*, and the
+> second instance there records why a partial match is more dangerous than no match.
 
-The mechanism is `BaseMutation.CalcLevel`:
-
-```csharp
-Statistic value = ParentObject.Statistics[mutationEntry?.GetStat()];
-num += value.Modifier;
-```
-
-`MutationEntry.GetStat()` falls through to `Category.Stat`, which `Mutations.xml` declares once per
-category:
+**The gradient is vanilla's, not this mod's.** `BaseMutation.CalcLevel` adds the governing stat's
+modifier, `MutationEntry.GetStat()` falls through to the category, and `Mutations.xml` declares it
+once:
 
 ```xml
 <category Name="Mental"   … Stat="Ego" … >   <!-- all 23 mental mutations -->
 <category Name="Physical" …            >     <!-- no Stat attribute at all -->
 ```
 
-So **every** mental mutation gains `EgoMod` levels and **no** physical mutation gains anything.
-`ElectricalGeneration` reading Willpower inside its own class is a separate, local effect on charge
-rate — not a level bonus.
+Every mental mutation in Caves of Qud scales with Ego, chip-granted or inherent. Nothing here was
+chosen by the mod, so there is no mod decision to reverse — only the size of the compensation to
+judge.
 
-**And it reaches chips.** `ModImprovedMutationBase.HandleEvent(EquippedEvent)` calls
+**It reaches chips through the tracker.** `ModImprovedMutationBase` calls
 `AddMutationMod(typeof(T), null, Tier, SourceType.Equipment, …)`, which creates the mutation at level
-**0** and records the chip's grade as a tracker. `CalcLevel` then sums the governing-stat modifier
-*and* the tracker bonus, so a chip-granted mental mutation's effective level is
-`chip grade + EgoMod`.
+**0** and records the grade as a tracker. `CalcLevel` then sums the stat modifier and every matching
+tracker, and clamps the total to `GetMutationCapForLevel(level)`, which is `level / 2 + 1`.
 
-| Ego | EgoMod | mental basic / upgraded / perfected | physical |
-|---:|---:|---|---|
-| 16 | +0 | 2 / 4 / 6 | 3 / 6 / 10 |
-| 20 | +2 | 4 / 6 / 8 | 3 / 6 / 10 |
-| **24** | **+4** | **6 / 8 / 10** | **3 / 6 / 10** |
-| 28 | +6 | 8 / 10 / 12 | 3 / 6 / 10 |
+    effective rank = min( chip grade + EgoMod , character level / 2 + 1 )
 
-**The two ladders converge exactly at Ego 24** — the Psionic Adept's stat maximum, since
-`Genotypes.xml` caps every Adept stat at 24. At that point a perfected mental chip and a perfected
-physical chip are both level 10.
+**Where the compensation lands.** Ego is not static: `Leveler.AddAttributeBonus` adds **+1 to every
+attribute** at levels 6, 12, 18, 24, 30 and 36, so Ego climbs whether the player invests in it or
+not. Vanilla's chargen maximum of 24 applies to every genotype, so it is a starting line rather than
+a ceiling.
 
-> ⚠️ A second correction to this section. It previously ended *"above it, mental overtakes and keeps
-> going, because nothing caps the Ego contribution."* Something does:
-> `BaseMutation.GetMutationCap()` clamps the total to `character level / 2 + 1`, which
-> `docs/LESSONS.md` already records from #226 and which I failed to apply. Mental only overtakes
-> where the character's level lets it — see §5.8, where the cap turns out to shape everything.
->
-> Twice wrong on one section, the same way both times: modelling from a partial read of a layered
-> system. The layers are per-class, then per-category, then the cap.
+Mental rank minus physical rank, at the perfected grade:
 
-Two things follow that the budget still has to answer:
+| char level | caster, all points to Ego | maxed at chargen, ignored after | Guardian, Ego 16 |
+|---:|---:|---:|---:|
+| 6–12 | +0 | +0 | +0 |
+| 18 | +0 | +0 | **−3** |
+| 24 | **+3** | **+2** | −2 |
+| 30 | **+5** | **+2** | −2 |
 
-- **The compensation is exact at one point and wrong either side of it.** A low-Ego character gets
-  materially less from a mental chip than from a physical one; a high-Ego character gets more, without
-  limit. Whether that gradient is the intended reward for building Ego, or an accident of picking a
-  single calibration point, is a design question rather than a defect.
-- **It says nothing about magnitude.** Ego scaling explains why the *ladders* differ. It does not
-  explain why level 10 of `HeightenedSpeed` should be worth what it is worth, which is §5.2 and §5.3.
+**The compensation is exact precisely where it does not matter and drifts where it does.** Below
+character level 18 the rank cap flattens everything to equality regardless of Ego. Above it the two
+ladders come apart in both directions at once.
+
+**Settled: leave both ladders alone.** The gradient is vanilla behaviour reaching chips rather than
+a mod choice, the divergence is two to five ranks and only past level 18, and it is the one thing
+distinguishing a caster Adept's chips from a Guardian's. Suppressing it would mean overriding a
+mechanic that applies to every mental mutation in the game, which is a larger intervention than
+anything else in this sweep.
+
+Two things follow rather than being closed by it:
+
+- **The +2 column is drift, not reward.** A character who maxed Ego at chargen and never thought
+  about it again gains two ranks from `AttributeBonus` alone. The caster's +5 is an investment
+  reward; the +2 beneath it rewards nothing. Accepted as the price of not overriding vanilla.
+- **The Guardian column is the finding worth carrying.** Low-Ego builds sit two to three ranks behind
+  from level 18 on, and Guardians are the half of the genotype that uses *physical* chips — which are
+  flat at rank 10 forever per §5.8. The plateau lands hardest on the subtypes with no way out of it,
+  and [#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350)'s duplicate
+  stacking is currently their only escape.
 
 ### 5.2 The ladder is keyed on the wrong property, and inverted
 
@@ -728,15 +731,15 @@ or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape i
 [#353](https://github.com/vixygrey/qud-expanded-community-edition/issues/353) (the mutant's slot) and
 [#354](https://github.com/vixygrey/qud-expanded-community-edition/issues/354) (the value curve).
 
-1. **Is the Ego gradient intended?** §5.1 shows the ladders are calibrated to meet at Ego 24 rather
-   than chosen arbitrarily, and §5.8 shows the rank cap bounds the divergence above it — a mental
-   chip only outruns a physical one where the character's level allows. So the likely answer is
-   *yes, leave the ladders alone*. **Settle this first: if it lands that way, most of item 2 goes
-   with it.**
-2. **Key the ladder on uptime, on a per-mutation cap list, or drop it for one uniform ladder?** The
-   live finding is §5.2's inversion — `HeightenedSpeed` at 100% uptime and `AdrenalControl2` at 10%
-   share 3/6/10. If item 1 leaves the ladders alone, this narrows from a re-key to *"cap the handful
-   of steep permanent passives"*, which is a five-row list rather than a system.
+1. ~~**Is the Ego gradient intended?**~~ **Settled — leave both ladders alone.** The gradient is
+   vanilla's own mechanic reaching chips rather than a mod decision, and suppressing it would mean
+   overriding behaviour that applies to every mental mutation in the game. See §5.1 for the reasoning
+   and for the two things it leaves open rather than closes.
+2. **Which of the steep permanent passives get a cap?** With item 1 settled the ladders stay, so this
+   is no longer a re-key — it is a short list. The candidates are §5.2's five 100%-uptime mutations,
+   and the argument for capping each is that a level of a permanent passive is worth far more than a
+   level of a cooldown-gated ability on the same ladder: `HeightenedSpeed` and `AdrenalControl2` both
+   grant Quickness on 3/6/10, at 100% and 10% uptime respectively.
 3. **Which dial for the Quickness pair?** Price, rarity, or removal — and only removal reaches below
    the `13 + 2 × Level` floor of +15. Price is the interesting one because #354 has to move these
    numbers anyway.

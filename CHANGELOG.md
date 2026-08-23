@@ -16,6 +16,28 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The first of question three's four decisions is settled: **the chip ladders stay as
+  they are** (#338). `docs/DESIGN_balance.md` §5.1 is rewritten around it.
+
+  The reason is that the Ego gradient is **vanilla's mechanic, not this mod's**. `Mutations.xml`
+  declares `Stat="Ego"` once on the Mental category and `BaseMutation.CalcLevel` applies it to every
+  mental mutation in the game, chip-granted or inherent. Mura's only decision was the size of the
+  3/6/10 compensation, and overriding the gradient would mean suppressing behaviour far wider than
+  the chips.
+
+  Worth recording that the compensation is **exact precisely where it does not matter**. Below
+  character level 18 the rank cap flattens every ladder to equality; above it they come apart, by +5
+  ranks for a dedicated caster and **−2 to −3 for a low-Ego Guardian**. And two of those ranks are
+  drift rather than reward: `AddAttributeBonus` raises every attribute at levels 6, 12, 18, 24, 30
+  and 36, so Ego climbs whether a player invests in it or not. Vanilla's chargen maximum of 24 is a
+  starting line, not a ceiling, and it applies to every genotype rather than being anything the
+  Psionic Adept has.
+
+  The finding carried forward is the Guardian column: they use *physical* chips, which are flat at
+  rank 10 forever, so §5.8's plateau lands hardest on the subtypes with no way out of it and #350's
+  duplicate stacking is currently their only escape.
+
+
 - **(internal)** #354 records that **all 144 psionic chips are off `docs/STYLEGUIDE.md` §3.2's value
   curve** — a perfected chip is a tier-8 item priced at 60 water where the curve says 1,280 — and
   that `item-curve` cannot see them. The check finds an object's tier by matching a **material word**
