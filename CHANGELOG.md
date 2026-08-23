@@ -16,6 +16,35 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **This fork's share of a vanilla loot table now stops at half** (#325). Ninety-four drop weights
+  across nine tables.
+
+  | table | was | now | | table | was | now |
+  | ------------------ | ----: | ----: | --- | ---------- | ----: | ----: |
+  | `Armor 4C` | 65.9% | 49.1% | | `Armor 2C` | 59.3% | 50.0% |
+  | `Melee Weapons 1R` | 62.5% | 50.0% | | `Armor 2R` | 57.7% | 48.8% |
+  | `Armor 5C` | 61.1% | 50.0% | | `Armor 8R` | 55.8% | 49.8% |
+  | `Armor 6C` | 60.0% | 49.4% | | `Melee Weapons 1C` | 55.4% | 49.9% |
+  | `Armor 8C` | 54.1% | 50.0% | | | | |
+
+  **The weights were rescaled, not flattened.** Each table is multiplied by vanilla's total over this
+  fork's, so the shape inside it survives — `Armor 4C` keeps its 2:1 split between the carbide set at
+  20 and the folded carbide set at 10, now 10 and 5. Flattening every entry to one number would have
+  hit the ceiling just as well and thrown away a deliberate distinction.
+
+  Worth restating, because it is the opposite of what the issue assumed: **the per-item weights were
+  never the defect.** They matched vanilla's almost exactly, and in `Armor 1R` were deliberately
+  lighter. Share drifted on **count** — completing every family and both handednesses puts more
+  entries in a tier band than vanilla stocks, so `Melee Weapons 1R` held 6 vanilla entries against
+  10 of this fork's. Capping share and keeping completeness are the same lever pulled in opposite
+  directions, which is why the fix lowers per-item weight rather than dropping content.
+
+  Half is the one number in §3.2.1 that is **chosen rather than derived** — vanilla has no opinion on
+  how much of its loot pool may belong to a mod — and the section says so.
+
+  `table-share` reports nothing and leaves the baseline, which falls to **22**: only #373's mispriced
+  items remain, from a starting 191.
+
 - **Weight is fixed where weight is the balance** (#320). Twelve items, and the per-slot factors are
   now written into `docs/STYLEGUIDE.md` §3.2.1.
 

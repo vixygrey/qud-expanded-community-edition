@@ -2,7 +2,7 @@
   "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure.",
   "known": {
     "item-curve": {
-      "issue": "#373. The 108 psionic chips were repriced in #338; what remains is the 22 other items #354 made visible.",
+      "issue": "#373. The 108 psionic chips were repriced in #338; what remains is the 22 other items #354 made visible - and #373 argues three of those groups want a CURVE_EXEMPT entry rather than a reprice.",
       "items": [
         "mod/ObjectBlueprints/Armor.xml: Raven_Bio Scanner Mask is tier 5, so the value curve gives 160, not 60",
         "mod/ObjectBlueprints/Armor.xml: Raven_Flexiboots is tier 5, so the value curve gives 160, not 75",
@@ -26,20 +26,6 @@
         "mod/ObjectBlueprints/RangedWeapons.xml: Raven_Fine-Tuned Handgun is tier 6, so the value curve gives 320, not 600",
         "mod/ObjectBlueprints/RangedWeapons.xml: Raven_HandCannonMod is tier 5, so the value curve gives 160, not 400",
         "mod/ObjectBlueprints/RangedWeapons.xml: Raven_Net Gun is tier 5, so the value curve gives 160, not 130"
-      ]
-    },
-    "table-share": {
-      "issue": "#325. Nine vanilla tables past half. Armor 8C came from 71.7% to 54.1% in #319; the rest are untouched.",
-      "items": [
-        "mod/PopulationTables.xml: Armor 2C is 59.3% this fork's content (160 against vanilla's 110) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 2R is 57.7% this fork's content (90 against vanilla's 66) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 4C is 65.9% this fork's content (280 against vanilla's 145) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 5C is 61.1% this fork's content (220 against vanilla's 140) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 6C is 60.0% this fork's content (180 against vanilla's 120) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 8C is 54.1% this fork's content (100 against vanilla's 85) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 8R is 55.8% this fork's content (168 against vanilla's 133) - the ceiling is half",
-        "mod/PopulationTables.xml: Melee Weapons 1C is 55.4% this fork's content (245 against vanilla's 197) - the ceiling is half",
-        "mod/PopulationTables.xml: Melee Weapons 1R is 62.5% this fork's content (200 against vanilla's 120) - the ceiling is half"
       ]
     }
   }
