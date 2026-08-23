@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **370** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **215** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -318,7 +318,7 @@ result among that family, and each family is equally likely.
 
 ## 4. Skills (`Skills.xml`)
 
-Six trees are edited. Nothing is removed; requirements and costs are retuned and one power is added.
+Seven trees are edited. Nothing is removed; requirements and costs are retuned, and **Finesse** is added to the two blade trees.
 
 Both halves are optional, under two separate toggles — **eased skill requirements** and **retuned
 skill point costs**. They are split because their scopes differ: costs apply immediately, while
@@ -328,10 +328,30 @@ requirements need a restart. See §13.
 |---|---|
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
 | **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
-| **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. |
+| **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. Adds **Finesse** (250, Agility 19). |
+| **Short Blade** | Adds **Finesse** (250, Agility 19). The tree is otherwise untouched. |
 | **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it — see below. |
 | **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
 | **Tinkering** | *Disassemble* cost **→ 0** (free with the tree). *Reverse Engineer* cost **100 → 200**. *Tinker I* Int **19 → 17**, *Tinker II* **23 → 21**, *Tinker III* **29 → 25**. |
+
+> ⚔️ **Finesse** is how an Agility character gets damage out of a blade.
+>
+> `MeleeWeapon.Stat` names the stat a weapon rolls **penetration** against, and the damage die is
+> rolled once per penetration — so it multiplies a weapon's whole output. Vanilla uses Strength for
+> it on every melee weapon in the game, which leaves an Agility build paying for to-hit and DV and
+> getting no damage scaling at all.
+>
+> Finesse fixes that without handing it out free. A weapon tagged `Finesse` — **daggers, knives and
+> wristblades** in the Short Blade tree, **rapiers and katanas** in the Long Blade tree — rolls
+> penetration against your **Agility** modifier instead, whenever Agility is the higher of the two.
+> Axe and Cudgel stay Strength-only.
+>
+> It costs 250 skill points and Agility 19, one purchase per tree. That price is the point: Agility
+> already buys melee to-hit and DV, so letting it buy penetration for free would make every other
+> melee stat pointless — the "Dex is the god stat" problem 5e is known for. Pathfinder charges a
+> feat for the same crossover, and this is that trade in Qud's own currency.
+>
+> The reasoning is in [`docs/DESIGN_balance.md`](DESIGN_balance.md) §3.
 
 > ✅ **Akimbo was removed from Multiweapon Fighting in #88** (closing #11), and the story is worth
 > keeping because it is this repo's clearest demonstration that **`Class=` is an identifier**.
@@ -389,7 +409,7 @@ doubles max charge and stacks with High Capacity.
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **370 active** | **215** |
+| **Total** | **370 active** | **213** |
 
 ### 6.2 Melee weapons
 
@@ -420,58 +440,58 @@ Conventions the mod follows:
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Halberd | new | 0 | 1d2+1 | +1 | 1 | Agility | 5 | 7 | yes |
-| Iron Halberd | new | 1 | 1d3+1 | +1 | 2 | Agility | 10 | 6 | yes |
-| Steel Halberd | new | 2 | 1d4+2 | +1 | 3 | Agility | 20 | 6 | yes |
-| Carbide Halberd | new | 3 | 1d5+2 | +1 | 4 | Agility | 40 | 8 | yes |
-| Folded Carbide Halberd | new | 4 | 1d6+3 | +1 | 5 | Agility | 80 | 7 | yes |
-| Fullerite Halberd | new | 5 | 1d7+3 | +1 | 6 | Agility | 160 | 9 | yes |
-| Vibro Halberd | new | 5 | 1d6+3 | +0 | 0 | Agility | 300 | 7 | yes |
+| Bronze Halberd | new | 0 | 1d2+1 | +1 | 1 |  | 5 | 7 | yes |
+| Iron Halberd | new | 1 | 1d3+1 | +1 | 2 |  | 10 | 6 | yes |
+| Steel Halberd | new | 2 | 1d4+2 | +1 | 3 |  | 20 | 6 | yes |
+| Carbide Halberd | new | 3 | 1d5+2 | +1 | 4 |  | 40 | 8 | yes |
+| Folded Carbide Halberd | new | 4 | 1d6+3 | +1 | 5 |  | 80 | 7 | yes |
+| Fullerite Halberd | new | 5 | 1d7+3 | +1 | 6 |  | 160 | 9 | yes |
+| Vibro Halberd | new | 5 | 1d6+3 | +0 | 0 |  | 300 | 7 | yes |
 
 #### Vinereapers (Axe, one-handed, Agility) — vanilla family, completed to all tiers
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Vinereaper | new | 0 | 1d2 | +0 | 1 | Agility | 5 | 3 |  |
-| Iron Vinereaper | merge | 1 | 1d3 | +0 | 2 | Agility | 10 | 2 |  |
-| Steel Vinereaper | merge | 2 | 1d4 | +0 | 3 | Agility | 20 | 2 |  |
-| Carbide Vinereaper | new | 3 | 1d5 | +0 | 4 | Agility | 40 | 4 |  |
-| Folded Carbide Vinereaper | new | 4 | 1d6+1 | +0 | 5 | Agility | 80 | 3 |  |
-| Fullerite Vinereaper | new | 5 | 1d7+1 | +0 | 6 | Agility | 160 | 5 |  |
-| Vibro Vinereaper | new | 5 | 1d6+1 | +0 | 0 | Agility | 300 | 3 |  |
-| Crysteel Vinereaper | new | 6 | 1d8+2 | +0 | 7 | Agility | 320 | 3 |  |
-| Flawless Crysteel Vinereaper | new | 7 | 1d9+2 | +0 | 8 | Agility | 640 | 3 |  |
-| Zetachrome Vinereaper | new | 8 | 1d10+3 | +0 | 9 | Agility | 1280 | 2 |  |
+| Bronze Vinereaper | new | 0 | 1d2 | +0 | 1 |  | 5 | 3 |  |
+| Iron Vinereaper | merge | 1 | 1d3 | +0 | 2 |  | 10 | 2 |  |
+| Steel Vinereaper | merge | 2 | 1d4 | +0 | 3 |  | 20 | 2 |  |
+| Carbide Vinereaper | new | 3 | 1d5 | +0 | 4 |  | 40 | 4 |  |
+| Folded Carbide Vinereaper | new | 4 | 1d6+1 | +0 | 5 |  | 80 | 3 |  |
+| Fullerite Vinereaper | new | 5 | 1d7+1 | +0 | 6 |  | 160 | 5 |  |
+| Vibro Vinereaper | new | 5 | 1d6+1 | +0 | 0 |  | 300 | 3 |  |
+| Crysteel Vinereaper | new | 6 | 1d8+2 | +0 | 7 |  | 320 | 3 |  |
+| Flawless Crysteel Vinereaper | new | 7 | 1d9+2 | +0 | 8 |  | 640 | 3 |  |
+| Zetachrome Vinereaper | new | 8 | 1d10+3 | +0 | 9 |  | 1280 | 2 |  |
 
 #### Katanas (Long Blades, two-handed, Agility) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Katana | new | 0 | 1d6 | +1 | 1 | Agility | 5 | 6 | yes |
-| Iron Katana | new | 1 | 1d8 | +1 | 2 | Agility | 10 | 5 | yes |
-| Steel Katana | new | 2 | 1d10 | +1 | 3 | Agility | 20 | 5 | yes |
-| Carbide Katana | new | 3 | 1d12 | +1 | 4 | Agility | 40 | 7 | yes |
-| Folded Carbide Katana | new | 4 | 2d6+1 | +1 | 5 | Agility | 80 | 6 | yes |
-| Fullerite Katana | new | 5 | 2d8+1 | +1 | 6 | Agility | 160 | 9 | yes |
-| Vibro Katana | new | 5 | 2d8 | +0 | 0 | Agility | 300 | 6 | yes |
-| Crysteel Katana | new | 6 | 2d8+2 | +1 | 7 | Agility | 320 | 4 | yes |
-| Flawless Crysteel Katana | new | 7 | 2d10+1 | +1 | 8 | Agility | 640 | 4 | yes |
-| Zetachrome Katana | new | 8 | 2d12+1 | +1 | 9 | Agility | 1280 | 3 | yes |
+| Bronze Katana | new | 0 | 1d6 | +1 | 1 |  | 5 | 6 | yes |
+| Iron Katana | new | 1 | 1d8 | +1 | 2 |  | 10 | 5 | yes |
+| Steel Katana | new | 2 | 1d10 | +1 | 3 |  | 20 | 5 | yes |
+| Carbide Katana | new | 3 | 1d12 | +1 | 4 |  | 40 | 7 | yes |
+| Folded Carbide Katana | new | 4 | 2d6+1 | +1 | 5 |  | 80 | 6 | yes |
+| Fullerite Katana | new | 5 | 2d8+1 | +1 | 6 |  | 160 | 9 | yes |
+| Vibro Katana | new | 5 | 2d8 | +0 | 0 |  | 300 | 6 | yes |
+| Crysteel Katana | new | 6 | 2d8+2 | +1 | 7 |  | 320 | 4 | yes |
+| Flawless Crysteel Katana | new | 7 | 2d10+1 | +1 | 8 |  | 640 | 4 | yes |
+| Zetachrome Katana | new | 8 | 2d12+1 | +1 | 9 |  | 1280 | 3 | yes |
 
 #### Rapiers (Long Blades, one-handed, Agility) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Rapier | new | 0 | 1d3 | +0 | 1 | Agility | 5 | 3 |  |
-| Iron Rapier | new | 1 | 1d4 | +0 | 2 | Agility | 10 | 3 |  |
-| Steel Rapier | new | 2 | 1d6 | +0 | 3 | Agility | 20 | 3 |  |
-| Carbide Rapier | new | 3 | 1d8 | +0 | 4 | Agility | 40 | 4 |  |
-| Folded Carbide Rapier | new | 4 | 1d10 | +0 | 5 | Agility | 80 | 3 |  |
-| Fullerite Rapier | new | 5 | 1d12 | +0 | 6 | Agility | 160 | 4 |  |
-| Vibro Rapier | new | 5 | 1d10 | +0 | 0 | Agility | 300 | 3 |  |
-| Crysteel Rapier | new | 6 | 2d6+1 | +0 | 7 | Agility | 320 | 2 |  |
-| Flawless Crysteel Rapier | new | 7 | 2d8+1 | +0 | 8 | Agility | 640 | 2 |  |
-| Zetachrome Rapier | new | 8 | 2d8+2 | +0 | 9 | Agility | 1280 | 2 |  |
+| Bronze Rapier | new | 0 | 1d3 | +0 | 1 |  | 5 | 3 |  |
+| Iron Rapier | new | 1 | 1d4 | +0 | 2 |  | 10 | 3 |  |
+| Steel Rapier | new | 2 | 1d6 | +0 | 3 |  | 20 | 3 |  |
+| Carbide Rapier | new | 3 | 1d8 | +0 | 4 |  | 40 | 4 |  |
+| Folded Carbide Rapier | new | 4 | 1d10 | +0 | 5 |  | 80 | 3 |  |
+| Fullerite Rapier | new | 5 | 1d12 | +0 | 6 |  | 160 | 4 |  |
+| Vibro Rapier | new | 5 | 1d10 | +0 | 0 |  | 300 | 3 |  |
+| Crysteel Rapier | new | 6 | 2d6+1 | +0 | 7 |  | 320 | 2 |  |
+| Flawless Crysteel Rapier | new | 7 | 2d8+1 | +0 | 8 |  | 640 | 2 |  |
+| Zetachrome Rapier | new | 8 | 2d8+2 | +0 | 9 |  | 1280 | 2 |  |
 
 #### Wristblades / arm daggers (Short Blades) — **new family**
 
@@ -515,19 +535,19 @@ Conventions the mod follows:
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze War Hammer | new | 0 | 1d3 | +0 | 1 | Agility | 5 | 4 |  |
-| Bronze War Hammerth | new | 0 | 2d2 | +1 | 1 | Agility | 5 | 7 | yes |
-| Iron War Hammerth | new | 1 | 2d2+1 | +1 | 2 | Agility | 10 | 6 | yes |
-| Steel War Hammer | merge | 2 | 2d2 | +0 | 3 | Agility | 20 | 3 |  |
-| Steel War Hammerth | merge | 2 | 3d2 | +1 | 3 | Agility | 20 | 6 |  |
-| Crysteel War Hammer | new | 6 | 2d6+1 | +0 | 7 | Agility | 320 | 3 |  |
-| Flawless Crysteel War Hammer | new | 7 | 3d4+2 | +0 | 8 | Agility | 640 | 3 |  |
+| Bronze War Hammer | new | 0 | 1d3 | +0 | 1 |  | 5 | 4 |  |
+| Bronze War Hammerth | new | 0 | 2d2 | +1 | 1 |  | 5 | 7 | yes |
+| Iron War Hammerth | new | 1 | 2d2+1 | +1 | 2 |  | 10 | 6 | yes |
+| Steel War Hammer | merge | 2 | 2d2 | +0 | 3 |  | 20 | 3 |  |
+| Steel War Hammerth | merge | 2 | 3d2 | +1 | 3 |  | 20 | 6 |  |
+| Crysteel War Hammer | new | 6 | 2d6+1 | +0 | 7 |  | 320 | 3 |  |
+| Flawless Crysteel War Hammer | new | 7 | 3d4+2 | +0 | 8 |  | 640 | 3 |  |
 
 #### Greathammers (Cudgel, Agility)
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Fullerite Greathammer | new | 5 | 3d6 | +1 | 6 | Agility | 160 | 9 |  |
+| Fullerite Greathammer | new | 5 | 3d6 | +1 | 6 |  | 160 | 9 |  |
 
 #### Greatswords (Long Blades)
 
@@ -1701,7 +1721,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Mods.xml                    # makes Gigantic tinkerable
 ├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
 ├── Subtypes.xml                # 18 affinities in 2 categories
-├── Skills.xml                  # 6 tree edits
+├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
 ├── Options.xml                 # 11 options (§13)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
@@ -1710,7 +1730,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 71 new / 79 merged
+│   ├── MeleeWeapons.xml        # 71 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
@@ -1721,7 +1741,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 41 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 43 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, and the chip-slot mutator
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
@@ -1841,11 +1861,11 @@ not touch that field (the vanilla value is inherited).
 | Battle Axe6 | 6 | 1d8+2 |  | 7 |  | 320 | 3 |
 | Battle Axe7 | 7 | 1d9+2 |  | 8 |  | 640 | 3 |
 | Battle Axe8 | 8 | 1d10+3 |  | 9 |  | 1280 | 2 |
-| Iron Vinereaper | 1 | 1d3 |  | 2 | Agility | 10 | 2 |
-| Steel Vinereaper | 2 | 1d4 |  | 3 | Agility | 20 | 2 |
-| Battle Axe6th | 6 | 1d8+5 | 1 | 7 | Agility | 320 | 6 |
-| Battle Axe7th | 7 | 1d9+5 | 1 | 8 | Agility | 640 | 6 |
-| Battle Axe8th | 8 | 1d10+6 | 1 | 9 | Agility | 1280 | 5 |
+| Iron Vinereaper | 1 | 1d3 |  | 2 |  | 10 | 2 |
+| Steel Vinereaper | 2 | 1d4 |  | 3 |  | 20 | 2 |
+| Battle Axe6th | 6 | 1d8+5 | 1 | 7 |  | 320 | 6 |
+| Battle Axe7th | 7 | 1d9+5 | 1 | 8 |  | 640 | 6 |
+| Battle Axe8th | 8 | 1d10+6 | 1 | 9 |  | 1280 | 5 |
 | BaseLongBlade |  |  |  |  |  |  | 2 |
 | Long Sword | 0 | 1d3 |  | 1 |  | 5 | 4 |
 | Two-Handed Sword | 0 | 1d6 | 1 | 1 |  | 5 | 6 |
@@ -1866,9 +1886,7 @@ not touch that field (the vanilla value is inherited).
 | Long Sword8 | 8 | 2d8+2 |  | 9 |  | 1280 | 2 |
 | Long Sword8th | 8 | 2d12+1 | 1 | 9 |  | 1280 | 4 |
 | Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 4 |
-| BaseDagger |  |  |  |  | Agility |  | 1 |
-| BaseRelicDagger1 |  |  |  |  | Agility |  |  |
-| BaseRelicDagger2 |  |  |  |  | Agility |  |  |
+| BaseDagger |  |  |  |  |  |  | 1 |
 | Dagger | 0 | 1d2 |  | 1 |  | 5 | 1 |
 | Dagger2 | 1 | 1d3 |  | 2 |  | 10 | 1 |
 | Desert Kris | 1 | 1d3 |  | 2 |  | 10 | 1 |
@@ -1894,18 +1912,18 @@ not touch that field (the vanilla value is inherited).
 | Cudgel6 | 6 | 2d6+1 |  | 7 |  | 320 | 3 |
 | Cudgel7 | 7 | 3d4+2 |  | 8 |  | 640 | 3 |
 | Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 480 | 10 |
-| Warhammer2 | 1 | 1d4 |  | 2 | Agility | 10 | 3 |
-| Steel War Hammer | 2 | 2d2 |  | 3 | Agility | 20 | 3 |
-| Steel War Hammerth | 2 | 3d2 | 1 | 3 | Agility | 20 | 6 |
-| Cudgel3 | 3 | 2d4 |  | 4 | Agility | 40 | 5 |
-| Cudgel3th | 3 | 3d4 | 1 | 4 | Agility | 40 | 8 |
-| Cudgel4 | 4 | 2d4+1 |  | 5 | Agility | 80 | 4 |
-| Cudgel4th | 4 | 3d4+1 | 1 | 5 | Agility | 80 | 7 |
-| Cudgel5 | 5 | 2d6 |  | 6 | Agility | 160 | 6 |
-| Cudgel6th | 6 | 3d6+1 | 1 | 11 | Agility | 320 | 6 |
-| Cudgel7th | 7 | 5d4+2 | 1 | 8 | Agility | 640 | 6 |
-| Cudgel8 | 8 | 3d6+2 |  | 9 | Agility | 1200 | 3 |
-| Cudgel8th | 8 | 5d6+2 | 1 | 9 | Agility | 1200 | 6 |
+| Warhammer2 | 1 | 1d4 |  | 2 |  | 10 | 3 |
+| Steel War Hammer | 2 | 2d2 |  | 3 |  | 20 | 3 |
+| Steel War Hammerth | 2 | 3d2 | 1 | 3 |  | 20 | 6 |
+| Cudgel3 | 3 | 2d4 |  | 4 |  | 40 | 5 |
+| Cudgel3th | 3 | 3d4 | 1 | 4 |  | 40 | 8 |
+| Cudgel4 | 4 | 2d4+1 |  | 5 |  | 80 | 4 |
+| Cudgel4th | 4 | 3d4+1 | 1 | 5 |  | 80 | 7 |
+| Cudgel5 | 5 | 2d6 |  | 6 |  | 160 | 6 |
+| Cudgel6th | 6 | 3d6+1 | 1 | 11 |  | 320 | 6 |
+| Cudgel7th | 7 | 5d4+2 | 1 | 8 |  | 640 | 6 |
+| Cudgel8 | 8 | 3d6+2 |  | 9 |  | 1200 | 3 |
+| Cudgel8th | 8 | 5d6+2 | 1 | 9 |  | 1200 | 6 |
 
 ---
 

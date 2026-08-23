@@ -16,6 +16,40 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Finesse** — a purchased power that lets an Agility character get damage out of a blade (#321).
+
+  **Before:** 61 melee blueprints declared `Stat="Agility"`, so rapiers, katanas, daggers,
+  vinereapers, halberds and war hammers rolled penetration against Agility with nothing bought and
+  nothing given up. **After:** every one of them rolls against Strength, as all 402 of vanilla's own
+  `MeleeWeapon` declarations do, and the crossover is a power you buy.
+
+  `MeleeWeapon.Stat` is not a damage stat — it names the stat penetration rolls against, and the
+  damage die is rolled **once per penetration**, so it multiplies a weapon's whole output. Agility
+  already supplies melee to-hit on every weapon with no exemption, and DV. Scaling penetration off it
+  too made one attribute do three of melee's four jobs — and Agility is the gun stat, so a rifle
+  build was getting better stat-scaling in melee than in its own specialty, having paid nothing.
+
+  **What you buy.** `Finesse`, 250 skill points at Agility 19, sold once each by **Short Blade** and
+  **Long Blade**. It rolls penetration against your Agility modifier whenever that beats your
+  Strength modifier. **Tagged weapons:** daggers, knives and wristblades on the short blade side;
+  rapiers and katanas on the long. Axe and Cudgel stay Strength-only, which reverses the two most
+  genre-inverted assignments in the mod — the halberd and the war hammer.
+
+  **What it costs you.** 250 sits level with Rejoinder and Shank and below En Garde!'s 300. For
+  comparison, vanilla's `Penetrating Strikes` handles the same event for 200 and grants a whole extra
+  penetration — stronger than Finesse at every armour value — but it switches off your entire
+  offhand. Finesse has no loadout cost, and it refunds the 8 attribute points that reaching a +4
+  Strength modifier would take, into a stat that also buys DV and to-hit.
+
+  Two implementation notes worth keeping. One class per tree, never a shared one — `PowersByClass`
+  keeps only the first entry for a given `Class`, which is how #11 broke Akimbo. And the `Finesse`
+  tag on `BaseDagger` inherits to **54 melee blueprints**, 24 of them vanilla daggers and knives;
+  that reach is deliberate — 5e gives the dagger `finesse` too — but it is one line changing a lot of
+  vanilla, and worth seeing as such.
+
+  `docs/STYLEGUIDE.md` §3.2 carries the rule, and `docs/DESIGN_balance.md` §3 the reasoning,
+  including the D&D 5e and Pathfinder comparison.
+
 - **(internal)** `docs/STYLEGUIDE.md` §3.2 gains the four conventions the balance sweep settled but
   had not written down. This is #340 split in half: these four were *decided* by questions one and
   three and cost a paragraph each, while the AV, weight, damage and table-share curves have to be

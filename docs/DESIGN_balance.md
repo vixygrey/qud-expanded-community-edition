@@ -384,18 +384,43 @@ wristblade no longer has to carry the Agility short blade role alone — which f
 [#324](https://github.com/vixygrey/qud-expanded-community-edition/issues/324) to widen the
 wristblade's damage deficit rather than close it.
 
-**Proposed pricing**, against what those trees already charge (0 / 100 / 150 / 200 / 250 / 300, with
-minimums at 17 / 21 / 23 / 25 / 27 / 29):
+**Settled pricing: `Cost="250" Minimum="19"`.** An earlier draft proposed 21 against a generic
+ladder; the trees' actual costs are Short Blade 0 / 100 / 150 / 250 and Long Blade 0 / 100 / 200 /
+300, with minimums 17 / 21 / 23 / 25 / 27 / 29.
 
 ```xml
-<power Name="Finesse" Cost="250" Attribute="Agility" Minimum="21"
+<power Name="Finesse" Cost="250" Attribute="Agility" Minimum="19"
        Class="Vixy_ShortBladesFinesse" ... />
 ```
 
-250 puts it level with Rejoinder and Shank and below En Garde!'s 300, which is right for something
-that changes a character's stat allocation rather than adding an effect. Agility 21 rather than 17
-because at 17 the modifier is 0 and the power would do nothing — the gate should sit where the
-purchase is real. **The number is the one dial still open**; the design does not depend on it.
+**250** sits level with Rejoinder and Shank, below En Garde!'s 300, and above the closest mechanical
+analogue in the game. `SingleWeaponFighting_PenetratingStrikes` handles the same event, costs **200
+at Minimum 23**, and grants `E.Penetrations++` — a guaranteed extra damage roll, which is *stronger*
+than Finesse at every AV. It charges for it, though: while toggled, `GetMeleeAttackChanceEvent` sets
+`E.Multiplier = 0.0` on every non-primary attack, so it costs the whole offhand. Finesse has no
+loadout cost, and its real value is not the damage anyway — reaching StrMod 4 from base 16 takes
+**8 attribute points**, more than the 6 discretionary points a whole run awards, out of a chargen
+pool of 34–44. Finesse refunds those into Agility, which also buys DV and to-hit. Less damage than
+Penetrating Strikes, more total value, so it prices above it and below a capstone.
+
+**19, not 21.** The gate should sit where the *decision* is still live: at Agility 21 a character has
+already committed, so a higher minimum makes the power arrive after the choice it exists to license.
+19 is the first odd score — vanilla's convention, since `StatMod` only moves on even scores — where
+the modifier is non-zero. The gate is nearly decorative regardless, because `if (agi > E.StatBonus)`
+self-limits: a Strength build that happens to reach Agility 19 gains exactly nothing.
+
+Expected penetrations by bonus, from `Stat.RollDamagePenetrations` (three dice per wave, at most one
+penetration per wave, `Bonus` decaying by 2):
+
+| bonus | AV 4 | AV 8 | AV 12 |
+|---:|---:|---:|---:|
+| 0 | 0.815 | 0.221 | 0.115 |
+| 3 | 1.302 | 0.664 | 0.196 |
+| 4 | 1.561 | 0.815 | 0.221 |
+| 6 | 2.561 | 1.112 | 0.490 |
+
+A realistic finesse build runs +3 to +6, since `AddAttributeBonus` lifts Strength and Agility alike
+and only discretionary points widen the gap.
 
 **The C#** is a nine-line variation on a class Freehold already ships,
 `SingleWeaponFighting_PenetratingStrikes` — a `BaseSkill` on the attacker that handles
