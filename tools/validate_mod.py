@@ -141,6 +141,91 @@ def material_tier_of(name: str) -> int | None:
     return next((t for t, mat in TIER_MATERIALS if mat in low), None)
 
 
+# AV ceiling per slot, from docs/STYLEGUIDE.md 3.2.1. Vanilla's best ORDINARY item in each slot -
+# named artefacts break vanilla's own ceiling on purpose and are not a benchmark this fork may
+# match. Shields carry AV on a `Shield` part rather than an `Armor` one, which is why they need
+# their own entry: a survey filtered on `Armor` misses all fourteen of vanilla's.
+AV_CEILING = {
+    "Body": 8,
+    "Head": 4,
+    "Hands": 4,
+    "Feet": 4,
+    "Back": 2,
+    "Arm": 1,
+    "Face": 2,
+    "Floating Nearby": 1,
+}
+AV_CEILING_SHIELD = 7
+
+# Highest MEAN damage vanilla ships per family, tier and handedness, from docs/STYLEGUIDE.md
+# 3.2.1. Keyed (skill, two_handed) -> tier -> mean. A tier absent from a family's row is one
+# vanilla does not ship, and is not checked: there is no ceiling to be under.
+DAMAGE_CEILING = {
+    ("ShortBlades", False): {
+        0: 1.5,
+        1: 2.0,
+        2: 3.5,
+        3: 4.5,
+        4: 4.5,
+        5: 5.5,
+        6: 6.5,
+        7: 7.5,
+        8: 8.5,
+    },
+    ("LongBlades", False): {
+        0: 2.0,
+        1: 2.5,
+        2: 3.5,
+        3: 4.5,
+        4: 5.5,
+        5: 6.5,
+        6: 7.0,
+        7: 8.0,
+        8: 9.0,
+    },
+    ("LongBlades", True): {
+        0: 3.5,
+        1: 4.5,
+        2: 5.5,
+        3: 6.5,
+        4: 7.0,
+        5: 8.0,
+        6: 9.0,
+        7: 11.0,
+        8: 13.0,
+    },
+    ("Axe", False): {
+        0: 1.5,
+        1: 2.0,
+        2: 3.0,
+        3: 3.5,
+        4: 4.5,
+        5: 5.5,
+        6: 6.5,
+        7: 7.5,
+        8: 8.5,
+    },
+    ("Axe", True): {2: 4.5, 3: 5.5, 4: 6.5, 5: 7.5, 6: 8.5, 7: 9.5, 8: 10.5},
+    ("Cudgel", False): {
+        0: 2.0,
+        1: 2.0,
+        2: 3.0,
+        3: 4.0,
+        4: 5.0,
+        5: 6.0,
+        6: 7.0,
+        7: 7.5,
+        8: 8.5,
+    },
+    ("Cudgel", True): {2: 5.0, 3: 6.0, 4: 7.0, 5: 9.0, 6: 8.5, 7: 10.5, 8: 14.0},
+}
+
+# The blueprints a Finesse tag reaches that roll penetration against Strength must say so in a
+# RulesDescription, and one that rolls against anything else must not - the tag is inert there.
+FINESSE_TAG = "Finesse"
+FINESSE_TEXT = "Finesse:"
+
+
 # Objects the curves genuinely do not describe. Each needs a reason, not just a name.
 CURVE_EXEMPT = {
     # Vibro weapons are tier 5 at value 300 by their own convention, whatever the material.
@@ -859,6 +944,152 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 )
 
 
+def check_stat_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """`MeleeWeapon.Stat` is Strength on a new weapon, and a merge never states it at all.
+
+    docs/STYLEGUIDE.md 3.2.1. `Stat=` names the stat penetration rolls against, and the damage
+    die is rolled once per penetration, so it multiplies a weapon's whole output rather than
+    adding to it. Vanilla declares `MeleeWeapon` 402 times: 191 Strength, 208 unset, 3 Ego, and
+    Agility never. This fork had 61 on Agility before #321.
+
+    The two halves are different rules. A new weapon may state Strength or leave it unset - the
+    `MeleeWeapon.Stat` field is initialised to "Strength", and vanilla itself omits the attribute on
+    208 of its 402 declarations, so requiring it would report 28 correct weapons. What is refused is
+    any other value, which is the whole defect class: all 61 of #321's swaps were explicit.
+
+    A merge states nothing at all, which is stricter, and deliberately. CI has no game, so the check
+    cannot tell a merge that restates vanilla's value from one that changes it - and the second is
+    the defect. Refusing the attribute outright is a line the check can actually hold, and it costs
+    nothing, because a merge restating vanilla's own value changes nothing by definition. It also
+    protects the three vanilla weapons that roll against Ego, which a flat "always Strength" rule
+    would have quietly rewritten.
+
+    Parses rather than greps, deliberately. mod/ObjectBlueprints/MeleeWeapons.xml carries a
+    commented-out block holding two vibro war hammers that still declare Stat="Agility"; they are
+    inert, and a line-based check would report two violations nobody can fix without touching code
+    marked for rework. ElementTree does not see inside a comment.
+    """
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if not name:
+                continue
+            for part in obj.findall("part"):
+                if part.get("Name") != "MeleeWeapon":
+                    continue
+                stat = part.get("Stat")
+                if obj.get("Load") == "Merge":
+                    if stat is not None:
+                        f.add(
+                            "stat-discipline",
+                            f"{path}: {name} is a merge and states Stat={stat!r} - a merge never "
+                            f"changes what vanilla decided the weapon rolls against",
+                        )
+                elif (
+                    name.startswith(MOD_PREFIXES)
+                    and stat is not None
+                    and stat != "Strength"
+                ):
+                    f.add(
+                        "stat-discipline",
+                        f"{path}: {name} states Stat={stat!r}; a new weapon rolls penetration "
+                        f"against Strength, and a Finesse tag is how one rewards Agility",
+                    )
+
+
+def check_armor_curve(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """No item may exceed vanilla's best ordinary item in its slot.
+
+    docs/STYLEGUIDE.md 3.2.1. There is no AV *curve* to check against - vanilla's tier-4 body
+    armour runs AV 0 to 5, so per-item values overlap far too heavily for a per-tier rule to
+    exist. What vanilla has is a ceiling per slot, and that is what the findings turn on: #318
+    and #319 are both ceiling violations.
+
+    Merges are checked as well as new objects, because raising a vanilla piece's AV is how most of
+    the drift happened - Crysteel Shardmail 6 -> 8, Zetachrome Lune 8 -> 10, and the whole
+    Zetachrome Apex/Gloves/Pumps set 4 -> 6. A merge that states an AV is asserting that number
+    whatever vanilla said.
+
+    Shields are looked up separately because they carry AV on a `Shield` part rather than an
+    `Armor` one - the omission that shipped the first version of 3.2.1 without a Shield column.
+    """
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if not name or is_base_object(obj):
+                continue
+            for part in obj.findall("part"):
+                kind = part.get("Name")
+                if kind not in ("Armor", "Shield"):
+                    continue
+                raw = part.get("AV")
+                if raw is None:
+                    continue
+                try:
+                    av = int(float(raw))
+                except ValueError:
+                    continue
+
+                if kind == "Shield":
+                    slot, ceiling = "Shield", AV_CEILING_SHIELD
+                else:
+                    slot = part.get("WornOn")
+                    if slot not in AV_CEILING:
+                        continue  # a slot vanilla states no ceiling for
+                    ceiling = AV_CEILING[slot]
+
+                if av > ceiling:
+                    f.add(
+                        "armor-curve",
+                        f"{path}: {name} grants AV {av} in the {slot} slot, over vanilla's best "
+                        f"ordinary item at {ceiling}",
+                    )
+
+
+def check_finesse_visible(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A weapon tagged Finesse must say so, and a weapon that says so must be tagged.
+
+    The Finesse tag has no player-facing surface of its own: nothing in the item screen mentions
+    it, so a weapon carrying the tag and a weapon where the feature is silently broken look
+    identical. That is not hypothetical - it is how #366 was found, after a play session where the
+    only symptom was a dagger description that said nothing.
+
+    Checked in both directions, because each catches a different mistake. A tag with no text is a
+    feature the player cannot discover; text with no tag is a promise the game does not keep.
+
+    Scope is what CI can actually resolve: blueprints that *declare* the tag in this mod's own
+    files. The daggers reached through `BaseDagger`'s tag are vanilla blueprints whose inheritance
+    needs the game, so they are covered transitively - `BaseDagger` carries both the tag and the
+    text, and this check holds that pairing.
+    """
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if not name:
+                continue
+            tag = next(
+                (e for e in obj.findall("tag") if e.get("Name") == FINESSE_TAG), None
+            )
+            tagged = tag is not None and tag.get("Value") != "*delete"
+            described = any(
+                e.get("Name") == "RulesDescription"
+                and FINESSE_TEXT in (e.get("Text") or "")
+                for e in obj.findall("part")
+            )
+            if tagged and not described:
+                f.add(
+                    "finesse-visible",
+                    f"{path}: {name} carries the Finesse tag but no RulesDescription saying so - "
+                    f"a silent feature and a broken one look the same from the item screen",
+                )
+            elif described and not tagged:
+                f.add(
+                    "finesse-visible",
+                    f"{path}: {name} describes itself as a finesse weapon but carries no Finesse "
+                    f"tag, so the power will never apply to it",
+                )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -1145,6 +1376,9 @@ def run() -> Findings:
     check_scripting_policy(f)
     check_subtype_tiles(f, roots)
     check_item_curves(f, roots)
+    check_stat_discipline(f, roots)
+    check_armor_curve(f, roots)
+    check_finesse_visible(f, roots)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
