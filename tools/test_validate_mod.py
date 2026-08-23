@@ -815,3 +815,75 @@ class SnapshotBackedChecks(unittest.TestCase):
             snapshot={"table_weights": {"Armor 4C": 100}},
         )
         self.assertEqual(findings_for(validate_mod.check_table_share, tmp), [])
+
+
+class CurveExemptions(unittest.TestCase):
+    """The categories the value curve does not describe, and the ones it does.
+
+    Each exemption is a hole in `item-curve`, so each needs a control proving the hole is the
+    shape it claims: the exempt category stays quiet, and an ordinary item in the same tier still
+    fires. Without the second half an exemption that matched everything would look like a pass.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _curve(self, body: str) -> list[tuple[str, str]]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, body)
+        return findings_for(validate_mod.check_item_curves, tmp)
+
+    def _obj(self, extra: str, value: int = 7, tier: int = 3) -> str:
+        return (
+            '  <object Name="Vixy_Thing">\n'
+            f'    <part Name="Commerce" Value="{value}" />\n'
+            f"{extra}"
+            f'    <tag Name="Tier" Value="{tier}" />\n'
+            "  </object>"
+        )
+
+    def test_an_ordinary_item_off_the_curve_still_fires(self) -> None:
+        """The control every case below is measured against."""
+        self.assertTrue(
+            self._curve(self._obj("")), "a mispriced ordinary item was not reported"
+        )
+
+    def test_ranged_weapons_are_exempt(self) -> None:
+        """0 of 5 in this mod have ever been on the curve, and 0 of vanilla's 64."""
+        self.assertEqual(
+            self._curve(self._obj('    <part Name="MissileWeapon" />\n')), []
+        )
+
+    def test_energy_cells_are_exempt(self) -> None:
+        self.assertEqual(self._curve(self._obj('    <part Name="EnergyCell" />\n')), [])
+
+    def test_containers_are_exempt(self) -> None:
+        self.assertEqual(self._curve(self._obj('    <part Name="Backpack" />\n')), [])
+
+    def test_trinkets_are_exempt(self) -> None:
+        self.assertEqual(
+            self._curve(
+                '  <object Name="Vixy_Thing">\n'
+                '    <part Name="Commerce" Value="7" />\n'
+                '    <tag Name="Trinket" />\n'
+                '    <tag Name="Tier" Value="3" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_armour_granting_no_av_is_exempt(self) -> None:
+        """A slot occupier rather than armour — the curve prices protection."""
+        self.assertEqual(
+            self._curve(self._obj('    <part Name="Armor" AV="0" WornOn="Face" />\n')),
+            [],
+        )
+
+    def test_armour_that_does_grant_av_is_not_exempt(self) -> None:
+        """The other half. Without this the AV rule could exempt every armour piece and pass."""
+        self.assertTrue(
+            self._curve(self._obj('    <part Name="Armor" AV="2" WornOn="Face" />\n')),
+            "real armour was swept up by the no-AV exemption",
+        )

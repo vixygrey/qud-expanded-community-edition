@@ -231,6 +231,46 @@ FINESSE_TAG = "Finesse"
 FINESSE_TEXT = "Finesse:"
 
 
+def curve_exempt(obj: ET.Element, name: str) -> str | None:
+    """Why the value curve does not describe this object, or None when it does.
+
+    The curve is **this fork's** convention rather than vanilla's - `item-curve` prices only
+    Raven_ and Vixy_ objects because "vanilla sets its own values". So the test for an exemption is
+    not whether vanilla follows the curve; it is whether this mod ever has, in that category.
+
+    Measured across every priced object this fork ships: melee weapons 63 of 73 on the curve and
+    armour 50 of 62, against **0 of 5** ranged weapons, **0 of 4** energy cells and 0 of 1 trinket.
+    A category the convention has never once described is not 22 defects; it is a category the
+    convention does not cover. #373.
+
+    Checked by part composition rather than by a word in the name, because a name match is the
+    failure #354 removed from tier detection and there is no reason to reintroduce it here.
+    """
+    low = name.lower()
+    for word, why in CURVE_EXEMPT.items():
+        if word in low:
+            return why
+
+    parts = {e.get("Name") for e in obj.findall("part")}
+    if "MissileWeapon" in parts:
+        # Vanilla agrees, for whatever that is worth: none of its 64 missile weapons sits on the
+        # curve either, at a median of 2.5x and a range of 0 to 25.
+        return "ranged weapons have never followed the curve, in this mod or in vanilla"
+    if "EnergyCell" in parts:
+        return "cells are priced by charge, not by tier"
+    if "Backpack" in parts:
+        return "containers are priced by what they carry"
+    if any(e.get("Name") == "Trinket" for e in obj.findall("tag")):
+        return "a trinket is priced against its vanilla sibling, not the curve"
+
+    armor = next((e for e in obj.findall("part") if e.get("Name") == "Armor"), None)
+    if armor is not None and not (armor.get("AV") or "").strip("0 "):
+        # An Armor part granting no AV is a slot occupier - a utility artifact wearing an armour
+        # slot - and the curve prices protection.
+        return "grants no AV, so it is a slot occupier rather than armour"
+    return None
+
+
 # Objects the curves genuinely do not describe. Each needs a reason, not just a name.
 CURVE_EXEMPT = {
     # Vibro weapons are tier 5 at value 300 by their own convention, whatever the material.
@@ -239,6 +279,11 @@ CURVE_EXEMPT = {
     # the material table either - CarbideFist 3, FulleriteFist 4, CrysteelFist 7 - so they
     # track the implant rather than the metal.
     "fist": "cybernetic fists track the implant, not the material curve",
+    # Deliberate round numbers rather than drift, kept as chosen (#373). The nanoweave set is 300
+    # against a curve of 320 and the mutating mask 1000 against 1280 - close enough that flattening
+    # them would be satisfying a rule at the cost of a number somebody picked.
+    "nanoweave": "300 is a chosen round number, not drift from 320",
+    "mutating mask": "1000 is a chosen round number, not drift from 1280",
 }
 
 # Mura's original Workshop item. This fork publishes SEPARATELY and must never target it —
@@ -899,10 +944,7 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             low = name.lower()
             if not name:
                 continue
-            exempt = next(
-                (why for word, why in CURVE_EXEMPT.items() if word in low), None
-            )
-            if exempt:
+            if curve_exempt(obj, name):
                 continue
             tier = tier_of(obj, name)
             if tier is None:

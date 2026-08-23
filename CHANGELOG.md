@@ -16,6 +16,38 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **The value curve now says which categories it describes** (#373), and the validator baseline is
+  **empty for the first time** — from 191 findings this morning to **zero**.
+
+  #373 read as 22 mispriced items. Sixteen of them are not mispriced; they are categories the curve
+  has never covered. The test that settles it is not whether *vanilla* follows the curve — vanilla is
+  nowhere near one — but whether **this fork** ever has, since the curve is its own convention and
+  `item-curve` prices only its own objects. Measured across everything priced:
+
+  | category | on the curve |
+  | -------------- | -----------: |
+  | melee weapons | 63 of 73 |
+  | armour | 50 of 62 |
+  | **ranged weapons** | **0 of 5** |
+  | **energy cells** | **0 of 4** |
+  | **trinkets** | **0 of 1** |
+
+  A rule nothing has ever followed is not a rule being broken. Ranged weapons, energy cells,
+  containers and trinkets are now exempt with reasons — and vanilla agrees on the first: **none of
+  its 64 missile weapons** sits on the curve, at a median of 2.5× and a range of 0 to 25.
+
+  Two more exemptions came out of reading the items rather than their names. **An `Armor` part
+  granting no AV is a slot occupier**, not armour — that is `Raven_Bio Scanner Mask` and
+  `Raven_Reinforced Suspension`, both AV 0, one a face-slot scanner and the other a tread container.
+  And the **nanoweave set at 300 against 320, with the mutating mask at 1000 against 1280**, are kept
+  as chosen round numbers rather than flattened to satisfy a rule.
+
+  **Exemptions are matched on part composition, not on a word in the blueprint name** — a name match
+  is exactly the failure #354 removed from tier detection, and there was no reason to reintroduce it.
+
+  Six items were genuinely mispriced and are repriced: the four `Flexi` pieces onto the curve at 160,
+  after the rest of the category was accounted for.
+
 - **This fork's share of a vanilla loot table now stops at half** (#325). Ninety-four drop weights
   across nine tables.
 
