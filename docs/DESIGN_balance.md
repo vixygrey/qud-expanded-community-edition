@@ -1,6 +1,6 @@
 # Balance — design doc
 
-**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315); four questions open, one partly settled here.
+**Status:** audit complete. 20 findings filed under [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315). Question one is settled (§3.9); three remain open.
 **Target:** Caves of Qud 2.0.211.x, Steam build 20250808.
 **Premise:** nothing in this mod should be blatantly stronger than what vanilla prices the same effect at.
 
@@ -187,7 +187,7 @@ one point of Intelligence is 4 skill points per level, and −6 Intelligence is 
 
 ## 3. Question one — where should Agility scaling sit?
 
-**Partly settled. The rule is agreed in shape; three things are still open, at the end of §3.9.**
+**Settled. The outcome is in §3.9; §3.1–§3.8 are the reasoning that got there.**
 Tracked in [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321).
 
 ### 3.1 Provenance — the swaps are undocumented
@@ -344,25 +344,110 @@ line is the halberd, war hammer and greathammer — three of the most archetypal
 existence — while its greataxe and mace lines are Strength. The rapier and wristblade are correct.
 It is inverted precisely where genre convention is strongest.
 
-**My recommendation is C + D.** Together they answer the gun objection and keep Mura's actual
-documented intent — more skill access for Agility builds — as the thing the mod is *for*. **A** is
-the safe fallback if the C# is unwanted.
+**C + D was the recommendation, and it is what was chosen** — see §3.9. Together they answer the
+gun objection and keep Mura's actual documented intent, more skill access for Agility builds, as the
+thing the mod is *for*.
 
-### 3.9 Left to decide
+### 3.9 Settled — finesse is a purchased power
 
-1. **The rule.** Recommended: match long blades everywhere. A vanilla blueprint keeps Strength; the
-   mod's parallel family is the Agility path. One stated exception — a vanilla blueprint may sit on
-   the Agility side when it is a low-tier member of a family this mod *completes* as the Agility
-   line (`Iron`/`Steel Vinereaper`, `Warhammer2`, `Steel War Hammer`, `Steel War Hammerth`), because
-   vanilla ships those families only partially.
-2. **Whether the crossover costs a build resource** — design C, and the only thing that answers §3.6.
-3. **Short blades**, given §3.7 argues the wristblade should fall further behind rather than catch up.
+**Design C, with the Finesse power sold by Short Blades and Long Blades only, and the dagger line
+finesse-eligible.**
 
-**Keep regardless:** the `Skills.xml` regating of 12 Axe and Cudgel powers to `Strength|Agility`. It
-is required for the theme to function at all — without it an Agility halberd user cannot take
-Cleave — and it is the only part Mura documented.
+Three things follow, and the first is the one that makes the rest simple: **C subsumes B.** If the
+crossover is bought, every blueprint goes back to `Stat="Strength"` and the question stops being
+"which weapons scale off Agility" — it becomes "which weapons *may*, and what does the licence
+cost". An earlier draft of this section listed the rule and the build cost as separable decisions.
+They are not, and B on its own does not answer §3.6: under B a rifle build simply picks up a
+`Raven_` weapon and gets the scaling free.
 
----
+**The shape.**
+
+| Layer | Mechanism | Borrowed from |
+|---|---|---|
+| Which weapons qualify | `<tag Name="Finesse" />` on the blueprint | 5e's closed property list |
+| Whether *you* may use it | a purchased power, one per eligible tree | PF1e's Weapon Finesse feat |
+| What it does | raises `StatBonus` to `StatMod("Agility")` when higher | PF2e's split, priced |
+
+Every melee blueprint reverts to `Stat="Strength"` — all 61 declarations, the 20 vanilla merges and
+the 41 new ones alike. Nothing scales off Agility by default any more.
+
+**Which trees sell it: Short Blades and Long Blades.** That is where genre convention is
+unambiguous — 5e's finesse list is entirely daggers, rapiers, scimitars and shortswords — and it is
+also what the trees themselves already say. Every power in vanilla's Short Blade tree is
+`Attribute="Agility"`, and the Long Blade tree is deliberately mixed (Lunge on Agility, Swipe on
+Strength, Dueling Stance on Intelligence). Axe and Cudgel stay Strength-only, which **reverses the
+two most genre-inverted assignments in the mod**: the halberd and the war hammer.
+
+**Tagged weapons:** the dagger line, the wristblade line, the rapier line, the katana line.
+Daggers are the most genre-canonical finesse weapon in any system, and tagging them means the
+wristblade no longer has to carry the Agility short blade role alone — which frees
+[#324](https://github.com/vixygrey/qud-expanded-community-edition/issues/324) to widen the
+wristblade's damage deficit rather than close it.
+
+**Proposed pricing**, against what those trees already charge (0 / 100 / 150 / 200 / 250 / 300, with
+minimums at 17 / 21 / 23 / 25 / 27 / 29):
+
+```xml
+<power Name="Finesse" Cost="250" Attribute="Agility" Minimum="21"
+       Class="Vixy_ShortBladesFinesse" ... />
+```
+
+250 puts it level with Rejoinder and Shank and below En Garde!'s 300, which is right for something
+that changes a character's stat allocation rather than adding an effect. Agility 21 rather than 17
+because at 17 the modifier is 0 and the power would do nothing — the gate should sit where the
+purchase is real. **The number is the one dial still open**; the design does not depend on it.
+
+**The C#** is a nine-line variation on a class Freehold already ships,
+`SingleWeaponFighting_PenetratingStrikes` — a `BaseSkill` on the attacker that handles
+`GetAttackerMeleePenetrationEvent` and mutates it. No instance fields, so `serializable-shape`
+passes; no reflection, no Harmony, public members only.
+
+```csharp
+public override bool HandleEvent(GetAttackerMeleePenetrationEvent E)
+{
+    if (E.Weapon != null && E.Weapon.HasTag("Finesse")
+        && E.Weapon.GetWeaponSkill() == "LongBlades")
+    {
+        int agi = E.Attacker.StatMod("Agility");
+        if (agi > E.StatBonus) E.StatBonus = agi;
+    }
+    return base.HandleEvent(E);
+}
+```
+
+**One tiny class per tree, never one shared class.** `SkillFactory.PowersByClass` keeps only the
+first entry for any `Class`, which is exactly how #11 broke Akimbo — the mod reused
+`Class="Pistol_Akimbo"` across two trees and vanilla's entry was served in place of the mod's.
+
+**Adding a power to a vanilla tree is additive and verified**, not inferred:
+`SkillFactory.HandlePowerNode` looks the name up in the existing skill's `Powers` and calls
+`NewSkill.Add(value)` when it is absent, so an unknown power name appends rather than replacing
+anything.
+
+### 3.10 Two consequences to carry forward
+
+**The Axe and Cudgel Agility families lose their reason to exist.** With finesse confined to blades,
+the vinereaper, halberd, war hammer and greathammer lines become near-duplicates of the battle axe,
+greataxe, mace and maceth lines. Across all 33 pairs, **damage, penetration bonus and cap are already
+identical** — 9 pairs match on every field, and the other 24 differ only by one pound of weight (plus
+the two `Cudgel8`/`Cudgel8th` entries that sit at 1200 against the curve's 1280).
+
+That one pound is consistent, and it used to be the *second* signal rather than the only one: the
+Agility twin is a pound lighter in Axe 1H, Cudgel 1H and Cudgel 2H, and a pound heavier in Axe 2H.
+
+Vanilla does ship flavour duplicates — `Steel Dagger`, `Steel Kukri`, `Steel Utility Knife`,
+`Steel Butcher Knife` and `Steel Potter's Knife` are all `1d4` / cap 3 / 1 lb / 20 water. So this is
+idiomatic rather than wrong. But vanilla's are five names for one weapon, not two parallel nine-tier
+families with a systematic offset that used to mean something, and that difference deserves a
+decision rather than a shrug.
+
+**The Axe and Cudgel skill regating becomes vestigial.** Twelve powers were regated to
+`Strength|Agility`, and it is the one change Mura documented. With Axe and Cudgel weapons
+Strength-only, an Agility character can now take Cleave and Dismember and has nothing to swing them
+with. The relaxation is inert rather than harmful, and it is documented intent — but charter rule 2
+does not like inert, so it wants a sentence either way.
+
+Both are tracked in [#342](https://github.com/vixygrey/qud-expanded-community-edition/issues/342).
 
 ## 4. Question two — are the weight cuts a feature or a defect?
 
