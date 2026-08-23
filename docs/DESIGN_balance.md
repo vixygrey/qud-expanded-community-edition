@@ -549,7 +549,7 @@ the final magnitudes turn out to be. Those seven are fixable now:
 what the budget should *be* is still undecided.**
 Tracked in [#338](https://github.com/vixygrey/qud-expanded-community-edition/issues/338).
 
-### 5.1 The stated rationale holds for 7 of 23
+### 5.1 The stated rationale is correct, and calibrated to Ego 24
 
 `docs/2.2-changelog.txt` justifies the 3/6/10 physical ladder as compensation:
 
@@ -557,21 +557,59 @@ Tracked in [#338](https://github.com/vixygrey/qud-expanded-community-edition/iss
 > not scale at all. To compensate for this, psionic chips that give physical mutations now give
 > 3/6/10 levels
 
-Reading every one of the 36 classes for `Stat(...)`, `StatMod(...)` and `BaseStat(...)` references:
+**This is true, and the compensation is calibrated rather than approximate.**
 
-| category | scales off any stat | no stat scaling |
-|---|---:|---:|
-| mental — ladder 2/4/6 | 7 | **16** |
-| physical — ladder 3/6/10 | 1 | 12 |
+> ⚠️ An earlier version of this section said the rationale held for only 7 of 23 mental mutations.
+> That was wrong. I searched for `Stat("Ego")` inside each mutation *class* and found seven. The
+> scaling is not there — it is in the shared base class, applied per *category*. This is exactly the
+> trap `docs/LESSONS.md` records as *"Search where the effect is applied, not where the part is
+> used"*, and I walked into it.
 
-Sixteen mental mutations have **no stat scaling at all** — Cryokinesis, Disintegration, ForceBubble,
-ForceWall, Kindle, LifeDrain, Precognition, Psychometry, Pyrokinesis, SpacetimeVortex, StunningForce,
-TeleportOther, Teleportation, TemporalFugue, TimeDilation and Clairvoyance. They sit on the lower
-ladder for a reason that does not apply to them. Meanwhile `ElectricalGeneration` is physical and
-scales off Willpower.
+The mechanism is `BaseMutation.CalcLevel`:
 
-**The split is therefore broken in both directions**, and which one is the anchor decides the fix:
-raising 16 mental mutations to 3/6/10 and lowering 12 physical to 2/4/6 are very different mods.
+```csharp
+Statistic value = ParentObject.Statistics[mutationEntry?.GetStat()];
+num += value.Modifier;
+```
+
+`MutationEntry.GetStat()` falls through to `Category.Stat`, which `Mutations.xml` declares once per
+category:
+
+```xml
+<category Name="Mental"   … Stat="Ego" … >   <!-- all 23 mental mutations -->
+<category Name="Physical" …            >     <!-- no Stat attribute at all -->
+```
+
+So **every** mental mutation gains `EgoMod` levels and **no** physical mutation gains anything.
+`ElectricalGeneration` reading Willpower inside its own class is a separate, local effect on charge
+rate — not a level bonus.
+
+**And it reaches chips.** `ModImprovedMutationBase.HandleEvent(EquippedEvent)` calls
+`AddMutationMod(typeof(T), null, Tier, SourceType.Equipment, …)`, which creates the mutation at level
+**0** and records the chip's grade as a tracker. `CalcLevel` then sums the governing-stat modifier
+*and* the tracker bonus, so a chip-granted mental mutation's effective level is
+`chip grade + EgoMod`.
+
+| Ego | EgoMod | mental basic / upgraded / perfected | physical |
+|---:|---:|---|---|
+| 16 | +0 | 2 / 4 / 6 | 3 / 6 / 10 |
+| 20 | +2 | 4 / 6 / 8 | 3 / 6 / 10 |
+| **24** | **+4** | **6 / 8 / 10** | **3 / 6 / 10** |
+| 28 | +6 | 8 / 10 / 12 | 3 / 6 / 10 |
+
+**The two ladders converge exactly at Ego 24** — the Psionic Adept's stat maximum, since
+`Genotypes.xml` caps every Adept stat at 24. At that point a perfected mental chip and a perfected
+physical chip are both level 10. Below it mental trails; above it, mental overtakes and keeps going,
+because nothing caps the Ego contribution.
+
+Two things follow that the budget still has to answer:
+
+- **The compensation is exact at one point and wrong either side of it.** A low-Ego character gets
+  materially less from a mental chip than from a physical one; a high-Ego character gets more, without
+  limit. Whether that gradient is the intended reward for building Ego, or an accident of picking a
+  single calibration point, is a design question rather than a defect.
+- **It says nothing about magnitude.** Ego scaling explains why the *ladders* differ. It does not
+  explain why level 10 of `HeightenedSpeed` should be worth what it is worth, which is §5.2 and §5.3.
 
 ### 5.2 The ladder is keyed on the wrong property, and inverted
 
@@ -675,8 +713,10 @@ cooldown caps it; **INERT** means the level is not read at all.
 
 ### 5.7 What still needs deciding
 
-1. **Is 2/4/6 the anchor, or 3/6/10?** §5.1 breaks the split in both directions, and this decides
-   whether the fix raises 16 mutations or lowers 12.
+1. **Is the Ego gradient intended?** §5.1 shows the two ladders are calibrated to meet at Ego 24 and
+   to diverge either side of it, without limit above. Whether that is the reward for building Ego or
+   an artefact of choosing one calibration point is the first thing to settle, because it decides
+   whether the ladders need changing at all.
 2. **Key the ladder on uptime, on a per-mutation cap list, or drop it for one uniform ladder?**
    Uptime is a rule and the other two are exception lists, which charter rule 2 prefers — but uptime
    needs all 36 classified once and defended.
