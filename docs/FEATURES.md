@@ -389,12 +389,30 @@ requirements need a restart. See §13.
 One line, big consequence:
 
 ```xml
-<mod Part="ModGigantic" Load="Merge" TinkerAllowed="true" />
+<mod Part="ModGigantic" Load="Merge" TinkerAllowed="true" TinkerTier="7" />
 ```
 
-**Gigantic becomes a tinkerable item mod.** You can now apply Gigantic to equipment yourself
-rather than only finding it. Combined with the energy-cell notes below, Gigantic on a cell
-doubles max charge and stacks with High Capacity.
+**Gigantic becomes a tinkerable item mod.** You can now apply Gigantic to equipment yourself rather
+than only finding it. Combined with the energy-cell notes below, Gigantic on a cell doubles max
+charge and stacks with High Capacity.
+
+**Tier 7 is the price of that**, added in #317. It puts the recipe alongside `ModNanon` and
+`ModSuspensor` — the top of what vanilla lets anyone build. Without the attribute `ModEntry` defaults
+`TinkerTier` to **1**, which is what shipped until now, and nothing vanilla allows at tier 1 is in
+the same company: `ModGigantic.ApplyModification` calls `AdjustDamage(3)` on a melee weapon, and
+damage is rolled **once per penetration**, so it is +3 *per penetration* rather than +3 flat.
+
+> ⚖️ **What Gigantic costs the player is real, and easy to miss from the blueprint.**
+> `GetSlotsRequiredEvent` does `E.Increases++`, so a gigantic item takes **one more equipment slot**
+> unless the wielder is a gigantic creature — a gigantic one-handed sword needs both hands, and a
+> gigantic shield does too. `GetAddedWeight()` is the blueprint's weight **× 4**, floored at 4, so a
+> 6 lb greataxe becomes 30 lb. Those two are why the capability is worth keeping rather than
+> reverting.
+>
+> One thing it does *not* do, contrary to how #317 first read it: the `× 3.333` value multiplier in
+> `GetIntrinsicValueEvent` is gated on `GetIntProperty("Currency") > 0`, so it multiplies gigantic
+> *currency* rather than gigantic weapons. An ordinary item gets the entry's `Value="1.5"`, in line
+> with every tinkerable vanilla mod.
 
 ---
 
