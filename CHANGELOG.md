@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/PERMISSION.md` §9 records **Mura's approval to absorb the Grand Bazaar and
+  the Experience Curve**, given on Discord on 18 August 2026. That answers the question §8.4 left
+  open, and unblocks #174 and #175 on permission — everything else those issues list still stands.
+
+  Two details worth more than the yes itself. **The option-gated shape was part of the question**, so
+  it is the form the permission was given in rather than something added afterwards. And **Mura kept
+  the mods separate for want of capability, not preference** — *"I didn't have the knowledge to set
+  everything up that way in a single mod"* — which is the exact thing twelve working options and a
+  validator that checks their wiring now supply.
+
+  §9.1 closes a second question: **there are no Noble Lark sprites in the Grand Bazaar**, *"just the
+  base mod"*. §8.2 records those sprites as the one item still needing chirps' own confirmation, and
+  it does not reach the Bazaar. I have not asked the same of the Experience Curve, and §9 says so
+  rather than assuming.
+
 - **(internal)** The last three of #337's checks — `damage-ceiling`, `weight-curve` and
   `table-share` — and the snapshot that makes them possible in CI.
 
