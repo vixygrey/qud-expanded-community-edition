@@ -16,6 +16,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The balance sweep's fourth and last question is settled: **fix in place, add no new
+  options** (#339, and it answers #336). `docs/DESIGN_balance.md` §6 records it, and **all four
+  questions are now closed** — what remains is implementation.
+
+  The decision is mostly forced by a constraint rather than chosen. All eleven shipped options work
+  by mutating a small loaded record — a `GenotypeEntry` field, a `PowerEntry`, an anatomy, a
+  population table. Item stats are not that shape: an option would have to carry **183 blueprints and
+  386 individual values**, and it **cannot read vanilla's back**, because once Qud merges the mod's
+  XML the in-memory blueprint holds the mod's value and vanilla's exists only in the game's own files
+  — which charter rule 5 bans reaching. So the switch means 386 hardcoded numbers duplicating a
+  dataset that drifts on every Qud patch, with nothing able to check it.
+
+  What *is* gateable mostly already has an option: skill requirements, chip slots and chip drops all
+  ship with one today.
+
+  The charter points the same way. Rule 6's exception is for a change that *grants* power with no
+  content attached, and every fix here **removes** power and moves toward vanilla. The circular catch
+  #339 was filed with is also gone: questions one to three produced stated conventions, so once #340
+  writes them into §3.2, most of the sweep becomes a defect fix under rule 2's lower bar.
+
+  **What it obliges instead** is on the changelog. With no switch to fall back on, every fix has to
+  state its before and after rather than just its reason, and the sweep wants landing across a
+  version boundary players can see rather than trickling into patch releases.
+
+
 - **(internal)** Question three of the balance sweep is **fully settled** — its fourth and last
   decision covers starting chips (#338), recorded in `docs/DESIGN_balance.md` §5.9.
 
