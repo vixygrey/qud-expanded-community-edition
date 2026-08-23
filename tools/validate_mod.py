@@ -1127,6 +1127,37 @@ def snapshot_records() -> tuple[dict, dict]:
     return data.get("merged_records", {}), data.get("table_weights", {})
 
 
+def inherited_skill(obj: ET.Element, all_roots: dict[Path, ET.Element]) -> str | None:
+    """A weapon's `Skill`, walked up `Inherits` through this mod's own files.
+
+    The snapshot answers this for merges, and a merge is the case that motivated it - but a NEW
+    blueprint has the same problem from the other direction: `Raven_Iron Mace` states no Skill and
+    inherits `BaseCudgel`, which this mod merges with `Skill="Cudgel"`. Without this it resolved to
+    None, found no ceiling, and was skipped in silence while sitting over one.
+
+    Only walks what the mod ships. A chain leaving the mod's files ends here rather than guessing.
+    """
+    seen: set[str] = set()
+    name = obj.get("Inherits")
+    while name and name not in seen:
+        seen.add(name)
+        parent = None
+        for root in all_roots.values():
+            for candidate in root.iter("object"):
+                if candidate.get("Name") == name:
+                    parent = candidate
+                    break
+            if parent is not None:
+                break
+        if parent is None:
+            return None
+        for el in parent.findall("part"):
+            if el.get("Name") == "MeleeWeapon" and el.get("Skill"):
+                return el.get("Skill")
+        name = parent.get("Inherits")
+    return None
+
+
 def check_damage_ceiling(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """No weapon may out-damage vanilla's best at its family, tier and handedness.
 
@@ -1163,7 +1194,11 @@ def check_damage_ceiling(f: Findings, all_roots: dict[Path, ET.Element]) -> None
                 continue
 
             fact = records.get(name, {})
-            skill = part.get("Skill") or fact.get("skill")
+            skill = (
+                part.get("Skill")
+                or fact.get("skill")
+                or inherited_skill(obj, all_roots)
+            )
             tier = tier_of(obj, name)
             if tier is None and fact.get("tier") is not None:
                 try:

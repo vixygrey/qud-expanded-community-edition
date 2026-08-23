@@ -115,7 +115,7 @@
       ColorString="&amp;g"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="1d8+5" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="1d8+4" />
     <part Name="Commerce" Value="320" />
     <part
       Name="Description"
@@ -140,7 +140,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="1d9+5" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="1d8+5" />
     <part Name="Commerce" Value="640" />
     <part
       Name="Description"
@@ -167,7 +167,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="1d10+6" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="1d8+6" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
@@ -380,7 +380,7 @@
   </object>
 
   <object Name="Battle Axe6th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="1d8+5" Skill="Axe" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" Skill="Axe" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="6" />
@@ -406,7 +406,7 @@
   </object>
 
   <object Name="Battle Axe7th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="1d9+5" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="6" />
@@ -433,7 +433,7 @@
   </object>
 
   <object Name="Battle Axe8th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="1d10+6" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1280" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="5" />
@@ -566,7 +566,7 @@
   </object>
 
   <object Name="Long Sword4th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d6+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" />
     <part Name="Commerce" Value="80" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="6" />
@@ -580,49 +580,49 @@
   </object>
 
   <object Name="Long Sword5th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="2d8+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" />
     <part Name="Commerce" Value="160" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="9" />
   </object>
 
   <object Name="Long Sword6" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Long Sword6th" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d8+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword7" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d8+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Long Sword7th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="2d10+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword8" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d8+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1280" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Long Sword8th" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="2d12+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1280" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="4" />
@@ -825,7 +825,7 @@
 
   <object Name="Raven_Folded Carbide Katana" Inherits="BaseLongBlade">
     <part Name="Render" DisplayName="{{B|folded carbide}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;B" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d6+1" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d6" Stat="Strength" />
     <part Name="Commerce" Value="80" />
     <part
       Name="Description"
@@ -857,7 +857,7 @@
 
   <object Name="Raven_Fullerite Katana" Inherits="BaseLongBlade">
     <part Name="Render" DisplayName="{{K|fullerite}} katana" Tile="items/sw_kopesh.bmp" ColorString="&amp;K" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="2d8+1" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="2d6+1" Stat="Strength" />
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A large fullerite blade with an unbelievably sharp edge." />
     <tag Name="Finesse" />
@@ -877,7 +877,7 @@
       ColorString="&amp;g"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" Stat="Strength" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6" Stat="Strength" />
     <part Name="Commerce" Value="320" />
     <part
       Name="Description"
@@ -900,7 +900,7 @@
       ColorString="&amp;g"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="2d8+2" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="2d8" Stat="Strength" />
     <part Name="Commerce" Value="320" />
     <part
       Name="Description"
@@ -923,7 +923,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d8+1" Stat="Strength" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d6+1" Stat="Strength" />
     <part Name="Commerce" Value="640" />
     <part
       Name="Description"
@@ -947,7 +947,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="2d10+1" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="2d10" Stat="Strength" />
     <part Name="Commerce" Value="640" />
     <part
       Name="Description"
@@ -971,7 +971,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d8+2" Stat="Strength" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d8" Stat="Strength" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
@@ -996,7 +996,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="2d12+1" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="2d12" Stat="Strength" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
@@ -1173,14 +1173,14 @@
   </object>
 
   <object Name="Dagger7" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d6+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Dagger8" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d6+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1280" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="1" />
@@ -1383,7 +1383,7 @@
 
   <object Name="Raven_Iron Mace" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="iron mace" Tile="Items/sw_cudgel_4.bmp" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d4" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="2" />
     <part Name="Commerce" Value="10" />
     <part Name="Description" Short="Iron lines unfold into a head of six flanges." />
     <part Name="Metal" />
@@ -1424,7 +1424,7 @@
 
   <object Name="Raven_Carbide Mace" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{b|carbide}} mace" Tile="Items/sw_cudgel_1.bmp" ColorString="&amp;b" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="2d4" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="2d3" />
     <part Name="Commerce" Value="40" />
     <part Name="Description" Short="Rigid polygons of azure metal forged together into sharp points." />
     <part Name="Metal" />
@@ -1435,7 +1435,7 @@
 
   <object Name="Raven_Carbide Maceth" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{b|carbide}} maul" Tile="Items/sw_cudgel_5.bmp" ColorString="&amp;b" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="3d4" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="2d4+1" />
     <part Name="Commerce" Value="40" />
     <part Name="Description" Short="Rigid polygons of azure metal forged together, small dents pock its surface." />
     <part Name="Metal" />
@@ -1446,7 +1446,7 @@
 
   <object Name="Raven_Folded Carbide Mace" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{B|folded carbide}} mace" Tile="Items/sw_cudgel_1.bmp" ColorString="&amp;B" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="2d4+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="2d4" />
     <part Name="Commerce" Value="80" />
     <part Name="Description" Short="Thin lines of bright and azure metal curl to points above a shining shaft." />
     <part Name="Metal" />
@@ -1457,7 +1457,7 @@
 
   <object Name="Raven_Folded Carbide Maceth" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{B|folded carbide}} maul" Tile="Items/sw_cudgel_5.bmp" ColorString="&amp;B" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="3d4+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d6" />
     <part Name="Commerce" Value="80" />
     <part Name="Description" Short="A bright head of azure metal sits above a shining shaft." />
     <part Name="Metal" />
@@ -1468,7 +1468,7 @@
 
   <object Name="Raven_Fullerite Mace" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{K|fullerite}} mace" Tile="Items/sw_cudgel_1.bmp" ColorString="&amp;K" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d6" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d4+1" />
     <part Name="Commerce" Value="160" />
     <part
       Name="Description"
@@ -1481,7 +1481,7 @@
 
   <object Name="Cudgel5th" Load="Merge">
     <part Name="Render" DisplayName="{{K|fullerite}} maul" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="3d6" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" />
     <part Name="Commerce" Value="160" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="11" UsesTwoSlots="true" />
@@ -1489,7 +1489,7 @@
   </object>
 
   <object Name="Cudgel6" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="3" />
@@ -1503,7 +1503,7 @@
       ColorString="&amp;g"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d6+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d4+1" />
     <part Name="Commerce" Value="320" />
     <part
       Name="Description"
@@ -1515,7 +1515,7 @@
   </object>
 
   <object Name="Cudgel7" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="3d4+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
@@ -1530,7 +1530,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="5d4+2" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="3d6" />
     <part Name="Commerce" Value="640" />
     <part
       Name="Description"
@@ -1550,7 +1550,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="3d6+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="3d4+1" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
@@ -1571,7 +1571,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="5d6+2" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="4d6" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
@@ -1656,7 +1656,7 @@
 
   <object Name="Warhammer2" Load="Merge">
     <part Name="Render" DisplayName="iron warhammer" Tile="Items/sw_cudgel_2.bmp" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d4" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="2" />
     <part Name="Commerce" Value="10" />
     <part Name="Description" Short="Pocks of rust coat the end of this year-weary warhammer." />
     <part Name="Metal" />
@@ -1695,7 +1695,7 @@
 
   <object Name="Cudgel3" Load="Merge">
     <part Name="Render" DisplayName="{{b|carbide}} warhammer" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="2d4" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="4" />
     <part Name="Commerce" Value="40" />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
@@ -1704,7 +1704,7 @@
 
   <object Name="Cudgel3th" Load="Merge">
     <part Name="Render" DisplayName="{{b|carbide}} greathammer" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="3d4" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" />
     <part Name="Commerce" Value="40" />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
@@ -1713,7 +1713,7 @@
 
   <object Name="Cudgel4" Load="Merge">
     <part Name="Render" DisplayName="{{B|folded carbide}} warhammer" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="2d4+1" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="5" />
     <part Name="Commerce" Value="80" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -1722,7 +1722,7 @@
 
   <object Name="Cudgel4th" Load="Merge">
     <part Name="Render" DisplayName="{{B|folded carbide}} greathammer" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="3d4+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" />
     <part Name="Commerce" Value="80" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
@@ -1731,7 +1731,7 @@
 
   <object Name="Cudgel5" Load="Merge">
     <part Name="Render" DisplayName="{{K|fullerite}} warhammer" Tile="Items/sw_cudgel_2.bmp" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d6" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="6" />
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A roughly shaped hammerhead of dusky metal perches atop a steel handle." />
     <tag Name="Tier" Value="5" />
@@ -1745,7 +1745,7 @@
        and BaseCudgel does not set it. It had to be written by hand and was not. -->
   <object Name="Raven_Fullerite Greathammer" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{K|fullerite}} greathammer" Tile="Items/sw_cudgel_3.bmp" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="3d6" Stat="Strength" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="6d2" Stat="Strength" />
     <part Name="Commerce" Value="160" />
     <part
       Name="Description"
@@ -1757,7 +1757,7 @@
 
   <object Name="Raven_Crysteel War Hammer" Inherits="BaseCudgel">
     <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} warhammer}}" Tile="Items/sw_cudgel_2.bmp" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6+1" Stat="Strength" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d6" Stat="Strength" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="3" />
@@ -1766,7 +1766,7 @@
 
   <object Name="Cudgel6th" Load="Merge">
     <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d6+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="6" />
@@ -1780,7 +1780,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="3d4+2" Stat="Strength" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="3d4" Stat="Strength" />
     <part Name="Commerce" Value="640" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
@@ -1790,7 +1790,7 @@
 
   <object Name="Cudgel7th" Load="Merge">
     <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="5d4+2" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="6" />
@@ -1798,7 +1798,7 @@
 
   <object Name="Cudgel8" Load="Merge">
     <part Name="Render" DisplayName="{{zetachrome|zetachrome}} warhammer" Tile="Items/sw_cudgel_2.bmp" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="3d6+2" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1200" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="3" />
@@ -1806,7 +1806,7 @@
 
   <object Name="Cudgel8th" Load="Merge">
     <part Name="Render" DisplayName="{{zetachrome|zetachrome}} greathammer" Tile="Items/sw_jackhammer.bmp" />
-    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="5d6+2" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
     <part Name="Commerce" Value="1200" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="6" />

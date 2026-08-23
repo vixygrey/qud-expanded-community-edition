@@ -16,6 +16,44 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **Melee damage comes back to vanilla's ceiling across all four families** (#322). Fifty weapons —
+  the largest single change in the sweep, and considerably wider than the issue described.
+
+  #322 reported the cudgel line as *"the exception"* to a mod whose new weapons are *"careful
+  mirrors of their vanilla twins"*. Neither half holds. **Every family sits over its own vanilla
+  ceiling**, and the mirrors were built at the raised values rather than the originals:
+
+  | family | cells | median over | worst |
+  | ------------- | ----: | ----------: | ----: |
+  | Cudgel 1H | 14 | 25% | **47%** |
+  | Cudgel 2H | 12 | 35% | 39% |
+  | Long blade 2H | 10 | 14% | 25% |
+  | Long blade 1H | 6 | 22% | 25% |
+  | Axe 2H | 6 | 10% | 12% |
+  | Short blade 1H | 2 | 7% | 7% |
+
+  **Twenty-six are vanilla merges and twenty-four are this fork's own blueprints, and they pair
+  up** — `Raven_Zetachrome Maceth` was 19.5 mean damage, exactly matching the raised `Cudgel8th`. One
+  change expressed twice: the family was lifted, and its mirror built at the lifted value.
+
+  The merges **drop their `BaseDamage` attribute entirely** so vanilla's own value stands, the same
+  discipline `stat-discipline` enforces. The new blueprints take their vanilla twin's string —
+  derived from the game rather than invented, and cross-checked by confirming the derived table
+  reproduces §3.2.1's published ceiling on all 59 entries before a single edit.
+
+  **Half of this was invisible until the check was fixed.** `damage-ceiling` resolved a weapon's
+  family from the snapshot, which only covers merges — so a *new* blueprint like `Raven_Iron Mace`,
+  which states no `Skill` and inherits `BaseCudgel`, resolved to nothing, found no ceiling, and was
+  skipped in silence while sitting over one. It now walks `Inherits` through the mod's own files.
+  That took the count from 26 to **50**.
+
+  `damage-ceiling` now reports nothing and leaves the baseline, which falls to **38**.
+
+- **(internal)** `Damage` and `AV` join `check_docs`' verified item-table columns, taking the count
+  from 741 figures to **956**. Fifty damage cells and fifteen AV cells had to be corrected by hand
+  when their blueprints moved — the third time in this sweep that a typed figure drifted because
+  nothing was watching it, after `Stat` in #375.
+
 - **The greatshield line comes down, and the tier-8 drop weights come back to vanilla's** (#319).
 
   The zetachrome greatshield had the **identical stat line to `Gear from the Great Machine`**, the
