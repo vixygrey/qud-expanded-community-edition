@@ -15,6 +15,7 @@ for each prefix. Synthetic mod directories only: no game, no network, no depende
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 import tempfile
@@ -655,3 +656,140 @@ class CurveChecks(unittest.TestCase):
             ),
             [],
         )
+
+
+class SnapshotBackedChecks(unittest.TestCase):
+    """The three checks that need vanilla's side, which CI does not have.
+
+    Each reads `merged_records` or `table_weights` from tools/qud-api.json. The fixtures write
+    their own snapshot rather than leaning on the committed one, so a test cannot start passing
+    because vanilla changed.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _mod(
+        self, blueprints: str = "", tables: str = "", snapshot: dict | None = None
+    ) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints, tables)
+        api = json.loads((tmp / "tools" / "qud-api.json").read_text())
+        api.update(snapshot or {})
+        (tmp / "tools" / "qud-api.json").write_text(json.dumps(api))
+        return tmp
+
+    # ------------------------------------------------------------------ damage-ceiling
+
+    def test_a_merge_over_its_family_ceiling_is_reported(self) -> None:
+        """The #322 defect. A merge names no Skill, so only the snapshot can say it is a cudgel."""
+        tmp = self._mod(
+            '  <object Name="Cudgel8th" Load="Merge">\n'
+            '    <part Name="MeleeWeapon" BaseDamage="5d6+2" />\n'
+            "  </object>",
+            snapshot={
+                "merged_records": {
+                    "Cudgel8th": {"skill": "Cudgel", "two_handed": True, "tier": "8"}
+                }
+            },
+        )
+        items = findings_for(validate_mod.check_damage_ceiling, tmp)
+        self.assertTrue(items, "a merge over the damage ceiling was not reported")
+        self.assertIn("19.5", items[0][1])
+
+    def test_a_merge_on_its_family_ceiling_is_not_reported(self) -> None:
+        tmp = self._mod(
+            '  <object Name="Cudgel8th" Load="Merge">\n'
+            '    <part Name="MeleeWeapon" BaseDamage="4d6" />\n'
+            "  </object>",
+            snapshot={
+                "merged_records": {
+                    "Cudgel8th": {"skill": "Cudgel", "two_handed": True, "tier": "8"}
+                }
+            },
+        )
+        self.assertEqual(findings_for(validate_mod.check_damage_ceiling, tmp), [])
+
+    def test_damage_is_not_checked_without_a_snapshot(self) -> None:
+        """The one silence worth naming. A snapshot predating these keys cannot tell "nothing
+        wrong" from "nothing checked", which is why the tool says to regenerate after an update."""
+        tmp = self._mod(
+            '  <object Name="Cudgel8th" Load="Merge">\n'
+            '    <part Name="MeleeWeapon" BaseDamage="99d99" />\n'
+            "  </object>",
+            snapshot={"merged_records": {}},
+        )
+        self.assertEqual(findings_for(validate_mod.check_damage_ceiling, tmp), [])
+
+    def test_a_merge_that_states_no_damage_is_not_checked(self) -> None:
+        """Changing an item's weight is not a claim about its damage."""
+        tmp = self._mod(
+            '  <object Name="Cudgel8th" Load="Merge">\n'
+            '    <part Name="Physics" Weight="6" />\n'
+            "  </object>",
+            snapshot={
+                "merged_records": {
+                    "Cudgel8th": {"skill": "Cudgel", "two_handed": True, "tier": "8"}
+                }
+            },
+        )
+        self.assertEqual(findings_for(validate_mod.check_damage_ceiling, tmp), [])
+
+    # -------------------------------------------------------------------- weight-curve
+
+    def test_a_merge_made_heavier_is_reported(self) -> None:
+        tmp = self._mod(
+            '  <object Name="Dagger3" Load="Merge">\n'
+            '    <part Name="Physics" Weight="2" />\n'
+            "  </object>",
+            snapshot={"merged_records": {"Dagger3": {"weight": "1"}}},
+        )
+        items = findings_for(validate_mod.check_weight_curve, tmp)
+        self.assertTrue(items, "an item made heavier than vanilla was not reported")
+
+    def test_a_merge_made_lighter_is_not_reported(self) -> None:
+        """Lighter is the whole point of the compression. Only the direction is checked."""
+        tmp = self._mod(
+            '  <object Name="Dagger3" Load="Merge">\n'
+            '    <part Name="Physics" Weight="1" />\n'
+            "  </object>",
+            snapshot={"merged_records": {"Dagger3": {"weight": "3"}}},
+        )
+        self.assertEqual(findings_for(validate_mod.check_weight_curve, tmp), [])
+
+    # --------------------------------------------------------------------- table-share
+
+    def test_a_table_over_half_is_reported(self) -> None:
+        tmp = self._mod(
+            "",
+            tables='  <population Name="Armor 4C" Load="Merge">\n'
+            '    <object Blueprint="Vixy_Thing" Weight="200" />\n'
+            "  </population>",
+            snapshot={"table_weights": {"Armor 4C": 100}},
+        )
+        items = findings_for(validate_mod.check_table_share, tmp)
+        self.assertTrue(items, "a table past half was not reported")
+        self.assertIn("66.7%", items[0][1])
+
+    def test_a_table_at_half_is_not_reported(self) -> None:
+        tmp = self._mod(
+            "",
+            tables='  <population Name="Armor 4C" Load="Merge">\n'
+            '    <object Blueprint="Vixy_Thing" Weight="100" />\n'
+            "  </population>",
+            snapshot={"table_weights": {"Armor 4C": 100}},
+        )
+        self.assertEqual(findings_for(validate_mod.check_table_share, tmp), [])
+
+    def test_this_forks_own_table_is_not_checked(self) -> None:
+        """A table with no vanilla entry has nothing to be half of."""
+        tmp = self._mod(
+            "",
+            tables='  <population Name="Raven_Chips Tier 1">\n'
+            '    <object Blueprint="Vixy_Chip" Weight="999" />\n'
+            "  </population>",
+            snapshot={"table_weights": {"Armor 4C": 100}},
+        )
+        self.assertEqual(findings_for(validate_mod.check_table_share, tmp), [])

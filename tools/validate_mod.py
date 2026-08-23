@@ -1090,6 +1090,180 @@ def check_finesse_visible(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                 )
 
 
+def mean_damage(dice: str | None) -> float | None:
+    """Mean of a Qud damage string like `2d6+1`, which is 8.0. None when it is not one."""
+    if not dice:
+        return None
+    m = re.fullmatch(r"\s*(\d*)d(\d+)\s*([+-]\s*\d+)?\s*", dice)
+    if m:
+        count = int(m.group(1) or 1)
+        faces = int(m.group(2))
+        bonus = int(m.group(3).replace(" ", "")) if m.group(3) else 0
+        return count * (faces + 1) / 2 + bonus
+    try:
+        return float(dice.strip())
+    except ValueError:
+        return None
+
+
+def snapshot_records() -> tuple[dict, dict]:
+    """Vanilla's side of the records this mod merges, from tools/qud-api.json.
+
+    Empty when the snapshot predates these keys, in which case the checks that need it return
+    early. That is the one silence here worth naming: a snapshot without them cannot distinguish
+    "nothing wrong" from "nothing checked", so regenerate after every Qud update.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}, {}
+    data = json.loads(QUD_API_PATH.read_text())
+    return data.get("merged_records", {}), data.get("table_weights", {})
+
+
+def check_damage_ceiling(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """No weapon may out-damage vanilla's best at its family, tier and handedness.
+
+    docs/STYLEGUIDE.md 3.2.1. This is the check the cudgel line in #322 walked past: 26 family and
+    tier cells over the ceiling, the worst by 47%.
+
+    Twenty-five of those 26 are **merges**, which is why this needs the snapshot. A merge carries
+    no `Inherits` and usually no `Skill`, so `Cudgel8th` cannot be recognised as a cudgel from this
+    mod's own XML at all - a CI check without vanilla's side would have caught 1 of 26 while
+    appearing to cover damage, which is worse than no check.
+
+    Only fires where the mod actually states a damage. A merge that leaves `BaseDamage` alone is
+    making no claim about damage, and armour that inherits a weapon's default `Skill` is not a
+    weapon.
+    """
+    records, _ = snapshot_records()
+    if not records:
+        return
+
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if not name or is_base_object(obj):
+                continue
+            if any(word in name.lower() for word in CURVE_EXEMPT):
+                continue  # the same exemptions the value curve carries, for the same reasons
+            part = next(
+                (e for e in obj.findall("part") if e.get("Name") == "MeleeWeapon"), None
+            )
+            if part is None or part.get("BaseDamage") is None:
+                continue
+            mean = mean_damage(part.get("BaseDamage"))
+            if mean is None:
+                continue
+
+            fact = records.get(name, {})
+            skill = part.get("Skill") or fact.get("skill")
+            tier = tier_of(obj, name)
+            if tier is None and fact.get("tier") is not None:
+                try:
+                    tier = int(fact["tier"])
+                except ValueError:
+                    tier = None
+            declared = next(
+                (
+                    e.get("UsesTwoSlots")
+                    for e in obj.findall("part")
+                    if e.get("Name") == "Physics" and e.get("UsesTwoSlots")
+                ),
+                None,
+            )
+            two = (declared or "").lower() == "true" or (
+                declared is None and bool(fact.get("two_handed"))
+            )
+
+            ceiling = DAMAGE_CEILING.get((skill, two), {}).get(tier)
+            if ceiling is None:
+                continue  # a family, tier or handedness vanilla does not ship
+            if mean > ceiling:
+                hands = "two-handed" if two else "one-handed"
+                f.add(
+                    "damage-ceiling",
+                    f"{path}: {name} deals {mean:g} mean damage, over vanilla's best "
+                    f"{hands} {skill} at tier {tier}, which is {ceiling:g}",
+                )
+
+
+def check_weight_curve(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A merge may make a vanilla item lighter, never heavier.
+
+    docs/STYLEGUIDE.md 3.2.1. The per-slot magnitudes wait on the burden work in #320, but the
+    direction does not: every factor this fork uses is below 1, so an item the mod made *heavier*
+    contradicts the rule whatever the magnitudes turn out to be.
+    """
+    records, _ = snapshot_records()
+    if not records:
+        return
+
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if obj.get("Load") != "Merge" or not name:
+                continue
+            part = next(
+                (e for e in obj.findall("part") if e.get("Name") == "Physics"), None
+            )
+            if part is None or part.get("Weight") is None:
+                continue
+            was = records.get(name, {}).get("weight")
+            if was is None:
+                continue
+            try:
+                now_w, was_w = float(part.get("Weight")), float(was)
+            except ValueError:
+                continue
+            if now_w > was_w:
+                f.add(
+                    "weight-curve",
+                    f"{path}: {name} weighs {now_w:g} lb against vanilla's {was_w:g} - every "
+                    f"per-slot factor is below 1, so nothing may get heavier",
+                )
+
+
+def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """This fork's share of a vanilla loot table stops at half.
+
+    docs/STYLEGUIDE.md 3.2.1, and the one curve there that is a chosen number rather than a
+    derived one - vanilla has no opinion on how much of its loot pool may belong to a mod.
+
+    Share is a ratio, so vanilla's side has to come from the snapshot. Tables this fork defines
+    itself have no vanilla entry to be half of, and are not checked.
+    """
+    _, vanilla_totals = snapshot_records()
+    if not vanilla_totals:
+        return
+
+    pops = Path("mod/PopulationTables.xml")
+    if not pops.is_file():
+        return
+    try:
+        root = ET.fromstring(pops.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    for pop in root.iter("population"):
+        name = pop.get("Name")
+        vanilla = vanilla_totals.get(name)
+        if not name or not vanilla:
+            continue
+        mine = 0
+        for obj in pop.iter("object"):
+            if obj.get("Blueprint"):
+                try:
+                    mine += int(obj.get("Weight") or 0)
+                except ValueError:
+                    pass
+        if mine > vanilla:
+            share = mine / (mine + vanilla) * 100
+            f.add(
+                "table-share",
+                f"mod/PopulationTables.xml: {name} is {share:.1f}% this fork's content "
+                f"({mine} against vanilla's {vanilla}) - the ceiling is half",
+            )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -1379,6 +1553,9 @@ def run() -> Findings:
     check_stat_discipline(f, roots)
     check_armor_curve(f, roots)
     check_finesse_visible(f, roots)
+    check_damage_ceiling(f, roots)
+    check_weight_curve(f, roots)
+    check_table_share(f, roots)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)

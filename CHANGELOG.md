@@ -16,6 +16,37 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The last three of #337's checks — `damage-ceiling`, `weight-curve` and
+  `table-share` — and the snapshot that makes them possible in CI.
+
+  All three compare against **vanilla**, which CI does not have. A merge is opaque without it: it
+  carries no `Inherits` and usually no `Skill`, so `Cudgel8th` cannot be recognised as a cudgel from
+  this mod's own XML at all. Since **25 of the 26 damage violations are merges**, a check without
+  vanilla's side would have caught 1 of 26 while appearing to cover damage — worse than no check.
+
+  So `tools/qud-api.json` gains **`merged_records`** (213 entries) and **`table_weights`** (56),
+  holding vanilla's answer for exactly the records this fork edits. Scope is the point: `CITED_FIGURES`
+  already stated the rule that file is kept to — *"a list of citations, not a dump of the game"* —
+  and every entry here exists because this mod merges that record. Its `_comment` claimed **"names
+  only"** while already holding 28 figures; it now states the citation rule instead, which is the
+  principle actually being followed.
+
+  A consequence worth knowing: **adding a new merge means regenerating the snapshot**, which needs
+  the game. That is the intended shape — a new merge is a new citation, and a record the snapshot has
+  never seen makes its check fail loudly rather than skip in silence.
+
+  What they find: **26** damage cells over §3.2.1's per-family ceiling, worst the cudgel line at 47%
+  (#322); **7** merges that made a vanilla item heavier, five of them short blades (#320); and **9**
+  vanilla tables past half, worst `Armor 8C` at 71.7% (#325). Each figure matches what the #340
+  derivation found independently.
+
+  `CURVE_EXEMPT` now covers damage as well as price, so cybernetic fists and vibro weapons are
+  exempt from both for the reasons already recorded there.
+
+  Nine more tests, each proving its check in both directions, with fixtures that write their own
+  snapshot so a test cannot start passing because vanilla changed. All 191 findings are baselined
+  against their governing issues.
+
 - **(internal)** Three of the checks #337 asked for, plus a fourth column in `check_docs`. The
   balance sweep's twenty findings all accumulated without failing anything; these are the durable
   half of fixing that.
