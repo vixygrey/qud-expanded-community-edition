@@ -310,6 +310,81 @@ possible in practice. Match them when adding anything.
 The tier and value curves are checked by `item-curve` in `tools/validate_mod.py`, so a mispriced or
 mistagged item fails CI rather than sitting in the loot pool at the wrong rarity.
 
+#### 3.2.1 The curves: AV, damage, weight and table share
+
+Derived from the installed game in #340, after the balance sweep found that **every number that
+drifted is one this section did not mention**. The value curve and the tier→material table held
+perfectly, because `item-curve` fails CI when they do not. These four had nothing holding them.
+
+Read them as **ceilings**, not targets. Vanilla prices an item against its neighbours, not against a
+grid, so an item well under a ceiling is fine and an item over one needs a reason.
+
+**AV per slot.** No item may exceed vanilla's best *ordinary* item in its slot:
+
+| Body | Head | Hands | Feet | Back | Arm | Face | Floating Nearby |
+| ---: | ---: | ----: | ---: | ---: | --: | ---: | --------------: |
+|    8 |    4 |     4 |    4 |    2 |   1 |    2 |               1 |
+
+Named artefacts break vanilla's own ceiling on purpose — `Flange from the Great Machine` at AV 10,
+`Gigantic Chassis Plate` at 6 — and are not a benchmark this fork may match.
+
+**Count the slot, not the item.** A humanoid has **two** Arm slots, so Arm AV counts twice toward a
+loadout. That is why Arm is the tightest cap in the table, and why vanilla puts bracelets there
+rather than armour. `Bodies.xml` is the authority: Body, Head, Hands, Feet, Back and Face are one
+each; Arm and Hand are two.
+
+**Back is the one deliberate stretch.** Vanilla's ordinary cloaks are AV 1 and only the
+`Sail from the Great Machine` reaches 2. This fork allows 2 at the top tiers so the weave-cloak line
+has somewhere to go. Measured against vanilla's best full loadout it costs **+1 AV and nothing
+else** — 26 becomes 27. That is the whole price of keeping the line, and it is why the concession
+stops at cloaks: extending the same courtesy to vambraces would cost 4 more, because the slot is
+worn twice.
+
+**There is no AV curve, only a ceiling.** Vanilla's tier-4 body armour runs AV 0 to 5. Two tighter
+rules were tested against all 224 vanilla armour pieces and **rejected**: `AV + DV` capped per tier
+is not monotone, and `AV + DV >= 0` is broken by 14 secondary-slot pieces. Do not reintroduce
+either; they produce false failures.
+
+**Damage per family, tier and handedness.** Highest **mean** damage vanilla ships, ordinary weapons
+only. Mean, not the die string: `2d6+1` is 8.0.
+
+| family         |   0 |   1 |   2 |   3 |   4 |   5 |   6 |    7 |    8 |
+| -------------- | --: | --: | --: | --: | --: | --: | --: | ---: | ---: |
+| Short blade 1H | 1.5 | 2.0 | 3.5 | 4.5 | 4.5 | 5.5 | 6.5 |  7.5 |  8.5 |
+| Long blade 1H  | 2.0 | 2.5 | 3.5 | 4.5 | 5.5 | 6.5 | 7.0 |  8.0 |  9.0 |
+| Long blade 2H  | 3.5 | 4.5 | 5.5 | 6.5 | 7.0 | 8.0 | 9.0 | 11.0 | 13.0 |
+| Axe 1H         | 1.5 | 2.0 | 3.0 | 3.5 | 4.5 | 5.5 | 6.5 |  7.5 |  8.5 |
+| Axe 2H         |   — |   — | 4.5 | 5.5 | 6.5 | 7.5 | 8.5 |  9.5 | 10.5 |
+| Cudgel 1H      | 2.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 |  7.5 |  8.5 |
+| Cudgel 2H      |   — |   — | 5.0 | 6.0 | 7.0 | 9.0 | 8.5 | 10.5 | 14.0 |
+
+**`MaxStrengthBonus` is the tier plus one.** True of 83 of vanilla's 87 ordinary melee weapons; the
+four exceptions are `Battle Axe2`, `Dagger2`, `TutorialBattleAxe` and `Obsidian Kris`. Vibro weapons
+are 0 by design — `Math.Min(Bonus, MaxBonus)` means no stat bonus reaches them at all — and fists
+are unbounded.
+
+**Weight is a constant factor per slot**, applied to vanilla's own value rather than chosen per
+item. 61 of the 109 re-weighted items already follow one: melee one-handed ×0.67, two-handed ×0.62,
+hands ×0.47, each with a mean deviation under a pound. **The magnitudes wait on
+[#176](https://github.com/vixygrey/qud-expanded-community-edition/issues/176)**, because a burden
+gradient and today's binary cliff want different numbers. Two things bind now regardless: every
+slot factor is below 1, so **no item may be heavier than vanilla's**, and the factor belongs to the
+slot, not the item.
+
+**Mod share of a vanilla loot table stops at half.** A mod entry never outweighs a comparable
+vanilla entry — that already holds, and one table's entries are deliberately lighter — so share
+drifted on **count** rather than weight: completing every family and both handednesses puts more
+mod entries in a tier band than vanilla stocks. Where completeness tips a table past half, the fix
+is a lower per-item weight on this fork's entries, never less content.
+
+Unlike the three above, **half is a chosen number, not a derived one.** Vanilla offers no anchor for
+how much of its loot pool may be someone else's, so this is a texture decision: at the low tiers
+most of what a player finds should still be the game they bought.
+
+The ceiling does not apply to a table this fork defines itself — `Raven_Chips Tier 1` through `3`
+have no vanilla entry to be half of.
+
+
 ### 3.3 Two ways to distribute an item, and which to reach for
 
 A new item can reach the world by an explicit entry in `mod/PopulationTables.xml`, or by carrying a

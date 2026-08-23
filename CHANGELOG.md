@@ -16,6 +16,39 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.2.1 carries the four curves the balance sweep was missing —
+  AV, damage, weight and mod share of a loot table — derived from the installed game rather than
+  chosen (#340). `docs/DESIGN_balance.md` §9 records what the derivation turned up, which is more
+  interesting than the rules.
+
+  **Vanilla has ceilings, not curves.** The premise was "AV per slot, per tier"; across 224 armour
+  pieces the values overlap so heavily that there is nothing to match — tier-4 body armour runs AV 0
+  to 5. What vanilla has is a clean ceiling per slot, and that is what the findings turn on anyway.
+  Two tighter rules were tested against the data and **rejected**: `AV + DV` capped per tier is not
+  monotone, and `AV + DV >= 0` is broken by 14 vanilla pieces. Either would have failed real items.
+
+  **A humanoid has two Arm slots**, so Arm armour is worn twice and its AV counts twice. Nothing had
+  accounted for that. It makes the vambrace line worth 6 AV — more than head, hands or feet — and it
+  restates best-in-slot as 26 → 40 for ordinary items, or 33 → 43 counting named artefacts. #316's
+  "32 → 48" is neither, because that issue never said which basis it used.
+
+  **Settled: cloaks stay at AV 2, vambraces go back to flavour at AV 1.** Vanilla makes Back and Arm
+  non-armour slots; this fork had turned both into nine-tier armour lines, which is most of why
+  best-in-slot climbed. Keeping the cloaks costs exactly +1 AV against vanilla's best loadout.
+  Extending it to vambraces would cost 4 more, and unlike cloaks there is no vanilla Arm item above
+  AV 1 to point at.
+
+  **And the drift is one defect wearing three hats.** Of the 26 damage cells over vanilla's ceiling,
+  25 are vanilla blueprints the mod merged into — `Cudgel3`–`8th`, `Long Sword6`–`8th`,
+  `Battle Axe6th`–`8th`, `Dagger7` — and only `Raven_Iron Mace` is this fork's own. The AV ceiling
+  rises the same way, on `Crysteel Shardmail`, `Zetachrome Lune` and the zetachrome set. §3.2's rule
+  that *a merge never changes vanilla's* was written for `Stat`; it turns out to describe nearly
+  everything the sweep found, and #337's checks should be built around that shape.
+
+  Table share is the one number that is chosen rather than derived — vanilla has no opinion on how
+  much of its loot pool may be a mod's — and §3.2.1 says so. It also found **#325's list is
+  incomplete**: nine tables sit above half, not six, and the worst is one it misses at 71.7%.
+
 - **Finesse** — a purchased power that lets an Agility character get damage out of a blade (#321).
 
   **Before:** 61 melee blueprints declared `Stat="Agility"`, so rapiers, katanas, daggers,
