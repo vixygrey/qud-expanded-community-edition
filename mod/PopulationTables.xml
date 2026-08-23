@@ -745,11 +745,11 @@
 
   <population Name="Armor 8C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="43" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
-      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
-      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Buckler" />
-      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Shield" />
-      <object Weight="43" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachromeweave Cloak" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vambrace" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Buckler" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Shield" />
+      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greatshield" />
     </group>
   </population>
 

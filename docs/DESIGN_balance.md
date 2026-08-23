@@ -1144,9 +1144,13 @@ is most of why best-in-slot climbed — a structural change to how much armour a
 not a tuning drift.
 
 Settled: **the cloaks stay, capped at AV 2; the vambraces go back to flavour at AV 1.** The split is
-priced. Keeping cloaks costs +1 AV against vanilla's best loadout, 26 to 27. Extending the same
-courtesy to vambraces would cost 4 more, because the slot is worn twice — and unlike cloaks, vanilla
-offers nothing to point at: there is no vanilla Arm item above AV 1 at any tier.
+priced. Keeping cloaks costs **+1 AV** against vanilla's best loadout. Extending the same courtesy to
+vambraces would cost **4 more**, because the slot is worn twice — and unlike cloaks, vanilla offers
+nothing to point at: there is no vanilla Arm item above AV 1 at any tier.
+
+*(An earlier draft priced this as 26 becoming 27. Those figures predate §9.2b and omit the shield
+slot; with shields counted the pair is 33 and 34. The +1 is unchanged, because it was always the
+cloak line and never the arithmetic around it.)*
 
 ### 9.4 The drift is one defect wearing three hats
 

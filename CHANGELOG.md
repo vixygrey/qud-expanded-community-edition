@@ -16,6 +16,58 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **The greatshield line comes down, and the tier-8 drop weights come back to vanilla's** (#319).
+
+  The zetachrome greatshield had the **identical stat line to `Gear from the Great Machine`**, the
+  best shield in Caves of Qud, at a seventh of the weight and a fifth of the price, out of a normal
+  drop table. It is now AV **9** — one below the legendary.
+
+  **The rule that settles it, now in `docs/STYLEGUIDE.md` §3.2.1: a greatshield sits one above the
+  shield at its tier.** The shield line itself was already right — it matches vanilla exactly where
+  vanilla ships one (3 at tier 2, 4 at 3, 5 at 5, 6 at 6, 7 at 7) and its tier-8 at 8 continues that
+  into the one tier vanilla leaves empty. So only four greatshields move: **7→6, 8→7, 9→8, 10→9**.
+
+  The issue said greatshields were *"strictly better than their own shield line — nothing is paid for
+  the word great"*. Half right: they carry about **3 lb more and a flat −3 DV**. What they do not do
+  is use two slots, and that turns out not to be available — a shield is `WornOn="Hand"` and a
+  humanoid has two, so a two-slot greatshield means no weapon at all.
+
+  **Shields need a ceiling per tier, not one number.** Vanilla's line is AV = tier + 1 up to tier 3
+  and AV = tier from tier 5, so there is no single formula — and a flat per-slot number would let a
+  tier-2 greatshield pass at the tier-8 ceiling. `armor-curve` now reads a per-tier table, with a
+  test for exactly that case.
+
+  **And the tier-8 drop weights come back to vanilla's 20**, from 43. Vanilla's four zetachrome
+  pieces sit at 20 each in `Armor 8C`; this fork's five sat at 43, so the AV-10 shield was 2.15× as
+  likely to appear as the `Zetachrome Lune` in vanilla's own table. That takes `Armor 8C` from
+  **71.7% to 54.1%** mod content — still over half, which is #325's remaining work.
+
+  `armor-curve` now reports **nothing at all**, and leaves the baseline entirely.
+
+- **Best-in-slot AV comes back to vanilla's ceiling** (#318). Fifteen pieces, in three groups.
+
+  **Four vanilla merges stop raising vanilla's own armour.** `Zetachrome Apex`, `Gloves` and `Pumps`
+  go 6 → **4**, and `Zetachrome Lune` goes 10 → **8**. For Apex and Pumps the AV was the *only* thing
+  the merge changed about the armour, so the whole `Armor` part is deleted and vanilla's stands —
+  the discipline `stat-discipline` already enforces for `MeleeWeapon.Stat`.
+
+  **Seven vambraces drop to AV 1** and **four cloaks to AV 2**, per `docs/DESIGN_balance.md` §9.3.
+  Vanilla makes Back and Arm non-armour slots — ordinary cloaks are AV 1, and no vanilla Arm item
+  exceeds 1 at any tier — and this fork had turned both into nine-tier armour lines reaching 3. The
+  cloaks keep a deliberate **+1 over vanilla** so the weave line has somewhere to go; the vambraces
+  do not, because the Arm slot is **worn twice** and the same courtesy there would cost four.
+
+  Best-in-slot AV is now vanilla's in every slot but two: Back by the one point above, and Shield,
+  which is #319's remaining work. `armor-curve`'s baseline goes from 19 entries to **4**.
+
+  `docs/FEATURES.md`'s armour tables are brought back in step — **15 AV cells** were quoting the old
+  values, and **nothing checks that column**, which is the same silent-drift shape as `Stat` before
+  #375.
+
+  Two things found while reading vanilla's records and filed rather than folded in: the mod also
+  **rewrites vanilla's prices** through merges, unchecked, by up to −66% (#380); and the vambrace
+  line is now **nine near-identical items**, which is a content question rather than a defect (#381).
+
 ### Added
 - **The psionic chips are repriced, the four steep passives made rare, and the Guardian starting
   kits fixed** (#338, and it closes #316). The largest content change of the balance sweep, and a

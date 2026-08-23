@@ -155,7 +155,12 @@ AV_CEILING = {
     "Face": 2,
     "Floating Nearby": 1,
 }
-AV_CEILING_SHIELD = 7
+# Shields need a ceiling per TIER, not one number for the slot. Vanilla's shield line is
+# AV = tier + 1 up to tier 3 and AV = tier from tier 5 - not one formula, so the ceiling is
+# vanilla's own value where vanilla ships a shield, extended to 8 at tier 8 because vanilla ships
+# none there. Greatshields sit one above the shield at their tier, paid for in weight and DV.
+# A single per-slot number would let a tier-2 greatshield pass at the tier-8 ceiling.
+AV_CEILING_SHIELD = {0: 3, 1: 3, 2: 4, 3: 5, 4: 6, 5: 6, 6: 7, 7: 8, 8: 9}
 
 # Highest MEAN damage vanilla ships per family, tier and handedness, from docs/STYLEGUIDE.md
 # 3.2.1. Keyed (skill, two_handed) -> tier -> mean. A tier absent from a family's row is one
@@ -1031,7 +1036,10 @@ def check_armor_curve(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     continue
 
                 if kind == "Shield":
-                    slot, ceiling = "Shield", AV_CEILING_SHIELD
+                    tier = tier_of(obj, name)
+                    if tier not in AV_CEILING_SHIELD:
+                        continue  # a tier the shield ceiling says nothing about
+                    slot, ceiling = f"Shield (tier {tier})", AV_CEILING_SHIELD[tier]
                 else:
                     slot = part.get("WornOn")
                     if slot not in AV_CEILING:
