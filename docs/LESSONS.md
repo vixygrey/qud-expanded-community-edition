@@ -1058,6 +1058,27 @@ I sampled a narrower range of stats the wrong model would have produced plausibl
 into a document. **A model of game arithmetic wants one deliberately extreme input** for that
 reason — the ordinary range will not tell you the model is wrong.
 
+**There was an earlier tell and I missed it, because it looked like nothing.** The first version of
+this model was a Monte Carlo simulation, and without `Bonus -= 2` the loop cannot terminate at all
+once the effective bonus clears the target's AV by two: the minimum die is −1, so every die
+penetrates, `wave` is always 3, and `while (wave == 3)` runs forever. I had backgrounded it when it
+passed its timeout. It was still running seventeen hours later, pinning a core, and I only found it
+because the interface said a task was live.
+
+So the bug's first symptom was a **hung process**, not a wrong number — and I went and rebuilt the
+same wrong model analytically instead, where the same degenerate case finally surfaced as a
+printable absurdity.
+
+> **A background task producing no output is indistinguishable from one still working.** Both are
+> silent, and silence reads as progress. If a job is expected to print only at the end, it has no
+> liveness signal at all, and a runaway can sit there for as long as the session does.
+
+Two habits come out of it. Give a long computation **incremental output** — a line per row, not one
+table at the end — so that silence means something. And when a model of a loop is being ported,
+**bound the port** even if the original looks unbounded: a `for _ in range(80)` where the real code
+has a decay costs nothing and turns an infinite loop into a visibly wrong number, which is the
+failure you want.
+
 ## A weapon slot is any body part, not just a hand
 
 `BodyPart.ScanForWeapon` walks the **whole body** recursively, and any part whose equipped item has
