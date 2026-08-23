@@ -663,22 +663,62 @@ So no `Tier` value changes on account of uptime, and **§5.3's question widens f
 pair to all seven permanent passives** — price and rarity become the whole answer rather than one
 dial of three.
 
-### 5.3 No ladder fixes the Quickness pair
+### 5.3 Price and rarity — settled
 
-`GetSpeedBonus(Level)` is `13 + 2 × Level`, shared by `HeightenedSpeed` and `PhotosyntheticSkin`.
+`GetSpeedBonus(Level)` is `13 + 2 × Level`, shared by `HeightenedSpeed` and `PhotosyntheticSkin`, so
+**level 1 is +15** — already above The Kesil Face's +10 at 10,000 water, and above The Shemesh Face's
++10 at 8,000. No ladder reaches below that floor, which is why §5.2's decision left this as the whole
+remaining question rather than one dial of three.
 
-| source | Quickness | price |
+**Price cannot gate a chip.** They live in `Artifact 3`–`8`, consumed only by
+`ChestBuilders.BuildSpecialChestInventory` at `1d2+1` items per special chest. Village tinkers stock
+`Artifact NR`, which carries none. So price sets what an unwanted chip *sells* for and nothing else;
+rarity is the access dial. Both are the mod's business under §5.2's rule, but they do different jobs.
+
+#### Settled: a stated chip curve at a quarter of the item curve
+
+`chip value = 1.25 × 2^tier`, written into `docs/STYLEGUIDE.md` §3.2 with its reason, in the style of
+`CURVE_EXEMPT`'s vibro entry — **chips are not equipment, their slot competes with nothing, and they
+cannot be bought.**
+
+| tier | kind | count | now | item curve | chip curve |
+|---:|---|---:|---:|---:|---:|
+| 4 | chip | 36 | 20 | 80 | **20** — already on it |
+| 6 | chipset | 12 | 20 | 320 | **80** |
+| 6 | chip | 36 | 40 | 320 | **80** |
+| 7 | chipset | 12 | 40 | 640 | **160** |
+| 8 | chip | 36 | 60 | 1280 | **320** |
+| 8 | chipset | 12 | 60 | 1280 | **320** |
+
+108 of the 144 change; the basic single chips are already correct.
+[#354](https://github.com/vixygrey/qud-expanded-community-edition/issues/354) checks against this
+curve rather than the item one.
+
+#### Settled: the four steep permanent passives become jackpots
+
+`HeightenedSpeed`, `PhotosyntheticSkin`, `Regeneration` and `ElectricalGeneration` drop from weight 3
+to weight 1 in all three `Raven_Chips Tier N` tables — the same weight as a chipset. The three utility
+passives keep weight 3.
+
+| | per artifact roll | 50% chance after |
 |---|---:|---:|
-| The Kesil Face (vanilla) | +10 | 10,000 |
-| The Shemesh Face (vanilla) | +10 | 8,000 |
-| **the mutation at level 1** | **+15** | — |
-| Neutral Body chipset, basic — *starting gear, all 9 Guardians* | +17 | 20 |
-| Heightened Quickness chip, basic | +19 | 20 |
-| …perfected | +33 | 60 |
+| a steep chip, now | 0.227% | 305 rolls |
+| a steep chip, at weight 1 | **0.081%** | **854 rolls** |
+| an ordinary single chip | 0.227% → 0.244% | — |
 
-**Level 1 already beats the best Quickness item in the game.** The floor is the problem, not the
-ceiling, so lowering the ladder cannot resolve these two — the dial has to be price, rarity, or
-removal.
+The table total falls 120 → 112, so every other chip gets marginally commoner, which is the intended
+trade rather than a side-effect.
+
+#### Settled: the Quickness pair stays in the catalogue
+
+Removal was the only dial reaching below the +15 floor, and it is not taken. Under §5.2's rule the mod
+controls access and price rather than what a mutation is worth, and **a Mutated Human can take
+`Heightened Quickness` at chargen for 4 of their 16 mutation points**. The chip is the non-mutant's
+route to the same thing, and pricing that route is exactly what is in scope. The floor of +15 is
+accepted as a consequence of the mutation's own vanilla design.
+
+What that leaves is a perfected Heightened Quickness chip at **320 water, 0.081% per artifact roll** —
+against 60 water and 0.227% today.
 
 ### 5.4 Six chips whose grades grant nothing — filed separately
 
@@ -737,11 +777,13 @@ cooldown caps it; **INERT** means the level is not read at all.
 
 ### 5.6 The three dials
 
-| dial | what it does | what it cannot do |
-|---|---|---|
-| **Level** | re-key the ladder on uptime rather than category | reach below +15 on the Quickness pair |
-| **Price** | chips are tier 4/6/8 at 20/40/60 where §3.2's curve says 80/320/1280 — **all 144 are off the curve**, and `item-curve` misses it because chip names carry no material word | stop a *found* chip being strong |
-| **Supply** | every chip is weight 3 in its tier table, chipsets 1; slots are 1 / 2 / 4 | reach the starting chipset, which bypasses both |
+| dial | outcome |
+|---|---|
+| **Level** | **not used** — §5.2. Vanilla decides what a rank is worth. |
+| **Price** | **used** — §5.3. A stated chip curve at a quarter of the item curve; 108 of 144 reprice. Sets sale value only, since chips cannot be bought. |
+| **Supply** | **used** — §5.3. The four steep permanent passives drop to weight 1. Slots were settled separately: the mutant's goes (#353), True Kin keep 2, the Adept keeps 4. |
+
+None of them reaches the starting chipset every Guardian holds, which is why that is its own decision.
 
 ### 5.7 What still needs deciding
 
@@ -761,11 +803,9 @@ or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape i
    through the chip ladder second-guesses Freehold by proxy. §5.2 records the reasoning and the
    principle it establishes: **the chip system controls access and price; vanilla controls what a
    mutation is worth.**
-3. **Price and rarity for the seven permanent passives.** Widened from "the Quickness pair" by item
-   2, because price is now the only dial left. Three things to fix together: what a chip should cost
-   (#354 has to move all 144 anyway), how rare the steep ones should be within their tier table, and
-   whether `HeightenedSpeed` and `PhotosyntheticSkin` belong in the catalogue at all — only removal
-   reaches below their `13 + 2 × Level` floor of +15.
+3. ~~**Price and rarity for the seven permanent passives.**~~ **Settled — see §5.3.** A stated chip
+   curve at a quarter of the item curve (108 of 144 chips reprice), the four steep permanent passives
+   drop to weight 1 in their tier tables, and the Quickness pair stays in the catalogue.
 4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
    chipset. That is **+15 Quickness at character creation** — the chipset grants rank 2 but the cap
    at level 1 is 1 — against The Kesil Face's uncapped +10 for 10,000 water.
