@@ -16,6 +16,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Question one of the balance sweep is settled: **Agility scaling becomes a purchased
+  power rather than a property baked into blueprints** (#321). Every melee blueprint reverts to
+  `Stat="Strength"`; a `Finesse` tag marks which weapons may cross over, and a power sold by Short
+  Blades and Long Blades decides whether you may. `docs/DESIGN_balance.md` §3.9 records the design
+  and §3.1–§3.8 the reasoning.
+
+  Three things decided it. Mura's notes describe **three skill changes and no weapon changes**, so
+  the 20 vanilla-weapon `Stat` swaps sit outside every document they left. Vanilla is rigid here —
+  Strength is the only stat in Qud that scales weapon damage, on 4,351 of 4,354 melee weapons, on
+  thrown, and on the only two bows that scale at all. And Agility is the gun stat while guns have no
+  penetration stat of their own, so the swaps gave a rifle build better stat-scaling in melee than
+  in its own specialty.
+
+  Splitting the licence from the weapon is Pathfinder's answer rather than D&D's, and it fits
+  because **Qud already works that way** — accuracy crosses over free on every weapon, damage does
+  not. It also reverses the two most genre-inverted assignments in the mod, since the halberd and
+  the war hammer go back to Strength.
+
+  The C# is a nine-line variation on a class Freehold already ships,
+  `SingleWeaponFighting_PenetratingStrikes`. One class per tree rather than one shared class,
+  because `SkillFactory.PowersByClass` keeps only the first entry for a given `Class` — which is
+  exactly how #11 broke Akimbo.
+
 - **(internal)** `docs/DESIGN_balance.md` — a balance audit of the whole mod against vanilla, and
   the reasoning behind it. Twenty findings are filed and indexed under
   [#315](https://github.com/vixygrey/qud-expanded-community-edition/issues/315); nothing is changed
