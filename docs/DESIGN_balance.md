@@ -1107,17 +1107,34 @@ Either would have failed real vanilla items, which is worse than having no rule 
 its AV counts twice, which no finding had accounted for. It changes the arithmetic and it changes
 the recommendation: the vambrace line at AV 3 is worth **6** AV, more than the head, hands or feet.
 
-It also corrects this document's own earlier figures. Best-in-slot AV, counting Arm twice:
+### 9.2b The first version of this section missed shields, and was wrong about #318
 
-| basis                     | vanilla | with the mod |
-| ------------------------- | ------: | -----------: |
-| including named artefacts |      33 |           43 |
-| ordinary items only       |      26 |           40 |
+The paragraph that stood here claimed
+[#318](https://github.com/vixygrey/qud-expanded-community-edition/issues/318)'s headline "32 → 48"
+had never stated its basis, and attributed it to #316. Both halves were wrong, and the cause is
+worth keeping.
 
-[#316](https://github.com/vixygrey/qud-expanded-community-edition/issues/316)'s headline "32 → 48"
-is neither of these. The gap is method rather than arithmetic — that issue never said whether
-artefacts count or whether Arm doubles — so the issue wants restating against a stated basis rather
-than the number wants correcting.
+**Shields carry AV on a `Shield` part, not an `Armor` one.** The survey behind §9.1 filtered on
+`Armor`, so all 14 vanilla shields — and the mod's 20 — were invisible to it. That is why my totals
+came out at 26 and 40: they were #318's numbers with the shield slot silently absent.
+
+Add it back and it reconciles exactly. Vanilla: Body 8, Head 4, Hands 4, Feet 4, Back 2, Arm 1 × 2,
+Face 1, **Shield 7** = **32**. The mod: 10, 6, 6, 6, 3, 3 × 2, 1, **10** = **48**. #318 stated its
+basis in its opening sentence — *"excluding uniques and gigantic-creature gear, computed identically
+on both sides"* — listed the Arm slot as `Arm × 2`, and was right on both sides.
+
+The failure was mine and it has a shape worth naming: **I verified the extraction against a number I
+had already computed the same wrong way.** §9.1's per-slot maxima summing to 32 looked like
+independent confirmation, and it was not — the 32 I matched came from including named artefacts,
+which happened to cancel the missing shield almost exactly. A coincidence that reads as a
+cross-check is worse than no cross-check.
+
+The shield ceiling itself now sits in `docs/STYLEGUIDE.md` §3.2.1 at **7** — `Flawless Crysteel
+Shield`, the largest single AV of any ordinary item in the game, beating every body armour but
+`Zetachrome Lune`. Vanilla ships no ordinary tier-8 shield; the only one is
+`Gear from the Great Machine` at AV 10, which is exactly what
+[#319](https://github.com/vixygrey/qud-expanded-community-edition/issues/319) reports the zetachrome
+greatshield matching.
 
 ### 9.3 Cloaks stay, vambraces go back to flavour
 

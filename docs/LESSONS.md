@@ -1172,3 +1172,39 @@ Cuffs and the rest of the utility artifacts, nearly all at AV 0 — so vanilla's
 weapon, `ArmDagger4`, is trading an extra attack against a unique effect. Add ordinary armour to the
 slot and that trade quietly stops being a trade. Before pricing an item that occupies an unusual
 slot, enumerate what already lives there.
+
+## A number that agrees because both sides share the error is not a cross-check
+
+Deriving the armour curves in #340 I surveyed every vanilla blueprint carrying an `Armor` part,
+totalled the per-slot maxima, and got **32** — the exact figure #318 had already published for
+best-in-slot AV. That looked like independent confirmation from a second method, so I stopped
+checking and wrote the curve.
+
+It was a coincidence. Shields carry their AV on a **`Shield` part, not an `Armor` one**, so the
+survey never saw a single one of vanilla's fourteen. My 32 was #318's 32 with the shield's 7
+missing and two named artefacts wrongly included, and those two errors happened to cancel. The
+curve shipped with no Shield column at all — in a document whose whole job was to give #319, *a
+finding about a shield*, something to be a defect against.
+
+Two things to take from it.
+
+**A matching number is only evidence if the two derivations are actually independent.** Mine shared
+the assumption that "armour" means "has an `Armor` part", which is the assumption that was wrong.
+When a recount lands on a figure you were hoping for, the question is not *does it match* but *could
+both of these be wrong the same way*.
+
+**When a survey defines a category by one part name, ask what else delivers the same effect.**
+Grepping `GetStat("AV")` finds only `Armor` — which is exactly why the miss was invisible. `Shield`
+never touches the AV stat at all: it sets `E.ShieldBlocked` on a `GetDefenderHitDiceEvent` and its
+AV applies to that one attack. Two mechanisms, one player-facing effect, and no shared symbol to
+grep for. The category to enumerate is *"what reduces incoming damage"*, not *"what writes to the AV
+stat"*.
+
+That difference matters beyond the miss, because **shield AV is conditional and armour AV is not.**
+Block chance is `25 * (1 + ImprovedBlock)`, plus 25 for `Shield_Block` and 25 for
+`Shield_DeftBlocking` — so 25% bare, 75% fully skilled, and 100% only under Shield Wall. Any
+best-in-slot total that adds a shield's AV to a body armour's is an upper bound, not a figure.
+
+The tell I ignored: **the category had no members where the finding said the worst case was.** #318
+named a shield in its own table and my slot list had no shield row. A survey that cannot see the
+thing the issue is about has answered a different question.
