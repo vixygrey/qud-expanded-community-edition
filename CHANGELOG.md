@@ -14,7 +14,40 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Changed
+
 ### Added
+- **The psionic chips are repriced, the four steep passives made rare, and the Guardian starting
+  kits fixed** (#338, and it closes #316). The largest content change of the balance sweep, and a
+  player-facing one.
+
+  **108 of the 144 chips move onto the chip curve**, `1.25 × 2^tier` — a quarter of the item curve,
+  because chips are not equipment: their slot competes with nothing and **they cannot be bought**,
+  living in `Artifact 3`–`8` while village tinkers stock `Artifact NR`. Tier 6 goes 20 and 40 → 80,
+  tier 7 goes 40 → 160, and **a perfected chip goes 60 → 320**. The 36 basic chips at 20 were
+  already on it.
+
+  **`HeightenedSpeed`, `PhotosyntheticSkin`, `Regeneration` and `ElectricalGeneration` drop from
+  weight 3 to weight 1** in all three chip tables — 0.227% to **0.081%** per artifact roll, or 305
+  rolls to 854 for a coin flip. Each table total falls 120 → 112, so every other chip gets
+  marginally commoner, which is the intended trade.
+
+  **All nine Guardians lose the basic neutral body chipset**, replaced by neutral mind. That chipset
+  carries `HeightenedSpeed`, so every martial subtype opened the game at +15 Quickness from a
+  *generic* chipset that is nobody's affinity — against `docs/DESIGN_balance.md` §5.9's rule that **a
+  subtype starts with its own affinity, not a generic chipset carrying someone else's steep
+  passive.** Their mental mirror chip becomes precognition, because neutral mind already grants
+  `MentalMirror` and duplicates stack (#350). Still three chips and five mutations.
+
+  **What this does not do.** The Quickness chips stay in the catalogue: removal was the only dial
+  reaching below their `13 + 2 × Level` floor of +15, and a Mutated Human can take Heightened
+  Quickness at chargen for 4 of 16 mutation points, so the chip is the non-mutant's route to the same
+  thing. The affinity cases stay too — a Light Psionic opening with `PhotosyntheticSkin` is its
+  affinity expressing itself.
+
+  `item-curve`'s baseline shrinks from 130 entries to **22**, which are the non-chip items #373
+  carries.
+
 
 - **(internal)** `docs/PERMISSION.md` §9 records **Mura's approval to absorb the Grand Bazaar and
   the Experience Curve**, given on Discord on 18 August 2026. That answers the question §8.4 left
