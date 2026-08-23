@@ -1,6 +1,30 @@
 {
   "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure.",
   "known": {
+    "armor-curve": {
+      "issue": "#318 for the four vanilla merges (Zetachrome Apex, Gloves, Pumps and Lune) and the eight vambraces, #319 for the four shields. The four cloaks at AV 3 are the other half of the cloaks-stay-vambraces-go decision in docs/DESIGN_balance.md 9.3, which caps Back at 2; they belong with #318's fix. Every one of these predates the ceiling being written down in 3.2.1.",
+      "items": [
+        "mod/ObjectBlueprints/Armor.xml: Raven_Carbide Vambrace grants AV 2 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Crysteel Greatshield grants AV 8 in the Shield slot, over vanilla's best ordinary item at 7",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Crysteel Vambrace grants AV 3 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Crysteelweave Cloak grants AV 3 in the Back slot, over vanilla's best ordinary item at 2",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Flawless Crysteel Greatshield grants AV 9 in the Shield slot, over vanilla's best ordinary item at 7",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Flawless Crysteel Vambrace grants AV 3 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Flawless Crysteelweave Cloak grants AV 3 in the Back slot, over vanilla's best ordinary item at 2",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Folded Carbide Vambrace grants AV 2 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Fullerite Vambrace grants AV 3 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Fulleriteweave Cloak grants AV 3 in the Back slot, over vanilla's best ordinary item at 2",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Steel Vambrace grants AV 2 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachrome Greatshield grants AV 10 in the Shield slot, over vanilla's best ordinary item at 7",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachrome Shield grants AV 8 in the Shield slot, over vanilla's best ordinary item at 7",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachrome Vambrace grants AV 3 in the Arm slot, over vanilla's best ordinary item at 1",
+        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachromeweave Cloak grants AV 3 in the Back slot, over vanilla's best ordinary item at 2",
+        "mod/ObjectBlueprints/Armor.xml: Zetachrome Apex grants AV 6 in the Head slot, over vanilla's best ordinary item at 4",
+        "mod/ObjectBlueprints/Armor.xml: Zetachrome Gloves grants AV 6 in the Hands slot, over vanilla's best ordinary item at 4",
+        "mod/ObjectBlueprints/Armor.xml: Zetachrome Lune grants AV 10 in the Body slot, over vanilla's best ordinary item at 8",
+        "mod/ObjectBlueprints/Armor.xml: Zetachrome Pumps grants AV 6 in the Feet slot, over vanilla's best ordinary item at 4"
+      ]
+    },
     "item-curve": {
       "issue": "#338 for the 108 chips (the chip curve is settled in docs/STYLEGUIDE.md 3.2.1; the reprice is that issue's work), #373 for the 22 other items. Both became visible only when #354 made item-curve prefer the Tier tag over a material word in the blueprint name - they are not new defects, they are defects the check could not previously see.",
       "items": [

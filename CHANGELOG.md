@@ -16,6 +16,37 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Three of the checks #337 asked for, plus a fourth column in `check_docs`. The
+  balance sweep's twenty findings all accumulated without failing anything; these are the durable
+  half of fixing that.
+
+  **`armor-curve`** holds AV against §3.2.1's per-slot ceiling, shields included on their own
+  `Shield` part. It reports **19** — the four vanilla merges from #318 (`Zetachrome Apex`, `Gloves`,
+  `Pumps` and `Lune`), the four shields from #319, the eight vambraces, and the four cloaks the
+  cloaks-stay decision caps at 2.
+
+  **`stat-discipline`** holds `MeleeWeapon.Stat`, and the two halves are different rules. A new
+  weapon may state Strength or leave it unset — the field is initialised to `"Strength"` and vanilla
+  omits it on 208 of its 402 declarations, so requiring it would report 28 correct weapons; what is
+  refused is any other value, which is the entire defect class. A **merge states nothing at all**,
+  which is stricter on purpose: CI has no game, so it cannot tell a merge restating vanilla's value
+  from one changing it, and the second is the defect. It reports **0** — one redundant
+  `Stat="Strength"` on the `Chute Crab Claw` merge was removed rather than baselined, since a merge
+  restating vanilla changes nothing by definition.
+
+  **`finesse-visible`** holds a `Finesse` tag and its rules text to implying each other, in both
+  directions. A tag with no text is a feature the player cannot discover — which is exactly how #366
+  was found, from a play session whose only symptom was a dagger that said nothing. Text with no tag
+  is a promise the game does not keep. It reports **0**.
+
+  And **`Stat` joins `ITEM_COLUMNS`** in `check_docs`, taking the verified item-table figures from
+  739 to 741. When #365 reverted 61 `Stat="Agility"` declarations, 65 table cells still said Agility
+  and nothing failed.
+
+  Twelve tests, each proving its check in both directions. The 19 `armor-curve` findings go into
+  `tools/validation-baseline.json` against #318 and #319 — reported, tracked, and not failing the
+  build, so every fix from here has a check to satisfy rather than a prose rule to remember.
+
 - **(internal)** Graded burden is played and confirmed, so `docs/FEATURES.md` §13 and §14 say so
   rather than saying it is untested. All five behaviours the pull request left open check out —
   including the one with no compile-time proof, that **an existing save picks the part up on load**.

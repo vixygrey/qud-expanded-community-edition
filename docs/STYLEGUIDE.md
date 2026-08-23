@@ -720,6 +720,9 @@ seconds rather than after a round trip.
 | `<part Builder="…">` naming a class in `XRL.World.PartBuilders` | `part-builder`, against the snapshot's `part_builders` list |
 | Figures the documents quote **from vanilla** | `vanilla-figure` in `tools/check_docs.py`, against the snapshot's `figures` map |
 | Tier and value curve consistency | `item-curve` |
+| AV against §3.2.1's ceiling, per slot and for shields | `armor-curve` |
+| `MeleeWeapon.Stat` on new weapons and on merges | `stat-discipline` |
+| A `Finesse` tag and its rules text implying each other | `finesse-visible` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |

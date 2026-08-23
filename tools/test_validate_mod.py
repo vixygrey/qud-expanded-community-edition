@@ -494,3 +494,164 @@ class TierResolution(unittest.TestCase):
             ),
             [],
         )
+
+
+class CurveChecks(unittest.TestCase):
+    """The checks #337 asked for, each proven in both directions.
+
+    A check is only proven by watching it fire on something broken AND stay quiet on something
+    sound. That is this file's house rule and it earns its keep here: every one of these guards a
+    rule that had no enforcement while twenty findings accumulated behind it.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _run(self, check, blueprints: str) -> list[tuple[str, str]]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints)
+        return findings_for(check, tmp)
+
+    # ----------------------------------------------------------------- stat-discipline
+
+    def test_new_weapon_on_agility_is_reported(self) -> None:
+        items = self._run(
+            validate_mod.check_stat_discipline,
+            '  <object Name="Vixy_Blade">\n'
+            '    <part Name="MeleeWeapon" Stat="Agility" />\n'
+            "  </object>",
+        )
+        self.assertTrue(items, "a new weapon on Agility was not reported")
+        self.assertEqual(items[0][0], "stat-discipline")
+
+    def test_new_weapon_may_leave_stat_unset(self) -> None:
+        """MeleeWeapon.Stat is initialised to "Strength" and vanilla omits it on 208 of 402
+        declarations. Requiring it would report 28 correct weapons."""
+        self.assertEqual(
+            self._run(
+                validate_mod.check_stat_discipline,
+                '  <object Name="Vixy_Blade">\n'
+                '    <part Name="MeleeWeapon" BaseDamage="1d4" />\n'
+                "  </object>",
+            ),
+            [],
+        )
+
+    def test_merge_stating_any_stat_is_reported(self) -> None:
+        """Stricter than the new-weapon half on purpose: CI has no game, so it cannot tell a merge
+        that restates vanilla's value from one that changes it, and the second is the defect."""
+        items = self._run(
+            validate_mod.check_stat_discipline,
+            '  <object Name="Dagger3" Load="Merge">\n'
+            '    <part Name="MeleeWeapon" Stat="Strength" />\n'
+            "  </object>",
+        )
+        self.assertTrue(items, "a merge asserting a Stat was not reported")
+
+    def test_merge_without_a_stat_is_not_reported(self) -> None:
+        self.assertEqual(
+            self._run(
+                validate_mod.check_stat_discipline,
+                '  <object Name="Dagger3" Load="Merge">\n'
+                '    <part Name="MeleeWeapon" BaseDamage="1d6" />\n'
+                "  </object>",
+            ),
+            [],
+        )
+
+    # --------------------------------------------------------------------- armor-curve
+
+    def test_armor_over_its_slot_ceiling_is_reported(self) -> None:
+        items = self._run(
+            validate_mod.check_armor_curve,
+            '  <object Name="Vixy_Bracer">\n'
+            '    <part Name="Armor" WornOn="Arm" AV="3" />\n'
+            "  </object>",
+        )
+        self.assertTrue(
+            items, "AV 3 in the Arm slot was not reported against a ceiling of 1"
+        )
+
+    def test_armor_at_its_slot_ceiling_is_not_reported(self) -> None:
+        """The boundary. A ceiling is a maximum, not a limit to stay under."""
+        self.assertEqual(
+            self._run(
+                validate_mod.check_armor_curve,
+                '  <object Name="Vixy_Plate">\n'
+                '    <part Name="Armor" WornOn="Body" AV="8" />\n'
+                "  </object>",
+            ),
+            [],
+        )
+
+    def test_shield_av_is_checked_against_the_shield_ceiling(self) -> None:
+        """Shields carry AV on a Shield part, not an Armor one. A survey filtered on Armor misses
+        all fourteen of vanilla's, which is how 3.2.1 first shipped without a Shield column."""
+        items = self._run(
+            validate_mod.check_armor_curve,
+            '  <object Name="Vixy_Aegis">\n'
+            '    <part Name="Shield" AV="10" />\n'
+            "  </object>",
+        )
+        self.assertTrue(items, "a Shield part's AV was not checked")
+        self.assertIn("Shield slot", items[0][1])
+
+    def test_base_objects_are_not_held_to_the_ceiling(self) -> None:
+        self.assertEqual(
+            self._run(
+                validate_mod.check_armor_curve,
+                '  <object Name="Vixy_Base Plate">\n'
+                '    <part Name="Armor" WornOn="Arm" AV="3" />\n'
+                '    <tag Name="BaseObject" Value="*noinherit" />\n'
+                "  </object>",
+            ),
+            [],
+        )
+
+    # ---------------------------------------------------------------- finesse-visible
+
+    def test_finesse_tag_without_the_text_is_reported(self) -> None:
+        """How #366 was found: the tag has no player-facing surface, so a silent feature and a
+        broken one look identical from the item screen."""
+        items = self._run(
+            validate_mod.check_finesse_visible,
+            '  <object Name="Vixy_Rapier">\n    <tag Name="Finesse" />\n  </object>',
+        )
+        self.assertTrue(items, "a Finesse tag with no rules text was not reported")
+
+    def test_finesse_text_without_the_tag_is_reported(self) -> None:
+        """The other direction, which is a different mistake: a promise the game does not keep."""
+        items = self._run(
+            validate_mod.check_finesse_visible,
+            '  <object Name="Vixy_Rapier">\n'
+            '    <part Name="RulesDescription" Text="Finesse: uses Agility." />\n'
+            "  </object>",
+        )
+        self.assertTrue(items, "finesse rules text with no tag was not reported")
+
+    def test_finesse_tag_with_the_text_is_not_reported(self) -> None:
+        self.assertEqual(
+            self._run(
+                validate_mod.check_finesse_visible,
+                '  <object Name="Vixy_Rapier">\n'
+                '    <tag Name="Finesse" />\n'
+                '    <part Name="RulesDescription" Text="Finesse: uses Agility." />\n'
+                "  </object>",
+            ),
+            [],
+        )
+
+    def test_a_deleted_finesse_tag_needs_no_text(self) -> None:
+        """`Value="*delete"` removes an inherited tag. The vibro wristblade uses it, because
+        MaxStrengthBonus 0 makes finesse unreachable there."""
+        self.assertEqual(
+            self._run(
+                validate_mod.check_finesse_visible,
+                '  <object Name="Vixy_Vibro Blade">\n'
+                '    <tag Name="Finesse" Value="*delete" />\n'
+                "  </object>",
+            ),
+            [],
+        )

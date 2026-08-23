@@ -5,7 +5,7 @@
   <!-- Chute crab claw can deal 0 damage as well now-->
 
   <object Name="Chute Crab Claw" Load="Merge">
-    <part Name="MeleeWeapon" BaseDamage="1d3-1" Skill="Cudgel" Stat="Strength" Slot="Hand" />
+    <part Name="MeleeWeapon" BaseDamage="1d3-1" Skill="Cudgel" Slot="Hand" />
   </object>
 
   <!-- Custom Bodies -->

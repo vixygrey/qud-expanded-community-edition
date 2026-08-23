@@ -601,6 +601,11 @@ ITEM_COLUMNS = (
     ("Tier", "tag", "Tier"),
     ("Value", "part", "Commerce"),
     ("Weight", "part", "Physics"),
+    # Added after #367. When #365 reverted 61 `Stat="Agility"` declarations, 65 table cells still
+    # said Agility and nothing failed - the two `item-tables` findings that did fire were about
+    # deleted blueprints, not wrong values. Sixty-five stale cells is a larger drift than any
+    # checked column has ever carried.
+    ("Stat", "part", "MeleeWeapon"),
 )
 # A cell holding one of these is documenting an absence, not a figure, and has nothing to compare.
 NOT_A_FIGURE = {"", "-", "\u2014", "(inh)"}
