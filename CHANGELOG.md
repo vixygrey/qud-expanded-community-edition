@@ -405,6 +405,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `item-curve` now finds an item's tier from its **`Tier` tag**, falling back to the
+  material word in its name only for the objects that predate the tag (#354). The order used to be
+  the other way round, so anything not named after a metal was skipped before its price was ever
+  compared — a clean green run over content nobody had checked.
+
+  It was reported as 144 invisible psionic chips. It is **130 violations across 166 objects**: 108
+  chips off the chip curve, and **22 other items nobody had filed**, from
+  `Raven_Large Sphere of Negative Weight` at a twelfth of curve to `Raven_Cryocannon` at nearly five
+  times it. #354 predicted exactly this — *"the chips are 144 of them; there may be others"* — and
+  #373 now carries the 22, including the three groups where the honest answer may be an exemption
+  rather than a reprice.
+
+  Two smaller corrections came with it. Chips are priced on **§3.2.1's chip curve** at `1.25 × 2^tier`
+  rather than the item curve, so the check now measures them against the right rule instead of
+  skipping them. And **base objects are no longer priced** — `Raven_Base Psionic Pistol` carries
+  `Tier` 3 and names no metal, so it was invisible here by accident rather than by rule, and nothing
+  spawns a template.
+
+  All 130 ship in `tools/validation-baseline.json`, reported but not failing, with the governing
+  issues named. The ledger only shrinks.
+
+  Six tests cover the new behaviour, and three of them were **checked against the old code first**
+  to confirm they fail there. A test that passes before and after proves nothing, which matters
+  especially here: the defect being fixed is a *skip*, and a check that skips is indistinguishable
+  from a check that approved.
+
 - **(internal)** `docs/STYLEGUIDE.md` §3.2.1's AV ceiling was missing shields, and
   `docs/DESIGN_balance.md` §9.2 was wrong about #318 as a result.
 

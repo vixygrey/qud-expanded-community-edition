@@ -71,10 +71,75 @@ TIER_MATERIALS = [
 ]
 
 # Value doubles per tier. The base differs by slot: body armour runs 8 -> 2048 and vambraces
-# 4 -> 1024 (half curve, partial slot); everything else 5 -> 1280.
+# 4 -> 1024 (half curve, partial slot); everything else 5 -> 1280. Chips run a quarter curve at
+# 1.25 -> 320, per docs/STYLEGUIDE.md 3.2.1: they are not equipment, their slot competes with
+# nothing, and they cannot be bought.
 VALUE_BASE_DEFAULT = 5
 VALUE_BASE_BODY = 8
 VALUE_BASE_VAMBRACE = 4
+VALUE_BASE_CHIP = 1.25
+
+
+def tier_of(obj: ET.Element, name: str) -> int | None:
+    """An object's tier: its `Tier` tag first, the material word in its name only as a fallback.
+
+    This order matters and it used to be the other way round. Matching a material word finds a
+    tier for anything named after a metal and `None` for everything else, so an object with an
+    explicit `<tag Name="Tier">` was skipped before its price was ever compared - which is how
+    all 144 psionic chips sat twenty times under the curve without failing anything (#354). The
+    tag is what the curve is actually about; the material word is a convenience for the objects
+    that predate it.
+
+    Returns None only when neither is present, which is the one case where there is genuinely no
+    tier to check against.
+    """
+    tag = next(
+        (e.get("Value") for e in obj.iter("tag") if e.get("Name") == "Tier"), None
+    )
+    if tag is not None:
+        try:
+            return int(tag)
+        except ValueError:
+            return None
+    low = name.lower()
+    return next((t for t, mat in TIER_MATERIALS if mat in low), None)
+
+
+def is_base_object(obj: ET.Element) -> bool:
+    """True for a template blueprint rather than a real item.
+
+    Qud marks these with `<tag Name="BaseObject" Value="*noinherit" />` - the value confines the
+    tag to the blueprint declaring it, so descendants are real objects. Nothing spawns a base, so
+    pricing one against the curve is meaningless. This only started mattering when tier resolution
+    stopped depending on a material word: `Raven_Base Psionic Pistol` carries `Tier` 3 and no
+    metal in its name, so it was previously invisible to the price check by accident.
+    """
+    return any(
+        e.get("Name") == "BaseObject" and e.get("Value") == "*noinherit"
+        for e in obj.findall("tag")
+    )
+
+
+# Every psionic chip inherits this one blueprint - all 144 of them, with nothing else doing so.
+CHIP_BASE = "Raven_Base Psionic Chip"
+
+
+def is_chip(obj: ET.Element, name: str) -> bool:
+    """True for a psionic chip, by inheritance rather than by name.
+
+    Deliberately not a name match. Matching "chip" in the blueprint name is the same class of
+    mistake as finding a tier by its material word, which is what #354 is about: it happens to
+    work today and silently stops working the moment something is named differently. All 144
+    chips declare `Inherits="Raven_Base Psionic Chip"` and nothing else does.
+    """
+    return obj.get("Inherits") == CHIP_BASE
+
+
+def material_tier_of(name: str) -> int | None:
+    """The tier a blueprint's own name claims, or None when it names no material."""
+    low = name.lower()
+    return next((t for t, mat in TIER_MATERIALS if mat in low), None)
+
 
 # Objects the curves genuinely do not describe. Each needs a reason, not just a name.
 CURVE_EXEMPT = {
@@ -749,22 +814,23 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
             if exempt:
                 continue
-            tier = next((t for t, mat in TIER_MATERIALS if mat in low), None)
+            tier = tier_of(obj, name)
             if tier is None:
                 continue
 
-            tag = next(
-                (e.get("Value") for e in obj.iter("tag") if e.get("Name") == "Tier"),
-                None,
-            )
-            if tag is not None and tag != str(tier):
+            # The tag wins for pricing, but a name that claims a different metal is still a
+            # defect worth reporting - it is how Flawless Crysteel Boots came to be tagged 3.
+            by_material = material_tier_of(name)
+            if by_material is not None and by_material != tier:
                 f.add(
                     "item-curve",
-                    f"{path}: {name} is tier {tier} by material, but tagged Tier {tag}",
+                    f"{path}: {name} is tier {by_material} by material, but tagged Tier {tier}",
                 )
 
             if not name.startswith(MOD_PREFIXES):
                 continue  # vanilla sets its own prices
+            if is_base_object(obj):
+                continue  # a base is a template, not an item anyone can hold
             commerce = next(
                 (e for e in obj.iter("part") if e.get("Name") == "Commerce"), None
             )
@@ -775,16 +841,20 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 None,
             )
             base = VALUE_BASE_DEFAULT
-            if "vambrace" in low:
+            curve = "value curve"
+            if is_chip(obj, name):
+                base = VALUE_BASE_CHIP
+                curve = "chip curve"
+            elif "vambrace" in low:
                 base = VALUE_BASE_VAMBRACE
             elif worn == "Body":
                 base = VALUE_BASE_BODY
-            expected = base * (2**tier)
+            expected = int(base * (2**tier))
             actual = int(commerce.get("Value"))
             if actual != expected:
                 f.add(
                     "item-curve",
-                    f"{path}: {name} is tier {tier}, so the value curve gives "
+                    f"{path}: {name} is tier {tier}, so the {curve} gives "
                     f"{expected}, not {actual}",
                 )
 
