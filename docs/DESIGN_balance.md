@@ -1002,16 +1002,26 @@ The sequence, in short:
 
 **All four questions are settled**, so what is left is implementation:
 
-1. **Write the curves** (#340) — AV, weight, damage, the chip curve, table share, and when a vanilla
-   blueprint may change its `Stat`. Plus the two rules the questions produced: *the chip system
-   controls access and price, vanilla controls what a mutation is worth* (§5.2), and *a subtype
-   starts with its own affinity, not a generic chipset carrying someone else's steep passive* (§5.9).
-   Nothing else can be called a defect until there is something it contradicts.
-2. **The four critical findings** (#316, #317, #318, #319).
-3. **The validator checks** (#337, #354) — what makes step 2 stick.
-4. **The systemic three** (#320, #321, #322). #320's magnitudes still wait on #176.
-5. **The rarity pass** (#325, #326, #327).
-6. Everything else. No option work — §6 settles that there will be none.
+The work splits in two, and the halves are not the same size. Four of the conventions were
+*decided* by the questions above and cost a paragraph each; the rest have to be **derived** from
+vanilla's own values before they can be written at all. Bundling them delayed the cheap half behind
+the expensive one.
+
+1. **Write the settled rules** — the `Stat` rule from §3.9, the chip value curve from §5.3, and the
+   two principles the questions produced: *the chip system controls access and price, vanilla
+   controls what a mutation is worth* (§5.2), and *a subtype starts with its own affinity, not a
+   generic chipset carrying someone else's steep passive* (§5.9). **Done** — they are in
+   `docs/STYLEGUIDE.md` §3.2, and they unblock #321, #338 and #354.
+2. **Derive the remaining curves** (#340) — AV and DV per slot per tier, weight per slot per tier,
+   damage per tier per family, and a ceiling on mod share of a vanilla table. Each needs vanilla's
+   own values collated first. Nothing they cover can be called a defect until there is something it
+   contradicts, which is what gates #318, #320, #322 and #325.
+3. **The four critical findings** (#316, #317, #318, #319).
+4. **The validator checks** (#337, #354) — what makes step 3 stick.
+5. **The systemic three** (#320, #321, #322). #321 was unblocked by step 1; #320's magnitudes still
+   wait on #176.
+6. **The rarity pass** (#325, #326, #327).
+7. Everything else. No option work — §6 settles that there will be none.
 
 ---
 
