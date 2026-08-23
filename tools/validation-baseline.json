@@ -1,39 +1,8 @@
 {
   "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure.",
   "known": {
-    "damage-ceiling": {
-      "issue": "",
-      "items": [
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Battle Axe6th deals 9.5 mean damage, over vanilla's best two-handed Axe at tier 6, which is 8.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Battle Axe7th deals 10 mean damage, over vanilla's best two-handed Axe at tier 7, which is 9.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Battle Axe8th deals 11.5 mean damage, over vanilla's best two-handed Axe at tier 8, which is 10.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel3 deals 5 mean damage, over vanilla's best one-handed Cudgel at tier 3, which is 4",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel3th deals 7.5 mean damage, over vanilla's best two-handed Cudgel at tier 3, which is 6",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel4 deals 6 mean damage, over vanilla's best one-handed Cudgel at tier 4, which is 5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel4th deals 8.5 mean damage, over vanilla's best two-handed Cudgel at tier 4, which is 7",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel5 deals 7 mean damage, over vanilla's best one-handed Cudgel at tier 5, which is 6",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel5th deals 10.5 mean damage, over vanilla's best two-handed Cudgel at tier 5, which is 9",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel6 deals 8 mean damage, over vanilla's best one-handed Cudgel at tier 6, which is 7",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel6th deals 11.5 mean damage, over vanilla's best two-handed Cudgel at tier 6, which is 8.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel7 deals 9.5 mean damage, over vanilla's best one-handed Cudgel at tier 7, which is 7.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel7th deals 14.5 mean damage, over vanilla's best two-handed Cudgel at tier 7, which is 10.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel8 deals 12.5 mean damage, over vanilla's best one-handed Cudgel at tier 8, which is 8.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Cudgel8th deals 19.5 mean damage, over vanilla's best two-handed Cudgel at tier 8, which is 14",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Dagger7 deals 8 mean damage, over vanilla's best one-handed ShortBlades at tier 7, which is 7.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Dagger8 deals 9 mean damage, over vanilla's best one-handed ShortBlades at tier 8, which is 8.5",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword4th deals 8 mean damage, over vanilla's best two-handed LongBlades at tier 4, which is 7",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword5th deals 10 mean damage, over vanilla's best two-handed LongBlades at tier 5, which is 8",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword6 deals 8 mean damage, over vanilla's best one-handed LongBlades at tier 6, which is 7",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword6th deals 11 mean damage, over vanilla's best two-handed LongBlades at tier 6, which is 9",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword7 deals 10 mean damage, over vanilla's best one-handed LongBlades at tier 7, which is 8",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword7th deals 12 mean damage, over vanilla's best two-handed LongBlades at tier 7, which is 11",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword8 deals 11 mean damage, over vanilla's best one-handed LongBlades at tier 8, which is 9",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Long Sword8th deals 14 mean damage, over vanilla's best two-handed LongBlades at tier 8, which is 13",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Warhammer2 deals 2.5 mean damage, over vanilla's best one-handed Cudgel at tier 1, which is 2"
-      ]
-    },
     "item-curve": {
-      "issue": "",
+      "issue": "#373. The 108 psionic chips were repriced in #338; what remains is the 22 other items #354 made visible.",
       "items": [
         "mod/ObjectBlueprints/Armor.xml: Raven_Bio Scanner Mask is tier 5, so the value curve gives 160, not 60",
         "mod/ObjectBlueprints/Armor.xml: Raven_Flexiboots is tier 5, so the value curve gives 160, not 75",
@@ -60,7 +29,7 @@
       ]
     },
     "table-share": {
-      "issue": "",
+      "issue": "#325. Nine vanilla tables past half. Armor 8C came from 71.7% to 54.1% in #319; the rest are untouched.",
       "items": [
         "mod/PopulationTables.xml: Armor 2C is 59.3% this fork's content (160 against vanilla's 110) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 2R is 57.7% this fork's content (90 against vanilla's 66) - the ceiling is half",
@@ -71,18 +40,6 @@
         "mod/PopulationTables.xml: Armor 8R is 55.8% this fork's content (168 against vanilla's 133) - the ceiling is half",
         "mod/PopulationTables.xml: Melee Weapons 1C is 55.4% this fork's content (245 against vanilla's 197) - the ceiling is half",
         "mod/PopulationTables.xml: Melee Weapons 1R is 62.5% this fork's content (200 against vanilla's 120) - the ceiling is half"
-      ]
-    },
-    "weight-curve": {
-      "issue": "",
-      "items": [
-        "mod/ObjectBlueprints/Cybernetics.xml: CrysteelHandBones weighs 10 lb against vanilla's 9 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: ArmDagger4 weighs 2 lb against vanilla's 1 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Dagger3 weighs 2 lb against vanilla's 1 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Dagger4 weighs 2 lb against vanilla's 1 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Dagger5 weighs 3 lb against vanilla's 2 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Obsidian Kris weighs 2 lb against vanilla's 1 - every per-slot factor is below 1, so nothing may get heavier",
-        "mod/ObjectBlueprints/MeleeWeapons.xml: Vibro Blade weighs 4 lb against vanilla's 2 - every per-slot factor is below 1, so nothing may get heavier"
       ]
     }
   }

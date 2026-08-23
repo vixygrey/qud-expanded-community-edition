@@ -397,12 +397,35 @@ are 0 by design — `Math.Min(Bonus, MaxBonus)` means no stat bonus reaches them
 are unbounded.
 
 **Weight is a constant factor per slot**, applied to vanilla's own value rather than chosen per
-item. 61 of the 109 re-weighted items already follow one: melee one-handed ×0.67, two-handed ×0.62,
-hands ×0.47, each with a mean deviation under a pound. **The magnitudes wait on
-[#176](https://github.com/vixygrey/qud-expanded-community-edition/issues/176)**, because a burden
-gradient and today's binary cliff want different numbers. Two things bind now regardless: every
-slot factor is below 1, so **no item may be heavier than vanilla's**, and the factor belongs to the
-slot, not the item.
+item. Measured across the 119 merged items that carry a weight on both sides:
+
+| slot | factor | | slot | factor |
+| ---------- | ----: | --- | ----------- | ----: |
+| Body | **0.44** | | melee 1H | 0.60–0.75 |
+| Feet | 0.47 | | melee 2H | 0.62–0.67 |
+| Hands | 0.50 | | short blades | **1.00** — see below |
+| Head | 0.57 | | | |
+
+**Two rules bind absolutely.** Every factor is below 1, so **no item may be heavier than vanilla's**
+— that holds whatever the magnitudes are, and it is what the `weight-curve` check enforces. And the
+factor belongs to the **slot**, not the item.
+
+**Body armour is held to 0.44 exactly**, because it is the one slot where weight *is* the balance.
+`Fullerite Plate Mail` is 160 lb in vanilla against a Strength-16 carry budget of 240 — two thirds
+of everything a character can lift, and precisely what its AV 6 is priced against. It had been cut
+to 36 lb, a factor of 0.23, which made the AV free. #320.
+
+**The other slots are held to the rule rather than the number.** Their medians sit close enough that
+re-deriving every weight would be churn against a convention the content mostly follows already;
+what matters is that nothing gets heavier and nothing is chosen per item. The short blades were the
+exception that proved it — a median of 1.00 is no compression at all, and five of them had gone
+*up*, leaving a line that ran 1, 1, 2, 2, 3, 1, 1, 1 by tier against vanilla's 1, 1, 1, 1, 1, 2, 2, 2.
+
+**Burden makes this matter more, not differently.** [#176](https://github.com/vixygrey/qud-expanded-community-edition/issues/176)
+ships graded burden **off by default**, so the experience these factors are tuned against is still
+vanilla's binary `Overburdened` cliff — where only the extremes count. With the gradient on, every
+pound moves you toward a real penalty, which is an argument for the factors being defensible rather
+than generous.
 
 **Mod share of a vanilla loot table stops at half.** A mod entry never outweighs a comparable
 vanilla entry — that already holds, and one table's entries are deliberately lighter — so share

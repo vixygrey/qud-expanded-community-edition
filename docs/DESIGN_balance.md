@@ -568,6 +568,31 @@ the final magnitudes turn out to be. Those seven are fixable now:
 | `Vibro Blade` | 2 | 4 |
 | `CrysteelHandBones` | 9 | 10 |
 
+### 4.5 Settled — the factors are written, and two groups were brought onto them
+
+`docs/STYLEGUIDE.md` §3.2.1 now carries the per-slot factors, measured across the 119 merged items
+that state a weight on both sides: Body 0.44, Feet 0.47, Hands 0.50, Head 0.57, melee 0.60–0.75 one
+handed and 0.62–0.67 two.
+
+**Only two groups were changed, not all 119.** #320's magnitudes were blocked on #176, and the
+answer #176 produced is that **the cliff is still the default** — graded burden ships opt-in, so the
+experience these factors are tuned against is unchanged. Under a binary threshold only the extremes
+count, which is what decided the scope:
+
+- **Body armour, held to 0.44 exactly.** The one slot where weight *is* the balance.
+  `Fullerite Plate Mail` is 160 lb in vanilla against a Strength-16 budget of 240 — two thirds of
+  everything a character can lift, and what its AV 6 is priced against. It had been cut to 36 lb, a
+  factor of 0.23, which made that AV free. Now 70.
+- **Seven items the mod made *heavier*.** Unambiguous in any direction, because every slot factor is
+  below 1. Five were short blades, leaving a line that ran 1, 1, 2, 2, 3, 1, 1, 1 by tier against
+  vanilla's 1, 1, 1, 1, 1, 2, 2, 2 — noise rather than a compression.
+
+The other hundred sit close enough to their slot medians that re-deriving each would be churn
+against a convention the content already follows. What binds them is the rule rather than the
+number, and `weight-curve` holds the half that can be checked without a game.
+
+---
+
 ## 5. Question three — what is a chip worth?
 
 **Open. The catalogue is now fully costed (§5.5) and three structural findings are settled facts;
