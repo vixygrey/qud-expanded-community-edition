@@ -721,16 +721,32 @@ cooldown caps it; **INERT** means the level is not read at all.
 
 ### 5.7 What still needs deciding
 
-1. **Is the Ego gradient intended?** §5.1 shows the two ladders are calibrated to meet at Ego 24 and
-   to diverge either side of it, without limit above. Whether that is the reward for building Ego or
-   an artefact of choosing one calibration point is the first thing to settle, because it decides
-   whether the ladders need changing at all.
-2. **Key the ladder on uptime, on a per-mutation cap list, or drop it for one uniform ladder?**
-   Uptime is a rule and the other two are exception lists, which charter rule 2 prefers — but uptime
-   needs all 36 classified once and defended.
-3. **Which dial for the Quickness pair?** Only removal gets below +15.
+Four, and two of them are cheap. Everything else this question started with has either been answered
+or split out — §5.1 (the ladder rationale is sound), §5.8 (the curve shape is coherent),
+[#347](https://github.com/vixygrey/qud-expanded-community-edition/issues/347) (inert grades),
+[#350](https://github.com/vixygrey/qud-expanded-community-edition/issues/350) (duplicate stacking),
+[#353](https://github.com/vixygrey/qud-expanded-community-edition/issues/353) (the mutant's slot) and
+[#354](https://github.com/vixygrey/qud-expanded-community-edition/issues/354) (the value curve).
+
+1. **Is the Ego gradient intended?** §5.1 shows the ladders are calibrated to meet at Ego 24 rather
+   than chosen arbitrarily, and §5.8 shows the rank cap bounds the divergence above it — a mental
+   chip only outruns a physical one where the character's level allows. So the likely answer is
+   *yes, leave the ladders alone*. **Settle this first: if it lands that way, most of item 2 goes
+   with it.**
+2. **Key the ladder on uptime, on a per-mutation cap list, or drop it for one uniform ladder?** The
+   live finding is §5.2's inversion — `HeightenedSpeed` at 100% uptime and `AdrenalControl2` at 10%
+   share 3/6/10. If item 1 leaves the ladders alone, this narrows from a re-key to *"cap the handful
+   of steep permanent passives"*, which is a five-row list rather than a system.
+3. **Which dial for the Quickness pair?** Price, rarity, or removal — and only removal reaches below
+   the `13 + 2 × Level` floor of +15. Price is the interesting one because #354 has to move these
+   numbers anyway.
 4. **Do the Guardians keep starting with a chipset?** All nine begin holding a basic Neutral Body
-   chipset, which is +17 Quickness at character creation whatever else is decided.
+   chipset. That is **+15 Quickness at character creation** — the chipset grants rank 2 but the cap
+   at level 1 is 1 — against The Kesil Face's uncapped +10 for 10,000 water.
+
+**What closing this question requires** is a stated budget in `docs/STYLEGUIDE.md` §3.2, and writing
+it there is [#340](https://github.com/vixygrey/qud-expanded-community-edition/issues/340)'s job. So
+#338 closes when these four are decided; no code depends on it.
 
 ### 5.8 Genotype power curves — the cap shapes everything
 
