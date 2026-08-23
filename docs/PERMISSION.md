@@ -191,3 +191,65 @@ the standalone's copies. The `JoppaRuins` terrain and map are not — see `docs/
 **This is precedent, not permission.** §8's licence grant is worded as *"their work in this
 mod"*, and the Bazaar and the Experience Curve are separate Workshop items. Whether that grant
 reaches them is Mura's to say, and the answer belongs in this file when it comes.
+
+---
+
+## 9. Sub-mod approval — Discord, 18 August 2026
+
+**This answers the question §8.4 left open.** That section recorded consolidation as Mura's own
+practice but stopped short of permission, because §8's grant is worded as *"their work in this
+mod"* and the Grand Bazaar and the Experience Curve are separate Workshop items. I asked directly.
+
+**VixyGrey**, 18 August 2026, 12:50 PM:
+
+> One more question: Can I eventually merge the Grand Bazaar and the EXP Curve mods into the
+> Community Edition? My plan would be to add options to allow players to enable/disable the add-ons
+> from their options menu rather than have 3 mods installed
+
+**Mura**, 12:59 PM:
+
+> Sure, I have no problem with that, the only reason I kept any of the mods separate was because
+> people asked for modularity and I didn't have the knowledge to set everything up that way in a
+> single mod
+
+Three things follow.
+
+**Both sub-mods are cleared**, so [#174](https://github.com/vixygrey/qud-expanded-community-edition/issues/174)
+and [#175](https://github.com/vixygrey/qud-expanded-community-edition/issues/175) are unblocked on
+permission. Everything else those issues list — the `Load="Merge"` audit, reading `SixDayTents.cs`
+against charter rule 5, the `WorkshopId` trap — still stands.
+
+**The option-gated shape was part of the question, not added afterwards.** I described enabling and
+disabling the add-ons from the options menu, and that is what Mura agreed to. So it is not merely
+permitted, it is the form the permission was given in — which matches charter rule 6 and settles
+how the merged content has to be built.
+
+**Mura's reason for keeping them separate was capability, not preference** — *"I didn't have the
+knowledge to set everything up that way in a single mod"*. §8.4 called consolidation the original
+author's own practice; this says the separation was a workaround for a problem this fork does not
+have. Twelve working options and a validator that checks their wiring is exactly the knowledge that
+was missing.
+
+### 9.1 No Noble Lark sprites in the Grand Bazaar
+
+Immediately after, at 1:15 PM:
+
+> **VixyGrey:** Ah, makes sense. Any Sprites from NobleLark in the grand bazaar?
+>
+> **Mura:** Nope, just the base mod
+
+That matters because **§8.2 records the sprites as the one thing still needing chirps' own
+confirmation.** It does not reach the Bazaar: there is nothing of theirs in it. So absorbing the
+Grand Bazaar raises no sprite question at all, and §8.2's open item stays scoped to the base mod
+where it already was.
+
+I have not asked the same question about the Experience Curve. It is a rules change rather than
+content, so sprites are unlikely — but *unlikely* is not *asked*, and this file records what was
+said rather than what is probably true.
+
+### 9.2 Evidence
+
+A screenshot of this Discord exchange belongs beside
+`permission-mura-workshop-comment.png` in `docs/`, under the §6 convention. Unlike the Workshop
+capture, this one carries **absolute timestamps** — 8/18/26 with the time on every message — so it
+needs no anchor date to read.
