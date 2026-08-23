@@ -25,14 +25,14 @@
 
   <object Name="Raven_Improved Disintegration Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{K|disintegration}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModDisintegration" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Disintegration Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{K|disintegration}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModDisintegration" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -46,14 +46,14 @@
 
   <object Name="Raven_Improved Stunning Force Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{K|stunning force}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModStunningForce" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Stunning Force Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{K|stunning force}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModStunningForce" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -67,21 +67,21 @@
 
   <object Name="Raven_Improved Force Bubble Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{K|force bubble}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModForceBubble" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Force Bubble Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{K|force bubble}} chip" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModForceBubble" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Force Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{K|force}} chipset" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModDisintegration" Tier="1" />
     <part Name="Raven_ModStunningForce" Tier="1" />
     <part Name="Raven_ModForceBubble" Tier="1" />
@@ -90,7 +90,7 @@
 
   <object Name="Raven_Improved Force Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{K|force}} chipset" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModDisintegration" Tier="2" />
     <part Name="Raven_ModStunningForce" Tier="2" />
     <part Name="Raven_ModForceBubble" Tier="2" />
@@ -99,7 +99,7 @@
 
   <object Name="Raven_Advanced Force Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{K|force}} chipset" ColorString="&amp;K" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModDisintegration" Tier="3" />
     <part Name="Raven_ModStunningForce" Tier="3" />
     <part Name="Raven_ModForceBubble" Tier="3" />
@@ -117,14 +117,14 @@
 
   <object Name="Raven_Improved Kindle Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModKindle" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Kindle Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModKindle" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -138,14 +138,14 @@
 
   <object Name="Raven_Improved Flaming Ray Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{o|flaming ray}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModFlamingRay" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Flaming Ray Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{o|flaming ray}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModFlamingRay" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -159,21 +159,21 @@
 
   <object Name="Raven_Improved Pyrokinesis Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{o|pyrokinesis}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPyrokinesis" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Pyrokinesis Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{o|pyrokinesis}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPyrokinesis" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Fire Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{o|fire}} chipset" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModKindle" Tier="1" />
     <part Name="Raven_ModFlamingRay" Tier="2" />
     <part Name="Raven_ModPyrokinesis" Tier="1" />
@@ -182,7 +182,7 @@
 
   <object Name="Raven_Improved Fire Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{o|fire}} chipset" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModKindle" Tier="2" />
     <part Name="Raven_ModFlamingRay" Tier="4" />
     <part Name="Raven_ModPyrokinesis" Tier="2" />
@@ -191,7 +191,7 @@
 
   <object Name="Raven_Advanced Fire Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{o|fire}} chipset" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModKindle" Tier="3" />
     <part Name="Raven_ModFlamingRay" Tier="6" />
     <part Name="Raven_ModPyrokinesis" Tier="3" />
@@ -209,14 +209,14 @@
 
   <object Name="Raven_Improved Frost Webs Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModFrostWebs" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Frost Webs Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModFrostWebs" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -230,14 +230,14 @@
 
   <object Name="Raven_Improved Freezing Ray Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|freezing ray}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModFreezingRay" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Freezing Ray Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|freezing ray}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModFreezingRay" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -251,21 +251,21 @@
 
   <object Name="Raven_Improved Cryokinesis Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|cryokinesis}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModCryokinesis" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Cryokinesis Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|cryokinesis}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModCryokinesis" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Ice Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{C|ice}} chipset" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModFrostWebs" Tier="2" />
     <part Name="Raven_ModFreezingRay" Tier="2" />
     <part Name="Raven_ModCryokinesis" Tier="1" />
@@ -274,7 +274,7 @@
 
   <object Name="Raven_Improved Ice Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|ice}} chipset" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModFrostWebs" Tier="4" />
     <part Name="Raven_ModFreezingRay" Tier="4" />
     <part Name="Raven_ModCryokinesis" Tier="2" />
@@ -283,7 +283,7 @@
 
   <object Name="Raven_Advanced Ice Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|ice}} chipset" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModFrostWebs" Tier="6" />
     <part Name="Raven_ModFreezingRay" Tier="6" />
     <part Name="Raven_ModCryokinesis" Tier="3" />
@@ -301,14 +301,14 @@
 
   <object Name="Raven_Improved EMP Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{W|EMP}} chip" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModElectromagneticPulse" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced EMP Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{W|EMP}} chip" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModElectromagneticPulse" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -327,7 +327,7 @@
       ColorString="&amp;W"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModElectricalGeneration" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -339,7 +339,7 @@
       ColorString="&amp;W"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModElectricalGeneration" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -353,21 +353,21 @@
 
   <object Name="Raven_Improved Phasing Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{W|phasing}} chip" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPhasing" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Phasing Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{W|phasing}} chip" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPhasing" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Lightning Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{W|lightning}} chipset" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModElectromagneticPulse" Tier="2" />
     <part Name="Raven_ModElectricalGeneration" Tier="2" />
     <part Name="Raven_ModPhasing" Tier="2" />
@@ -376,7 +376,7 @@
 
   <object Name="Raven_Improved Lightning Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{W|lightning}} chipset" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModElectromagneticPulse" Tier="4" />
     <part Name="Raven_ModElectricalGeneration" Tier="4" />
     <part Name="Raven_ModPhasing" Tier="4" />
@@ -385,7 +385,7 @@
 
   <object Name="Raven_Advanced Lightning Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{W|lightning}} chipset" ColorString="&amp;W" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModElectromagneticPulse" Tier="6" />
     <part Name="Raven_ModElectricalGeneration" Tier="6" />
     <part Name="Raven_ModPhasing" Tier="6" />
@@ -408,7 +408,7 @@
       ColorString="&amp;O"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPhotosyntheticSkin" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -420,7 +420,7 @@
       ColorString="&amp;O"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPhotosyntheticSkin" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -439,7 +439,7 @@
       ColorString="&amp;O"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModLightManipulation" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -451,7 +451,7 @@
       ColorString="&amp;O"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModLightManipulation" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -465,21 +465,21 @@
 
   <object Name="Raven_Improved Teleportation Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{Y|teleportation}} chip" ColorString="&amp;O" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModTeleportation" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Teleportation Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{Y|teleportation}} chip" ColorString="&amp;O" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModTeleportation" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Light Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{Y|light}} chipset" ColorString="&amp;O" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPhotosyntheticSkin" Tier="2" />
     <part Name="Raven_ModLightManipulation" Tier="1" />
     <part Name="Raven_ModTeleportation" Tier="1" />
@@ -488,7 +488,7 @@
 
   <object Name="Raven_Improved Light Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{Y|light}} chipset" ColorString="&amp;O" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModPhotosyntheticSkin" Tier="4" />
     <part Name="Raven_ModLightManipulation" Tier="2" />
     <part Name="Raven_ModTeleportation" Tier="2" />
@@ -497,7 +497,7 @@
 
   <object Name="Raven_Advanced Light Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{Y|light}} chipset" ColorString="&amp;O" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPhotosyntheticSkin" Tier="6" />
     <part Name="Raven_ModLightManipulation" Tier="3" />
     <part Name="Raven_ModTeleportation" Tier="3" />
@@ -515,14 +515,14 @@
 
   <object Name="Raven_Improved Corrosive Gas Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{g|corrosive gas}} chip" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModGasGeneration" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Corrosive Gas Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{g|corrosive gas}} chip" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModGasGeneration" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -536,14 +536,14 @@
 
   <object Name="Raven_Improved Confusion Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{g|confusion}} chip" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModConfusion" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Confusion Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{g|confusion}} chip" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModConfusion" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -562,7 +562,7 @@
       ColorString="&amp;g"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModAcidSlimeGlands" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -574,14 +574,14 @@
       ColorString="&amp;g"
       DetailColor="y"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModAcidSlimeGlands" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Acid Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{g|acid}} chipset" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModGasGeneration" Tier="2" />
     <part Name="Raven_ModConfusion" Tier="1" />
     <part Name="Raven_ModAcidSlimeGlands" Tier="2" />
@@ -590,7 +590,7 @@
 
   <object Name="Raven_Improved Acid Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{g|acid}} chipset" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModGasGeneration" Tier="4" />
     <part Name="Raven_ModConfusion" Tier="2" />
     <part Name="Raven_ModAcidSlimeGlands" Tier="4" />
@@ -599,7 +599,7 @@
 
   <object Name="Raven_Advanced Acid Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{g|acid}} chipset" ColorString="&amp;g" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModGasGeneration" Tier="6" />
     <part Name="Raven_ModConfusion" Tier="3" />
     <part Name="Raven_ModAcidSlimeGlands" Tier="6" />
@@ -617,14 +617,14 @@
 
   <object Name="Raven_Improved Syphon Vim Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|syphon vim}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModLifeDrain" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Syphon Vim Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|syphon vim}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModLifeDrain" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -638,14 +638,14 @@
 
   <object Name="Raven_Improved Adrenal Control Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|adrenal control}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModAdrenalControl2" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Adrenal Control Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|adrenal control}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModAdrenalControl2" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -659,21 +659,21 @@
 
   <object Name="Raven_Improved Regeneration Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|regeneration}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModRegeneration" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Regeneration Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|regeneration}} chip" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModRegeneration" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Blood Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{R|blood}} chipset" ColorString="&amp;w" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModLifeDrain" Tier="1" />
     <part Name="Raven_ModAdrenalControl2" Tier="2" />
     <part Name="Raven_ModRegeneration" Tier="2" />
@@ -682,7 +682,7 @@
 
   <object Name="Raven_Improved Blood Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|blood}} chipset" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModLifeDrain" Tier="2" />
     <part Name="Raven_ModAdrenalControl2" Tier="4" />
     <part Name="Raven_ModRegeneration" Tier="4" />
@@ -691,7 +691,7 @@
 
   <object Name="Raven_Advanced Blood Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|blood}} chipset" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModLifeDrain" Tier="3" />
     <part Name="Raven_ModAdrenalControl2" Tier="6" />
     <part Name="Raven_ModRegeneration" Tier="6" />
@@ -709,14 +709,14 @@
 
   <object Name="Raven_Improved Sunder Mind Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|sunder mind}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModSunderMind" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Sunder Mind Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|sunder mind}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModSunderMind" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -730,14 +730,14 @@
 
   <object Name="Raven_Improved Domination Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|domination}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModDomination" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Domination Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|domination}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModDomination" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -751,21 +751,21 @@
 
   <object Name="Raven_Improved Mass Mind Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|mass mind}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModMassMind" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Mass Mind Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|mass mind}} chip" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModMassMind" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Mental Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{M|mental}} chipset" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModSunderMind" Tier="1" />
     <part Name="Raven_ModDomination" Tier="1" />
     <part Name="Raven_ModMassMind" Tier="1" />
@@ -774,7 +774,7 @@
 
   <object Name="Raven_Improved Mental Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|mental}} chipset" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModSunderMind" Tier="2" />
     <part Name="Raven_ModDomination" Tier="2" />
     <part Name="Raven_ModMassMind" Tier="2" />
@@ -783,7 +783,7 @@
 
   <object Name="Raven_Advanced Mental Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|mental}} chipset" ColorString="&amp;M" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModSunderMind" Tier="3" />
     <part Name="Raven_ModDomination" Tier="3" />
     <part Name="Raven_ModMassMind" Tier="3" />
@@ -801,14 +801,14 @@
 
   <object Name="Raven_Improved Space-Time Vortex Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} space-time vortex chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModSpacetimeVortex" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Space-Time Vortex Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} space-time vortex chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModSpacetimeVortex" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -822,14 +822,14 @@
 
   <object Name="Raven_Improved Time Dilation Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} time dilation chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModTimeDilation" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Time Dilation Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} time dilation chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModTimeDilation" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -843,21 +843,21 @@
 
   <object Name="Raven_Improved Temporal Fugue Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} temporal fugue chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModTemporalFugue" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Temporal Fugue Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} temporal fugue chip" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModTemporalFugue" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Temporal Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic temporal chipset" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModSpacetimeVortex" Tier="1" />
     <part Name="Raven_ModTimeDilation" Tier="1" />
     <part Name="Raven_ModTemporalFugue" Tier="1" />
@@ -866,7 +866,7 @@
 
   <object Name="Raven_Improved Temporal Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} temporal chipset" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModSpacetimeVortex" Tier="2" />
     <part Name="Raven_ModTimeDilation" Tier="2" />
     <part Name="Raven_ModTemporalFugue" Tier="2" />
@@ -875,7 +875,7 @@
 
   <object Name="Raven_Advanced Temporal Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} temporal chipset" ColorString="&amp;Y" DetailColor="y" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModSpacetimeVortex" Tier="3" />
     <part Name="Raven_ModTimeDilation" Tier="3" />
     <part Name="Raven_ModTemporalFugue" Tier="3" />
@@ -893,14 +893,14 @@
 
   <object Name="Raven_Improved Mental Mirror Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|mental mirror}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModMentalMirror" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Mental Mirror Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|mental mirror}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModMentalMirror" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -914,14 +914,14 @@
 
   <object Name="Raven_Improved Teleport Other Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|teleport other}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModTeleportOther" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Teleport Other Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|teleport other}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModTeleportOther" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -935,21 +935,21 @@
 
   <object Name="Raven_Improved Force Wall Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|force wall}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModForceWall" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Force Wall Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|force wall}} chip" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModForceWall" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Neutral Mind Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{M|neutral mind}} chipset" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModMentalMirror" Tier="1" />
     <part Name="Raven_ModTeleportOther" Tier="1" />
     <part Name="Raven_ModForceWall" Tier="1" />
@@ -958,7 +958,7 @@
 
   <object Name="Raven_Improved Neutral Mind Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{M|neutral mind}} chipset" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModMentalMirror" Tier="2" />
     <part Name="Raven_ModTeleportOther" Tier="2" />
     <part Name="Raven_ModForceWall" Tier="2" />
@@ -967,7 +967,7 @@
 
   <object Name="Raven_Advanced Neutral Mind Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{M|neutral mind}} chipset" ColorString="&amp;y" DetailColor="M" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModMentalMirror" Tier="3" />
     <part Name="Raven_ModTeleportOther" Tier="3" />
     <part Name="Raven_ModForceWall" Tier="3" />
@@ -990,7 +990,7 @@
       ColorString="&amp;y"
       DetailColor="R"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModHeightenedSpeed" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -1002,7 +1002,7 @@
       ColorString="&amp;y"
       DetailColor="R"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModHeightenedSpeed" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -1016,14 +1016,14 @@
 
   <object Name="Raven_Improved Ego Projection Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|ego projection}} chip" ColorString="&amp;y" DetailColor="R" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModWillForce" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Ego Projection Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|ego projection}} chip" ColorString="&amp;y" DetailColor="R" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModWillForce" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -1042,7 +1042,7 @@
       ColorString="&amp;y"
       DetailColor="R"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModHeightenedHearing" Tier="6" />
     <tag Name="Tier" Value="6" />
   </object>
@@ -1054,14 +1054,14 @@
       ColorString="&amp;y"
       DetailColor="R"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModHeightenedHearing" Tier="10" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Neutral Body Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{R|neutral body}} chipset" ColorString="&amp;y" DetailColor="R" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModHeightenedSpeed" Tier="2" />
     <part Name="Raven_ModWillForce" Tier="1" />
     <part Name="Raven_ModHeightenedHearing" Tier="2" />
@@ -1070,7 +1070,7 @@
 
   <object Name="Raven_Improved Neutral Body Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{R|neutral body}} chipset" ColorString="&amp;y" DetailColor="R" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModHeightenedSpeed" Tier="4" />
     <part Name="Raven_ModWillForce" Tier="2" />
     <part Name="Raven_ModHeightenedHearing" Tier="4" />
@@ -1079,7 +1079,7 @@
 
   <object Name="Raven_Advanced Neutral Body Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{R|neutral body}} chipset" ColorString="&amp;y" DetailColor="R" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModHeightenedSpeed" Tier="6" />
     <part Name="Raven_ModWillForce" Tier="3" />
     <part Name="Raven_ModHeightenedHearing" Tier="6" />
@@ -1097,14 +1097,14 @@
 
   <object Name="Raven_Improved Clairvoyance Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|clairvoyance}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModClairvoyance" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Clairvoyance Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|clairvoyance}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModClairvoyance" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -1118,14 +1118,14 @@
 
   <object Name="Raven_Improved Psychometry Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|psychometry}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPsychometry" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Psychometry Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|psychometry}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPsychometry" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -1139,21 +1139,21 @@
 
   <object Name="Raven_Improved Precognition Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|precognition}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModPrecognition" Tier="4" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Precognition Chip" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|precognition}} chip" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModPrecognition" Tier="6" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Raven_Simple Neutral Spirit Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="basic {{C|neutral spirit}} chipset" ColorString="&amp;y" DetailColor="C" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="80" />
     <part Name="Raven_ModClairvoyance" Tier="1" />
     <part Name="Raven_ModPsychometry" Tier="1" />
     <part Name="Raven_ModPrecognition" Tier="1" />
@@ -1167,7 +1167,7 @@
       ColorString="&amp;y"
       DetailColor="C"
     />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="160" />
     <part Name="Raven_ModClairvoyance" Tier="2" />
     <part Name="Raven_ModPsychometry" Tier="2" />
     <part Name="Raven_ModPrecognition" Tier="2" />
@@ -1181,7 +1181,7 @@
       ColorString="&amp;y"
       DetailColor="C"
     />
-    <part Name="Commerce" Value="60" />
+    <part Name="Commerce" Value="320" />
     <part Name="Raven_ModClairvoyance" Tier="3" />
     <part Name="Raven_ModPsychometry" Tier="3" />
     <part Name="Raven_ModPrecognition" Tier="3" />

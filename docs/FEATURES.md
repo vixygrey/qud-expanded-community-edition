@@ -1497,8 +1497,22 @@ Per-subtype deviations:
 
 **Immovable Wall (Guardians)** — `StartingGear_Common`, a themed weapon, a **full iron armor
 set** (Raven_Iron Plate Armor, Boots, Gauntlets, Helmet), 3 half-full waterskins, 1d3 salve
-tonic, one themed single chip, a **basic neutral body chipset**, a **basic mental mirror chip**,
+tonic, one themed single chip, a **basic neutral mind chipset**, a **basic precognition chip**,
 1d3 injectors, 1d3 cells. Three Guardians break the armor-set pattern entirely.
+
+> The chipset used to be **neutral body**, and the third chip **mental mirror**. Both changed in
+> #338. Neutral body carries `HeightenedSpeed`, which is one of the four steep permanent passives —
+> so every one of the nine Guardians opened the game at +15 Quickness from a *generic* chipset that
+> is nobody's affinity. `docs/DESIGN_balance.md` §5.9 states the rule it broke: **a subtype starts
+> with its own affinity, not a generic chipset carrying someone else's steep passive.** Neutral mind
+> is reflect-block-displace, which is closer to what a Guardian is anyway.
+>
+> Mental mirror moved to precognition for a second reason: the neutral mind chipset already grants
+> `MentalMirror`, and **duplicate chips stack** (#350), which should not be baked into starting
+> gear. Still three chips and five mutations, with no duplicate and no steep passive.
+>
+> The affinity cases stay. A Light Psionic opening with `PhotosyntheticSkin` is its affinity
+> expressing itself, and so is the Light Guardian's own affinity chip.
 
 | Guardian | Weapon(s) | Armor | Chip | Other deviations |
 |---|---|---|---|---|
@@ -2011,146 +2025,146 @@ not touch that field (the vanilla value is inherited).
 | Chip | Item tier | Value | Grants (mutation @ level) |
 |---|---|---|---|
 | basic disintegration chip | 4 | 20 | Disintegration @ 2 |
-| upgraded disintegration chip | 6 | 40 | Disintegration @ 4 |
-| perfected disintegration chip | 8 | 60 | Disintegration @ 6 |
+| upgraded disintegration chip | 6 | 80 | Disintegration @ 4 |
+| perfected disintegration chip | 8 | 320 | Disintegration @ 6 |
 | basic stunning force chip | 4 | 20 | StunningForce @ 2 |
-| upgraded stunning force chip | 6 | 40 | StunningForce @ 4 |
-| perfected stunning force chip | 8 | 60 | StunningForce @ 6 |
+| upgraded stunning force chip | 6 | 80 | StunningForce @ 4 |
+| perfected stunning force chip | 8 | 320 | StunningForce @ 6 |
 | basic force bubble chip | 4 | 20 | ForceBubble @ 2 |
-| upgraded force bubble chip | 6 | 40 | ForceBubble @ 4 |
-| perfected force bubble chip | 8 | 60 | ForceBubble @ 6 |
-| basic force chipset | 6 | 20 | Disintegration @ 1, StunningForce @ 1, ForceBubble @ 1 |
-| upgraded force chipset | 7 | 40 | Disintegration @ 2, StunningForce @ 2, ForceBubble @ 2 |
-| perfected force chipset | 8 | 60 | Disintegration @ 3, StunningForce @ 3, ForceBubble @ 3 |
+| upgraded force bubble chip | 6 | 80 | ForceBubble @ 4 |
+| perfected force bubble chip | 8 | 320 | ForceBubble @ 6 |
+| basic force chipset | 6 | 80 | Disintegration @ 1, StunningForce @ 1, ForceBubble @ 1 |
+| upgraded force chipset | 7 | 160 | Disintegration @ 2, StunningForce @ 2, ForceBubble @ 2 |
+| perfected force chipset | 8 | 320 | Disintegration @ 3, StunningForce @ 3, ForceBubble @ 3 |
 | basic kindle chip | 4 | 20 | Kindle @ 2 |
-| upgraded kindle chip | 6 | 40 | Kindle @ 4 |
-| perfected kindle chip | 8 | 60 | Kindle @ 6 |
+| upgraded kindle chip | 6 | 80 | Kindle @ 4 |
+| perfected kindle chip | 8 | 320 | Kindle @ 6 |
 | basic flaming ray chip | 4 | 20 | FlamingRay @ 3 |
-| upgraded flaming ray chip | 6 | 40 | FlamingRay @ 6 |
-| perfected flaming ray chip | 8 | 60 | FlamingRay @ 10 |
+| upgraded flaming ray chip | 6 | 80 | FlamingRay @ 6 |
+| perfected flaming ray chip | 8 | 320 | FlamingRay @ 10 |
 | basic pyrokinesis chip | 4 | 20 | Pyrokinesis @ 2 |
-| upgraded pyrokinesis chip | 6 | 40 | Pyrokinesis @ 4 |
-| perfected pyrokinesis chip | 8 | 60 | Pyrokinesis @ 6 |
-| basic fire chipset | 6 | 20 | Kindle @ 1, FlamingRay @ 2, Pyrokinesis @ 1 |
-| upgraded fire chipset | 7 | 40 | Kindle @ 2, FlamingRay @ 4, Pyrokinesis @ 2 |
-| perfected fire chipset | 8 | 60 | Kindle @ 3, FlamingRay @ 6, Pyrokinesis @ 3 |
+| upgraded pyrokinesis chip | 6 | 80 | Pyrokinesis @ 4 |
+| perfected pyrokinesis chip | 8 | 320 | Pyrokinesis @ 6 |
+| basic fire chipset | 6 | 80 | Kindle @ 1, FlamingRay @ 2, Pyrokinesis @ 1 |
+| upgraded fire chipset | 7 | 160 | Kindle @ 2, FlamingRay @ 4, Pyrokinesis @ 2 |
+| perfected fire chipset | 8 | 320 | Kindle @ 3, FlamingRay @ 6, Pyrokinesis @ 3 |
 | basic frost webs chip | 4 | 20 | FrostWebs @ 3 |
-| upgraded frost webs chip | 6 | 40 | FrostWebs @ 6 |
-| perfected frost webs chip | 8 | 60 | FrostWebs @ 10 |
+| upgraded frost webs chip | 6 | 80 | FrostWebs @ 6 |
+| perfected frost webs chip | 8 | 320 | FrostWebs @ 10 |
 | basic freezing ray chip | 4 | 20 | FreezingRay @ 3 |
-| upgraded freezing ray chip | 6 | 40 | FreezingRay @ 6 |
-| perfected freezing ray chip | 8 | 60 | FreezingRay @ 10 |
+| upgraded freezing ray chip | 6 | 80 | FreezingRay @ 6 |
+| perfected freezing ray chip | 8 | 320 | FreezingRay @ 10 |
 | basic cryokinesis chip | 4 | 20 | Cryokinesis @ 2 |
-| upgraded cryokinesis chip | 6 | 40 | Cryokinesis @ 4 |
-| perfected cryokinesis chip | 8 | 60 | Cryokinesis @ 6 |
-| basic ice chipset | 6 | 20 | FrostWebs @ 2, FreezingRay @ 2, Cryokinesis @ 1 |
-| upgraded ice chipset | 7 | 40 | FrostWebs @ 4, FreezingRay @ 4, Cryokinesis @ 2 |
-| perfected ice chipset | 8 | 60 | FrostWebs @ 6, FreezingRay @ 6, Cryokinesis @ 3 |
+| upgraded cryokinesis chip | 6 | 80 | Cryokinesis @ 4 |
+| perfected cryokinesis chip | 8 | 320 | Cryokinesis @ 6 |
+| basic ice chipset | 6 | 80 | FrostWebs @ 2, FreezingRay @ 2, Cryokinesis @ 1 |
+| upgraded ice chipset | 7 | 160 | FrostWebs @ 4, FreezingRay @ 4, Cryokinesis @ 2 |
+| perfected ice chipset | 8 | 320 | FrostWebs @ 6, FreezingRay @ 6, Cryokinesis @ 3 |
 | basic EMP chip | 4 | 20 | ElectromagneticPulse @ 3 |
-| upgraded EMP chip | 6 | 40 | ElectromagneticPulse @ 6 |
-| perfected EMP chip | 8 | 60 | ElectromagneticPulse @ 10 |
+| upgraded EMP chip | 6 | 80 | ElectromagneticPulse @ 6 |
+| perfected EMP chip | 8 | 320 | ElectromagneticPulse @ 10 |
 | basic electrical generation chip | 4 | 20 | ElectricalGeneration @ 3 |
-| upgraded electrical generation chip | 6 | 40 | ElectricalGeneration @ 6 |
-| perfected electrical generation chip | 8 | 60 | ElectricalGeneration @ 10 |
+| upgraded electrical generation chip | 6 | 80 | ElectricalGeneration @ 6 |
+| perfected electrical generation chip | 8 | 320 | ElectricalGeneration @ 10 |
 | basic phasing chip | 4 | 20 | Phasing @ 3 |
-| upgraded phasing chip | 6 | 40 | Phasing @ 6 |
-| perfected phasing chip | 8 | 60 | Phasing @ 10 |
-| basic lightning chipset | 6 | 20 | ElectromagneticPulse @ 2, ElectricalGeneration @ 2, Phasing @ 2 |
-| upgraded lightning chipset | 7 | 40 | ElectromagneticPulse @ 4, ElectricalGeneration @ 4, Phasing @ 4 |
-| perfected lightning chipset | 8 | 60 | ElectromagneticPulse @ 6, ElectricalGeneration @ 6, Phasing @ 6 |
+| upgraded phasing chip | 6 | 80 | Phasing @ 6 |
+| perfected phasing chip | 8 | 320 | Phasing @ 10 |
+| basic lightning chipset | 6 | 80 | ElectromagneticPulse @ 2, ElectricalGeneration @ 2, Phasing @ 2 |
+| upgraded lightning chipset | 7 | 160 | ElectromagneticPulse @ 4, ElectricalGeneration @ 4, Phasing @ 4 |
+| perfected lightning chipset | 8 | 320 | ElectromagneticPulse @ 6, ElectricalGeneration @ 6, Phasing @ 6 |
 | basic photosynthetic skin chip | 4 | 20 | PhotosyntheticSkin @ 3 |
-| upgraded photosynthetic skin chip | 6 | 40 | PhotosyntheticSkin @ 6 |
-| perfected photosynthetic skin chip | 8 | 60 | PhotosyntheticSkin @ 10 |
+| upgraded photosynthetic skin chip | 6 | 80 | PhotosyntheticSkin @ 6 |
+| perfected photosynthetic skin chip | 8 | 320 | PhotosyntheticSkin @ 10 |
 | basic light manipulation chip | 4 | 20 | LightManipulation @ 2 |
-| upgraded light manipulation chip | 6 | 40 | LightManipulation @ 4 |
-| perfected light manipulation chip | 8 | 60 | LightManipulation @ 6 |
+| upgraded light manipulation chip | 6 | 80 | LightManipulation @ 4 |
+| perfected light manipulation chip | 8 | 320 | LightManipulation @ 6 |
 | basic teleportation chip | 4 | 20 | Teleportation @ 2 |
-| upgraded teleportation chip | 6 | 40 | Teleportation @ 4 |
-| perfected teleportation chip | 8 | 60 | Teleportation @ 6 |
-| basic light chipset | 6 | 20 | PhotosyntheticSkin @ 2, LightManipulation @ 1, Teleportation @ 1 |
-| upgraded light chipset | 7 | 40 | PhotosyntheticSkin @ 4, LightManipulation @ 2, Teleportation @ 2 |
-| perfected light chipset | 8 | 60 | PhotosyntheticSkin @ 6, LightManipulation @ 3, Teleportation @ 3 |
+| upgraded teleportation chip | 6 | 80 | Teleportation @ 4 |
+| perfected teleportation chip | 8 | 320 | Teleportation @ 6 |
+| basic light chipset | 6 | 80 | PhotosyntheticSkin @ 2, LightManipulation @ 1, Teleportation @ 1 |
+| upgraded light chipset | 7 | 160 | PhotosyntheticSkin @ 4, LightManipulation @ 2, Teleportation @ 2 |
+| perfected light chipset | 8 | 320 | PhotosyntheticSkin @ 6, LightManipulation @ 3, Teleportation @ 3 |
 | basic corrosive gas chip | 4 | 20 | CorrosiveGasGeneration @ 3 |
-| upgraded corrosive gas chip | 6 | 40 | CorrosiveGasGeneration @ 6 |
-| perfected corrosive gas chip | 8 | 60 | CorrosiveGasGeneration @ 10 |
+| upgraded corrosive gas chip | 6 | 80 | CorrosiveGasGeneration @ 6 |
+| perfected corrosive gas chip | 8 | 320 | CorrosiveGasGeneration @ 10 |
 | basic confusion chip | 4 | 20 | Confusion @ 2 |
-| upgraded confusion chip | 6 | 40 | Confusion @ 4 |
-| perfected confusion chip | 8 | 60 | Confusion @ 6 |
+| upgraded confusion chip | 6 | 80 | Confusion @ 4 |
+| perfected confusion chip | 8 | 320 | Confusion @ 6 |
 | basic acid slime glands chip | 4 | 20 | AcidSlimeGlands @ 3 |
-| upgraded acid slime glands chip | 6 | 40 | AcidSlimeGlands @ 6 |
-| perfected acid slime glands chip | 8 | 60 | AcidSlimeGlands @ 10 |
-| basic acid chipset | 6 | 20 | CorrosiveGasGeneration @ 2, Confusion @ 1, AcidSlimeGlands @ 2 |
-| upgraded acid chipset | 7 | 40 | CorrosiveGasGeneration @ 4, Confusion @ 2, AcidSlimeGlands @ 4 |
-| perfected acid chipset | 8 | 60 | CorrosiveGasGeneration @ 6, Confusion @ 3, AcidSlimeGlands @ 6 |
+| upgraded acid slime glands chip | 6 | 80 | AcidSlimeGlands @ 6 |
+| perfected acid slime glands chip | 8 | 320 | AcidSlimeGlands @ 10 |
+| basic acid chipset | 6 | 80 | CorrosiveGasGeneration @ 2, Confusion @ 1, AcidSlimeGlands @ 2 |
+| upgraded acid chipset | 7 | 160 | CorrosiveGasGeneration @ 4, Confusion @ 2, AcidSlimeGlands @ 4 |
+| perfected acid chipset | 8 | 320 | CorrosiveGasGeneration @ 6, Confusion @ 3, AcidSlimeGlands @ 6 |
 | basic syphon vim chip | 4 | 20 | LifeDrain @ 2 |
-| upgraded syphon vim chip | 6 | 40 | LifeDrain @ 4 |
-| perfected syphon vim chip | 8 | 60 | LifeDrain @ 6 |
+| upgraded syphon vim chip | 6 | 80 | LifeDrain @ 4 |
+| perfected syphon vim chip | 8 | 320 | LifeDrain @ 6 |
 | basic adrenal control chip | 4 | 20 | AdrenalControl2 @ 3 |
-| upgraded adrenal control chip | 6 | 40 | AdrenalControl2 @ 6 |
-| perfected adrenal control chip | 8 | 60 | AdrenalControl2 @ 10 |
+| upgraded adrenal control chip | 6 | 80 | AdrenalControl2 @ 6 |
+| perfected adrenal control chip | 8 | 320 | AdrenalControl2 @ 10 |
 | basic regeneration chip | 4 | 20 | Regeneration @ 3 |
-| upgraded regeneration chip | 6 | 40 | Regeneration @ 6 |
-| perfected regeneration chip | 8 | 60 | Regeneration @ 10 |
-| basic blood chipset | 6 | 20 | LifeDrain @ 1, AdrenalControl2 @ 2, Regeneration @ 2 |
-| upgraded blood chipset | 7 | 40 | LifeDrain @ 2, AdrenalControl2 @ 4, Regeneration @ 4 |
-| perfected blood chipset | 8 | 60 | LifeDrain @ 3, AdrenalControl2 @ 6, Regeneration @ 6 |
+| upgraded regeneration chip | 6 | 80 | Regeneration @ 6 |
+| perfected regeneration chip | 8 | 320 | Regeneration @ 10 |
+| basic blood chipset | 6 | 80 | LifeDrain @ 1, AdrenalControl2 @ 2, Regeneration @ 2 |
+| upgraded blood chipset | 7 | 160 | LifeDrain @ 2, AdrenalControl2 @ 4, Regeneration @ 4 |
+| perfected blood chipset | 8 | 320 | LifeDrain @ 3, AdrenalControl2 @ 6, Regeneration @ 6 |
 | basic sunder mind chip | 4 | 20 | SunderMind @ 2 |
-| upgraded sunder mind chip | 6 | 40 | SunderMind @ 4 |
-| perfected sunder mind chip | 8 | 60 | SunderMind @ 6 |
+| upgraded sunder mind chip | 6 | 80 | SunderMind @ 4 |
+| perfected sunder mind chip | 8 | 320 | SunderMind @ 6 |
 | basic domination chip | 4 | 20 | Domination @ 2 |
-| upgraded domination chip | 6 | 40 | Domination @ 4 |
-| perfected domination chip | 8 | 60 | Domination @ 6 |
+| upgraded domination chip | 6 | 80 | Domination @ 4 |
+| perfected domination chip | 8 | 320 | Domination @ 6 |
 | basic mass mind chip | 4 | 20 | MassMind @ 2 |
-| upgraded mass mind chip | 6 | 40 | MassMind @ 4 |
-| perfected mass mind chip | 8 | 60 | MassMind @ 6 |
-| basic mental chipset | 6 | 20 | SunderMind @ 1, Domination @ 1, MassMind @ 1 |
-| upgraded mental chipset | 7 | 40 | SunderMind @ 2, Domination @ 2, MassMind @ 2 |
-| perfected mental chipset | 8 | 60 | SunderMind @ 3, Domination @ 3, MassMind @ 3 |
+| upgraded mass mind chip | 6 | 80 | MassMind @ 4 |
+| perfected mass mind chip | 8 | 320 | MassMind @ 6 |
+| basic mental chipset | 6 | 80 | SunderMind @ 1, Domination @ 1, MassMind @ 1 |
+| upgraded mental chipset | 7 | 160 | SunderMind @ 2, Domination @ 2, MassMind @ 2 |
+| perfected mental chipset | 8 | 320 | SunderMind @ 3, Domination @ 3, MassMind @ 3 |
 | basic space-time vortex chip | 4 | 20 | SpacetimeVortex @ 2 |
-| upgraded space-time vortex chip | 6 | 40 | SpacetimeVortex @ 4 |
-| perfected space-time vortex chip | 8 | 60 | SpacetimeVortex @ 6 |
+| upgraded space-time vortex chip | 6 | 80 | SpacetimeVortex @ 4 |
+| perfected space-time vortex chip | 8 | 320 | SpacetimeVortex @ 6 |
 | basic time dilation chip | 4 | 20 | TimeDilation @ 2 |
-| upgraded time dilation chip | 6 | 40 | TimeDilation @ 4 |
-| perfected time dilation chip | 8 | 60 | TimeDilation @ 6 |
+| upgraded time dilation chip | 6 | 80 | TimeDilation @ 4 |
+| perfected time dilation chip | 8 | 320 | TimeDilation @ 6 |
 | basic temporal fugue chip | 4 | 20 | TemporalFugue @ 2 |
-| upgraded temporal fugue chip | 6 | 40 | TemporalFugue @ 4 |
-| perfected temporal fugue chip | 8 | 60 | TemporalFugue @ 6 |
-| basic temporal chipset | 6 | 20 | SpacetimeVortex @ 1, TimeDilation @ 1, TemporalFugue @ 1 |
-| upgraded temporal chipset | 7 | 40 | SpacetimeVortex @ 2, TimeDilation @ 2, TemporalFugue @ 2 |
-| perfected temporal chipset | 8 | 60 | SpacetimeVortex @ 3, TimeDilation @ 3, TemporalFugue @ 3 |
+| upgraded temporal fugue chip | 6 | 80 | TemporalFugue @ 4 |
+| perfected temporal fugue chip | 8 | 320 | TemporalFugue @ 6 |
+| basic temporal chipset | 6 | 80 | SpacetimeVortex @ 1, TimeDilation @ 1, TemporalFugue @ 1 |
+| upgraded temporal chipset | 7 | 160 | SpacetimeVortex @ 2, TimeDilation @ 2, TemporalFugue @ 2 |
+| perfected temporal chipset | 8 | 320 | SpacetimeVortex @ 3, TimeDilation @ 3, TemporalFugue @ 3 |
 | basic mental mirror chip | 4 | 20 | MentalMirror @ 2 |
-| upgraded mental mirror chip | 6 | 40 | MentalMirror @ 4 |
-| perfected mental mirror chip | 8 | 60 | MentalMirror @ 6 |
+| upgraded mental mirror chip | 6 | 80 | MentalMirror @ 4 |
+| perfected mental mirror chip | 8 | 320 | MentalMirror @ 6 |
 | basic teleport other chip | 4 | 20 | TeleportOther @ 2 |
-| upgraded teleport other chip | 6 | 40 | TeleportOther @ 4 |
-| perfected teleport other chip | 8 | 60 | TeleportOther @ 6 |
+| upgraded teleport other chip | 6 | 80 | TeleportOther @ 4 |
+| perfected teleport other chip | 8 | 320 | TeleportOther @ 6 |
 | basic force wall chip | 4 | 20 | ForceWall @ 2 |
-| upgraded force wall chip | 6 | 40 | ForceWall @ 4 |
-| perfected force wall chip | 8 | 60 | ForceWall @ 6 |
-| basic neutral mind chipset | 6 | 20 | MentalMirror @ 1, TeleportOther @ 1, ForceWall @ 1 |
-| upgraded neutral mind chipset | 7 | 40 | MentalMirror @ 2, TeleportOther @ 2, ForceWall @ 2 |
-| perfected neutral mind chipset | 8 | 60 | MentalMirror @ 3, TeleportOther @ 3, ForceWall @ 3 |
+| upgraded force wall chip | 6 | 80 | ForceWall @ 4 |
+| perfected force wall chip | 8 | 320 | ForceWall @ 6 |
+| basic neutral mind chipset | 6 | 80 | MentalMirror @ 1, TeleportOther @ 1, ForceWall @ 1 |
+| upgraded neutral mind chipset | 7 | 160 | MentalMirror @ 2, TeleportOther @ 2, ForceWall @ 2 |
+| perfected neutral mind chipset | 8 | 320 | MentalMirror @ 3, TeleportOther @ 3, ForceWall @ 3 |
 | basic heightened quickness chip | 4 | 20 | HeightenedSpeed @ 3 |
-| upgraded heightened quickness chip | 6 | 40 | HeightenedSpeed @ 6 |
-| perfected heightened quickness chip | 8 | 60 | HeightenedSpeed @ 10 |
+| upgraded heightened quickness chip | 6 | 80 | HeightenedSpeed @ 6 |
+| perfected heightened quickness chip | 8 | 320 | HeightenedSpeed @ 10 |
 | basic ego projection chip | 4 | 20 | WillForce @ 2 |
-| upgraded ego projection chip | 6 | 40 | WillForce @ 4 |
-| perfected ego projection chip | 8 | 60 | WillForce @ 6 |
+| upgraded ego projection chip | 6 | 80 | WillForce @ 4 |
+| perfected ego projection chip | 8 | 320 | WillForce @ 6 |
 | basic heightened hearing chip | 4 | 20 | HeightenedHearing @ 3 |
-| upgraded heightened hearing chip | 6 | 40 | HeightenedHearing @ 6 |
-| perfected heightened hearing chip | 8 | 60 | HeightenedHearing @ 10 |
-| basic neutral body chipset | 6 | 20 | HeightenedSpeed @ 2, WillForce @ 1, HeightenedHearing @ 2 |
-| upgraded neutral body chipset | 7 | 40 | HeightenedSpeed @ 4, WillForce @ 2, HeightenedHearing @ 4 |
-| perfected neutral body chipset | 8 | 60 | HeightenedSpeed @ 6, WillForce @ 3, HeightenedHearing @ 6 |
+| upgraded heightened hearing chip | 6 | 80 | HeightenedHearing @ 6 |
+| perfected heightened hearing chip | 8 | 320 | HeightenedHearing @ 10 |
+| basic neutral body chipset | 6 | 80 | HeightenedSpeed @ 2, WillForce @ 1, HeightenedHearing @ 2 |
+| upgraded neutral body chipset | 7 | 160 | HeightenedSpeed @ 4, WillForce @ 2, HeightenedHearing @ 4 |
+| perfected neutral body chipset | 8 | 320 | HeightenedSpeed @ 6, WillForce @ 3, HeightenedHearing @ 6 |
 | basic clairvoyance chip | 4 | 20 | Clairvoyance @ 2 |
-| upgraded clairvoyance chip | 6 | 40 | Clairvoyance @ 4 |
-| perfected clairvoyance chip | 8 | 60 | Clairvoyance @ 6 |
+| upgraded clairvoyance chip | 6 | 80 | Clairvoyance @ 4 |
+| perfected clairvoyance chip | 8 | 320 | Clairvoyance @ 6 |
 | basic psychometry chip | 4 | 20 | Psychometry @ 2 |
-| upgraded psychometry chip | 6 | 40 | Psychometry @ 4 |
-| perfected psychometry chip | 8 | 60 | Psychometry @ 6 |
+| upgraded psychometry chip | 6 | 80 | Psychometry @ 4 |
+| perfected psychometry chip | 8 | 320 | Psychometry @ 6 |
 | basic precognition chip | 4 | 20 | Precognition @ 2 |
-| upgraded precognition chip | 6 | 40 | Precognition @ 4 |
-| perfected precognition chip | 8 | 60 | Precognition @ 6 |
-| basic neutral spirit chipset | 6 | 20 | Clairvoyance @ 1, Psychometry @ 1, Precognition @ 1 |
-| upgraded neutral spirit chipset | 7 | 40 | Clairvoyance @ 2, Psychometry @ 2, Precognition @ 2 |
-| perfected neutral spirit chipset | 8 | 60 | Clairvoyance @ 3, Psychometry @ 3, Precognition @ 3 |
+| upgraded precognition chip | 6 | 80 | Precognition @ 4 |
+| perfected precognition chip | 8 | 320 | Precognition @ 6 |
+| basic neutral spirit chipset | 6 | 80 | Clairvoyance @ 1, Psychometry @ 1, Precognition @ 1 |
+| upgraded neutral spirit chipset | 7 | 160 | Clairvoyance @ 2, Psychometry @ 2, Precognition @ 2 |
+| perfected neutral spirit chipset | 8 | 320 | Clairvoyance @ 3, Psychometry @ 3, Precognition @ 3 |
