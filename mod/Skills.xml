@@ -124,6 +124,18 @@
       Foreground="y"
       Detail="Y"
     />
+    <power
+      Name="Finesse"
+      Cost="250"
+      Attribute="Agility"
+      Minimum="19"
+      Class="Vixy_LongBladesFinesse"
+      Snippet="finesse"
+      Description="When you attack with a finesse weapon, your penetration rolls use your Agility modifier in place of your Strength modifier, whenever Agility is higher. Rapiers and katanas are finesse weapons."
+      Tile="Abilities/sw_skill_penetrating_strikes.png"
+      Foreground="y"
+      Detail="Y"
+    />
   </skill>
 
   <skill Name="Multiweapon Fighting" Load="Merge">
@@ -140,6 +152,21 @@
       Tile="Abilities/sw_skill_multiweapon_mastery.png"
       Foreground="y"
       Detail="M"
+    />
+  </skill>
+
+  <skill Name="Short Blade" Load="Merge">
+    <power
+      Name="Finesse"
+      Cost="250"
+      Attribute="Agility"
+      Minimum="19"
+      Class="Vixy_ShortBladesFinesse"
+      Snippet="finesse"
+      Description="When you attack with a finesse weapon, your penetration rolls use your Agility modifier in place of your Strength modifier, whenever Agility is higher. Daggers, knives and wristblades are finesse weapons."
+      Tile="Abilities/sw_skill_penetrating_strikes.png"
+      Foreground="y"
+      Detail="m"
     />
   </skill>
 
