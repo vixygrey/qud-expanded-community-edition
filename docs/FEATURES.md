@@ -755,10 +755,10 @@ Vanilla families completed:
 | Steel Greatshield | new | 2 | Hand | 4 | -3 | 20 | 10 |
 | Carbide Greatshield | new | 3 | Hand | 5 | -3 | 40 | 13 |
 | Folded Carbide Greatshield | new | 4 | Hand | 6 | -3 | 80 | 12 |
-| Fullerite Greatshield | new | 5 | Hand | 7 | -3 | 160 | 15 |
-| Crysteel Greatshield | new | 6 | Hand | 8 | -3 | 320 | 9 |
-| Flawless Crysteel Greatshield | new | 7 | Hand | 9 | -3 | 640 | 9 |
-| Zetachrome Greatshield | new | 8 | Hand | 10 | -2 | 1280 | 7 |
+| Fullerite Greatshield | new | 5 | Hand | 6 | -3 | 160 | 15 |
+| Crysteel Greatshield | new | 6 | Hand | 7 | -3 | 320 | 9 |
+| Flawless Crysteel Greatshield | new | 7 | Hand | 8 | -3 | 640 | 9 |
+| Zetachrome Greatshield | new | 8 | Hand | 9 | -2 | 1280 | 7 |
 
 #### Notable armor artifacts
 

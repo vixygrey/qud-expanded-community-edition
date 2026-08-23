@@ -1079,7 +1079,7 @@
   </object>
 
   <object Name="Raven_Fullerite Greatshield" Inherits="BaseShield">
-    <part Name="Shield" AV="7" DV="-3" WornOn="Hand" />
+    <part Name="Shield" AV="6" DV="-3" WornOn="Hand" />
     <part Name="Render" DisplayName="{{K|fullerite}} greatshield" ColorString="&amp;K" DetailColor="y" />
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A heavy fullerite greatshield, meant to be secured to your hand and arm." />
@@ -1088,7 +1088,7 @@
   </object>
 
   <object Name="Raven_Crysteel Greatshield" Inherits="BaseShield">
-    <part Name="Shield" AV="8" DV="-3" WornOn="Hand" />
+    <part Name="Shield" AV="7" DV="-3" WornOn="Hand" />
     <part Name="Render" DisplayName="{{crysteel|crysteel}} greatshield" ColorString="&amp;c" />
     <part Name="Commerce" Value="320" />
     <part
@@ -1100,7 +1100,7 @@
   </object>
 
   <object Name="Raven_Flawless Crysteel Greatshield" Inherits="BaseShield">
-    <part Name="Shield" AV="9" DV="-3" WornOn="Hand" />
+    <part Name="Shield" AV="8" DV="-3" WornOn="Hand" />
     <part
       Name="Render"
       DisplayName="{{K|flawless {{crysteel|crysteel}} greatshield}}"
@@ -1118,7 +1118,7 @@
   </object>
 
   <object Name="Raven_Zetachrome Greatshield" Inherits="BaseShield">
-    <part Name="Shield" AV="10" DV="-2" WornOn="Hand" />
+    <part Name="Shield" AV="9" DV="-2" WornOn="Hand" />
     <part
       Name="Render"
       DisplayName="{{zetachrome|zetachrome}} greatshield"

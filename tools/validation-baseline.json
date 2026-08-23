@@ -1,17 +1,8 @@
 {
   "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure.",
   "known": {
-    "armor-curve": {
-      "issue": "#319. The four vanilla merges, seven vambraces and four cloaks were fixed in #318; what remains is the four shields.",
-      "items": [
-        "mod/ObjectBlueprints/Armor.xml: Raven_Crysteel Greatshield grants AV 8 in the Shield slot, over vanilla's best ordinary item at 7",
-        "mod/ObjectBlueprints/Armor.xml: Raven_Flawless Crysteel Greatshield grants AV 9 in the Shield slot, over vanilla's best ordinary item at 7",
-        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachrome Greatshield grants AV 10 in the Shield slot, over vanilla's best ordinary item at 7",
-        "mod/ObjectBlueprints/Armor.xml: Raven_Zetachrome Shield grants AV 8 in the Shield slot, over vanilla's best ordinary item at 7"
-      ]
-    },
     "damage-ceiling": {
-      "issue": "#322. Twenty-five of the 26 are merges raising a vanilla weapon's own damage; only Raven_Iron Mace is this fork's content.",
+      "issue": "",
       "items": [
         "mod/ObjectBlueprints/MeleeWeapons.xml: Battle Axe6th deals 9.5 mean damage, over vanilla's best two-handed Axe at tier 6, which is 8.5",
         "mod/ObjectBlueprints/MeleeWeapons.xml: Battle Axe7th deals 10 mean damage, over vanilla's best two-handed Axe at tier 7, which is 9.5",
@@ -42,7 +33,7 @@
       ]
     },
     "item-curve": {
-      "issue": "#373. The 108 psionic chips were repriced in #338; what remains is the 22 other items #354 made visible.",
+      "issue": "",
       "items": [
         "mod/ObjectBlueprints/Armor.xml: Raven_Bio Scanner Mask is tier 5, so the value curve gives 160, not 60",
         "mod/ObjectBlueprints/Armor.xml: Raven_Flexiboots is tier 5, so the value curve gives 160, not 75",
@@ -69,21 +60,21 @@
       ]
     },
     "table-share": {
-      "issue": "#325. Nine vanilla tables past half, worst Armor 8C at 71.7%.",
+      "issue": "",
       "items": [
         "mod/PopulationTables.xml: Armor 2C is 59.3% this fork's content (160 against vanilla's 110) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 2R is 57.7% this fork's content (90 against vanilla's 66) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 4C is 65.9% this fork's content (280 against vanilla's 145) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 5C is 61.1% this fork's content (220 against vanilla's 140) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 6C is 60.0% this fork's content (180 against vanilla's 120) - the ceiling is half",
-        "mod/PopulationTables.xml: Armor 8C is 71.7% this fork's content (215 against vanilla's 85) - the ceiling is half",
+        "mod/PopulationTables.xml: Armor 8C is 54.1% this fork's content (100 against vanilla's 85) - the ceiling is half",
         "mod/PopulationTables.xml: Armor 8R is 55.8% this fork's content (168 against vanilla's 133) - the ceiling is half",
         "mod/PopulationTables.xml: Melee Weapons 1C is 55.4% this fork's content (245 against vanilla's 197) - the ceiling is half",
         "mod/PopulationTables.xml: Melee Weapons 1R is 62.5% this fork's content (200 against vanilla's 120) - the ceiling is half"
       ]
     },
     "weight-curve": {
-      "issue": "#320. Seven merges that made a vanilla item heavier, five of them short blades. The per-slot magnitudes still wait on #176, but the direction does not.",
+      "issue": "",
       "items": [
         "mod/ObjectBlueprints/Cybernetics.xml: CrysteelHandBones weighs 10 lb against vanilla's 9 - every per-slot factor is below 1, so nothing may get heavier",
         "mod/ObjectBlueprints/MeleeWeapons.xml: ArmDagger4 weighs 2 lb against vanilla's 1 - every per-slot factor is below 1, so nothing may get heavier",

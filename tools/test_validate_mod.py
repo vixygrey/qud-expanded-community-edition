@@ -594,10 +594,32 @@ class CurveChecks(unittest.TestCase):
             validate_mod.check_armor_curve,
             '  <object Name="Vixy_Aegis">\n'
             '    <part Name="Shield" AV="10" />\n'
+            '    <tag Name="Tier" Value="8" />\n'
             "  </object>",
         )
         self.assertTrue(items, "a Shield part's AV was not checked")
-        self.assertIn("Shield slot", items[0][1])
+        self.assertIn("Shield (tier 8)", items[0][1])
+
+    def test_the_shield_ceiling_is_per_tier(self) -> None:
+        """A single per-slot number would let a low-tier greatshield pass at the tier-8 ceiling.
+
+        AV 9 is exactly right at tier 8 and three over at tier 2, and the check has to tell those
+        apart - vanilla's shield line is AV = tier + 1 up to tier 3 and AV = tier from tier 5, so
+        there is no one number for the slot.
+        """
+        shield = (
+            '  <object Name="Vixy_Aegis">\n'
+            '    <part Name="Shield" AV="9" />\n'
+            '    <tag Name="Tier" Value="{}" />\n'
+            "  </object>"
+        )
+        self.assertEqual(
+            self._run(validate_mod.check_armor_curve, shield.format(8)), []
+        )
+        self.assertTrue(
+            self._run(validate_mod.check_armor_curve, shield.format(2)),
+            "AV 9 at tier 2 passed a ceiling meant for tier 8",
+        )
 
     def test_base_objects_are_not_held_to_the_ceiling(self) -> None:
         self.assertEqual(

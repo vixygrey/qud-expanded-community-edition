@@ -327,19 +327,33 @@ grid, so an item well under a ceiling is fine and an item over one needs a reaso
 
 **AV per slot.** No item may exceed vanilla's best *ordinary* item in its slot:
 
-| Body | Head | Hands | Feet | Back | Arm | Face | Floating Nearby | Shield |
-| ---: | ---: | ----: | ---: | ---: | --: | ---: | --------------: | -----: |
-|    8 |    4 |     4 |    4 |    2 |   1 |    2 |               1 |      7 |
+| Body | Head | Hands | Feet | Back | Arm | Face | Floating Nearby |
+| ---: | ---: | ----: | ---: | ---: | --: | ---: | --------------: |
+|    8 |    4 |     4 |    4 |    2 |   1 |    2 |               1 |
+
+**Shields are the exception, and they need a ceiling per tier.** Vanilla's shield line is
+AV = tier + 1 up to tier 3 and AV = tier from tier 5 — not one formula — so the ceiling is vanilla's
+own value where vanilla ships a shield, extended to **8 at tier 8** because vanilla ships none there
+and 5·6·7 at tiers 5·6·7 points nowhere else. **A greatshield sits one above the shield at its
+tier**, which it pays for in about 3 lb and a flat −3 DV.
+
+| tier | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| ------------- | -: | -: | -: | -: | -: | -: | -: | -: | -: |
+| shield | 2 | 2 | 3 | 4 | 5 | 5 | 6 | 7 | 8 |
+| **greatshield** | 3 | 3 | 4 | 5 | 6 | 6 | 7 | 8 | **9** |
+
+A single number for the slot would let a tier-2 greatshield pass at the tier-8 ceiling, which is why
+`armor-curve` reads this table rather than one value.
 
 Named artefacts break vanilla's own ceiling on purpose — `Flange from the Great Machine` at AV 10,
 `Gear from the Great Machine` at 10, `Gigantic Chassis Plate` at 6 — and are not a benchmark this
 fork may match.
 
-**Shields are the exception to look up separately.** They carry their AV on a `Shield` part rather
-than an `Armor` one, so any survey filtered on `Armor` misses them entirely — which is how the first
-version of this table shipped without a Shield column. They also carry the largest single AV of any
-ordinary item: `Flawless Crysteel Shield` at 7 beats every body armour but one. Vanilla ships no
-ordinary tier-8 shield at all; the only one is the artefact.
+**Shields carry their AV on a `Shield` part rather than an `Armor` one**, so any survey filtered on
+`Armor` misses them entirely — which is how the first version of this table shipped without a Shield
+column at all. They also carry the largest single AV of any ordinary item: `Flawless Crysteel Shield`
+at 7 beats every body armour but one, and the tier-8 extension puts a greatshield at 9, one below
+`Gear from the Great Machine`.
 
 **Shield AV is conditional, so it is not the same currency.** It applies only to an attack the
 shield blocks, and `Combat.HandleEvent(GetDefenderHitDiceEvent)` puts that at `25 * (1 +
