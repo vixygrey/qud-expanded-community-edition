@@ -623,6 +623,11 @@ ITEM_COLUMNS = (
     ("Damage", "part", "MeleeWeapon", "BaseDamage"),
     ("AV", "part", "Armor", "AV"),
     ("AV", "part", "Shield", "AV"),
+    # DV, added after #381. The vambrace line's DV column had been noise for nine items - it ran
+    # -1, 0, -2, -1, 0, -3, -2, -1, 0 - and flattening it to 0 left nine stale cells that nothing
+    # reported, because this tuple listed every other armour figure and not this one. #337 named
+    # "AV, weight, damage or drop weight"; DV was simply never on the list.
+    ("DV", "part", "Armor", "DV"),
 )
 # A cell holding one of these is documenting an absence, not a figure, and has nothing to compare.
 NOT_A_FIGURE = {"", "-", "\u2014", "(inh)"}

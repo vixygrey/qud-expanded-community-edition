@@ -628,13 +628,31 @@ haft taking `DetailColor`.
 |---|---|---|---|---|---|---|---|---|---|
 | Bronze Wristblade | new | 0 | 1 | +0 | 1 | (inh) | 5 | 1 |  |
 | Iron Wristblade | new | 1 | 1d2 | +0 | 2 | (inh) | 10 | 1 |  |
-| Steel Wristblade | new | 2 | 1d3 | +0 | 3 | (inh) | 20 | 1 |  |
-| Carbide Wristblade | new | 3 | 2d2 | +0 | 4 | (inh) | 40 | 2 |  |
-| Fullerite Wristblade | new | 5 | 2d3+1 | +0 | 6 | (inh) | 160 | 3 |  |
+| Steel Wristblade | new | 2 | 1d2 | +0 | 3 | (inh) | 20 | 1 |  |
+| Carbide Wristblade | new | 3 | 1d3 | +0 | 4 | (inh) | 40 | 2 |  |
+| ArmDagger4 | merge | 4 | 1d4 |  | 5 |  | 75 | 1 |  |
+| Fullerite Wristblade | new | 5 | 1d6 | +0 | 6 | (inh) | 160 | 3 |  |
 | Vibro Wristblade | new | 5 | 1d4+1 | +0 | 0 | (inh) | 300 | 1 |  |
-| Crysteel Wristblade | new | 6 | 2d4 | +0 | 7 | (inh) | 320 | 1 |  |
-| Flawless Crysteel Wristblade | new | 7 | 2d4+1 | +0 | 8 | (inh) | 640 | 1 |  |
-| Zetachrome Wristblade | new | 8 | 2d6 | +0 | 9 | (inh) | 1280 | 1 |  |
+| Crysteel Wristblade | new | 6 | 2d3 | +0 | 7 | (inh) | 320 | 1 |  |
+| Flawless Crysteel Wristblade | new | 7 | 1d8 | +0 | 8 | (inh) | 640 | 1 |  |
+| Zetachrome Wristblade | new | 8 | 2d4 | +0 | 9 | (inh) | 1280 | 1 |  |
+
+**Two things worth knowing before building around these.**
+
+**They attack from the Arm slot**, and `BodyPart.ScanForWeapon` walks every body part, so two arms
+plus two hands is **four attack attempts a round**. That is vanilla's mechanic, not this fork's —
+what the fork changed is availability: vanilla ships exactly one wristblade, `ArmDagger4` at tier 4,
+and one item at one tier is a find rather than a build. The damage is priced against that extra
+attack at roughly 60% of the dagger of the same tier (#324, and `docs/STYLEGUIDE.md` §3.2.1). Vanilla
+prices its own at full parity — `ArmDagger4` **is** `Dagger4` — because it never had to price a build.
+
+**Single Weapon Fighting turns them off, and it defaults to on.** While that ability is toggled on,
+`SingleWeaponFighting_Ability` multiplies the attack chance of every non-primary body part by zero,
+and the combat loop marks only the first part primary — so your wristblades make **no attacks at
+all**. The skill's own bonuses need the toggle on, so the two are alternatives you switch between
+rather than combine. This is vanilla's behaviour and applies to your off-hand weapon just the same,
+but it is worth stating here, because a new character who buys Single Weapon Fighting and then
+straps on wristblades will see nothing happen and have no obvious reason why.
 
 #### Maces, one-handed (Cudgel, Finesse)
 
@@ -744,7 +762,7 @@ Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
 
 New concepts introduced:
 
-- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla fills that slot with bracelets and gadgets and never with armor — no arm item in the game grants more than a single point of AV, and its tier ladder climbs in DV — so this is the first arm line that trades DV for AV.
+- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla fills that slot with bracelets and gadgets and never with armor: no arm item in the game grants more than a single point of AV, and across all 28 of them **not one carries a negative DV**. So the line is held to the slot rather than allowed to reshape it — AV 1, DV 0 and a pound at every tier, matching vanilla's own numbers (#318, #381). What separates the nine is price, which makes them flavour rather than a progression, and that is deliberate: the Arm slot is for utility artifacts, and a vambrace is what you wear until you find one.
 - **Greatshields** — a full tier 0–8 line of two-handed-feel `Hand` shields with the highest AV in the game (3 → 10) at a DV cost.
 - **Bio-scanner mask** and **mutating mask** — two `Face`-slot artifacts.
 - **Reinforced suspension** — `Tread`-slot accessory for the mechanical-legs build.
@@ -843,15 +861,15 @@ Vanilla families completed:
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Vambrace | new | 0 | Arm | 1 | -1 | — | 4 | 4 |
-| Iron Vambrace | new | 1 | Arm | 1 | 0 | — | 8 | 3 |
-| Steel Vambrace | new | 2 | Arm | 1 | -2 | — | 16 | 3 |
-| Carbide Vambrace | new | 3 | Arm | 1 | -1 | — | 32 | 5 |
-| Folded Carbide Vambrace | new | 4 | Arm | 1 | 0 | — | 64 | 4 |
-| Fullerite Vambrace | new | 5 | Arm | 1 | -3 | — | 128 | 6 |
-| Crysteel Vambrace | new | 6 | Arm | 1 | -2 | 5/5/5/5 | 256 | 3 |
-| Flawless Crysteel Vambrace | new | 7 | Arm | 1 | -1 | 5/5/5/5 | 512 | 3 |
-| Zetachrome Vambrace | new | 8 | Arm | 1 | 0 | 6/6/6/6 | 1024 | 2 |
+| Bronze Vambrace | new | 0 | Arm | 1 | 0 | — | 4 | 1 |
+| Iron Vambrace | new | 1 | Arm | 1 | 0 | — | 8 | 1 |
+| Steel Vambrace | new | 2 | Arm | 1 | 0 | — | 16 | 1 |
+| Carbide Vambrace | new | 3 | Arm | 1 | 0 | — | 32 | 1 |
+| Folded Carbide Vambrace | new | 4 | Arm | 1 | 0 | — | 64 | 1 |
+| Fullerite Vambrace | new | 5 | Arm | 1 | 0 | — | 128 | 1 |
+| Crysteel Vambrace | new | 6 | Arm | 1 | 0 | 5/5/5/5 | 256 | 1 |
+| Flawless Crysteel Vambrace | new | 7 | Arm | 1 | 0 | 5/5/5/5 | 512 | 1 |
+| Zetachrome Vambrace | new | 8 | Arm | 1 | 0 | 6/6/6/6 | 1024 | 1 |
 
 #### Face
 
@@ -2139,7 +2157,7 @@ not touch that field (the vanilla value is inherited).
 | Dagger7 | 7 | 1d12+1 |  | 8 |  | 690 | 1 |
 | Dagger8 | 8 | 1d12+2 |  | 9 |  | 1390 | 1 |
 | Vibro Dagger | 5 | 2d4 |  | 0 |  | 300 | 1 |
-| ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 1 |
+| ArmDagger4 | 4 | 1d4 |  | 5 |  | 75 | 1 |
 | BaseCudgel |  |  |  |  |  |  | 3 |
 | Club | 0 |  |  |  |  | 2 | 3 |
 | Mace2 | 0 | 1d3 |  | 1 |  | 10 | 3 |
