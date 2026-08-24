@@ -175,7 +175,7 @@ Guardians always used. The casters ran 40 / −20 until #332 — vanilla's caste
 | Light, Seekers of the Path | -2 | +1 | -2 | +2 | +2 | +2 | Heat +20, Electric +20 / Cold -10, Acid -10 | Short Blades Expertise, Pistol (+Akimbo, Weak Spotter, Sling and Run) |
 | Corrosive, Builders of the Wall | -2 | -2 | -2 | +2 | +2 | +4 | Acid +40 / Electric -20 | Short Blades Expertise, Rifles, Persuasion (+Intimidate, Berate, Snake Oiler) |
 | Blood, Lurkers of the Unknown | -2 | +1 | -2 | +2 | +2 | +2 | *+4 save vs Bleeding* | Short Blades, Pistol, Multiweapon Fighting (+Proficiency, Expertise) |
-| Mental, Guides of the Lost | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Rifles, Customs (+Trash Divining), Survival + **all 7 terrain survival skills** |
+| Mental, Guides of the Lost | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Customs (+Trash Divining), Survival + **6 terrain survival skills** |
 | Temporal, Keepers of the Records | -2 | -2 | -2 | +2 | +4 | +2 | — | Short Blades Expertise, Rifles, Discipline (+Fasting Way, Iron Mind, Lionheart, Conatus, Mind over Body) |
 
 *Light also carries an `extrainfo`: "Guaranteed one Solar Cell."*
@@ -192,15 +192,30 @@ Guardians always used. The casters ran 40 / −20 until #332 — vanilla's caste
 | Corrosive, Flank Battalion | +2 | +2 | +4 | -2 | -2 | -2 | Acid +20 / Electric -10 | Long Blades Proficiency, Endurance (+Swimming, Poison Tolerance, Weathered, Juicer) |
 | Blood, Assassin Battalion | +1 | +4 | +2 | -2 | -2 | -2 | *+2 save vs Bleeding* | Axe (+Dismember), Short Blades (+Bloodletter), Multiweapon Fighting (+Proficiency) |
 | Mental, Technical Battalion | +1 | +3 | +1 | — | -2 | — | — | Persuasion (+Inspiring Presence), Tinkering (+Disassemble, Deploy Turret, Lay Mine) |
-| Temporal, Support Battalion | +2 | +2 | +2 | **-6** | +1 | +1 | — | **19 skill trees at once** — see below |
+| Temporal, Support Battalion | +2 | +2 | +2 | **-6** | +1 | +1 | — | **the most skills in the game** — see below |
 
 *Light Guardian also carries "Guaranteed one Solar Cell."*
 
-**Temporal, Support Battalion** is the outlier build: it trades a crippling **-6 Intelligence**
-for base access to Acrobatics, Axe, Rifles, Cooking and Gathering, Cudgel, Customs, Discipline,
-Multiweapon Fighting, Endurance, Physic, Heavy Weapons, Long Blades, Persuasion, Pistol, Shield,
-Short Blades, Survival, Tactics, and Tinkering (plus Tinker I, Disassemble, Scavenger). Its own
-`extrainfo` says: *"Starts with massively lowered Intelligence in exchange for so many skills."*
+**Temporal, Support Battalion** is the most generous subtype in the game: it trades a crippling
+**-6 Intelligence** for base access to Axe, Bow and Rifle, Cooking and Gathering, Cudgel, Customs,
+Discipline, Endurance, Persuasion, Physic, Survival, Tactics and Tinkering (plus Tinker I,
+Disassemble and Scavenger) — **15 skills, 1,400 skill points**. Its own `extrainfo` says:
+*"Starts with massively lowered Intelligence in exchange for so many skills."*
+
+> ⚪ **That trade is now arithmetic rather than a claim (#330).** It granted **22 skills / 2,075 SP**
+> against vanilla's most generous caste at 7 / 700 and its median at 5 / 450 — and it opened *every*
+> base weapon tree, which is why it had no weapon identity of its own. `Leveler.RollSP` is
+> `(Intelligence − 10) × 4` per level, so -6 Intelligence costs **24 SP a level**, about 720 over a
+> full run. Vanilla's ceiling of 700 **plus** the 720 it pays is ≈1,400, which is what it grants now:
+> the most skills in the game, and it pays for them exactly.
+>
+> The specialist weapon trees went — Multiweapon Fighting, Heavy Weapon, Long Blade, Pistol, Shield,
+> Short Blade and Acrobatics — and the whole support kit stayed. A support unit keeps a sidearm and
+> a long arm, not mastery of every weapon in the battalion.
+>
+> **`Mental, Guides of the Lost` came down with it**, from 12 skills / 825 SP to **10 / 700**, which
+> is vanilla's ceiling exactly. It loses the firearm tree, which a guide has no call for, and the one
+> terrain lore vanilla itself prices below the rest.
 
 ### 2.3 Subtype sprites
 
@@ -373,11 +388,11 @@ requirements need a restart. See §13.
 |---|---|
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
 | **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
-| **Long Blade** | *Dueling Stance* Intelligence requirement **17 → 15**. *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. Adds **Finesse** (250, Agility 19). |
+| **Long Blade** | *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. Adds **Finesse** (250, Agility 19). *Dueling Stance* is vanilla's again (#331). |
 | **Short Blade** | Adds **Finesse** (250, Agility 19). The tree is otherwise untouched. |
 | **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it — see below. |
 | **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
-| **Tinkering** | *Disassemble* cost **→ 0** (free with the tree). *Reverse Engineer* cost **100 → 200**. *Tinker I* Int **19 → 17**, *Tinker II* **23 → 21**, *Tinker III* **29 → 25**. |
+| **Tinkering** | *Reverse Engineer* cost **100 → 200**, the other half of the Cooking offset. Everything else is vanilla's: *Disassemble* costs 100 again, and *Tinker I / II / III* need Int **19 / 23 / 29** (#331). |
 
 > ⚔️ **Finesse** is how an Agility character gets damage out of a blade.
 >

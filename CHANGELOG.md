@@ -884,6 +884,44 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **The Support Battalion's skill grant is the trade it always claimed to be, and three
+  undocumented skill cuts go back to vanilla** (#330, #331).
+
+  **`Temporal, Support Battalion` granted 22 skills and 2,075 skill points.** Vanilla's most generous
+  caste is `Priest of All Suns` at 7 and 700; the median is 5 and 450. It also opened *every* base
+  weapon tree, which is why it had no weapon identity of its own.
+
+  Its `extrainfo` states a trade — *"Starts with massively lowered Intelligence in exchange for so
+  many skills"* — so the fix is to make that arithmetic rather than a claim. `Leveler.RollSP` is
+  `(Intelligence − 10) × 4` per level, so **−6 Intelligence costs 24 a level, about 720 across a
+  run**. Vanilla's ceiling of 700 plus the 720 it pays is ≈1,400, and that is what it grants now:
+  **15 skills, 1,400 points** — still the most in the game, and paid for exactly.
+
+  What went is the specialist weapon trees: Multiweapon Fighting, Heavy Weapon, Long Blade, Pistol,
+  Shield, Short Blade and Acrobatics. What stayed is the whole support kit — the Tinkering line,
+  Scavenger, Cooking, Physic, Persuasion, Customs, Wayfaring, Endurance, Self-discipline, Tactics —
+  plus a sidearm and a long arm. A support unit is not master of every weapon in the battalion.
+
+  **`Mental, Guides of the Lost` came down with it**, 12 skills / 825 SP to **10 / 700**, which is
+  vanilla's ceiling exactly. It loses the firearm tree, which a guide has no call for, and the one
+  terrain lore vanilla itself prices below the rest.
+
+- **(internal)** Three skill changes nothing documented now track vanilla whichever way the
+  *eased skill requirements* option is set (#331).
+
+  That option carried six changes. Three are **documented intent** in Mura's notes and stay optional:
+  the Axe and Cudgel powers accepting Strength *or* Agility, `En Garde!` needing 29 in either rather
+  than 29 and 23 in both, and Multiweapon Expertise and Mastery at 21 and 25.
+
+  Three had **no record anywhere**: Tinker I / II / III cut from Int 19 / 23 / 29 to 17 / 21 / 25,
+  `Disassemble` made free against vanilla's 100, and — which #331 did not itself catch — `Long Blade`'s
+  `Dueling Stance` cut from Int 17 to 15. Tinkering is the tree that converts into every other kind
+  of power, and Tinker III at four attribute points cheaper is most of a build's investment.
+
+  **An option offers a choice between two things somebody meant.** Drift is a defect, and a defect
+  does not get a switch, so these are simply vanilla's now — the option no longer mentions them, and
+  neither does its helptext.
+
 - **Cybernetic implants are vanilla's again, elemental resistance can no longer reach total
   immunity, and the credit pass grants what vanilla's best wedge grants** (#335, #327, #332).
 
