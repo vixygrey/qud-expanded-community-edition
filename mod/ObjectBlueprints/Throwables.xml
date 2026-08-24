@@ -3,7 +3,7 @@
   <!-- Grenades -->
 
   <object Name="SleepGasGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="SleepGasGrenade2" Load="Merge">
@@ -11,95 +11,95 @@
   </object>
 
   <object Name="SleepGasGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="PoisonGasGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="PoisonGasGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="PoisonGasGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="StunGasGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="StunGasGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="StunGasGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="AcidGasGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="AcidGasGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="AcidGasGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="FlashbangGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="FlashbangGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="FlashbangGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="HeatGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="HeatGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="HeatGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="ColdGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="ColdGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="ColdGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="HEGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
-  </object>
-
-  <object Name="HEGrenade2" Load="Merge">
     <part Name="Commerce" Value="20" />
   </object>
 
-  <object Name="HEGrenade3" Load="Merge">
+  <object Name="HEGrenade2" Load="Merge">
     <part Name="Commerce" Value="30" />
   </object>
 
+  <object Name="HEGrenade3" Load="Merge">
+    <part Name="Commerce" Value="40" />
+  </object>
+
   <object Name="EMPGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="EMPGrenade2" Load="Merge">
@@ -107,23 +107,23 @@
   </object>
 
   <object Name="EMPGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
-  </object>
-
-  <object Name="NormalityGasGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
-  </object>
-
-  <object Name="NormalityGasGrenade2" Load="Merge">
     <part Name="Commerce" Value="20" />
   </object>
 
-  <object Name="NormalityGasGrenade3" Load="Merge">
+  <object Name="NormalityGasGrenade1" Load="Merge">
+    <part Name="Commerce" Value="20" />
+  </object>
+
+  <object Name="NormalityGasGrenade2" Load="Merge">
     <part Name="Commerce" Value="30" />
   </object>
 
+  <object Name="NormalityGasGrenade3" Load="Merge">
+    <part Name="Commerce" Value="40" />
+  </object>
+
   <object Name="StasisGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="StasisGrenade2" Load="Merge">
@@ -131,11 +131,11 @@
   </object>
 
   <object Name="StasisGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="SunderGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="SunderGrenade2" Load="Merge">
@@ -143,66 +143,66 @@
   </object>
 
   <object Name="SunderGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="DefoliantGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="DefoliantGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="DefoliantGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="FungicideGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="20" />
   </object>
 
   <object Name="FungicideGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="FungicideGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="FireSupportGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="FireSupportGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="FireSupportGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="50" />
   </object>
 
   <object Name="TimeDilationGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="30" />
   </object>
 
   <object Name="TimeDilationGrenade2" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="40" />
   </object>
 
   <object Name="TimeDilationGrenade3" Load="Merge">
-    <part Name="Commerce" Value="30" />
+    <part Name="Commerce" Value="50" />
   </object>
 
   <object Name="GlitterGrenade1" Load="Merge">
-    <part Name="Commerce" Value="10" />
-  </object>
-
-  <object Name="GlitterGrenade2" Load="Merge">
     <part Name="Commerce" Value="20" />
   </object>
 
-  <object Name="GlitterGrenade3" Load="Merge">
+  <object Name="GlitterGrenade2" Load="Merge">
     <part Name="Commerce" Value="30" />
+  </object>
+
+  <object Name="GlitterGrenade3" Load="Merge">
+    <part Name="Commerce" Value="40" />
   </object>
 </objects>

@@ -916,6 +916,47 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **The last four outliers of the balance sweep** (#334, #333, #328, #329) — and with them, the
+  inherited-defect ledger is **empty for the first time**.
+
+  **All 51 grenades carry vanilla's prices again** (#334). The fork had flattened every one to
+  10/20/30, which erased **three** distinct ladders vanilla uses: 20/30/40 for the twelve common
+  lines, 20/20/20 for the four that deliberately do not scale by grade, and **30/40/50** for fire
+  support and time dilation. That is two separate signals — which throwables are premium, and which
+  gain nothing from a higher grade — and it is most of how a player learns them. The merged grenade
+  economy goes back from 1,020 to **1,470**.
+
+  **`Rhinox-Skull Maul` gives back its extra penetration point** (#333). The issue said nothing else
+  in the mod touches penetration; in fact **84** blueprints do, and every one of them is 1 — as is
+  every one of the **28** weapons vanilla ships that a player can equip and that carry a `PenBonus`,
+  including `Gimeleth` at 12,000 water and `Fist of the Ape God`. The high numbers in the game's data
+  are on cherubic claws and astral tabby bites, not equipment. At 2 it was the only exception in
+  either catalogue.
+
+  Its weight stays at 10 against vanilla's 25: `weight-curve` permits a merge to lighten, and §3.2.1
+  holds the non-body slots to the rule rather than the number. And the **Ironweave Cloak keeps its
+  demotion** from tier 4 to 1 — iron is tier 1 in this fork's material table, and #380's value rule
+  was already written around exactly this case: a merge keeps vanilla's value *unless it also
+  re-tiers*.
+
+  **`Raven_Drum Shotgun` fires 10 rather than 24** (#328). Vanilla's ceiling across 65 missile
+  weapons is the `Swarm Rack` at 10, and its two shotguns fire 8 — so 24 was three times the best
+  shotgun in the game, at the same tier, for less money. It is **10 shots for 2 ammo** now, which
+  keeps the drum's real trade (five shots a shell against vanilla's eight) under a ceiling vanilla
+  sets, and **125 water** rather than 75, above the Combat Shotgun it out-bursts.
+
+  **`Raven_Fine-Tuned Handgun` costs 750 rather than 600** (#329), matching `LightLock`, the cheapest
+  vanilla pistol at its tier — the others are 1,050 and 1,200. Its accuracy of 1 is **left alone**: it
+  sits inside vanilla's tier-6 range rather than beyond it, since `Nullray Pistol` is 0. Its drop
+  weight of 2 in `Missile 4` is untouched, as #284 and #286 set it deliberately.
+
+- **(internal)** `tools/validation-baseline.json` is **empty**. It has tracked inherited debt since it
+  was written; the 22 `item-curve` rows were cleared by #373 and the 47 `merge-value` rows by #334,
+  and verified stale by running the validator with the ledger removed entirely — it still reports
+  nothing. An empty ledger means every violation the validator can report is a new one, which is the
+  state it was always meant to reach. The file and its comment stay, because the next inherited defect
+  will want somewhere to go.
+
 - **A solar cell no longer pays for a psionic shot every turn, the dark matter cell weighs what its
   capacity is worth, and the cell rarity ladder runs the right way up** (#323, #326).
 

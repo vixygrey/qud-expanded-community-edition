@@ -2178,7 +2178,7 @@
 -->
 
   <object Name="Rhinox-Skull Maul" Load="Merge">
-    <part Name="MeleeWeapon" PenBonus="2" MaxStrengthBonus="7" BaseDamage="3d4+1" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d4+1" />
     <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="10" />
