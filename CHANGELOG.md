@@ -884,6 +884,32 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `validate_mod.py` holds a merge to vanilla's value and resistances (#380). This is
+  the check the revert in the same issue argued for, and it is the second half of the blind spot
+  #354 fixed for tier detection — **both halves of `item-curve` skipped vanilla-named objects, and
+  only one of them should have.**
+
+  `merged_records` in `tools/qud-api.json` gains **`value`** and **`resistances`**, so CI can tell a
+  merge that restates vanilla's price from one that changes it. Without the snapshot a merge is
+  opaque: it carries no `Inherits`, and CI has no game to look the record up in.
+
+  The exception is stated rather than assumed: **where the merge also re-tiers the item the reprice
+  stands**, because there the price follows a derived tier rather than replacing a decision vanilla
+  made. Re-tiering licenses a price and nothing else — a resistance has no curve to derive from, so
+  it is refused either way.
+
+  Run against the tree as it stood before the revert, it reports **88** — the 80 prices and the 8
+  resistance fields, exactly what was reverted.
+
+  **The 47 grenades and 3 cybernetic implants go into `tools/validation-baseline.json`**, tagged to
+  #334 and #335. Listed as known debt rather than exempted in the check, deliberately: an exemption
+  would have made them invisible, and closing either issue now means clearing its rows.
+
+- **(internal)** `docs/STYLEGUIDE.md`'s check inventory gains rows for `merge-value` and for
+  `dead-chip-grade`, which shipped undocumented in #347. `check-names` verifies that a documented
+  name *exists*; nothing verifies that an emitted check is documented, so a new check can ship
+  unlisted in silence. Caught by hand this time.
+
 - **Vanilla's own prices are vanilla's again on 80 merged items, and two zetachrome pieces get
   their resistances back** (#380).
 

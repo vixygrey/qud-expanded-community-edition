@@ -22,6 +22,7 @@ import tempfile
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
+from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -826,6 +827,132 @@ class SnapshotBackedChecks(unittest.TestCase):
         api.update(snapshot or {})
         (tmp / "tools" / "qud-api.json").write_text(json.dumps(api))
         return tmp
+
+    # ---------------------------------------------------------------------- merge-value
+
+    RECORD: ClassVar[dict] = {
+        "tier": "8",
+        "value": "6000",
+        "resistances": {"Heat": "11"},
+    }
+
+    def _merge_value(self, blueprints: str, record: dict | None = None):
+        tmp = self._mod(
+            blueprints,
+            snapshot={"merged_records": {"Zetachrome Lune": record or self.RECORD}},
+        )
+        return findings_for(validate_mod.check_merged_value, tmp)
+
+    def test_a_merge_repricing_vanilla_is_reported(self) -> None:
+        """#380. 142 of the 213 merges carried a price this fork had rewritten, and item-curve
+        could not see one of them - it prices only the mod's own objects."""
+        items = self._merge_value(
+            '  <object Name="Zetachrome Lune" Load="Merge">\n'
+            '    <part Name="Commerce" Value="2048" />\n'
+            '    <tag Name="Tier" Value="8" />\n'
+            "  </object>"
+        )
+        self.assertEqual([c for c, _ in items], ["merge-value"])
+        self.assertIn("vanilla prices it 6000", items[0][1])
+
+    def test_a_merge_restating_vanillas_price_passes(self) -> None:
+        """Restating a value changes nothing by definition, so it is not the defect."""
+        self.assertEqual(
+            self._merge_value(
+                '  <object Name="Zetachrome Lune" Load="Merge">\n'
+                '    <part Name="Commerce" Value="6000" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_merge_that_re_tiers_may_reprice(self) -> None:
+        """The exception, and the reason the check is not simply 'never'. Carbide Boots is tier 3
+        at 40 against vanilla's tier 4 at 150 - the curve doing its job on a tier this fork chose."""
+        self.assertEqual(
+            self._merge_value(
+                '  <object Name="Zetachrome Lune" Load="Merge">\n'
+                '    <part Name="Commerce" Value="2048" />\n'
+                '    <tag Name="Tier" Value="6" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_new_object_is_not_touched(self) -> None:
+        """The curve still governs everything this fork adds; only merges are held to vanilla."""
+        self.assertEqual(
+            self._merge_value(
+                '  <object Name="Zetachrome Lune">\n'
+                '    <part Name="Commerce" Value="2048" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_merge_changing_a_resistance_is_reported(self) -> None:
+        items = self._merge_value(
+            '  <object Name="Zetachrome Lune" Load="Merge">\n'
+            '    <part Name="Armor" Heat="10" />\n'
+            "  </object>"
+        )
+        self.assertEqual([c for c, _ in items], ["merge-value"])
+        self.assertIn("vanilla says 11", items[0][1])
+
+    def test_a_merge_inventing_a_resistance_is_reported(self) -> None:
+        """Vanilla states none, so there is nothing to restate - and no curve to derive it from."""
+        items = self._merge_value(
+            '  <object Name="Zetachrome Lune" Load="Merge">\n'
+            '    <part Name="Armor" Cold="5" />\n'
+            "  </object>"
+        )
+        self.assertEqual([c for c, _ in items], ["merge-value"])
+        self.assertIn("vanilla says nothing", items[0][1])
+
+    def test_a_merge_restating_a_resistance_passes(self) -> None:
+        self.assertEqual(
+            self._merge_value(
+                '  <object Name="Zetachrome Lune" Load="Merge">\n'
+                '    <part Name="Armor" Heat="11" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_re_tier_does_not_licence_a_resistance(self) -> None:
+        """The exception is for price only. Re-tiering derives a new price; it derives nothing
+        about a resistance, because no curve describes one."""
+        items = self._merge_value(
+            '  <object Name="Zetachrome Lune" Load="Merge">\n'
+            '    <part Name="Armor" Heat="10" />\n'
+            '    <tag Name="Tier" Value="6" />\n'
+            "  </object>"
+        )
+        self.assertEqual([c for c, _ in items], ["merge-value"])
+
+    def test_a_merge_vanilla_never_priced_is_left_alone(self) -> None:
+        """`None` means vanilla states no value, so there is nothing to contradict."""
+        self.assertEqual(
+            self._merge_value(
+                '  <object Name="Zetachrome Lune" Load="Merge">\n'
+                '    <part Name="Commerce" Value="2048" />\n'
+                "  </object>",
+                record={"tier": "8", "value": None, "resistances": None},
+            ),
+            [],
+        )
+
+    def test_the_committed_snapshot_carries_vanillas_prices(self) -> None:
+        """Guards against a vacuous pass: without `value` on the records the check returns nothing
+        to compare and every test above would still pass."""
+        api = json.loads(API_SNAPSHOT.read_text())
+        records = api["merged_records"]
+        self.assertEqual(records["Zetachrome Lune"]["value"], "6000")
+        self.assertEqual(records["Zetachrome Lune"]["resistances"]["Heat"], "11")
+        self.assertTrue(
+            all(r.get("value") for r in records.values()),
+            "every merged record should carry vanilla's price",
+        )
 
     # ------------------------------------------------------------------ damage-ceiling
 
