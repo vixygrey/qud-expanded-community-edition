@@ -1208,3 +1208,35 @@ best-in-slot total that adds a shield's AV to a body armour's is an upper bound,
 The tell I ignored: **the category had no members where the finding said the worst case was.** #318
 named a shield in its own table and my slot list had no shield row. A survey that cannot see the
 thing the issue is about has answered a different question.
+
+## A commented-out blueprint is invisible to every check, and to nothing else
+
+`mod/ObjectBlueprints/MeleeWeapons.xml` holds four objects inside a `<!-- rework these or remove
+them` block — `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`, `Raven_Vibro War Hammer` and
+`Raven_Two-Handed Vibro War Hammer`. They are not blueprints. They are text.
+
+I tagged one of them by accident. The mace-ladder change in #342 needed a `Finesse` tag on ten
+blueprints, I matched objects with a regex over the raw file, and the regex found the commented one
+because a comment is just characters. The tag went in, the object stayed dead, and **every check
+passed** — `validate_mod.py` parses with ElementTree, which does not see inside a comment, so there
+was nothing for it to report. The defect reached `main` and shipped a changelog line promising a
+tagged vibro mace that does not exist.
+
+**Edit this file by parse, not by pattern.** If a script must work on raw text to preserve
+formatting, reconcile the result against the parsed document before committing:
+
+```python
+live = {o.get("Name") for o in ET.fromstring(raw).iter("object")}
+raw_objs = set(re.findall(r'<object Name="([^"]*)"', raw))
+assert not (raw_objs - live) & touched      # touched something that is not a blueprint
+```
+
+`stat-discipline` already knew this and says so in its own docstring — *"Parses rather than greps,
+deliberately… ElementTree does not see inside a comment"* — written because a line-based check
+reported those same two vibro war hammers as violations nobody could fix. **The knowledge existed in
+a docstring in the validator and nowhere a person writing an edit script would look.** That is the
+part worth fixing, and why this is here.
+
+The general shape: **a validator that ignores a region cannot protect that region.** Anything
+deliberately excluded from checking is somewhere mistakes accumulate silently, so a change that
+writes to the file rather than through the parser has to police itself.

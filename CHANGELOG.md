@@ -19,8 +19,8 @@ recorded because contributors need them, not because subscribers do.
   hammers** (#342).
 
   **What it is.** Pathfinder's finesse bludgeon is a mace-family weapon — the light mace carries
-  agile, finesse and shove, while the warhammer never does. So the nine one-handed maces and the
-  vibro mace take the `Finesse` tag: with the Cudgel tree's Finesse power bought, penetration rolls
+  agile, finesse and shove, while the warhammer never does. So the **nine one-handed maces** take the
+  `Finesse` tag: with the Cudgel tree's Finesse power bought, penetration rolls
   use your Agility modifier whenever it beats Strength. **The war hammers stay Strength**, which is
   what they should always have been — #321 called the war hammer one of the two most genre-inverted
   assignments in the mod, and this does not undo that, it puts the finesse on the weapon that
