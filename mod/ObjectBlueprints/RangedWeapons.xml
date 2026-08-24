@@ -50,7 +50,7 @@
   <object Name="Raven_Fine-Tuned Handgun" Inherits="BaseMagazinePistol">
     <part Name="Render" DisplayName="fine-tuned handgun" Tile="items/sw_autopistol.bmp" />
     <part Name="Physics" Weight="3" />
-    <part Name="Commerce" Value="600" />
+    <part Name="Commerce" Value="750" />
     <part
       Name="MissileWeapon"
       AnimationDelay="0"
@@ -167,14 +167,14 @@
   <object Name="Raven_Drum Shotgun" Inherits="BaseMagazineRifle">
     <part Name="Render" DisplayName="&amp;bdrum &amp;yshotgun" Tile="items/sw_shotgun_1.bmp" ColorString="&amp;b" />
     <part Name="Physics" Weight="16" UsesTwoSlots="true" />
-    <part Name="Commerce" Value="75" />
+    <part Name="Commerce" Value="125" />
     <part
       Name="MissileWeapon"
       Skill="Rifle"
       NoWildfire="true"
-      ShotsPerAction="24"
-      AmmoPerAction="4"
-      ShotsPerAnimation="6"
+      ShotsPerAction="10"
+      AmmoPerAction="2"
+      ShotsPerAnimation="10"
       WeaponAccuracy="36"
       RangeIncrement="6"
     />

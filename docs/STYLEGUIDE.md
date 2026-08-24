@@ -480,6 +480,27 @@ rules as they stand rather than in tension with them. It is the one place this f
 vanilla weapon's damage, and it is here because leaving it at parity would make the merged item 80%
 better than its own tier-mates.
 
+**Penetration bonus is 1, and vanilla has no second value for it.** Across the 28 weapons vanilla
+ships that a player can equip and that carry a `PenBonus`, **every one is 1** — including `Gimeleth`
+at 12,000 water and `Fist of the Ape God`, its legendary cudgels. The high numbers in the game's data
+(6, 8, 10) are on creature limbs — cherubic claws, astral tabby bites — not on equipment. This fork's
+own 84 declarations are all 1 as well. `Rhinox-Skull Maul` at **2** was the only exception in either
+catalogue, and #333 brought it back: a named artifact may be distinctive, but not above a ceiling the
+game's own legendaries respect.
+
+**Shots per action stops at 10.** Vanilla's ceiling across 65 missile weapons is the `Swarm Rack` at
+10, and its two shotguns fire 8. `Raven_Drum Shotgun` fired **24** — three times the best shotgun in
+the game, at the same tier, for less money. It is 10 now, at 2 ammo, which keeps the drum's actual
+trade (five shots a shell against vanilla's eight) without exceeding a ceiling vanilla sets. Note
+`ShotsPerAnimation` follows `ShotsPerAction` on every vanilla burst weapon except the chaingun.
+
+**A merge may re-tier a vanilla item when the material table says so, and the price follows the
+tier.** Fourteen do. `Ironweave Cloak` is the one that demotes rather than extends — tier 4 to 1,
+because iron is tier 1 — which puts a mid-game vanilla item in the opening zones so the
+bronzeweave-through-zetachromeweave family has room. That is accepted (#333) and it is the exception
+that #380's value rule was already written around: a merge keeps vanilla's value *unless it also
+re-tiers*, and this is what that clause is for.
+
 **An energy cell's capacity sets its rarity and its entry tier, and the two ladders run separately.**
 Vanilla states the rule plainly once entry tier is read against charge: chem 10,000 enters Ammo 4 at
 weight 25, nuclear 100,000 enters Ammo 6 at 5, antimatter 200,000 enters Ammo 7 at 1. Recharging

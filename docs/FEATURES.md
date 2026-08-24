@@ -28,7 +28,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
 | **Loot tables** | **56** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
-| **Economy** | Price curve flattened on high-tier gear; all 51 grenades repriced |
+| **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
 > **This document specifies; the [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
 > explains.** Every figure below — tier, weight, price, drop rate, stat modifier, option default and
@@ -1038,9 +1038,9 @@ Nine elemental variants of each:
 
 | Blueprint | Tier | Skill | Shots/action | Ammo | Accuracy | Range inc. | Value | Notes |
 |---|---|---|---|---|---|---|---|---|
-| Fine-tuned handgun | 6 | Pistol | 2 (2 ammo) | 10 slugs | **1** (near-perfect) | 1 | 600 | Projectile pen 8 / 1d8. Turret name "miniature burstfire turret" |
+| Fine-tuned handgun | 6 | Pistol | 2 (2 ammo) | 10 slugs | **1** (near-perfect) | 1 | 750 | Projectile pen 8 / 1d8. Turret name "miniature burstfire turret" |
 | Modified handcannon | 5 | Pistol | 8 (1 ammo) | 4 shotgun shells | 30 | 12 | 400 | Fires shotgun shells from a handcannon; pellets pen 4 / 1d2 |
-| Drum shotgun | 3 | Rifle | 24 (4 ammo, 6/anim) | 20 shells | 36 | 6 | 75 | `NoWildfire`, two-slot, weight 16 |
+| Drum shotgun | 3 | Rifle | 10 (2 ammo, 10/anim) | 20 shells | 36 | 6 | 125 | `NoWildfire`, two-slot, weight 16 |
 | Compact flamethrower | (inherits) | Heavy | — | 16 dram liquid | — | — | — | Occupies **both Missile Weapon slots** instead of hands |
 | Cryocannon | 5 | Heavy Weapons | 1 | energy cell, 2000 charge | 0 | — | 750 | 1d8 `Cold NonPenetrating`, **-300 temperature** on hit and on entering |
 | Net gun | 5 | Rifle | 1 | energy cell, 1000 charge | — | 12 | 130 | 1d4 `Electric NonPenetrating` + deploys a **Stasisfield** (radius 1, duration 1d3+3). Also a radius-8 light source while charged |
@@ -1925,7 +1925,9 @@ The mod deliberately flattens the top of the price curve so high-tier gear is at
 - Two tier-8 items are pulled *below* curve: Cudgel8 and Cudgel8th, both 1200. The zetachrome greataxe and wristblade were also 1200 until #86 put them on the curve at 1280.
 - Vibro weapons are flat 300 across the board.
 - Laser pistol 250, laser rifle 550, chain pistol 100, borderlands revolver 25.
-- All grenades flattened to 10/20/30.
+- All grenades carry vanilla's own prices again (#334). They had been flattened to 10/20/30, which
+  erased vanilla's three ladders: 20/30/40 for the common lines, 20/20/20 for the four that do not
+  scale by grade, and 30/40/50 for fire support and time dilation.
 
 ---
 
@@ -2270,7 +2272,7 @@ not touch that field (the vanilla value is inherited).
 | Cudgel5th | 5 | 3d4 | 1 | 6 |  | 160 | 8 |
 | Cudgel6 | 6 | 2d6 |  | 7 |  | 390 | 2 |
 | Cudgel7 | 7 | 3d4 |  | 8 |  | 720 | 2 |
-| Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 320 | 10 |
+| Rhinox-Skull Maul | 6 | 3d4+1 | 1 | 7 |  | 320 | 10 |
 | Warhammer2 | 1 | 2 |  | 2 |  | 10 | 3 |
 | Steel War Hammer | 2 | 2d2 |  | 3 |  | 20 | 3 |
 | Steel War Hammerth | 2 | 3d2 | 1 | 3 |  | 20 | 6 |
