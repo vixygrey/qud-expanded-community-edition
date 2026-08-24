@@ -480,6 +480,25 @@ rules as they stand rather than in tension with them. It is the one place this f
 vanilla weapon's damage, and it is here because leaving it at parity would make the merged item 80%
 better than its own tier-mates.
 
+**An energy cell's capacity sets its rarity and its entry tier, and the two ladders run separately.**
+Vanilla states the rule plainly once entry tier is read against charge: chem 10,000 enters Ammo 4 at
+weight 25, nuclear 100,000 enters Ammo 6 at 5, antimatter 200,000 enters Ammo 7 at 1. Recharging
+cells run their own ladder beside it, anchored by the solar cell at 2,500 and weight 10. **Nothing
+with more charge may be commoner than something with less**, within either ladder. #326 found the
+advanced chem cell at weight 20 — four times commoner than a nuclear cell holding twice as much.
+
+**A solar cell recharges at 10 a turn, because that is the only rate vanilla states.** `SolarArray`
+defaults to 10 and vanilla ships exactly one cell using it, so any other figure is invented. The rate
+is not a free parameter: it is measured against what a shot costs. Vanilla's own ratio is a laser
+pistol at 100 charge against 10 a turn — **ten turns of sunlight per shot**. #323 found the solar
+nexus at 50 a turn against a psionic pistol at 50 a shot, which is one shot per turn, outdoors, for
+ever. Capacity is what separates this fork's solar cells now, as it separates every vanilla cell.
+
+**Vanilla's portable charge ceiling is 200,000.** The only 500,000 cell it ships is the mech power
+core, at **70 lb**. A cell may hold more than an antimatter cell only by taking that weight — the
+dark matter cell keeps its 500,000 and carries the 70 (#323), which makes it a power source you
+install rather than one you pocket.
+
 **A subtype's starting skills are capped at vanilla's most generous caste**, which is 7 skills and
 **700 skill points** — `Priest of All Suns`. Vanilla's median is 5 and 450. A subtype may exceed the
 ceiling only by what its own Intelligence penalty pays back: `Leveler.RollSP` is

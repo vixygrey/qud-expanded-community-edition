@@ -58,6 +58,7 @@
       RenderLayer="5"
     />
     <part Name="EnergyCell" Charge="500000" MaxCharge="500000" />
+    <part Name="Physics" Weight="70" />
     <part
       Name="Description"
       Short="A tightly wound hedron of dark matter containing vast amounts of potential energy."
@@ -82,7 +83,7 @@
       Name="Description"
       Short="An array of shimmering silver cubes, these cells will slowly recharge if left in sunlight."
     />
-    <part Name="SolarArray" ChargeRate="25" />
+    <part Name="SolarArray" ChargeRate="10" />
     <part Name="IntegralRecharger" />
     <part Name="TinkerItem" Bits="0023" CanDisassemble="true" CanBuild="true" />
     <part Name="Commerce" Value="150" />
@@ -104,7 +105,7 @@
       Name="Description"
       Short="An undulating nexus of shimmering silver cubes, they will gradually recharge if left in sunlight."
     />
-    <part Name="SolarArray" ChargeRate="50" />
+    <part Name="SolarArray" ChargeRate="10" />
     <part Name="IntegralRecharger" />
     <part Name="TinkerItem" Bits="0025" CanDisassemble="true" CanBuild="true" />
     <part Name="Commerce" Value="225" />
