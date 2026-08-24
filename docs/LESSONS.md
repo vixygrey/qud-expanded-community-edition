@@ -135,9 +135,19 @@ Two things that would have caught it, in order of cost:
 
 - **Run the check.** It is one command and it reports the answer as a list.
 - **Put it where it cannot be skipped.** A check that lives in someone's habit is a check with an
-  expiry date. This one could be a `pre-push` hook or a CI job on any pull request whose body says
-  "Part of" — the repository already prefers mechanical enforcement to prose for exactly this reason,
+  expiry date. The repository already prefers mechanical enforcement to prose for exactly this reason,
   and `docs/CHARTER.md` rule 4 says so: *"Keep new checks in the script rather than in prose."*
+
+**That second one is done** — [`tools/check_pr_intent.py`](../tools/check_pr_intent.py) runs in the
+**PR conventions** job and fails a pull request whose body names an issue after `Part of`, `Advances`
+or `Why … stays open` while `closingIssuesReferences` says it would close that same issue (#361). It
+catches all three instances above, including this one, and its tests carry them in their own words so
+that a regular expression over prose cannot quietly stop matching.
+
+**Keep running the manual check anyway.** The automated one needs a *stated* intent to contradict, so
+it cannot see a pull request that carries a closing reference and says nothing either way — and that
+body is the easier one to write by accident, not the harder one. What the check removes is the case
+that has actually bitten, three times.
 
 That second point generalises past this check. Several of the habits in this document are still
 habits, and every one of them has the same failure mode.
