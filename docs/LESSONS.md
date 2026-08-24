@@ -149,6 +149,33 @@ it cannot see a pull request that carries a closing reference and says nothing e
 body is the easier one to write by accident, not the harder one. What the check removes is the case
 that has actually bitten, three times.
 
+## A null in a sentence is a body part that was never chosen
+
+A player reported that a chip-granted Ice Ray failed with *"Your is too damaged to do that"*. The
+missing noun **was the whole diagnosis**: the game builds that sentence as
+`"Your " + BodyPartType + " is too damaged to do that!"`, so an empty gap between two words is a null
+field rendered, not a typo in the message.
+
+What produced it: `FlamingRay` and `FreezingRay` are *variant* mutations, deriving their body part
+from a chosen variant. `BaseMutation.Create` only calls `SetVariant` when the variant is non-empty,
+and the chip base class passes `null` — so the derivation never ran. The mutation's own fallback
+looked like it should save this, and does not: it assigns the `Variant` **field** directly rather
+than going through `SetVariant`, so the body part stays unset even once a variant exists.
+
+Three things worth keeping from it:
+
+- **Read the message as a format string.** *"Your is"* has a hole in it, and the hole is the variable.
+  That narrowed a whole-catalogue question to one field in one class before any code was opened.
+- **A fallback that assigns a field is not the same as one that calls the setter**, and the
+  difference only shows when the setter does more than assign. Both of these look correct in
+  isolation.
+- **The player's own theory was wrong and worth discarding early.** They were a True Kin and assumed
+  the genotype mattered; it does not, and chasing that would have cost the afternoon.
+
+Vanilla never reaches this defect, which is why it survived: its only three items using that base
+class grant mutations that have no variants. A mod that grants a wider set of mutations through a
+vanilla mechanism is exactly the thing that finds the corners vanilla's own content never turns.
+
 ## Writing *about* a closing keyword is writing one
 
 The fourth instance is the pull request that added the check above, and it is the only one where the

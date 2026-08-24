@@ -283,6 +283,15 @@ public class Raven_ModDisintegration : ModImprovedMutationBase<Disintegration> {
 
 36 such scripts exist, one per mutation. The part's `Tier` attribute is the mutation level granted.
 
+**Two of them need a variant, and the stock base class does not supply one (#411).** `FlamingRay`
+and `FreezingRay` derive the body part they fire from out of a chosen variant, and
+`ModImprovedMutationBase` passes `null` for it — so `BodyPartType` stayed null and activating the
+ability failed with *"Your  is too damaged to do that!"*, an empty body-part name printed straight
+into the sentence. Both now inherit `Raven_ModVariantMutationBase`, which passes the variant
+(`Ghostly Flames` and `Icy Vapor`, each the only one its mutation has) and then rebuilds the body's
+default equipment so the slot is actually registered. Vanilla never meets this: its only three items
+using that base class grant Confusion and Temporal Fugue, neither of which has variants.
+
 **Physical vs mental scaling (2.2 change):** mental mutations keep scaling with Ego even when
 granted by a chip; physical mutations do not scale at all. To compensate, chips granting
 *physical* mutations give **3 / 6 / 10** levels instead of the **2 / 4 / 6** that mental chips give.
@@ -1959,7 +1968,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 48 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 49 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, the chip-slot mutator,
 │                               # burden, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark

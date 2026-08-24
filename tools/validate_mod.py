@@ -898,6 +898,12 @@ def _report_field(
     stmt = stmt.strip()
     if not stmt or stmt.startswith("["):
         return
+    # An expression-bodied member declares no field at all - the compiler emits a method or a
+    # get-only property with no backing storage, so nothing reaches the save. #411 added the first
+    # of these: `protected override string VariantBlueprint => "Icy Vapor";`. Checked before the
+    # "=" split, because "=>" would otherwise read as an assignment and the head as a field.
+    if "=>" in stmt:
+        return
     head = stmt.split("=", 1)[0]
     # A "(" before any "=" means a method or expression, not a field declaration.
     if "(" in head:
@@ -1591,8 +1597,18 @@ def check_mutation_type_arguments(f: Findings) -> None:
         # Comments are stripped so a commented-out declaration cannot invent a violation; the
         # mod keeps blocks of dormant blueprints and scripts exactly like that.
         src = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
+        # Type parameters are not mutation names. Raven_ModVariantMutationBase is generic over T
+        # and passes it through to ModImprovedMutationBase<T>, so a literal read finds "T" and
+        # reports a mutation nothing declares (#411).
+        parameters = {
+            name
+            for decl in re.findall(r"\bclass\s+\w+\s*<([^>]*)>", src)
+            for name in re.findall(r"\w+", decl)
+        }
         for match in re.finditer(r"ModImprovedMutationBase<\s*(\w+)\s*>", src):
             arg = match.group(1)
+            if arg in parameters:
+                continue
             if arg not in known:
                 f.add(
                     "unknown-mutation",
