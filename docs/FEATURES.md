@@ -104,6 +104,32 @@ work identically, through `RollSP` and `RollMP`.
 
 ### 1.4 Psionic Adept (new)
 
+**What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list —
+credits cost 150 water each, implants are chosen, and you install exactly what you saved for at a
+becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be bought and
+cannot be built.** They carry no `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables
+naming them are `Artifact 3` through `8` — which is what `ChestBuilders` uses to fill a chest. So
+they come out of chests, tier-scaled, and from nowhere else.
+
+Chargen fills three of its four slots from its affinity's own kit, and everything after that is a
+find. It is the one genotype whose build you cannot decide in advance, which is what its fiction
+already says: a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become
+what you find.**
+
+The **95 skill points a level** — the highest in the game — are the counterweight. The Adept has no
+innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
+points. What it has instead is the broadest skill access in the game and a mutation kit assembled
+from loot. **Skills and scavenging** is the fantasy.
+
+> ⚪ **Its power curve is the opposite shape to a mutant's**, and that is deliberate rather than a
+> defect to fix. A chip's rank is capped at its grade, so an Adept is at its strongest relative to
+> the others around **character level 18** — where the rank cap reaches 10 and a perfected chip is
+> finally worth its full value — and falls behind after 30, when a mutant's mutation-point income
+> keeps climbing and the chips do not. Front-loaded breadth that plateaus. The working is in
+> [`docs/DESIGN_balance.md`](DESIGN_balance.md) §5.8, and #350 records the one route past the
+> plateau: chip levels sum, so two of the same mutation are worth twice the grade, at the cost of
+> half your breadth.
+
 Named `Psionic Adept` internally and in display, matching vanilla's convention that a genotype's
 `Name` and `DisplayName` agree (`Mutated Human`, `True Kin`). It was internally `Psionic` until
 this fork renamed it (#24).

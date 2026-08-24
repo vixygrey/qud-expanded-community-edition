@@ -41,8 +41,11 @@ Noble Lark for the subclass sprites*. I treat that as permanent, and the build f
 
 ## What it does
 
-- **Psionic Adept** — a third genotype with 18 subtypes, split between casters and martial
-  guardians.
+- **Psionic Adept** — a third genotype for players who would rather find their build than plan it.
+  It has no mutations and the fewest stat points in the game, and the most skill points per level of
+  anyone; its power comes from psionic chips, which cannot be bought or built and only ever come out
+  of chests. A True Kin saves up for the implant it wants. An Adept wears what it finds. 18 subtypes,
+  split between casters and martial guardians.
 - **144 psionic chips** — implantable chips granting real, working mutations to genotypes that
   cannot mutate. Every one of them can be found.
 - **Complete weapon and armor families** — bronze through zetachrome, one- and two-handed, with
