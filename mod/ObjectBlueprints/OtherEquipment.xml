@@ -178,7 +178,7 @@
       FlameTemperature="99999"
       VaporTemperature="9999"
     />
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="5" />
     <stat Name="Hitpoints" Value="1000" />
     <stat Name="HeatResistance" Value="100" />
     <stat Name="ColdResistance" Value="100" />

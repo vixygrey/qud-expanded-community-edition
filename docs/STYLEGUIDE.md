@@ -362,6 +362,32 @@ the failure #354 removed from tier detection. A `MissileWeapon`, an `EnergyCell`
 `Trinket` tag exempts; so does an `Armor` part granting **no AV**, which is a slot occupier rather
 than armour. Anything else with a price is held to the curve.
 
+**A merge keeps vanilla's value, unless it also changes the item's tier.** The curve describes this
+fork's own items; imposing it on a vanilla blueprint is the same shape as the `MeleeWeapon.Stat`
+swaps #321 reverted, and it reached far further — **142 of the 213 merges** carried a price the fork
+had rewritten, moving the merged economy 44,476 → 33,459, about 25% cheaper. #380 reverted 80 of
+them and kept the 12 where the merge re-tiers the item, because there the price follows a derived
+tier rather than replacing a decision vanilla made. The remaining 50 belong to
+[#334](https://github.com/vixygrey/qud-expanded-community-edition/issues/334) and
+[#335](https://github.com/vixygrey/qud-expanded-community-edition/issues/335), which own the grenade
+and cybernetics economies.
+
+The measurement that settled it: vanilla's own prices are **not** the mess the exemption note above
+suggests once you hold the slot fixed. Body armour runs a 1.1x spread at tier 5, 1.5x at tiers 6 and
+7, and **1.1x at tier 8** — Zetachrome Lune at 6,000 sits beside the Flange from the Great Machine
+at 6,666. Vanilla is coherent at the top; this fork's curve is simply a different slope, above
+vanilla at tier 1 and a third of it at tier 8. There was no inconsistency to tidy.
+
+**What that costs, stated because it is visible in play.** A family holding both new and merged
+items no longer steps evenly: four pairs run a higher tier at no more price, and ten tiers hold a
+fork item and a vanilla one at different prices — tier-5 boots are 160 new and 195 merged. Two of
+those four are vanilla's own flat step reproduced faithfully. That unevenness is accepted; it is
+what "vanilla sets its own values" looks like when the two catalogues sit in one table.
+
+Resistances follow the same rule and have no curve at all, so a merge never states them. The two
+that did — `Zetachrome Gloves` at 5/5/5/5 against vanilla's 6, `Zetachrome Lune` at 10/10/10/10
+against 11 — were reverted in #380.
+
 **An item's tier is its `Tier` tag**, and the material word in its name is only a fallback for the
 objects that predate the tag. That order used to be reversed, which meant anything not named after
 a metal was skipped before its price was ever compared — 144 psionic chips and 22 other items, all

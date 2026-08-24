@@ -884,6 +884,51 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **Vanilla's own prices are vanilla's again on 80 merged items, and two zetachrome pieces get
+  their resistances back** (#380).
+
+  **What was wrong.** This fork applied its value curve to vanilla blueprints through merges. I
+  found four by hand; the audit found **142 of the 213 merges**, moving the merged economy from
+  44,476 to 33,459 — about **25% cheaper**, 124 items down and 18 up. `item-curve` could not see any
+  of it, because it prices only `Raven_` and `Vixy_` objects on the rule that vanilla sets its own
+  values. That rule is right for a new item and exactly wrong for a merge that rewrites vanilla's.
+
+  **The measurement that settled which way to go.** The case for keeping them was that vanilla is
+  inconsistent with its own economy — `Zetachrome Lune` at 6,000 against a tier-8 curve of 2,048.
+  It is not. Hold the slot fixed and vanilla's body armour runs a 1.1x price spread at tier 5, 1.5x
+  at tiers 6 and 7, and 1.1x at tier 8, where the Lune's only peer is the Flange from the Great
+  Machine at 6,666. Vanilla is coherent at the top. This fork's curve is a different slope — above
+  vanilla at tier 1, a third of it at tier 8 — so it was competing with vanilla's ladder rather than
+  repairing it.
+
+  **What changed.** 80 merges give their price back, including the four ranged weapons, which the
+  curve should never have reached at all — `item-curve` already exempts ranged weapons on the
+  grounds that neither this mod nor vanilla has ever priced them by tier. Highlights:
+
+  | blueprint | was | now |
+  |---|---:|---:|
+  | `Zetachrome Lune` | 2,048 | **6,000** |
+  | `Flawless Crysteel Shardmail` | 1,024 | **1,900** |
+  | `Crysteel Shardmail` | 512 | **1,200** |
+  | `Laser Rifle` | 550 | **750** |
+  | `Battle Axe8` | 1,280 | **1,500** |
+  | `Vibro Dagger` | 300 | **120** |
+
+  And `Zetachrome Gloves` goes back to 6/6/6/6 elemental resistance from 5, `Zetachrome Lune` to
+  11/11/11/11 from 10. Both were undocumented nerfs, and no curve claims resistances.
+
+  **What did not change.** The 12 merges where this fork also re-tiers the item keep their new
+  price, because there it follows a derived tier rather than replacing a decision vanilla made —
+  `Carbide Boots` stays tier 3 at 40 against vanilla's tier 4 at 150. The grenades stay as they are
+  under #334 and the cybernetics under #335, which own those two economies. And every item this
+  fork adds is still priced by the curve, unchanged.
+
+  **What it costs, since it is visible in play.** A family holding both new and merged items no
+  longer steps evenly. Four pairs now run a higher tier at no more money, and ten tiers hold a fork
+  item and a vanilla one at different prices — tier-5 boots are 160 new and 195 merged. Two of those
+  four pairs are vanilla's own flat step, reproduced faithfully. `docs/STYLEGUIDE.md` §3.2 states the
+  rule and accepts the unevenness.
+
 - **(internal)** `validate_mod.py` refuses a chip line that grades a mutation which cannot level
   (#347). This is the guard the fix in the same issue argued for.
 

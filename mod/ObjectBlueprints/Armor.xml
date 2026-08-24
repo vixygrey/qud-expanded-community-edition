@@ -51,26 +51,26 @@
 
   <object Name="Fullerite Boots" Load="Merge">
     <part Name="Armor" AV="4" DV="-4" WornOn="Feet" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="195" />
     <part Name="Physics" Weight="10" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Crysteel Boots" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Feet" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="400" />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Flawless Crysteel Boots" Load="Merge">
     <part Name="Armor" AV="4" DV="0" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Feet" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="650" />
     <part Name="Physics" Weight="6" />
   </object>
 
   <object Name="Zetachrome Pumps" Load="Merge">
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <part Name="Physics" Weight="5" />
     <tag Name="Tier" Value="8" />
     <part Name="MoveCostMultiplier" Amount="-10" />
@@ -202,28 +202,28 @@
 
   <object Name="Fullerite Gauntlets" Load="Merge">
     <part Name="Armor" AV="4" DV="-4" WornOn="Hands" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="195" />
     <part Name="Physics" Weight="10" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Crysteel Gauntlets" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Hands" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="400" />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Flawless Crysteel Gauntlets" Load="Merge">
     <part Name="Armor" AV="4" DV="0" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Hands" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="650" />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="7" />
   </object>
 
   <object Name="Zetachrome Gloves" Load="Merge">
-    <part Name="Armor" AV="4" DV="0" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Hands" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Armor" AV="4" DV="0" Elec="6" Cold="6" Heat="6" Acid="6" WornOn="Hands" />
+    <part Name="Commerce" Value="1500" />
     <part Name="Physics" Weight="5" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -328,27 +328,27 @@
 
   <object Name="Fullerite Armet" Load="Merge">
     <part Name="Armor" AV="4" DV="-4" WornOn="Head" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="95" />
     <part Name="Physics" Weight="12" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Crysteel Coronet" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Head" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="400" />
     <part Name="Physics" Weight="8" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Flawless Crysteel Coronet" Load="Merge">
     <part Name="Armor" AV="4" DV="0" Heat="5" Cold="5" Acid="5" Elec="5" WornOn="Head" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="650" />
     <part Name="Physics" Weight="8" />
     <tag Name="Tier" Value="7" />
   </object>
 
   <object Name="Zetachrome Apex" Load="Merge">
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <part Name="Physics" Weight="7" />
     <tag Name="Tier" Value="8" />
   </object>
@@ -466,41 +466,41 @@
 
   <object Name="Fullerite Plate Mail" Load="Merge">
     <part Name="Armor" AV="6" DV="-2" WornOn="Body" />
-    <part Name="Commerce" Value="256" />
+    <part Name="Commerce" Value="345" />
     <part Name="Physics" Weight="70" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Fullerite Flake Armor" Load="Merge">
     <part Name="Armor" AV="4" DV="-2" Heat="12" Cold="12" Elec="3" Acid="3" WornOn="Body" />
-    <part Name="Commerce" Value="256" />
+    <part Name="Commerce" Value="320" />
     <part Name="Physics" Weight="40" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Crysteel Shardmail" Load="Merge">
     <part Name="Armor" AV="8" DV="-4" WornOn="Body" />
-    <part Name="Commerce" Value="512" />
+    <part Name="Commerce" Value="1200" />
     <part Name="Physics" Weight="18" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Flawless Crysteel Shardmail" Load="Merge">
     <part Name="Armor" AV="8" DV="-2" Heat="9" Cold="9" Acid="9" Elec="9" WornOn="Body" />
-    <part Name="Commerce" Value="1024" />
+    <part Name="Commerce" Value="1900" />
     <part Name="Physics" Weight="18" />
     <tag Name="Tier" Value="7" />
   </object>
 
   <object Name="Zetachrome Lune" Load="Merge">
-    <part Name="Armor" AV="8" DV="-2" Elec="10" Cold="10" Heat="10" Acid="10" WornOn="Body" />
-    <part Name="Commerce" Value="2048" />
+    <part Name="Armor" AV="8" DV="-2" Elec="11" Cold="11" Heat="11" Acid="11" WornOn="Body" />
+    <part Name="Commerce" Value="6000" />
     <part Name="Physics" Weight="15" />
     <tag Name="Tier" Value="8" />
   </object>
 
   <object Name="Chain Mail" Load="Merge">
-    <part Name="Commerce" Value="32" />
+    <part Name="Commerce" Value="25" />
     <part Name="Physics" Weight="15" />
     <tag Name="Tier" Value="2" />
   </object>
@@ -822,7 +822,7 @@
 
   <object Name="Steel Buckler" Load="Merge">
     <part Name="Shield" AV="2" DV="-1" WornOn="Arm" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="50" />
     <part Name="Physics" Weight="3" />
     <tag Name="Tier" Value="2" />
   </object>
@@ -961,7 +961,7 @@
   </object>
 
   <object Name="Steel Shield" Load="Merge">
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="50" />
     <part Name="Description" Short="A large steel shield, meant to be secured to your hand." />
     <part Name="Physics" Weight="7" />
     <tag Name="Tier" Value="2" />
@@ -970,7 +970,7 @@
   <object Name="Carbide Shield" Load="Merge">
     <part Name="Shield" AV="4" DV="-2" WornOn="Hand" />
     <part Name="Description" Short="A large carbide shield, meant to be secured to your hand." />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="50" />
     <part Name="Physics" Weight="10" />
     <tag Name="Tier" Value="3" />
   </object>
@@ -987,21 +987,21 @@
 
   <object Name="Fullerite Shield" Load="Merge">
     <part Name="Shield" AV="5" DV="-2" WornOn="Hand" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="200" />
     <part Name="Physics" Weight="12" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Crysteel Shield" Load="Merge">
     <part Name="Shield" AV="6" DV="-2" WornOn="Hand" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="300" />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Flawless Crysteel Shield" Load="Merge">
     <part Name="Shield" AV="7" DV="-2" WornOn="Hand" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="450" />
     <part Name="Physics" Weight="6" />
     <tag Name="Tier" Value="7" />
   </object>
