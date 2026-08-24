@@ -983,7 +983,73 @@ checked now (#152), and the fix has a sting worth remembering: when `Tests` was 
 obvious next move was to update the documented count — which would have turned a correct ten into
 an incorrect eleven. The documents were only right again *because* of the fix.
 
-### 10.1 Where checking stops
+### 10.1 Every check name
+
+The table above maps **rules to enforcers**, so a check guarding something other than a style rule has
+no row in it. This one is the registry: **every name any script in `tools/` can report**, so a name
+you meet in a failure has somewhere to be looked up.
+
+`check-names` holds it complete **in both directions** — a document calling something a check that no
+script emits, and a script emitting a name this table does not list, are both findings. It only
+checked the first until #402, so a new check could ship unlisted in silence, and fifteen had.
+
+| Check | Emitted by | What it holds |
+|---|---|---|
+| `appendix-b` | `check_docs.py` | every row of FEATURES' chip appendix, against the blueprint it describes |
+| `armor-curve` | `validate_mod.py` | AV against §3.2.1's ceiling, per slot and for shields |
+| `built` | `check_build_log.py` | the game's own build log says the C# compiled |
+| `changelog-sections` | `check_docs.py` | no duplicate `### Added` / `### Changed` heading inside one release |
+| `check-names` | `check_docs.py` | this one — a documented check name exists, and an emitted one is documented |
+| `class-filename` | `validate_mod.py` | a C# class living in a file named for it |
+| `count` | `check_build_log.py` | the log covering every script the mod ships |
+| `counts` | `check_docs.py` | the file and blueprint counts the documents quote |
+| `damage-ceiling` | `validate_mod.py` | damage against §3.2.1's per-family ceiling |
+| `dangling-blueprint` | `validate_mod.py` | a population entry naming a blueprint that exists |
+| `dangling-blueprint-ref` | `validate_mod.py` | a blueprint-valued part attribute naming one that exists |
+| `dead-chip-grade` | `validate_mod.py` | a chip grading a mutation that cannot level |
+| `deployed` | `check_build_log.py` | the log belonging to the copy the game actually compiled |
+| `filename-space` | `validate_mod.py` | filenames without spaces |
+| `finesse-visible` | `validate_mod.py` | a `Finesse` tag and its rules text implying each other |
+| `fresh` | `check_build_log.py` | the log post-dating that copy |
+| `identical` | `check_build_log.py` | the working tree matching what was compiled |
+| `item-curve` | `validate_mod.py` | tier and value curve consistency |
+| `item-tables` | `check_docs.py` | every figure in FEATURES' item tables, against its blueprint |
+| `joppa-sync` | `validate_mod.py` | the Joppa map and its option agreeing |
+| `json` | `validate_mod.py` | `manifest.json` and `workshop.json` parsing |
+| `links` | `check_docs.py` | every relative link in the documents resolving |
+| `loaded` | `check_build_log.py` | the game loading the mod rather than skipping it |
+| `manifest` | `validate_mod.py` | `manifest.json` validity, and its version against the changelog |
+| `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
+| `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
+| `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
+| `option-slider` | `validate_mod.py` | slider `Min` above 1, which crashes Qud's options menu (#51) |
+| `option-wiring` | `validate_mod.py` | an option declared but unread, or read but undeclared |
+| `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |
+| `part-builder` | `validate_mod.py` | `<part Builder="…">` naming a real class |
+| `preserved` | `check_docs.py` | Mura's preserved documents unedited since the fork |
+| `qud-api-snapshot` | `validate_mod.py` | the API snapshot being present and carrying what a check needs |
+| `required-checks` | `check_docs.py` | the documented count of required checks matching the ruleset copy |
+| `scripting-policy` | `validate_mod.py` | charter rule 5's banned APIs in `mod/Scripting/` |
+| `sections` | `check_docs.py` | the section headings the documents cross-reference |
+| `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
+| `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
+| `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
+| `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
+| `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
+| `unknown-part` | `validate_mod.py` | part names resolving to a real class |
+| `unreachable` | `validate_mod.py` | blueprint reachability |
+| `vanilla-figure` | `check_docs.py` | figures the documents quote from vanilla |
+| `weight-curve` | `validate_mod.py` | a merge never making a vanilla item heavier |
+| `wellformed` | `validate_mod.py` | XML and map-file well-formedness |
+| `wiki-link` | `check_docs.py` | the wiki anchors the documents point at |
+| `workshop-description` | `validate_mod.py` | the Workshop description fitting Steam's 8000-character limit |
+| `workshop-target` | `validate_mod.py` | the upload target |
+
+`qud-api-snapshot` is the odd one out: several checks emit it when `tools/qud-api.json` is missing or
+has lost a list they need, so it is a shared failure mode rather than a check of its own. It is listed
+anyway, because a contributor who meets it still needs somewhere to look it up.
+
+### 10.2 Where checking stops
 
 Worth stating, so the boundary is not rediscovered by someone building the wrong tool.
 

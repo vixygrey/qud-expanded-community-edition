@@ -916,6 +916,34 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `check-names` checks both directions, and `docs/STYLEGUIDE.md` gains **§10.1, a
+  registry of every check name** any script in `tools/` can report (#402).
+
+  It only ever verified that a name a document *calls a check* exists — the mistake #100 made,
+  writing `reachability` where the validator emits `unreachable`. The reverse went unchecked, and it
+  is the quieter half. **A documented name that does not exist is loud** the moment anyone follows
+  it: they run the validator, grep the output, find nothing. **An emitted name nobody documented is
+  silent** — the inventory simply reads as complete when it is not.
+
+  `dead-chip-grade` shipped unlisted in #347 and I caught it by hand while adding a neighbouring row.
+  Measuring properly found **fifteen** names in that state, most of `check_docs.py`'s own and all six
+  of `check_build_log.py`'s.
+
+  **§10 was the wrong place to enforce it.** That table maps *rules to enforcers*, so a check guarding
+  something other than a style rule legitimately has no row — and it names things that are not checks
+  at all, like `ruff` and `prettier`. Demanding a row there for all 49 would have invented a rule the
+  document never claimed, which is the reasoning `check_item_tables` already uses about its own scope.
+  So §10.1 is a separate, explicitly complete registry, and the check reads that section by its
+  heading rather than the whole page.
+
+  Both failures are covered by tests that build a synthetic registry, and one more guards the
+  vacuous pass: if the heading ever moves, a section it cannot parse would otherwise make every emitted
+  name a finding or none of them one.
+
+  `qud-api-snapshot` is listed with a note. Several checks emit it when the API snapshot is missing or
+  has lost a list they need, so it is a shared failure mode rather than a check of its own — and a
+  contributor who meets it still needs somewhere to look it up.
+
 - **The last four outliers of the balance sweep** (#334, #333, #328, #329) — and with them, the
   inherited-defect ledger is **empty for the first time**.
 
