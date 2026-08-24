@@ -69,7 +69,7 @@ body:
         - label: "Player-facing notes pasted into the uploader's change note"
         - label: "Tagged and pushed — `git tag -a vX.Y.Z && git push origin vX.Y.Z`"
         - label: "GitHub release created with the same notes"
-        - label: "`QudExpandedCommunityEdition-X.Y.Z.zip` built and attached — **this is what non-Steam players install.** GitHub's auto source zip is the whole repository, not the mod"
+        - label: "`QudExpandedCommunityEdition-X.Y.Z.zip` built with `python3 tools/sync_mod.py --zip --tag vX.Y.Z` and attached — **this is what non-Steam players install.** GitHub's auto source zip is the whole repository, not the mod"
 
   - type: checkboxes
     id: after

@@ -35,7 +35,8 @@ the marking is what lets a reader skip them.
 
 `version` only. **`validate_mod.py` now fails if this and the changelog's newest released heading
 disagree**, so these two cannot drift apart — but they can only be checked against each other, not
-against the tag, so step 7 is still on you.
+against the tag — so pass `--tag vX.Y.Z` to `sync_mod.py --zip` in step 7 and the third side of
+that triangle is checked too (#314).
 
 ## 4. Update `workshop.json`
 
@@ -94,15 +95,24 @@ very commit that creates a release.
 ### Attach the zip, and do not skip this
 
 ```bash
-cd "$(mktemp -d)"
-cp -R "$HOME/Library/Application Support/com.FreeholdGames.CavesOfQud/Mods/qud-expanded-community-edition" \
-      QudExpandedCommunityEdition
-zip -qr QudExpandedCommunityEdition-X.Y.Z.zip QudExpandedCommunityEdition
+python3 tools/sync_mod.py --zip --tag vX.Y.Z
 gh release upload vX.Y.Z QudExpandedCommunityEdition-X.Y.Z.zip
 ```
 
-The contents of `mod/`, under a folder named for the manifest id, built from the install step 6
-already verified. Around 175 KB and 86 entries.
+The contents of `mod/`, under a folder named for the manifest id. Both names come from
+`manifest.json` — the archive from its `version`, the folder inside from its `id` — so the rename
+that used to hide inside a `cp -R` cannot go wrong: the install directory is
+`qud-expanded-community-edition` and every published zip contains `QudExpandedCommunityEdition`, and
+that difference used to be a step you had to remember rather than something the tool knew.
+
+**`--zip` builds from `mod/`, not from the install directory**, which closes the other hole: there is
+no copy in between that could belong to a `--dev` run or to a version before the bump. It applies the
+same guards `--publish` does — refuses a dirty tree, refuses a branch that is not `main` level with
+origin, and runs the validator first — and `--tag` refuses to build at all unless the tag agrees with
+the manifest version. That is the check step 3 says it cannot make.
+
+It reproduces what the manual recipe produced: run against the `v2.5.1` tag it rebuilds the shipped
+2.5.1 asset **byte for byte, all 81 files** (#314).
 
 **A release without it is not empty, which is the trap.** GitHub generates a source zip for any tag,
 so the page still offers a download — of the whole repository, `tools/` and `docs/` and all. A
@@ -110,12 +120,10 @@ player who takes that and drops it in `Mods/` gets the repo rather than the mod.
 a missing file, it is a plausible wrong one, offered to exactly the players this step exists for.
 2.5.1 went out without the asset for twenty minutes for this reason (#312).
 
-Check two things before uploading, because they are the two ways it goes wrong quietly:
-
-```bash
-unzip -p <zip> QudExpandedCommunityEdition/manifest.json | grep version   # not a stale build
-unzip -l <zip> | grep -ciE 'tools/|docs/|\.github'                        # not the source tree
-```
+The two checks #312 added here are gone, because `--zip` makes both impossible rather than
+detectable. A stale build cannot happen when the archive is assembled from `mod/` at the commit the
+guards just verified, and zipping the source tree by mistake cannot happen when no path is typed. A
+check you can delete because the failure is now unreachable is the best outcome a check can have.
 
 ## 8. Move the board
 
@@ -139,6 +147,7 @@ apart (`not planned` against `completed`).
 - [ ] `python3 tools/sync_mod.py --publish`
 - [ ] Uploaded through Caves of Qud's uploader, notes pasted into the change note
 - [ ] Tagged, pushed, and a GitHub release created with the same notes
-- [ ] `QudExpandedCommunityEdition-X.Y.Z.zip` built and attached — **this is what non-Steam players
-      install**, and GitHub's auto source zip is not a substitute
+- [ ] `QudExpandedCommunityEdition-X.Y.Z.zip` built with `sync_mod.py --zip --tag vX.Y.Z` and
+      attached — **this is what non-Steam players install**, and GitHub's auto source zip is not a
+      substitute
 - [ ] Board: Staging → Done
