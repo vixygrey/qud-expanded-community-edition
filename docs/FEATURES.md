@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **390** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **400** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
@@ -433,7 +433,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **390 active** | **213** |
+| **Total** | **400 active** | **213** |
 
 ### 6.2 Melee weapons
 
@@ -459,6 +459,39 @@ Conventions the mod follows:
 | Crysteel Greataxe | new | 6 | 1d8+4 | +1 | 7 | (inh) | 320 | 5 | yes |
 | Flawless Crysteel Greataxe | new | 7 | 1d8+5 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Greataxe | new | 8 | 1d8+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
+
+#### Glaives (Axe, two-handed, Finesse) — **new family**
+
+The Axe tree's two-handed finesse weapon, added in #342. Of Pathfinder's three polearms it is the one
+whose identity survives translation: the halberd's traits are **reach** and **versatile**, and Qud has
+neither, while the glaive's are flavour rather than mechanism. *"A long, single-edged blade on the end
+of a 7-foot pole."*
+
+Damage is **the greataxe's die one tier behind**, the same way the quarterstaff pays the maul — which
+gives it a memorable property: **a glaive at tier N hits exactly as hard as a one-handed battle axe at
+tier N+1.** Weight is the greataxe line minus one, per §3.2's light-for-its-class rule.
+
+Neither the glaive nor a plain spear carries `finesse` in Pathfinder — the two-handed finesse
+precedents are both elven weapons. This is a fork decision resting on the light-for-its-class rule
+rather than an imported trait, recorded plainly so nobody later reads it as genre canon.
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Glaive | new | 0 | 1d3 | +1 | 1 | (inh) | 5 | 5 | yes |
+| Iron Glaive | new | 1 | 1d2+1 | +1 | 2 | (inh) | 10 | 4 | yes |
+| Steel Glaive | new | 2 | 1d3+1 | +1 | 3 | (inh) | 20 | 4 | yes |
+| Carbide Glaive | new | 3 | 1d4+2 | +1 | 4 | (inh) | 40 | 7 | yes |
+| Folded Carbide Glaive | new | 4 | 1d5+2 | +1 | 5 | (inh) | 80 | 5 | yes |
+| Fullerite Glaive | new | 5 | 1d6+3 | +1 | 6 | (inh) | 160 | 8 | yes |
+| Crysteel Glaive | new | 6 | 1d7+3 | +1 | 7 | (inh) | 320 | 4 | yes |
+| Flawless Crysteel Glaive | new | 7 | 1d8+4 | +1 | 8 | (inh) | 640 | 4 | yes |
+| Zetachrome Glaive | new | 8 | 1d8+5 | +1 | 9 | (inh) | 1280 | 3 | yes |
+
+`Vixy_Vibro Glaive` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`, bits `0015`.
+
+The tile is this fork's own art, `mod/Textures/items/Vixy_Glaive.png` — a broad single-edged blade
+with a back-spur at the socket, so it reads as a chopping weapon rather than the spear's thrusting
+point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 
 #### Halberds (Axe, two-handed, Strength) — **new family**
 
@@ -1827,7 +1860,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 91 new / 77 merged
+│   ├── MeleeWeapons.xml        # 101 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
