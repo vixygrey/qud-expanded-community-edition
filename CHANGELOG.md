@@ -237,6 +237,34 @@ recorded because contributors need them, not because subscribers do.
   line is now **nine near-identical items**, which is a content question rather than a defect (#381).
 
 ### Added
+- **Finesse is now sold by all four melee trees** — Axe and Cudgel join Short Blade and Long Blade
+  (#342).
+
+  **What you buy.** `Finesse`, 250 skill points at Agility 19, on the same terms as the two trees
+  that already sold it: penetration rolls use your Agility modifier whenever it beats your Strength
+  modifier, for a weapon carrying the `Finesse` tag. The weapons those two powers apply to arrive in
+  later changes — the vinereaper and glaive on the axe side, the mace line and quarterstaff on the
+  cudgel side — so buying it today does nothing yet.
+
+  **Why the reversal.** #321 left Axe and Cudgel Strength-only and called the halberd and war hammer
+  the two most genre-inverted assignments in the mod. That still holds for those two weapons, and
+  neither gets the tag. What changed is the reading of the trees themselves: vanilla describes the
+  vinereaper as *"moulded to a crescent for scything the rough hides of watervine"* — a sickle, and
+  Pathfinder's sickle carries finesse. Pathfinder's finesse bludgeon is likewise a mace-family
+  weapon; the warhammer never carries it. So both trees do have a genre-legitimate finesse weapon.
+  It was simply not the one the mod had picked.
+
+  **This also settles the skill regating**, which had been deferred. Twelve Axe and Cudgel powers were
+  relaxed to `Strength|Agility` by Mura, and with those trees Strength-only the relaxation was close
+  to inert — an Agility character could buy Cleave or Slam but had nothing in the tree that rewarded
+  the investment. Now they do. The regating stays, and it means something.
+
+  `docs/DESIGN_balance.md` §3.3 records the correction that made this possible: *"finesse never
+  coexists with two-handed"* is **5e's rule, not the genre's**, and this document had mistaken one
+  for the other. Pathfinder's elven branched spear and elven curve blade are both two-handed and
+  both finesse. The replacement rule is that **a finesse weapon is light for its class** — which is
+  the same principle that sets the mace line a pound below the war hammers.
+
 - **The psionic chips are repriced, the four steep passives made rare, and the Guardian starting
 - **(internal)** `docs/DESIGN_balance.md` §3.10 records the direction on #342: **the Axe and Cudgel
   duplicate families get real differentiators**, and the skill-regating question **waits on that

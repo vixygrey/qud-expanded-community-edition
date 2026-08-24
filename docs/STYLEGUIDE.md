@@ -297,10 +297,24 @@ possible in practice. Match them when adding anything.
   melee to-hit and DV on every weapon with no exemption. Vanilla declares `MeleeWeapon` 402 times:
   191 `Strength`, 208 unset (which is Strength), 3 `Ego`, and **`Agility` never**. A weapon meant
   to reward Agility carries `<tag Name="Finesse" />` instead, and the crossover is then bought as a
-  power in the Short Blades or Long Blades tree — never granted by the blueprint. Axe and Cudgel
-  stay Strength-only. `docs/DESIGN_balance.md` §3.9 has the reasoning and the tabletop precedent.
-  **61 blueprints still violate this**; [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321)
-  reverts them, so don't read them as precedent.
+  power in that weapon's own tree — never granted by the blueprint. All four melee trees sell it:
+  Short Blades, Long Blades, Axe and Cudgel. `docs/DESIGN_balance.md` §3.9 has the reasoning and the
+  tabletop precedent, and §3.3 has why the Axe and Cudgel powers were added later than the other two.
+  The 61 blueprints that once violated this were reverted in
+  [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321); **no live
+  declaration breaks it now.** Two `Stat="Agility"` vibro war hammers survive inside a commented-out
+  block in `MeleeWeapons.xml` — inert, invisible to `stat-discipline`, which parses rather than
+  greps, and not precedent.
+- **A finesse weapon is light for its class**, and that is the whole test — not the hand count. A
+  one-handed finesse weapon sits below one-handed norms for its tier, a two-handed one below
+  two-handed norms. This is why the mace ladder sits a pound below the war hammers, and it is what
+  licenses two-handed finesse weapons at all; Pathfinder's elven branched spear and elven curve blade
+  are both two-handed and both finesse. An earlier version of this rule said finesse never coexists
+  with two-handed, which was 5e's rule mistaken for the genre's. `docs/DESIGN_balance.md` §3.3.
+- **A `Finesse` tag needs a matching `RulesDescription`**, and text needs a matching tag. The tag has
+  no player-facing surface of its own, so a weapon carrying it and a weapon where the feature is
+  silently broken look identical — which is how #366 survived a play session. `finesse-visible` in
+  `tools/validate_mod.py` checks both directions.
 - **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
   `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
 - **A tool is found at low tiers and built at high ones.** Where a line is an implement rather than a
