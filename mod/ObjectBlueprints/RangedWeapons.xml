@@ -40,7 +40,7 @@
   </object>
 
   <object Name="Borderlands Revolver" Load="Merge">
-    <part Name="Commerce" Value="25" />
+    <part Name="Commerce" Value="50" />
   </object>
 
   <object Name="Ruin of House Isner" Load="Merge">
@@ -153,15 +153,15 @@
   </object>
 
   <object Name="Chain Pistol" Load="Merge">
-    <part Name="Commerce" Value="100" />
+    <part Name="Commerce" Value="150" />
   </object>
 
   <object Name="Laser Pistol" Load="Merge">
-    <part Name="Commerce" Value="250" />
+    <part Name="Commerce" Value="400" />
   </object>
 
   <object Name="Laser Rifle" Load="Merge">
-    <part Name="Commerce" Value="550" />
+    <part Name="Commerce" Value="750" />
   </object>
 
   <object Name="Raven_Drum Shotgun" Inherits="BaseMagazineRifle">

@@ -536,8 +536,8 @@ point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
 | Bronze Vinereaper | new | 0 | 1d2 | +0 | 1 |  | 5 | 3 |  |
-| Iron Vinereaper | merge | 1 | 1d3 | +0 | 2 |  | 10 | 2 |  |
-| Steel Vinereaper | merge | 2 | 1d4 | +0 | 3 |  | 20 | 2 |  |
+| Iron Vinereaper | merge | 1 | 1d3 | +0 | 2 |  | 5 | 2 |  |
+| Steel Vinereaper | merge | 2 | 1d4 | +0 | 3 |  | 35 | 2 |  |
 | Carbide Vinereaper | new | 3 | 1d5 | +0 | 4 |  | 40 | 4 |  |
 | Folded Carbide Vinereaper | new | 4 | 1d6+1 | +0 | 5 |  | 80 | 3 |  |
 | Fullerite Vinereaper | new | 5 | 1d7+1 | +0 | 6 |  | 160 | 5 |  |
@@ -627,7 +627,7 @@ haft taking `DetailColor`.
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 5 | 3 |  |
+| Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 10 | 3 |  |
 | Iron Mace | new | 1 | 2 | +0 | 2 | (inh) | 10 | 2 |  |
 | Carbide Mace | new | 3 | 2d3 | +0 | 4 | (inh) | 40 | 4 |  |
 | Folded Carbide Mace | new | 4 | 2d4 | +0 | 5 | (inh) | 80 | 3 |  |
@@ -751,13 +751,13 @@ Vanilla families completed:
 | Chain Boots | merge | 2 | Feet | 2 | -2 | — | 20 | 6 |
 | Steel Boots | merge | 2 | Feet | 3 | -3 | — | 20 | 7 |
 | Carbide Boots | merge | 3 | Feet | 3 | -2 | — | 40 | 9 |
-| Flawless Crysteel Boots | merge | 7 | Feet | 4 | 0 | 5/5/5/5 | 640 | 6 |
+| Flawless Crysteel Boots | merge | 7 | Feet | 4 | 0 | 5/5/5/5 | 650 | 6 |
 | Folded Carbide Boots | new | 4 | Feet | 3 | -1 | — | 80 | 8 |
-| Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 160 | 10 |
+| Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 195 | 10 |
 | Flexiboots | new | 5 | Feet | 1 | 3 | — | 160 | 2 |
-| Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 320 | 6 |
+| Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 400 | 6 |
 | Nanoweave Boots | new | 6 | Feet | 3 | 1 | — | 300 | 3 |
-| Zetachrome Pumps | merge | 8 | Feet | 4 | 0 | 6/6/6/6 | 1280 | 5 |
+| Zetachrome Pumps | merge | 8 | Feet | 4 | 0 | 6/6/6/6 | 1500 | 5 |
 
 #### Hands
 
@@ -768,12 +768,12 @@ Vanilla families completed:
 | Steel Gauntlets | merge | 2 | Hands | 3 | -3 | — | 20 | 7 |
 | Carbide Gauntlets | merge | 3 | Hands | 3 | -2 | — | 40 | 9 |
 | Folded Carbide Gauntlets | new | 4 | Hands | 3 | -1 | — | 80 | 8 |
-| Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | — | 160 | 10 |
+| Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | — | 195 | 10 |
 | Flexigloves | new | 5 | Hands | 1 | 2 | — | 160 | 2 |
-| Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 320 | 6 |
+| Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 400 | 6 |
 | Nanoweave Gloves | new | 6 | Hands | 2 | 1 | — | 300 | 3 |
-| Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 640 | 6 |
-| Zetachrome Gloves | merge | 8 | Hands | 4 | 0 | 5/5/5/5 | 1280 | 5 |
+| Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 650 | 6 |
+| Zetachrome Gloves | merge | 8 | Hands | 4 | 0 | 5/5/5/5 | 1500 | 5 |
 | Chain Gauntlets | merge | - | Hands | 2 | -1 | — | - | 6 |
 
 #### Head
@@ -786,12 +786,12 @@ Vanilla families completed:
 | Steel Helmet | merge | 2 | Head | 3 | -3 | — | 20 | 9 |
 | Carbide Helmet | new | 3 | Head | 3 | -2 | — | 40 | 11 |
 | Folded Carbide Helmet | new | 4 | Head | 3 | -1 | — | 80 | 10 |
-| Fullerite Armet | merge | 5 | Head | 4 | -4 | — | 160 | 12 |
+| Fullerite Armet | merge | 5 | Head | 4 | -4 | — | 95 | 12 |
 | Flexihelmet | new | 5 | Head | 1 | 2 | — | 160 | 2 |
-| Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 320 | 8 |
+| Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 400 | 8 |
 | Nanoweave Helmet | new | 6 | Head | 2 | 1 | — | 300 | 3 |
-| Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 640 | 8 |
-| Zetachrome Apex | merge | 8 | Head | 4 | 0 | 6/6/6/6 | 1280 | 7 |
+| Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 650 | 8 |
+| Zetachrome Apex | merge | 8 | Head | 4 | 0 | 6/6/6/6 | 1500 | 7 |
 
 #### Body
 
@@ -799,15 +799,15 @@ Vanilla families completed:
 |---|---|---|---|---|---|---|---|---|
 | Bronze Plate Armor | new | 0 | Body | 3 | -3 | — | 8 | 24 |
 | Iron Plate Armor | new | 1 | Body | 3 | -1 | — | 16 | 21 |
-| Chain Mail | merge | 2 | (inh) | - | - | — | 32 | 15 |
+| Chain Mail | merge | 2 | (inh) | - | - | — | 25 | 15 |
 | Steel Plate Mail | merge | 2 | Body | 4 | -4 | — | 32 | 26 |
 | Carbide Plate Armor | merge | 3 | Body | 4 | -2 | — | 64 | 20 |
 | Folded Carbide Plate Armor | new | 4 | Body | 6 | -4 | — | 128 | 24 |
-| Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 256 | 40 |
-| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 256 | 70 |
-| Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 512 | 18 |
-| Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1024 | 18 |
-| Zetachrome Lune | merge | 8 | Body | 8 | -2 | 10/10/10/10 | 2048 | 15 |
+| Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 320 | 40 |
+| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 345 | 70 |
+| Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 1200 | 18 |
+| Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1900 | 18 |
+| Zetachrome Lune | merge | 8 | Body | 8 | -2 | 10/10/10/10 | 6000 | 15 |
 
 #### Back (cloaks)
 
@@ -860,7 +860,7 @@ Vanilla families completed:
 |---|---|---|---|---|---|---|---|
 | Bronze Buckler | new | 0 | Arm | 1 | -1 | 5 | 4 |
 | Iron Buckler | merge | 1 | Arm | 1 | 0 | 10 | 3 |
-| Steel Buckler | merge | 2 | Arm | 2 | -1 | 20 | 3 |
+| Steel Buckler | merge | 2 | Arm | 2 | -1 | 50 | 3 |
 | Carbide Buckler | new | 3 | Arm | 2 | 0 | 40 | 5 |
 | Folded Carbide Buckler | new | 4 | Arm | 3 | -2 | 80 | 4 |
 | Fullerite Buckler | new | 5 | Arm | 3 | -1 | 160 | 6 |
@@ -874,12 +874,12 @@ Vanilla families completed:
 |---|---|---|---|---|---|---|---|
 | Bronze Shield | new | 0 | Hand | 2 | -2 | 5 | 8 |
 | Iron Shield | new | 1 | Hand | 2 | -1 | 10 | 7 |
-| Steel Shield | merge | 2 | (inh) | - | - | 20 | 7 |
-| Carbide Shield | merge | 3 | Hand | 4 | -2 | 40 | 10 |
+| Steel Shield | merge | 2 | (inh) | - | - | 50 | 7 |
+| Carbide Shield | merge | 3 | Hand | 4 | -2 | 50 | 10 |
 | Folded Carbide Shield | new | 4 | Hand | 5 | -3 | 80 | 9 |
-| Fullerite Shield | merge | 5 | Hand | 5 | -2 | 160 | 12 |
-| Crysteel Shield | merge | 6 | Hand | 6 | -2 | 320 | 6 |
-| Flawless Crysteel Shield | merge | 7 | Hand | 7 | -2 | 640 | 6 |
+| Fullerite Shield | merge | 5 | Hand | 5 | -2 | 200 | 12 |
+| Crysteel Shield | merge | 6 | Hand | 6 | -2 | 300 | 6 |
+| Flawless Crysteel Shield | merge | 7 | Hand | 7 | -2 | 450 | 6 |
 | Zetachrome Shield | new | 8 | Hand | 8 | -1 | 1280 | 5 |
 
 #### Greatshields — **new family** (Hand slot)
@@ -2070,70 +2070,70 @@ not touch that field (the vanilla value is inherited).
 | Blueprint | Tier | Damage | Pen | Max STR | Stat | Value | Weight |
 |---|---|---|---|---|---|---|---|
 | BaseAxe |  |  |  |  |  |  | 3 |
-| Battle Axe | 0 |  |  |  |  | 5 | 4 |
+| Battle Axe | 0 |  |  |  |  | 3 | 4 |
 | Battle Axe2 | 1 | 1d3 |  | 2 |  | 10 | 3 |
-| Steel Battle Axe | 2 | 1d4 |  | 3 |  | 20 | 3 |
-| Steel Battle Axeth | 2 | 1d4+2 | 1 | 3 |  | 20 | 5 |
-| Battle Axe3 | 3 | 1d5 |  | 4 |  | 40 | 5 |
-| Battle Axe3th | 3 | 1d5+2 | 1 | 4 |  | 40 | 8 |
-| Battle Axe4 | 4 | 1d6+1 |  | 5 |  | 80 | 4 |
-| Battle Axe4th | 4 | 1d6+3 | 1 | 5 |  | 80 | 6 |
-| Battle Axe5 | 5 | 1d7+1 |  | 6 |  | 160 | 6 |
-| Battle Axe5th | 5 | 1d7+3 | 1 | 6 |  | 160 | 9 |
-| Battle Axe6 | 6 | 1d8+2 |  | 7 |  | 320 | 3 |
-| Battle Axe7 | 7 | 1d9+2 |  | 8 |  | 640 | 3 |
-| Battle Axe8 | 8 | 1d10+3 |  | 9 |  | 1280 | 2 |
-| Iron Vinereaper | 1 | 1d3 |  | 2 |  | 10 | 2 |
-| Steel Vinereaper | 2 | 1d4 |  | 3 |  | 20 | 2 |
-| Battle Axe6th | 6 | 1d8+4 | 1 | 7 |  | 320 | 6 |
-| Battle Axe7th | 7 | 1d8+5 | 1 | 8 |  | 640 | 6 |
-| Battle Axe8th | 8 | 1d8+6 | 1 | 9 |  | 1280 | 5 |
+| Steel Battle Axe | 2 | 1d4 |  | 3 |  | 25 | 3 |
+| Steel Battle Axeth | 2 | 1d4+2 | 1 | 3 |  | 25 | 5 |
+| Battle Axe3 | 3 | 1d5 |  | 4 |  | 55 | 5 |
+| Battle Axe3th | 3 | 1d5+2 | 1 | 4 |  | 55 | 8 |
+| Battle Axe4 | 4 | 1d6+1 |  | 5 |  | 95 | 4 |
+| Battle Axe4th | 4 | 1d6+3 | 1 | 5 |  | 95 | 6 |
+| Battle Axe5 | 5 | 1d7+1 |  | 6 |  | 185 | 6 |
+| Battle Axe5th | 5 | 1d7+3 | 1 | 6 |  | 195 | 9 |
+| Battle Axe6 | 6 | 1d8+2 |  | 7 |  | 390 | 3 |
+| Battle Axe7 | 7 | 1d9+2 |  | 8 |  | 720 | 3 |
+| Battle Axe8 | 8 | 1d10+3 |  | 9 |  | 1500 | 2 |
+| Iron Vinereaper | 1 | 1d3 |  | 2 |  | 5 | 2 |
+| Steel Vinereaper | 2 | 1d4 |  | 3 |  | 35 | 2 |
+| Battle Axe6th | 6 | 1d8+4 | 1 | 7 |  | 390 | 6 |
+| Battle Axe7th | 7 | 1d8+5 | 1 | 8 |  | 720 | 6 |
+| Battle Axe8th | 8 | 1d8+6 | 1 | 9 |  | 1500 | 5 |
 | BaseLongBlade |  |  |  |  |  |  | 2 |
-| Long Sword | 0 | 1d3 |  | 1 |  | 5 | 4 |
-| Two-Handed Sword | 0 | 1d6 | 1 | 1 |  | 5 | 6 |
-| Long Sword2 | 1 | 1d4 |  | 2 |  | 10 | 3 |
-| Long Sword2th | 1 | 1d8 | 1 | 2 |  | 10 | 5 |
-| Steel Long Sword | 2 | 1d6 |  | 3 |  | 20 | 3 |
-| Steel Long Swordth | 2 | 1d10 | 1 | 3 |  | 20 | 5 |
-| Long Sword3 | 3 | 1d8 |  | 4 |  | 40 | 5 |
-| Long Sword3th | 3 | 1d12 | 1 | 4 |  | 40 | 7 |
-| Long Sword4 | 4 | 1d10 |  | 5 |  | 80 | 4 |
-| Long Sword4th | 4 | 2d6 | 1 | 5 |  | 80 | 6 |
-| Long Sword5 | 5 | 1d12 |  | 6 |  | 160 | 6 |
-| Long Sword5th | 5 | 2d6+1 | 1 | 6 |  | 160 | 9 |
-| Long Sword6 | 6 | 2d6 |  | 7 |  | 320 | 3 |
-| Long Sword6th | 6 | 2d8 |  | 7 |  | 320 | 5 |
-| Long Sword7 | 7 | 2d6+1 |  | 8 |  | 640 | 3 |
-| Long Sword7th | 7 | 2d10 | 1 | 8 |  | 640 | 5 |
-| Long Sword8 | 8 | 2d8 |  | 9 |  | 1280 | 2 |
-| Long Sword8th | 8 | 2d12 | 1 | 9 |  | 1280 | 4 |
+| Long Sword | 0 | 1d3 |  | 1 |  | 15 | 4 |
+| Two-Handed Sword | 0 | 1d6 | 1 | 1 |  | 20 | 6 |
+| Long Sword2 | 1 | 1d4 |  | 2 |  | 25 | 3 |
+| Long Sword2th | 1 | 1d8 | 1 | 2 |  | 25 | 5 |
+| Steel Long Sword | 2 | 1d6 |  | 3 |  | 30 | 3 |
+| Steel Long Swordth | 2 | 1d10 | 1 | 3 |  | 30 | 5 |
+| Long Sword3 | 3 | 1d8 |  | 4 |  | 55 | 5 |
+| Long Sword3th | 3 | 1d12 | 1 | 4 |  | 55 | 7 |
+| Long Sword4 | 4 | 1d10 |  | 5 |  | 95 | 4 |
+| Long Sword4th | 4 | 2d6 | 1 | 5 |  | 95 | 6 |
+| Long Sword5 | 5 | 1d12 |  | 6 |  | 195 | 6 |
+| Long Sword5th | 5 | 2d6+1 | 1 | 6 |  | 195 | 9 |
+| Long Sword6 | 6 | 2d6 |  | 7 |  | 390 | 3 |
+| Long Sword6th | 6 | 2d8 |  | 7 |  | 390 | 5 |
+| Long Sword7 | 7 | 2d6+1 |  | 8 |  | 720 | 3 |
+| Long Sword7th | 7 | 2d10 | 1 | 8 |  | 720 | 5 |
+| Long Sword8 | 8 | 2d8 |  | 9 |  | 1500 | 2 |
+| Long Sword8th | 8 | 2d12 | 1 | 9 |  | 1500 | 4 |
 | Vibro Blade | 5 | 1d10 |  | 0 |  | 300 | 2 |
 | BaseDagger |  |  |  |  |  |  | 1 |
 | Dagger | 0 | 1d2 |  | 1 |  | 5 | 1 |
 | Dagger2 | 1 | 1d3 |  | 2 |  | 10 | 1 |
-| Desert Kris | 1 | 1d3 |  | 2 |  | 10 | 1 |
+| Desert Kris | 1 | 1d3 |  | 2 |  | 15 | 1 |
 | Steel Kukri | 2 | 1d4 |  | 3 |  | 20 | 1 |
 | Steel Dagger | 2 | 1d4 |  | 3 |  | 20 | 1 |
 | Steel Utility Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
-| Steel Potter's Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
-| Steel Butcher Knife | 2 | 1d4 |  | 3 |  | 20 | 1 |
+| Steel Potter's Knife | 2 | 1d4 |  | 3 |  | 28 | 1 |
+| Steel Butcher Knife | 2 | 1d4 |  | 3 |  | 28 | 1 |
 | Dagger3 | 3 | 1d6 |  | 4 |  | 40 | 1 |
-| Dagger4 | 4 | 1d8 |  | 5 |  | 80 | 1 |
+| Dagger4 | 4 | 1d8 |  | 5 |  | 75 | 1 |
 | Obsidian Kris | 4 | 1d8 |  | 5 |  | 80 | 1 |
-| Dagger5 | 5 | 1d10 |  | 6 |  | 160 | 2 |
-| Dagger6 | 6 | 1d12 |  | 7 |  | 320 | 1 |
-| Dagger7 | 7 | 1d12+1 |  | 8 |  | 640 | 1 |
-| Dagger8 | 8 | 1d12+2 |  | 9 |  | 1280 | 1 |
+| Dagger5 | 5 | 1d10 |  | 6 |  | 150 | 2 |
+| Dagger6 | 6 | 1d12 |  | 7 |  | 310 | 1 |
+| Dagger7 | 7 | 1d12+1 |  | 8 |  | 690 | 1 |
+| Dagger8 | 8 | 1d12+2 |  | 9 |  | 1390 | 1 |
 | Vibro Dagger | 5 | 2d4 |  | 0 |  | 300 | 1 |
 | ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 1 |
 | BaseCudgel |  |  |  |  |  |  | 3 |
 | Club | 0 |  |  |  |  | 2 | 3 |
-| Mace2 | 0 | 1d3 |  | 1 |  | 5 | 3 |
+| Mace2 | 0 | 1d3 |  | 1 |  | 10 | 3 |
 | Steel Hammer | 2 | 2d2 |  | 3 |  | 20 | 2 |
 | Cudgel5th | 5 | 3d4 | 1 | 6 |  | 160 | 8 |
-| Cudgel6 | 6 | 2d6 |  | 7 |  | 320 | 2 |
-| Cudgel7 | 7 | 3d4 |  | 8 |  | 640 | 2 |
-| Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 480 | 10 |
+| Cudgel6 | 6 | 2d6 |  | 7 |  | 390 | 2 |
+| Cudgel7 | 7 | 3d4 |  | 8 |  | 720 | 2 |
+| Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 320 | 10 |
 | Warhammer2 | 1 | 2 |  | 2 |  | 10 | 3 |
 | Steel War Hammer | 2 | 2d2 |  | 3 |  | 20 | 3 |
 | Steel War Hammerth | 2 | 3d2 | 1 | 3 |  | 20 | 6 |
@@ -2142,10 +2142,10 @@ not touch that field (the vanilla value is inherited).
 | Cudgel4 | 4 | 2d4 |  | 5 |  | 80 | 4 |
 | Cudgel4th | 4 | 2d6 | 1 | 5 |  | 80 | 7 |
 | Cudgel5 | 5 | 2d4+1 |  | 6 |  | 160 | 6 |
-| Cudgel6th | 6 | 3d4+1 | 1 | 11 |  | 320 | 6 |
-| Cudgel7th | 7 | 3d6 | 1 | 8 |  | 640 | 6 |
-| Cudgel8 | 8 | 3d4+1 |  | 9 |  | 1200 | 3 |
-| Cudgel8th | 8 | 4d6 | 1 | 9 |  | 1200 | 6 |
+| Cudgel6th | 6 | 3d4+1 | 1 | 11 |  | 390 | 6 |
+| Cudgel7th | 7 | 3d6 | 1 | 8 |  | 720 | 6 |
+| Cudgel8 | 8 | 3d4+1 |  | 9 |  | 1500 | 3 |
+| Cudgel8th | 8 | 4d6 | 1 | 9 |  | 1500 | 6 |
 
 ---
 

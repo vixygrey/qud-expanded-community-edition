@@ -8,7 +8,7 @@
   </object>
 
   <object Name="Battle Axe" Load="Merge">
-    <part Name="Commerce" Value="5" />
+    <part Name="Commerce" Value="3" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="4" />
   </object>
@@ -42,7 +42,7 @@
 
   <object Name="Steel Battle Axe" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d4" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="25" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -50,14 +50,14 @@
   <object Name="Steel Battle Axeth" Load="Merge">
     <part Name="Render" DisplayName="{{Y|steel}} greataxe" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="3" BaseDamage="1d4+2" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="25" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Battle Axe3" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="1d5" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="55" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="5" />
   </object>
@@ -65,14 +65,14 @@
   <object Name="Battle Axe3th" Load="Merge">
     <part Name="Render" DisplayName="{{b|carbide}} greataxe" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="1d5+2" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="55" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="8" />
   </object>
 
   <object Name="Battle Axe4" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d6+1" />
-    <part Name="Commerce" Value="80" />
+    <part Name="Commerce" Value="95" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="4" />
   </object>
@@ -80,14 +80,14 @@
   <object Name="Battle Axe4th" Load="Merge">
     <part Name="Render" DisplayName="{{B|folded carbide}} greataxe" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="1d6+3" />
-    <part Name="Commerce" Value="80" />
+    <part Name="Commerce" Value="95" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="6" />
   </object>
 
   <object Name="Battle Axe5" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="1d7+1" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="185" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="6" />
   </object>
@@ -95,14 +95,14 @@
   <object Name="Battle Axe5th" Load="Merge">
     <part Name="Render" DisplayName="{{K|fullerite}} greataxe" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="1d7+3" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="195" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="9" />
   </object>
 
   <object Name="Battle Axe6" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="1d8+2" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -127,7 +127,7 @@
 
   <object Name="Battle Axe7" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="1d9+2" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -154,7 +154,7 @@
   <object Name="Battle Axe8" Load="Merge">
     <part Name="Render" Tile="Items/sw_axe_3.bmp" />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="1d10+3" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
   </object>
@@ -264,7 +264,7 @@
 
   <object Name="Iron Vinereaper" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d3" />
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="5" />
     <tag Name="Finesse" />
     <part
       Name="RulesDescription"
@@ -286,7 +286,7 @@
 
   <object Name="Steel Vinereaper" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d4" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="35" />
     <tag Name="Finesse" />
     <part
       Name="RulesDescription"
@@ -420,7 +420,7 @@
 
   <object Name="Battle Axe6th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" Skill="Axe" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="6" />
   </object>
@@ -452,7 +452,7 @@
 
   <object Name="Battle Axe7th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="6" />
   </object>
@@ -485,7 +485,7 @@
 
   <object Name="Battle Axe8th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="5" />
   </object>
@@ -775,126 +775,126 @@
 
   <object Name="Long Sword" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="1" BaseDamage="1d3" />
-    <part Name="Commerce" Value="5" />
+    <part Name="Commerce" Value="15" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="4" />
   </object>
 
   <object Name="Two-Handed Sword" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="1" BaseDamage="1d6" />
-    <part Name="Commerce" Value="5" />
+    <part Name="Commerce" Value="20" />
     <tag Name="Tier" Value="0" />
     <part Name="Physics" Weight="6" />
   </object>
 
   <object Name="Long Sword2" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d4" />
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="25" />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Long Sword2th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="2" BaseDamage="1d8" />
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="25" />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Steel Long Sword" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d6" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Steel Long Swordth" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="3" BaseDamage="1d10" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="30" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword3" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="1d8" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="55" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword3th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="1d12" />
-    <part Name="Commerce" Value="40" />
+    <part Name="Commerce" Value="55" />
     <tag Name="Tier" Value="3" />
     <part Name="Physics" Weight="7" />
   </object>
 
   <object Name="Long Sword4" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d10" />
-    <part Name="Commerce" Value="80" />
+    <part Name="Commerce" Value="95" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="4" />
   </object>
 
   <object Name="Long Sword4th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" />
-    <part Name="Commerce" Value="80" />
+    <part Name="Commerce" Value="95" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="6" />
   </object>
 
   <object Name="Long Sword5" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="1d12" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="195" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="6" />
   </object>
 
   <object Name="Long Sword5th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="195" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="9" />
   </object>
 
   <object Name="Long Sword6" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Long Sword6th" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword7" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Long Sword7th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="5" />
   </object>
 
   <object Name="Long Sword8" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Long Sword8th" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="4" />
   </object>
@@ -1368,7 +1368,7 @@
 
   <object Name="Desert Kris" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="2" BaseDamage="1d3" />
-    <part Name="Commerce" Value="10" />
+    <part Name="Commerce" Value="15" />
     <tag Name="Tier" Value="1" />
     <part Name="Physics" Weight="1" />
   </object>
@@ -1396,14 +1396,14 @@
 
   <object Name="Steel Potter's Knife" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d4" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="28" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Steel Butcher Knife" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d4" />
-    <part Name="Commerce" Value="20" />
+    <part Name="Commerce" Value="28" />
     <tag Name="Tier" Value="2" />
     <part Name="Physics" Weight="1" />
   </object>
@@ -1417,7 +1417,7 @@
 
   <object Name="Dagger4" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d8" />
-    <part Name="Commerce" Value="80" />
+    <part Name="Commerce" Value="75" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="1" />
   </object>
@@ -1431,28 +1431,28 @@
 
   <object Name="Dagger5" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="1d10" />
-    <part Name="Commerce" Value="160" />
+    <part Name="Commerce" Value="150" />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Dagger6" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="1d12" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="310" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Dagger7" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="690" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="1" />
   </object>
 
   <object Name="Dagger8" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1280" />
+    <part Name="Commerce" Value="1390" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="1" />
   </object>
@@ -1878,7 +1878,7 @@
   <object Name="Mace2" Load="Merge">
     <part Name="Render" DisplayName="{{w|bronze}} mace" Tile="Items/sw_cudgel_4.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" MaxStrengthBonus="1" BaseDamage="1d3" />
-    <part Name="Commerce" Value="5" />
+    <part Name="Commerce" Value="10" />
     <tag Name="Finesse" />
     <part
       Name="RulesDescription"
@@ -2036,7 +2036,7 @@
 
   <object Name="Cudgel6" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Finesse" />
     <part
       Name="RulesDescription"
@@ -2067,7 +2067,7 @@
 
   <object Name="Cudgel7" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <part Name="Metal" />
     <tag Name="Finesse" />
     <part
@@ -2179,7 +2179,7 @@
 
   <object Name="Rhinox-Skull Maul" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="2" MaxStrengthBonus="7" BaseDamage="3d4+1" />
-    <part Name="Commerce" Value="480" />
+    <part Name="Commerce" Value="320" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="10" />
   </object>
@@ -2544,7 +2544,7 @@
   <object Name="Cudgel6th" Load="Merge">
     <part Name="Render" DisplayName="{{K|{{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" />
-    <part Name="Commerce" Value="320" />
+    <part Name="Commerce" Value="390" />
     <tag Name="Tier" Value="6" />
     <part Name="Physics" Weight="6" />
   </object>
@@ -2568,7 +2568,7 @@
   <object Name="Cudgel7th" Load="Merge">
     <part Name="Render" DisplayName="{{K|flawless {{crysteel|crysteel}} greathammer}}" Tile="Items/sw_cudgel_7.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" />
-    <part Name="Commerce" Value="640" />
+    <part Name="Commerce" Value="720" />
     <tag Name="Tier" Value="7" />
     <part Name="Physics" Weight="6" />
   </object>
@@ -2576,7 +2576,7 @@
   <object Name="Cudgel8" Load="Merge">
     <part Name="Render" DisplayName="{{zetachrome|zetachrome}} warhammer" Tile="Items/sw_cudgel_2.bmp" />
     <part Name="MeleeWeapon" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1200" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -2584,7 +2584,7 @@
   <object Name="Cudgel8th" Load="Merge">
     <part Name="Render" DisplayName="{{zetachrome|zetachrome}} greathammer" Tile="Items/sw_jackhammer.bmp" />
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" />
-    <part Name="Commerce" Value="1200" />
+    <part Name="Commerce" Value="1500" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="6" />
   </object>
