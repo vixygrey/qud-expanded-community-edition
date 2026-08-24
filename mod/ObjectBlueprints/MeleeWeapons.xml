@@ -1698,11 +1698,6 @@
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Finesse" />
-    <part
-      Name="RulesDescription"
-      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
-    />
     <tag Name="Tier" Value="4" />
   </object>
 
