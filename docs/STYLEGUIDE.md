@@ -480,6 +480,28 @@ rules as they stand rather than in tension with them. It is the one place this f
 vanilla weapon's damage, and it is here because leaving it at parity would make the merged item 80%
 better than its own tier-mates.
 
+**A cybernetic implant is priced against vanilla's, and most of them stack.** `CyberneticsOneOnly`
+is the only gate on duplicates and it is **per-blueprint** — vanilla tags 17 items with it, and the
+dermal platings and insulations are not among them. `Slots="Body,Head,Back"` names three distinct
+body parts, and `ImplantedEvent` does `GetStat(key).BaseValue += value` once per implant with no cap.
+So any multi-slot implant's real value is **three times its printed one**, and that is the number to
+price against. #335 found the fork's line at 3 x +4 AV = +12 against vanilla's 3 x +1 = +3, and
+three high-grade insulations at +60 to each element against vanilla's +27.
+
+Resistance matters more than the AV, because it is applied as `(100 - resistance) / 100` — at 100 it
+multiplies to zero. A Full Psionic caster's +40 plus three insulations at +20 reached **exactly
+100**. Vanilla's ceiling by the same route is 42, and the fork now sits at 47.
+
+Two rules follow. **A merge does not change a vanilla implant's cost or effect** — the same rule
+§3.2 states for value, for the same reason, and a merge left restating vanilla's numbers should be
+deleted rather than kept. And **a new implant is priced on its stacked total**, not its printed one:
+the fork's plating line runs +1 / +2 / +3 so the best three slots give +6, twice vanilla's ceiling
+rather than four times it.
+
+**No caste grants cybernetics license points.** Vanilla's genotype is the only source — zero
+declarations across every vanilla subtype — and the nine Full Psionics granting +1 each was part of
+how the resistance ceiling reached 100 (#332).
+
 **There is no AV curve, only a ceiling.** Vanilla's tier-4 body armour runs AV 0 to 5. Two tighter
 rules were tested against all 224 vanilla armour pieces and **rejected**: `AV + DV` capped per tier
 is not monotone, and `AV + DV >= 0` is broken by 14 secondary-slot pieces. Do not reintroduce

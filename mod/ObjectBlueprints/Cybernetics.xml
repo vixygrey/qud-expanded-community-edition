@@ -18,35 +18,21 @@
   </object>
 
   <object Name="CherubicVisage" Load="Merge">
-    <part Name="CyberneticsBaseItem" BehaviorDescription="+2 Ego" />
-    <part Name="CyberneticsStatModifier" Stats="Ego:2" />
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+1 Ego" />
+    <part Name="CyberneticsStatModifier" Stats="Ego:1" />
   </object>
 
   <object Name="CrysteelHandBones" Load="Merge">
     <part Name="Physics" Weight="9" />
     <part Name="Examiner" Complexity="6" Difficulty="1" />
-    <part Name="Commerce" Value="360" />
-    <part Name="CyberneticsBaseItem" Slots="Hands" Cost="6" BehaviorDescription="Your fists deal 3d4 damage." />
-  </object>
-
-  <object Name="DermalInsulation" Load="Merge">
-    <part
-      Name="CyberneticsBaseItem"
-      BehaviorDescription="+10 Heat Resistance
-+10 Cold Resistance
-+10 Electrical Resistance
-+10 Acid Resistance"
-    />
-    <part
-      Name="CyberneticsStatModifier"
-      Stats="HeatResistance:10;ColdResistance:10;ElectricResistance:10;AcidResistance:10"
-    />
+    <part Name="Commerce" Value="600" />
+    <part Name="CyberneticsBaseItem" Slots="Hands" Cost="8" BehaviorDescription="Your fists deal 3d4 damage." />
   </object>
 
   <object Name="DermalPlating" Load="Merge">
     <part Name="Render" DisplayName="{{b|carbide}} dermal plating" />
-    <part Name="CyberneticsBaseItem" Cost="2" BehaviorDescription="+2 AV" />
-    <part Name="CyberneticsStatModifier" Stats="AV:2" />
+    <part Name="CyberneticsBaseItem" Cost="3" BehaviorDescription="+1 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:1" />
   </object>
 
   <object Name="DopamineSynth" Load="Merge">
@@ -55,33 +41,15 @@
   </object>
 
   <object Name="FulleriteHandBones" Load="Merge">
-    <part Name="CyberneticsBaseItem" BehaviorDescription="Your fists deal 2d5 damage." />
+    <part Name="CyberneticsBaseItem" BehaviorDescription="Your fists deal 2d4+1 damage." />
   </object>
   <object Name="FulleriteFist" Load="Merge">
     <part Name="MeleeWeapon" BaseDamage="2d5" />
   </object>
 
-  <object Name="HighGradeDermalInsulation" Load="Merge">
-    <part
-      Name="CyberneticsBaseItem"
-      Slots="Body,Head,Back"
-      Cost="4"
-      BehaviorDescription="+20 Heat Resistance
-+20 Cold Resistance
-+20 Electrical Resistance
-+20 Acid Resistance"
-    />
-    <part
-      Name="CyberneticsStatModifier"
-      Stats="HeatResistance:20;ColdResistance:20;ElectricResistance:20;AcidResistance:20"
-    />
-    <part Name="Examiner" Complexity="5" />
-    <part Name="Commerce" Value="240" />
-  </object>
-
   <object Name="HyperElasticAnkleTendons" Load="Merge">
-    <part Name="CyberneticsBaseItem" BehaviorDescription="+10 movespeed" />
-    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-10" />
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+6 movespeed" />
+    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-6" />
   </object>
 
   <object Name="MotorizedTreads" Load="Merge">
@@ -106,9 +74,9 @@
   </object>
 
   <object Name="OpticalMultiscanner" Load="Merge">
-    <part Name="CyberneticsBaseItem" Cost="4" />
+    <part Name="CyberneticsBaseItem" Cost="8" />
     <part Name="Examiner" Complexity="5" />
-    <part Name="Commerce" Value="240" />
+    <part Name="Commerce" Value="600" />
   </object>
 
   <object Name="RapidReleaseFingerFlexors" Load="Merge">
@@ -122,8 +90,8 @@
   </object>
 
   <object Name="UltraElasticAnkleTendons" Load="Merge">
-    <part Name="CyberneticsBaseItem" BehaviorDescription="+20 movespeed" />
-    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-20" />
+    <part Name="CyberneticsBaseItem" BehaviorDescription="+10 movespeed" />
+    <part Name="CyberneticsStatModifier" Stats="MoveSpeed:-10" />
   </object>
 
   <!-- New Items -->
@@ -169,8 +137,8 @@
       ColorString="&amp;g"
       DetailColor="r"
     />
-    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="3" BehaviorDescription="+3 AV" />
-    <part Name="CyberneticsStatModifier" Stats="AV:3" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="3" BehaviorDescription="+2 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:2" />
   </object>
 
   <object Name="Raven_DermalPlatingZetachrome" Inherits="BaseCyberneticsEquipment_4point">
@@ -186,8 +154,8 @@
       ColorString="&amp;m"
       DetailColor="r"
     />
-    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="4" BehaviorDescription="+4 AV" />
-    <part Name="CyberneticsStatModifier" Stats="AV:4" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="4" BehaviorDescription="+3 AV" />
+    <part Name="CyberneticsStatModifier" Stats="AV:3" />
   </object>
 
   <object Name="Raven_OmniPass" Inherits="BaseCyberneticsEquipment_2point">

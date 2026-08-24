@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **400** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -149,14 +149,20 @@ becoming nook and all cybernetics — they are mechanically a third "tech" genot
 18 subtypes in one class (`Affinities`, chargen title "choose expertise", singular "affinity"),
 split into two categories:
 
-- **The Lore Seekers of the Grand Library** (`Full Psionic`) — 9 caster subtypes. Each grants
-  **+1 cybernetics license point** on top of the genotype's 2.
-- **The Immovable Wall of the Yttria** (`Half Psionic`) — 9 martial "Guardian" subtypes. No
-  bonus cybernetics points.
+- **The Lore Seekers of the Grand Library** (`Full Psionic`) — 9 caster subtypes.
+- **The Immovable Wall of the Yttria** (`Half Psionic`) — 9 martial "Guardian" subtypes.
+
+**Neither grants cybernetics license points.** The casters granted +1 each until #332: no vanilla
+caste grants any, the genotype is the only source in the base game, and stacked with the implant
+changes it was part of how elemental resistance reached 100.
 
 Design rule stated in the source comments: each subtype nets **+2 to +3 stat points** after
 subtracting penalties (True Kin net +3 to +4, Mutants net +2). Subtypes with elemental
 resistances take a penalty resist equal to **half** their bonus.
+
+**The two halves now use one resistance scale**, 20 against a −10 counterpart, which is what the
+Guardians always used. The casters ran 40 / −20 until #332 — vanilla's castes are **always exactly
+15 and never negative**, so 40 was 2.7x a number vanilla only ever states once.
 
 ### 2.1 Full Psionic — The Lore Seekers of the Grand Library
 
@@ -465,14 +471,14 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Armor.xml` | 61 | 38 |
 | `RangedWeapons.xml` | 49 | 9 |
 | `PsionicChips.xml` | 145 | 0 |
-| `Cybernetics.xml` | 9 | 16 |
+| `Cybernetics.xml` | 9 | 14 |
 | `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **400 active** | **213** |
+| **Total** | **400 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1009,8 +1015,8 @@ Nine elemental variants of each:
 |---|---|---|---|---|
 | **Air filtration system** | 3 | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
 | **Steel dermal plating** | 1 | Body, Head, Back | +1 AV | 6 |
-| **Crysteel dermal plating** | 3 | Body, Head, Back | +3 AV | 12 |
-| **Zetachrome dermal plating** | 4 | Body, Head, Back | +4 AV | 16 |
+| **Crysteel dermal plating** | 3 | Body, Head, Back | +2 AV | 12 |
+| **Zetachrome dermal plating** | 4 | Body, Head, Back | +3 AV | 16 |
 | **Omni pass** | 2 | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`). Tagged `StartingCybernetic:General` | 0 |
 | **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
 | **Zetachrome hand bones** | 8 | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
@@ -1021,18 +1027,28 @@ Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`)
 
 | Implant | Change |
 |---|---|
-| Carbide dermal plating (`DermalPlating`) | Renamed to **carbide** dermal plating, cost **2**, +2 AV (was the generic 1-point/+1) |
-| Crysteel hand bones | Now cost **6**, value 360, complexity 6, weight 10, **3d4** fist damage |
-| Fullerite hand bones / fist | **2d5** fist damage |
-| Beautiful Visage / Cherubic Visage | **+2 Ego** each (stat modifier added) |
-| Dopamine Synth | **+2 Willpower** |
-| Dermal Insulation | +10 to all four elemental resistances |
-| High-grade Dermal Insulation | Cost **4**, **+20** to all four resistances, complexity 5, value 240, slots Body/Head/Back |
-| Hyper-elastic ankle tendons | +10 movespeed |
-| Ultra-elastic ankle tendons | +20 movespeed |
+| Carbide dermal plating (`DermalPlating`) | Renamed to **carbide** dermal plating. Cost and effect are vanilla's — 3 points, +1 AV |
+| Crysteel hand bones | Weight 10 and a custom tile; cost, value and **3d4** fist damage are vanilla's |
+| Fullerite hand bones / fist | Vanilla's **2d4+1** |
 | Motorized treads | `SaveModifier` +6 vs Move, Knockdown, Knockback, Restraint, Drag (EMP-sensitive, tech-scannable) |
-| Optical multiscanner | Cost **4**, complexity 5, value 240 |
 | Air current microsensor, Nocturnal apex, Rapid release finger flexors | New custom tiles and color strings |
+
+> ⚪ **The buffs that used to be in this table were reverted in #335.** Eight implants had been made
+> cheaper, stronger, or both — `DermalPlating` at 2 points for +2 AV against vanilla's 3 for +1,
+> both insulations at +10 and +20 against +6 and +9, the ankle tendons doubled, `CherubicVisage` at
+> +2 Ego, `OpticalMultiscanner` at 4 points and 240 water against 8 and 600.
+>
+> **What made it matter is that most of them stack.** `CyberneticsOneOnly` is the only gate on
+> duplicate implants and it is per-blueprint; vanilla tags 17 items with it and the platings and
+> insulations are not among them. `Slots="Body,Head,Back"` is three distinct body parts, and
+> `ImplantedEvent` adds the stat once per implant with no cap — so three high-grade insulations were
+> **+60 to each of the four elemental resistances**. Resistance applies as `(100 - resistance) / 100`,
+> so a Full Psionic caster's +40 on top of that reached **exactly 100**, which multiplies those paths
+> to zero. Vanilla's ceiling by the same route is 42. It is now 47.
+>
+> `DermalInsulation` and `HighGradeDermalInsulation` no longer appear in `mod/` at all: once their
+> numbers are vanilla's, the merge changes nothing by definition, and deleting it is cleaner than
+> restating it.
 
 ### 6.6 Other equipment
 
@@ -1071,7 +1087,7 @@ dark matter cell is 10× the advanced chem cell, 5× a nuclear cell, 2.5× an an
 | Item | Tier | Effect | Value |
 |---|---|---|---|
 | **Advanced hoversled** | 6 | `Backpack` **-100 carry weight**, worn "Floating Nearby", tinkerable (`00345`) | 400 |
-| **Cybernetics credit pass** | — | `CyberneticsCreditWedge` worth **10 credits** | 1550 |
+| **Cybernetics credit pass** | — | `CyberneticsCreditWedge` worth **3 credits** | 450 |
 | **Large sphere of negative weight** | 8 | `Suspensor` at **200% force**, **0 charge use**, complexity 7, tinkerable (`00008`), trinket, `DisplayFullNameAsReward` | 100 |
 
 #### Merged vanilla equipment
@@ -1921,7 +1937,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
-│   ├── Cybernetics.xml         # 9 new / 16 merged
+│   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled

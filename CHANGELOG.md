@@ -884,6 +884,50 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **Cybernetic implants are vanilla's again, elemental resistance can no longer reach total
+  immunity, and the credit pass grants what vanilla's best wedge grants** (#335, #327, #332).
+
+  Three issues, one resource, and they had to be settled together — because the way they combined
+  was worse than any of them alone.
+
+  **The thing that made it serious is that implants stack.** `CyberneticsOneOnly` is the only gate
+  on duplicates and it is per-blueprint; vanilla tags 17 items with it and the dermal platings and
+  insulations are not among them. `Slots="Body,Head,Back"` is **three distinct body parts**, and
+  each implant adds its stat again with no cap. So every printed number here was really three times
+  itself.
+
+  | | vanilla | was | now |
+  |---|---:|---:|---:|
+  | best plating, three slots | +3 AV | **+12 AV** | +6 AV |
+  | high-grade insulation, three slots | +27 | **+60** | +27 |
+  | elemental resistance, caste + implants | 42 | **100** | 47 |
+
+  **100 is not a large number, it is the end of the scale.** Resistance applies as
+  `(100 - resistance) / 100`, so a Full Psionic caster's +40 on top of three insulations at +20
+  multiplied those paths to zero — and the caste's own −20 drawback was repaid three times over by
+  the same implants. That combination needed two of these issues to exist and neither one to be
+  wrong on its own.
+
+  **What changed.** Eight merged implants go back to vanilla's costs and effects: `DermalPlating`
+  (3 points, +1 AV), both insulations, both ankle tendons, `CherubicVisage`, `OpticalMultiscanner`
+  and `CrysteelHandBones`. Two of those merges are **deleted outright** — once the numbers are
+  vanilla's, the merge changes nothing by definition.
+
+  The fork's own plating line is re-scaled to **+1 / +2 / +3**, so the best three slots give +6
+  rather than +12 — twice vanilla's ceiling instead of four times it. It is priced on the stacked
+  total now, which is the number that was never being read.
+
+  The nine Full Psionic casters drop to **20 / −10**, which is the scale their own Guardian half has
+  always used, and **no longer grant a licence point** — vanilla's genotype is the only source of
+  those in the whole game.
+
+  The **cybernetics credit pass** grants **3** credits at **450** water, which is vanilla's
+  `CyberneticsCreditWedge3` exactly. It granted 10, and a credit is a licence tier: one drop was five
+  times a starting True Kin's entire licence, repeatable from a tier-8 table.
+
+  **What did not change**: the True Kin licence stays at 4 against vanilla's 2, deliberately — it is
+  chargen power rather than a ceiling, and the ceiling was the problem. Implant costs are untouched.
+
 - **(internal)** `sync_mod.py --zip` builds the release asset, so the last unguarded step in the
   release stops being assembled by hand (#314).
 

@@ -13,7 +13,6 @@
         Code="a"
         Gear="StartingGear_Force Psionic"
         Tile="Subtypes/forcePsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="K"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -37,7 +36,6 @@
         Code="b"
         Gear="StartingGear_Fire Psionic"
         Tile="Subtypes/firePsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="o"
       >
         <stat Name="Strength" Bonus="1" />
@@ -46,8 +44,8 @@
         <stat Name="Intelligence" Bonus="2" />
         <stat Name="Willpower" Bonus="2" />
         <stat Name="Ego" Bonus="2" />
-        <stat Name="HeatResistance" Bonus="40" />
-        <stat Name="ColdResistance" Bonus="-20" />
+        <stat Name="HeatResistance" Bonus="20" />
+        <stat Name="ColdResistance" Bonus="-10" />
         <skills>
           <skill Name="ShortBlades_Expertise" />
           <skill Name="Axe" />
@@ -62,7 +60,6 @@
         Code="c"
         Gear="StartingGear_Ice Psionic"
         Tile="Subtypes/icePsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="C"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -71,8 +68,8 @@
         <stat Name="Intelligence" Bonus="2" />
         <stat Name="Willpower" Bonus="2" />
         <stat Name="Ego" Bonus="2" />
-        <stat Name="ColdResistance" Bonus="40" />
-        <stat Name="HeatResistance" Bonus="-20" />
+        <stat Name="ColdResistance" Bonus="20" />
+        <stat Name="HeatResistance" Bonus="-10" />
         <skills>
           <skill Name="ShortBlades_Expertise" />
           <skill Name="Rifles" />
@@ -87,7 +84,6 @@
         Code="d"
         Gear="StartingGear_Lightning Psionic"
         Tile="Subtypes/lightningPsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="W"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -96,8 +92,8 @@
         <stat Name="Intelligence" Bonus="2" />
         <stat Name="Willpower" Bonus="2" />
         <stat Name="Ego" Bonus="2" />
-        <stat Name="ElectricResistance" Bonus="40" />
-        <stat Name="AcidResistance" Bonus="-20" />
+        <stat Name="ElectricResistance" Bonus="20" />
+        <stat Name="AcidResistance" Bonus="-10" />
         <skills>
           <skill Name="ShortBlades" />
           <skill Name="ShortBlades_Bloodletter" />
@@ -112,7 +108,6 @@
         Code="e"
         Gear="StartingGear_Light Psionic"
         Tile="Subtypes/lightPsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="O"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -121,10 +116,10 @@
         <stat Name="Intelligence" Bonus="2" />
         <stat Name="Willpower" Bonus="2" />
         <stat Name="Ego" Bonus="2" />
-        <stat Name="HeatResistance" Bonus="20" />
-        <stat Name="ElectricResistance" Bonus="20" />
-        <stat Name="ColdResistance" Bonus="-10" />
-        <stat Name="AcidResistance" Bonus="-10" />
+        <stat Name="HeatResistance" Bonus="10" />
+        <stat Name="ElectricResistance" Bonus="10" />
+        <stat Name="ColdResistance" Bonus="-5" />
+        <stat Name="AcidResistance" Bonus="-5" />
         <skills>
           <skill Name="ShortBlades_Expertise" />
           <skill Name="Pistol" />
@@ -140,7 +135,6 @@
         Code="f"
         Gear="StartingGear_Corrosive Psionic"
         Tile="Subtypes/corrosivePsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="g"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -149,8 +143,8 @@
         <stat Name="Intelligence" Bonus="2" />
         <stat Name="Willpower" Bonus="2" />
         <stat Name="Ego" Bonus="4" />
-        <stat Name="AcidResistance" Bonus="40" />
-        <stat Name="ElectricResistance" Bonus="-20" />
+        <stat Name="AcidResistance" Bonus="20" />
+        <stat Name="ElectricResistance" Bonus="-10" />
         <skills>
           <skill Name="ShortBlades_Expertise" />
           <skill Name="Rifles" />
@@ -166,7 +160,6 @@
         Code="g"
         Gear="StartingGear_Blood Psionic"
         Tile="Subtypes/bloodPsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="R"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -192,7 +185,6 @@
         Code="h"
         Gear="StartingGear_Mental Psionic"
         Tile="Subtypes/mentalPsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="M"
       >
         <stat Name="Strength" Bonus="-2" />
@@ -222,7 +214,6 @@
         Code="q"
         Gear="StartingGear_Temporal Psionic"
         Tile="Subtypes/temporalPsionic.bmp"
-        CyberneticsLicensePoints="1"
         DetailColor="Y"
       >
         <stat Name="Strength" Bonus="-2" />
