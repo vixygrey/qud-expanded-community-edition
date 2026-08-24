@@ -261,6 +261,30 @@ recorded because contributors need them, not because subscribers do.
   line is now **nine near-identical items**, which is a content question rather than a defect (#381).
 
 ### Added
+- **Spears** — a new nine-tier family, and **the first two-handed weapon the Short Blades tree has
+  ever had** (#342).
+
+  **Why it exists.** Short Blades was the only melee tree in the game with no two-handed weapon at
+  all — Cudgel has 17, Long Blades 10, Axe 10, Short Blades none. That matters because Single Weapon
+  Fighting's cost is your offhand: it zeroes every non-primary attack while toggled. A two-handed
+  weapon has already given the offhand up, so the cost is largely pre-paid — and a short-blade
+  specialist was the one build that could never take the skill cheaply. Now it can.
+
+  A spear read as a short blade on a long pole is a stretch by weapon group and sound by shape, and
+  Pathfinder's elven branched spear — two-handed, finesse — is the precedent for the combination.
+
+  **What it does.** It carries the `Finesse` tag, so with the Short Blade tree's Finesse power bought
+  its penetration rolls use your Agility modifier whenever that beats Strength. Damage sits at the
+  midpoint between the dagger line and the two-handed long sword line at each tier: better than a
+  dagger, never as good as a greatsword. It is the lightest two-handed blade at every tier.
+
+  It is **not** throwable, although Pathfinder's spear is and Qud's whole dagger line carries
+  `ThrownWeapon`. The two-handed spear exists to fill a build gap, not to do a second job as well.
+
+  **The art is mine** — `mod/Textures/items/Vixy_Spear.png`, the first item tile this fork has drawn.
+  One 16×24 sprite recoloured across all nine tiers: the head and the butt-ferrule take the tier's
+  colour, the haft stays wood.
+
 - **Quarterstaves** — a new nine-tier family, and the Cudgel tree's two-handed finesse weapon
   (#342).
 
