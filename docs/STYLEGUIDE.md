@@ -480,6 +480,22 @@ rules as they stand rather than in tension with them. It is the one place this f
 vanilla weapon's damage, and it is here because leaving it at parity would make the merged item 80%
 better than its own tier-mates.
 
+**A subtype's starting skills are capped at vanilla's most generous caste**, which is 7 skills and
+**700 skill points** — `Priest of All Suns`. Vanilla's median is 5 and 450. A subtype may exceed the
+ceiling only by what its own Intelligence penalty pays back: `Leveler.RollSP` is
+`(Intelligence − 10) × 4` per level, so −6 Intelligence costs 24 a level and about 720 across a run.
+That is the whole of #330's derivation — `Temporal, Support Battalion` granted 22 skills and 2,075 SP
+against a stated trade of *"massively lowered Intelligence in exchange for so many skills"*, and now
+grants 15 and **1,400**, which is 700 plus the 720 it pays. `Mental, Guides of the Lost` came to the
+ceiling exactly at 10 and 700.
+
+**An option offers a choice between two things somebody meant.** Where a change is documented intent
+it can be optional; where it is drift, it is a defect and the option has no business carrying it. The
+skill-requirements option kept three of each until #331: the Axe and Cudgel regating, `En Garde!` and
+the Multiweapon thresholds are in Mura's notes and stay optional, while the Tinkering gates
+(19/23/29 cut to 17/21/25), `Disassemble` made free, and `Long Blade`'s `Dueling Stance` cut from
+Int 17 to 15 had no record anywhere and now track vanilla whichever way the option is set.
+
 **A cybernetic implant is priced against vanilla's, and most of them stack.** `CyberneticsOneOnly`
 is the only gate on duplicates and it is **per-blueprint** — vanilla tags 17 items with it, and the
 dermal platings and insulations are not among them. `Slots="Body,Head,Back"` names three distinct

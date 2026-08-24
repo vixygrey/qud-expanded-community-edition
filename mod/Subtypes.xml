@@ -195,11 +195,9 @@
         <stat Name="Ego" Bonus="2" />
         <skills>
           <skill Name="ShortBlades_Expertise" />
-          <skill Name="Rifles" />
           <skill Name="Customs" />
           <skill Name="Customs_TrashDivining" />
           <skill Name="Survival" />
-          <skill Name="Survival_PlainsSurvival" />
           <skill Name="Survival_SaltmarshSurvival" />
           <skill Name="Survival_MountainsSurvival" />
           <skill Name="Survival_DesertCanyonSurvival" />
@@ -448,22 +446,15 @@
         <stat Name="Willpower" Bonus="1" />
         <stat Name="Ego" Bonus="1" />
         <skills>
-          <skill Name="Acrobatics" />
           <skill Name="Axe" />
           <skill Name="Rifles" />
           <skill Name="CookingAndGathering" />
           <skill Name="Cudgel" />
           <skill Name="Customs" />
           <skill Name="Discipline" />
-          <skill Name="Multiweapon_Fighting" />
           <skill Name="Endurance" />
           <skill Name="Physic" />
-          <skill Name="HeavyWeapons" />
-          <skill Name="LongBlades" />
           <skill Name="Persuasion" />
-          <skill Name="Pistol" />
-          <skill Name="Shield" />
-          <skill Name="ShortBlades" />
           <skill Name="Survival" />
           <skill Name="Tactics" />
           <skill Name="Tinkering" />

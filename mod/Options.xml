@@ -120,12 +120,12 @@
     Type="Checkbox"
     Default="Yes"
     Restart="true"
-    SearchKeywords="qud expanded skill requirements attribute axe cudgel long blade multiweapon tinkering"
+    SearchKeywords="qud expanded skill requirements attribute axe cudgel long blade multiweapon en garde"
   >
     <helptext>
-            Keeps this mod's eased attribute requirements on {{W|Axe}}, {{W|Cudgel}}, {{W|Long Blade}}, {{W|Multiweapon Fighting}} and {{W|Tinkering}}.
+            Keeps this mod's eased attribute requirements: {{W|Axe}} and {{W|Cudgel}} powers accept Strength {{y|or}} Agility, {{W|En Garde!}} needs 29 in either rather than 29 and 23 in both, and {{W|Multiweapon Expertise}} and {{W|Mastery}} ask 21 and 25 rather than 23 and 27.
 
-            Turn this off for vanilla's. Skills you already own are never taken back.
+            Turn this off for vanilla's. Skills you already own are never taken back. {{W|Tinkering}} is not covered - its requirements are vanilla's either way.
 
             {{y|Takes effect when you restart the game.}}
         </helptext>
@@ -137,10 +137,10 @@
     Category="Mods"
     Type="Checkbox"
     Default="Yes"
-    SearchKeywords="qud expanded skill point cost tinkering cooking butchery spicer disassemble"
+    SearchKeywords="qud expanded skill point cost tinkering cooking butchery spicer reverse engineer"
   >
     <helptext>
-            Keeps this mod's skill point prices: {{W|Disassemble}} free rather than 100, {{W|Reverse Engineer}} {{G|200}}, and {{W|Butchery}} and {{W|Spicer}} {{G|100}} each.
+            Keeps this mod's skill point prices: {{W|Reverse Engineer}} {{G|200}}, and {{W|Butchery}} and {{W|Spicer}} {{G|100}} each.
 
             The Cooking prices pay for the free skills {{W|extra starting skills}} grants, so if that is off you may want this off too. Applies immediately.
         </helptext>

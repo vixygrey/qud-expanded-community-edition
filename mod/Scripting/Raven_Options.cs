@@ -318,8 +318,6 @@ namespace QudExpandedCE
             new PowerRequirement("Cudgel", "Slam", StrengthOrAgility, Range("25|25", "25")),
             new PowerRequirement("Cudgel", "Demolish", StrengthOrAgility, Range("29|29", "29")),
 
-            new PowerRequirement("Long Blade", "Dueling Stance", Intelligence, Range("15", "17")),
-
             // Vanilla asks for 29 in one of Strength or Agility AND 23 in the other, whichever way
             // round; the mod asks only for 29 in either. Restoring it means putting back both the
             // paired attribute list and its paired minimums.
@@ -339,9 +337,12 @@ namespace QudExpandedCE
                 "Multiweapon Fighting", "Multiweapon Mastery", AgilityOrStrength,
                 Range("25|25", "27|27")),
 
-            new PowerRequirement("Tinkering", "Tinker I", Intelligence, Range("17", "19")),
-            new PowerRequirement("Tinkering", "Tinker II", Intelligence, Range("21", "23")),
-            new PowerRequirement("Tinkering", "Tinker III", Intelligence, Range("25", "29")),
+            // Tinkering is deliberately absent, and so is Long Blade's Dueling Stance. Both were
+            // cut by this fork - Tinker I/II/III from 19/23/29 to 17/21/25, Dueling Stance from
+            // Int 17 to 15 - and nothing anywhere records why. #331 settled that an undocumented
+            // cut is not an option's business: an option offers a choice between two things
+            // somebody meant, and these were drift. They now track vanilla whichever way the
+            // option is set, which is why they appear in neither table.
         };
 
         /// <summary>
@@ -359,7 +360,9 @@ namespace QudExpandedCE
             new PowerCost("Cooking and Gathering", "Butchery", new Tuning<int>(100, 50)),
             new PowerCost("Cooking and Gathering", "Spicer", new Tuning<int>(100, 50)),
 
-            new PowerCost("Tinkering", "Disassemble", new Tuning<int>(0, 100)),
+            // Disassemble was free in this fork against vanilla's 100, and like the Tinkering
+            // requirements above nothing records why, so it is gone from here and stays vanilla's
+            // (#331). Reverse Engineer's rise is the other half of the Cooking offset and stays.
             new PowerCost("Tinkering", "Reverse Engineer", new Tuning<int>(200, 100)),
         };
 
