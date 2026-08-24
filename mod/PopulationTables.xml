@@ -889,7 +889,7 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
-      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Array" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Blaze Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Arrow" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Dream Dew Arrow" />
@@ -906,8 +906,8 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
-      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
-      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="10" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Array" />
     </group>
   </population>
 
@@ -918,8 +918,8 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
-      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
-      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="10" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Array" />
     </group>
   </population>
 
@@ -930,9 +930,9 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
-      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
-      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
-      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
+      <object Weight="10" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="1" Number="1" Blueprint="Raven_Solar Cell Nexus" />
     </group>
   </population>
 
@@ -943,9 +943,9 @@
       <object Weight="2" Number="1d4" Blueprint="Raven_Cryo Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Flechette Shell" />
       <object Weight="2" Number="1d4" Blueprint="Raven_Takedown Shell" />
-      <object Weight="20" Number="1" Blueprint="Raven_Advanced Chem Cell" />
-      <object Weight="10" Number="1" Blueprint="Raven_Solar Cell Array" />
-      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Nexus" />
+      <object Weight="10" Number="1" Blueprint="Raven_Advanced Chem Cell" />
+      <object Weight="5" Number="1" Blueprint="Raven_Solar Cell Array" />
+      <object Weight="1" Number="1" Blueprint="Raven_Solar Cell Nexus" />
       <table Weight="1" Number="1" Name="Raven_Dark Matter Cell Chance" />
       <!-- Adding a chance onto the rare table to roll -->
     </group>

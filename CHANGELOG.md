@@ -884,6 +884,55 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **A solar cell no longer pays for a psionic shot every turn, the dark matter cell weighs what its
+  capacity is worth, and the cell rarity ladder runs the right way up** (#323, #326).
+
+  **The loop.** `SolarArray` produces its rate in charge every turn while you are outdoors in
+  daylight. The solar cell nexus produced **50**, and a psionic pistol costs **50 a shot** — so
+  daylight paid for one shot per turn, indefinitely. Vanilla's own ratio is a laser pistol at 100
+  against a solar cell making 10: **ten turns of sun per shot**.
+
+  Vanilla ships exactly one solar cell and its rate is **10**, so 25 and 50 were invented figures.
+  Both fork cells are 10 now, which leaves **capacity** as the thing that separates them — as it
+  separates every cell vanilla ships.
+
+  | | charge per shot | solar per turn | turns of sun per shot |
+  |---|---:|---:|---:|
+  | vanilla: laser pistol + solar cell | 100 | 10 | 10 |
+  | **was**: psionic pistol + nexus | 50 | 50 | **1** |
+  | **now**: psionic pistol + nexus | 50 | 10 | 5 |
+
+  **The dark matter cell held the mech power core's charge in a pocket.** Vanilla's portable ceiling
+  is the antimatter cell at 200,000; the only 500,000 cell in the game is the mech power core, at
+  **70 lb**. It keeps the 500,000 and now carries the 70 — a power source you install somewhere
+  rather than one you pocket, which is the trade vanilla already priced.
+
+  **And the rarity ladder was upside down.** Vanilla's rule shows up as soon as entry tier is read
+  against capacity — more charge is rarer *and* later:
+
+  | cell | charge | enters | drop weight |
+  |---|---:|---|---:|
+  | chem (vanilla) | 10,000 | Ammo 4 | 25 |
+  | **advanced chem** | 50,000 | Ammo 5 | 20 → **10** |
+  | nuclear (vanilla) | 100,000 | Ammo 6 | 5 |
+  | antimatter (vanilla) | 200,000 | Ammo 7 | 1 |
+
+  The advanced chem cell was **four times commoner than a nuclear cell holding twice as much**, and
+  twenty times commoner than antimatter. The recharging cells run their own ladder beside that one,
+  and were inverted the same way: the solar array goes 10 → **5** against vanilla's solar cell at 10,
+  and the nexus 5 → **1**, sharing Ammo 7 with antimatter. Both ladders are monotone now.
+
+  **What did not change**: the psionic guns' prices. `item-curve` records that ranged weapons follow
+  no value curve in this fork *or* in vanilla — 0 of 5 here, and vanilla's own 64 missile weapons
+  miss it too — so there is nothing to reprice against, and inventing an anchor is what #380 settled
+  against.
+
+- **(internal)** `docs/FEATURES.md`'s energy-cell table is checked against its blueprints. It gained
+  Weight and Drop weight columns, and naming the first column `Blueprint` brings it under
+  `check_item_tables` — which immediately caught a figure that had been wrong for some time: the dark
+  matter cell was documented at value 300 against a blueprint saying **1200**. Checked item-table
+  figures go from 1,136 to 1,145.
+
 - **Chip-granted flaming ray and freezing ray could not be used at all** (#411). Reported by a
   player, and it is the first defect in this fork found by someone playing rather than by an audit.
 

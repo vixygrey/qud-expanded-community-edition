@@ -1078,21 +1078,60 @@ Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`)
 
 #### Energy cells — new
 
-| Cell | Tier | Max charge | Recharge | Value | Tinker bits |
-|---|---|---|---|---|---|
-| **Advanced chem cell** | 5 | 50,000 | — | 300 | `0014` |
-| **Dark matter cell** | 8 | **500,000** | — | 300 | `0047` |
-| **Solar cell array** | 4 | 10,000 | 25/turn in sunlight | 150 | `0023` |
-| **Solar cell nexus** | 7 | 50,000 | 50/turn in sunlight | 225 | `0025` |
+| Blueprint | Tier | Max charge | Recharge | Weight | Value | Drop weight | Tinker bits |
+|---|---|---|---|---|---|---|---|
+| **Advanced chem cell** | 5 | 50,000 | — | 1 | 300 | 10 | `0014` |
+| **Dark matter cell** | 8 | **500,000** | — | 70 | 1200 | 1 | `0047` |
+| **Solar cell array** | 4 | 10,000 | 10/turn in sunlight | 1 | 150 | 5 | `0023` |
+| **Solar cell nexus** | 7 | 50,000 | 10/turn in sunlight | 1 | 225 | 1 | `0025` |
 
 For reference, the mod's own notes record the vanilla baseline: chem cell 10,000 (T1);
 fidget 2,500 (T1, 2/20 per turn out of/in combat); solar 2,500 (T2, 10/turn); nuclear 100,000 (T7);
 antimatter 200,000 (T8); and the liquid-fuelled cells — lead-acid 4,000 (500/dram), combustion
 6,000 (750/dram), thermoelectric 40,000 (5,000/dram), biodynamic 60,000 (7,500/dram).
 
-So the solar array is 4× capacity / 2.5× recharge of a basic solar cell; the nexus is 20× / 5×
-(or 5× / 2× versus the array). The advanced chem cell is 5× a chem cell, half a nuclear cell. The
-dark matter cell is 10× the advanced chem cell, 5× a nuclear cell, 2.5× an antimatter cell.
+So the solar array is 4× the capacity of a basic solar cell and the nexus 20×, at vanilla's own
+recharge rate. The advanced chem cell is 5× a chem cell and half a nuclear cell. The dark matter cell
+matches the **mech power core**, which is the only other 500,000 cell in the game.
+
+> ⚪ **Three of those figures moved in #326 and #323**, and the reasons are worth keeping.
+>
+> **Recharge was 25 and 50 per turn.** Vanilla ships exactly one solar cell and its rate is **10**, so
+> 25 and 50 were invented. The nexus at 50 mattered more than it looks: a psionic pistol costs 50
+> charge a shot, so the nexus paid for **one shot per turn, indefinitely**, outdoors in daylight.
+> Vanilla's own ratio is a laser pistol at 100 a shot against a solar cell making 10 — **ten turns of
+> sun per shot**. Both fork cells are now 10 as well, which leaves capacity as the thing that
+> separates them, exactly as it separates every vanilla cell.
+>
+> **The dark matter cell weighed a pound.** Vanilla's portable ceiling is the antimatter cell at
+> 200,000; the only 500,000 cell it ships is the mech power core, at **70 lb**. Keeping the capacity
+> and taking the weight is the honest version of that trade — it is a power source you install
+> somewhere, not one you pocket.
+>
+> **And the drop weights were inverted.** See below.
+
+#### Energy cells — rarity
+
+Vanilla's rule is visible once entry tier is read against capacity: **more charge, rarer, and later**.
+
+| cell | charge | enters | drop weight |
+|---|---:|---|---:|
+| Chem (vanilla) | 10,000 | Ammo 4 | 25 |
+| **Advanced chem** | 50,000 | Ammo 5 | **10** |
+| Nuclear (vanilla) | 100,000 | Ammo 6 | 5 |
+| Antimatter (vanilla) | 200,000 | Ammo 7 | 1 |
+
+and the recharging cells run their own ladder alongside it:
+
+| cell | charge | enters | drop weight |
+|---|---:|---|---:|
+| Solar (vanilla) | 2,500 | Ammo 4 | 10 |
+| **Solar array** | 10,000 | Ammo 4 | **5** |
+| **Solar nexus** | 50,000 | Ammo 7 | **1** |
+
+Both ladders are monotone: nothing with more charge is commoner than something with less. They were
+not, before #326 — the advanced chem cell sat at weight **20**, four times commoner than the nuclear
+cell at twice its capacity and twenty times commoner than antimatter.
 
 **How cell mods interact** (from Mura's pinned feature list — useful context for retuning these):
 
