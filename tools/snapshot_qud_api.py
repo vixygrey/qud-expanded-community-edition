@@ -279,12 +279,24 @@ def collect_parts(assembly: Path) -> list[str]:
     return sorted(names)
 
 
-def collect_members(assembly: Path) -> tuple[dict[str, list[str]], list[str]]:
-    """Every settable member of every part class, plus the part-builder type names.
+MUTATION_NAMESPACE = "XRL.World.Parts.Mutation"
+
+
+def collect_members(
+    assembly: Path,
+) -> tuple[dict[str, list[str]], list[str], list[str]]:
+    """Every settable member of every part class, the part-builder type names, and the mutations
+    that cannot level.
 
     Shells out to `tools/dump_part_members.cs` through a throwaway project, because the answer
     lives in the assembly's metadata and nothing in the shipped XML carries it. See that file for
     what counts as settable and why properties, inheritance and generic bases each need handling.
+
+    The third list is the one #347 needed. A mutation whose `CanLevel()` returns a constant false
+    reads its level nowhere, so every grade of a chip granting it is the same item - Kindle and
+    Frost Webs shipped three grades each and all six were one item, at 20, 80 and 320 water.
+    Neither `Mutations.xml` nor `HiddenMutations.xml` carries an attribute for it; only the method
+    body knows, which is why this comes from the assembly rather than from the catalogue.
     """
     if not shutil.which("dotnet"):
         raise SystemExit(
@@ -324,10 +336,20 @@ def collect_members(assembly: Path) -> tuple[dict[str, list[str]], list[str]]:
         raise SystemExit(f"error: no members found in {PART_NAMESPACE}")
     if not payload_obj.get("part_builders"):
         raise SystemExit(f"error: no types found in {BUILDER_NAMESPACE}")
+    if not payload_obj.get("non_leveling_mutations"):
+        raise SystemExit(
+            f"error: no CanLevel() overrides found in {MUTATION_NAMESPACE}.\n"
+            "Every mutation in the game reports that it can level, which has never been true - "
+            "the shape of the method or the namespace has changed."
+        )
     members = {
         name: sorted(vals) for name, vals in sorted(payload_obj["members"].items())
     }
-    return members, sorted(payload_obj["part_builders"])
+    return (
+        members,
+        sorted(payload_obj["part_builders"]),
+        sorted(payload_obj["non_leveling_mutations"]),
+    )
 
 
 def collect_figures(game: Path) -> dict[str, str]:
@@ -811,7 +833,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         else collect_parts_from_xml(game)
     )
     blueprints = collect_blueprints(game)
-    members, part_builders = collect_members(member_assembly)
+    members, part_builders, non_leveling = collect_members(member_assembly)
     figures = collect_figures(game)
     mutation_classes = collect_mutation_classes(game)
     figures.update(collect_census(game))
@@ -853,6 +875,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + "\n".join(mutation_classes)
             + "\0"
+            + "\n".join(non_leveling)
+            + "\0"
             + json.dumps(merged_records, sort_keys=True)
             + "\0"
             + json.dumps(table_weights, sort_keys=True)
@@ -885,10 +909,12 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "figures": len(figures),
             "part_builders": len(part_builders),
             "mutation_classes": len(mutation_classes),
+            "non_leveling_mutations": len(non_leveling),
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
         },
         "mutation_classes": mutation_classes,
+        "non_leveling_mutations": non_leveling,
         "parts": parts,
         "blueprints": blueprints,
         "members": members,

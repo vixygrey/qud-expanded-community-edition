@@ -1598,6 +1598,95 @@ def check_mutation_type_arguments(f: Findings) -> None:
                 )
 
 
+def check_graded_unlevellable_chips(
+    f: Findings, all_roots: dict[Path, ET.Element]
+) -> None:
+    """A chip granting a mutation that cannot level must not vary that level by grade.
+
+    `Kindle` and `FrostWebs` override `CanLevel()` to return a constant false and read their level
+    nowhere - Kindle's cooldown and range are literals, Frost Webs sets its range and area the same
+    way. So a chip granting one of them is the same item whatever level it claims to give, and the
+    fork shipped three grades of each at 20, 80 and 320 water: #347. A player paid sixteen times
+    the price of the basic chip for the basic chip.
+
+    Nothing could have caught it. `unknown-mutation` passes, because `Kindle` is genuinely
+    declared in the catalogue; `item-curve` passes, because each price sat exactly on the chip
+    curve for its tier. The defect is only visible inside the mutation's own method body, which is
+    why `tools/qud-api.json` now carries `non_leveling_mutations` - see `tools/dump_part_members.cs`
+    for how two IL bytes decide it.
+
+    Grouped by the set of mutation-granting parts a blueprint carries, which is what makes a line a
+    line. The three Kindle chips carry `{Raven_ModKindle}` and must agree with each other; the three
+    Fire chipsets carry that part alongside two that do scale, so they form their own group and must
+    agree among themselves. Comparing every blueprint at once would refuse the correct arrangement,
+    where a chipset grants a lower level than the single chip on purpose.
+    """
+    api = load_qud_api()
+    if api is None:
+        return  # check_part_names already reported the missing snapshot
+    unlevellable = api.get("non_leveling_mutations")
+    if not unlevellable:
+        f.add(
+            "qud-api-snapshot",
+            f"{QUD_API_PATH} has no non_leveling_mutations - regenerate with "
+            "tools/snapshot_qud_api.py --assembly",
+        )
+        return
+    unlevellable = set(unlevellable)
+
+    # Every chip part, and which of them grant a mutation that cannot level. Comments are
+    # stripped for the same reason check_mutation_type_arguments strips them: the mod keeps
+    # dormant scripts commented out, and a dormant declaration is not a violation.
+    granting: set[str] = set()
+    dead: dict[str, str] = {}
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        src = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
+        match = re.search(r"ModImprovedMutationBase<\s*(\w+)\s*>", src)
+        if not match:
+            continue
+        granting.add(cs.stem)
+        if match.group(1) in unlevellable:
+            dead[cs.stem] = match.group(1)
+    if not dead:
+        return
+
+    # group -> part -> {tier: [blueprint names]}
+    groups: dict[tuple[str, ...], dict[str, dict[str, list[str]]]] = {}
+    for root in all_roots.values():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            carried = {
+                e.get("Name"): e.get("Tier")
+                for e in obj.findall("part")
+                if e.get("Name") in granting
+            }
+            if not any(part in dead for part in carried):
+                continue
+            key = tuple(sorted(carried))
+            for part, tier in carried.items():
+                if part not in dead:
+                    continue
+                groups.setdefault(key, {}).setdefault(part, {}).setdefault(
+                    tier or "unset", []
+                ).append(name)
+
+    for parts in (g for _, g in sorted(groups.items())):
+        for part, by_tier in sorted(parts.items()):
+            if len(by_tier) < 2:
+                continue
+            ladder = "; ".join(
+                f"Tier {tier} on {', '.join(sorted(names))}"
+                for tier, names in sorted(by_tier.items())
+            )
+            f.add(
+                "dead-chip-grade",
+                f"{part} grants {dead[part]}, which cannot level, so every grade of it "
+                f"grants the same thing - but the level varies by grade ({ladder}). "
+                f"Give the line one level, or the tooltip promises a ladder that is not "
+                f"there (see #347)",
+            )
+
+
 def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Blueprint-valued attributes must name a blueprint that exists.
 
@@ -1672,6 +1761,7 @@ def run() -> Findings:
     check_part_attributes(f, roots)
     check_part_builders(f, roots)
     check_mutation_type_arguments(f)
+    check_graded_unlevellable_chips(f, roots)
     return f
 
 

@@ -337,6 +337,130 @@ class MutationTypeArguments(unittest.TestCase):
         self.assertIn("unknown-mutation", codes)
 
 
+class GradedUnlevellableChips(unittest.TestCase):
+    """#347. Kindle and Frost Webs shipped three grades each, and all six were one item.
+
+    Nothing existing could see it. `unknown-mutation` passes because both are genuinely
+    catalogued, and `item-curve` passes because each price sat exactly on the chip curve for its
+    tier. Only the mutation's own method body knows, which is what `non_leveling_mutations` in the
+    snapshot carries.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _findings(
+        self, blueprints: str, mutation: str = "Kindle", api: dict | None = None
+    ) -> list[tuple[str, str]]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints=blueprints)
+        if api is not None:
+            (tmp / "tools" / "qud-api.json").write_text(json.dumps(api))
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        (scripting / "Raven_ModDead.cs").write_text(
+            f"public class Raven_ModDead : ModImprovedMutationBase<{mutation}> {{ }}",
+            encoding="utf-8",
+        )
+        (scripting / "Raven_ModLive.cs").write_text(
+            "public class Raven_ModLive : ModImprovedMutationBase<Teleportation> { }",
+            encoding="utf-8",
+        )
+        return findings_for(validate_mod.check_graded_unlevellable_chips, tmp)
+
+    @staticmethod
+    def _chip(name: str, part_tier: str, extra: str = "") -> str:
+        return (
+            f'  <object Name="{name}" Inherits="Raven_Base Psionic Chip">\n'
+            f'    <part Name="Raven_ModDead" Tier="{part_tier}" />\n'
+            f"{extra}"
+            f"  </object>"
+        )
+
+    def test_the_real_snapshot_knows_kindle_cannot_level(self) -> None:
+        """Guards the whole class against a vacuous pass: if the snapshot ever loses the list,
+        every test below would pass while the check returned early."""
+        api = json.loads(API_SNAPSHOT.read_text())
+        self.assertIn("Kindle", api["non_leveling_mutations"])
+        self.assertIn("FrostWebs", api["non_leveling_mutations"])
+        self.assertNotIn("Teleportation", api["non_leveling_mutations"])
+
+    def test_one_level_across_the_line_passes(self) -> None:
+        items = self._findings(
+            "\n".join(
+                self._chip(f"Raven_{grade} Dead Chip", "2")
+                for grade in ("Simple", "Improved", "Advanced")
+            )
+        )
+        self.assertEqual(items, [])
+
+    def test_a_varying_level_is_reported(self) -> None:
+        items = self._findings(
+            "\n".join(
+                self._chip(f"Raven_{grade} Dead Chip", tier)
+                for grade, tier in (
+                    ("Simple", "2"),
+                    ("Improved", "4"),
+                    ("Advanced", "6"),
+                )
+            )
+        )
+        self.assertEqual([c for c, _ in items], ["dead-chip-grade"])
+        self.assertIn("Raven_Improved Dead Chip", items[0][1])
+
+    def test_a_mutation_that_levels_is_left_alone(self) -> None:
+        """The ladder is the point everywhere else in the catalogue - 34 of the 36 chip lines."""
+        items = self._findings(
+            "\n".join(
+                self._chip(f"Raven_{grade} Live Chip", tier)
+                for grade, tier in (
+                    ("Simple", "2"),
+                    ("Improved", "4"),
+                    ("Advanced", "6"),
+                )
+            ),
+            mutation="Teleportation",
+        )
+        self.assertEqual(items, [])
+
+    def test_a_chipset_forms_its_own_line(self) -> None:
+        """A chipset grants a lower level than the single chip on purpose, so comparing every
+        blueprint at once would refuse the correct arrangement."""
+        chips = "\n".join(
+            self._chip(f"Raven_{grade} Dead Chip", "2")
+            for grade in ("Simple", "Improved", "Advanced")
+        )
+        sets = "\n".join(
+            self._chip(
+                f"Raven_{grade} Dead Chipset",
+                "1",
+                extra='    <part Name="Raven_ModLive" Tier="3" />\n',
+            )
+            for grade in ("Simple", "Improved", "Advanced")
+        )
+        self.assertEqual(self._findings(chips + "\n" + sets), [])
+
+    def test_a_chipset_line_is_checked_on_its_own(self) -> None:
+        sets = "\n".join(
+            self._chip(
+                f"Raven_{grade} Dead Chipset",
+                tier,
+                extra='    <part Name="Raven_ModLive" Tier="3" />\n',
+            )
+            for grade, tier in (("Simple", "1"), ("Improved", "2"), ("Advanced", "3"))
+        )
+        self.assertEqual([c for c, _ in self._findings(sets)], ["dead-chip-grade"])
+
+    def test_a_snapshot_without_the_list_is_reported(self) -> None:
+        """A missing list must be loud. Returning quietly would make every check above vacuous."""
+        api = json.loads(API_SNAPSHOT.read_text())
+        del api["non_leveling_mutations"]
+        items = self._findings(self._chip("Raven_Simple Dead Chip", "2"), api=api)
+        self.assertEqual([c for c, _ in items], ["qud-api-snapshot"])
+
+
 class VersionAgreesWithChangelog(unittest.TestCase):
     """#309. The version lives in three places by hand and nothing held any two together.
 

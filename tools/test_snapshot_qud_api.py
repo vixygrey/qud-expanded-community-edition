@@ -299,6 +299,71 @@ class Unavailable(unittest.TestCase):
         self.assertIn("ERROR", err.getvalue())
 
 
+class NonLevelingMutations(unittest.TestCase):
+    """#347. The list only exists inside the assembly, so its absence has to be loud.
+
+    A mutation whose `CanLevel()` returns a constant false reads its level nowhere, which makes
+    every grade of a chip granting it the same item. Neither `Mutations.xml` nor
+    `HiddenMutations.xml` carries an attribute for it - `tools/dump_part_members.cs` decides it
+    from two IL bytes - so the only protection against the list silently going missing is that
+    `collect_members` refuses to return without it.
+    """
+
+    SNAPSHOT = Path(__file__).resolve().parent / "qud-api.json"
+
+    def test_the_committed_snapshot_carries_it(self) -> None:
+        api = json.loads(self.SNAPSHOT.read_text())
+        listed = api["non_leveling_mutations"]
+        self.assertEqual(api["counts"]["non_leveling_mutations"], len(listed))
+        self.assertEqual(
+            listed, sorted(listed), "the list must be sorted for a stable digest"
+        )
+        # The two the check exists for, and one that must not be caught by it.
+        self.assertIn("Kindle", listed)
+        self.assertIn("FrostWebs", listed)
+        self.assertNotIn("Teleportation", listed)
+
+    def test_every_name_is_a_real_mutation_class(self) -> None:
+        api = json.loads(self.SNAPSHOT.read_text())
+        catalogue = set(api["mutation_classes"])
+        # The namespace holds classes the catalogue never declares, so this is a subset check
+        # rather than equality - but a name in neither is a sign the dumper read the wrong thing.
+        self.assertTrue(
+            catalogue & set(api["non_leveling_mutations"]),
+            "no non-levelling mutation is catalogued, which cannot be right",
+        )
+
+    def _collect(self, payload: dict) -> tuple:
+        completed = mock.Mock(returncode=0, stdout=json.dumps(payload), stderr="")
+        with (
+            mock.patch.object(
+                snapshot_qud_api.shutil, "which", return_value="/usr/bin/dotnet"
+            ),
+            mock.patch.object(snapshot_qud_api, "member_tfm", return_value="net8.0"),
+            mock.patch.object(
+                snapshot_qud_api.subprocess, "run", return_value=completed
+            ),
+        ):
+            return snapshot_qud_api.collect_members(ASSEMBLY)
+
+    def test_a_dumper_payload_without_the_list_fails(self) -> None:
+        with self.assertRaises(SystemExit) as caught:
+            self._collect({"members": {"Armor": ["AV"]}, "part_builders": ["X"]})
+        self.assertIn("CanLevel", str(caught.exception))
+
+    def test_a_complete_payload_returns_all_three_lists(self) -> None:
+        members, builders, unlevellable = self._collect(
+            {
+                "members": {"Armor": ["AV"]},
+                "part_builders": ["X"],
+                "non_leveling_mutations": ["Kindle", "Albino"],
+            }
+        )
+        self.assertEqual(members, {"Armor": ["AV"]})
+        self.assertEqual(builders, ["X"])
+        self.assertEqual(unlevellable, ["Albino", "Kindle"], "returned unsorted")
+
+
 class MissingDependencies(unittest.TestCase):
     """The hook must be harmless on a machine without the game."""
 
