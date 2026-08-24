@@ -49,6 +49,18 @@
       Foreground="y"
       Detail="R"
     />
+    <power
+      Name="Finesse"
+      Cost="250"
+      Attribute="Agility"
+      Minimum="19"
+      Class="Vixy_AxeFinesse"
+      Snippet="finesse"
+      Description="When you attack with a finesse weapon, your penetration rolls use your Agility modifier in place of your Strength modifier, whenever Agility is higher. Vinereapers and glaives are finesse weapons."
+      Tile="Abilities/sw_skill_penetrating_strikes.png"
+      Foreground="y"
+      Detail="R"
+    />
   </skill>
 
   <skill Name="Cooking and Gathering" Load="Merge">
@@ -102,6 +114,18 @@
       Attribute="Strength|Agility"
       Minimum="29|29"
       Tile="Abilities/abil_demolish.bmp"
+      Foreground="y"
+      Detail="g"
+    />
+    <power
+      Name="Finesse"
+      Cost="250"
+      Attribute="Agility"
+      Minimum="19"
+      Class="Vixy_CudgelFinesse"
+      Snippet="finesse"
+      Description="When you attack with a finesse weapon, your penetration rolls use your Agility modifier in place of your Strength modifier, whenever Agility is higher. Maces and quarterstaves are finesse weapons."
+      Tile="Abilities/sw_skill_penetrating_strikes.png"
       Foreground="y"
       Detail="g"
     />
