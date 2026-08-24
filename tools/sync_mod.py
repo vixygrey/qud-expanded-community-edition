@@ -44,6 +44,8 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
+import zipfile
 from pathlib import Path
 
 MOD = Path("mod")
@@ -199,6 +201,65 @@ def copy_tree(src: Path, dest: Path) -> int:
     return written
 
 
+def manifest_field(name: str) -> str:
+    """Read one field out of mod/manifest.json, or refuse.
+
+    The zip's two names both come from here rather than from a constant, which is the whole point of
+    #314: the install directory is `qud-expanded-community-edition` and every published zip contains
+    `QudExpandedCommunityEdition`, so the `cp -R` in the manual recipe was a *rename* that read as
+    ceremony. Naming the folder from the id removes that hazard by construction.
+    """
+    path = MOD / "manifest.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise Problem(f"cannot read {path}: {exc}") from exc
+    value = data.get(name)
+    if not isinstance(value, str) or not value.strip():
+        raise Problem(f"{path} has no usable {name!r}")
+    return value.strip()
+
+
+def check_tag_matches(tag: str, version: str) -> None:
+    """A named tag must agree with the manifest version.
+
+    `validate_mod.py` ties the manifest to the changelog; this ties it to the tag the asset is being
+    uploaded against. The gap between them is exactly where 2.6.0 became 2.5.1 across three files.
+    """
+    wanted = tag.removeprefix("v")
+    if wanted != version:
+        raise Problem(
+            f"Tag {tag!r} is version {wanted!r}, but mod/manifest.json says {version!r}.\n"
+            f"One of them is wrong, and the zip would be named after the manifest either way."
+        )
+
+
+def build_zip(out_dir: Path, tag: str | None) -> tuple[Path, int]:
+    """Assemble the release asset, and return where it landed and how many files it holds.
+
+    Reuses copy_tree rather than reimplementing the file set, so the zip holds exactly what a
+    --publish install holds - SKIP_NAMES honoured, nothing else consulted. Building from mod/ rather
+    than from the install directory is what closes the stale-build hole: there is no longer a copy
+    in between that could belong to a --dev run or to a version before the bump.
+    """
+    identifier = manifest_field("id")
+    version = manifest_field("version")
+    if tag:
+        check_tag_matches(tag, version)
+
+    archive = out_dir / f"{identifier}-{version}.zip"
+    with tempfile.TemporaryDirectory() as staging:
+        root = Path(staging) / identifier
+        written = copy_tree(MOD, root)
+        if archive.exists():
+            archive.unlink()
+        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
+            for path in sorted(root.rglob("*")):
+                if path.is_file():
+                    zf.write(path, path.relative_to(root.parent))
+    return archive, written
+
+
 def mark_as_dev(dest: Path) -> list[str]:
     """Strip the Workshop binding and label the build. Returns what changed, for the report."""
     notes = []
@@ -248,6 +309,19 @@ def main() -> int:
         action="store_true",
         help="install main verbatim, after the guards and the validator",
     )
+    mode.add_argument(
+        "--zip",
+        action="store_true",
+        help="build the release asset from mod/, after the same guards",
+    )
+    parser.add_argument(
+        "--out",
+        help="directory to write the zip into (default: the repository root)",
+    )
+    parser.add_argument(
+        "--tag",
+        help="the release tag this asset is for; refused unless it matches the manifest version",
+    )
     parser.add_argument(
         "--dest", help="install path (default: the game's Mods directory)"
     )
@@ -266,6 +340,22 @@ def main() -> int:
         return 2
 
     try:
+        if args.zip:
+            check_publish_state(fetch=not args.no_fetch)
+            run_validator()
+            out_dir = Path(args.out).expanduser() if args.out else Path.cwd()
+            if not out_dir.is_dir():
+                raise Problem(f"--out {out_dir} is not a directory")
+            archive, written = build_zip(out_dir, args.tag)
+            print(f"\nRELEASE asset built: {written} files -> {archive}")
+            print(f"  from branch main at {git('rev-parse', '--short', 'HEAD')}")
+            print(f"  top-level folder: {manifest_field('id')}")
+            print(
+                f"\n  Upload it with:\n"
+                f"    gh release upload v{manifest_field('version')} {archive.name}"
+            )
+            return 0
+
         dest = find_mods_dir(args.dest)
         if args.publish:
             check_publish_state(fetch=not args.no_fetch)

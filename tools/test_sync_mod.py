@@ -22,6 +22,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -227,6 +228,119 @@ class CopyTree(unittest.TestCase):
             self.assertTrue((dest / "ObjectBlueprints" / "Ammo.xml").is_file())
             self.assertFalse((dest / ".DS_Store").exists())
             self.assertFalse((dest / "stale.xml").exists())
+
+
+class BuildZip(unittest.TestCase):
+    """#314. The release asset was the only unchecked step left in the whole release.
+
+    Everything around it has a guard - --publish refuses a dirty tree or a branch, validate_mod ties
+    the manifest to the changelog, check_docs and the pool snapshot run on every commit. The one step
+    where a person assembled a file by hand is the one that ships to players.
+    """
+
+    @contextmanager
+    def _mod(self, manifest: dict | None = None):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            mod = root / "mod"
+            (mod / "ObjectBlueprints").mkdir(parents=True)
+            (mod / "ObjectBlueprints" / "Ammo.xml").write_text(
+                "<objects />", encoding="utf-8"
+            )
+            (mod / "Bodies.xml").write_text("<bodies />", encoding="utf-8")
+            (mod / ".DS_Store").write_text("junk", encoding="utf-8")
+            (mod / "manifest.json").write_text(
+                json.dumps(manifest or {"id": "TestModId", "version": "9.9.9"}),
+                encoding="utf-8",
+            )
+            previous = sync_mod.MOD
+            sync_mod.MOD = mod
+            try:
+                yield root
+            finally:
+                sync_mod.MOD = previous
+
+    def test_the_asset_is_named_from_the_manifest(self) -> None:
+        with self._mod() as root:
+            archive, written = sync_mod.build_zip(root, None)
+            self.assertEqual(archive.name, "TestModId-9.9.9.zip")
+            self.assertEqual(
+                written, 3, "manifest, Bodies.xml and Ammo.xml, but not .DS_Store"
+            )
+
+    def test_the_top_level_folder_is_the_id_not_the_install_directory(self) -> None:
+        """The hazard #314 exists for. The install directory is `qud-expanded-community-edition`
+        and every published zip contains `QudExpandedCommunityEdition`, so the manual `cp -R` was a
+        rename that read as ceremony - and getting it wrong still produced a plausible file."""
+        with self._mod() as root:
+            archive, _ = sync_mod.build_zip(root, None)
+            with zipfile.ZipFile(archive) as zf:
+                tops = {name.split("/")[0] for name in zf.namelist()}
+            self.assertEqual(tops, {"TestModId"})
+            self.assertNotIn(sync_mod.DEST_NAME, tops)
+
+    def test_it_holds_exactly_what_copy_tree_produces(self) -> None:
+        with self._mod() as root:
+            archive, _ = sync_mod.build_zip(root, None)
+            with zipfile.ZipFile(archive) as zf:
+                names = sorted(zf.namelist())
+            self.assertEqual(
+                names,
+                [
+                    "TestModId/Bodies.xml",
+                    "TestModId/ObjectBlueprints/Ammo.xml",
+                    "TestModId/manifest.json",
+                ],
+            )
+            self.assertNotIn("TestModId/.DS_Store", names)
+
+    def test_rebuilding_replaces_rather_than_appends(self) -> None:
+        """A zipfile opened for append would keep the old members, so a rebuild after deleting a
+        file would ship both versions and look fine."""
+        with self._mod() as root:
+            sync_mod.build_zip(root, None)
+            (sync_mod.MOD / "Bodies.xml").unlink()
+            archive, _ = sync_mod.build_zip(root, None)
+            with zipfile.ZipFile(archive) as zf:
+                self.assertNotIn("TestModId/Bodies.xml", zf.namelist())
+
+    def test_a_matching_tag_is_accepted_with_or_without_the_v(self) -> None:
+        with self._mod() as root:
+            for tag in ("v9.9.9", "9.9.9"):
+                with self.subTest(tag=tag):
+                    archive, _ = sync_mod.build_zip(root, tag)
+                    self.assertEqual(archive.name, "TestModId-9.9.9.zip")
+
+    def test_a_mismatched_tag_is_refused(self) -> None:
+        """The check that would have caught a release changing from 2.6.0 to 2.5.1 across three
+        files - validate_mod ties the manifest to the changelog, this ties it to the tag."""
+        with self._mod() as root:
+            with self.assertRaises(sync_mod.Problem) as caught:
+                sync_mod.build_zip(root, "v9.9.8")
+            self.assertIn("9.9.8", str(caught.exception))
+            self.assertIn("9.9.9", str(caught.exception))
+
+    def test_a_manifest_without_a_version_is_refused(self) -> None:
+        with (
+            self._mod({"id": "TestModId"}) as root,
+            self.assertRaises(sync_mod.Problem),
+        ):
+            sync_mod.build_zip(root, None)
+
+    def test_a_manifest_with_a_blank_id_is_refused(self) -> None:
+        """Blank rather than missing, because "" would name the archive "-9.9.9.zip" and put every
+        file at the archive root - plausible, and wrong."""
+        with (
+            self._mod({"id": "   ", "version": "9.9.9"}) as root,
+            self.assertRaises(sync_mod.Problem),
+        ):
+            sync_mod.build_zip(root, None)
+
+    def test_an_unreadable_manifest_is_refused(self) -> None:
+        with self._mod() as root:
+            (sync_mod.MOD / "manifest.json").write_text("{not json", encoding="utf-8")
+            with self.assertRaises(sync_mod.Problem):
+                sync_mod.build_zip(root, None)
 
 
 if __name__ == "__main__":

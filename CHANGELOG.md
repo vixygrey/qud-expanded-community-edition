@@ -884,6 +884,43 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `sync_mod.py --zip` builds the release asset, so the last unguarded step in the
+  release stops being assembled by hand (#314).
+
+  Everything else in a release has a guard: `--publish` refuses a dirty tree or a branch,
+  `validate_mod.py` ties the manifest to the changelog, `check_docs.py` and the pool snapshot run on
+  every commit. **The one step where a person assembled a file by hand was the one that ships to
+  players** — and non-Steam players install nothing else.
+
+  Three ways it went wrong, two of them silent:
+
+  - **A stale build.** The zip was built from the *install directory*, which may hold a `--dev` build
+    from testing, or a `--publish` from before the version bump. Nothing about the file looks wrong.
+  - **The source tree.** Zipping the repository produces something plausible and much larger, which
+    is #312 in a different form.
+  - **The folder name.** The install directory is `qud-expanded-community-edition`; every published
+    zip contains `QudExpandedCommunityEdition`. So the `cp -R` was not a copy, it was a **rename**,
+    and it read as ceremony.
+
+  `--zip` removes all three by construction. It builds from `mod/` rather than the install directory,
+  so there is no copy in between to go stale. It reuses `copy_tree`, so the archive holds exactly what
+  a `--publish` install holds and no path is ever typed. And both names come from `manifest.json` —
+  the archive from `version`, the folder inside from `id` — so the rename is something the tool knows
+  rather than something you remember.
+
+  It applies the `--publish` guards and runs the validator first, and **`--tag vX.Y.Z` refuses to
+  build unless the tag agrees with the manifest version** — the third side of a triangle
+  `docs/RELEASING.md` step 3 explicitly said it could not check.
+
+  **Verified against the real thing**: run against the `v2.5.1` tag it rebuilds the shipped 2.5.1
+  asset **byte for byte, all 81 files, identical file list**.
+
+  `docs/RELEASING.md` and the release issue template now point at it, and the two verification
+  commands #312 added are **deleted rather than kept** — a stale build cannot happen when the archive
+  is assembled from `mod/` at the commit the guards just verified, and zipping the source tree cannot
+  happen when no path is typed. A check you can delete because its failure became unreachable is the
+  best outcome a check can have.
+
 - **The Arm slot goes back to being the Arm slot: vambraces stop costing dodge, and wristblades pay
   for the extra attack they buy** (#381, #324).
 
