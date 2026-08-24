@@ -1003,6 +1003,33 @@ indefinitely — at half the mutation count.
 | 30 | 4 at rank 10 | 2 at rank **16** |
 | 36 | 4 at rank 10 | 2 at rank **19** |
 
+#### The niche, stated — and the sweep re-read against it
+
+`docs/FEATURES.md` §1.4 now opens with what the genotype is *for*, which #410 filed because nothing
+player-facing ever said. The short form: **a True Kin plans and an Adept adapts.** Chips carry no
+`TinkerItem` and no `DynamicObjectsTable` tag, and the only tables naming them are `Artifact 3`–`8`,
+which is what `ChestBuilders` uses to fill a chest — so they cannot be bought or built, and come out
+of chests or not at all. The 95 skill points a level are the counterweight for having no innate power.
+
+With that written, the five sweep changes that touched this genotype can finally be read against
+something. Four hold up:
+
+| change | against the niche |
+|---|---|
+| #353 removed the Mutated Human's slot | **serves it** — restores four slots as an actual identity |
+| #350 left duplicate stacking alone | **serves it** — depth from duplicates is another find-shaped outcome, and the only route past the plateau |
+| #332 halved the affinity resistances | **neutral** — it landed on the Guardian half's own scale, so the affinity is still the themed half |
+| #330 cut two subtypes' skill grants | **neutral** — 95 SP a level is a genotype property and untouched, and 15 skills is still the most in the game |
+
+**One is in tension, and it is worth naming rather than resolving.** #338's rarity pass dropped the
+four steep passives from weight 3 to 1 — about 0.081% per artifact roll. That is right on its own
+terms, and it lands on the one genotype whose **core resource has a drop rate at all**. A mutant
+spends points and a True Kin spends water; only an Adept can have a run simply not deliver. The
+starting kit is what keeps that from being a cliff — three chips at chargen, filling three of the four
+slots — so the floor is set and the rarity governs the ceiling. That reads as the intended shape, but
+it is the one number where a change aimed at the chip economy is really a change aimed at this
+genotype, and it should be weighed that way next time.
+
 #### Settled — the stacking stays, because it is vanilla's
 
 Three vanilla items grant a mutation through equipment, and **two of them are the same mutation on

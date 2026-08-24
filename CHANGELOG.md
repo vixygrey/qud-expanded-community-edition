@@ -15,6 +15,38 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **The Psionic Adept has a stated reason to exist** (#410). It is the flagship genotype and nothing
+  player-facing ever said what it was *for* — the README, the Workshop page and `docs/FEATURES.md`
+  §1.4 all described its *contents*, which is not a reason to choose it over a True Kin.
+
+  **A True Kin plans; an Adept adapts.** A True Kin's power is a shopping list: credits cost 150 water
+  each, implants are chosen, and you install exactly what you saved for. An Adept's power is whatever
+  the world hands it — psionic chips **cannot be bought and cannot be built**. They carry no
+  `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables naming them are `Artifact 3`
+  through `8`, which is what fills a chest. Chargen gives you three, filling three of your four slots
+  from your affinity's own kit, and everything after that is a find.
+
+  So it is the one genotype whose build you cannot decide in advance — which is what its fiction
+  already said, since a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You
+  become what you find**, and the 95 skill points a level, the most in the game, are the counterweight
+  for having no innate power at all.
+
+  **Why it mattered now.** The balance sweep touched this genotype five times — #338, #332, #330,
+  #350 and #353 — and not one of those changes could be weighed against a niche, because there was
+  none written. Charter rule 2 asks *"does the world explain it, and does it change a decision the
+  player makes?"*, and that question had no answer here.
+
+  Re-read against the niche now that it exists, four of the five hold up and one is in tension:
+  **#338's rarity pass** is right on its own terms and lands on the only genotype whose core resource
+  has a drop rate at all. A mutant spends points and a True Kin spends water; only an Adept can have a
+  run simply not deliver. The starting kit is what stops that being a cliff. Recorded in
+  `docs/DESIGN_balance.md` §5.8 rather than acted on.
+
+  **Its power curve is the opposite shape to a mutant's, and that is the arc rather than a defect.**
+  A chip's rank is capped at its grade, so an Adept peaks around character level 18 and falls behind
+  after 30. Front-loaded breadth that plateaus, with #350's duplicate stacking as the one route past
+  it. That was always the design; it had just never been said out loud.
+
 - **The mace ladder is the Cudgel tree's finesse pick, and now weighs a pound less than the war
   hammers** (#342).
 
