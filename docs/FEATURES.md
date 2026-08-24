@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **370** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **380** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
@@ -433,7 +433,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **370 active** | **213** |
+| **Total** | **380 active** | **213** |
 
 ### 6.2 Melee weapons
 
@@ -554,6 +554,32 @@ Conventions the mod follows:
 | Crysteel Maceth | new | 6 | 3d4+1 | +1 | 7 | (inh) | 320 | 5 | yes |
 | Flawless Crysteel Maceth | new | 7 | 3d6 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Maceth | new | 8 | 4d6 | +1 | 9 | (inh) | 1280 | 5 | yes |
+
+#### Quarterstaves (Cudgel, two-handed, Finesse) — **new family**
+
+The Cudgel tree's two-handed finesse weapon, added in #342. Pathfinder files both the staff and the
+bo staff in the **club** group and tags each `monk` — the trait that has always meant Dexterity in
+both systems — so the staff is where a finesse two-handed cudgel comes from. It is the lightest of
+the three two-handed cudgel lines at every tier, per §3.2's rule that a finesse weapon is light for
+its class, and it deals **the maul's die one tier behind**, which is what the finesse costs.
+
+Wood rather than metal, so no `Metal` part — matching vanilla's own `Staff` and `Club`. The tier
+material is the ferrule, not the shaft, which is what a shod quarterstaff actually is.
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Quarterstaff | new | 0 | 1d3 | +1 | 1 | (inh) | 5 | 5 | yes |
+| Iron Quarterstaff | new | 1 | 2d2 | +1 | 2 | (inh) | 10 | 4 | yes |
+| Steel Quarterstaff | new | 2 | 2d2+1 | +1 | 3 | (inh) | 20 | 4 | yes |
+| Carbide Quarterstaff | new | 3 | 3d2 | +1 | 4 | (inh) | 40 | 6 | yes |
+| Folded Carbide Quarterstaff | new | 4 | 2d4+1 | +1 | 5 | (inh) | 80 | 5 | yes |
+| Fullerite Quarterstaff | new | 5 | 2d6 | +1 | 6 | (inh) | 160 | 7 | yes |
+| Crysteel Quarterstaff | new | 6 | 3d4 | +1 | 7 | (inh) | 320 | 4 | yes |
+| Flawless Crysteel Quarterstaff | new | 7 | 3d4+1 | +1 | 8 | (inh) | 640 | 4 | yes |
+| Zetachrome Quarterstaff | new | 8 | 3d6 | +1 | 9 | (inh) | 1280 | 4 | yes |
+
+`Vixy_Vibro Quarterstaff` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`,
+bits `0015`.
 
 #### War hammers (Cudgel, Strength)
 
@@ -1768,7 +1794,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 71 new / 77 merged
+│   ├── MeleeWeapons.xml        # 81 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)

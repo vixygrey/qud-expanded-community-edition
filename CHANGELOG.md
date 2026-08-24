@@ -261,6 +261,31 @@ recorded because contributors need them, not because subscribers do.
   line is now **nine near-identical items**, which is a content question rather than a defect (#381).
 
 ### Added
+- **Quarterstaves** — a new nine-tier family, and the Cudgel tree's two-handed finesse weapon
+  (#342).
+
+  **Why a staff.** Pathfinder files both the staff and the bo staff in the **club** group, which is
+  where the Cudgel tree's weapons come from, and tags each one `monk` — and monk is the trait that
+  has always meant Dexterity. 5e says it outright: Martial Arts lets a monk use Dexterity instead of
+  Strength for attack *and* damage with monk weapons, and the quarterstaff qualifies. So the staff is
+  the two-handed cudgel a precise fighter was always supposed to use.
+
+  **What it costs.** It deals **the maul's die one tier behind** — a bronze quarterstaff hits for
+  1d3 where a bronze maul hits 2d2, and a zetachrome one for 3d6 against 4d6. That is what the
+  finesse buys, and it is how both tabletop systems price a staff against a maul. It is also the
+  lightest two-handed cudgel at every tier, which is the rule §3.2 now states: a finesse weapon is
+  light for its class.
+
+  Wood rather than metal, so a "carbide quarterstaff" is a heartwood shaft with carbide ferrules,
+  which is what a shod quarterstaff has always been. It ships on the game's own staff tile and wood
+  swing sound.
+
+  **One knock-on worth stating.** The tier 0–1 melee loot tables were already at this fork's share
+  cap — 196 of a permitted 197 in `Melee Weapons 1C`, and 120 of 120 in `1R`. Fitting the bronze and
+  iron quarterstaves in meant scaling this fork's own existing entries there down by 10–15%, so a
+  handful of other low-tier mod weapons are now marginally rarer. Vanilla's entries are untouched;
+  the cap is what #386 set, and it is not being bent.
+
 - **Finesse is now sold by all four melee trees** — Axe and Cudgel join Short Blade and Long Blade
   (#342).
 

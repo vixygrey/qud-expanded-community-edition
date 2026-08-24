@@ -396,45 +396,49 @@
 
   <population Name="Melee Weapons 1C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Greataxe" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Vinereaper" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Halberd" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Rapier" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Katana" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze Maceth" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze War Hammer" />
-      <object Weight="16" Number="1" Blueprint="Raven_Bronze War Hammerth" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Greataxe" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Vinereaper" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Halberd" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Rapier" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Katana" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze Maceth" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze War Hammer" />
+      <object Weight="14" Number="1" Blueprint="Raven_Bronze War Hammerth" />
       <object Weight="4" Number="1" Blueprint="Raven_Bronze Wristblade" />
+      <object Weight="14" Number="1" Blueprint="Vixy_Bronze Quarterstaff" />
 
-      <object Weight="8" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="8" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="8" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="8" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="8" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="8" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="8" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="8" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="7" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="7" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="7" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="7" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
     </group>
   </population>
 
   <population Name="Melee Weapons 1R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="12" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="12" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron War Hammerth" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Wristblade" />
-      <object Weight="12" Number="1" Blueprint="Raven_Iron Maceth" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="10" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="10" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Wristblade" />
+      <object Weight="10" Number="1" Blueprint="Raven_Iron Maceth" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
     </group>
   </population>
 
   <population Name="Melee Weapons 2C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Steel Rapier" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Steel Quarterstaff" />
     </group>
   </population>
 
@@ -451,6 +455,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Mace" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Carbide Quarterstaff" />
     </group>
   </population>
 
@@ -467,6 +472,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Mace" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Folded Carbide Quarterstaff" />
     </group>
   </population>
 
@@ -482,6 +488,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Mace" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Fullerite Quarterstaff" />
     </group>
   </population>
 
@@ -497,6 +504,7 @@
   <population Name="Melee Weapons 6C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Rapier" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Crysteel Quarterstaff" />
     </group>
   </population>
 
@@ -513,6 +521,7 @@
   <population Name="Melee Weapons 7C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Rapier" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Flawless Crysteel Quarterstaff" />
     </group>
   </population>
 
@@ -530,6 +539,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Mace" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Zetachrome Quarterstaff" />
     </group>
   </population>
 

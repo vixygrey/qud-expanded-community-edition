@@ -1724,6 +1724,222 @@
     <part Name="Physics" Weight="10" />
   </object>
 
+  <!-- Quarterstaves -->
+
+  <object Name="Vixy_Bronze Quarterstaff" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="{{w|bronze}} quarterstaff" Tile="Items/sw_cudgel_11.bmp" ColorString="&amp;w" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="1" BaseDamage="1d3" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="5" />
+    <part Name="Description" Short="A shaft of seasoned witchwood, capped at both ends with collars of bell bronze." />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="0" />
+    <part Name="Physics" Weight="5" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier0" />
+  </object>
+
+  <object Name="Vixy_Iron Quarterstaff" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="iron quarterstaff" Tile="Items/sw_cudgel_11.bmp" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="2" BaseDamage="2d2" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="10" />
+    <part Name="Description" Short="Hairline rust ribbons the iron ferrules that weight each end of the worn shaft." />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="1" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier1" />
+  </object>
+
+  <object Name="Vixy_Steel Quarterstaff" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="{{Y|steel}} quarterstaff" Tile="Items/sw_cudgel_11.bmp" ColorString="&amp;Y" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="3" BaseDamage="2d2+1" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Description" Short="Polished steel collars ring a shaft rubbed dark by a thousand hours of grip." />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="2" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier2" />
+  </object>
+
+  <object Name="Vixy_Carbide Quarterstaff" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="{{b|carbide}} quarterstaff" Tile="Items/sw_cudgel_11.bmp" ColorString="&amp;b" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="4" BaseDamage="3d2" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="40" />
+    <part
+      Name="Description"
+      Short="Azure carbide caps sheathe a shaft of dense heartwood, and the balance sits dead centre."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="3" />
+    <part Name="Physics" Weight="6" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier3" />
+  </object>
+
+  <object Name="Vixy_Folded Carbide Quarterstaff" Inherits="BaseCudgel">
+    <part
+      Name="Render"
+      DisplayName="{{B|folded carbide}} quarterstaff"
+      Tile="Items/sw_cudgel_11.bmp"
+      ColorString="&amp;B"
+    />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="5" BaseDamage="2d4+1" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="80" />
+    <part
+      Name="Description"
+      Short="Layer on layer of folded carbide is drawn out into ferrules so thin they ring when struck."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="4" />
+    <part Name="Physics" Weight="5" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier4" />
+  </object>
+
+  <object Name="Vixy_Fullerite Quarterstaff" Inherits="BaseCudgel">
+    <part Name="Render" DisplayName="{{K|fullerite}} quarterstaff" Tile="Items/sw_cudgel_11.bmp" ColorString="&amp;K" />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" BaseDamage="2d6" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="160" />
+    <part
+      Name="Description"
+      Short="Cages of fullerite grip either end of the shaft, black and light and impossibly hard."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="5" />
+    <part Name="Physics" Weight="7" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier5" />
+  </object>
+
+  <object Name="Vixy_Crysteel Quarterstaff" Inherits="BaseCudgel">
+    <part
+      Name="Render"
+      DisplayName="{{K|{{crysteel|crysteel}} quarterstaff}}"
+      Tile="Items/sw_cudgel_11.bmp"
+      ColorString="&amp;g"
+      DetailColor="K"
+    />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d4" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="320" />
+    <part
+      Name="Description"
+      Short="Hexagonal crysteel prisms cap the shaft, and the green glint of vanadium runs their length."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="6" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier6" />
+  </object>
+
+  <object Name="Vixy_Flawless Crysteel Quarterstaff" Inherits="BaseCudgel">
+    <part
+      Name="Render"
+      DisplayName="{{K|flawless {{crysteel|crysteel}} quarterstaff}}"
+      Tile="Items/sw_cudgel_11.bmp"
+      ColorString="&amp;G"
+      DetailColor="K"
+    />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="8" BaseDamage="3d4+1" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="640" />
+    <part
+      Name="Description"
+      Short="The crysteel collars are without flaw, culled from casts unmottled by a single particle of dust."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="7" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier7" />
+  </object>
+
+  <object Name="Vixy_Zetachrome Quarterstaff" Inherits="BaseCudgel">
+    <part
+      Name="Render"
+      DisplayName="{{zetachrome|zetachrome}} quarterstaff"
+      Tile="Items/sw_cudgel_11.bmp"
+      ColorString="&amp;m"
+      DetailColor="y"
+    />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="9" BaseDamage="3d6" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="1280" />
+    <part Name="Description" Short="Zetachrome runs over each end of the shaft like a liquid that forgot to fall." />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <tag Name="Tier" Value="8" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+    <tag Name="SwingSound" Value="Sounds/Melee/cudgels/sfx_melee_cudgel_wood_swing" />
+    <tag Name="HitSound" Value="meleeTier8" />
+  </object>
+
+  <object Name="Vixy_Vibro Quarterstaff" Inherits="MeleeWeapon">
+    <part
+      Name="Render"
+      DisplayName="{{c|vibro quarterstaff}}"
+      Tile="Items/sw_cudgel_11.bmp"
+      ColorString="&amp;c"
+      DetailColor="y"
+    />
+    <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="0" BaseDamage="2d6" Skill="Cudgel" Stat="Strength" />
+    <part Name="Commerce" Value="300" />
+    <part Name="EnergyCellSocket" SlotType="EnergyCell" />
+    <part
+      Name="Description"
+      Short="Ionic plastifer ferrules cap a shaft of dark heartwood. When charged they blur at the ends and shrug their way through whatever the shaft is swung into."
+    />
+    <part
+      Name="RulesDescription"
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+    />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
+    <part Name="Examiner" Complexity="5" />
+    <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
+    <part Name="VibroWeapon" ChargeUse="100" />
+    <tag Name="Mods" Value="WeaponMods,CommonMods,ElectronicsMods" />
+    <tag Name="Tier" Value="5" />
+    <part Name="Physics" Weight="4" UsesTwoSlots="true" />
+  </object>
+
   <!-- Warhammers and Greathammers -->
   <!-- do descriptions -->
 
