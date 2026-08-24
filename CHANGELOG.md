@@ -1238,6 +1238,24 @@ recorded because contributors need them, not because subscribers do.
   ([#265](https://github.com/vixygrey/qud-expanded-community-edition/issues/265))
 
 ### Fixed
+- **(internal)** `check_build_log.py` reads its log section title from the **deployed** manifest
+  rather than the repository's, so it can pass against a dev build.
+
+  The log names its section after the title the game saw, and `sync_mod.py --dev` deliberately
+  suffixes that with `(dev)` so the in-game mod list says which build is loaded. The check looked up
+  the repository's title instead, so **it could never pass against a dev build** — the only build
+  worth checking, since a publish build is `main` and `main` is validated before it is installed.
+
+  Found by using it: verifying #342 in-game, the game had compiled all 48 files and written
+  `Success :)`, and the check called it a failure. `find_deployed` already looks the install up by
+  manifest id "since the folder is named however it was installed" — this is that same thought,
+  finished.
+
+  Worth recording why sixteen tests missed it: the harness wrote the deployed manifest with **no
+  title at all**, so every test took the fallback path and matched the repository's title. The defect
+  lived in a code path the suite could not reach. Fixed the harness, then added three tests, and
+  checked the new one fails with the fix reverted.
+
 
 - **(internal)** `docs/RELEASING.md` and the release issue template now cover the release zip.
   Step 7 said to tag and run `gh release create` and stopped, but every release also attaches
