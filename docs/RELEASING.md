@@ -122,6 +122,10 @@ unzip -l <zip> | grep -ciE 'tools/|docs/|\.github'                        # not 
 Everything in **Staging** becomes **Done**. Per `CONTRIBUTING.md`, Done means released — a merged
 pull request is not Done, and neither is a Workshop upload on its own.
 
+Done also holds issues closed *without* shipping, which arrive there directly rather than through
+Staging. Those are not part of a release and nothing here moves them; the close reason tells them
+apart (`not planned` against `completed`).
+
 ---
 
 ## The checklist, without the reasoning
