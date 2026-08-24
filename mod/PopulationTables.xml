@@ -449,7 +449,6 @@
 
   <population Name="Melee Weapons 3C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Carbide Vinereaper" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Mace" />
     </group>
@@ -466,7 +465,6 @@
 
   <population Name="Melee Weapons 4C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Vinereaper" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Mace" />
     </group>
@@ -482,7 +480,6 @@
 
   <population Name="Melee Weapons 5C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Fullerite Vinereaper" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Mace" />
     </group>
@@ -500,7 +497,6 @@
   <population Name="Melee Weapons 6C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Rapier" />
-      <object Weight="20" Number="1" Blueprint="Raven_Crysteel Vinereaper" />
     </group>
   </population>
 
@@ -517,7 +513,6 @@
   <population Name="Melee Weapons 7C" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Rapier" />
-      <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Vinereaper" />
     </group>
   </population>
 
@@ -533,7 +528,6 @@
 
   <population Name="Melee Weapons 8C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Vinereaper" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Mace" />
     </group>
