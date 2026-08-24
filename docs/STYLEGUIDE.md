@@ -291,6 +291,18 @@ possible in practice. Match them when adding anything.
   inherited rather than introduced and there is no monotonic curve here to restore. Nothing checks
   this, so check it by hand when you add a tier — #248 read the two-handed half in isolation and
   proposed bringing fullerite down from 9, which was the one value the rule required.
+
+  **The mace family follows the same +3, and the mace line sits one pound below the war hammer line
+  at every tier.** That offset is not decoration: it is the finesse tell. The mace ladder is the
+  Cudgel tree's finesse pick and the war hammers are the Strength pick, and a finesse weapon is light
+  for its class — so the lighter of the two families is the one carrying the tag. Maces run
+  3·2·2·4·3·5·2·2·2 against war hammers at 4·3·3·5·4·6·3·3·3, and mauls 6·5·5·7·6·8·5·5·5 against
+  greathammers at 7·6·6·8·7·9·6·6·6.
+
+  Before #342 the offset pointed the other way, and the mace family broke the +3 rule at two tiers —
+  fullerite was +4 and zetachrome +2. Flipping it repaired both. Every weight moved **downward**,
+  which matters: `check_weight_curve` lets a merge lighten a vanilla item and never make one heavier,
+  and `Mace2`, `Steel Hammer`, `Cudgel6`, `Cudgel7` and `Cudgel5th` are all vanilla.
 - **`MeleeWeapon.Stat` is `Strength` on every new weapon, and a merge never changes vanilla's.**
   `Stat=` names the *penetration* stat, and the damage die is rolled once per penetration, so it
   multiplies a weapon's whole output rather than adding to it — while Agility already supplies

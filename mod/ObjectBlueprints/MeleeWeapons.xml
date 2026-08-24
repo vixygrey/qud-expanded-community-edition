@@ -1422,8 +1422,13 @@
     <part Name="Render" DisplayName="{{w|bronze}} mace" Tile="Items/sw_cudgel_4.bmp" ColorString="&amp;w" />
     <part Name="MeleeWeapon" MaxStrengthBonus="1" BaseDamage="1d3" />
     <part Name="Commerce" Value="5" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="0" />
-    <part Name="Physics" Weight="5" />
+    <part Name="Physics" Weight="3" />
   </object>
 
   <object Name="Raven_Bronze Maceth" Inherits="BaseCudgel">
@@ -1433,7 +1438,7 @@
     <part Name="Description" Short="A dented mass of bell bronze is screw-fitted to a scarred wooden shaft." />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
-    <part Name="Physics" Weight="8" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier0" />
   </object>
 
@@ -1443,8 +1448,13 @@
     <part Name="Commerce" Value="10" />
     <part Name="Description" Short="Iron lines unfold into a head of six flanges." />
     <part Name="Metal" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="1" />
-    <part Name="Physics" Weight="4" />
+    <part Name="Physics" Weight="2" />
     <tag Name="HitSound" Value="meleeTier1" />
   </object>
 
@@ -1455,7 +1465,7 @@
     <part Name="Description" Short="A hunk of iron is welded to an iron shaft." />
     <part Name="Metal" />
     <tag Name="Tier" Value="1" />
-    <part Name="Physics" Weight="7" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="5" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier1" />
   </object>
 
@@ -1463,8 +1473,13 @@
     <part Name="Render" Tile="Items/sw_cudgel_4.bmp" />
     <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="2d2" />
     <part Name="Commerce" Value="20" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="2" />
-    <part Name="Physics" Weight="4" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Steel Maceth" Inherits="BaseCudgel">
@@ -1474,7 +1489,7 @@
     <part Name="Description" Short="A polished steel head  is welded to a steel shaft." />
     <part Name="Metal" />
     <tag Name="Tier" Value="2" />
-    <part Name="Physics" Weight="7" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="5" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier2" />
   </object>
 
@@ -1484,8 +1499,13 @@
     <part Name="Commerce" Value="40" />
     <part Name="Description" Short="Rigid polygons of azure metal forged together into sharp points." />
     <part Name="Metal" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="3" />
-    <part Name="Physics" Weight="6" />
+    <part Name="Physics" Weight="4" />
     <tag Name="HitSound" Value="meleeTier3_4" />
   </object>
 
@@ -1496,7 +1516,7 @@
     <part Name="Description" Short="Rigid polygons of azure metal forged together, small dents pock its surface." />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
-    <part Name="Physics" Weight="9" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="7" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier3_4" />
   </object>
 
@@ -1506,8 +1526,13 @@
     <part Name="Commerce" Value="80" />
     <part Name="Description" Short="Thin lines of bright and azure metal curl to points above a shining shaft." />
     <part Name="Metal" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="4" />
-    <part Name="Physics" Weight="5" />
+    <part Name="Physics" Weight="3" />
     <tag Name="HitSound" Value="meleeTier4_4" />
   </object>
 
@@ -1518,7 +1543,7 @@
     <part Name="Description" Short="A bright head of azure metal sits above a shining shaft." />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
-    <part Name="Physics" Weight="8" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="6" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier4_4" />
   </object>
 
@@ -1530,8 +1555,13 @@
       Name="Description"
       Short="A dusky mass of gravid metal, roughly hewn to jagged edges, is welded to a steel shaft."
     />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight="7" />
+    <part Name="Physics" Weight="5" />
     <tag Name="HitSound" Value="meleeTier5" />
   </object>
 
@@ -1540,15 +1570,20 @@
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="6" />
     <part Name="Commerce" Value="160" />
     <tag Name="Tier" Value="5" />
-    <part Name="Physics" Weight="11" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="8" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier5" />
   </object>
 
   <object Name="Cudgel6" Load="Merge">
     <part Name="MeleeWeapon" MaxStrengthBonus="7" />
     <part Name="Commerce" Value="320" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Crysteel Maceth" Inherits="BaseCudgel">
@@ -1566,7 +1601,7 @@
       Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
     />
     <tag Name="Tier" Value="6" />
-    <part Name="Physics" Weight="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="5" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier6" />
   </object>
 
@@ -1574,8 +1609,13 @@
     <part Name="MeleeWeapon" MaxStrengthBonus="8" />
     <part Name="Commerce" Value="640" />
     <part Name="Metal" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="2" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Maceth" Inherits="BaseCudgel">
@@ -1594,7 +1634,7 @@
     />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
-    <part Name="Physics" Weight="6" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
+    <part Name="Physics" Weight="5" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier7" />
   </object>
 
@@ -1613,8 +1653,13 @@
       Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
     />
     <part Name="Zetachrome" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="8" />
-    <part Name="Physics" Weight="3" FlameTemperature="99999" VaporTemperature="9999" />
+    <part Name="Physics" Weight="2" FlameTemperature="99999" VaporTemperature="9999" />
     <tag Name="HitSound" Value="meleeTier8" />
     <property Name="Role" Value="Rare" />
   </object>
@@ -1653,6 +1698,11 @@
     <part Name="Metal" />
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
+    <tag Name="Finesse" />
+    <part
+      Name="RulesDescription"
+      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
+    />
     <tag Name="Tier" Value="4" />
   </object>
 

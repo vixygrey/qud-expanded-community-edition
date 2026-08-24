@@ -15,6 +15,30 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **The mace ladder is the Cudgel tree's finesse pick, and now weighs a pound less than the war
+  hammers** (#342).
+
+  **What it is.** Pathfinder's finesse bludgeon is a mace-family weapon — the light mace carries
+  agile, finesse and shove, while the warhammer never does. So the nine one-handed maces and the
+  vibro mace take the `Finesse` tag: with the Cudgel tree's Finesse power bought, penetration rolls
+  use your Agility modifier whenever it beats Strength. **The war hammers stay Strength**, which is
+  what they should always have been — #321 called the war hammer one of the two most genre-inverted
+  assignments in the mod, and this does not undo that, it puts the finesse on the weapon that
+  deserved it instead.
+
+  **The pound changes sides.** The war hammer used to be the lighter twin at six of nine tiers.
+  That is backwards for a finesse weapon, so the mace line now sits **one pound below** the war
+  hammer line at every tier, and the mauls one below the greathammers. Maces run 3·2·2·4·3·5·2·2·2
+  against war hammers at 4·3·3·5·4·6·3·3·3.
+
+  #342 called that one pound the last vestigial signal in these families. It is now the load-bearing
+  one — it tells you which line is the finesse line.
+
+  **It also repairs a rule.** `docs/STYLEGUIDE.md` §3.2 says a two-handed hammer weighs its
+  one-handed twin plus 3. The mace family broke that at two tiers — fullerite was +4, zetachrome +2.
+  Flipping the offset put every tier at exactly +3. Two-handed cudgels stay Strength-only either way;
+  the mauls moved to keep the relationship true, not to become finesse weapons.
+
 - **The vinereaper is a sickle** — it takes the `Finesse` tag, and stops being found as loot above
   steel (#342).
 
