@@ -884,6 +884,19 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `CONTRIBUTING.md` and `docs/RELEASING.md` say where an issue closed *without*
+  shipping goes on the board: **straight to Done**.
+
+  The columns were documented for work that ships — QA, then Staging, then Done once a release is
+  cut. Nothing covered a report whose premise turns out not to hold. #364 was the first, and it had
+  nowhere correct to sit: it cannot wait in Staging, because nothing about it will ever appear in a
+  release, and leaving it in On Deck counts dead work as upcoming.
+
+  So Done means *out of the pipeline* — released for anything that was built, immediate for anything
+  that will not be — and the close reason (`not planned` against `completed`) is what tells the two
+  apart. `RELEASING.md` says so too, since its "everything in Staging becomes Done" step would
+  otherwise read as the only way in.
+
 
 - **(internal)** `item-curve` now finds an item's tier from its **`Tier` tag**, falling back to the
   material word in its name only for the objects that predate the tag (#354). The order used to be

@@ -89,6 +89,13 @@ sentence.
 So if your change merges and the board doesn't move to Done, nothing is wrong — it's in Staging, and
 you'll see it in the changelog when a release is cut.
 
+**An issue closed without shipping goes straight to Done**, and #364 is the first — a report whose
+premise turned out not to hold. Nothing about it will ever appear in a release, so it cannot wait in
+Staging, and leaving it in On Deck would count dead work as upcoming. So Done means *out of the
+pipeline*: released, for anything that was built, and immediate for anything that will not be. The
+issue's close reason carries the distinction — `completed` against `not planned` — which is where to
+look if you need to tell the two apart.
+
 Cutting one is mine to do and [`docs/RELEASING.md`](docs/RELEASING.md) is how, if you ever want to
 know what your change is waiting on.
 
