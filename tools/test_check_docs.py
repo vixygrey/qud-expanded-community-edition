@@ -82,15 +82,36 @@ CHIP_BLUEPRINT = """<objects>
 CHIP_SCRIPT = "public class Raven_ModTesting : ModImprovedMutationBase<Testing> { }"
 
 
-def appendix_findings(row: str) -> list[tuple[str, str]]:
-    """Run check_appendix_b over a one-chip fixture with the given table row."""
+# Two blueprints under one display name, differing only by item tier - the #347 shape, where
+# Kindle and Frost Webs each collapsed onto a single name because every grade grants the same thing.
+CHIP_BLUEPRINT_SHARED_NAME = """<objects>
+  <object Name="Raven_Test Chip">
+    <part Name="Render" DisplayName="basic {{K|test}} chip" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModTesting" Tier="2" />
+    <tag Name="Tier" Value="4" />
+  </object>
+  <object Name="Raven_Improved Test Chip">
+    <part Name="Render" DisplayName="basic {{K|test}} chip" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModTesting" Tier="2" />
+    <tag Name="Tier" Value="6" />
+  </object>
+</objects>
+"""
+
+
+def appendix_findings(
+    row: str, blueprint: str = CHIP_BLUEPRINT
+) -> list[tuple[str, str]]:
+    """Run check_appendix_b over a chip fixture with the given table row."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "mod" / "ObjectBlueprints").mkdir(parents=True)
         (root / "mod" / "Scripting").mkdir(parents=True)
         (root / "docs").mkdir()
         (root / "mod" / "ObjectBlueprints" / "Chips.xml").write_text(
-            CHIP_BLUEPRINT, encoding="utf-8"
+            blueprint, encoding="utf-8"
         )
         (root / "mod" / "Scripting" / "Raven_ModTesting.cs").write_text(
             CHIP_SCRIPT, encoding="utf-8"
@@ -121,9 +142,10 @@ class AppendixB(unittest.TestCase):
         )
 
     def test_a_wrong_item_tier_is_reported(self) -> None:
+        """The tier is half the key now, so a wrong one reads as an unmatched row."""
         codes = appendix_findings("| basic test chip | 6 | 20 | Testing @ 2 |")
         self.assertTrue(codes, "a wrong item tier must be reported")
-        self.assertIn("item tier", codes[0][1])
+        self.assertIn("at item tier 6", codes[0][1])
 
     def test_a_wrong_value_is_reported(self) -> None:
         codes = appendix_findings("| basic test chip | 4 | 40 | Testing @ 2 |")
@@ -148,6 +170,24 @@ class AppendixB(unittest.TestCase):
     def test_a_chip_with_no_row_is_reported(self) -> None:
         codes = appendix_findings("| unrelated | 1 | 1 | x |")
         self.assertTrue(any("no row for" in d for _, d in codes))
+
+    def test_two_blueprints_may_share_a_display_name(self) -> None:
+        """#347. Keyed on the name alone, the second blueprint used to overwrite the first, and
+        the appendix could describe only whichever parsed last."""
+        rows = (
+            "| basic test chip | 4 | 20 | Testing @ 2 |\n"
+            "| basic test chip | 6 | 20 | Testing @ 2 |"
+        )
+        self.assertEqual(appendix_findings(rows, CHIP_BLUEPRINT_SHARED_NAME), [])
+
+    def test_a_shared_name_still_needs_a_row_per_tier(self) -> None:
+        codes = appendix_findings(
+            "| basic test chip | 4 | 20 | Testing @ 2 |", CHIP_BLUEPRINT_SHARED_NAME
+        )
+        self.assertTrue(
+            any("no row for" in d and "item tier 6" in d for _, d in codes),
+            "the tier that has no row must be named",
+        )
 
     def test_colour_markup_is_stripped_before_matching(self) -> None:
         """The document writes plain names; the blueprint writes {{K|markup}}."""

@@ -1003,6 +1003,30 @@ indefinitely — at half the mutation count.
 | 30 | 4 at rank 10 | 2 at rank **16** |
 | 36 | 4 at rank 10 | 2 at rank **19** |
 
+#### Settled — the stacking stays, because it is vanilla's
+
+Three vanilla items grant a mutation through equipment, and **two of them are the same mutation on
+different slots**: the Enigma Cone (Body, tier 7, 1250) and the Enigma Cap (Head, tier 7, 600) each
+carry `ModImprovedConfusion` at Tier 3, so wearing both gives Confusion 6. Every chip part in
+`Scripting/` subclasses that same `ModImprovedMutationBase<T>`, unmodified. The fork did not
+introduce duplicate stacking; it inherited a mechanism the base game ships and uses.
+
+The cap then holds this mod to vanilla's own ceiling of two sources. Two perfected chips are tracker
+20, and `level / 2 + 1` does not reach 20 until **character level 38**, so the third and fourth chip
+are worth nothing before then — the Adept's four slots look like 4x and are 2x in play. Below level
+18 doubling is strictly *worse*, because the cap binds at 10 either way and the second copy buys
+nothing while costing a slot. After 18 it trades breadth for depth, which is the shape of a real
+decision rather than a free upgrade.
+
+Rarity finishes the argument. Chips cannot be bought, and §5.3 dropped the four steep passives to
+weight 1: at 0.081% per artifact roll a *first* perfected Quickness chip is a coin flip at about 855
+rolls and a **second** at about 2,070. Ordinary chips at 0.244% need roughly 688 rolls for a pair.
+
+The alternative — a chip setting a floor rather than adding to a base — was rejected. It needs C#,
+and it would pin the Adept at rank 10 permanently, which deepens the weakness this section already
+identifies: weakest genotype at level 30+, on the worst ledger in the game. What is left is
+documentation, and it is in `docs/FEATURES.md` §3.2.
+
 **What this means for the genotype's niche.** The Psionic Adept is front-loaded breadth that
 plateaus, with an undocumented depth mode. It is strongest relative to the others around level 18 and
 weakest at level 30+, which is the opposite shape to a mutant — and a coherent design, if an

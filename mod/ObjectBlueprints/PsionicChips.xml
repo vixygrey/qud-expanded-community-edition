@@ -109,23 +109,23 @@
   <!-- Fire -->
 
   <object Name="Raven_Simple Kindle Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="basic {{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
+    <part Name="Render" DisplayName="{{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
     <part Name="Commerce" Value="20" />
     <part Name="Raven_ModKindle" Tier="2" />
     <tag Name="Tier" Value="4" />
   </object>
 
   <object Name="Raven_Improved Kindle Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="{{m|upgraded}} {{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="80" />
-    <part Name="Raven_ModKindle" Tier="4" />
+    <part Name="Render" DisplayName="{{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModKindle" Tier="2" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Kindle Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="{{M|perfected}} {{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
-    <part Name="Commerce" Value="320" />
-    <part Name="Raven_ModKindle" Tier="6" />
+    <part Name="Render" DisplayName="{{o|kindle}} chip" ColorString="&amp;o" DetailColor="y" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModKindle" Tier="2" />
     <tag Name="Tier" Value="8" />
   </object>
 
@@ -183,7 +183,7 @@
   <object Name="Raven_Improved Fire Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{o|fire}} chipset" ColorString="&amp;o" DetailColor="y" />
     <part Name="Commerce" Value="160" />
-    <part Name="Raven_ModKindle" Tier="2" />
+    <part Name="Raven_ModKindle" Tier="1" />
     <part Name="Raven_ModFlamingRay" Tier="4" />
     <part Name="Raven_ModPyrokinesis" Tier="2" />
     <tag Name="Tier" Value="7" />
@@ -192,7 +192,7 @@
   <object Name="Raven_Advanced Fire Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{o|fire}} chipset" ColorString="&amp;o" DetailColor="y" />
     <part Name="Commerce" Value="320" />
-    <part Name="Raven_ModKindle" Tier="3" />
+    <part Name="Raven_ModKindle" Tier="1" />
     <part Name="Raven_ModFlamingRay" Tier="6" />
     <part Name="Raven_ModPyrokinesis" Tier="3" />
     <tag Name="Tier" Value="8" />
@@ -201,23 +201,23 @@
   <!-- Ice -->
 
   <object Name="Raven_Simple Frost Webs Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="basic {{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
+    <part Name="Render" DisplayName="{{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
     <part Name="Commerce" Value="20" />
     <part Name="Raven_ModFrostWebs" Tier="3" />
     <tag Name="Tier" Value="4" />
   </object>
 
   <object Name="Raven_Improved Frost Webs Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="{{m|upgraded}} {{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="80" />
-    <part Name="Raven_ModFrostWebs" Tier="6" />
+    <part Name="Render" DisplayName="{{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModFrostWebs" Tier="3" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Advanced Frost Webs Chip" Inherits="Raven_Base Psionic Chip">
-    <part Name="Render" DisplayName="{{M|perfected}} {{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
-    <part Name="Commerce" Value="320" />
-    <part Name="Raven_ModFrostWebs" Tier="10" />
+    <part Name="Render" DisplayName="{{C|frost webs}} chip" ColorString="&amp;C" DetailColor="y" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Raven_ModFrostWebs" Tier="3" />
     <tag Name="Tier" Value="8" />
   </object>
 
@@ -275,7 +275,7 @@
   <object Name="Raven_Improved Ice Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{m|upgraded}} {{C|ice}} chipset" ColorString="&amp;C" DetailColor="y" />
     <part Name="Commerce" Value="160" />
-    <part Name="Raven_ModFrostWebs" Tier="4" />
+    <part Name="Raven_ModFrostWebs" Tier="2" />
     <part Name="Raven_ModFreezingRay" Tier="4" />
     <part Name="Raven_ModCryokinesis" Tier="2" />
     <tag Name="Tier" Value="7" />
@@ -284,7 +284,7 @@
   <object Name="Raven_Advanced Ice Chipset" Inherits="Raven_Base Psionic Chip">
     <part Name="Render" DisplayName="{{M|perfected}} {{C|ice}} chipset" ColorString="&amp;C" DetailColor="y" />
     <part Name="Commerce" Value="320" />
-    <part Name="Raven_ModFrostWebs" Tier="6" />
+    <part Name="Raven_ModFrostWebs" Tier="2" />
     <part Name="Raven_ModFreezingRay" Tier="6" />
     <part Name="Raven_ModCryokinesis" Tier="3" />
     <tag Name="Tier" Value="8" />
