@@ -382,7 +382,17 @@
       "Raven_Zetachrome Wristblade",
       "Raven_ZetachromeHandBones",
       "Raven_Zetachromeweave Cloak",
-      "Vixy_Scour Slug"
+      "Vixy_Bronze Quarterstaff",
+      "Vixy_Carbide Quarterstaff",
+      "Vixy_Crysteel Quarterstaff",
+      "Vixy_Flawless Crysteel Quarterstaff",
+      "Vixy_Folded Carbide Quarterstaff",
+      "Vixy_Fullerite Quarterstaff",
+      "Vixy_Iron Quarterstaff",
+      "Vixy_Scour Slug",
+      "Vixy_Steel Quarterstaff",
+      "Vixy_Vibro Quarterstaff",
+      "Vixy_Zetachrome Quarterstaff"
     ]
   },
   "DynamicObjectsTable:MeleeWeapons": {
@@ -469,7 +479,17 @@
       "Raven_Zetachrome Rapier",
       "Raven_Zetachrome Vinereaper",
       "Raven_Zetachrome Wristblade",
-      "Vixy_Scour Slug"
+      "Vixy_Bronze Quarterstaff",
+      "Vixy_Carbide Quarterstaff",
+      "Vixy_Crysteel Quarterstaff",
+      "Vixy_Flawless Crysteel Quarterstaff",
+      "Vixy_Folded Carbide Quarterstaff",
+      "Vixy_Fullerite Quarterstaff",
+      "Vixy_Iron Quarterstaff",
+      "Vixy_Scour Slug",
+      "Vixy_Steel Quarterstaff",
+      "Vixy_Vibro Quarterstaff",
+      "Vixy_Zetachrome Quarterstaff"
     ]
   },
   "DynamicObjectsTable:Trinkets": {
