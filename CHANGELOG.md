@@ -884,6 +884,36 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `validate_mod.py` refuses a chip line that grades a mutation which cannot level
+  (#347). This is the guard the fix in the same issue argued for.
+
+  **Why nothing caught it the first time.** `unknown-mutation` passed, because `Kindle` and
+  `FrostWebs` are genuinely declared in the catalogue. `item-curve` passed, because every price sat
+  exactly on the chip curve for its tier. The defect was only visible inside the mutation's own
+  method body, and no check could reach one.
+
+  So `tools/qud-api.json` gains **`non_leveling_mutations`** — 44 of the game's 130 mutation classes
+  return a constant `false` from `CanLevel()`. Neither `Mutations.xml` nor `HiddenMutations.xml`
+  carries an attribute for it, so it comes out of `Assembly-CSharp.dll` through
+  `tools/dump_part_members.cs`, which already reads that file's metadata for part members. Reading a
+  method body is still metadata rather than decompilation: `return false` compiles to two IL bytes,
+  `ldc.i4.0` then `ret`, so the test is a two-byte comparison. I checked it against a full ilspycmd
+  decompile of the same assembly — **44 out of 44, no drift in either direction**.
+
+  The check groups blueprints by the set of mutation-granting parts they carry, which is what makes
+  a line a line: the three Kindle chips must agree with each other, and the three Fire chipsets form
+  their own group, because a chipset grants a lower level than the single chip on purpose. Run
+  against the tree as it stood before the fix it reports all four lines and names the blueprints;
+  against the tree after, nothing.
+
+  **What it does not do** is find more of them today. Cross-referenced against all 36
+  `ModImprovedMutationBase<T>` subclasses in `Scripting/`, exactly two match, and both are now
+  fixed. This is a guard against the next one — a chip added for a mutation that turns out not to
+  level, or a Qud patch that stops one levelling.
+
+  It needs the snapshot regenerating with `--assembly` after a Qud update, like everything else in
+  that file, and a snapshot that has lost the list fails loudly rather than passing quietly.
+
 - **The kindle and frost webs chips had three grades that all granted the same thing, and the top
   one cost sixteen times the bottom one** (#347).
 

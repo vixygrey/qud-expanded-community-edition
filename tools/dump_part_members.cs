@@ -25,8 +25,19 @@
 // It also emits the type names in XRL.World.PartBuilders. A <part Builder="X"> names one of
 // those rather than setting a member, and an X that does not exist fails the same silent way (#168).
 //
+// And it emits the mutations that cannot level: classes in XRL.World.Parts.Mutation whose
+// CanLevel() returns a constant false. A chip granting one of those is the same item at every
+// grade, which is #347 - Kindle and Frost Webs shipped three grades each and all six were one
+// item. The catalogue XML carries no attribute for this; only the method body knows.
+//
+// Reading a method body is still metadata, not decompilation. `return false` compiles to two IL
+// bytes - ldc.i4.0 (0x16) then ret (0x2A) - so the test is a two-byte comparison against the body
+// the assembly already stores. Anything longer is a real implementation and is left alone, which
+// is the safe direction: a missed one costs a check that does not fire, never a false failure.
+//
 // Usage:  dotnet run -- <path to Assembly-CSharp.dll>
-//         -> JSON on stdout: {"members": {"Part": ["Member"]}, "part_builders": ["Name"]}
+//         -> JSON on stdout: {"members": {"Part": ["Member"]}, "part_builders": ["Name"],
+//                             "non_leveling_mutations": ["Class"]}
 
 using System;
 using System.Collections.Generic;
@@ -47,7 +58,14 @@ internal static class DumpPartMembers
     // class and pass.
     private const string BuilderNamespace = "XRL.World.PartBuilders";
 
+    // Mutation classes live here. A chip's ModImprovedMutationBase<T> names one of them.
+    private const string MutationNamespace = "XRL.World.Parts.Mutation";
+
+    // `return false` as the compiler emits it: ldc.i4.0, ret.
+    private static readonly byte[] ReturnsFalse = { 0x16, 0x2A };
+
     private static MetadataReader md;
+    private static PEReader pe;
     private static readonly Dictionary<string, TypeDefinitionHandle> ByFullName = new();
 
     private static int Main(string[] args)
@@ -59,7 +77,8 @@ internal static class DumpPartMembers
         }
 
         using var stream = File.OpenRead(args[0]);
-        using var pe = new PEReader(stream);
+        using var reader = new PEReader(stream);
+        pe = reader;
         md = pe.GetMetadataReader();
 
         foreach (var handle in md.TypeDefinitions)
@@ -70,6 +89,7 @@ internal static class DumpPartMembers
 
         var members = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
         var builders = new SortedSet<string>(StringComparer.Ordinal);
+        var unlevellable = new SortedSet<string>(StringComparer.Ordinal);
         foreach (var handle in md.TypeDefinitions)
         {
             var td = md.GetTypeDefinition(handle);
@@ -77,6 +97,7 @@ internal static class DumpPartMembers
             var ns = md.GetString(td.Namespace);
             if (ns == PartNamespace) members[md.GetString(td.Name)] = Settable(handle);
             else if (ns == BuilderNamespace) builders.Add(md.GetString(td.Name));
+            else if (ns == MutationNamespace && CannotLevel(handle)) unlevellable.Add(md.GetString(td.Name));
         }
 
         if (members.Count == 0)
@@ -90,12 +111,48 @@ internal static class DumpPartMembers
             return 1;
         }
 
+        if (unlevellable.Count == 0)
+        {
+            Console.Error.WriteLine($"error: no CanLevel() overrides found in {MutationNamespace}");
+            return 1;
+        }
+
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             members,
             part_builders = builders.ToList(),
+            non_leveling_mutations = unlevellable.ToList(),
         }));
         return 0;
+    }
+
+    /// True when the nearest CanLevel() in the type's own chain returns a constant false.
+    ///
+    /// Walks the base chain because a mutation may inherit the override rather than declare it,
+    /// and stops at the first declaration - the nearest one is what runs.
+    private static bool CannotLevel(TypeDefinitionHandle start)
+    {
+        var cursor = start;
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        while (true)
+        {
+            var td = md.GetTypeDefinition(cursor);
+            foreach (var handle in td.GetMethods())
+            {
+                var method = md.GetMethodDefinition(handle);
+                if (md.GetString(method.Name) != "CanLevel") continue;
+                if (method.RelativeVirtualAddress == 0) return false;
+                var il = pe.GetMethodBody(method.RelativeVirtualAddress).GetILBytes();
+                return il is not null
+                    && il.Length == ReturnsFalse.Length
+                    && il[0] == ReturnsFalse[0]
+                    && il[1] == ReturnsFalse[1];
+            }
+
+            var baseName = ResolveBase(td.BaseType);
+            if (baseName is null || !ByFullName.TryGetValue(baseName, out cursor) || !seen.Add(baseName))
+                return false;
+        }
     }
 
     /// Every settable member of a type and of everything it inherits from, flattened.
