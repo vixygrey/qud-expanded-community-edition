@@ -153,6 +153,16 @@ def find_deployed(f: Findings, mods_dir: Path, mod_id: str) -> Path | None:
     return None
 
 
+def deployed_title(deployed: Path, fallback: str) -> str:
+    """The title the game saw, which is the deployed manifest's rather than the repository's."""
+    manifest = deployed / "manifest.json"
+    try:
+        found = json.loads(manifest.read_text(encoding="utf-8-sig")).get("title")
+    except (OSError, json.JSONDecodeError):
+        return fallback
+    return found or fallback
+
+
 def check_identical(f: Findings, deployed: Path) -> Path | None:
     """The game compiles the deployed copy, so a verdict only counts if it matches ours."""
     deployed_scripting = deployed / "Scripting"
@@ -302,6 +312,13 @@ def main() -> int:
         deployed_scripting = check_identical(f, deployed)
         if deployed_scripting is not None:
             check_fresh(f, deployed_scripting, stamps)
+        # The log names its section after the title the GAME saw, which is the deployed
+        # manifest's - and `sync_mod.py --dev` deliberately suffixes that with " (dev)" so the
+        # in-game mod list says which build is loaded. Reading the repository's title here made
+        # this check impossible to pass against a dev build, which is the only build worth
+        # checking: a publish build is `main`, verified before it is installed rather than after.
+        # Same reasoning `find_deployed` already applies to the folder name. See #342.
+        title = deployed_title(deployed, title)
 
     check_built(f, sections, title, expected)
     check_loaded(f, order, mod_id)

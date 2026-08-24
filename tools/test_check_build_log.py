@@ -97,6 +97,7 @@ class BuildLogCheck(unittest.TestCase):
         stamp: str | None = None,
         load_order: tuple[str, ...] = (MOD_ID,),
         title: str = TITLE_CAPS,
+        deployed_title: str | None = None,
         write_log: bool = True,
         deploy: bool = True,
         edit: str | None = None,
@@ -119,7 +120,10 @@ class BuildLogCheck(unittest.TestCase):
                     target = deployed / "Scripting" / cs.name
                     shutil.copy2(cs, target)
                     deployed_cs.append(target)
-                (deployed / "manifest.json").write_text(json.dumps({"id": MOD_ID}))
+                manifest: dict[str, str] = {"id": MOD_ID}
+                if deployed_title is not None:
+                    manifest["title"] = deployed_title
+                (deployed / "manifest.json").write_text(json.dumps(manifest))
 
             # Before the mutations below, so touch_future lands *after* the log rather than
             # dragging the derived timestamp along with it.
@@ -240,6 +244,37 @@ class BuildLogCheck(unittest.TestCase):
         )
         self.assertEqual(code, 1, out)
         self.assertFinding(out, "built")
+
+    # -- the title the game saw, not the one in the repository -------------------------
+
+    def test_dev_build_title_comes_from_the_deployed_manifest(self):
+        """`sync_mod.py --dev` renames the installed mod, and the log follows the install.
+
+        Reading the repository's title here made this check impossible to pass against a dev
+        build - the only build worth checking, since a publish build is `main` and is verified
+        before it is installed rather than after. See #342.
+        """
+        code, out = self.run_check(
+            deployed_title="Qud Expanded Community Edition (dev)",
+            title="QUD EXPANDED COMMUNITY EDITION (DEV)",
+        )
+        self.assertEqual(code, 0, out)
+        self.assertIn("OK -", out)
+
+    def test_deployed_title_still_has_to_match_the_log(self):
+        """The fallback must not become a way to pass with a section that is not this mod's."""
+        code, out = self.run_check(
+            deployed_title="Qud Expanded Community Edition (dev)",
+            title="SOMETHING ELSE ENTIRELY",
+        )
+        self.assertEqual(code, 1, out)
+        self.assertFinding(out, "built")
+
+    def test_deployed_manifest_without_a_title_falls_back(self):
+        """An install that predates titled manifests still checks against the repository's."""
+        code, out = self.run_check(deployed_title=None)
+        self.assertEqual(code, 0, out)
+        self.assertIn("OK -", out)
 
     def test_section_absent(self):
         code, out = self.run_check(title="A DIFFERENT MOD")
