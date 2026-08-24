@@ -149,6 +149,33 @@ it cannot see a pull request that carries a closing reference and says nothing e
 body is the easier one to write by accident, not the harder one. What the check removes is the case
 that has actually bitten, three times.
 
+## Writing *about* a closing keyword is writing one
+
+The fourth instance is the pull request that added the check above, and it is the only one where the
+check was present and still did not cover it.
+
+#403's body explained the defect by quoting #360's sentence. The quotation contained the words
+*close* and *#339* next to each other, so GitHub resolved it, and `closingIssuesReferences` came back
+naming an issue the pull request had no business touching. **The new check passed, correctly** —
+there was no `Part of #339` for the link to contradict, only a quotation. The manual look caught it,
+about thirty seconds after I had written in that same body that the automated check cannot see this
+case.
+
+Two things worth having in writing:
+
+- **The reference resolves from the commit messages too, not only the body.** I fixed the body first
+  and `closingIssuesReferences` did not change, because the commit message carried the same
+  quotation. Editing one and re-checking is what showed it; fixing the body alone would have looked
+  like a fix and left the link in place.
+- **A document describing this trap cannot quote the trap.** The way out is the one this entry
+  already uses without ever having said so: *describe* the offending sentence rather than reproduce
+  it. "A clause asking a human to do the closing by hand" carries the same meaning and resolves to
+  nothing.
+
+So the quarantine is wider than it looks. It is not only your own intent that has to keep the keyword
+away from the number — an explanation, a quotation, a changelog entry and a commit message all parse
+the same way, and none of them is a register the parser declines to read.
+
 That second point generalises past this check. Several of the habits in this document are still
 habits, and every one of them has the same failure mode.
 

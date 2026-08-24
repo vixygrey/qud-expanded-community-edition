@@ -884,6 +884,21 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** `docs/LESSONS.md` records the fourth instance of the closing-keyword trap, and it is
+  the only one where the check from #361 was present and still did not cover it.
+
+  #403's body explained the defect by quoting #360's sentence, and the quotation put a closing verb
+  next to an issue number — so GitHub resolved it, and that pull request carried a link to an issue
+  it had no business touching. The check passed correctly: there was no stated intent for the link to
+  contradict, only a quotation. The manual look caught it, about thirty seconds after I had written
+  in the same body that the check cannot see this case.
+
+  Two facts the entry did not have before. **The reference resolves from commit messages as well as
+  the body** — fixing the body alone changed nothing, because the commit carried the same quotation,
+  and only re-checking showed it. And **a document describing the trap cannot quote the trap**: the
+  way out is to describe the offending sentence rather than reproduce it, which is what the entry had
+  been doing all along without saying so.
+
 - **(internal)** CI fails a pull request that says it only *advances* an issue while carrying a
   closing link to it (#361).
 
