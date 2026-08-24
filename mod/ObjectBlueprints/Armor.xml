@@ -687,11 +687,11 @@
   <!-- Regular Vambraces -->
 
   <object Name="Raven_Bronze Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-1" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" WornOn="Arm" />
     <part Name="Render" DisplayName="{{w|bronze}} vambrace" ColorString="&amp;w" />
     <part Name="Commerce" Value="4" />
     <part Name="Description" Short="A bronze vambrace, meant to be secured to the arm." />
-    <part Name="Physics" Weight="4" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="0" />
   </object>
@@ -701,27 +701,27 @@
     <part Name="Render" DisplayName="iron vambrace" ColorString="&amp;y" />
     <part Name="Commerce" Value="8" />
     <part Name="Description" Short="A iron vambrace, meant to be secured to the arm." />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="1" />
   </object>
 
   <object Name="Raven_Steel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-2" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" WornOn="Arm" />
     <part Name="Render" DisplayName="{{Y|steel}} vambrace" ColorString="&amp;y" />
     <part Name="Description" Short="A steel vambrace, meant to be secured to the arm." />
     <part Name="Commerce" Value="16" />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="2" />
   </object>
 
   <object Name="Raven_Carbide Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-1" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" WornOn="Arm" />
     <part Name="Render" DisplayName="{{b|carbide}} vambrace" ColorString="&amp;b" />
     <part Name="Description" Short="A carbide vambrace, meant to be secured to the arm." />
     <part Name="Commerce" Value="32" />
-    <part Name="Physics" Weight="5" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
   </object>
@@ -731,34 +731,34 @@
     <part Name="Render" DisplayName="{{B|folded carbide}} vambrace" ColorString="&amp;B" />
     <part Name="Commerce" Value="64" />
     <part Name="Description" Short="A folded carbide vambrace, meant to be secured to the arm." />
-    <part Name="Physics" Weight="4" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="4" />
   </object>
 
   <object Name="Raven_Fullerite Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-3" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" WornOn="Arm" />
     <part Name="Render" DisplayName="{{K|fullerite}} vambrace" ColorString="&amp;K" DetailColor="y" />
     <part Name="Commerce" Value="128" />
     <part Name="Description" Short="A fullerite vambrace, meant to be secured to the arm." />
-    <part Name="Physics" Weight="6" />
+    <part Name="Physics" Weight="1" />
     <tag Name="Tier" Value="5" />
   </object>
 
   <object Name="Raven_Crysteel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-2" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
     <part Name="Render" DisplayName="{{crysteel|crysteel}} vambrace" ColorString="&amp;c" />
     <part Name="Commerce" Value="256" />
     <part
       Name="Description"
       Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue."
     />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="1" />
     <tag Name="Tier" Value="6" />
   </object>
 
   <object Name="Raven_Flawless Crysteel Vambrace" Inherits="BaseArmlet">
-    <part Name="Armor" AV="1" DV="-1" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
+    <part Name="Armor" AV="1" DV="0" Elec="5" Cold="5" Heat="5" Acid="5" WornOn="Arm" />
     <part
       Name="Render"
       DisplayName="{{K|flawless {{crysteel|crysteel}} vambrace}}"
@@ -770,7 +770,7 @@
       Name="Description"
       Short="Blast furnaces sucked the tidal energy out of the planet, heated carbon to solar temperatures, and poured it into hexagonal molds. The emerald tongs used to retrieve the casts atomized and vented vanadium -- the green glint -- into the manifold, imperfecting the metal and conferring its characteristic hue. Casts mottled with dust particles were culled and fed to lithovores, leaving only the perfect hexagonal prisms."
     />
-    <part Name="Physics" Weight="3" />
+    <part Name="Physics" Weight="1" />
     <part Name="Metal" />
     <tag Name="Tier" Value="7" />
   </object>
@@ -789,7 +789,7 @@
       Name="Description"
       Short="Quark-gluon plasma rapidly cooled and was extinguished on the voidpeaks of the early universe, except where the globules got trapped in 6D kinks of spacetime. There they glided in the slipstream for billions of years until beings discovered them, built machines to extract and cool them, and reheat them in their stellar furnaces."
     />
-    <part Name="Physics" Weight="2" />
+    <part Name="Physics" Weight="1" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
     <property Name="Role" Value="Rare" />

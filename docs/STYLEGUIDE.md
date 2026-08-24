@@ -451,6 +451,35 @@ else** — 26 becomes 27. That is the whole price of keeping the line, and it is
 stops at cloaks: extending the same courtesy to vambraces would cost 4 more, because the slot is
 worn twice.
 
+**The Arm slot carries no DV penalty and weighs a pound.** Vanilla puts 28 armour items in that
+slot and **not one** of them has negative DV — the values are 0, 1 and 2, and the median weight is 1.
+The vambrace line broke both: seven of its nine imposed a penalty the slot has never had, running
+−1, 0, −2, −1, 0, −3, −2, −1, 0, and they weighed 2 to 6 lb. Both columns were chosen per item, which
+the weight rule above forbids in as many words. #381 flattened them to DV 0 and 1 lb. There is no Arm
+row in the factor table because vanilla has nothing armoured there to derive a factor from; the slot's
+own numbers are the anchor instead.
+
+That leaves nine items separated only by price, and **that is accepted rather than owed**. The Arm
+slot is for utility artifacts; the vambraces are flavour, and flavour that imposes no penalty vanilla
+would not is the honest version of flavour. Vanilla ships duplicates of its own — `Steel Dagger`,
+`Steel Kukri`, `Steel Utility Knife` — though at one tier rather than nine.
+
+**A wristblade is worth about 60% of the dagger at its tier.** It attacks from the Arm slot, and
+`BodyPart.ScanForWeapon` walks every part, so two arms and two hands is four attempts a round; the
+Arm slot's alternative is a utility artifact, which is no contest. Vanilla is no guide here and says
+so clearly: `ArmDagger4` **is** `Dagger4` — same `1d8`, same 75 water, same penetration — because
+vanilla ships exactly one wristblade at one tier and never enabled the build. Nine of them is a
+build, so this fork prices the attack that vanilla never had to. Means by tier: 1.0, 1.5, 1.5, 2.0,
+2.5, 3.5, 4.0, 4.5, 5.0, a deficit of a third to a half at every tier the dice can express one — 0
+and 1 cannot, because 40% off `1d2` has nowhere to go. #324.
+
+**Note what that does *not* rest on.** #380's rule that a merge keeps vanilla's value is about price
+and resistances, where `merged_records` can prove what vanilla said. Damage is held to a per-family
+ceiling instead, deliberately, so `ArmDagger4` at `1d4` against vanilla's `1d8` is allowed by the
+rules as they stand rather than in tension with them. It is the one place this fork overrides a
+vanilla weapon's damage, and it is here because leaving it at parity would make the merged item 80%
+better than its own tier-mates.
+
 **There is no AV curve, only a ceiling.** Vanilla's tier-4 body armour runs AV 0 to 5. Two tighter
 rules were tested against all 224 vanilla armour pieces and **rejected**: `AV + DV` capped per tier
 is not monotone, and `AV + DV >= 0` is broken by 14 secondary-slot pieces. Do not reintroduce

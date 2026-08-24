@@ -884,6 +884,58 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **The Arm slot goes back to being the Arm slot: vambraces stop costing dodge, and wristblades pay
+  for the extra attack they buy** (#381, #324).
+
+  **What the slot is.** Vanilla puts 28 armour items on the Arm, and they are Kindrish, the
+  Transkinetic Cuffs, Kah's Loop, the scanning bracelets — utility artifacts. None grants more than
+  **AV 1**, and **not one of the 28 carries a negative DV**; the values are 0, 1 and 2, and the
+  median weight is a pound.
+
+  **The vambraces broke both.** Seven of the nine imposed a dodge penalty the slot has never had —
+  the column ran −1, 0, −2, −1, 0, −3, −2, −1, 0, which is noise rather than a progression — and they
+  weighed 2 to 6 lb. Both were chosen per item, which `docs/STYLEGUIDE.md` §3.2.1 already forbids.
+  All nine are now **AV 1, DV 0, 1 lb**.
+
+  That leaves nine items separated only by price, and **that is the intended answer rather than a
+  loose end**. The Arm slot is for utility artifacts; a vambrace is what you wear until you find one.
+  Giving the line a stat ladder would invent a category vanilla does not have in that slot.
+
+  **The wristblades are the other half.** They attack from the Arm slot, and the game walks every
+  body part looking for a weapon, so two arms plus two hands is **four attack attempts a round**.
+  That mechanic is vanilla's. What this fork changed is availability: vanilla ships exactly one
+  wristblade, at one tier, which is a find rather than a build — and prices it at **full parity with
+  the dagger of its tier**, because it never had to price a build. Nine of them is a build.
+
+  So the line now runs at about **60% of the dagger's damage**, a deficit of a third to a half:
+
+  | tier | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+  |---|---|---|---|---|---|---|---|---|---|
+  | dagger | 1d2 | 1d3 | 1d4 | 1d6 | 1d8 | 1d10 | 1d12 | 1d12+1 | 1d12+2 |
+  | **was** | 1 | 1d2 | 1d3 | 2d2 | 2d3 | 2d3+1 | 2d4 | 2d4+1 | 2d6 |
+  | **now** | 1 | 1d2 | 1d2 | 1d3 | 1d4 | 1d6 | 2d3 | 1d8 | 2d4 |
+
+  The zetachrome wristblade goes from a mean of 7.0 to **5.0**. Tiers 0 and 1 keep a smaller deficit
+  because 40% off `1d2` has nowhere to go.
+
+  `ArmDagger4` moves with them, to `1d4`. It is the one place this fork overrides a vanilla weapon's
+  damage, and leaving it at vanilla's `1d8` would have made the merged item **80% better than its own
+  tier-mates**. Worth being plain that #380's "a merge keeps vanilla's value" covers price and
+  resistances, where the snapshot can prove what vanilla said; damage is held to a per-family ceiling
+  instead, so this is allowed by the rules as they stand rather than in tension with them.
+
+  **And a warning the family badly needed.** `docs/FEATURES.md` now says that **Single Weapon
+  Fighting turns wristblades off, and it defaults to on** — while that ability is toggled on, every
+  non-primary body part's attack chance is multiplied by zero, so the wristblades make no attacks at
+  all. That is vanilla's behaviour and it applies to an off-hand weapon just the same, but a
+  character who buys the skill and then straps on wristblades sees nothing happen and has no obvious
+  reason why.
+
+- **(internal)** `check_docs.py` checks the **DV** column of the item tables (#381). It covered tier,
+  value, weight, stat, damage and AV — #337 named those — and DV was simply never on the list, so
+  flattening the vambrace line left nine stale cells that nothing reported. The checked figure count
+  goes from 1,068 to 1,136.
+
 - **A Mutated Human no longer gets a Chip Interface slot** (#353, deciding #352).
 
   **Why it was there.** Nobody chose it. Vanilla's Mutated Human is `BodyObject="Humanoid"`, so the

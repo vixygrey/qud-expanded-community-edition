@@ -1735,7 +1735,7 @@
 
   <object Name="Raven_Steel Wristblade" Inherits="BaseDagger">
     <part Name="Render" DisplayName="{{Y|steel}} wristblade" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;Y" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d3" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="3" BaseDamage="1d2" Slot="Arm" />
     <part Name="Commerce" Value="20" />
     <part Name="Description" Short="A ribbon of leather is looped through the hilt of a polished blade." />
     <part Name="Metal" />
@@ -1745,7 +1745,7 @@
 
   <object Name="Raven_Carbide Wristblade" Inherits="BaseDagger">
     <part Name="Render" DisplayName="{{b|carbide}} wristblade" Tile="Items/sw_shortblade_11.bmp" ColorString="&amp;b" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="2d2" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="4" BaseDamage="1d3" Slot="Arm" />
     <part Name="Commerce" Value="40" />
     <part Name="Description" Short="A ribbon of leather is looped through the hilt of a soft azure blade." />
     <part Name="Metal" />
@@ -1754,7 +1754,7 @@
   </object>
 
   <object Name="ArmDagger4" Load="Merge">
-    <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="2d3" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="5" BaseDamage="1d4" />
     <part Name="Commerce" Value="75" />
     <tag Name="Tier" Value="4" />
     <part Name="Physics" Weight="1" />
@@ -1767,7 +1767,7 @@
       Tile="Items/sw_shortblade_11.bmp"
       ColorString="&amp;K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="2d3+1" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="6" BaseDamage="1d6" Slot="Arm" />
     <part Name="Commerce" Value="160" />
     <part Name="Description" Short="A ribbon of leather is looped through the hilt of a dusky metal blade." />
     <tag Name="Tier" Value="5" />
@@ -1782,7 +1782,7 @@
       ColorString="&amp;g"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d4" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="7" BaseDamage="2d3" Slot="Arm" />
     <part Name="Commerce" Value="320" />
     <part
       Name="Description"
@@ -1800,7 +1800,7 @@
       ColorString="&amp;G"
       DetailColor="K"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="2d4+1" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="8" BaseDamage="1d8" Slot="Arm" />
     <part Name="Commerce" Value="640" />
     <part
       Name="Description"
@@ -1819,7 +1819,7 @@
       ColorString="&amp;m"
       DetailColor="y"
     />
-    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d6" Slot="Arm" />
+    <part Name="MeleeWeapon" MaxStrengthBonus="9" BaseDamage="2d4" Slot="Arm" />
     <part Name="Commerce" Value="1280" />
     <part
       Name="Description"
