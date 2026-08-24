@@ -177,6 +177,22 @@ DAMAGE_CEILING = {
         7: 7.5,
         8: 8.5,
     },
+    # Vanilla ships no two-handed short blade, so this row has no vanilla weapon to measure.
+    # It is derived instead: the midpoint between the dagger line and the two-handed long sword
+    # line at each tier - above its own tree's one-handed line, below the two-handed line of the tree
+    # above. Added with the spear in #342, because a family the ceiling skips is a family
+    # nothing protects.
+    ("ShortBlades", True): {
+        0: 2.5,
+        1: 3.0,
+        2: 4.0,
+        3: 5.0,
+        4: 6.0,
+        5: 7.0,
+        6: 8.0,
+        7: 9.0,
+        8: 11.0,
+    },
     ("LongBlades", False): {
         0: 2.0,
         1: 2.5,

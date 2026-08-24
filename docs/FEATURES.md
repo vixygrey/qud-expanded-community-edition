@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **380** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **390** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
@@ -433,7 +433,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **380 active** | **213** |
+| **Total** | **390 active** | **213** |
 
 ### 6.2 Melee weapons
 
@@ -516,6 +516,39 @@ Conventions the mod follows:
 | Crysteel Rapier | new | 6 | 2d6 | +0 | 7 |  | 320 | 2 |  |
 | Flawless Crysteel Rapier | new | 7 | 2d6+1 | +0 | 8 |  | 640 | 2 |  |
 | Zetachrome Rapier | new | 8 | 2d8 | +0 | 9 |  | 1280 | 2 |  |
+
+#### Spears (Short Blades, two-handed, Finesse) — **new family**
+
+**The only two-handed weapon in the Short Blades tree**, added in #342. That gap was the reason for
+it: Single Weapon Fighting zeroes every non-primary intrinsic attack, so a two-handed weapon has
+already paid its cost — and a short-blade specialist was the one build that could never take the
+skill cheaply. Pathfinder's elven branched spear is the precedent for a two-handed finesse weapon.
+
+Damage sits at the **midpoint between the dagger line and the two-handed long sword line** at each
+tier — above its own tree's one-handed line, below the two-handed line of the tree above. The Short Blades tree
+is already the finesse tree, so unlike the quarterstaff the spear does not pay for finesse twice.
+Weight is the katana line minus one, keeping §3.2's light-for-its-class rule.
+
+Deliberately **not** throwable, though PF2e's spear is and the whole dagger line carries
+`ThrownWeapon`: the two-handed spear exists to fill a build gap, not to do a second job.
+
+| Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
+|---|---|---|---|---|---|---|---|---|---|
+| Bronze Spear | new | 0 | 1d4 | +1 | 1 | (inh) | 5 | 5 | yes |
+| Iron Spear | new | 1 | 1d5 | +1 | 2 | (inh) | 10 | 4 | yes |
+| Steel Spear | new | 2 | 1d7 | +1 | 3 | (inh) | 20 | 4 | yes |
+| Carbide Spear | new | 3 | 1d9 | +1 | 4 | (inh) | 40 | 6 | yes |
+| Folded Carbide Spear | new | 4 | 2d5 | +1 | 5 | (inh) | 80 | 5 | yes |
+| Fullerite Spear | new | 5 | 2d6 | +1 | 6 | (inh) | 160 | 8 | yes |
+| Crysteel Spear | new | 6 | 2d7 | +1 | 7 | (inh) | 320 | 3 | yes |
+| Flawless Crysteel Spear | new | 7 | 2d8 | +1 | 8 | (inh) | 640 | 3 | yes |
+| Zetachrome Spear | new | 8 | 2d10 | +1 | 9 | (inh) | 1280 | 2 | yes |
+
+`Vixy_Vibro Spear` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`, bits `0015`.
+
+The tile is this fork's own art, `mod/Textures/items/Vixy_Spear.png` — one 16×24 drawing recoloured
+across all nine tiers by `ColorString`, with the head and butt-ferrule taking the tier colour and the
+haft taking `DetailColor`.
 
 #### Wristblades / arm daggers (Short Blades) — **new family**
 
@@ -1794,7 +1827,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 81 new / 77 merged
+│   ├── MeleeWeapons.xml        # 91 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)

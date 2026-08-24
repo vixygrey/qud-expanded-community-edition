@@ -416,6 +416,7 @@
       <object Weight="7" Number="1" Blueprint="Raven_Iron Mace" />
       <object Weight="7" Number="1" Blueprint="Raven_Iron War Hammerth" />
       <object Weight="7" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
+      <object Weight="4" Number="1" Blueprint="Vixy_Bronze Spear" />
     </group>
   </population>
 
@@ -432,6 +433,7 @@
       <object Weight="10" Number="1" Blueprint="Raven_Iron Wristblade" />
       <object Weight="10" Number="1" Blueprint="Raven_Iron Maceth" />
       <object Weight="10" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Iron Spear" />
     </group>
   </population>
 
@@ -448,6 +450,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Steel Katana" />
       <object Weight="20" Number="1" Blueprint="Raven_Steel Halberd" />
       <object Weight="20" Number="1" Blueprint="Raven_Steel Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Steel Spear" />
     </group>
   </population>
 
@@ -465,6 +468,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Katana" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Carbide Spear" />
     </group>
   </population>
 
@@ -481,6 +485,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Halberd" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Katana" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Maceth" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Folded Carbide Spear" />
     </group>
   </population>
 
@@ -498,6 +503,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Katana" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greathammer" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Fullerite Spear" />
     </group>
   </population>
 
@@ -515,6 +521,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Crysteel Spear" />
     </group>
   </population>
 
@@ -532,6 +539,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Flawless Crysteel Spear" />
     </group>
   </population>
 
@@ -549,6 +557,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Wristblade" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Zetachrome Spear" />
     </group>
   </population>
 

@@ -1240,3 +1240,34 @@ part worth fixing, and why this is here.
 The general shape: **a validator that ignores a region cannot protect that region.** Anything
 deliberately excluded from checking is somewhere mistakes accumulate silently, so a change that
 writes to the file rather than through the parser has to police itself.
+
+## Nothing checks that `Inherits=` names a blueprint that exists
+
+Writing the spear line for #342 I gave nine blueprints `Inherits="BaseShortBlade"`. There is no such
+object. Qud's Short Blades base is **`BaseDagger`** — the bases are `BaseAxe`, `BaseCudgel`,
+`BaseDagger`, `BaseLongBlade`, and a handful of ranged ones.
+
+`validate_mod.py` reported nothing. The file parses, the objects are well-formed, `unreachable` fired
+about population tables and said nothing about the parent. `dangling-blueprint-ref` checks table
+references, not inheritance. So nine weapons would have shipped inheriting nothing, and by §1.1b's
+own mechanism the failure is silent: `GetBlueprint` misses, logs through `MetricsManager`, and hands
+back the generic `Object`. Degraded, not broken, and invisible.
+
+I found it only because I stopped to ask what `BaseShortBlade` actually contained before relying on
+it. **That question is the check.** Until something enforces it, confirm the parent exists before
+writing a line of a new family:
+
+```bash
+grep -ho '<object Name="Base[A-Za-z]*"' "$BASE"/ObjectBlueprints/*.xml | sort -u
+```
+
+Two things worth carrying beyond the specific mistake.
+
+**An invented name is more dangerous than a wrong one.** A typo of a real base — `BaseCudgle` — fails
+the same way, silently, so neither spelling nor plausibility helps. Only existence does.
+
+**Inheriting the nearest base is not automatically right either.** `BaseDagger` carries
+`DynamicObjectsTable:Daggers`, so a spear inheriting it would appear anywhere the game asks for a
+dagger specifically. The spears inherit `MeleeWeapon` and declare their skill, mods and sounds
+explicitly instead. **Read what a base actually grants before adopting it** — the tags it carries
+travel with every child.
