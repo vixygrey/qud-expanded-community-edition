@@ -278,8 +278,9 @@ backlog, with a file and line on every open row.
   in the game has one**. Nothing populates it today. Be deliberate if you ever change that — it
   would affect the entire world at once. Option-gated as of #81 — and note `Humanoid` is shared by
   NPCs *and* by a Mutated Human player (vanilla's genotype is `BodyObject="Humanoid"`), so the two
-  cannot be separated by editing that anatomy alone. `Raven_ChipSlotPlayerMutator` exists solely to
-  correct the player when the two options disagree.
+  cannot be separated by editing that anatomy alone. That is why `Raven_ChipSlotPlayerMutator`
+  exists: since #353 it takes the shared slot back off the player at chargen, because a genotype
+  that can mutate is not what chips are for.
 
 ---
 

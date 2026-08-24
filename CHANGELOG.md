@@ -884,6 +884,39 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **A Mutated Human no longer gets a Chip Interface slot** (#353, deciding #352).
+
+  **Why it was there.** Nobody chose it. Vanilla's Mutated Human is `BodyObject="Humanoid"`, so the
+  merge that gives every humanoid *NPC* a slot handed the mutant player one as a side-effect.
+
+  **Why it goes.** Three reasons, each enough on its own. It contradicts what this system is for —
+  `docs/FEATURES.md` §3 says chips grant mutations *"to genotypes that cannot mutate"*, and a mutant
+  can. It was never a decision. And it inverts the power curve: a chip's level is a tracker that sums
+  with a mutation's inherent `BaseLevel` before the rank cap, so the mutant's base keeps climbing
+  while a chip alone stops at its grade.
+
+  | character level | mutant, inherent + 1 chip | Adept, best single chip |
+  |---:|---:|---:|
+  | 25 | rank 13 — **+39 Quickness** | rank 10 — +33 |
+  | 30 | rank 16 — **+45** | rank 10 — +33 |
+
+  One slot on the genotype that already mutates beat four on the genotype the chips were built for.
+
+  **What else changes.** The chargen panel no longer promises the mutant a slot, which would
+  otherwise be #275's defect arriving from the other direction. The option
+  *"your own Chip Interface slots"* is now **"True Kin Chip Interface slots"**, because that is all
+  it governs; it still defaults on and still gives a True Kin two.
+
+  **Existing characters keep theirs.** A body is built once, at character creation, so a Mutated
+  Human already in a save keeps the slot and anything worn in it. Nothing is orphaned — the
+  `Chip Interface` type string stays declared for the other two anatomies, and `Bodies.xml` is
+  untouched, so every humanoid NPC still has one.
+
+  **This is a straight fix rather than a new option**, following #339: item-shaped opinions get
+  options, defects that contradict a stated convention do not, and what is gateable here already had
+  its option. `docs/FEATURES.md` §13 flags that option as due a re-check in game, since the
+  2026-08-16 pass no longer covers what it does.
+
 - **(internal)** `docs/LESSONS.md` records the fourth instance of the closing-keyword trap, and it is
   the only one where the check from #361 was present and still did not cover it.
 
