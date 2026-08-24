@@ -254,6 +254,28 @@ granted by a chip; physical mutations do not scale at all. To compensate, chips 
 *physical* mutations give **3 / 6 / 10** levels instead of the **2 / 4 / 6** that mental chips give.
 Chipsets follow the same split: **1 / 2 / 3** for mental, **2 / 4 / 6** for physical.
 
+**Two mutations ignore their level, so their chips have no grades (#347).** `Kindle` and
+`FrostWebs` both override `CanLevel()` to `false` and read their level nowhere — Kindle's cooldown
+and range are constants, and Frost Webs sets its range and area as literals. They are the only two
+of the 36 that do this. So all three Kindle chips are one item, all three Frost Webs chips are one
+item, and each line is now named, priced and levelled as that one item: **one display name, 20
+water at every tier, and the same granted level on all three**. The three blueprints stay, because
+a shipped blueprint name is frozen (`docs/STYLEGUIDE.md` §1.1b) and anyone holding one in a save
+would lose it. The item tier still differs, since that is what puts each in its own loot pool. The
+Fire and Ice chipsets carry the same dead component and now state its true level too; their prices
+are unchanged, because the other two mutations in each still scale.
+
+**Chip levels sum on a mutation you already have (#350).** `ModImprovedMutationBase` adds a
+tracker rather than setting a value, and `BaseMutation.CalcLevel` sums every tracker before
+clamping — so two chips of one mutation are worth twice the grade, and a chip stacks on an inherent
+mutation the same way. **This is vanilla's own behaviour, not something the fork added**: the Enigma
+Cone and the Enigma Cap each carry `ModImprovedConfusion` at Tier 3, on the Body and Head slots, so
+vanilla ships a deliberate stacking pair of its own. What limits it is the rank cap,
+`level / 2 + 1`, which applies to the total from every source: two perfected chips reach tracker 20
+and that cap does not reach 20 until **character level 38**, so a third copy is worth nothing before
+then. Doubling up is also strictly worse below level 18, where the cap binds at 10 either way — it
+buys depth after that, at the cost of half your breadth.
+
 ### 3.3 The 12 affinity families
 
 Each family has 3 single-mutation chips and 1 chipset, each at 3 grades
@@ -278,9 +300,13 @@ Item tiers and prices are uniform across all families:
 
 | Grade | Single chip: item tier / value / mutation level | Chipset: item tier / value / mutation levels |
 |---|---|---|
-| basic (`Simple`) | Tier 4 · 20 · **2** (mental) or **3** (physical) | Tier 6 · 20 · **1** / **2** |
-| upgraded (`Improved`) | Tier 6 · 40 · **4** / **6** | Tier 7 · 40 · **2** / **4** |
-| perfected (`Advanced`) | Tier 8 · 60 · **6** / **10** | Tier 8 · 60 · **3** / **6** |
+| basic (`Simple`) | Tier 4 · 20 · **2** (mental) or **3** (physical) | Tier 6 · 80 · **1** / **2** |
+| upgraded (`Improved`) | Tier 6 · 80 · **4** / **6** | Tier 7 · 160 · **2** / **4** |
+| perfected (`Advanced`) | Tier 8 · 320 · **6** / **10** | Tier 8 · 320 · **3** / **6** |
+
+Values are the chip curve, `1.25 × 2^tier`, set in #338 — this table said 20 / 40 / 60 until #347
+noticed it had not been updated with the blueprints. The Kindle and Frost Webs lines are the two
+exceptions: every grade of each is 20, for the reason in §3.2.
 
 > ✅ **All 144 chips can drop.** Upstream 2.2 shipped only *the first chip of each family* plus that
 > family's chipset in `Raven_Chips Tier 1/2/3` — 24 entries where 48 were needed — so chips B and C
@@ -2147,9 +2173,9 @@ not touch that field (the vanilla value is inherited).
 | basic force chipset | 6 | 80 | Disintegration @ 1, StunningForce @ 1, ForceBubble @ 1 |
 | upgraded force chipset | 7 | 160 | Disintegration @ 2, StunningForce @ 2, ForceBubble @ 2 |
 | perfected force chipset | 8 | 320 | Disintegration @ 3, StunningForce @ 3, ForceBubble @ 3 |
-| basic kindle chip | 4 | 20 | Kindle @ 2 |
-| upgraded kindle chip | 6 | 80 | Kindle @ 4 |
-| perfected kindle chip | 8 | 320 | Kindle @ 6 |
+| kindle chip | 4 | 20 | Kindle @ 2 |
+| kindle chip | 6 | 20 | Kindle @ 2 |
+| kindle chip | 8 | 20 | Kindle @ 2 |
 | basic flaming ray chip | 4 | 20 | FlamingRay @ 3 |
 | upgraded flaming ray chip | 6 | 80 | FlamingRay @ 6 |
 | perfected flaming ray chip | 8 | 320 | FlamingRay @ 10 |
@@ -2157,11 +2183,11 @@ not touch that field (the vanilla value is inherited).
 | upgraded pyrokinesis chip | 6 | 80 | Pyrokinesis @ 4 |
 | perfected pyrokinesis chip | 8 | 320 | Pyrokinesis @ 6 |
 | basic fire chipset | 6 | 80 | Kindle @ 1, FlamingRay @ 2, Pyrokinesis @ 1 |
-| upgraded fire chipset | 7 | 160 | Kindle @ 2, FlamingRay @ 4, Pyrokinesis @ 2 |
-| perfected fire chipset | 8 | 320 | Kindle @ 3, FlamingRay @ 6, Pyrokinesis @ 3 |
-| basic frost webs chip | 4 | 20 | FrostWebs @ 3 |
-| upgraded frost webs chip | 6 | 80 | FrostWebs @ 6 |
-| perfected frost webs chip | 8 | 320 | FrostWebs @ 10 |
+| upgraded fire chipset | 7 | 160 | Kindle @ 1, FlamingRay @ 4, Pyrokinesis @ 2 |
+| perfected fire chipset | 8 | 320 | Kindle @ 1, FlamingRay @ 6, Pyrokinesis @ 3 |
+| frost webs chip | 4 | 20 | FrostWebs @ 3 |
+| frost webs chip | 6 | 20 | FrostWebs @ 3 |
+| frost webs chip | 8 | 20 | FrostWebs @ 3 |
 | basic freezing ray chip | 4 | 20 | FreezingRay @ 3 |
 | upgraded freezing ray chip | 6 | 80 | FreezingRay @ 6 |
 | perfected freezing ray chip | 8 | 320 | FreezingRay @ 10 |
@@ -2169,8 +2195,8 @@ not touch that field (the vanilla value is inherited).
 | upgraded cryokinesis chip | 6 | 80 | Cryokinesis @ 4 |
 | perfected cryokinesis chip | 8 | 320 | Cryokinesis @ 6 |
 | basic ice chipset | 6 | 80 | FrostWebs @ 2, FreezingRay @ 2, Cryokinesis @ 1 |
-| upgraded ice chipset | 7 | 160 | FrostWebs @ 4, FreezingRay @ 4, Cryokinesis @ 2 |
-| perfected ice chipset | 8 | 320 | FrostWebs @ 6, FreezingRay @ 6, Cryokinesis @ 3 |
+| upgraded ice chipset | 7 | 160 | FrostWebs @ 2, FreezingRay @ 4, Cryokinesis @ 2 |
+| perfected ice chipset | 8 | 320 | FrostWebs @ 2, FreezingRay @ 6, Cryokinesis @ 3 |
 | basic EMP chip | 4 | 20 | ElectromagneticPulse @ 3 |
 | upgraded EMP chip | 6 | 80 | ElectromagneticPulse @ 6 |
 | perfected EMP chip | 8 | 320 | ElectromagneticPulse @ 10 |

@@ -300,6 +300,13 @@ CURVE_EXEMPT = {
     # them would be satisfying a rule at the cost of a number somebody picked.
     "nanoweave": "300 is a chosen round number, not drift from 320",
     "mutating mask": "1000 is a chosen round number, not drift from 1280",
+    # Kindle and Frost Webs override CanLevel() to false and read their level nowhere, so a higher
+    # grade of either chip grants exactly what the basic one does (#347). All three grades of each
+    # are priced at the tier-4 floor of 20 rather than the 80 and 320 their own tiers would give,
+    # because the chip curve prices what a chip grants and these grant the same thing. The tier
+    # tags stay as they are - they place the chip in its loot pool, and the pools are correct.
+    "kindle": "every grade grants the same thing, so all three are priced at the floor (#347)",
+    "frost webs": "every grade grants the same thing, so all three are priced at the floor (#347)",
 }
 
 # Mura's original Workshop item. This fork publishes SEPARATELY and must never target it —

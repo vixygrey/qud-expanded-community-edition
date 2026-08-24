@@ -884,6 +884,54 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **The kindle and frost webs chips had three grades that all granted the same thing, and the top
+  one cost sixteen times the bottom one** (#347).
+
+  **What was wrong.** `Kindle` and `FrostWebs` are the only two of the 36 mutations the chips grant
+  that override `CanLevel()` to `false` — Kindle's cooldown and range are constants, Frost Webs sets
+  its range and area as literals. Neither reads its level anywhere. So a perfected frost webs chip
+  granted exactly what the basic one did, and after #338 repriced the catalogue it asked **320 water
+  for what 20 buys**. Nothing in the item said so, because the description line is written by
+  vanilla's `ModImprovedMutationBase` from whatever level the chip claims to give.
+
+  **Before → after.** All six chips now say the same true thing:
+
+  | | before | after |
+  |---|---|---|
+  | basic / upgraded / perfected kindle chip | 20 / 80 / 320 water · Kindle 2 / 4 / 6 | **20 / 20 / 20 · Kindle 2** |
+  | basic / upgraded / perfected frost webs chip | 20 / 80 / 320 water · Frost Webs 3 / 6 / 10 | **20 / 20 / 20 · Frost Webs 3** |
+  | all three display names, each line | basic / upgraded / perfected | **one name — "kindle chip", "frost webs chip"** |
+  | fire chipset's Kindle component | 1 / 2 / 3 | **1 at every grade** |
+  | ice chipset's Frost Webs component | 2 / 4 / 6 | **2 at every grade** |
+
+  The chipsets keep their prices. Two of their three mutations still scale, so the price is still
+  earned; only the dead component's stated level changes.
+
+  **The blueprints all stay.** `docs/STYLEGUIDE.md` §1.1b freezes a shipped blueprint name, and
+  removing one degrades any copy already in a save to the generic `Object`, silently. Three
+  blueprints under one display name is the honest description of three identical items, and their
+  item tiers still differ, which is what keeps each in its own loot pool.
+
+  **What did not change**: the tooltip's phrasing, which is vanilla's; the drop tables; and the
+  other 34 chip lines, which all grant mutations that do scale. I checked — those two are the only
+  ones, against 44 non-levelling mutations in the game's catalogue.
+
+- **(internal)** `docs/FEATURES.md` §3.3's chip price table still said 20 / 40 / 60 (#347). #338
+  moved the catalogue onto the chip curve and the table was not updated with it; the figures are now
+  20 / 80 / 320 for single chips and 80 / 160 / 320 for chipsets. Nothing checks that table —
+  `check_docs.py` verifies Appendix B's 144 rows, not the summary above them.
+
+- **(internal)** `check_docs.py`'s Appendix B check keys on **(display name, item tier)** rather
+  than the display name alone (#347). A display name is not unique — #347 made three blueprints
+  share one — and the old key let them overwrite each other, so the appendix could describe only
+  whichever parsed last. No row changed meaning; six now exist that could not before.
+
+- **(internal)** `docs/FEATURES.md` §3.2 records that **chip levels sum** on a mutation the
+  character already has, and why that is left alone (#350). It is vanilla's own behaviour: the
+  Enigma Cone and Enigma Cap both carry `ModImprovedConfusion` at Tier 3 on different slots, so the
+  base game ships a deliberate stacking pair. The rank cap `level / 2 + 1` then holds this mod to
+  the same ceiling of two useful sources — a third chip is worth nothing below character level 38.
+  Working in `docs/DESIGN_balance.md` §5.8.
 - **(internal)** `CONTRIBUTING.md` and `docs/RELEASING.md` say where an issue closed *without*
   shipping goes on the board: **straight to Done**.
 

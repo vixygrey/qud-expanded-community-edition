@@ -498,8 +498,14 @@ def _plain(text: str) -> str:
     return COLOUR_MARKUP.sub(r"\1", text or "").replace("{{", "").replace("}}", "")
 
 
-def chips_from_blueprints() -> dict[str, tuple[str, str, list[str]]]:
-    """Recompute Appendix B from the blueprints: name -> (item tier, value, grants).
+def chips_from_blueprints() -> dict[tuple[str, str], tuple[str, list[str]]]:
+    """Recompute Appendix B from the blueprints: (name, item tier) -> (value, grants).
+
+    Keyed on the pair rather than the display name alone, because a display name is not unique.
+    #347 flattened the three Kindle chips and the three Frost Webs chips onto one name each - they
+    grant the same thing, so they now say the same thing - and three blueprints sharing a name used
+    to overwrite each other here, leaving the appendix able to describe only whichever parsed last.
+    The item tier still separates them, because it is what puts each one in its own loot pool.
 
     Every column is data that was typed into the document by hand, and typed data drifts. Three
     rows still named `GasGeneration` months after #258 renamed it, and I corrected the three
@@ -519,7 +525,7 @@ def chips_from_blueprints() -> dict[str, tuple[str, str, list[str]]]:
         if found:
             granted[cs.stem] = found.group(1)
 
-    chips: dict[str, tuple[str, str, list[str]]] = {}
+    chips: dict[tuple[str, str], tuple[str, list[str]]] = {}
     for path in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
         try:
             root = ET.parse(path).getroot()
@@ -540,7 +546,7 @@ def chips_from_blueprints() -> dict[str, tuple[str, str, list[str]]]:
                 if tag.get("Name") == "Tier":
                     tier = tag.get("Value")
             if grants and name:
-                chips[name] = (tier, value, sorted(grants))
+                chips[(name, tier)] = (value, sorted(grants))
     return chips
 
 
@@ -570,18 +576,18 @@ def check_appendix_b(f: Findings) -> int:
             continue
         rows += 1
         name, tier, value, grants = cells
-        seen.add(name)
-        if name not in chips:
+        seen.add((name, tier))
+        if (name, tier) not in chips:
             f.add(
                 "appendix-b",
-                f"docs/FEATURES.md:{offset + 1}: no blueprint renders as {name!r}",
+                f"docs/FEATURES.md:{offset + 1}: no blueprint renders as {name!r} "
+                f"at item tier {tier}",
             )
             continue
-        want_tier, want_value, want_grants = chips[name]
+        want_value, want_grants = chips[(name, tier)]
         # Order-insensitive: a chipset grants three mutations and the document's order is its own.
         have_grants = sorted(g.strip() for g in grants.split(","))
         for label, have, want in (
-            ("item tier", tier, want_tier),
             ("value", value, want_value),
             ("grants", ", ".join(have_grants), ", ".join(want_grants)),
         ):
@@ -592,8 +598,12 @@ def check_appendix_b(f: Findings) -> int:
                     f"blueprints say {want!r}",
                 )
 
-    for missing in sorted(set(chips) - seen):
-        f.add("appendix-b", f"docs/FEATURES.md Appendix B has no row for {missing!r}")
+    for missing_name, missing_tier in sorted(set(chips) - seen):
+        f.add(
+            "appendix-b",
+            f"docs/FEATURES.md Appendix B has no row for {missing_name!r} "
+            f"at item tier {missing_tier}",
+        )
     return rows
 
 
