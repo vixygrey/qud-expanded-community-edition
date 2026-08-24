@@ -884,6 +884,39 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **(internal)** CI fails a pull request that says it only *advances* an issue while carrying a
+  closing link to it (#361).
+
+  `docs/LESSONS.md` has prescribed `gh pr view --json closingIssuesReferences` since #292, and a
+  habit is a check with an expiry date: I ran it on five consecutive pull requests, found nothing,
+  stopped, and the sixth closed #339 with a sentence that read *"No closing keyword — … I would
+  rather you close #339 than have a merge do it."* Charter rule 4 is explicit about where that
+  belongs — **"Keep new checks in the script rather than in prose."**
+
+  [`tools/check_pr_intent.py`](tools/check_pr_intent.py) compares the two machine-readable halves:
+  an issue named after `Part of`, `Advances` or `Why … stays open` — the three forms `LESSONS.md`
+  prescribes — must not also appear in `closingIssuesReferences`. It runs in the **PR conventions**
+  job, so no new required check and no new job.
+
+  **It catches all three instances this repository has recorded** — the denial in #286, the
+  narration in #292 and the delegation in #360 — and its tests hold those three bodies in their own
+  words, because a regular expression over prose that quietly stops matching would be worse than no
+  check at all: it would retire the manual habit too.
+
+  It is a script rather than a step body for the same reason. `LESSONS.md` now says both that the
+  check exists and that the manual look still matters, since a body carrying a closing reference and
+  saying nothing either way states no intent to contradict.
+
+- **(internal)** `skip-changelog` works whenever it is applied (#346). The changelog gate reads
+  `github.event.pull_request.labels`, and `labeled` was not in the workflow's trigger list — so
+  applying the label after the run fired could never satisfy it: no new run, and a manual re-run
+  replays the original payload, which was captured before the label existed. The check stayed red
+  with the label visibly applied, which is what `CONTRIBUTING.md` promises it will not do.
+
+  The workflow already documented this exact trap for the title check, which is why `edited` is
+  there. Labels have the same problem and did not get the same fix. `unlabeled` is in the list too,
+  so removing the label re-runs the gate rather than leaving a stale exemption.
+
 - **(internal)** `validate_mod.py` holds a merge to vanilla's value and resistances (#380). This is
   the check the revert in the same issue argued for, and it is the second half of the blind spot
   #354 fixed for tier detection — **both halves of `item-curve` skipped vanilla-named objects, and

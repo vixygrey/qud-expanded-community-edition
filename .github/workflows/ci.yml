@@ -6,8 +6,14 @@ on:
   # so retitling a PR to fix a failing title neither re-runs the job nor changes what a manual
   # re-run sees - a re-run replays the original payload. The check stays red until an unrelated
   # commit is pushed, which is a poor reason to make someone write one.
+  #
+  # `labeled` and `unlabeled` are here for the same reason (#346). The changelog gate reads
+  # `github.event.pull_request.labels`, so applying `skip-changelog` after the run fired could
+  # never satisfy it - no new run, and a manual re-run replays the original payload, so the check
+  # stayed red with the label visibly applied. Removing the label has to re-run it too, or a PR
+  # could be exempted and then un-exempted without the gate ever seeing the second half.
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
   push:
     branches: [main]
 
@@ -125,6 +131,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: github.event_name == 'pull_request'
+    # Above the workflow's `contents: read`, because two steps here read the pull request itself
+    # through the API: the maintainer-edits note, and #361's closing-link check, whose
+    # `closingIssuesReferences` is a GraphQL field rather than anything in the event payload.
+    # Read only - nothing in this job writes.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -158,6 +171,24 @@ jobs:
           else
             echo "::notice::Maintainer edits are disabled on this PR. That is fine and changes nothing about whether it can be merged. Enabling 'Allow edits from maintainers' just lets us rebase or add a changelog entry for you rather than asking; otherwise we cherry-pick your commit, which keeps your authorship either way."
           fi
+
+      # docs/LESSONS.md has prescribed `gh pr view --json closingIssuesReferences` since #292, and a
+      # habit is a check with an expiry date - I ran it on five consecutive pull requests, found
+      # nothing, stopped, and the sixth closed an issue whose body said it should not. Charter rule
+      # 4: keep new checks in the script rather than in prose. #361.
+      #
+      # `closingIssuesReferences` is a GraphQL field that GitHub resolves from the body's keywords,
+      # so this needs `gh` and a token - the event payload does not carry the resolved links. The
+      # body comes from the payload, which is why `edited` is in the trigger list above: a body
+      # edited to fix this failure has to re-run the job.
+      - name: Stated intent agrees with the closing links
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          closes=$(gh pr view "$PR" --json closingIssuesReferences --jq '.closingIssuesReferences')
+          printf '%s' "$BODY" | python3 tools/check_pr_intent.py --body-file - --closes-json "$closes"
 
       # CONTRIBUTING.md: every PR updates the changelog. It is where charter rule 2's causality
       # reaches players, who never read commit messages. Label 'skip-changelog' to opt out.
