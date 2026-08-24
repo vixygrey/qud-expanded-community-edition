@@ -396,44 +396,46 @@
 
   <population Name="Melee Weapons 1C" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Greataxe" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Vinereaper" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Halberd" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Rapier" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Katana" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze Maceth" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze War Hammer" />
-      <object Weight="14" Number="1" Blueprint="Raven_Bronze War Hammerth" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Greataxe" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Vinereaper" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Halberd" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Rapier" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Katana" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze Maceth" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze War Hammer" />
+      <object Weight="13" Number="1" Blueprint="Raven_Bronze War Hammerth" />
       <object Weight="4" Number="1" Blueprint="Raven_Bronze Wristblade" />
-      <object Weight="14" Number="1" Blueprint="Vixy_Bronze Quarterstaff" />
+      <object Weight="13" Number="1" Blueprint="Vixy_Bronze Quarterstaff" />
 
-      <object Weight="7" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="7" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="7" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="7" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="7" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="7" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="7" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="7" Number="1" Blueprint="Raven_Iron War Hammerth" />
-      <object Weight="7" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="6" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="6" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="6" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="6" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
       <object Weight="4" Number="1" Blueprint="Vixy_Bronze Spear" />
+      <object Weight="13" Number="1" Blueprint="Vixy_Bronze Glaive" />
     </group>
   </population>
 
   <population Name="Melee Weapons 1R" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Greataxe" />
-      <object Weight="10" Number="1" Blueprint="Iron Vinereaper" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Halberd" />
-      <object Weight="10" Number="1" Blueprint="Long Sword2th" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Rapier" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Katana" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Mace" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron War Hammerth" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Wristblade" />
-      <object Weight="10" Number="1" Blueprint="Raven_Iron Maceth" />
-      <object Weight="10" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
-      <object Weight="10" Number="1" Blueprint="Vixy_Iron Spear" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Greataxe" />
+      <object Weight="8" Number="1" Blueprint="Iron Vinereaper" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Halberd" />
+      <object Weight="8" Number="1" Blueprint="Long Sword2th" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Rapier" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Katana" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Mace" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron War Hammerth" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Wristblade" />
+      <object Weight="8" Number="1" Blueprint="Raven_Iron Maceth" />
+      <object Weight="8" Number="1" Blueprint="Vixy_Iron Quarterstaff" />
+      <object Weight="8" Number="1" Blueprint="Vixy_Iron Spear" />
+      <object Weight="18" Number="1" Blueprint="Vixy_Iron Glaive" />
     </group>
   </population>
 
@@ -451,6 +453,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Steel Halberd" />
       <object Weight="20" Number="1" Blueprint="Raven_Steel Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Steel Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Steel Glaive" />
     </group>
   </population>
 
@@ -469,6 +472,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Maceth" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Carbide Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Carbide Glaive" />
     </group>
   </population>
 
@@ -486,6 +490,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Katana" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Maceth" />
       <object Weight="20" Number="1" Blueprint="Vixy_Folded Carbide Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Folded Carbide Glaive" />
     </group>
   </population>
 
@@ -504,6 +509,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Greathammer" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Fullerite Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Fullerite Glaive" />
     </group>
   </population>
 
@@ -522,6 +528,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Crysteel Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Crysteel Glaive" />
     </group>
   </population>
 
@@ -540,6 +547,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Flawless Crysteel Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Flawless Crysteel Glaive" />
     </group>
   </population>
 
@@ -558,6 +566,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Greataxe" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Wristblade" />
       <object Weight="20" Number="1" Blueprint="Vixy_Zetachrome Spear" />
+      <object Weight="20" Number="1" Blueprint="Vixy_Zetachrome Glaive" />
     </group>
   </population>
 

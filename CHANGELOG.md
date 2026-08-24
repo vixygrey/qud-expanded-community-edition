@@ -261,6 +261,33 @@ recorded because contributors need them, not because subscribers do.
   line is now **nine near-identical items**, which is a content question rather than a defect (#381).
 
 ### Added
+- **Glaives** — a new nine-tier family, and the Axe tree's two-handed finesse weapon. **This
+  completes #342**: every melee tree now offers finesse at one hand and at two (#342).
+
+  **Why a glaive and not a halberd.** Of Pathfinder's three polearms, the glaive is the one whose
+  identity survives translation to Qud. A halberd's traits are **reach** and **versatile** — Qud has
+  no melee reach at all, and no per-swing damage-type toggle — so a Qud halberd is a halberd with
+  both its defining properties removed. The glaive's are flavour rather than mechanism, so nothing is
+  lost making one.
+
+  **What it costs.** The greataxe's die one tier behind, the same way the quarterstaff pays the maul.
+  That gives it a shape worth remembering: **a glaive hits exactly as hard as a one-handed battle axe
+  one tier above it.** It is also the lightest two-handed axe at every tier.
+
+  I should say plainly that neither the glaive nor the spear carries `finesse` in Pathfinder — the
+  two-handed finesse weapons there are both elven. Tagging these two is my call, resting on the rule
+  that a finesse weapon is light for its class, not on an imported trait.
+
+  **The art is mine** — `mod/Textures/items/Vixy_Glaive.png`, a broad single-edged blade with a
+  back-spur at the socket, so it reads as a chopping weapon beside the spear's thrusting point.
+
+  **One knock-on, and it is the third time.** The tier 0–1 melee tables were full again — `Melee
+  Weapons 1C` at 197 of 197 and `1R` at 120 of 120 after the spear. Fitting the bronze and iron
+  glaives in meant scaling this fork's own entries down a third time, so tier-0 weapons now sit at 12
+  where Mura left them at 16. Vanilla's entries are untouched throughout and every table stays under
+  the cap #386 set, but the low-tier melee pool is now demonstrably saturated: three families in a
+  row have had to buy their way in.
+
 - **Spears** — a new nine-tier family, and **the first two-handed weapon the Short Blades tree has
   ever had** (#342).
 
