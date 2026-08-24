@@ -152,8 +152,8 @@
       Tile="Items/sw_wedge3.bmp"
       DetailColor="C"
     />
-    <part Name="CyberneticsCreditWedge" Credits="10" />
-    <part Name="Commerce" Value="1550" />
+    <part Name="CyberneticsCreditWedge" Credits="3" />
+    <part Name="Commerce" Value="450" />
     <tag Name="NoEquip" Value="1" />
     <part Name="Description" Short="A tiny card of plastic." />
     <tag Name="NoSparkingQuest" />

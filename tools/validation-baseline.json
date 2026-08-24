@@ -29,11 +29,8 @@
    ]
   },
   "merge-value": {
-   "issue": "#334 and #335. The 47 grenades and 3 cybernetic implants are the two merged economies #380 did not touch, because each has an issue of its own that owns the whole question rather than only the price. They are listed here rather than exempted in the check, so closing either issue means clearing its rows - an exemption would have made them invisible and the issues quietly unfinishable.",
+   "issue": "#334. The 47 grenades are the one merged economy #380 did not touch, because #334 owns the whole question rather than only the price. Listed here rather than exempted in the check, so closing that issue means clearing these rows - an exemption would have made them invisible and the issue quietly unfinishable. The three cybernetic implants that sat here were cleared by #335, which is what a baseline row is supposed to end as.",
    "items": [
-    "mod/ObjectBlueprints/Cybernetics.xml: CrysteelHandBones is a merge priced at 360, but vanilla prices it 600 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
-    "mod/ObjectBlueprints/Cybernetics.xml: HighGradeDermalInsulation is a merge priced at 240, but vanilla prices it 180 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
-    "mod/ObjectBlueprints/Cybernetics.xml: OpticalMultiscanner is a merge priced at 240, but vanilla prices it 600 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
     "mod/ObjectBlueprints/Throwables.xml: AcidGasGrenade1 is a merge priced at 10, but vanilla prices it 20 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
     "mod/ObjectBlueprints/Throwables.xml: AcidGasGrenade2 is a merge priced at 20, but vanilla prices it 30 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
     "mod/ObjectBlueprints/Throwables.xml: AcidGasGrenade3 is a merge priced at 30, but vanilla prices it 40 - a merge keeps vanilla's value unless it also re-tiers the item (STYLEGUIDE 3.2, #380)",
