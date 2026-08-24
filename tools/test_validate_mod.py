@@ -462,6 +462,90 @@ class GradedUnlevellableChips(unittest.TestCase):
         self.assertEqual([c for c, _ in items], ["qud-api-snapshot"])
 
 
+class CSharpShapesAddedIn411(unittest.TestCase):
+    """#411 introduced two C# shapes neither check had seen, and both misread them.
+
+    Reported as findings on correct code, which is the failure mode that trains people to ignore a
+    check. Both fixes narrow the check rather than widening what it accepts.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _scripting(self, name: str, source: str) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp)
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        (scripting / name).write_text(source, encoding="utf-8")
+        return tmp
+
+    def _shape(self, source: str) -> list[str]:
+        tmp = self._scripting("Raven_Thing.cs", source)
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_serializable_shape(f)
+        return [c for c, _ in f.items]
+
+    def test_an_expression_bodied_property_is_not_a_field(self) -> None:
+        """It compiles to a get-only property with no backing storage, so nothing reaches a save."""
+        self.assertEqual(
+            self._shape(
+                "[Serializable]\npublic class Raven_Thing {\n"
+                '    protected override string VariantBlueprint => "Icy Vapor";\n}'
+            ),
+            [],
+        )
+
+    def test_a_real_instance_field_is_still_reported(self) -> None:
+        """The boundary. Narrowing the check must not stop it doing its job."""
+        self.assertEqual(
+            self._shape(
+                "[Serializable]\npublic class Raven_Thing {\n"
+                '    public string VariantBlueprint = "Icy Vapor";\n}'
+            ),
+            ["serializable-shape"],
+        )
+
+    def test_a_static_field_is_still_ignored(self) -> None:
+        self.assertEqual(
+            self._shape(
+                "[Serializable]\npublic class Raven_Thing {\n"
+                '    public static string Shared = "x";\n}'
+            ),
+            [],
+        )
+
+    def _mutation(self, source: str) -> list[str]:
+        tmp = self._scripting("Raven_ModThing.cs", source)
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_mutation_type_arguments(f)
+        return [c for c, _ in f.items]
+
+    def test_a_type_parameter_is_not_a_mutation_name(self) -> None:
+        """A generic base passes T straight through, and a literal read reports 'T' as unknown."""
+        self.assertEqual(
+            self._mutation(
+                "public abstract class Raven_Base<T> : ModImprovedMutationBase<T> "
+                "where T : BaseMutation, new() { }"
+            ),
+            [],
+        )
+
+    def test_a_real_mutation_name_is_still_checked(self) -> None:
+        """The boundary again: the #226 defect must still be caught through a generic file."""
+        self.assertIn(
+            "unknown-mutation",
+            self._mutation(
+                "public abstract class Raven_Base<T> : ModImprovedMutationBase<T> { }\n"
+                "public class Raven_ModThing : ModImprovedMutationBase<GasGeneration> { }"
+            ),
+        )
+
+
 class VersionAgreesWithChangelog(unittest.TestCase):
     """#309. The version lives in three places by hand and nothing held any two together.
 

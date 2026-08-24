@@ -489,7 +489,13 @@ def check_required_checks(f: Findings) -> None:
             )
 
 
-MUTATION_PART = re.compile(r"ModImprovedMutationBase<(\w+)>")
+# The mutation a chip part grants, read off whichever base it inherits. #411 added
+# Raven_ModVariantMutationBase for the two mutations that need a variant, and matching only the
+# stock name silently dropped both from Appendix B - the rows stopped resolving to a blueprint
+# rather than reporting a wrong figure, which is the quieter of the two failures.
+MUTATION_PART = re.compile(
+    r"(?:ModImprovedMutationBase|Raven_ModVariantMutationBase)<(\w+)>"
+)
 COLOUR_MARKUP = re.compile(r"\{\{[^|}]*\|([^}]*)\}\}")
 
 

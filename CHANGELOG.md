@@ -884,6 +884,52 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **Chip-granted flaming ray and freezing ray could not be used at all** (#411). Reported by a
+  player, and it is the first defect in this fork found by someone playing rather than by an audit.
+
+  The symptom was *"Your is too damaged to do that"* — and the missing word is the whole diagnosis.
+  The game builds that sentence as `"Your " + BodyPartType + " is too damaged to do that!"`, so the
+  gap is a **null body part rendered into the message**.
+
+  Both mutations derive the body part they fire from out of a chosen *variant*.
+  `BaseMutation.Create` calls `SetVariant` **only when a variant is supplied**, and the stock chip
+  base class passes `null` — so the derivation never ran. The mutation's own fallback looks like it
+  should cover this and does not: it assigns the `Variant` field directly rather than going through
+  `SetVariant`, so the body part stays unset even once a variant exists.
+
+  **12 blueprints were affected** — three flaming ray chips, three freezing ray chips, and the three
+  grades of each of the Fire and Ice chipsets. Every other chip in the catalogue is fine: 34 of the
+  36 mutations this mod grants have no variants at all.
+
+  Both parts now pass their variant — `Ghostly Flames` and `Icy Vapor`, each the only one its
+  mutation has, both worn on the hands — and then rebuild the body's default equipment, which is what
+  registers the slot and creates the object. Setting the body part without that would have moved the
+  failure rather than fixed it.
+
+  **Vanilla never reaches this**, which is why it survived: its only three items using that base
+  class are the Enigma Cone, the Enigma Cap and the Leyline Puppeteers, granting Confusion and
+  Temporal Fugue — neither has variants.
+
+  Worth noting where this leaves the two families: with #347, Fire and Ice each had **two of their
+  three mutations defective**. Kindle and Frost Webs ignored their grades; these two did not work at
+  all.
+
+- **(internal)** Three checks learned C# shapes they had never seen, all introduced by #411's fix and
+  all reported against correct code:
+
+  - `serializable-shape` read an **expression-bodied property** as an instance field. `=>` members
+    have no backing storage and reach no save, so they are now skipped — while a real field, and a
+    static one, still behave exactly as before.
+  - `unknown-mutation` read the **type parameter** `T` in a generic base as a mutation name and
+    reported that nothing declares it. Type parameters declared on the enclosing class are now
+    excluded, and #226's actual defect is still caught through the same file.
+  - `check_docs`'s Appendix B matched only the stock base class name, so both ray chip lines
+    **silently stopped resolving** to a blueprint. That is the quieter failure of the two: a row that
+    matches nothing rather than a figure that disagrees.
+
+  A finding reported against correct code is how a check trains people to ignore it, so each fix
+  narrows the check rather than widening what it tolerates.
+
 - **The Support Battalion's skill grant is the trade it always claimed to be, and three
   undocumented skill cuts go back to vanilla** (#330, #331).
 
