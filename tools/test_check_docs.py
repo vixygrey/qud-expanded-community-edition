@@ -565,6 +565,69 @@ class CheckNameSources(unittest.TestCase):
         )
 
 
+class CheckNameRegistry(unittest.TestCase):
+    """#402. The reverse direction was never checked, so a new check could ship unlisted.
+
+    That is the quieter half: a documented name that does not exist is loud the moment anyone
+    follows it, but an emitted name nobody documented is silent — the registry simply reads as
+    complete. Fifteen names had accumulated that way.
+    """
+
+    def test_the_registry_parses_and_is_not_empty(self) -> None:
+        """Guards against the vacuous pass: if the section heading ever moves, an empty set would
+        make every emitted name a finding, and a None would make none of them one."""
+        names = check_docs.registered_check_names()
+        self.assertIsNotNone(names, "docs/STYLEGUIDE.md §10.1 could not be parsed")
+        self.assertGreater(len(names), 40)
+        self.assertIn("item-curve", names)
+        self.assertIn("appendix-b", names)
+
+    def test_the_registry_does_not_swallow_the_table_above_it(self) -> None:
+        """§10 maps rules to enforcers and names things that are not checks — `ruff`, `prettier`,
+        `gitleaks`. Parsing from the heading rather than the whole section keeps them out."""
+        names = check_docs.registered_check_names()
+        for not_a_check in ("ruff", "prettier", "gitleaks", "typos"):
+            self.assertNotIn(not_a_check, names)
+
+    def test_the_repository_agrees_with_itself_today(self) -> None:
+        f = check_docs.Findings()
+        check_docs.check_check_names(f)
+        self.assertEqual([i for i in f.items if i[0] == "check-names"], [])
+
+    def _with_registry(self, names: list[str]) -> list[str]:
+        """Run the check against a synthetic registry holding exactly `names`."""
+        rows = "\n".join(f"| `{n}` | `validate_mod.py` | x |" for n in names)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "docs").mkdir()
+            (root / "tools").mkdir()
+            (root / "docs" / "STYLEGUIDE.md").write_text(
+                "### 10.1 Every check name\n\n| Check | Emitted by | What |\n|---|---|---|\n"
+                + rows
+                + "\n\n### 10.2 After\n",
+                encoding="utf-8",
+            )
+            for source in ("validate_mod.py", "check_build_log.py", "check_docs.py"):
+                (root / "tools" / source).write_text(
+                    'f.add("real-check", "x")\n', encoding="utf-8"
+                )
+            with chdir(root):
+                f = check_docs.Findings()
+                check_docs.check_check_names(f)
+                return [d for _, d in f.items]
+
+    def test_an_emitted_name_missing_from_the_registry_is_reported(self) -> None:
+        found = self._with_registry(["something-else"])
+        self.assertTrue(any("emits the check 'real-check'" in d for d in found))
+
+    def test_a_registered_name_nothing_emits_is_reported(self) -> None:
+        found = self._with_registry(["real-check", "imaginary-check"])
+        self.assertTrue(any("'imaginary-check'" in d for d in found))
+
+    def test_agreement_is_quiet(self) -> None:
+        self.assertEqual(self._with_registry(["real-check"]), [])
+
+
 class HumanoidCensusClaims(unittest.TestCase):
     """The humanoid subset shares a denominator-shaped phrasing with the whole-bestiary claims,
     which is exactly how a figure gets quoted against the wrong population."""

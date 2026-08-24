@@ -830,8 +830,43 @@ def check_changelog_sections(f: Findings) -> None:
             seen[name] = lineno
 
 
+# The registry in docs/STYLEGUIDE.md §10.1, which lists every name a script in tools/ can report.
+# Delimited by its own heading so the parse cannot drift onto the rule-to-enforcer table above it,
+# which is a different thing and deliberately incomplete.
+CHECK_REGISTRY = ("docs/STYLEGUIDE.md", "### 10.1 Every check name")
+
+
+def registered_check_names() -> set[str] | None:
+    """Every check name §10.1 lists, or None when the section cannot be found."""
+    doc = Path(CHECK_REGISTRY[0])
+    if not doc.is_file():
+        return None
+    text = doc.read_text()
+    start = text.find(CHECK_REGISTRY[1])
+    if start < 0:
+        return None
+    end = text.find("\n### ", start + len(CHECK_REGISTRY[1]))
+    section = text[start : end if end > 0 else len(text)]
+    return {
+        m.group(1)
+        for line in section.splitlines()
+        if line.startswith("| `")
+        for m in [re.match(r"\|\s*`([a-z]+(?:-[a-z]+)*)`", line)]
+        if m
+    }
+
+
 def check_check_names(f: Findings) -> None:
-    """A doc naming a check that does not exist teaches a contributor a false name."""
+    """Check names and the documents must agree, in both directions.
+
+    A document naming a check that does not exist teaches a contributor a false name — that is the
+    mistake #100 made, writing `reachability` where the validator emits `unreachable`.
+
+    The reverse went unchecked until #402, and it is the quieter half: a check the tools emit that no
+    document lists is **silent**. The registry simply reads as complete when it is not, and whoever
+    trusts it never learns the check is there. Fifteen names had accumulated that way, including
+    `dead-chip-grade`, which shipped unlisted in #347 and was caught by hand.
+    """
     # Every script that emits named checks, not just the validator: the moment one of them is
     # left out, documenting its checks correctly reports as an error. That is a worse failure
     # than the one this guards against, because it punishes the person doing the right thing.
@@ -871,6 +906,26 @@ def check_check_names(f: Findings) -> None:
                     "check-names",
                     f"{doc}: calls `{name}` a check, but no script in tools/ emits that name",
                 )
+
+    # The other direction: every emitted name must be in the registry.
+    registered = registered_check_names()
+    if registered is None:
+        f.add(
+            "check-names",
+            f"{CHECK_REGISTRY[0]} has no '{CHECK_REGISTRY[1]}' section to check names against",
+        )
+        return
+    for name in sorted(emitted - registered):
+        f.add(
+            "check-names",
+            f"tools/ emits the check {name!r}, but {CHECK_REGISTRY[0]} §10.1 does not list it - "
+            f"a check no document names is one nobody can look up",
+        )
+    for name in sorted(registered - emitted):
+        f.add(
+            "check-names",
+            f"{CHECK_REGISTRY[0]} §10.1 lists {name!r}, but no script in tools/ emits it",
+        )
 
 
 def check_preserved(f: Findings) -> None:
