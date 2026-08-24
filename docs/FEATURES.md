@@ -460,7 +460,7 @@ Conventions the mod follows:
 | Flawless Crysteel Greataxe | new | 7 | 1d8+5 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Greataxe | new | 8 | 1d8+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
 
-#### Halberds (Axe, two-handed, Agility) — **new family**
+#### Halberds (Axe, two-handed, Strength) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -472,7 +472,7 @@ Conventions the mod follows:
 | Fullerite Halberd | new | 5 | 1d7+3 | +1 | 6 |  | 160 | 9 | yes |
 | Vibro Halberd | new | 5 | 1d6+3 | +0 | 0 |  | 300 | 7 | yes |
 
-#### Vinereapers (Axe, one-handed, Agility) — vanilla family, completed to all tiers
+#### Vinereapers (Axe, one-handed, Finesse) — vanilla family, completed to all tiers
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -487,7 +487,7 @@ Conventions the mod follows:
 | Flawless Crysteel Vinereaper | new | 7 | 1d9+2 | +0 | 8 |  | 640 | 3 |  |
 | Zetachrome Vinereaper | new | 8 | 1d10+3 | +0 | 9 |  | 1280 | 2 |  |
 
-#### Katanas (Long Blades, two-handed, Agility) — **new family**
+#### Katanas (Long Blades, two-handed, Finesse) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -502,7 +502,7 @@ Conventions the mod follows:
 | Flawless Crysteel Katana | new | 7 | 2d10 | +1 | 8 |  | 640 | 4 | yes |
 | Zetachrome Katana | new | 8 | 2d12 | +1 | 9 |  | 1280 | 3 | yes |
 
-#### Rapiers (Long Blades, one-handed, Agility) — **new family**
+#### Rapiers (Long Blades, one-handed, Finesse) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -531,31 +531,31 @@ Conventions the mod follows:
 | Flawless Crysteel Wristblade | new | 7 | 2d4+1 | +0 | 8 | (inh) | 640 | 1 |  |
 | Zetachrome Wristblade | new | 8 | 2d6 | +0 | 9 | (inh) | 1280 | 1 |  |
 
-#### Maces, one-handed (Cudgel, Strength)
+#### Maces, one-handed (Cudgel, Finesse)
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 5 | 5 |  |
-| Iron Mace | new | 1 | 2 | +0 | 2 | (inh) | 10 | 4 |  |
-| Carbide Mace | new | 3 | 2d3 | +0 | 4 | (inh) | 40 | 6 |  |
-| Folded Carbide Mace | new | 4 | 2d4 | +0 | 5 | (inh) | 80 | 5 |  |
-| Fullerite Mace | new | 5 | 2d4+1 | +0 | 6 | (inh) | 160 | 7 |  |
-| Zetachrome Mace | new | 8 | 3d4+1 | +0 | 9 | (inh) | 1280 | 3 |  |
+| Mace2 | merge | 0 | 1d3 | +0 | 1 | (inh) | 5 | 3 |  |
+| Iron Mace | new | 1 | 2 | +0 | 2 | (inh) | 10 | 2 |  |
+| Carbide Mace | new | 3 | 2d3 | +0 | 4 | (inh) | 40 | 4 |  |
+| Folded Carbide Mace | new | 4 | 2d4 | +0 | 5 | (inh) | 80 | 3 |  |
+| Fullerite Mace | new | 5 | 2d4+1 | +0 | 6 | (inh) | 160 | 5 |  |
+| Zetachrome Mace | new | 8 | 3d4+1 | +0 | 9 | (inh) | 1280 | 2 |  |
 
 #### Maces, two-handed (Cudgel, Strength) — **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
-| Bronze Maceth | new | 0 | 2d2 | +1 | 1 | (inh) | 5 | 8 | yes |
-| Iron Maceth | new | 1 | 2d2+1 | +1 | 2 | (inh) | 10 | 7 | yes |
-| Steel Maceth | new | 2 | 3d2 | +1 | 3 | (inh) | 20 | 7 | yes |
-| Carbide Maceth | new | 3 | 2d4+1 | +1 | 4 | (inh) | 40 | 9 | yes |
-| Folded Carbide Maceth | new | 4 | 2d6 | +1 | 5 | (inh) | 80 | 8 | yes |
-| Crysteel Maceth | new | 6 | 3d4+1 | +1 | 7 | (inh) | 320 | 6 | yes |
-| Flawless Crysteel Maceth | new | 7 | 3d6 | +1 | 8 | (inh) | 640 | 6 | yes |
+| Bronze Maceth | new | 0 | 2d2 | +1 | 1 | (inh) | 5 | 6 | yes |
+| Iron Maceth | new | 1 | 2d2+1 | +1 | 2 | (inh) | 10 | 5 | yes |
+| Steel Maceth | new | 2 | 3d2 | +1 | 3 | (inh) | 20 | 5 | yes |
+| Carbide Maceth | new | 3 | 2d4+1 | +1 | 4 | (inh) | 40 | 7 | yes |
+| Folded Carbide Maceth | new | 4 | 2d6 | +1 | 5 | (inh) | 80 | 6 | yes |
+| Crysteel Maceth | new | 6 | 3d4+1 | +1 | 7 | (inh) | 320 | 5 | yes |
+| Flawless Crysteel Maceth | new | 7 | 3d6 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Maceth | new | 8 | 4d6 | +1 | 9 | (inh) | 1280 | 5 | yes |
 
-#### War hammers (Cudgel, Agility)
+#### War hammers (Cudgel, Strength)
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -567,7 +567,7 @@ Conventions the mod follows:
 | Crysteel War Hammer | new | 6 | 2d6 | +0 | 7 |  | 320 | 3 |  |
 | Flawless Crysteel War Hammer | new | 7 | 3d4 | +0 | 8 |  | 640 | 3 |  |
 
-#### Greathammers (Cudgel, Agility)
+#### Greathammers (Cudgel, Strength)
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -2010,11 +2010,11 @@ not touch that field (the vanilla value is inherited).
 | ArmDagger4 | 4 | 2d3 |  | 5 |  | 75 | 1 |
 | BaseCudgel |  |  |  |  |  |  | 3 |
 | Club | 0 |  |  |  |  | 2 | 3 |
-| Mace2 | 0 | 1d3 |  | 1 |  | 5 | 5 |
-| Steel Hammer | 2 | 2d2 |  | 3 |  | 20 | 4 |
-| Cudgel5th | 5 | 3d4 | 1 | 6 |  | 160 | 11 |
-| Cudgel6 | 6 | 2d6 |  | 7 |  | 320 | 3 |
-| Cudgel7 | 7 | 3d4 |  | 8 |  | 640 | 3 |
+| Mace2 | 0 | 1d3 |  | 1 |  | 5 | 3 |
+| Steel Hammer | 2 | 2d2 |  | 3 |  | 20 | 2 |
+| Cudgel5th | 5 | 3d4 | 1 | 6 |  | 160 | 8 |
+| Cudgel6 | 6 | 2d6 |  | 7 |  | 320 | 2 |
+| Cudgel7 | 7 | 3d4 |  | 8 |  | 640 | 2 |
 | Rhinox-Skull Maul | 6 | 3d4+1 | 2 | 7 |  | 480 | 10 |
 | Warhammer2 | 1 | 2 |  | 2 |  | 10 | 3 |
 | Steel War Hammer | 2 | 2d2 |  | 3 |  | 20 | 3 |
