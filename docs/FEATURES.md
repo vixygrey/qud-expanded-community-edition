@@ -20,7 +20,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New item blueprints** | **400** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **213** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
-| **New body system** | "Chip Interface" slots — 1 for all humanoids, 2 for True Kin, 4 for Psionic Adepts |
+| **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
@@ -51,7 +51,8 @@ Every genotype gains these starting skills:
 - **Cooking and Gathering** (`CookingAndGathering`)
 - **Meal Preparation** (`CookingAndGathering_MealPreparation`) — the base skill is required for this to function, which is why both are granted
 
-Every humanoid also gains **one Chip Interface slot** (see §3).
+Every humanoid **NPC** also gains one Chip Interface slot (see §3). A Mutated Human player does
+not, though vanilla's genotype shares that anatomy — see §3.1.
 
 ### 1.2 Mutated Human
 
@@ -218,7 +219,7 @@ and then attached to anatomies:
 
 | Anatomy | Chip Interface slots | Notes |
 |---|---|---|
-| `Humanoid` (merged) | **1** | Applies to every humanoid in the game, NPCs included |
+| `Humanoid` (merged) | **1** | Every humanoid NPC. A Mutated Human player shares this anatomy and has the slot taken off at chargen — see below |
 | `TrueKin` (new) | **2** | Full custom anatomy; True Kin genotype points at this |
 | `PsionicAdept` (new) | **4** | Psionic Adept anatomy |
 
@@ -227,6 +228,18 @@ and then attached to anatomies:
 > Neither was accurate: the slot takes 108 chips against 36 chipsets, and 13 of the 36 mutations
 > the chips grant are *physical* rather than mental. It is now **"Chip Interface"** — true of the
 > whole catalogue, and consistent with the technological fiction in the chips' own description.
+
+> ⚪ **A Mutated Human gets no slot (#353).** Vanilla's Mutated Human is `BodyObject="Humanoid"`, so
+> the merge that gives every humanoid *NPC* a slot gave the mutant player one as a side-effect.
+> Nobody chose that, and #352 found it made the mutant the **strongest chip user in the game**: a
+> chip's level is a tracker that sums with a mutation's inherent `BaseLevel` before the rank cap, so
+> one slot on a genotype that already mutates outperforms four on the genotype the chips were built
+> for. It also contradicts §3's own statement of what chips are for — *"genotypes that cannot
+> mutate"*. So `Raven_ChipSlotPlayerMutator` removes it at character creation. The anatomy is
+> unchanged, because NPCs still get theirs and the type string has to stay live for the other two.
+>
+> **Existing characters keep it.** `IPlayerMutator.mutate` runs at chargen only, so a Mutated Human
+> already in a save keeps the slot and anything in it. Nothing is orphaned.
 
 The `TrueKin` and `PsionicAdept` anatomies are otherwise identical to vanilla Humanoid (Head/Face,
 Back, two Arms with Hands, two Missile Weapon slots, Hands, Feet). Two matching creature
@@ -1820,7 +1833,7 @@ someone rediscover the problem from scratch.
 | 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/RangedWeapons.xml` |
 | 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
-| 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world | `Bodies.xml` |
+| 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world. The player-side half of that blast radius is settled: vanilla's Mutated Human shares the anatomy, so the merge gave the mutant player a slot as a side-effect, and #353 takes it back off at chargen (§3.1). | `Bodies.xml` |
 
 ### Things the changelog references that are **not** in this folder
 
@@ -1942,7 +1955,8 @@ rather than opted out of; and graded burden, which is a genuinely new opinion th
 rather than anything the mod already was.
 
 > ✅ **Verified in game by the maintainer: eleven options on 2026-08-16, graded burden on
-> 2026-08-23.** Still the only evidence
+> 2026-08-23.** ⚠️ **The Chip Interface option is due a re-check**: #353 narrowed it to True Kin
+> only, so the 2026-08-16 pass no longer covers what it does. Still the only evidence
 > that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
 > locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
 > proves the code builds, not that an option does the right thing to a run. CodeQL cannot cover the C#
@@ -1962,7 +1976,7 @@ rather than anything the mod already was.
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
-| your own Chip Interface slots | Checkbox | **Yes** | The player's slots — 1 mutant, 2 True Kin. §3.1. |
+| True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing here ever fills those slots, so the reason to turn it off is to stop another mod — or a later version of this one — being able to. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip

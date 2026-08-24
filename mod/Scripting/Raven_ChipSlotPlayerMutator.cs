@@ -7,8 +7,7 @@ using XRL.World.Parts;
 namespace QudExpandedCE
 {
     /// <summary>
-    /// Corrects the player's Chip Interface slots at character creation, in the one case the
-    /// anatomy edits in Raven_Options cannot cover on their own.
+    /// Takes the shared Chip Interface slot off a Mutated Human at character creation.
     ///
     /// The player's body comes from their genotype's anatomy, and only one of those is
     /// player-exclusive:
@@ -17,11 +16,16 @@ namespace QudExpandedCE
     ///   True Kin       -> "TrueKin"      this mod's own; no vanilla creature uses it
     ///   Psionic Adept  -> "PsionicAdept" this mod's own; deliberately never touched
     ///
-    /// So the True Kin and Psionic Adept cases are already right by the time a body is built.
-    /// A Mutated Human, though, gets whatever the *NPC* option left on "Humanoid" - which is
-    /// wrong whenever the two options disagree. Without this, turning off chip slots for NPCs
-    /// would silently take a Mutated Human player's slot as well, which is not what the option
-    /// says it does.
+    /// The merge that gives every humanoid *NPC* a slot therefore gives the Mutated Human player
+    /// one as a side-effect. Nobody chose that, and #352 found it made the mutant the strongest
+    /// chip user in the game: a chip's level is a tracker that sums with a mutation's inherent
+    /// BaseLevel before the rank cap, so one slot on a genotype that already mutates outperforms
+    /// four on the genotype the chips were built for. docs/FEATURES.md 3 states the system's
+    /// purpose as granting mutations "to genotypes that cannot mutate", which excludes this one
+    /// by its own wording. So the slot goes, and #353 records the decision.
+    ///
+    /// The anatomy cannot express it - "Humanoid" is one record and NPCs still need their slot -
+    /// which is why this class exists at all.
     ///
     /// Charter rule 5: no file I/O, no network, no reflection, no Harmony. This reads two
     /// options and adds or removes one body part on a single object.
@@ -39,16 +43,6 @@ namespace QudExpandedCE
 
         public void mutate(GameObject player)
         {
-            bool wanted = Raven_Options.PlayerChipSlots;
-
-            // When both options agree, the anatomy the body was just built from already matches
-            // what the player asked for, and there is nothing to correct. This is the common
-            // case - both options default on - so it is checked first and costs nothing.
-            if (wanted == Raven_Options.NPCChipSlots)
-            {
-                return;
-            }
-
             Body body = player?.GetPart<Body>();
             BodyPart root = body?.GetBody();
             if (root == null)
@@ -58,26 +52,21 @@ namespace QudExpandedCE
 
             List<BodyPart> existing = FindChipSlots(root);
 
-            // A Psionic Adept is never adjusted. Its anatomy is its own and is not governed by
-            // either option, so any slots found here are the genotype's four, not the shared
-            // Humanoid one. Detecting that by slot count rather than by genotype name keeps this
-            // working if the genotype is ever renamed again.
-            if (existing.Count > 1)
+            // Exactly one slot means the shared Humanoid one, which is the only case here.
+            // The counts a player can reach are fixed by the anatomies and the two options:
+            //
+            //   Mutated Human  1 (NPC option on) or 0 (off)
+            //   True Kin       2 (player option on) or 0 (off)
+            //   Psionic Adept  4, always - its anatomy is governed by neither option
+            //
+            // So one is unambiguous. Counting rather than reading the genotype name keeps this
+            // working if the genotype is ever renamed again, which it has been once already.
+            if (existing.Count != 1)
             {
                 return;
             }
 
-            if (wanted && existing.Count == 0)
-            {
-                root.AddPart(ChipSlot);
-            }
-            else if (!wanted && existing.Count > 0)
-            {
-                foreach (BodyPart slot in existing)
-                {
-                    root.RemovePart(slot, true);
-                }
-            }
+            root.RemovePart(existing[0], true);
         }
 
         private static List<BodyPart> FindChipSlots(BodyPart root)

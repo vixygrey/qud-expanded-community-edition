@@ -195,14 +195,14 @@
 
   <option
     ID="OptionQudExpandedCEChipSlotsPlayer"
-    DisplayText="{{C|Qud Expanded}}: your own Chip Interface slots"
+    DisplayText="{{C|Qud Expanded}}: True Kin Chip Interface slots"
     Category="Mods"
     Type="Checkbox"
     Default="Yes"
-    SearchKeywords="qud expanded chip interface slot chargen psionic implant"
+    SearchKeywords="qud expanded chip interface slot chargen psionic implant true kin"
   >
     <helptext>
-            Gives your character the Chip Interface slots this mod grants: {{G|1}} for a Mutated Human, {{G|2}} for a True Kin. Psionic Adepts are unaffected - their {{G|4}} are the genotype.
+            Gives a True Kin the {{G|2}} Chip Interface slots this mod grants them. Psionic Adepts are unaffected - their {{G|4}} are the genotype. A Mutated Human has none either way: chips grant mutations to genotypes that cannot mutate, and that one can.
 
             {{y|Set this before creating a character.}} A body is built once, at character creation, so this cannot change a character who already exists.
         </helptext>

@@ -109,8 +109,6 @@ namespace QudExpandedCE
         /// </summary>
         private const string MenacingStareInfo = "May use {{r|Menacing Stare}}";
         private const string JoppaReputationInfo = "+300 reputation with {{C|Joppa}}";
-        private const string MutantChipSlotInfo =
-            "{{C|1}} Chip Interface slot; {{W|Ego}} raises the mental mutations chips grant";
         private const string TrueKinChipSlotInfo =
             "{{C|2}} Chip Interface slots; {{W|Ego}} raises the mental mutations chips grant";
 
@@ -420,20 +418,19 @@ namespace QudExpandedCE
         /// on. Charter rule 6 makes these options a promise, and the panel is where a player reads
         /// it while choosing.
         ///
-        /// Only this mod's own four lines are touched. Rebuilding the list from a captured copy
+        /// Only this mod's own three lines are touched. Rebuilding the list from a captured copy
         /// would be simpler and would discard <extrainfo> another mod had added since, which
         /// charter rule 1 does not allow.
         ///
-        /// Both chip lines follow the player's option rather than the NPC one, even though the
-        /// Mutated Human's slot comes from the shared Humanoid anatomy that SetChipSlots governs
-        /// with the NPC option: Raven_ChipSlotPlayerMutator corrects the player's own slot to
-        /// PlayerChipSlots afterwards, so that is what the reader of this panel ends up with.
+        /// There is no Mutated Human chip line any more. #353 took that genotype's slot away, so
+        /// a line describing one would promise something chargen will not deliver - which is the
+        /// defect #275 was about, arriving from the other direction. The remaining chip line is
+        /// the True Kin's, and it follows the player option, which after #353 governs nothing else.
         /// </summary>
         private static void ApplyChargenInfo()
         {
             SetChargenInfo(Mutant, MenacingStareInfo, Enabled(StartingSkillsID, "Yes"));
             SetChargenInfo(Mutant, JoppaReputationInfo, Enabled(StartingReputationID, "Yes"));
-            SetChargenInfo(Mutant, MutantChipSlotInfo, PlayerChipSlots);
             SetChargenInfo(TrueKin, TrueKinChipSlotInfo, PlayerChipSlots);
         }
 
