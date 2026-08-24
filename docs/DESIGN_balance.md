@@ -252,14 +252,34 @@ rolls, but the same modifier for both.* Four things make it work:
 - a **property on a published, closed list** — dagger, dart, rapier, scimitar, shortsword, whip —
   not a per-item stat override
 - a **choice, not a swap**; a Strength fighter with a rapier still uses Strength
-- **light one-handed piercing or slashing only**. Finesse never coexists with `heavy` or
-  `two-handed`. There is no finesse greataxe, maul or halberd, by rule
+- **light one-handed piercing or slashing only.** In 5e, finesse never coexists with `heavy` or
+  `two-handed`. There is no finesse greataxe, maul or halberd in *that* system, by rule
 - **paid for in the damage die.** Finesse tops out at d8; Strength-only martial weapons get d10,
   d12, 2d6, plus reach and versatile
 
 And then the warning, which is the more useful half: 5e is the system where **Dexterity became the
 god stat** — AC, initiative, the three saves that matter, Stealth, ranged attacks, *and* finesse
 melee. That critique is as old as the edition and it was never fixed. Finesse is where it came from.
+
+**The one-handed clause is 5e's rule, not the genre's, and an earlier version of this section said
+otherwise.** I wrote "finesse never coexists with two-handed" as though it were universal, and used
+it to rule the two-handed families out of the split in #342. Pathfinder disproves it:
+
+| | Elven Branched Spear | Elven Curve Blade |
+|---|---|---|
+| Damage | 1d6 P | 1d8 S |
+| Group | Spear | Sword |
+| Hands | **2** | **2** |
+| Traits | Uncommon, Deadly d8, **Elf**, **Finesse**, Reach | Uncommon, **Elf**, **Finesse**, Forceful |
+
+Both are elf weapons, and that is the logic rather than an accident — elven craft makes a two-handed
+weapon light and fine enough to reward Dexterity. **So the real constraint was never the hand count.
+It is that a finesse weapon must be light for its class**: a one-handed one sits below one-handed
+norms, a two-handed one below two-handed norms.
+
+That replacement rule is the better one, because it is the same principle already doing work
+elsewhere in this fork — it is why the mace ladder sits a pound below the war hammers. Two decisions,
+one reason. `docs/STYLEGUIDE.md` §3.2 carries the rule; this section carries why.
 
 ### 3.4 What Pathfinder does — the split
 
