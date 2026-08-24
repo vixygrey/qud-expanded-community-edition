@@ -303,6 +303,20 @@ possible in practice. Match them when adding anything.
   reverts them, so don't read them as precedent.
 - **Vibro weapons:** tier 5, value 300, `ChargeUse="100"`, bits `0015`,
   `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`.
+- **A tool is found at low tiers and built at high ones.** Where a line is an implement rather than a
+  weapon, it stops appearing in the loot tables above the tier vanilla itself stopped at, and takes a
+  `TinkerItem` instead. Nobody forges a farming tool out of crysteel, but a tinker with odd
+  priorities can. The vinereaper is the case: vanilla ships it at iron and steel only, so tiers 0–2
+  stay in the tables and 3–8 are tinker-only.
+
+  **This is not a way around `unreachable`.** That check accepts "in a population table, *or*
+  tinkerable", and the second half is real: `TinkerData.TinkerRecipes` scans every blueprint carrying
+  a `TinkerItem`, and `DataDisk` draws from that list filtered by tier, so the recipes turn up on
+  found disks gated by Tinkering rank. **Bits are `000` plus the item's own tier** — three scrap bits
+  and one of its tier — which is vanilla's commonest shape at four of the six tiers this covers.
+
+  **Never delete the high-tier blueprints instead.** §1.1b freezes them, and a save holding one
+  would silently degrade to the generic `Object`.
 - **Prefer `Load="Merge"`** over redeclaring a vanilla object. The Artifact tables were the one
   place this was violated; they became merges in #34, and `tools/validate_mod.py`'s
   `merge-discipline` check holds the line now. Don't add new violations for it to catch.

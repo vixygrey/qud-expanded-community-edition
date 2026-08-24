@@ -15,6 +15,28 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **The vinereaper is a sickle** — it takes the `Finesse` tag, and stops being found as loot above
+  steel (#342).
+
+  **What it is.** Vanilla describes it as *"wrought iron was moulded to a **crescent** for **scything
+  the rough hides of watervine**"* — a crescent blade named for the crop it harvests. That is a
+  sickle, and Pathfinder's sickle carries agile, finesse and trip. So the whole line is now a finesse
+  weapon: with the Axe tree's Finesse power bought, penetration rolls use your Agility modifier
+  whenever it beats your Strength modifier.
+
+  **Where you find it.** Vanilla ships a vinereaper at **iron and steel only** — the line stops at
+  steel, because a farming implement is not something anyone forges out of crysteel. Mura extended it
+  to nine tiers. Tiers 0–2 stay in the loot tables; **tiers 3–8 come out of them and become
+  tinkerable instead.** A carbide vinereaper is no longer something you loot, it is something a
+  tinker decides to make, and the recipe turns up on data disks gated by Tinkering rank like any
+  other build.
+
+  Nothing is removed. The blueprints all still exist and any save holding one is untouched — §1.1b
+  freezes shipped names precisely because deleting one degrades it to a generic object with no error.
+  The vibro vinereaper stays findable and tagged; it is a powered device that happens to be
+  sickle-shaped, not a farm tool in exotic metal.
+
+  This also trims six entries from vanilla's loot tables, which is the direction #386 wanted.
 
 - **The value curve now says which categories it describes** (#373), and the validator baseline is
   **empty for the first time** — from 191 findings this morning to **zero**.
