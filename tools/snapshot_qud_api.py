@@ -574,6 +574,11 @@ def _chain_tag(chain, key: str) -> str | None:
     return None
 
 
+# The four elemental resistances an `Armor` part can state. No curve describes them, so a merge
+# never states one - two zetachrome pieces did, both undocumented nerfs, and #380 reverted them.
+RESISTANCES = ("Heat", "Cold", "Acid", "Elec")
+
+
 def collect_merged_records(game: Path) -> dict[str, dict]:
     """What vanilla says about each record this mod merges into.
 
@@ -602,6 +607,17 @@ def collect_merged_records(game: Path) -> dict[str, dict]:
             or _chain_attr(chain, "Shield", "AV"),
             "weight": _chain_attr(chain, "Physics", "Weight"),
             "tier": _chain_tag(chain, "Tier"),
+            # Added for #380. 142 of the 213 merges carried a price this fork had rewritten, and
+            # nothing could see it: `item-curve` prices only the mod's own objects, on the rule
+            # that vanilla sets its own values. Recording vanilla's side is what lets a check tell
+            # a merge that restates a price from one that changes it.
+            "value": _chain_attr(chain, "Commerce", "Value"),
+            "resistances": {
+                element: _chain_attr(chain, "Armor", element)
+                for element in RESISTANCES
+                if _chain_attr(chain, "Armor", element) is not None
+            }
+            or None,
         }
         if any(v not in (None, False) for v in record.values()):
             out[name] = record

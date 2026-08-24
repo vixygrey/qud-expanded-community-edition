@@ -840,6 +840,8 @@ seconds rather than after a round trip.
 | A `Finesse` tag and its rules text implying each other | `finesse-visible` |
 | Damage against §3.2.1's per-family ceiling | `damage-ceiling`, against the snapshot's `merged_records` |
 | A merge never making a vanilla item heavier | `weight-curve`, same source |
+| A merge keeping vanilla's value and resistances | `merge-value`, same source |
+| A chip grading a mutation that cannot level | `dead-chip-grade`, against the snapshot's `non_leveling_mutations` |
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |

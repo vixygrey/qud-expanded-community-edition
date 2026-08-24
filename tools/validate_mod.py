@@ -74,6 +74,10 @@ TIER_MATERIALS = [
 # 4 -> 1024 (half curve, partial slot); everything else 5 -> 1280. Chips run a quarter curve at
 # 1.25 -> 320, per docs/STYLEGUIDE.md 3.2.1: they are not equipment, their slot competes with
 # nothing, and they cannot be bought.
+# The four elemental resistances an Armor part can state, matching RESISTANCES in
+# tools/snapshot_qud_api.py. No curve describes them, so a merge never states one (#380).
+RESISTANCES = ("Heat", "Cold", "Acid", "Elec")
+
 VALUE_BASE_DEFAULT = 5
 VALUE_BASE_BODY = 8
 VALUE_BASE_VAMBRACE = 4
@@ -1687,6 +1691,93 @@ def check_graded_unlevellable_chips(
             )
 
 
+def check_merged_value(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A merge keeps vanilla's value, unless it also changes the item's tier.
+
+    docs/STYLEGUIDE.md 3.2. The value curve describes *this fork's* items; `item-curve` prices only
+    `Raven_` and `Vixy_` objects, on the rule that vanilla sets its own values. That rule is right
+    for a new item and exactly wrong for a merge that rewrites vanilla's, which is how 142 of the
+    213 merges came to carry a price this fork had chosen - the merged economy 25% cheaper, and
+    nothing able to see it (#380).
+
+    The exception is real and small. Where the merge also re-tiers the item the new price follows a
+    derived tier rather than replacing a decision vanilla made: `Carbide Boots` is tier 3 at 40
+    against vanilla's tier 4 at 150, and that is the curve doing its job on a tier this fork chose.
+    Twelve merges qualify.
+
+    Resistances have no curve at all, so a merge never states one. Vanilla's side is recorded for
+    the same reason as value: CI has no game, so without the snapshot a merge is opaque.
+
+    This is the second half of the blind spot #354 fixed for tier detection. Both halves of
+    `item-curve` skipped vanilla-named objects; only one of them should have.
+    """
+    api = load_qud_api()
+    if api is None:
+        return  # check_part_names already reported the missing snapshot
+    records = api.get("merged_records")
+    if not records:
+        f.add(
+            "qud-api-snapshot",
+            f"{QUD_API_PATH} has no merged_records - regenerate with "
+            "tools/snapshot_qud_api.py --assembly",
+        )
+        return
+
+    for path, root in all_roots.items():
+        for obj in root.iter("object"):
+            name = obj.get("Name") or ""
+            if obj.get("Load") != "Merge" or name not in records:
+                continue
+            vanilla = records[name]
+
+            mine = next(
+                (
+                    e.get("Value")
+                    for e in obj.findall("part")
+                    if e.get("Name") == "Commerce" and e.get("Value") is not None
+                ),
+                None,
+            )
+            if mine is not None and vanilla.get("value") not in (None, mine):
+                my_tier = next(
+                    (
+                        e.get("Value")
+                        for e in obj.findall("tag")
+                        if e.get("Name") == "Tier"
+                    ),
+                    None,
+                )
+                retiered = (
+                    my_tier is not None
+                    and vanilla.get("tier") is not None
+                    and my_tier != vanilla["tier"]
+                )
+                if not retiered:
+                    f.add(
+                        "merge-value",
+                        f"{path}: {name} is a merge priced at {mine}, but vanilla prices it "
+                        f"{vanilla['value']} - a merge keeps vanilla's value unless it also "
+                        f"re-tiers the item (STYLEGUIDE 3.2, #380)",
+                    )
+
+            armor = next(
+                (e for e in obj.findall("part") if e.get("Name") == "Armor"), None
+            )
+            if armor is None:
+                continue
+            theirs = vanilla.get("resistances") or {}
+            for element in RESISTANCES:
+                stated = armor.get(element)
+                if stated is None or stated == theirs.get(element):
+                    continue
+                f.add(
+                    "merge-value",
+                    f"{path}: {name} is a merge stating {element}={stated}, but vanilla "
+                    f"says {theirs.get(element, 'nothing')} - no curve describes a resistance, "
+                    f"so a merge never states one (STYLEGUIDE 3.2, #380)",
+                )
+
+
 def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Blueprint-valued attributes must name a blueprint that exists.
 
@@ -1762,6 +1853,7 @@ def run() -> Findings:
     check_part_builders(f, roots)
     check_mutation_type_arguments(f)
     check_graded_unlevellable_chips(f, roots)
+    check_merged_value(f, roots)
     return f
 
 
