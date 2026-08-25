@@ -135,7 +135,6 @@
     <power
       Name="Dueling Stance"
       Attribute="Intelligence"
-      Minimum="15"
       Tile="Abilities/abil_dueling_stance_toggle_off.bmp"
       Foreground="y"
       Detail="Y"
@@ -195,7 +194,7 @@
   </skill>
 
   <skill Name="Tinkering" Load="Merge">
-    <power Name="Disassemble" Cost="0" Tile="Abilities/sw_skill_disassemble.png" Foreground="y" Detail="c" />
+    <power Name="Disassemble" Tile="Abilities/sw_skill_disassemble.png" Foreground="y" Detail="c" />
     <power
       Name="Reverse Engineer"
       Cost="200"
@@ -203,8 +202,8 @@
       Foreground="y"
       Detail="c"
     />
-    <power Name="Tinker I" Cost="100" Minimum="17" Tile="Abilities/sw_skill_tinker_1.png" Foreground="y" Detail="c" />
-    <power Name="Tinker II" Cost="200" Minimum="21" Tile="Abilities/sw_skill_tinker_2.png" Foreground="y" Detail="c" />
-    <power Name="Tinker III" Cost="300" Minimum="25" Tile="Abilities/sw_skill_tinker_3.png" Foreground="y" Detail="c" />
+    <power Name="Tinker I" Cost="100" Tile="Abilities/sw_skill_tinker_1.png" Foreground="y" Detail="c" />
+    <power Name="Tinker II" Cost="200" Tile="Abilities/sw_skill_tinker_2.png" Foreground="y" Detail="c" />
+    <power Name="Tinker III" Cost="300" Tile="Abilities/sw_skill_tinker_3.png" Foreground="y" Detail="c" />
   </skill>
 </skills>

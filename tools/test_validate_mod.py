@@ -65,6 +65,17 @@ def write_mod(tmp: Path, blueprints: str = "", tables: str = "") -> Path:
     return mod
 
 
+# Vanilla's Tinker III, as tools/qud-api.json records it. The skill-option-coverage tests read
+# this rather than the real snapshot so they state the vanilla side they are asserting against.
+_VANILLA_TINKER3 = {
+    "Tinkering/Tinker III": {
+        "Cost": "300",
+        "Minimum": "29",
+        "Attribute": "Intelligence",
+    }
+}
+
+
 def findings_for(check, tmp: Path) -> list[tuple[str, str]]:
     """Run one check against the synthetic mod and return what it reported."""
     with chdir(tmp):
@@ -1211,6 +1222,73 @@ class SnapshotBackedChecks(unittest.TestCase):
             self._implant("6", "Raven_Chips Tier 1"),
         )
         self.assertEqual(items, [])
+
+    # ---------------------------------------------------------- skill-option-coverage
+
+    def _coverage(
+        self, power: str, options: str = "", snapshot: dict | None = None
+    ) -> list[tuple[str, str]]:
+        tmp = self._mod(
+            "",
+            snapshot={
+                "skill_powers": _VANILLA_TINKER3 if snapshot is None else snapshot
+            },
+        )
+        (tmp / "mod" / "Skills.xml").write_text(
+            '<?xml version="1.0" encoding="utf-8" ?>\n<skills>\n'
+            '  <skill Name="Tinkering" Load="Merge">\n'
+            f"    {power}\n"
+            "  </skill>\n</skills>\n",
+            encoding="utf-8",
+        )
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        (scripting / "Raven_Options.cs").write_text(options, encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_skill_option_coverage(f)
+        return f.items
+
+    def test_a_changed_power_no_option_restores_is_reported(self) -> None:
+        """#421: the cut stayed in Skills.xml after the option governing it was removed."""
+        items = self._coverage('<power Name="Tinker III" Minimum="25" />')
+        self.assertTrue(items, "a change no option restores was not reported")
+        self.assertIn("Minimum", items[0][1])
+
+    def test_a_changed_power_an_option_restores_is_not_reported(self) -> None:
+        self.assertEqual(
+            self._coverage(
+                '<power Name="Tinker III" Minimum="25" />',
+                options='new PowerRequirement("Tinkering", "Tinker III", A, B),',
+            ),
+            [],
+        )
+
+    def test_an_option_entry_restoring_nothing_is_reported(self) -> None:
+        """The other direction: a table entry whose value already matches vanilla."""
+        items = self._coverage(
+            '<power Name="Tinker III" Minimum="29" />',
+            options='new PowerCost("Tinkering", "Tinker III", new Tuning<int>(1, 1)),',
+        )
+        self.assertTrue(items, "an option restoring nothing was not reported")
+        self.assertIn("restores nothing", items[0][1])
+
+    def test_a_power_matching_vanilla_is_not_reported(self) -> None:
+        self.assertEqual(
+            self._coverage('<power Name="Tinker III" Minimum="29" Tile="x.png" />'), []
+        )
+
+    def test_a_power_vanilla_does_not_have_is_not_checked(self) -> None:
+        """This fork's own additions - the four Finesse powers - merge nothing."""
+        self.assertEqual(
+            self._coverage('<power Name="Finesse" Cost="100" Minimum="1" />'), []
+        )
+
+    def test_without_the_snapshot_key_the_check_stays_quiet(self) -> None:
+        """A snapshot predating skill_powers cannot tell 'nothing wrong' from 'nothing checked'."""
+        self.assertEqual(
+            self._coverage('<power Name="Tinker III" Minimum="25" />', snapshot={}), []
+        )
 
 
 class CurveExemptions(unittest.TestCase):

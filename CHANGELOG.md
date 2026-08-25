@@ -15,6 +15,26 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **(internal)** `skill-option-coverage` holds `mod/Skills.xml` against the option tables, in both
+  directions (#421).
+
+  The two halves of an optional skill change live in different files and neither names the other, so
+  nothing could see that #331 had edited one and not the other. This fails the build when they
+  disagree:
+
+  | | means |
+  |---|---|
+  | a value differs from vanilla and no table restores it | a change nothing can undo |
+  | a table entry whose value already matches vanilla | an option that restores nothing |
+
+  Both directions were verified by reintroducing the real defect and watching each fire, rather than
+  by trusting a pass. Powers with no vanilla counterpart — the four `Finesse` ones — are additions
+  rather than merges and belong to neither direction.
+
+  It needs vanilla's side to compare against, so `tools/qud-api.json` gains **`skill_powers`**: the
+  `Cost`, `Minimum` and `Attribute` vanilla states for each of the 23 powers this fork merges. Same
+  bargain as `merged_records` — a citation exists because a check depends on it, and CI has no game.
+
 - **The dermal plating line is priced on vanilla's own rate, so vanilla's own plating is worth
   installing again** (#418).
 
@@ -1163,6 +1183,12 @@ recorded because contributors need them, not because subscribers do.
   **An option offers a choice between two things somebody meant.** Drift is a defect, and a defect
   does not get a switch, so these are simply vanilla's now — the option no longer mentions them, and
   neither does its helptext.
+
+  **That took two goes** (#421). #331 removed the three from `Raven_Options.cs`'s tables and stopped
+  there, leaving `mod/Skills.xml` still declaring the cut values — so they went on shipping, and
+  because the option no longer named them they could no longer be switched off either. The sentence
+  above was true of the option and false of the mod for as long as both were in `[Unreleased]`.
+  `mod/Skills.xml` now leaves all five attributes unset, so vanilla's own numbers stand.
 
 - **Cybernetic implants are vanilla's again, elemental resistance can no longer reach total
   immunity, and the credit pass grants what vanilla's best wedge grants** (#335, #327, #332).

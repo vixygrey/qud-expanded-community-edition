@@ -1202,6 +1202,17 @@ def snapshot_records() -> tuple[dict, dict]:
     return data.get("merged_records", {}), data.get("table_weights", {})
 
 
+def snapshot_skill_powers() -> dict[str, dict]:
+    """Vanilla's Cost, Minimum and Attribute for each skill power this mod merges into.
+
+    Separate accessor rather than a third element on `snapshot_records`, because the callers do
+    not overlap and a tuple that grows is a tuple every caller has to be edited for.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("skill_powers", {})
+
+
 def inherited_skill(obj: ET.Element, all_roots: dict[Path, ET.Element]) -> str | None:
     """A weapon's `Skill`, walked up `Inherits` through this mod's own files.
 
@@ -1439,6 +1450,92 @@ def check_implant_table_cost(f: Findings, all_roots: dict[Path, ET.Element]) -> 
                     + (f"-{high}" if high != low else "")
                     + (" and up" if high == 99 else ""),
                 )
+
+
+SKILL_POWER_FIELDS = ("Cost", "Minimum", "Attribute")
+
+
+def optioned_powers() -> set[tuple[str, str]]:
+    """Every (skill, power) the eased-requirements and retuned-costs options restore.
+
+    Read out of `Raven_Options.cs`'s two tables rather than duplicated here, so the check cannot
+    drift from the thing it checks. Both entries start `new PowerRequirement("Skill", "Power"` or
+    `new PowerCost("Skill", "Power"`, which is a shape the file's own formatting keeps stable.
+    """
+    source = Path("mod/Scripting/Raven_Options.cs")
+    if not source.is_file():
+        return set()
+    text = source.read_text(encoding="utf-8-sig")
+    return {
+        (m.group(1), m.group(2))
+        for m in re.finditer(
+            r'new Power(?:Requirement|Cost)\(\s*"([^"]+)",\s*"([^"]+)"', text
+        )
+    }
+
+
+def check_skill_option_coverage(f: Findings) -> None:
+    """A skill power this fork changes must be a power its options can put back.
+
+    #421: #331 decided three undocumented cuts were drift and removed them from the option tables
+    -- but not from `mod/Skills.xml`, so they kept shipping and could no longer be switched off.
+    Nothing could see it, because the two halves live in different files and neither names the
+    other.
+
+    So this holds them together, in both directions:
+
+      a value that differs from vanilla and is in no table  -> a change nothing can undo
+      a table entry whose value already matches vanilla     -> an option that restores nothing
+
+    Powers with no vanilla counterpart are this fork's own additions rather than merges -- the
+    four `Finesse` powers -- and belong to neither direction.
+    """
+    vanilla = snapshot_skill_powers()
+    if not vanilla:
+        return  # no snapshot, or one predating this key; regenerating is the fix
+
+    skills = Path("mod/Skills.xml")
+    if not skills.is_file():
+        return
+    try:
+        root = ET.fromstring(skills.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    optioned = optioned_powers()
+    changed: set[tuple[str, str]] = set()
+
+    for skill in root.iter("skill"):
+        for power in skill.iter("power"):
+            name = (skill.get("Name"), power.get("Name"))
+            if not all(name):
+                continue
+            stock = vanilla.get(f"{name[0]}/{name[1]}")
+            if not stock:
+                continue  # a power this fork adds, not one it merges
+
+            differs = [
+                field
+                for field in SKILL_POWER_FIELDS
+                if power.get(field) is not None and power.get(field) != stock.get(field)
+            ]
+            if not differs:
+                continue
+            changed.add(name)
+            if name not in optioned:
+                f.add(
+                    "skill-option-coverage",
+                    f"mod/Skills.xml: {name[0]} / {name[1]} changes "
+                    f"{', '.join(differs)} against vanilla, but no option restores it - "
+                    f"either put vanilla's value back or add it to Raven_Options.cs",
+                )
+
+    for name in sorted(optioned - changed):
+        f.add(
+            "skill-option-coverage",
+            f"mod/Scripting/Raven_Options.cs: {name[0]} / {name[1]} is in an option table, "
+            f"but mod/Skills.xml does not change it - the option restores nothing",
+        )
 
 
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -1920,6 +2017,7 @@ def run() -> Findings:
     check_weight_curve(f, roots)
     check_table_share(f, roots)
     check_implant_table_cost(f, roots)
+    check_skill_option_coverage(f)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)

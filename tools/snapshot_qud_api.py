@@ -624,6 +624,42 @@ def collect_merged_records(game: Path) -> dict[str, dict]:
     return out
 
 
+SKILL_POWER_FIELDS = ("Cost", "Minimum", "Attribute")
+
+
+def collect_skill_powers(game: Path) -> dict[str, dict]:
+    """What vanilla says about each skill power this mod merges into.
+
+    Same bargain as `collect_merged_records`, for the same reason: `mod/Skills.xml` is all
+    `Load="Merge"`, so from the mod's own XML alone there is no way to tell a line that *changes*
+    a power from one that merely restates vanilla's number. #421 is what that costs — three
+    undocumented cuts stayed in this file after the option that governed them was removed, and
+    nothing could see that the file and the option tables disagreed.
+
+    Keyed `"<skill>/<power>"` so the JSON stays flat. Only the three fields a check compares are
+    recorded, `None` where vanilla does not state one.
+    """
+    wanted: set[tuple[str, str]] = set()
+    skills = MOD / "Skills.xml"
+    if skills.is_file():
+        for sk in parse(skills, lenient=True).iter("skill"):
+            for pw in sk.iter("power"):
+                if sk.get("Name") and pw.get("Name"):
+                    wanted.add((sk.get("Name"), pw.get("Name")))
+
+    out: dict[str, dict] = {}
+    for f in sorted(game.glob("Skills*.xml")):
+        for sk in parse(f, lenient=True).iter("skill"):
+            for pw in sk.iter("power"):
+                key = (sk.get("Name"), pw.get("Name"))
+                if key not in wanted:
+                    continue
+                out[f"{key[0]}/{key[1]}"] = {
+                    field: pw.get(field) for field in SKILL_POWER_FIELDS
+                }
+    return out
+
+
 def collect_table_weights(game: Path) -> dict[str, int]:
     """Vanilla's total drop weight for each population table this mod adds entries to.
 
@@ -855,6 +891,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     figures.update(collect_census(game))
     merged_records = collect_merged_records(game)
     table_weights = collect_table_weights(game)
+    skill_powers = collect_skill_powers(game)
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
     if problems:
@@ -896,6 +933,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + json.dumps(merged_records, sort_keys=True)
             + "\0"
             + json.dumps(table_weights, sort_keys=True)
+            + "\0"
+            + json.dumps(skill_powers, sort_keys=True)
         ).encode()
     ).hexdigest()[:16]
     return {
@@ -928,6 +967,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "non_leveling_mutations": len(non_leveling),
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
+            "skill_powers": len(skill_powers),
         },
         "mutation_classes": mutation_classes,
         "non_leveling_mutations": non_leveling,
@@ -938,6 +978,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "figures": dict(sorted(figures.items())),
         "merged_records": dict(sorted(merged_records.items())),
         "table_weights": dict(sorted(table_weights.items())),
+        "skill_powers": dict(sorted(skill_powers.items())),
     }
 
 
