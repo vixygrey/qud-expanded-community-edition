@@ -1335,3 +1335,44 @@ the same way, silently, so neither spelling nor plausibility helps. Only existen
 dagger specifically. The spears inherit `MeleeWeapon` and declare their skill, mods and sounds
 explicitly instead. **Read what a base actually grants before adopting it** — the tags it carries
 travel with every child.
+
+## Putting a value back is a change, and needs the same neighbour check as moving it
+
+#335 restored `DermalPlating` to vanilla's 3 licence points for +1 AV. That was the right call, made
+for the right reason, and it verified correctly: the value matched vanilla, the stacked ceiling it
+was aimed at came down from +12 to +6, and every check passed. The balance sweep closed.
+
+It also made vanilla's only dermal plating **dead content**. This fork sells a steel rung at 1 point
+for the same +1 AV, and a crysteel rung at 3 points for twice it. Neither moved in #335, so neither
+appeared in the diff. Put back where it belonged, carbide landed strictly worse than two things
+standing beside it, and there was no state of the game in which a player should install it.
+
+**Reverting felt like the safe direction, and that is why I did not check.** A change that makes an
+item stronger obviously needs weighing against its neighbours. A change that puts a number back to
+vanilla's reads as a *removal* of an opinion — as returning to the state where, by definition,
+nothing is out of place. But the neighbours were not vanilla's. They were mine, priced against the
+buffed carbide, and restoring the anchor moved every one of them relative to it without touching a
+line of their XML.
+
+**The test is positional, not directional.** Before changing any value, list what a player is
+choosing *between* and check the whole set afterwards — including the entries the diff does not
+touch. A rung is dominated when something costs less for the same benefit, or the same for more, and
+that is arithmetic over the set rather than a property of the item you edited.
+
+**I caught it the same day, and that is the uncomfortable part.** #335 and the fix are hours apart in
+`git log`. I was not returning to cold code — I had written the restore, argued for it in the issue,
+and could still recite why. I found the domination anyway only because I went to look up the plating
+costs for an unrelated in-game check and read all four rows at once. Familiarity with a change is not
+coverage of it; the diff was the thing I knew, and the diff was where the defect was not.
+
+There was a second layer under it, and it is the more general trap. `Implants_3Pointers` is a vanilla
+population table, and its **name is a claim about its contents**. Re-pricing crysteel from 3 points
+to 6 invalidated a placement in a *different file* that never mentioned the cost — so the loot table
+went on saying *3 Pointers* while holding a 6-point implant, and nothing in the game or in `tools/`
+had any opinion about it.
+
+**When a name encodes a value, editing the value edits the name's truth.** Grep for the identifier
+you are re-pricing before you finish, not just the file you are in. `implant-table-cost` in
+`tools/validate_mod.py` now holds this particular coupling, per charter rule 4 — but the general
+version has no check and probably cannot have one. Bracket names, tier names and table names are all
+assertions, and the thing that makes them dangerous is that they are usually right.
