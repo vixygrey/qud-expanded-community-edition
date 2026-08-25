@@ -2141,11 +2141,37 @@ rather than anything the mod already was.
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
-| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing here ever fills those slots, so the reason to turn it off is to stop another mod — or a later version of this one — being able to. |
+| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
 vanilla value to restore and turning them off would leave a genotype with nothing.
+
+> ⚠️ **An NPC's chip slot is reachable, and the documentation used to say it was not (#417).** This
+> row read *"nothing here ever fills those slots, so the reason to turn it off is to stop another mod
+> — or a later version of this one — being able to."* The first clause is true of the **mod**: no
+> creature is generated carrying a chip, and chips reach the world only through the artifact tables
+> that fill containers. The conclusion drawn from it is not, because a player is not another mod.
+>
+> **Chips are worn armour, not implants.** `Raven_Base Psionic Chip` inherits `BaseArmor` and sits in
+> the slot with `WornOn="Chip Interface"`, which puts it on the ordinary AI equip path. Every gate on
+> that path was traced:
+>
+> | step | result |
+> |---|---|
+> | `Body.GetParts()` | returns every part with no filter, so the abstract slot is enumerated |
+> | `Armor.HandleEvent(QueryEquippableListEvent)` | adds the chip whenever `WornOn` matches the queried slot, and **never reads `RequireDesirable`** — 0 AV / 0 DV does not disqualify it |
+> | `NoAIEquip`, `CannotEquip`, `NoEquip`, `Food`, `Shield` | none of the 144 chips carries any of them |
+> | `Brain.CompareGear(chip, null)` | returns `-1` for an empty slot, so `IsNewGearBetter` is true |
+> | the grant | fires on `EquippedEvent` and targets `E.Actor` — whoever wore it, not whoever is the player |
+>
+> The `_stock` guard in `PerformEquip` keeps merchants from wearing their own inventory, so this
+> needs a player to choose it: hand a chip to a humanoid follower.
+>
+> **This is a code reading, not a result.** Every step is accounted for and none of them blocks, but
+> nobody has watched a follower do it. #417 holds the in-game test. If it works, the mod has a
+> capability no document describes; if it does not, whatever stops it belongs in `docs/LESSONS.md`,
+> because the trace above says it should.
 
 ### 13.2 When an option takes effect — three scopes
 
