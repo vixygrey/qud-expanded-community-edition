@@ -20,8 +20,34 @@ on:
 permissions:
   contents: read
 
+# Cancelling a superseded run is right for a new commit and wrong for a new label, and until #431
+# both went in the same group.
+#
+# `gh pr create --label a --label b` fires `opened` and then one `labeled` per label, all within the
+# same second and all carrying the same `github.ref`. They collided, the later ones cancelled the
+# first, and the cancellation is not free: the first run gets far enough to register its check runs,
+# so **seven of the ten required contexts end up with a `cancelled` conclusion sitting on the commit
+# beside a `success` for the same name**. `statusCheckRollup` then reports SUCCESS while the ruleset
+# still counts those contexts unsatisfied, and the merge is refused with "the base branch policy
+# prohibits the merge" — indistinguishable from a genuinely failing check. It blocked two merges the
+# evening 2.6.0 went out, and the tempting fix is `--admin`, which bypasses a protection that is
+# working correctly on bad input.
+#
+# So the events that change only metadata get a group of their own, per run: they neither cancel nor
+# are cancelled. `labeled` and `unlabeled` have to keep firing — #346 put them here because the
+# changelog gate reads the labels from the event payload and a manual re-run replays the original —
+# and `edited` likewise, because retitling to fix a failing title is the whole reason it is in the
+# trigger list. Those are exactly the flows where a cancellation was most likely, and they are cheap:
+# no checkout has happened yet when the duplicate starts.
+#
+# Everything else — `opened`, `synchronize`, `reopened`, and pushes to main — keeps the shared group
+# and keeps cancelling, which is where cancellation actually saves work. `github.event.action` is
+# empty for a push, so a push falls through to `code`.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: >-
+    ci-${{ github.ref }}-${{
+    contains(fromJSON('["labeled","unlabeled","edited"]'), github.event.action)
+    && github.run_id || 'code' }}
   cancel-in-progress: true
 
 jobs:
