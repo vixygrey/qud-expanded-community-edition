@@ -413,7 +413,8 @@ result among that family, and each family is equally likely.
 
 ## 4. Skills (`Skills.xml`)
 
-Seven trees are edited. Nothing is removed; requirements and costs are retuned, and **Finesse** is added to the two blade trees.
+Seven trees are edited. Nothing is removed; requirements and costs are retuned, and **Finesse** is
+sold by all four melee trees.
 
 Both halves are optional, under two separate toggles — **eased skill requirements** and **retuned
 skill point costs**. They are split because their scopes differ: costs apply immediately, while
@@ -436,10 +437,23 @@ requirements need a restart. See §13.
 > it on every melee weapon in the game, which leaves an Agility build paying for to-hit and DV and
 > getting no damage scaling at all.
 >
-> Finesse fixes that without handing it out free. A weapon tagged `Finesse` — **daggers, knives and
-> wristblades** in the Short Blade tree, **rapiers and katanas** in the Long Blade tree — rolls
-> penetration against your **Agility** modifier instead, whenever Agility is the higher of the two.
-> Axe and Cudgel stay Strength-only. Each finesse weapon says so in its own rules description.
+> Finesse fixes that without handing it out free. A weapon tagged `Finesse` rolls penetration
+> against your **Agility** modifier instead, whenever Agility is the higher of the two. Each finesse
+> weapon says so in its own rules description.
+>
+> | tree | tagged weapons |
+> |---|---|
+> | **Short Blade** | daggers, knives, wristblades, spears |
+> | **Long Blade** | rapiers, katanas |
+> | **Axe** | vinereapers, glaives |
+> | **Cudgel** | maces, quarterstaves |
+>
+> **The halberd and the war hammer are deliberately not on it.** #321 called them the two most
+> genre-inverted assignments in the mod and that still holds — what #342 changed was the reading of
+> the *trees*, not of those two weapons. Vanilla describes the vinereaper as a crescent for scything,
+> which is a sickle, and Pathfinder's sickle carries finesse; its finesse bludgeon is likewise a
+> mace-family weapon and never the warhammer. Both trees had a genre-legitimate finesse weapon all
+> along. It was simply not the one the mod had picked.
 >
 > It applies only to weapons that roll against **Strength** in the first place. Vanilla has three
 > that do not, and one of them — the crystalline jile, at `Stat="Ego"` — is a dagger, so it would
