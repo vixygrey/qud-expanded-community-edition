@@ -14,6 +14,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-08-24
+
 ### Changed
 - **(internal)** Claim patterns are wrapped centrally, and `claim-coverage` fails any that matches
   nothing (#422).
