@@ -951,6 +951,7 @@ seconds rather than after a round trip.
 | A chip grading a mutation that cannot level | `dead-chip-grade`, against the snapshot's `non_leveling_mutations` |
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
+| A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
@@ -1035,6 +1036,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `sections` | `check_docs.py` | the section headings the documents cross-reference |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
+| `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |

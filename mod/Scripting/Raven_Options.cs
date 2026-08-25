@@ -341,16 +341,22 @@ namespace QudExpandedCE
             // cut by this fork - Tinker I/II/III from 19/23/29 to 17/21/25, Dueling Stance from
             // Int 17 to 15 - and nothing anywhere records why. #331 settled that an undocumented
             // cut is not an option's business: an option offers a choice between two things
-            // somebody meant, and these were drift. They now track vanilla whichever way the
-            // option is set, which is why they appear in neither table.
+            // somebody meant, and these were drift.
+            //
+            // #331 removed them from here and stopped, which is the opposite of what it decided:
+            // mod/Skills.xml kept declaring the cut values, so they went on shipping and could no
+            // longer be switched off. #421 put those values back to vanilla's, which is what makes
+            // their absence here correct rather than a hole. `skill-option-coverage` in
+            // tools/validate_mod.py now fails if the two halves disagree again, in either
+            // direction.
         };
 
         /// <summary>
         /// Every skill point cost this mod retunes, against vanilla's own Base/Skills.xml.
         ///
         /// Tinker I, II and III are deliberately absent: mod/Skills.xml restates their 100/200/300
-        /// but those are vanilla's numbers already, so they belong to neither toggle. Only their
-        /// attribute minimums are a mod change, and those are in Requirements above.
+        /// but those are vanilla's numbers already, so they belong to neither toggle. Their
+        /// attribute minimums are vanilla's too since #421, so they are in no table at all.
         /// </summary>
         private static readonly PowerCost[] Costs =
         {
@@ -361,8 +367,9 @@ namespace QudExpandedCE
             new PowerCost("Cooking and Gathering", "Spicer", new Tuning<int>(100, 50)),
 
             // Disassemble was free in this fork against vanilla's 100, and like the Tinkering
-            // requirements above nothing records why, so it is gone from here and stays vanilla's
-            // (#331). Reverse Engineer's rise is the other half of the Cooking offset and stays.
+            // requirements above nothing records why, so it is gone from here and mod/Skills.xml
+            // no longer sets its cost either (#331, then #421 for the half that was missed).
+            // Reverse Engineer's rise is the other half of the Cooking offset and stays.
             new PowerCost("Tinkering", "Reverse Engineer", new Tuning<int>(200, 100)),
         };
 
