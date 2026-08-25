@@ -1017,6 +1017,22 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **`docs/FEATURES.md` §4 still described Finesse as a two-tree power** (#423).
+
+  #342 sold Finesse in all four melee trees, added the `Finesse` tag to vinereapers, glaives, maces
+  and quarterstaves, and wrote all of it into the changelog and into each family's own §6.2 heading.
+  The §4 callout that *explains* Finesse was not touched, so the document said **"added to the two
+  blade trees"** and **"Axe and Cudgel stay Strength-only"** while its own weapon headings said
+  `(Axe, two-handed, Finesse)` two hundred lines below.
+
+  It now carries the table of which weapons actually take the tag, and says why the halberd and the
+  war hammer deliberately do not — that was never a claim about the trees, and #321's reading of
+  those two weapons still stands.
+
+  **Nothing checked it, and nothing easily could.** `check_docs.py` holds figures against the mod; a
+  sentence naming which trees sell a power is prose. It was found by reading FEATURES to write the
+  wiki page that cites it.
+
 - **The README's own figures were wrong, and the check that should have caught them had gone
   silent** (#422).
 
