@@ -711,12 +711,12 @@ class WrappedClaims(unittest.TestCase):
         accident. 19 of the 29 patterns were literal-space before #422, and one of them had
         already gone silent across a reflow."""
         source = Path("tools/check_docs.py").read_text()
-        for call in ("re.finditer(wrapped(pattern), text)",):
-            self.assertEqual(
-                source.count(call),
-                2,
-                "check_counts and check_vanilla_figures must both wrap the pattern",
-            )
+        self.assertEqual(
+            source.count("re.finditer(wrapped(pattern), text)"),
+            3,
+            "check_counts, check_vanilla_figures and check_wiki_counts must all wrap the "
+            "pattern - this count rising is a new loop that has to opt in deliberately",
+        )
 
 
 class ClaimCoverage(unittest.TestCase):
@@ -762,7 +762,7 @@ class ClaimCoverage(unittest.TestCase):
         """Otherwise IDLE_PHRASINGS becomes a place typos go to be ignored."""
         items = self._findings([], idle={r"a phrasing nobody registered": "typo"})
         self.assertTrue(items, "a stale exemption was not reported")
-        self.assertIn("neither CLAIMS nor VANILLA_CLAIMS", items[0][1])
+        self.assertIn("CLAIMS, VANILLA_CLAIMS or WIKI_CLAIMS", items[0][1])
 
     def test_the_repository_agrees_with_itself_today(self) -> None:
         """The control the guard needs: run it against the real tables, not synthetic ones."""
@@ -776,6 +776,109 @@ class ClaimCoverage(unittest.TestCase):
                 self.assertTrue(
                     reason.strip(), "an exemption with no reason is not an exemption"
                 )
+
+    def test_wiki_patterns_are_not_dead_on_an_ordinary_run(self) -> None:
+        """#427's design question: WIKI_CLAIMS has no wiki to match against unless --wiki is used.
+
+        Reporting all ten as dead on every normal run would be the false failure the issue flagged
+        before any of this was written, and a check that cries wolf is one people learn to skip.
+        """
+        f = check_docs.Findings()
+        check_docs.check_claim_coverage(f)
+        dead = [d for c, d in f.items if "WIKI_CLAIMS" in d]
+        self.assertEqual(
+            dead, [], "wiki patterns were reported dead with no wiki to read"
+        )
+
+    def test_wiki_patterns_are_checked_when_a_wiki_is_given(self) -> None:
+        """The other half: passing a wiki must actually hold them, or the exemption is total."""
+        with tempfile.TemporaryDirectory() as tmp:
+            wiki = Path(tmp)
+            (wiki / "Page.md").write_text("nothing matches here", encoding="utf-8")
+            f = check_docs.Findings()
+            with mock.patch.object(
+                check_docs, "WIKI_CLAIMS", [(r"no page says this", ["options"])]
+            ):
+                check_docs.check_claim_coverage(f, wiki)
+            self.assertTrue(
+                [d for c, d in f.items if "WIKI_CLAIMS" in d],
+                "a wiki pattern matching nothing was not reported",
+            )
+
+
+class WikiFigures(unittest.TestCase):
+    """#427. The wiki had nine wrong figures and nothing read a word of its content.
+
+    It also has no version selector, so a wrong figure there is wrong for every player on every
+    version at once — which is why these are checked against the mod rather than against a document.
+    """
+
+    def _findings(self, page: str, known: dict[str, int]) -> list:
+        with tempfile.TemporaryDirectory() as tmp:
+            wiki = Path(tmp)
+            (wiki / "Page.md").write_text(page, encoding="utf-8")
+            f = check_docs.Findings()
+            check_docs.check_wiki_counts(wiki, f, known)
+            return f.items
+
+    def test_a_wrong_option_count_is_reported(self) -> None:
+        items = self._findings(
+            "Eleven options live in Qud's own options menu, under Mods.",
+            {"options": 12},
+        )
+        self.assertTrue(items, "a wrong option count was not reported")
+        self.assertIn("says options is 11", items[0][1])
+
+    def test_a_right_option_count_is_quiet(self) -> None:
+        self.assertEqual(
+            self._findings(
+                "Twelve options live in Qud's own options menu, under Mods.",
+                {"options": 12},
+            ),
+            [],
+        )
+
+    def test_a_claim_survives_a_line_break(self) -> None:
+        """Wiki prose wraps like any other. The patterns go through `wrapped` for the same reason."""
+        self.assertEqual(
+            self._findings(
+                "Twelve options live in Qud's\nown options menu, under Mods.",
+                {"options": 12},
+            ),
+            [],
+        )
+
+    def test_the_slot_table_is_read_row_by_row(self) -> None:
+        page = (
+            "| genotype | slots |\n|---|---|\n| True Kin | 1 |\n| Psionic Adept | 4 |\n"
+        )
+        items = self._findings(
+            page, {"chip-slots-truekin": 2, "chip-slots-psionicadept": 4}
+        )
+        self.assertEqual(len(items), 1, "exactly the wrong row should report")
+        self.assertIn("chip-slots-truekin", items[0][1])
+
+    def test_a_word_the_script_cannot_resolve_is_reported(self) -> None:
+        """Silently skipping an unresolvable word is how a claim goes unchecked."""
+        items = self._findings(
+            "Umpteen options live in Qud's own options menu.", {"options": 12}
+        )
+        self.assertTrue(items)
+        self.assertIn("WORD_NUMBERS", items[0][1])
+
+    def test_none_resolves_to_zero(self) -> None:
+        """The slot table writes zero as a word, so the vocabulary has to carry it."""
+        self.assertEqual(check_docs.WORD_NUMBERS["none"], 0)
+
+    def test_the_mutant_row_has_no_fact_behind_it(self) -> None:
+        """Stated as a test so the limit is recorded rather than remembered.
+
+        A Mutated Human has no slot because `Raven_ChipSlotPlayerMutator` removes it, which is a
+        rule in C# rather than a number in XML. Restating it in Python would be a second
+        implementation of the same rule.
+        """
+        self.assertNotIn("chip-slots-mutatedhuman", check_docs.facts())
+        self.assertNotIn("chip-slots-humanoid", check_docs.facts())
 
 
 if __name__ == "__main__":

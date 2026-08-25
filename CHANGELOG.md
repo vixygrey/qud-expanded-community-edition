@@ -14,6 +14,49 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Changed
+
+- **(internal)** The wiki's figures are checked, not only its links (#427).
+
+  `check_docs.py --wiki` cloned the wiki and verified its anchor links, and **read nothing else**.
+  The sweep before 2.6.0 found nine wrong figures on five pages — eleven options where twelve ship,
+  an extra cybernetics licence point no caste grants any more, eight vibro weapons where eleven
+  exist. Not one was catchable, because nothing read the content. The wiki also has **no version
+  selector**, so a wrong figure there is wrong for every player on every version at once.
+
+  `wiki-figure` now holds eleven figures across the pages, against the same `facts()` the repository's
+  own documents are checked against. Two facts are new and both come out of `mod/`:
+  `chip-slots-truekin` / `chip-slots-psionicadept` counted from `Bodies.xml`, and `vibro-weapons`
+  counted from a real parse of `MeleeWeapons.xml` — that file holds four vibro objects inside a
+  comment block, and a regex over the raw text counts them, which is the defect `docs/LESSONS.md`
+  records against that exact file.
+
+  **`WIKI_CLAIMS` is a separate table from `CLAIMS`**, which was the design question #427 raised
+  before any of this was written. The wiki is cloned only under `--wiki`, so its patterns match
+  nothing on an ordinary run — and `claim-coverage` from #422 would have called all ten dead. One
+  table would have meant a scope marker on every entry; two carry it in the name, and the coverage
+  guard only reads the wiki table when there is a wiki to read it against. Both halves are tested.
+
+  It runs weekly rather than on pull requests, in its own workflow. The wiki is a separate
+  repository, so nothing here changes when it does and a push-triggered run would never see a wiki
+  edit; and cloning needs the network, which `ci.yml` deliberately does not.
+
+  **It catches four of the seven, and #427 claimed seven of nine before it was built.** I measured it
+  by restoring all seven wrong claims to a copy of the wiki and running the check: the option count on
+  three pages and the vibro count fire; the other three do not, because they are prose with no figure
+  in them.
+
+  The three it misses are the ones worth naming. *"Every humanoid has at least one Chip Interface
+  slot, so a Mutated Human can wear one"* — the worst error of the sweep — has no number in it, and a
+  Mutated Human's count is zero because a C# player mutator removes the slot rather than because any
+  XML says so. Restating that rule in Python to check it would be a second implementation of the same
+  rule, which is `docs/LESSONS.md`'s "a number that agrees because both sides share the error".
+  Likewise *"every Lore Seeker comes with an extra licence point"* and the list of which weapons scale
+  off Agility: both are sentences about which things belong to a set, not about how many.
+
+  So this is a real floor under the wiki rather than a solution to it. The limit is recorded as a test
+  so it is rediscovered by a failing assertion rather than by a player.
+
 ## [2.6.0] - 2026-08-24
 
 ### Changed
