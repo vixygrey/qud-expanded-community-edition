@@ -22,22 +22,57 @@
   ],
   "ruleset": "main protection",
   "required": [
-    { "context": "Validate mod", "source": "ci.yml:validate" },
-    { "context": "Python lint", "source": "ci.yml:python" },
-    { "context": "Tests", "source": "ci.yml:tests" },
-    { "context": "XML format", "source": "ci.yml:xml-format" },
-    { "context": "Spelling", "source": "ci.yml:spelling" },
-    { "context": "Secret scan", "source": "ci.yml:secrets" },
-    { "context": "PR conventions", "source": "ci.yml:conventions" },
-    { "context": "CodeQL", "source": "github:code-scanning-default-setup" },
-    { "context": "Analyze (actions)", "source": "github:code-scanning-default-setup" },
-    { "context": "Analyze (python)", "source": "github:code-scanning-default-setup" }
+    {
+      "context": "Validate mod",
+      "source": "ci.yml:validate"
+    },
+    {
+      "context": "Python lint",
+      "source": "ci.yml:python"
+    },
+    {
+      "context": "Tests",
+      "source": "ci.yml:tests"
+    },
+    {
+      "context": "XML format",
+      "source": "ci.yml:xml-format"
+    },
+    {
+      "context": "Spelling",
+      "source": "ci.yml:spelling"
+    },
+    {
+      "context": "Secret scan",
+      "source": "ci.yml:secrets"
+    },
+    {
+      "context": "PR conventions",
+      "source": "ci.yml:conventions"
+    },
+    {
+      "context": "CodeQL",
+      "source": "github:code-scanning-default-setup"
+    },
+    {
+      "context": "Analyze (actions)",
+      "source": "github:code-scanning-default-setup"
+    },
+    {
+      "context": "Analyze (python)",
+      "source": "github:code-scanning-default-setup"
+    }
   ],
   "not_required": [
     {
       "context": "Assign to maintainer",
       "source": "assign.yml:assign",
       "reason": "Convenience only - it assigns the pull request and has no opinion about the change. Requiring it would block merges on an assignment step, and it is skipped on forks by design."
+    },
+    {
+      "context": "Check the wiki",
+      "source": "wiki.yml:wiki",
+      "reason": "Runs on a weekly schedule and on demand, never on a pull request. It clones a separate repository over the network, so requiring it would make a merge wait on the wiki's state and on ci.yml losing the offline guarantee that keeps it from failing for reasons unrelated to the change under review."
     }
   ]
 }

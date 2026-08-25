@@ -953,6 +953,7 @@ seconds rather than after a round trip.
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
 | Every claim pattern matching something, so a reworded sentence cannot silence its check | `claim-coverage` |
+| Figures quoted by the wiki, which has no version selector | `wiki-figure`, under `--wiki` only |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
@@ -1047,6 +1048,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `vanilla-figure` | `check_docs.py` | figures the documents quote from vanilla |
 | `weight-curve` | `validate_mod.py` | a merge never making a vanilla item heavier |
 | `wellformed` | `validate_mod.py` | XML and map-file well-formedness |
+| `wiki-figure` | `check_docs.py` | every figure the wiki quotes, against the mod it describes |
 | `wiki-link` | `check_docs.py` | the wiki anchors the documents point at |
 | `workshop-description` | `validate_mod.py` | the Workshop description fitting Steam's 8000-character limit |
 | `workshop-target` | `validate_mod.py` | the upload target |

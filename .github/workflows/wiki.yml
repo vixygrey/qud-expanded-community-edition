@@ -1,0 +1,38 @@
+name: Wiki
+
+# The wiki is a separate repository, so nothing here changes when it does — a push-triggered run
+# would never see a wiki edit at all. It is also the only documentation with no version selector:
+# whatever it says is what every player reads on every version, which makes drift there cost more
+# than drift anywhere else. #427 found nine wrong figures on it that nothing could have caught.
+#
+# So this runs on a schedule and on demand, and deliberately not on pull requests. Cloning the wiki
+# needs the network, and ci.yml stays offline so it cannot fail for a reason unrelated to the change
+# under review. It is not a required check for the same reason: a merge should not wait on a separate
+# repository's state.
+on:
+  schedule:
+    # Mondays, 07:00 UTC. Weekly suits a document nobody edits daily — the point is to catch drift
+    # before a player does, not within the hour.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wiki-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wiki:
+    name: Check the wiki
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Same pin as ci.yml. Python comes from the runner's preinstalled python3, as it does there —
+      # tools/ is standard library only, so there is nothing to install and no second action to pin.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Clones the wiki itself over https, so no token and no write scope are involved.
+      - name: Figures and links
+        run: python3 tools/check_docs.py --wiki

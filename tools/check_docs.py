@@ -54,7 +54,11 @@ from check_vanilla_drift import BlueprintIndex
 
 MOD = Path("mod")
 REQUIRED_CHECKS_PATH = Path("tools/required-checks.json")
-CI_WORKFLOWS = (Path(".github/workflows/ci.yml"), Path(".github/workflows/assign.yml"))
+CI_WORKFLOWS = (
+    Path(".github/workflows/ci.yml"),
+    Path(".github/workflows/assign.yml"),
+    Path(".github/workflows/wiki.yml"),
+)
 
 # The documents write these as words, which is their voice and not something to rewrite for a
 # regex's convenience. Only the values actually used are listed; an unknown word is reported
@@ -69,6 +73,10 @@ WORD_NUMBERS = {
     "fourteen": 14,
     "fifteen": 15,
     "sixteen": 16,
+    "eighteen": 18,
+    # The wiki's genotype/slot table writes zero as a word, because "| Mutated Human | 0 |" reads
+    # like a typo where "none" reads like a decision.
+    "none": 0,
 }
 DOCS = [
     Path(p)
@@ -126,6 +134,54 @@ def parse(path: Path):
 # --------------------------------------------------------------------------- facts
 
 
+def vibro_weapons() -> int:
+    """Melee vibro weapons this fork owns.
+
+    "New" rather than merged, which is the same test `facts()` uses everywhere else: vanilla's own
+    `Vibro Blade` and `Vibro Dagger` are merges and are not part of the count the wiki quotes.
+
+    Parsed rather than grepped. `mod/ObjectBlueprints/MeleeWeapons.xml` holds four vibro objects
+    inside a comment block, and a regex over the raw text counts them - which is the defect
+    docs/LESSONS.md records against that exact file.
+    """
+    path = MOD / "ObjectBlueprints" / "MeleeWeapons.xml"
+    if not path.is_file():
+        return 0
+    return sum(
+        1
+        for obj in parse(path).iter("object")
+        if "Vibro" in (obj.get("Name") or "") and obj.get("Load") != "Merge"
+    )
+
+
+def chip_slots() -> dict[str, int]:
+    """Chip Interface slots per anatomy, for the two genotypes whose count is in the XML.
+
+    `mod/Bodies.xml` is the single source: `TrueKin` and `PsionicAdept` are this fork's own
+    anatomies and declare their slots literally, so counting the parts is the whole derivation.
+
+    **The Mutated Human is deliberately absent.** Its count is zero because
+    `Raven_ChipSlotPlayerMutator` removes the slot the shared `Humanoid` anatomy gives it, and that
+    is a rule in C# rather than a number in XML. Restating it here would be a second implementation
+    of the same rule, which is the "number that agrees because both sides share the error" trap in
+    docs/LESSONS.md. So the wiki's mutant row is checked by nobody, and #427 says so rather than
+    pretending otherwise.
+    """
+    path = MOD / "Bodies.xml"
+    if not path.is_file():
+        return {}
+    root = parse(path)
+    out: dict[str, int] = {}
+    for anatomy in root.iter("anatomy"):
+        name = anatomy.get("Name")
+        if name not in ("TrueKin", "PsionicAdept"):
+            continue
+        out[f"chip-slots-{name.lower()}"] = sum(
+            1 for part in anatomy.iter("part") if part.get("Type") == "Chip Interface"
+        )
+    return out
+
+
 def facts() -> dict[str, int]:
     """Recompute every figure the documents are allowed to quote."""
     new = merged = 0
@@ -166,9 +222,11 @@ def facts() -> dict[str, int]:
         "subtype-sprites": len(list((MOD / "Textures" / "Subtypes").glob("*.png"))),
         "chips": len(chips) - sum(1 for c in chips if "Base" in (c.get("Name") or "")),
         "chip-objects": len(chips),
+        "vibro-weapons": vibro_weapons(),
         "scripting-files": len(list((MOD / "Scripting").glob("*.cs"))),
         "mutation-stubs": len(list((MOD / "Scripting").glob("Raven_Mod*.cs"))),
         "required-checks": len(required_checks()["required"]),
+        **chip_slots(),
         "optioned-requirements": len(optioned_requirements()),
     }
     for name, (n, m) in per_file.items():
@@ -282,6 +340,32 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
         r"`StrengthPenetration=\"(\d+)\"` over `(\d+d\d+)` damage",
         ["boomrose-penetration", "boomrose-base-damage"],
     ),
+]
+
+
+# What the wiki quotes, kept apart from CLAIMS because the two are read against different files and
+# in different runs. The wiki is a separate repository, cloned only under --wiki, so a pattern here
+# has nothing to match during an ordinary run - and `claim-coverage` must not call that dead. Keeping
+# them in one table would mean every entry carrying a scope marker; two tables carry it in the name.
+#
+# The phrasings differ from the repository's on purpose. The wiki is written for a player and
+# docs/FEATURES.md for a contributor, so "Twelve options live in Qud's own options menu" is a wiki
+# sentence and will never appear in docs/. That is the cost of checking prose, and #422 already
+# settled that it is cheaper than the alternative.
+WIKI_CLAIMS: list[tuple[str, list[str]]] = [
+    (r"(\w+) options live in Qud's own options menu", ["options"]),
+    (r"(\w+) options sit in Qud's own options menu", ["options"]),
+    (r"which of the (\w+) to set", ["options"]),
+    (r"one of (\w+) affinities", ["subtypes"]),
+    (r"The (\w+) split into two groups", ["subtypes"]),
+    (r"the (\w+) affinities", ["subtypes"]),
+    (r"which of the (\w+) Psionic Adept affinities", ["subtypes"]),
+    (r"(\w+) affinities to pick from", ["subtypes"]),
+    # The genotype/slot table on Common-questions.md. Anchored on the row rather than on the number
+    # so it cannot match a sentence that happens to say "True Kin" near a 2.
+    (r"\| True Kin \| (\w+) \|", ["chip-slots-truekin"]),
+    (r"\| Psionic Adept \| (\w+) \|", ["chip-slots-psionicadept"]),
+    (r"(\w+) of them — battle axe", ["vibro-weapons"]),
 ]
 
 
@@ -433,7 +517,55 @@ def check_vanilla_figures(f: Findings) -> int:
     return checked
 
 
-def check_claim_coverage(f: Findings) -> None:
+def check_wiki_counts(wiki: Path, f: Findings, known: dict[str, int]) -> int:
+    """Every figure the wiki quotes, against the mod it describes.
+
+    Until #427 the wiki was checked for broken links and nothing else, and a sweep found **nine wrong
+    figures** across five pages: eleven options where twelve ship, an extra cybernetics licence point
+    no caste grants any more, eight vibro weapons where eleven exist. None of it was catchable,
+    because nothing read the content. The wiki also has no version selector, so whatever it says is
+    what every player sees on every version - which makes it the least defended documentation in the
+    project and the most read.
+
+    This reaches seven of those nine. The two it cannot are prose with no figure in them, and the
+    worse of those - *"a Mutated Human can wear one"* - is the one that actually shipped. See
+    `chip_slots` for why that row has no fact behind it.
+    """
+    checked = 0
+    for page in sorted(wiki.glob("*.md")):
+        text = page.read_text(encoding="utf-8")
+        for pattern, names in WIKI_CLAIMS:
+            for m in re.finditer(wrapped(pattern), text):
+                for group, name in enumerate(names, start=1):
+                    raw = m.group(group)
+                    if raw.isdigit():
+                        claimed = int(raw)
+                    elif raw.lower() in WORD_NUMBERS:
+                        claimed = WORD_NUMBERS[raw.lower()]
+                    else:
+                        f.add(
+                            "wiki-figure",
+                            f"{page.name}: {raw!r} is not a number this script knows - add it to "
+                            f"WORD_NUMBERS rather than leaving the claim unchecked",
+                        )
+                        continue
+                    checked += 1
+                    if name not in known:
+                        f.add(
+                            "wiki-figure",
+                            f"{page.name}: pattern names unknown fact {name!r}",
+                        )
+                    elif claimed != known[name]:
+                        f.add(
+                            "wiki-figure",
+                            f"{page.name}: says {name} is {claimed}; the mod says {known[name]} "
+                            f"- the wiki has no version selector, so this is what every player "
+                            f"reads",
+                        )
+    return checked
+
+
+def check_claim_coverage(f: Findings, wiki: Path | None = None) -> None:
     """Every claim pattern must match something, or say why it does not.
 
     `check_counts` and `check_vanilla_figures` both walk `re.finditer`, so a pattern that matches
@@ -453,10 +585,17 @@ def check_claim_coverage(f: Findings) -> None:
     counted = [d for d in DOCS if d.is_file() and d not in COUNT_EXEMPT]
     everywhere = [d for d in figure_sources() if d.is_file()]
 
-    for label, patterns, sources in (
+    tables = [
         ("CLAIMS", CLAIMS, counted),
         ("VANILLA_CLAIMS", VANILLA_CLAIMS, everywhere),
-    ):
+    ]
+    # WIKI_CLAIMS is only checkable when there is a wiki to check it against. Including it on an
+    # ordinary run would report all ten as dead - the false failure #427 flagged before any of this
+    # was written, and a check that cries wolf every run is one people learn to skip.
+    if wiki is not None:
+        tables.append(("WIKI_CLAIMS", WIKI_CLAIMS, sorted(wiki.glob("*.md"))))
+
+    for label, patterns, sources in tables:
         for pattern, _ in patterns:
             if any(re.search(wrapped(pattern), doc.read_text()) for doc in sources):
                 continue
@@ -471,14 +610,18 @@ def check_claim_coverage(f: Findings) -> None:
             )
 
     for pattern in sorted(IDLE_PHRASINGS):
-        if pattern in {p for p, _ in CLAIMS} or pattern in {
-            p for p, _ in VANILLA_CLAIMS
-        }:
+        registered = (
+            {p for p, _ in CLAIMS}
+            | {p for p, _ in VANILLA_CLAIMS}
+            | {p for p, _ in WIKI_CLAIMS}
+        )
+        if pattern in registered:
             continue
         f.add(
             "claim-coverage",
-            f"tools/check_docs.py: IDLE_PHRASINGS lists {pattern!r}, which is in neither "
-            f"CLAIMS nor VANILLA_CLAIMS - an exemption for a pattern that does not exist",
+            f"tools/check_docs.py: IDLE_PHRASINGS lists {pattern!r}, which is in none of "
+            f"CLAIMS, VANILLA_CLAIMS or WIKI_CLAIMS - an exemption for a pattern that does "
+            f"not exist",
         )
 
 
@@ -1147,19 +1290,23 @@ def check_wiki(explicit: str | None) -> int:
         return 2
 
     f = Findings()
-    checked = check_wiki_links(wiki, f)
+    links = check_wiki_links(wiki, f)
+    figures = check_wiki_counts(wiki, f, facts())
+    check_claim_coverage(f, wiki)
     if f.items:
-        print(f"FAIL - {len(f.items)} broken wiki link(s):", file=sys.stderr)
+        print(f"FAIL - {len(f.items)} problem(s) in the wiki:", file=sys.stderr)
         for check, detail in sorted(f.items):
             print(f"  [{check}] {detail}", file=sys.stderr)
         print(
-            "\nThe wiki is a separate repository and does not know this one changed. Either put "
-            "the heading back, or update the page - it clones from\n  " + WIKI_URL,
+            "\nThe wiki is a separate repository and does not know this one changed. Either "
+            "correct the page or, for a link, put the heading back - it clones from\n  "
+            + WIKI_URL,
             file=sys.stderr,
         )
         return 1
     print(
-        f"OK - {checked} wiki anchor link(s) across {len(pages)} page(s) still resolve"
+        f"OK - {links} wiki anchor link(s) and {figures} figure(s) across "
+        f"{len(pages)} page(s) still hold"
     )
     return 0
 
