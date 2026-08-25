@@ -47,3 +47,10 @@ CLAUDE.md
 
 # Qud writes these next to a loaded mod
 *.log
+
+# The release asset, which `tools/sync_mod.py --zip` writes to the repository root by default.
+# It is a build output and belongs on the GitHub release rather than in git — but the real reason
+# it is here is that `--publish` and `--zip` both refuse a dirty working tree, so an untracked zip
+# left over from step 7 of docs/RELEASING.md blocks step 6 of the same release. Cutting 2.6.0 hit
+# exactly that, between building the asset and installing the publish build.
+QudExpandedCommunityEdition-*.zip
