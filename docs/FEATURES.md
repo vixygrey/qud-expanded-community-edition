@@ -2120,7 +2120,7 @@ rather than anything the mod already was.
 | Mutated Human hit points per level | Combo | **1-5** | `BaseHPGain`. `2-3` is what 2.2 shipped, `1-4` is vanilla. See §1.2. |
 | extra skill points per level | Checkbox | **Yes** | `BaseSPGain` — 65 for mutants against vanilla's 50, 85 for True Kin against 70. |
 | extra starting skills | Checkbox | **Yes** | Staunch Wounds, Cooking and Gathering, Meal Preparation; Menacing Stare for mutants. |
-| eased skill requirements | Checkbox | **Yes** | The twenty retuned attribute requirements in §4. |
+| eased skill requirements | Checkbox | **Yes** | The fifteen retuned attribute requirements in §4. |
 | retuned skill point costs | Checkbox | **Yes** | The four retuned prices in §4. |
 | starting reputation bonus | Checkbox | **No** | +300 Joppa for mutants. §1.2. |
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
