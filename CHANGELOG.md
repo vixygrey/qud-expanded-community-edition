@@ -15,6 +15,41 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **(internal)** Claim patterns are wrapped centrally, and `claim-coverage` fails any that matches
+  nothing (#422).
+
+  `check_docs.py` verifies a figure by finding the sentence that quotes it. `re.finditer` yields
+  nothing for a pattern that matches nothing, so **a pattern which stops describing its sentence
+  reports no failure** — it just quietly checks less. The only symptom is that the "N documented
+  figure(s)" line goes down, and nothing knew what N should be.
+
+  Six of forty-seven patterns were in that state, from two different causes:
+
+  **Reflowed prose.** `wrapped()` has existed since #242 to turn every literal space into `\s+`,
+  with a docstring saying a pattern with a literal space *"stops matching the moment a sentence
+  moves across a line … which is the same silence this whole check exists to break, arriving
+  through the check itself."* It was opt-in, and **19 of 29 `CLAIMS` patterns did not use it.** One
+  had already gone silent, which is how the README's blueprint count drifted by 52 unnoticed. It is
+  now applied by the loops, so a new pattern cannot be written unwrapped.
+
+  **Reworded documents.** One pattern read
+  `r"Eleven options" if False else r"\*\*(\d+)\*\* options, all under"` — a dead conditional
+  leaving a live-looking disabled branch, where the disabled half matched the defect and the active
+  half matched nothing at all.
+
+  `claim-coverage` closes it in both directions, the same argument #402 made for the check-name
+  registry: a pattern that matches nothing fails, and an `IDLE_PHRASINGS` exemption naming no
+  registered pattern fails too, so the exemption list cannot become where typos go to be ignored.
+
+  **Five patterns are legitimately idle** and say so. Four are the census matrix from #242, which
+  registers nine ways to state one survey so whichever phrasing a document reaches for is checked;
+  the fifth appears only inside a changelog entry quoting an old bug report. Each carries a reason,
+  and a test asserts every reason is non-empty.
+
+  The option's requirement count is a computed fact now — `optioned-requirements`, read out of
+  `Raven_Options.cs`'s `Requirements[]` — rather than a number in prose with nobody to disagree
+  with it.
+
 - **(internal)** `skill-option-coverage` holds `mod/Skills.xml` against the option tables, in both
   directions (#421).
 
@@ -982,6 +1017,17 @@ recorded because contributors need them, not because subscribers do.
   are the durable half of the work.
 
 ### Fixed
+- **The README's own figures were wrong, and the check that should have caught them had gone
+  silent** (#422).
+
+  It advertised **348 new blueprints** against a real 400, and **eleven options** against twelve.
+  `docs/FEATURES.md` §13.1 described the *eased skill requirements* option as covering "the twenty
+  retuned attribute requirements" when it restores fifteen — #421 moved four powers out of that
+  table and the sentence stayed.
+
+  All three are figures `check_docs.py` was written to hold, and all three drifted anyway. Why is
+  the interesting part, and it is below.
+
 - **(internal)** `check-names` checks both directions, and `docs/STYLEGUIDE.md` gains **§10.1, a
   registry of every check name** any script in `tools/` can report (#402).
 

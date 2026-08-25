@@ -24,6 +24,7 @@ import tempfile
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -704,6 +705,77 @@ class WrappedClaims(unittest.TestCase):
 
     def test_wrapped_joins_on_whitespace(self) -> None:
         self.assertEqual(check_docs.wrapped("a b c"), r"a\s+b\s+c")
+
+    def test_every_counted_claim_pattern_is_wrapped_by_the_loop(self) -> None:
+        """Wrapping is applied centrally, so a new pattern cannot be written unwrapped by
+        accident. 19 of the 29 patterns were literal-space before #422, and one of them had
+        already gone silent across a reflow."""
+        source = Path("tools/check_docs.py").read_text()
+        for call in ("re.finditer(wrapped(pattern), text)",):
+            self.assertEqual(
+                source.count(call),
+                2,
+                "check_counts and check_vanilla_figures must both wrap the pattern",
+            )
+
+
+class ClaimCoverage(unittest.TestCase):
+    """A pattern matching nothing passes silently, because `re.finditer` simply yields nothing.
+
+    #422: that hid two live figures at once - README drifted to 348 new blueprints against 400,
+    and to eleven options against twelve. `claim-coverage` is the reverse direction, the same
+    argument #402 made for the check-name registry.
+    """
+
+    def _findings(self, claims, vanilla=(), idle=None):
+        f = check_docs.Findings()
+        with (
+            mock.patch.object(check_docs, "CLAIMS", list(claims)),
+            mock.patch.object(check_docs, "VANILLA_CLAIMS", list(vanilla)),
+            mock.patch.object(
+                check_docs, "IDLE_PHRASINGS", {} if idle is None else idle
+            ),
+        ):
+            check_docs.check_claim_coverage(f)
+        return f.items
+
+    def test_a_pattern_matching_nothing_is_reported(self) -> None:
+        items = self._findings([(r"no document says this at all", ["x"])])
+        self.assertTrue(items, "a pattern matching nothing was not reported")
+        self.assertIn("matches nothing", items[0][1])
+
+    def test_a_pattern_that_matches_is_quiet(self) -> None:
+        self.assertEqual(
+            self._findings([(r"(\w+) options, all under", ["options"])]), []
+        )
+
+    def test_an_idle_pattern_is_excused(self) -> None:
+        pattern = r"no document says this at all"
+        self.assertEqual(
+            self._findings(
+                [(pattern, ["x"])], idle={pattern: "registered ahead of the prose"}
+            ),
+            [],
+        )
+
+    def test_an_exemption_for_a_pattern_nobody_registered_is_reported(self) -> None:
+        """Otherwise IDLE_PHRASINGS becomes a place typos go to be ignored."""
+        items = self._findings([], idle={r"a phrasing nobody registered": "typo"})
+        self.assertTrue(items, "a stale exemption was not reported")
+        self.assertIn("neither CLAIMS nor VANILLA_CLAIMS", items[0][1])
+
+    def test_the_repository_agrees_with_itself_today(self) -> None:
+        """The control the guard needs: run it against the real tables, not synthetic ones."""
+        f = check_docs.Findings()
+        check_docs.check_claim_coverage(f)
+        self.assertEqual([c for c, _ in f.items], [])
+
+    def test_every_idle_phrasing_names_a_reason(self) -> None:
+        for pattern, reason in check_docs.IDLE_PHRASINGS.items():
+            with self.subTest(pattern=pattern):
+                self.assertTrue(
+                    reason.strip(), "an exemption with no reason is not an exemption"
+                )
 
 
 if __name__ == "__main__":

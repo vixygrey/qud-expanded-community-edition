@@ -952,6 +952,7 @@ seconds rather than after a round trip.
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
+| Every claim pattern matching something, so a reworded sentence cannot silence its check | `claim-coverage` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
@@ -1007,6 +1008,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `counts` | `check_docs.py` | the file and blueprint counts the documents quote |
 | `damage-ceiling` | `validate_mod.py` | damage against §3.2.1's per-family ceiling |
 | `dangling-blueprint` | `validate_mod.py` | a population entry naming a blueprint that exists |
+| `claim-coverage` | `check_docs.py` | every claim pattern matching something, or being registered as idle |
 | `dangling-blueprint-ref` | `validate_mod.py` | a blueprint-valued part attribute naming one that exists |
 | `dead-chip-grade` | `validate_mod.py` | a chip grading a mutation that cannot level |
 | `deployed` | `check_build_log.py` | the log belonging to the copy the game actually compiled |

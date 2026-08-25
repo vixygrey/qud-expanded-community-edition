@@ -51,7 +51,7 @@ Noble Lark for the subclass sprites*. I treat that as permanent, and the build f
 - **Complete weapon and armor families** — bronze through zetachrome, one- and two-handed, with
   consistent stats, tiers and prices.
 - **New weapon classes** — katanas, rapiers, halberds, greataxes, greatswords, war hammers,
-  wristblades and more.
+  wristblades, and the two-handed finesse lines: glaives, spears and quarterstaves.
 - **Skill and economy retuning**, and a home base building in Joppa.
 
 **Two places to read more, and they don't overlap.** The
@@ -62,7 +62,7 @@ rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Eleven options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+Twelve options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
 the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
 have that — nobody should need to swallow the whole mod to get one part of it.
 
@@ -77,7 +77,7 @@ have that — nobody should need to swallow the whole mod to get one part of it.
   save.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
-document is also the complete reference for the mod itself: every system, all 348 new blueprints and
+document is also the complete reference for the mod itself: every system, all 400 new blueprints and
 211 vanilla merges.
 
 ## Requires a new character

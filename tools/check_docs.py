@@ -66,6 +66,9 @@ WORD_NUMBERS = {
     "eleven": 11,
     "twelve": 12,
     "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
 }
 DOCS = [
     Path(p)
@@ -166,11 +169,34 @@ def facts() -> dict[str, int]:
         "scripting-files": len(list((MOD / "Scripting").glob("*.cs"))),
         "mutation-stubs": len(list((MOD / "Scripting").glob("Raven_Mod*.cs"))),
         "required-checks": len(required_checks()["required"]),
+        "optioned-requirements": len(optioned_requirements()),
     }
     for name, (n, m) in per_file.items():
         out[f"file:{name}:new"] = n
         out[f"file:{name}:merged"] = m
     return out
+
+
+def optioned_requirements() -> set[tuple[str, str]]:
+    """Every power whose attribute requirement the *eased skill requirements* option restores.
+
+    Read out of `Raven_Options.cs`'s `Requirements[]` rather than counted by hand. #421 moved four
+    powers out of that table and `docs/FEATURES.md` went on saying twenty, because a number in
+    prose has nobody to disagree with it.
+
+    `PowerCost` entries are deliberately not counted: those belong to the *retuned skill point
+    costs* option, which is a separate switch with a separate scope.
+    """
+    source = MOD / "Scripting" / "Raven_Options.cs"
+    if not source.is_file():
+        return set()
+    return {
+        (m.group(1), m.group(2))
+        for m in re.finditer(
+            r'new PowerRequirement\(\s*"([^"]+)",\s*"([^"]+)"',
+            source.read_text(encoding="utf-8-sig"),
+        )
+    }
 
 
 QUD_API_PATH = Path("tools/qud-api.json")
@@ -200,23 +226,23 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
     # quote a share of one total against a count from another - which is the shape of the defect
     # these replace, where 813 and 282 were correct against two different populations.
     (
-        wrapped(r"(\d+) of (\d+) creature blueprints bleed"),
+        r"(\d+) of (\d+) creature blueprints bleed",
         ["creature-blueprints-bleeding", "creature-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) creature blueprints carry nothing at all"),
+        r"(\d+) of (\d+) creature blueprints carry nothing at all",
         ["creature-inventory-none", "creature-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) creature blueprints carry only natural gear"),
+        r"(\d+) of (\d+) creature blueprints carry only natural gear",
         ["creature-inventory-natural", "creature-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) creature blueprints are dead to `RustOnHit`"),
+        r"(\d+) of (\d+) creature blueprints are dead to `RustOnHit`",
         ["creature-rust-dead", "creature-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) creature blueprints have a rustable item"),
+        r"(\d+) of (\d+) creature blueprints have a rustable item",
         ["creature-rustable", "creature-blueprints"],
     ),
     # The humanoid subset. "humanoid creature blueprints" cannot collide with the patterns above:
@@ -224,15 +250,15 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
     # the way. Kept explicit rather than made optional so a sentence cannot quote a humanoid count
     # against the whole-bestiary denominator.
     (
-        wrapped(r"(\d+) of (\d+) humanoid creature blueprints have a rustable item"),
+        r"(\d+) of (\d+) humanoid creature blueprints have a rustable item",
         ["humanoid-rustable", "humanoid-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`"),
+        r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`",
         ["humanoid-rust-dead", "humanoid-blueprints"],
     ),
     (
-        wrapped(r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all"),
+        r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all",
         ["humanoid-inventory-none", "humanoid-blueprints"],
     ),
     (r"thermal mk I is `ThermalGrenade (-?\d+)`", ["heat-grenade-delta"]),
@@ -257,6 +283,26 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
         ["boomrose-penetration", "boomrose-base-damage"],
     ),
 ]
+
+
+# Patterns deliberately kept live while nothing matches them. `claim-coverage` fails any other
+# pattern that matches nothing, so this is the line between "idle on purpose" and "went dead when
+# somebody reworded a sentence" - which is the defect #422 was filed for, twice over.
+#
+# Keep this list short. An entry here is a check that is not running.
+IDLE_PHRASINGS: dict[str, str] = {
+    # The census matrix (#242) registers nine ways to state one survey so that whichever phrasing
+    # a document reaches for is the one checked. Four have no home today. Deleting them would mean
+    # a sentence could appear later with nothing watching it, which is how the census went wrong
+    # the first time.
+    r"(\d+) of (\d+) creature blueprints carry nothing at all": "census matrix (#242)",
+    r"(\d+) of (\d+) creature blueprints have a rustable item": "census matrix (#242)",
+    r"(\d+) of (\d+) humanoid creature blueprints are dead to `RustOnHit`": "census matrix (#242)",
+    r"(\d+) of (\d+) humanoid creature blueprints carry nothing at all": "census matrix (#242)",
+    # Its only home is a changelog entry quoting a historical bug report, and CHANGELOG.md is
+    # COUNT_EXEMPT because its figures describe a past state on purpose.
+    r"(\d+) referenced, (\d+) defined": "quoted only inside CHANGELOG.md",
+}
 
 
 # Each pattern's capture groups map, in order, to the facts they must equal.
@@ -305,7 +351,9 @@ CLAIMS: list[tuple[str, list[str]]] = [
     (r"All (\d+) psionic subtype sprites", ["subtype-sprites"]),
     (r"the (\d+) subtype sprites", ["subtype-sprites"]),
     (r"Textures/Subtypes/\s+# (\d+) sprites", ["subtype-sprites"]),
-    (r"Eleven options" if False else r"\*\*(\d+)\*\* options, all under", ["options"]),
+    (r"(\w+) options, all under", ["options"]),
+    (r"The (\w+) retuned attribute requirements", ["optioned-requirements"]),
+    (r"(\w+) options, in Qud's own options menu", ["options"]),
     (r"Options\.xml\s+# (\d+) options", ["options"]),
     (r"Scripting/\s+# (\d+) classes", ["scripting-files"]),
     (r"(\d+) referenced, (\d+) defined", ["mutation-stubs", "mutation-stubs"]),
@@ -364,7 +412,7 @@ def check_vanilla_figures(f: Findings) -> int:
             continue
         text = doc.read_text()
         for pattern, names in VANILLA_CLAIMS:
-            for m in re.finditer(pattern, text):
+            for m in re.finditer(wrapped(pattern), text):
                 for group, name in enumerate(names, start=1):
                     expected = figures.get(name)
                     if expected is None:
@@ -385,6 +433,55 @@ def check_vanilla_figures(f: Findings) -> int:
     return checked
 
 
+def check_claim_coverage(f: Findings) -> None:
+    """Every claim pattern must match something, or say why it does not.
+
+    `check_counts` and `check_vanilla_figures` both walk `re.finditer`, so a pattern that matches
+    nothing contributes nothing and the run still passes. The only visible effect is that the
+    "N documented figure(s)" total is quietly lower than it should be, and nothing knows what N is
+    supposed to be.
+
+    #422 found that costing two live figures at once. `README.md` had drifted to **348** new
+    blueprints against 400, and to eleven options against twelve, and both patterns had gone silent
+    - one because the sentence was reflowed across a line, one because it was reworded. The check
+    written to catch drifting counts had itself drifted, in the direction that reports nothing.
+
+    So this is the same argument #402 made for `check-names`: a registry is worth having only if it
+    is read in both directions. `IDLE_PHRASINGS` carries the exceptions, and being on it is a claim
+    that wants justifying rather than a place to put an inconvenient failure.
+    """
+    counted = [d for d in DOCS if d.is_file() and d not in COUNT_EXEMPT]
+    everywhere = [d for d in figure_sources() if d.is_file()]
+
+    for label, patterns, sources in (
+        ("CLAIMS", CLAIMS, counted),
+        ("VANILLA_CLAIMS", VANILLA_CLAIMS, everywhere),
+    ):
+        for pattern, _ in patterns:
+            if any(re.search(wrapped(pattern), doc.read_text()) for doc in sources):
+                continue
+            reason = IDLE_PHRASINGS.get(pattern)
+            if reason:
+                continue
+            f.add(
+                "claim-coverage",
+                f"tools/check_docs.py: the {label} pattern {pattern!r} matches nothing - "
+                f"either the sentence it describes was reworded or removed, or the pattern "
+                f"belongs in IDLE_PHRASINGS with a reason",
+            )
+
+    for pattern in sorted(IDLE_PHRASINGS):
+        if pattern in {p for p, _ in CLAIMS} or pattern in {
+            p for p, _ in VANILLA_CLAIMS
+        }:
+            continue
+        f.add(
+            "claim-coverage",
+            f"tools/check_docs.py: IDLE_PHRASINGS lists {pattern!r}, which is in neither "
+            f"CLAIMS nor VANILLA_CLAIMS - an exemption for a pattern that does not exist",
+        )
+
+
 def check_counts(f: Findings, known: dict[str, int]) -> int:
     checked = 0
     for doc in DOCS:
@@ -392,7 +489,7 @@ def check_counts(f: Findings, known: dict[str, int]) -> int:
             continue
         text = doc.read_text()
         for pattern, names in CLAIMS:
-            for m in re.finditer(pattern, text):
+            for m in re.finditer(wrapped(pattern), text):
                 for group, name in enumerate(names, start=1):
                     checked += 1
                     raw = m.group(group)
@@ -1151,6 +1248,7 @@ def main() -> int:
     known = facts()
     checked = check_counts(f, known)
     from_game = check_vanilla_figures(f)
+    check_claim_coverage(f)
     appendix = check_appendix_b(f)
     items = check_item_tables(f)
     check_links(f)
