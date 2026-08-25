@@ -1151,6 +1151,67 @@ class SnapshotBackedChecks(unittest.TestCase):
         )
         self.assertEqual(findings_for(validate_mod.check_table_share, tmp), [])
 
+    # -------------------------------------------------------------- implant-table-cost
+
+    def _implant(self, cost: str, table: str) -> Path:
+        return self._mod(
+            f'  <object Name="Raven_Plating" Inherits="BaseCyberneticsEquipment_1point">\n'
+            f'    <part Name="CyberneticsBaseItem" Slots="Body" Cost="{cost}" />\n'
+            "  </object>",
+            tables=f'  <population Name="{table}" Load="Merge">\n'
+            '    <object Blueprint="Raven_Plating" Number="1" Weight="1" />\n'
+            "  </population>",
+        )
+
+    def test_an_implant_above_its_brackets_ceiling_is_reported(self) -> None:
+        """#418: crysteel plating went 3 points to 6 and stayed in the 3-point table."""
+        items = findings_for(
+            validate_mod.check_implant_table_cost,
+            self._implant("6", "Implants_3Pointers"),
+        )
+        self.assertTrue(items, "an implant priced above its table was not reported")
+        self.assertIn("Raven_Plating", items[0][1])
+
+    def test_an_implant_below_its_brackets_floor_is_reported(self) -> None:
+        items = findings_for(
+            validate_mod.check_implant_table_cost,
+            self._implant("2", "Implants_4PlusPointers"),
+        )
+        self.assertTrue(items, "an implant priced below its table was not reported")
+
+    def test_an_implant_inside_its_bracket_is_not_reported(self) -> None:
+        for cost, table in (
+            ("1", "Implants_1and2Pointers"),
+            ("2", "Implants_1and2Pointers"),
+            ("3", "Implants_3Pointers"),
+            ("9", "Implants_4PlusPointers"),
+        ):
+            with self.subTest(cost=cost, table=table):
+                self.assertEqual(
+                    findings_for(
+                        validate_mod.check_implant_table_cost,
+                        self._implant(cost, table),
+                    ),
+                    [],
+                )
+
+    def test_a_blueprint_this_fork_does_not_define_is_not_checked(self) -> None:
+        """Vanilla's own placements are vanilla's to be wrong about."""
+        tmp = self._mod(
+            "",
+            tables='  <population Name="Implants_3Pointers" Load="Merge">\n'
+            '    <object Blueprint="OpticalMultiscanner" Number="1" Weight="1" />\n'
+            "  </population>",
+        )
+        self.assertEqual(findings_for(validate_mod.check_implant_table_cost, tmp), [])
+
+    def test_a_table_outside_the_three_brackets_is_not_checked(self) -> None:
+        items = findings_for(
+            validate_mod.check_implant_table_cost,
+            self._implant("6", "Raven_Chips Tier 1"),
+        )
+        self.assertEqual(items, [])
+
 
 class CurveExemptions(unittest.TestCase):
     """The categories the value curve does not describe, and the ones it does.

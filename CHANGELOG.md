@@ -15,6 +15,52 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Changed
+- **The dermal plating line is priced on vanilla's own rate, so vanilla's own plating is worth
+  installing again** (#418).
+
+  #335 restored `DermalPlating` to vanilla's 3 licence points for +1 AV, which was right. What it did
+  not do is look at what that landed next to. **Vanilla's only plating came out dominated by two of
+  this fork's rungs**: steel gave the same +1 AV for a third of the licence cost and a third of the
+  water, and crysteel gave twice the AV for the same 3 points. There was no state of the game in
+  which a player should install carbide dermal plating.
+
+  Vanilla ships exactly one plating, so there is exactly one data point for what armour costs a True
+  Kin: **3 licence points per +1 AV**. The fork's three rungs now sit on that rate.
+
+  | plating | source | licence | water | AV | across 3 slots |
+  |---|---|---:|---:|---:|---:|
+  | steel | fork | 1 | 60 | +1 | **+1** — Body only |
+  | carbide | **vanilla** | 3 | 180 | +1 | +3 |
+  | crysteel | fork | **6** | **360** | +2 | +6 |
+  | zetachrome | fork | **9** | **800** | +3 | +9 |
+
+  **So the fork's platings buy slot density rather than power.** One zetachrome is +3 AV for 9 points
+  in one slot; three carbides are +3 AV for 9 points in three. You pay vanilla's price for the armour
+  and buy back two slots for something else — which is a reason to want the expensive one that
+  survives being read carefully, and is the first one this line has had.
+
+  Steel keeps its cheap entry price and is now **Body only**, so it cannot ladder to +3 the way it
+  could while it undercut carbide in every slot. `Slots` governs installation rather than what is
+  already installed, so **a save with steel plating in a Head or Back slot keeps it**.
+
+  Crysteel moves from `Implants_3Pointers` to `Implants_4PlusPointers`, because those table names are
+  literal about licence cost rather than decorative.
+
+  **Carbide itself does not move.** Charter rule 2 sets a high bar for changing vanilla's values and
+  #335 had just finished putting this one back; the fork's own rungs are the fork's to price. Nothing
+  is deleted either — `Raven_DermalPlatingSteel` has shipped, and a save with one installed would be
+  orphaned by removing it.
+
+- **(internal)** `implant-table-cost` holds an implant's loot table against the licence points it
+  actually costs (#418).
+
+  The three vanilla implant tables are named after a cost bracket, so each name is a claim about what
+  is inside it — and nothing in the game checks that. This is exactly how the crysteel placement
+  above survived a re-price: the table went on saying *3 Pointers* while holding a 6-point implant.
+  Charter rule 4 wants that in the script rather than in prose, so it is.
+
+  Only this fork's blueprints are checked. Vanilla's placements are vanilla's to be wrong about.
+
 - **The Psionic Adept has a stated reason to exist** (#410). It is the flagship genotype and nothing
   player-facing ever said what it was *for* — the README, the Workshop page and `docs/FEATURES.md`
   §1.4 all described its *contents*, which is not a reason to choose it over a True Kin.

@@ -1382,6 +1382,65 @@ def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
 
 
+IMPLANT_TABLE_COSTS = {
+    "Implants_1and2Pointers": (1, 2),
+    "Implants_3Pointers": (3, 3),
+    "Implants_4PlusPointers": (4, 99),
+}
+
+
+def check_implant_table_cost(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """An implant's loot table has to match the licence points it actually costs.
+
+    Vanilla's three implant tables are named after a cost bracket, so the name is a claim about
+    the blueprints inside it rather than a label. Nothing in the game enforces that, which is how
+    #418 happened: crysteel dermal plating was re-priced from 3 licence points to 6 and stayed in
+    `Implants_3Pointers`, where its own name said it did not belong.
+
+    Only this fork's blueprints are checked. Vanilla's placements are vanilla's to be wrong about,
+    and the merges do not change `Cost`.
+    """
+    pops = Path("mod/PopulationTables.xml")
+    if not pops.is_file():
+        return
+    try:
+        root = ET.fromstring(pops.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    costs: dict[str, int] = {}
+    for blueprint_root in blueprint_sources(all_roots).values():
+        for obj in blueprint_root.iter("object"):
+            name = obj.get("Name")
+            if not name:
+                continue
+            for part in obj.iter("part"):
+                if part.get("Name") == "CyberneticsBaseItem" and part.get("Cost"):
+                    try:
+                        costs[name] = int(part.get("Cost"))
+                    except ValueError:
+                        pass
+
+    for pop in root.iter("population"):
+        bracket = IMPLANT_TABLE_COSTS.get(pop.get("Name") or "")
+        if not bracket:
+            continue
+        low, high = bracket
+        for obj in pop.iter("object"):
+            blueprint = obj.get("Blueprint")
+            cost = costs.get(blueprint or "")
+            if cost is None or not (low <= cost <= high):
+                if cost is None:
+                    continue
+                f.add(
+                    "implant-table-cost",
+                    f"mod/PopulationTables.xml: {blueprint} costs {cost} licence point(s) "
+                    f"but sits in {pop.get('Name')}, which is for {low}"
+                    + (f"-{high}" if high != low else "")
+                    + (" and up" if high == 99 else ""),
+                )
+
+
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every new blueprint must be obtainable: in a population table, or tinkerable.
 
@@ -1860,6 +1919,7 @@ def run() -> Findings:
     check_damage_ceiling(f, roots)
     check_weight_curve(f, roots)
     check_table_share(f, roots)
+    check_implant_table_cost(f, roots)
     check_serializable_shape(f)
     check_reachability(f, roots)
     check_table_targets(f, roots)
