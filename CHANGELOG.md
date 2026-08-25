@@ -14,6 +14,29 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The documentation said an NPC's Chip Interface slot could never be filled, and it can** (#417).
+
+  `docs/FEATURES.md` §13.1 read *"nothing here ever fills those slots, so the reason to turn it off is
+  to stop another mod — or a later version of this one — being able to."* The first half is true of
+  the mod: no creature is generated carrying a chip. The conclusion is not, **because a player is not
+  another mod.**
+
+  Chips are worn armour rather than implants — `BaseArmor` with `WornOn="Chip Interface"` — which puts
+  them on the ordinary AI equip path, and every gate on that path is open. `Body.GetParts()` returns
+  the abstract slot with no filter; `Armor`'s equippable-list handler adds the chip on a `WornOn`
+  match and never reads `RequireDesirable`, so 0 AV / 0 DV does not disqualify it; no chip carries
+  `NoAIEquip`; `CompareGear(chip, null)` returns `-1`, so anything beats an empty slot; and the grant
+  fires on `EquippedEvent` against `E.Actor`, which is whoever wore it.
+
+  So handing a chip to a humanoid follower should give **the follower** the mutation. The option is
+  the switch for that, and nothing said so.
+
+  **This is a code reading, not a result** — nobody has watched a follower do it, and the callout says
+  so rather than implying otherwise. #417 stays open for the in-game test. What changed here is that
+  the document no longer makes a claim its own code contradicts.
+
 ### Changed
 
 - **(internal)** The wiki's figures are checked, not only its links (#427).
