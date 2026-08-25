@@ -105,6 +105,10 @@ that used to hide inside a `cp -R` cannot go wrong: the install directory is
 `qud-expanded-community-edition` and every published zip contains `QudExpandedCommunityEdition`, and
 that difference used to be a step you had to remember rather than something the tool knew.
 
+The archive is gitignored, so it does not have to be moved or deleted before step 6 — which matters
+because `--publish` refuses a dirty tree too, and for one release the asset from this step blocked the
+publish build of the same release.
+
 **`--zip` builds from `mod/`, not from the install directory**, which closes the other hole: there is
 no copy in between that could belong to a `--dev` run or to a version before the bump. It applies the
 same guards `--publish` does — refuses a dirty tree, refuses a branch that is not `main` level with
