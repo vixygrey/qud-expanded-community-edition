@@ -1064,9 +1064,9 @@ Nine elemental variants of each:
 | Implant | Cost | Slots | Effect | Weight |
 |---|---|---|---|---|
 | **Air filtration system** | 3 | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
-| **Steel dermal plating** | 1 | Body, Head, Back | +1 AV | 6 |
-| **Crysteel dermal plating** | 3 | Body, Head, Back | +2 AV | 12 |
-| **Zetachrome dermal plating** | 4 | Body, Head, Back | +3 AV | 16 |
+| **Steel dermal plating** | 1 | Body | +1 AV | 6 |
+| **Crysteel dermal plating** | 6 | Body, Head, Back | +2 AV | 12 |
+| **Zetachrome dermal plating** | 9 | Body, Head, Back | +3 AV | 16 |
 | **Omni pass** | 2 | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`). Tagged `StartingCybernetic:General` | 0 |
 | **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
 | **Zetachrome hand bones** | 8 | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
@@ -1099,6 +1099,30 @@ Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`)
 > `DermalInsulation` and `HighGradeDermalInsulation` no longer appear in `mod/` at all: once their
 > numbers are vanilla's, the merge changes nothing by definition, and deleting it is cleaner than
 > restating it.
+
+> ⚪ **The plating line is priced on vanilla's own rate (#418).** Restoring carbide to 3 points for
+> +1 AV in #335 was right on its own and left it **dominated by two of this fork's rungs** — steel
+> gave the same +1 AV for a third of the licence cost, and crysteel gave twice the AV for the same
+> 3 points. Vanilla ships exactly one plating, so there is exactly one data point for what AV costs:
+> **3 licence points each**. The fork's rungs now sit on that rate.
+>
+> | plating | source | licence | water | AV | across 3 slots |
+> |---|---|---:|---:|---:|---:|
+> | steel | fork | 1 | 60 | +1 | **+1** — Body only |
+> | carbide | vanilla | 3 | 180 | +1 | +3 |
+> | crysteel | fork | 6 | 360 | +2 | +6 |
+> | zetachrome | fork | 9 | 800 | +3 | +9 |
+>
+> **So the fork's platings buy slot density rather than power.** One zetachrome is +3 AV for 9 points
+> in one slot; three carbides are +3 AV for 9 points in three. You pay vanilla's price for the armour
+> and buy back two slots for insulations, and that is the whole reason to want the expensive one.
+>
+> Steel keeps its cheap entry price but is **Body only**, so it cannot ladder to +3 the way it could
+> when it undercut carbide in every slot. `Slots` governs installation rather than what is already
+> installed, so a save with steel plating in a Head or Back slot keeps it.
+>
+> Crysteel moved from `Implants_3Pointers` to `Implants_4PlusPointers` to match — those table names
+> are literal about licence cost, and `implant-table-cost` in `tools/validate_mod.py` now holds that.
 
 ### 6.6 Other equipment
 
@@ -1821,8 +1845,9 @@ tonic, one themed single chip, a **basic neutral mind chipset**, a **basic preco
 - **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (2), modified handcannon (5), drum shotgun (5).
 - **Ammo 4–8** — solar cell array from tier 4; advanced chem cell from tier 5; solar cell nexus from tier 7; dark matter cell via a nested chance table at tier 8.
 - **Implants_1and2Pointers** — steel dermal plating, omni pass, steel hand bones.
-- **Implants_3Pointers** — air filtration system, crysteel dermal plating.
-- **Implants_4PlusPointers** — crysteel hand bones, zetachrome dermal plating, zetachrome hand bones.
+- **Implants_3Pointers** — air filtration system.
+- **Implants_4PlusPointers** — crysteel hand bones, crysteel dermal plating, zetachrome dermal
+  plating, zetachrome hand bones.
 
 ### 7.3 Artifact tables (merged)
 

@@ -370,13 +370,13 @@
   <population Name="Implants_3Pointers" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Blueprint="Raven_AirFiltrationSystem" Number="1" Weight="1" />
-      <object Blueprint="Raven_DermalPlatingCrysteel" Number="1" Weight="1" />
     </group>
   </population>
 
   <population Name="Implants_4PlusPointers" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Blueprint="CrysteelHandBones" Number="1" Weight="1" />
+      <object Blueprint="Raven_DermalPlatingCrysteel" Number="1" Weight="1" />
       <object Blueprint="Raven_DermalPlatingZetachrome" Number="1" Weight="1" />
       <object Blueprint="Raven_ZetachromeHandBones" Number="1" Weight="1" />
     </group>

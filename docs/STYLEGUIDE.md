@@ -950,6 +950,7 @@ seconds rather than after a round trip.
 | A merge keeping vanilla's value and resistances | `merge-value`, same source |
 | A chip grading a mutation that cannot level | `dead-chip-grade`, against the snapshot's `non_leveling_mutations` |
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
+| An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
@@ -1012,6 +1013,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `finesse-visible` | `validate_mod.py` | a `Finesse` tag and its rules text implying each other |
 | `fresh` | `check_build_log.py` | the log post-dating that copy |
 | `identical` | `check_build_log.py` | the working tree matching what was compiled |
+| `implant-table-cost` | `validate_mod.py` | an implant's loot table matching its licence cost |
 | `item-curve` | `validate_mod.py` | tier and value curve consistency |
 | `item-tables` | `check_docs.py` | every figure in FEATURES' item tables, against its blueprint |
 | `joppa-sync` | `validate_mod.py` | the Joppa map and its option agreeing |

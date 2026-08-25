@@ -123,11 +123,11 @@
       ColorString="&amp;Y"
       DetailColor="r"
     />
-    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="1" BehaviorDescription="+1 AV" />
+    <part Name="CyberneticsBaseItem" Slots="Body" Cost="1" BehaviorDescription="+1 AV" />
     <part Name="CyberneticsStatModifier" Stats="AV:1" />
   </object>
 
-  <object Name="Raven_DermalPlatingCrysteel" Inherits="BaseCyberneticsEquipment_3point">
+  <object Name="Raven_DermalPlatingCrysteel" Inherits="BaseCyberneticsEquipment_6point">
     <part Name="Physics" Weight="12" />
     <part Name="Description" Short="Interlinked plates of hexagonal crysteel tessellate into a subcutaneous sheet." />
     <part
@@ -137,11 +137,11 @@
       ColorString="&amp;g"
       DetailColor="r"
     />
-    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="3" BehaviorDescription="+2 AV" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="6" BehaviorDescription="+2 AV" />
     <part Name="CyberneticsStatModifier" Stats="AV:2" />
   </object>
 
-  <object Name="Raven_DermalPlatingZetachrome" Inherits="BaseCyberneticsEquipment_4point">
+  <object Name="Raven_DermalPlatingZetachrome" Inherits="BaseCyberneticsEquipment_9point">
     <part Name="Physics" Weight="16" />
     <part
       Name="Description"
@@ -154,7 +154,7 @@
       ColorString="&amp;m"
       DetailColor="r"
     />
-    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="4" BehaviorDescription="+3 AV" />
+    <part Name="CyberneticsBaseItem" Slots="Body,Head,Back" Cost="9" BehaviorDescription="+3 AV" />
     <part Name="CyberneticsStatModifier" Stats="AV:3" />
   </object>
 
