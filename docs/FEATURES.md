@@ -2056,8 +2056,9 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 16 options (§13)
+├── Options.xml                 # 17 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
+├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
@@ -2076,7 +2077,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 51 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, the chip-slot mutator,
 │                               # burden, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2110,7 +2111,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Sixteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Seventeen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2146,6 +2147,7 @@ rather than anything the mod already was.
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
 | wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
 | gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
+| how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.5. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
 
@@ -2343,6 +2345,44 @@ hindren third gender rather than a general one, and hindren have their own names
 All three are held by `tools/validate_mod.py`, and `tools/naming_harness.py` resolves the whole file
 against vanilla without launching the game.
 
+### 15.5 The player's own name, which needed a different mechanism entirely
+
+Everything above scopes on a creature's gender and species. **None of it can reach the player**, and
+the reason is worth stating because it looks like an oversight and is not.
+
+`XRLCore.GenerateRandomPlayerName` calls `NameMaker.MakeName(null, null, Type)`. `For` is **null** —
+there is no GameObject, because the name is generated at `BOOTEVENT_GENERATERANDOMPLAYERNAME`, before
+the player object is built. `NameStyles.Generate` only populates `Gender`, `Species` and `Tag` from a
+live GameObject, so the player's random name is drawn gender-blind from `Qudish` however the
+namestyles above are scoped. There is nothing to hang a `NamingTag` property on.
+
+What there *is*, is the boot event itself. It fires through `EmbarkInfo.fireBootEvent` with the
+default name as its element and takes back whatever the modules return. So
+`mod/Scripting/Vixy_NameFlavourModule.cs` replaces it, reading a `Combo` option:
+
+| choice | drawn from | resolves to |
+| --- | --- | --- |
+| `Random` *(default)* | all three, evenly | 33% / 33% / 33% |
+| `Masc` | the widened Qudish pool | `Qudish` |
+| `Femme` | the open, vowel-final endings | `Vixy_Qudish Feminine` |
+| `Neutral` | an even mix of both | `Vixy_Qudish Neutral` |
+
+`NameMaker.MakeName` takes `Tag` as an ordinary parameter, so reaching a tag-scoped namestyle needs
+no GameObject — just the argument. `GameObject.Validate(ref null)` returns false, so `Generate` skips
+the block that would overwrite `Tag` and the passed one survives.
+
+**It is a module rather than an `EmbarkEvent` handler for one reason.** `fireBootEvent` iterates
+`enabledModules` regardless of `game`, while `EmbarkEvent.Send` dispatches through
+`Game?.HandleEvent` — and character creation's own *"roll me another name"* passes `game: null`. An
+event handler would have changed the final name and not the one previewed while choosing it.
+
+The `Tag` scopes sit at `Priority="200"` with `Combine="false"`, because an explicit choice should win
+outright. `Vixy_Random` is the exception: `Priority="50"` and combining, carried at the same priority
+by all three namestyles, so the weighted draw splits evenly. Random is the absence of a preference
+rather than a fourth pool.
+
+Typing a name in bypasses all of this, which is always the surest way to get the one you want.
+
 ### 15.4 What this does not touch
 
 - **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
@@ -2352,10 +2392,8 @@ against vanilla without launching the game.
 - **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
   scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
   a site call.
-- **The player's own random name.** `GenerateRandomPlayerName` calls
-  `NameMaker.MakeName(null, null, Type)` — `For` is null, so `Generate` never populates `Gender`,
-  `Species` or `Tag`, and the player's name is drawn gender-blind from Qudish regardless of what
-  these namestyles say. Reaching it needs a handler on `BOOTEVENT_GENERATERANDOMPLAYERNAME`.
+- **The player's own random name**, by any of the gender scoping above — see §15.5, which reaches
+  it a different way.
 
 ## 16. Gender and pronouns (`Genders.xml`)
 

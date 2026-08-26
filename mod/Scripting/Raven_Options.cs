@@ -44,6 +44,13 @@ namespace QudExpandedCE
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
         /// <summary>
+        /// Read by Vixy_NameFlavourModule rather than here. There is nothing to apply: it governs
+        /// one string generated during character creation, not a field on a record this class can
+        /// write. Declared here so every option ID lives in one place.
+        /// </summary>
+        public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
+
+        /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
         /// when a zone activates, not a field on a record this class can write.
         /// </summary>

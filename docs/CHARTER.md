@@ -112,18 +112,35 @@ mod-approval prompt for every subscriber. That's a trust relationship, and I tre
   hook this mod needs exists as a `MinEvent`.
 - **reflection into game internals.** Public members and documented extension points only.
 
-**What the mod's C# does, as of 2.3.0.** The rule used to name 36 one-line
+**What the mod's C# does.** The rule used to name 36 one-line
 `ModImprovedMutationBase<T>` subclasses as the ceiling — no I/O, no reflection, no state. It now
 also:
 
 - reads its own options and writes public fields on records the game has already loaded
-  (`GenotypeEntry.MutationPoints`, `.Skills`, `.Reputations`)
+  (`GenotypeEntry.MutationPoints`, `.Skills`, `.Reputations`, `NameElement.Weight`,
+  `NameScope.Chance`, `Gender.EnableSelection`)
 - registers a `[Serializable]` `IGameSystem` that handles a zone event and creates and destroys
   objects within one zone
+- **registers a character-creation module** — an `AbstractEmbarkBuilderModule` subclass, declared
+  by class name in `mod/EmbarkModules.xml`, which handles one boot event and replaces the string
+  the game generated for the player's name
 
-**I raised that ceiling deliberately in #46; it wasn't crossed by drift** — drift is the failure
-this rule exists to prevent. The hard limits above are unchanged. What changed is that C# may now
-hold state and adjust already-loaded data in response to a player's choice.
+**I raised that ceiling twice, deliberately, and neither time was drift** — drift is the failure
+this rule exists to prevent. #46 was the first: C# may hold state and adjust already-loaded data in
+response to a player's choice. The second is the embark module, and it is worth saying why it
+needed asking for rather than just doing.
+
+It participates in character creation, which is a part of the game the mod had never touched, and
+"the mod runs code while you are making your character" is a bigger sentence than any diff shows.
+What made it acceptable is that none of the hard limits above move. `AbstractEmbarkBuilderModule`
+declares **no abstract members**, so the subclass overrides one public virtual method; the game
+instantiates it from a class name in XML exactly as it instantiates a part from a blueprint, so the
+reflection is the game's rather than the mod's; and it declares no module data, because
+`AbstractEmbarkBuilderModuleData` is `[Serializable]` and travels in build codes — a module holding
+state would put this mod's shape into other people's saved characters.
+
+The alternative was Harmony, which rule 5 refuses and which breaks on arm64 macOS anyway. The
+question was never "patch or module", it was whether the feature was worth a new kind of C# at all.
 
 **Both limits above are checked now, not just written down.** `tools/validate_mod.py` runs
 `scripting-policy` (every banned API in rule 5's list, with the clause each pattern enforces) and

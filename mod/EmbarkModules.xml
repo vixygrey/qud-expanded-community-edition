@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<embarkmodules>
+  <!-- Declares Vixy_NameFlavourModule to character creation. The game resolves the class by name
+       and instantiates it, the same way a blueprint's <part Name="..."> resolves to a class, so
+       nothing here reflects into anything.
+
+       No <window> element, deliberately. A window would add a page to character creation, and
+       this module has no UI - it reads an option and replaces one string. Modules are enabled by
+       default (AbstractEmbarkBuilderModule._enabled starts true), so a windowless one is active
+       and receives boot events without appearing anywhere. -->
+  <module Class="QudExpandedCE.Vixy_NameFlavourModule" />
+</embarkmodules>

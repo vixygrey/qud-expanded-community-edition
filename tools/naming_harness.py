@@ -438,11 +438,11 @@ def ascii_violations(styles: dict[str, Style]) -> list[tuple[str, str]]:
 # (label, context, expected winning namestyle) triple. NAMEGENFAIL means the game would return
 # a literal "NameGenFail<n>" as the name.
 #
-# There is no player scenario here, and that is the finding rather than an omission.
-# GenerateRandomPlayerName calls NameMaker.MakeName(null, null, Type) -- For is null, so
-# Generate never populates Gender, Species or Tag, and the player's random name is drawn
-# gender-blind from Qudish no matter what these namestyles say. Reaching it needs a handler on
-# BOOTEVENT_GENERATERANDOMPLAYERNAME, which is separate work.
+# The player scenarios carry only Subtype and Tag because that is all the game has at the
+# moment it names them: GenerateRandomPlayerName calls MakeName(null, null, Type), and with
+# For null, Generate never populates Gender or Species. The Tag survives because
+# GameObject.Validate(ref null) is false, so the block that would overwrite it is skipped --
+# which is what makes Vixy_NameFlavourModule's replacement reach a scope at all.
 SCENARIOS = [
     ("female human villager", "Species=human,Gender=female", "Vixy_Qudish Feminine"),
     ("male human villager", "Species=human,Gender=male", "Qudish"),
@@ -462,6 +462,15 @@ SCENARIOS = [
     ("female bear", "Species=bear,Gender=female,Faction=Beasts", "Animal"),
     ("hindren third gender", "Species=human,Gender=hartind", "Qudish"),
     ("a site name", "Type=Site,Culture=Qudish", "Qudish Site"),
+    # The player. GenerateRandomPlayerName passes no GameObject, so Gender and Species are null
+    # and only Subtype and the Tag Vixy_NameFlavourModule supplies are in play.
+    ("player chose Masc", "Subtype=Greybeard,Tag=Vixy_Masc", "Qudish"),
+    ("player chose Femme", "Subtype=Greybeard,Tag=Vixy_Femme", "Vixy_Qudish Feminine"),
+    (
+        "player chose Neutral",
+        "Subtype=Greybeard,Tag=Vixy_Neutral",
+        "Vixy_Qudish Neutral",
+    ),
 ]
 
 VANILLA_POOLS = {"Qudish": (29, 20, 24)}
