@@ -54,7 +54,7 @@ repos:
         # files as explicit arguments, and an explicitly named file overrides the config's
         # exclusions. CI runs the action over the whole tree instead, where the config does apply,
         # so anything skipped has to be skipped in both places or it is skipped in neither.
-        exclude: ^(tools/qud-api\.json|mod/Naming\.xml)$
+        exclude: ^(tools/qud-api\.json|mod/Naming\.xml|mod/Scripting/Vixy_NameSyllables\.cs)$
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.1

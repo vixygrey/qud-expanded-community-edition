@@ -821,6 +821,47 @@ class NamingChecksTest(unittest.TestCase):
             [],
         )
 
+    # -- option coverage -----------------------------------------------------------------------
+
+    def coverage(self, xml: str, cs: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(tmp, ignore_errors=True))
+        (tmp / "mod" / "Scripting").mkdir(parents=True)
+        (tmp / "mod" / "Scripting" / "Vixy_NameSyllables.cs").write_text(
+            cs, encoding="utf-8"
+        )
+        f = validate_mod.Findings()
+        with chdir(tmp):
+            validate_mod.check_naming_option_coverage(f, self.roots(xml))
+        return [d for _, d in f.items]
+
+    CS = """
+        private static readonly string[] AddedPrefixes = { %s };
+        private static readonly string[] AddedInfixes = { };
+        private static readonly string[] AddedPostfixes = { };
+    """
+
+    XML = """
+        <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+          <prefixes>%s</prefixes>
+        </namestyle></namestyles></naming>"""
+
+    def test_matching_lists_are_quiet(self):
+        self.assertEqual(
+            self.coverage(self.XML % '<prefix Name="ze" />', self.CS % '"ze"'), []
+        )
+
+    def test_a_syllable_the_option_cannot_switch_off_is_a_finding(self):
+        found = self.coverage(
+            self.XML % '<prefix Name="ze" /><prefix Name="za" />', self.CS % '"ze"'
+        )
+        self.assertTrue(any("cannot switch it off" in d for d in found), found)
+
+    def test_a_syllable_the_option_does_not_own_is_a_finding(self):
+        """The dangerous direction: zeroing the weight on a vanilla syllable silences it."""
+        found = self.coverage(self.XML % '<prefix Name="ze" />', self.CS % '"ze", "fa"')
+        self.assertTrue(any("does not add" in d for d in found), found)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -388,6 +388,39 @@ def parse_ctx(spec: str) -> dict[str, str | None]:
     return ctx
 
 
+def vanilla_collisions(vanilla: dict[str, Style], fragment: Path) -> list[str]:
+    """A merged syllable sharing a name with a vanilla one becomes ONE element.
+
+    LoadNameStylePrefixNode looks the name up and updates in place rather than appending, so there
+    is a single element carrying a single weight -- and `Raven_Options.ApplyWiderNames` sets that
+    weight to 0 when the option is off, which for a collided syllable silences vanilla's too.
+
+    This has to read the fragment's own declarations. After the merge the two are indistinguishable:
+    a collision does not grow the pool, so there is no tail to inspect and no marker to read.
+    """
+    out = []
+    pools = {"prefixes": "prefix", "infixes": "infix", "postfixes": "postfix"}
+    root = ET.parse(fragment).getroot()
+    for style_node in root.iter("namestyle"):
+        name = style_node.get("Name", "")
+        base = vanilla.get(name)
+        if base is None:
+            continue  # a new namestyle shares no element with vanilla
+        for pool, child in pools.items():
+            node = style_node.find(pool)
+            if node is None:
+                continue
+            have = {syl for syl, _ in getattr(base, pool)}
+            for el in node:
+                if el.get("Name") in have:
+                    out.append(
+                        f"{name}: added {child} {el.get('Name')!r} collides with vanilla's — "
+                        f"they merge into one element, so switching the option off would "
+                        f"silence vanilla's too"
+                    )
+    return out
+
+
 def ascii_violations(styles: dict[str, Style]) -> list[tuple[str, str]]:
     """Vanilla is 3,074 syllables for 3,074 ASCII. Diacritics risk Qud's tileset font."""
     bad = []
@@ -500,6 +533,15 @@ def main() -> int:
     order: list[str] = []
     load_naming(game / "Naming.xml", styles, order, is_mod=False)
     base_pools = {n: pools_of(s) for n, s in styles.items()}
+    vanilla_styles = {
+        n: Style(
+            name=n,
+            prefixes=[list(e) for e in s.prefixes],
+            infixes=[list(e) for e in s.infixes],
+            postfixes=[list(e) for e in s.postfixes],
+        )
+        for n, s in styles.items()
+    }
     print(
         f"vanilla: {len(styles)} namestyles, "
         f"{sum(sum(pools_of(s)) for s in styles.values()):,} syllables  [{game}]"
@@ -517,6 +559,7 @@ def main() -> int:
         print(f"\nafter {args.fragment}:")
         lines, problems = report_pools(styles, base_pools, fragment=True)
         print("\n".join(lines))
+        problems += vanilla_collisions(vanilla_styles, Path(args.fragment))
     else:
         problems = []
 

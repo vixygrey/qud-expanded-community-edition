@@ -222,4 +222,53 @@
             {{y|Set this before creating a character.}} Bodies are built once, when a creature is generated.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEWiderNames"
+    DisplayText="{{C|Qud Expanded}}: wider name pools"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded name names naming repeat repetition syllable prefix postfix"
+  >
+    <helptext>
+            Adds syllables to the Qudish name pools, so procedurally generated people stop
+            sounding alike.
+
+            Vanilla draws from 29 openings and 24 endings, which is about 93,500 distinct names -
+            so it is not the whole name you notice repeating, it is the syllable. There is a 50%
+            chance of seeing a repeated opening after fewer than seven names. This takes openings
+            to 68 and endings to 36, which moves that to eleven.
+
+            The middle syllables are deliberately left nearly alone. That is not where the
+            collision is.
+
+            Turning this off restores vanilla's pools exactly. Nothing vanilla is removed or
+            reweighted either way.
+        </helptext>
+  </option>
+
+  <option
+    ID="OptionQudExpandedCEGenderedNames"
+    DisplayText="{{C|Qud Expanded}}: gendered name endings"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded name names naming gender feminine soft ending vowel"
+  >
+    <helptext>
+            Lets a generated person's name reflect the gender the game already gave them.
+
+            Qud rolls a gender for almost every human it generates - 117 of the 126 human
+            blueprints are a male-or-female coin flip - and then ignores it when naming them.
+            Vanilla's endings are 23 hard stops out of 24, so everyone ends up sounding the same
+            way regardless.
+
+            With this on, women draw mostly from open, vowel-final endings and the genders that
+            are neither draw from an even mix. It is a lean rather than a rule: about one name in
+            five still takes a hard ending, so a name never states someone's gender outright.
+
+            Turning this off makes naming gender-blind again, as vanilla is. It does not narrow
+            the pools - that is the option above.
+        </helptext>
+  </option>
 </options>

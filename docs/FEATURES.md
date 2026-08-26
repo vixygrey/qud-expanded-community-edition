@@ -2056,7 +2056,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 12 options (§13)
+├── Options.xml                 # 14 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
@@ -2075,7 +2075,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 49 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, the chip-slot mutator,
 │                               # burden, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2109,7 +2109,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twelve options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Fourteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2143,6 +2143,8 @@ rather than anything the mod already was.
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
+| wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
+| gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
