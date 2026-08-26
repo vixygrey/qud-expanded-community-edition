@@ -31,6 +31,8 @@ Usage:
     python3 tools/naming_harness.py --fragment PATH        # baseline + fragment, with pool deltas
     python3 tools/naming_harness.py --fragment PATH --check # run the scenario battery, exit 1 on failure
     python3 tools/naming_harness.py --fragment PATH --sample "Species=human,Gender=female"
+    python3 tools/naming_harness.py --genders                  # the chargen gender/pronoun lists
+    python3 tools/naming_harness.py --genders --fragment PATH  # ...and what a fragment does to them
 """
 
 from __future__ import annotations
@@ -499,6 +501,136 @@ def report_pools(styles, base_pools, fragment: bool) -> list[str]:
     return lines, problems
 
 
+# ---------------------------------------------------------------------------------------------
+# Genders and pronoun sets. Different data, same problem: what the game ends up with after a mod
+# merges into it, answered without launching the game.
+
+# Gender defaults, from the Gender field initialisers. They matter because a replicated pronoun
+# set is NAMED by its eleven forms -- person terms included -- so two genders with the same
+# pronouns but different person terms produce two separate entries in the chargen list.
+TERM_DEFAULTS = {
+    "PersonTerm": "human",
+    "ImmaturePersonTerm": "child",
+    "FormalAddressTerm": "friend",
+    "OffspringTerm": "child",
+    "SiblingTerm": "sib",
+    "ParentTerm": "progenitor",
+}
+FORMS = (
+    "Subjective",
+    "Objective",
+    "PossessiveAdjective",
+    "SubstantivePossessive",
+    "Reflexive",
+)
+
+
+def load_genders(path: Path, genders: dict[str, dict], is_mod: bool) -> bool | None:
+    """Mirror of Gender.LoadGendersNode. Returns the file's EnableSelection, if it states one.
+
+    There is no Load attribute anywhere in this loader: it looks the name up, reuses the existing
+    Gender when it finds one, and overwrites only the attributes present. Merge is not a mode you
+    opt into, it is the only behaviour -- so adding a gender is pure addition and touching a
+    vanilla one is surgical.
+    """
+    root = ET.parse(path).getroot()
+    if root.tag != "genders":
+        raise SystemExit(f"{path}: root is <{root.tag}>, expected <genders>")
+    for node in root:
+        if node.tag != "gender":
+            continue
+        entry = genders.setdefault(node.get("Name"), {"Generic": "true"})
+        entry.update(node.attrib)
+    value = root.get("EnableSelection")
+    return None if value is None else value == "true"
+
+
+def chargen_genders(genders: dict[str, dict]) -> list[str]:
+    """Gender.GetAllGenericPersonalSingular: Generic && !UseBareIndicative && !Plural."""
+    return sorted(
+        name
+        for name, g in genders.items()
+        if g.get("Generic", "true") == "true"
+        and g.get("UseBareIndicative") != "true"
+        and g.get("Plural") != "true"
+    )
+
+
+def pronoun_set_name(source: dict) -> str:
+    """PronounSet.CalculateName -- eleven forms joined with '/', person terms included."""
+    parts = []
+    if source.get("Plural") == "true":
+        parts.append("plural")
+    if source.get("PseudoPlural") == "true":
+        parts.append("pseudo-plural")
+    if source.get("UseBareIndicative") == "true":
+        parts.append("nonperson")
+    parts += [source.get(k, "") for k in FORMS]
+    parts += [source.get(k, v) for k, v in TERM_DEFAULTS.items()]
+    return "/".join(parts)
+
+
+def chargen_pronoun_sets(
+    genders: dict[str, dict], handwritten: list[dict]
+) -> list[str]:
+    """The Pronoun Set row: hand-written sets, plus one replica per eligible gender.
+
+    Replication is skipped when a set of that name already exists, and the name carries the person
+    terms -- so a promoted gender whose terms differ from the defaults does NOT collide with the
+    hand-written set it was promoted from. It appears twice.
+    """
+    sets: dict[str, str] = {}
+    for entry in handwritten:
+        if entry.get("Abstract") == "true":
+            continue
+        sets[pronoun_set_name(entry)] = "hand-written"
+    for name, g in genders.items():
+        if g.get("DoNotReplicateAsPronounSet") == "true":
+            continue
+        if g.get("Generic", "true") != "true" or g.get("UseBareIndicative") == "true":
+            continue
+        sets.setdefault(pronoun_set_name(g), f"from gender {name}")
+    return sorted(f"{k}    [{v}]" for k, v in sets.items())
+
+
+def report_genders(game: Path, fragment: str | None) -> list[str]:
+    genders: dict[str, dict] = {}
+    selection = load_genders(game / "Genders.xml", genders, is_mod=False)
+    handwritten = [
+        dict(ps.attrib)
+        for ps in ET.parse(game / "PronounSets.xml").getroot().iter("pronounset")
+    ]
+    before = chargen_genders(genders), chargen_pronoun_sets(genders, handwritten)
+    if fragment:
+        override = load_genders(Path(fragment), genders, is_mod=True)
+        if override is not None:
+            selection = override
+    after = chargen_genders(genders), chargen_pronoun_sets(genders, handwritten)
+
+    out = [f"Gender.EnableSelection: {selection}"]
+    out.append(f"\nchargen Gender row: {len(before[0])} -> {len(after[0])}")
+    for name in after[0]:
+        out.append(f"  {'+' if name not in before[0] else ' '} {name}")
+    out.append(f"\nchargen Pronoun Set row: {len(before[1])} -> {len(after[1])}")
+    for name in after[1]:
+        out.append(f"  {'+' if name not in before[1] else ' '} {name}")
+    dupes = duplicate_pronouns(after[1])
+    for d in dupes:
+        out.append(
+            f"\n  !! two entries share the pronouns {d} and differ only in person terms"
+        )
+    return out
+
+
+def duplicate_pronouns(entries: list[str]) -> list[str]:
+    """Two selectable sets with identical pronouns are indistinguishable to a player picking one."""
+    seen: dict[str, int] = {}
+    for entry in entries:
+        key = "/".join(entry.split("    ")[0].split("/")[:5])
+        seen[key] = seen.get(key, 0) + 1
+    return sorted(k for k, n in seen.items() if n > 1)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -517,6 +649,11 @@ def main() -> int:
         help='context to draw sample names for, e.g. "Species=human,Gender=female"',
     )
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument(
+        "--genders",
+        action="store_true",
+        help="report the chargen gender and pronoun lists instead",
+    )
     args = ap.parse_args()
 
     game = find_game(args.game)
@@ -528,6 +665,10 @@ def main() -> int:
             file=sys.stderr,
         )
         return 2
+
+    if args.genders:
+        print("\n".join(report_genders(game, args.fragment)))
+        return 0
 
     styles: dict[str, Style] = {}
     order: list[str] = []

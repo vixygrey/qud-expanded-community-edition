@@ -276,5 +276,133 @@ class HarnessTest(unittest.TestCase):
             nh.parse_ctx("Speceis=human")
 
 
+VANILLA_GENDERS = """
+<genders EnableSelection="false">
+  <gender Name="neuter" Subjective="it" Objective="it" PossessiveAdjective="its"
+          SubstantivePossessive="its" Reflexive="itself" UseBareIndicative="true"
+          DoNotReplicateAsPronounSet="true" />
+  <gender Name="male" Subjective="he" Objective="him" PossessiveAdjective="his"
+          SubstantivePossessive="his" Reflexive="himself" PersonTerm="man" />
+  <gender Name="plural" Subjective="they" Objective="them" PossessiveAdjective="their"
+          SubstantivePossessive="theirs" Reflexive="themselves" Plural="true" />
+  <gender Name="elverson" Generic="false" Subjective="ey" Objective="em"
+          PossessiveAdjective="eir" SubstantivePossessive="eirs" Reflexive="emself"
+          PersonTerm="person" SiblingTerm="sibling" ParentTerm="parent" />
+</genders>
+"""
+
+XE = (
+    '<genders><gender Name="xe" Subjective="xe" Objective="xem" PossessiveAdjective="xyr"'
+    ' SubstantivePossessive="xyrs" Reflexive="xemself" PersonTerm="person"'
+    ' SiblingTerm="sibling" ParentTerm="parent" %s /></genders>'
+)
+
+HANDWRITTEN = [
+    {"Name": "player", "Abstract": "true", "Subjective": "you"},
+    {
+        "Subjective": "xe",
+        "Objective": "xem",
+        "PossessiveAdjective": "xyr",
+        "SubstantivePossessive": "xyrs",
+        "Reflexive": "xemself",
+    },
+]
+
+
+class GenderTest(unittest.TestCase):
+    """The chargen lists, predicted.
+
+    Both failure modes here are silent: a gender that never appears in the row, and two entries a
+    player cannot tell apart. Neither errors, and neither is visible without starting a new game.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def load(self, *fragments: str):
+        genders: dict[str, dict] = {}
+        nh.load_genders(
+            write(self.tmp, "g.xml", VANILLA_GENDERS), genders, is_mod=False
+        )
+        for i, frag in enumerate(fragments):
+            nh.load_genders(write(self.tmp, f"m{i}.xml", frag), genders, is_mod=True)
+        return genders
+
+    # -- the loader ----------------------------------------------------------------------------
+
+    def test_touching_one_attribute_leaves_the_rest(self):
+        """LoadGenderNode has no Load attribute: it reuses the entry and overwrites only what is
+        stated. Merge is the only behaviour, so unhiding a gender cannot lose its pronouns."""
+        genders = self.load(
+            '<genders><gender Name="elverson" Generic="true" /></genders>'
+        )
+        self.assertEqual(genders["elverson"]["Generic"], "true")
+        self.assertEqual(genders["elverson"]["Subjective"], "ey")
+        self.assertEqual(genders["elverson"]["ParentTerm"], "parent")
+
+    def test_a_new_gender_defaults_to_generic(self):
+        """new Gender(name, _Generic: true) -- an addition reaches chargen without saying so."""
+        genders = self.load('<genders><gender Name="fae" Subjective="fae" /></genders>')
+        self.assertIn("fae", nh.chargen_genders(genders))
+
+    # -- the gender row ------------------------------------------------------------------------
+
+    def test_the_gender_row_filter(self):
+        """Generic && !UseBareIndicative && !Plural, so this fixture offers only male."""
+        self.assertEqual(nh.chargen_genders(self.load()), ["male"])
+
+    def test_unhiding_elverson_puts_it_in_the_row(self):
+        genders = self.load(
+            '<genders><gender Name="elverson" Generic="true" /></genders>'
+        )
+        self.assertIn("elverson", nh.chargen_genders(genders))
+
+    # -- the pronoun set row -------------------------------------------------------------------
+
+    def test_an_abstract_hand_written_set_is_not_offered(self):
+        sets = nh.chargen_pronoun_sets(self.load(), HANDWRITTEN)
+        self.assertFalse(any(entry.startswith("you/") for entry in sets), sets)
+
+    def test_promoting_without_the_flag_duplicates_the_hand_written_set(self):
+        """The replica's name carries the person terms, so a promoted gender whose terms differ
+        does NOT collide with the set it was promoted from -- it appears twice."""
+        sets = nh.chargen_pronoun_sets(self.load(XE % ""), HANDWRITTEN)
+        self.assertEqual(nh.duplicate_pronouns(sets), ["xe/xem/xyr/xyrs/xemself"])
+
+    def test_the_flag_prevents_the_duplicate(self):
+        genders = self.load(XE % 'DoNotReplicateAsPronounSet="true"')
+        sets = nh.chargen_pronoun_sets(genders, HANDWRITTEN)
+        self.assertEqual(nh.duplicate_pronouns(sets), [])
+        self.assertIn("xe", nh.chargen_genders(genders), "the gender is still offered")
+
+    def test_a_genuinely_new_gender_brings_its_pronoun_set_with_it(self):
+        genders = self.load(
+            '<genders><gender Name="fae" Subjective="fae" Objective="faer"'
+            ' PossessiveAdjective="faer" SubstantivePossessive="faers"'
+            ' Reflexive="faerself" /></genders>'
+        )
+        sets = nh.chargen_pronoun_sets(genders, HANDWRITTEN)
+        self.assertTrue(any(e.startswith("fae/faer/") for e in sets), sets)
+
+    def test_pronoun_set_name_fills_the_term_defaults(self):
+        """A gender stating no person terms still names its replica with all eleven forms."""
+        name = nh.pronoun_set_name({"Subjective": "ne", "Objective": "nem"})
+        self.assertTrue(name.endswith("/human/child/friend/child/sib/progenitor"), name)
+
+    def test_enable_selection_is_read_from_the_root(self):
+        genders: dict[str, dict] = {}
+        base = write(self.tmp, "v.xml", VANILLA_GENDERS)
+        mod = write(self.tmp, "m.xml", '<genders EnableSelection="true"></genders>')
+        self.assertIs(nh.load_genders(base, genders, is_mod=False), False)
+        self.assertIs(nh.load_genders(mod, genders, is_mod=True), True)
+
+    def test_a_fragment_stating_nothing_leaves_selection_alone(self):
+        genders: dict[str, dict] = {}
+        mod = write(self.tmp, "m.xml", '<genders><gender Name="fae" /></genders>')
+        self.assertIsNone(nh.load_genders(mod, genders, is_mod=True))
+
+
 if __name__ == "__main__":
     unittest.main()

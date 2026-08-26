@@ -16,6 +16,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The harness predicts the character-creation gender and pronoun lists (#435).
+
+  Qud ships a complete gender and pronoun system switched off, and #435 is about turning it on. Both
+  of the failure modes there are silent: a gender that never reaches the list, and two entries a
+  player cannot tell apart. Neither errors, and neither is visible without starting a new game.
+
+  `--genders` resolves both lists the way the game does — `Generic && !UseBareIndicative && !Plural`
+  for the Gender row, hand-written sets plus one replica per eligible gender for the Pronoun Set row
+  — and reports what a candidate fragment changes.
+
+  It found the trap immediately. A replicated pronoun set is **named by all eleven of its forms,
+  person terms included**, and replication is skipped only when a set of that exact name already
+  exists. So promoting `xe` to a gender with sensible person terms does *not* collide with the
+  hand-written `xe/xem/xyr/xyrs/xemself` set vanilla already ships — it appears **twice**, identical
+  pronouns, differing only in whether a stranger calls you `person` or `human`. Three of the nine
+  planned additions would have done this. `DoNotReplicateAsPronounSet="true"` avoids it, and the
+  harness confirms both the duplicate and the fix rather than my having reasoned about it.
+
+  Verified against the installed game: vanilla is 4 genders and 8 pronoun sets, which is what the
+  simulation reproduces from the same files.
+
 - **Both halves of the name change are options** (#184).
 
   `wider name pools` and `gendered name endings`, separate on purpose: wanting more variety and
