@@ -1378,6 +1378,69 @@ dagger specifically. The spears inherit `MeleeWeapon` and declare their skill, m
 explicitly instead. **Read what a base actually grants before adopting it** — the tags it carries
 travel with every child.
 
+## A scope that looks load-bearing may match nothing at all
+
+The entry above says to confirm a parent blueprint exists before building on it. This is the same
+question asked of a *relationship* rather than a reference, and the answer surprised me more.
+
+`Naming.xml` scopes on `Culture` **50 times**, naming 36 distinct cultures — twice as often as it
+scopes on `Species`, which it uses 25 times. Read the scope table and the design looks obvious:
+culture is how a creature gets a culturally appropriate name, and species is the fallback for things
+that have no culture. I was one step from building #436 on top of that.
+
+It is the wrong way round. `Culture` is a blueprint tag with a species fallback:
+
+```csharp
+public string GetCulture()
+{
+    return GetPropertyOrTag("Culture") ?? GetSpecies();
+}
+```
+
+And almost nothing carries the tag.
+
+| | |
+|---|---|
+| `Culture` tags across every vanilla blueprint | **41 instances, 33 distinct values** |
+| Runtime writes of `Culture` in the whole 12 MB assembly | **one** — `EndGame.cs`, `"Chiliad Qudish"` |
+| Village generation touching `Culture` | **none** — `VillageBase`, `Village` and `VillageMaker` never mention it |
+| Scoped cultures that can never match a creature | **7 of 36** |
+
+The dead seven are `Qudish`, `Arcologian`, `Ekuemekiyyen`, `Ibulian`, `Yawningmoon`, `Chiliad
+Qudish` and `Ape`. The first is the one that matters: **the Qudish namestyle's `Culture="Qudish"`
+scope at Priority 100 has never fired, in any game anyone has ever played**, because no blueprint in
+Caves of Qud is tagged with it. Qudish reaches creatures entirely through its Priority-0 `General`
+scope and `Genotype="Mutated Human"`. The rest of the `Culture` scopes are duplicates of their own
+style's `Species` scope, reachable only through that `?? GetSpecies()` fallback.
+
+**`Ape` is dead for a second reason, and it is the more general one.** Apes carry no `Culture` tag,
+so the fallback supplies their species — which is `ape`. The scope asks for `Ape`. `NameScope.ApplyTo`
+compares with `Culture != this.Culture`, an ordinal `string` comparison, so the capital is fatal.
+`Bear`, `Bird` and `Antelope` look identical and work, because a blueprint tags each of them with the
+capitalised spelling. Nothing distinguishes the working ones from the broken one by reading.
+
+**The check is counting the other end**, and everything above came out of two commands. A grep for
+what actually carries the tag:
+
+```bash
+grep -rhoE '<tag Name="Culture" Value="[^"]*"' "$BASE"/ObjectBlueprints/ | sort | uniq -c
+```
+
+and a search of the assembly for anything that writes it at runtime. Ten seconds, and it settles a
+design question that I had otherwise been arguing about on taste.
+
+**Before building on a data relationship, count the things on the other end of it.** A scope, a tag,
+a table reference and an `Inherits=` are all *assertions that something is there*, and each of them
+parses, validates and ships whether or not it is. This is the same family as an orphaned
+`Load="Merge"`, a missing `[PlayerMutator]` and a `Priority="0"` scope handing back `NameGenFail1`:
+data that is well-formed, passes every check, and does nothing.
+
+There is a second, less comfortable point. **`tools/naming_harness.py` could have answered this
+before #436 was ever written.** It reimplements `XRL.Names` precisely so questions like this stop
+being guesses, it was sitting in the repository the whole time, and I did not think to ask it — I
+read the XML instead and drew a conclusion from how the file looked. A tool built to answer a class
+of question only helps if the question gets asked of it.
+
 ## Putting a value back is a change, and needs the same neighbour check as moving it
 
 #335 restored `DermalPlating` to vanilla's 3 licence points for +1 AV. That was the right call, made

@@ -39,7 +39,9 @@ in them applies to a contribution you're helping someone else write.
 - **Verify claims about Qud against the game's own files** rather than from memory — the installed
   mods under `steamapps/workshop/content/333640/` and the vanilla data under
   `StreamingAssets/Base`. `docs/LESSONS.md` explains where both are and which vanilla files aren't
-  valid XML.
+  valid XML. When the claim is that two things are *related* — a scope, a tag, an `Inherits=` —
+  count what's on the other end of it. Seven of the 36 cultures `Naming.xml` scopes on match nothing
+  in the game, `Qudish` among them.
 
 ## Before you commit
 

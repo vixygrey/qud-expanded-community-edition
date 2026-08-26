@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records that a scope which looks load-bearing may match nothing (#456).
+
+  `Naming.xml` scopes on `Culture` 50 times, naming 36 cultures — twice as often as it scopes on
+  `Species`. Seven of those 36 can never match a creature, and one of them is `Qudish`: **no
+  blueprint in Caves of Qud carries `Culture="Qudish"`**, so that scope has never fired in any game
+  anyone has played. `GetCulture()` is `GetPropertyOrTag("Culture") ?? GetSpecies()`, the tag appears
+  41 times in the whole game, and exactly one line in the 12 MB assembly writes it at runtime.
+
+  `Ape` is dead for a second reason worth its own paragraph: apes carry no tag, so the fallback
+  supplies `ape`, and the scope asks for `Ape`. `NameScope.ApplyTo` compares with `!=`. `Bear` and
+  `Bird` look identical and work, because a blueprint tags each with the capitalised spelling.
+
+  The rule the entry lands on is that a scope, a tag, a table reference and an `Inherits=` are all
+  assertions that something is there, and every one of them parses, validates and ships whether or
+  not it is. Counting the other end took two commands and settled a design question I had been
+  arguing on taste. `AGENTS.md` gets the short version.
+
+  The uncomfortable half is that `tools/naming_harness.py` could have answered this before #436 was
+  written. It was built for exactly this and I read the XML instead.
+
 - **(internal)** Recorded that adding genders widened what the world generates, not just the chargen list (#435).
 
   `Gender.CheckSpecial` resolves keywords a blueprint can use in place of a gender name —
