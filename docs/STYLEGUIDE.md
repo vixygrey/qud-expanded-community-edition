@@ -1033,6 +1033,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `naming-merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla namestyles, and mod-prefixed names on scopes added to them |
 | `naming-option-coverage` | `validate_mod.py` | the syllables the option can switch off being exactly the ones the XML adds |
 | `naming-priority` | `validate_mod.py` | a combining scope sitting above 0 and below 100 |
+| `option-default` | `validate_mod.py` | a Checkbox `Default` of `Yes` or `No`, and a Combo `Default` among its own `Values` |
 | `option-slider` | `validate_mod.py` | slider `Min` above 1, which crashes Qud's options menu (#51) |
 | `option-wiring` | `validate_mod.py` | an option declared but unread, or read but undeclared |
 | `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |
