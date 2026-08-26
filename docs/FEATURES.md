@@ -411,6 +411,31 @@ result among that family, and each family is equally likely.
 
 ---
 
+### 3.5 A follower can wear one, and it works
+
+**Hand a psionic chip to a humanoid follower and they will equip it and gain the mutation — and use
+it.** Verified in game (#417): a wished-up humanoid companion equipped a
+`Raven_Simple Disintegration Chip` unprompted, gained Disintegration, and killed a snapjaw with it.
+
+This is a real capability of the chip system and nothing described it until now. It follows from
+chips being **worn armour rather than implants** — `Raven_Base Psionic Chip` inherits `BaseArmor`
+and sits in the slot with `WornOn="Chip Interface"`, which puts it on the ordinary AI equip path,
+and the grant fires on `EquippedEvent` targeting `E.Actor` — whoever wore it, not whoever is the
+player. §13.1's callout traces every gate on that path.
+
+Two things are worth knowing before you try it.
+
+**The option gates it, and it gates it at creation.** *Chip Interface slots on other humanoids* adds
+the slot to the `Humanoid` **anatomy**, which is the template a body is built from. A follower you
+already have was built with whatever the anatomy said at the time and will never gain the slot
+afterwards — switching the option on reaches only humanoids generated after it. That is not a defect;
+it is what §13.2 means by an option read once, applied to a creature rather than to you.
+
+**Nothing in this mod ever puts a chip on an NPC.** Chips reach the world through the artifact tables
+that fill containers (#410), never through creature inventories, so this only ever happens because a
+player chose to hand one over. That is the sense in which §13.1's original line was half right: no
+creature is *generated* carrying one.
+
 ## 4. Skills (`Skills.xml`)
 
 Seven trees are edited. Nothing is removed; requirements and costs are retuned, and **Finesse** is
@@ -2155,7 +2180,9 @@ The Psionic Adept is deliberately outside every one of these. Its skills, reputa
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
 vanilla value to restore and turning them off would leave a genotype with nothing.
 
-> ⚠️ **An NPC's chip slot is reachable, and the documentation used to say it was not (#417).** This
+> ⚠️ **An NPC's chip slot is reachable, and the documentation used to say it was not (#417).**
+> **Confirmed in game**: a humanoid follower equipped a chip unprompted, gained the mutation, and
+> killed a snapjaw with it. What follows was a code reading first and is now a result — see §3.5. This
 > row read *"nothing here ever fills those slots, so the reason to turn it off is to stop another mod
 > — or a later version of this one — being able to."* The first clause is true of the **mod**: no
 > creature is generated carrying a chip, and chips reach the world only through the artifact tables

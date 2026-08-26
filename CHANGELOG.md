@@ -16,6 +16,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **A follower can wear a psionic chip, and the documentation now says so** (#417).
+
+  Confirmed in game: a humanoid companion equipped a `Raven_Simple Disintegration Chip` unprompted,
+  gained Disintegration, and killed a snapjaw with it. #434 corrected §13.1's claim that the slot was
+  unreachable, but that correction was a code reading — this is the result, and §3 had never
+  mentioned followers at all.
+
+  §3.5 describes the capability, including the part that will otherwise waste someone's afternoon:
+  the option adds the slot to the `Humanoid` **anatomy**, which is the template a body is built from,
+  so **a follower you already have will never gain the slot** — only humanoids generated after the
+  option is on. Testing it on an existing companion produces a false negative and the wrong
+  conclusion.
+
+  Nothing in this mod ever puts a chip on an NPC. Chips reach the world through the artifact tables
+  that fill containers (#410), never through creature inventories, so this only happens because a
+  player chose to hand one over — which is the sense in which the original line was half right.
+
 - **(internal)** `docs/LESSONS.md` records what launching the game found that no check could.
 
   Six pull requests of naming and gender work reached `main` fully green — validator, docs checks,
