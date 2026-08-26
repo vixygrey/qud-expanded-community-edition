@@ -14,6 +14,35 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** `tools/naming_harness.py` resolves name generation without launching the game (#184).
+
+  Everything this repository knows about `Naming.xml` was read out of `Assembly-CSharp.dll`, and
+  reading control flow is not the same as watching it run. The harness reimplements the three pieces
+  of `XRL.Names` that decide what a creature is called — the loader's `Load="Merge"` cascade,
+  `NameScope.ApplyTo`, and `NameStyles.Generate`'s Priority-weighted draw — so a candidate fragment
+  can be checked against vanilla before it reaches `mod/`.
+
+  It earned itself immediately. I had been describing a missing `Load="Merge"` as *"clears the
+  pool"*, and it is worse than that: `LoadNameStyleNode`'s replacement branch calls
+  `_NameStyleList.Remove(value)`, builds a fresh style, writes it to `_NameStyleTable` and **never
+  adds it back to the list**. `Generate` iterates the list. So a redeclaration without the attribute
+  does not empty a vanilla namestyle, it removes it from name generation altogether — surviving only
+  for `Base=` lookups. Doing that to `Qudish` takes every procedurally named human in the game with
+  it, and each one comes back as the literal string `NameGenFail1`, `NameGenFail2`, and so on.
+
+  Two more traps are now executable rather than remembered. A `General` scope at `Priority="0"` is
+  **skipped entirely** by the weighted draw, so a second one alongside vanilla's sends the total to
+  zero and returns `NameGenFail<n>` as a creature's name; vanilla survives only because `Qudish` is
+  the sole `General`-scope namestyle in the file, which takes a different branch. And the exclusion
+  test is `other.priority > scope.priority`, so a new combining scope at 100 does not lose to the
+  faction styles — it **displaces** them, and female Templars and Barathrumites stop being named
+  like Templars and Barathrumites.
+
+  `--check` runs a scenario battery and exits non-zero; `--sample` draws names for a context. 22
+  tests in `tools/test_naming_harness.py`, synthetic XML only, so CI runs them without a game.
+
 ### Fixed
 
 - **The documentation said an NPC's Chip Interface slot could never be filled, and it can** (#417).
