@@ -16,6 +16,34 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Both halves of the name change are options** (#184).
+
+  `wider name pools` and `gendered name endings`, separate on purpose: wanting more variety and
+  wanting names to signal gender are different opinions, and rule 6 says nobody should have to take
+  one to get the other. Both default **on** — they are cosmetic and grant no power, so rule 6's
+  default-off exception does not apply.
+
+  Both are reversible rather than undoable, which is what rule 5 asks of anything that mutates
+  loaded game data. The widening sets `Weight` to 0 on the syllables this mod added, which
+  `GetRandomNameElement` skips while leaving the element in place; the gendered endings set `Chance`
+  to 0 on the two new namestyles' scopes, which `ApplyTo` evaluates last, so the scope stops matching
+  and naming falls back to Qudish exactly as vanilla does it. Off is vanilla, exactly.
+
+  **The syllable list is restated in C# and a check holds the two halves together.** Nothing at
+  runtime can tell a merged-in syllable from a vanilla one — the loader appends both into the same
+  `List` and neither carries a marker — and reading the XML back would be file I/O, which rule 5
+  forbids. It lives in its own `Vixy_NameSyllables.cs` so the spell checker can skip it — these are
+  invented fragments, and `Raven_Options.cs` is 700 lines of real prose that should stay checked.
+  `naming-option-coverage` holds the two files against `mod/Naming.xml` in both
+  directions: a syllable in the XML the option cannot reach, and a syllable in the C# the XML does
+  not add. The second is the dangerous one, because zeroing a weight on something this mod does not
+  own means silencing vanilla's.
+
+  `tools/naming_harness.py` covers the case CI cannot see: a syllable that shares a name with a
+  vanilla one **merges into a single element**, so it does not lengthen the pool and there is no tail
+  to inspect. The harness reads the fragment's own declarations against the installed game instead.
+  None of the 59 collide today.
+
 - **Names stopped repeating, and half the people in Qud stopped sounding like men** (#184).
 
   Vanilla's Qudish namestyle has 29 prefixes, 20 infixes and 24 postfixes — about 93,500 distinct

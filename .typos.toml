@@ -40,4 +40,5 @@ extend-exclude = [
   # every document in the repo including player-facing text, which is the padding this policy
   # exists to prevent.
   "mod/Naming.xml",
+  "mod/Scripting/Vixy_NameSyllables.cs", # the same syllables, restated for the option
 ]

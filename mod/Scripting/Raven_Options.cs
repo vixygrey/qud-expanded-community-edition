@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using XRL;
 using XRL.UI;
+using XRL.Names;
 using XRL.World.Anatomy;
 using XRL.World.Skills;
 
@@ -36,12 +37,37 @@ namespace QudExpandedCE
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
+        public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
+        public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
         /// when a zone activates, not a field on a record this class can write.
         /// </summary>
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
+
+
+        /// <summary>The vanilla namestyle mod/Naming.xml merges its new syllables into.</summary>
+        private const string QudishStyle = "Qudish";
+
+        /// <summary>
+        /// The namestyles that carry the gendered ending pools. Switching the option off sets
+        /// every scope on them to Chance 0, which ApplyTo evaluates last - so the scope stops
+        /// matching, the style stops competing, and naming falls back to Qudish exactly as
+        /// vanilla does it.
+        /// </summary>
+        private static readonly string[] GenderedStyles =
+        {
+            "Vixy_Qudish Feminine", "Vixy_Qudish Neutral"
+        };
+
+        /// <summary>
+        /// The syllables mod/Naming.xml adds to Qudish, in their own file so the spell
+        /// checker can skip them. Vixy_NameSyllables says why the list is restated at all.
+        /// </summary>
+        private static readonly string[] AddedPrefixes = Vixy_NameSyllables.AddedPrefixes;
+        private static readonly string[] AddedInfixes = Vixy_NameSyllables.AddedInfixes;
+        private static readonly string[] AddedPostfixes = Vixy_NameSyllables.AddedPostfixes;
 
         private const string ChipSlot = "Chip Interface";
 
@@ -374,6 +400,61 @@ namespace QudExpandedCE
         };
 
         /// <summary>Runs whenever any option changes, and once as options are first read.</summary>
+
+        /// <summary>
+        /// Weight 0 excludes a syllable from the draw without removing it: GetRandomNameElement
+        /// sums only weights above 0 and skips the rest. So this is a switch that can be flipped
+        /// back, rather than an edit to undo.
+        ///
+        /// If another mod adds a syllable this one also adds, the loader merges them into a
+        /// single element and switching this off silences it for both. That is unavoidable -
+        /// there is one element and one weight - and it is the additive direction, so nothing
+        /// vanilla is ever affected.
+        /// </summary>
+        private static void ApplyWiderNames()
+        {
+            int weight = Enabled(WiderNamesID, "Yes") ? 1 : 0;
+            if (!NameStyles.NameStyleTable.TryGetValue(QudishStyle, out NameStyle style))
+            {
+                return;
+            }
+            SetWeights(style.Prefixes, AddedPrefixes, weight);
+            SetWeights(style.Infixes, AddedInfixes, weight);
+            SetWeights(style.Postfixes, AddedPostfixes, weight);
+        }
+
+        private static void SetWeights<T>(List<T> pool, string[] added, int weight)
+            where T : NameElement
+        {
+            foreach (T element in pool)
+            {
+                if (Array.IndexOf(added, element.Name) >= 0)
+                {
+                    element.Weight = weight;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Chance is the last thing NameScope.ApplyTo evaluates - `return Chance.in100()` - so 0
+        /// stops the scope matching at all and the namestyle drops out of the running. Naming
+        /// becomes gender-blind again, which is what vanilla does.
+        /// </summary>
+        private static void ApplyGenderedNames()
+        {
+            int chance = Enabled(GenderedNamesID, "Yes") ? 100 : 0;
+            foreach (string name in GenderedStyles)
+            {
+                if (NameStyles.NameStyleTable.TryGetValue(name, out NameStyle style))
+                {
+                    foreach (NameScope scope in style.Scopes)
+                    {
+                        scope.Chance = chance;
+                    }
+                }
+            }
+        }
+
         [OptionFlagUpdate]
         public static void OnOptionFlagUpdate()
         {
@@ -388,6 +469,8 @@ namespace QudExpandedCE
             ApplyChipDrops();
             ApplySkillRequirements();
             ApplySkillCosts();
+            ApplyWiderNames();
+            ApplyGenderedNames();
         }
 
         private static bool Enabled(string id, string fallback)
