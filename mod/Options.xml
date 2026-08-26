@@ -346,4 +346,27 @@
             it.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCECreatureVariants"
+    DisplayText="{{C|Qud Expanded}}: creature colour variants"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded creature variants colour color coat spawn regional"
+  >
+    <helptext>
+            Adds 32 regional colour and name variants of thirteen common creatures - brindle and
+            marsh dogs, black goats, rust beetles, a glass dragonfly - each in the one biome its
+            name argues for.
+
+            Cosmetic only. A variant differs in name, colour and description and in nothing else,
+            so a pied dog fights exactly as a feral dog does. Each one shares its parent's slot in
+            the spawn tables rather than taking its own, so creatures appear exactly as often as
+            they do in vanilla - you meet the same number of dogs, and some of them are brindle.
+
+            Applies to zones generated after you change it. Zones you have already visited keep
+            whatever they were built with, so set this before starting a character if you want it
+            to apply everywhere.
+        </helptext>
+  </option>
 </options>
