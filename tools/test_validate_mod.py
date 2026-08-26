@@ -863,6 +863,67 @@ class NamingChecksTest(unittest.TestCase):
         self.assertTrue(any("does not add" in d for d in found), found)
 
 
+class OptionDefaultTest(unittest.TestCase):
+    """#443. Nothing here is broken today, which is exactly why it needs a check: the one wrong
+    value in the file worked by accident, so copying it was a coin flip."""
+
+    def findings(self, body: str) -> list[str]:
+        f = validate_mod.Findings()
+        roots = {Path("mod/Options.xml"): ET.fromstring(f"<options>{body}</options>")}
+        validate_mod.check_option_defaults(f, roots)
+        return [d for _, d in f.items]
+
+    def test_yes_and_no_are_quiet(self):
+        self.assertEqual(
+            self.findings(
+                '<option ID="A" Type="Checkbox" Default="Yes" />'
+                '<option ID="B" Type="Checkbox" Default="No" />'
+            ),
+            [],
+        )
+
+    def test_true_is_a_finding(self):
+        """The dangerous one: "true" is not "Yes", so an option meant to default on ships off."""
+        found = self.findings('<option ID="A" Type="Checkbox" Default="true" />')
+        self.assertTrue(any("reads as off" in d for d in found), found)
+
+    def test_false_is_a_finding_even_though_it_behaves(self):
+        """It reads as off, which is usually what was meant -- but only by accident."""
+        found = self.findings('<option ID="A" Type="Checkbox" Default="false" />')
+        self.assertEqual(len(found), 1, found)
+
+    def test_a_combo_default_outside_its_values_is_a_finding(self):
+        found = self.findings(
+            '<option ID="A" Type="Combo" Values="1,2,3" Default="9" />'
+        )
+        self.assertTrue(any("not one of its" in d for d in found), found)
+
+    def test_a_combo_default_inside_its_values_is_quiet(self):
+        self.assertEqual(
+            self.findings('<option ID="A" Type="Combo" Values="1,2,3" Default="2" />'),
+            [],
+        )
+
+    def test_a_slider_is_not_held_to_either_rule(self):
+        """option-slider covers sliders, and a numeric Default is correct for one."""
+        self.assertEqual(
+            self.findings(
+                '<option ID="A" Type="Slider" Min="0" Max="24" Default="16" />'
+            ),
+            [],
+        )
+
+    def test_a_file_that_is_not_an_options_file_is_skipped(self):
+        f = validate_mod.Findings()
+        roots = {
+            Path("mod/Naming.xml"): ET.fromstring(
+                '<naming><option ID="A" Type="Checkbox" Default="true" /></naming>'
+            )
+        }
+        validate_mod.check_option_defaults(f, roots)
+        self.assertEqual([d for _, d in f.items], [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

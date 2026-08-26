@@ -47,6 +47,28 @@ recorded because contributors need them, not because subscribers do.
   with the hand-written set it was promoted from — it appears twice, identical pronouns, differing
   only in whether a stranger calls you `person` or `human`.
 
+||||||| 0e0d9de
+- **(internal)** `option-default` holds a Checkbox default to the two values a Checkbox stores (#443).
+
+  Thirteen of the fourteen options used `Default="Yes"` or `Default="No"`. Graded burden used
+  `Default="false"` — and it worked, which is the part worth fixing.
+
+  A Checkbox stores exactly `"Yes"` or `"No"`
+  (`SetOption(ID, GetOption(ID) == "Yes" ? "No" : "Yes")`), and `GetOption` returns the XML `Default`
+  before any C# fallback, so the XML value is what `Enabled` compares against until the player
+  touches the option. `"false"` is simply not `"Yes"`, so it read as off, which is what graded burden
+  wanted. **`Default="true"` would not have been so lucky**: an option meant to default on would have
+  shipped off, the checkbox would have rendered unchecked, and nothing would have errored — leaving a
+  player looking at an option that appears not to work, and a one-character cause in a file nobody
+  would suspect.
+
+  The one wrong value in the file being a *working* example is what made it worth a check rather than
+  a correction: the next person adding an option had a coin flip on which line to copy.
+
+  The Combo half is preventative and I would rather say so than imply it caught something — every
+  Combo in the file is correct. A `Default` outside the option's own `Values` fails the same silent
+  way. `Default="false"` is now `Default="No"`, which changes no behaviour at all.
+
 - **(internal)** The harness predicts the character-creation gender and pronoun lists (#435).
 
   Qud ships a complete gender and pronoun system switched off, and #435 is about turning it on. Both
