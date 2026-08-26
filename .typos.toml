@@ -18,6 +18,10 @@ TOU = "TOU"
 WIL = "WIL"
 # FEATURES.md shorthand for "inherited" in stat tables
 inh = "inh"
+# The sie/hir pronoun set. A real word rather than a misspelling of size/sigh/side, and unlike the
+# name syllables it appears in genuine player-facing prose - the option helptext, FEATURES.md and
+# the changelog - so it belongs here rather than in a file exclusion. #435.
+sie = "sie"
 
 [files]
 extend-exclude = [

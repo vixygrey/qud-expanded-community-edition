@@ -271,4 +271,51 @@
             the pools - that is the option above.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEGenderSelection"
+    DisplayText="{{C|Qud Expanded}}: choose your gender at character creation"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded gender chargen character creation pronoun nonbinary trans"
+  >
+    <helptext>
+            Adds a Gender row to character creation.
+
+            Qud has thirteen genders with full grammar, and ships every one of them written and
+            switched off - there is no way to pick yours, so the game rolls one for you. This turns
+            the row on, and widens what it offers from four to thirteen: elverson (ey/em), xe, ze,
+            sie, fae, spivak (e/em), ve, per and ne join male, female, neuterperson and
+            nonspecific.
+
+            The hindren third gender is deliberately not offered. It is theirs, not a general one.
+
+            Turning this off hides the row again and the game picks for you, as vanilla does. The
+            genders themselves stay declared either way, so a character who already has one keeps
+            it.
+        </helptext>
+  </option>
+
+  <option
+    ID="OptionQudExpandedCEPronounSelection"
+    DisplayText="{{C|Qud Expanded}}: choose your pronouns at character creation"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded pronoun pronouns chargen character creation neopronoun they"
+  >
+    <helptext>
+            Adds a Pronoun Set row to character creation, separate from gender.
+
+            Qud tracks pronouns apart from gender, so you can take a gender's grammar and a
+            different set of pronouns. The row defaults to "from gender", which is what you want
+            unless you want something else.
+
+            Vanilla ships this switched off too. On, it offers fourteen sets - the three Qud
+            already wrote and never showed anyone, plus one for each gender.
+
+            Turning it off hides the row. Your pronouns then follow your gender, as vanilla does
+            it.
+        </helptext>
+  </option>
 </options>

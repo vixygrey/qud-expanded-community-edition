@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using XRL;
 using XRL.UI;
 using XRL.Names;
+using XRL.World;
 using XRL.World.Anatomy;
 using XRL.World.Skills;
 
@@ -39,6 +40,8 @@ namespace QudExpandedCE
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
+        public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
+        public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
         /// <summary>
         /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
@@ -455,6 +458,28 @@ namespace QudExpandedCE
             }
         }
 
+        /// <summary>
+        /// Qud ships a complete gender and pronoun system switched off. Thirteen genders with full
+        /// grammar tables, a separate pronoun-set system, replication between the two, and a
+        /// selection UI written down to its screen coordinates - all of it unreachable, because
+        /// QudCustomizeCharacterModuleWindow.GetSelections yields the Gender and Pronoun Set rows
+        /// only `if (Gender.EnableSelection)` and `if (PronounSet.EnableSelection)`.
+        ///
+        /// Both are public static fields with no setter to work around. Vanilla sets them from the
+        /// root attribute of Genders.xml and PronounSets.xml, and a mod could do the same - but an
+        /// XML attribute loads unconditionally, and charter rule 6 wants this to be a choice. So it
+        /// is set here instead, which is the one thing that makes it optional.
+        ///
+        /// This does not touch the genders themselves. Turning the option off hides the rows; a
+        /// character who already picked a gender keeps it, because the gender is stored on the
+        /// object rather than re-read from this flag.
+        /// </summary>
+        private static void ApplyChargenSelection()
+        {
+            Gender.EnableSelection = Enabled(GenderSelectionID, "Yes");
+            PronounSet.EnableSelection = Enabled(PronounSelectionID, "Yes");
+        }
+
         [OptionFlagUpdate]
         public static void OnOptionFlagUpdate()
         {
@@ -471,6 +496,7 @@ namespace QudExpandedCE
             ApplySkillCosts();
             ApplyWiderNames();
             ApplyGenderedNames();
+            ApplyChargenSelection();
         }
 
         private static bool Enabled(string id, string fallback)

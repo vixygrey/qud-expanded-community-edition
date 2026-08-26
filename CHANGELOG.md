@@ -16,6 +16,38 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **You can choose your gender and pronouns, and there are thirteen of them** (#435).
+
+  Qud has a complete gender and pronoun system — 13 genders with full grammar tables, a separate
+  pronoun-set system, replication between the two, and a selection UI rendered down to its screen
+  coordinates. **It ships every part of it switched off.** Both data files carry
+  `EnableSelection="false"`, and character creation yields the Gender and Pronoun Set rows only when
+  those are true, so neither row is ever emitted and the game picks a gender for you at random.
+
+  Character creation now offers both rows. The gender list goes from **4 to 13**: `elverson` (ey/em)
+  unhidden, `xe`, `ze` and `sie` promoted from pronoun sets to genders, and `fae`, `spivak` (e/em),
+  `ve`, `per` and `ne` added. The pronoun list goes from **8 to 14**.
+
+  Every addition uses vanilla's own person terms for a generic non-binary gender, taken from
+  `elverson` — `person / child / friend / child / sibling / parent`. The game had already answered
+  that question, so this derives rather than invents.
+
+  **`hartind` stays hidden, deliberately.** It is the other gender behind `Generic="false"`, its
+  person terms are `hartind` / `faun`, and its pronouns duplicate `nonspecific` exactly — it is the
+  hindren third gender rather than a general one, and offering it would change nothing about the
+  grammar while putting a hindren cultural gender in everyone's list.
+
+  **Turning it on is C# rather than the one-attribute XML version, and that is the whole point.** A
+  `mod/Genders.xml` carrying `EnableSelection="true"` would work — but XML loads unconditionally and
+  could never be switched off. Two options set the fields instead, so charter rule 6 holds.
+
+  `DoNotReplicateAsPronounSet="true"` on the three promoted genders prevents a duplicate that would
+  otherwise have shipped: a replicated pronoun set is named by all eleven of its forms, **person
+  terms included**, so a promoted gender whose terms differ from vanilla's defaults does not collide
+  with the hand-written set it was promoted from — it appears twice, identical pronouns, differing
+  only in whether a stranger calls you `person` or `human`.
+
+||||||| 0e0d9de
 - **(internal)** `option-default` holds a Checkbox default to the two values a Checkbox stores (#443).
 
   Thirteen of the fourteen options used `Default="Yes"` or `Default="No"`. Graded burden used
