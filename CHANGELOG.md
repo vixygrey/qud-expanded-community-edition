@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** The Workshop description's figures are checked, not only its length (#459).
+
+  `check_docs.py` recounts 51 figures from `mod/` across the README, the charter and the feature
+  reference — and read `mod/workshop.json` not at all. `validate_mod.py`'s `check_workshop_description`
+  has only ever measured the Description against Steam's 8000-character limit. So the one piece of
+  text every Workshop visitor reads was the only one whose figures nobody counted, and **"Twelve
+  settings in Qud's own options menu" survived six new options across two releases**. Corrected to
+  eighteen here.
+
+  `WORKSHOP_CLAIMS` now holds four of them — options, subtypes, psionic chips and subtype sprites —
+  read through the same recount machinery as everything else, and `workshop-version` holds the two
+  places that go stale the moment `manifest.json` bumps: the `New in X.Y.Z` heading and the version
+  under *Version and saves*. Both are anchored on their surrounding markup rather than on a bare
+  version number, because the description legitimately cites older releases and the quill arrow
+  really did ship in 2.3.0.
+
+  What it deliberately does not check is whether the options *list* is complete. Six options are
+  missing from those bullets, and they are prose rather than IDs, so no honest pattern reaches them.
+  The count is what makes me reread the list — which is exactly how I found the six.
+
 - **32 creature colour variants**, on by default and toggleable in the mod options (#171).
 
   Thirteen common creatures pick up regional coats: brindle, rangy, pied, ash-coated and marsh dogs,

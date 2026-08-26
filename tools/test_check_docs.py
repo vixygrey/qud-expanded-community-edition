@@ -714,9 +714,10 @@ class WrappedClaims(unittest.TestCase):
         source = Path("tools/check_docs.py").read_text()
         self.assertEqual(
             source.count("re.finditer(wrapped(pattern), text)"),
-            3,
-            "check_counts, check_vanilla_figures and check_wiki_counts must all wrap the "
-            "pattern - this count rising is a new loop that has to opt in deliberately",
+            4,
+            "check_counts, check_vanilla_figures, check_wiki_counts and check_workshop_counts "
+            "must all wrap the pattern - this count rising is a new loop that has to opt in "
+            "deliberately",
         )
 
 
@@ -944,6 +945,122 @@ class ConflictMarkers(unittest.TestCase):
     def test_a_binary_file_is_skipped_rather_than_crashing(self):
         (self.tmp / "blob.bin").write_bytes(b"\x00\xff\xfe<<<<<<< HEAD\n")
         self.assertEqual(self.findings("clean\n"), [])
+
+
+@contextmanager
+def workshop_mod(description: str, version: str = "2.6.0"):
+    """A synthetic mod/ holding one Workshop description and one manifest version."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "mod").mkdir()
+        (root / "mod" / "workshop.json").write_text(
+            json.dumps({"WorkshopId": 1, "Description": description}), encoding="utf-8"
+        )
+        (root / "mod" / "manifest.json").write_text(
+            json.dumps({"version": version}), encoding="utf-8"
+        )
+        with chdir(root):
+            yield
+
+
+def workshop_findings(description: str, known=None):
+    """Only the figure check, so a fixture without version lines does not trip the other one."""
+    with workshop_mod(description):
+        f = check_docs.Findings()
+        counted = check_docs.check_workshop_counts(
+            f, known if known is not None else {"options": 18}
+        )
+        return counted, f.items
+
+
+def workshop_version_findings(description: str, version: str):
+    """Only the version check, for the same reason in reverse."""
+    with workshop_mod(description, version):
+        f = check_docs.Findings()
+        check_docs.check_workshop_version(f)
+        return f.items
+
+
+OPTIONS_LINE = "[b]{} settings in Qud's own options menu, under Mods.[/b]"
+VERSION_LINES = (
+    "[h1]New in {v}[/h1]\n[h1]Version and saves[/h1]\n[b]{v}.[/b] Loads fine."
+)
+
+
+class WorkshopFigures(unittest.TestCase):
+    """#459: the Workshop description ships with a release and nobody counted its figures.
+
+    `check_workshop_description` in validate_mod.py measures the Description's length and nothing
+    else, which is how "Twelve settings" survived six new options across two releases.
+    """
+
+    def test_a_matching_count_passes(self) -> None:
+        counted, items = workshop_findings(OPTIONS_LINE.format("Eighteen"))
+        self.assertEqual(items, [])
+        self.assertEqual(counted, 1, "the claim must actually have been checked")
+
+    def test_the_real_defect_is_reported(self) -> None:
+        """Verbatim the sentence that shipped wrong."""
+        _, items = workshop_findings(OPTIONS_LINE.format("Twelve"))
+        self.assertTrue(items, "a stale option count was not reported")
+        self.assertEqual(items[0][0], "workshop-figure")
+        self.assertIn("says options is 12", items[0][1])
+        self.assertIn("18", items[0][1])
+
+    def test_a_digit_is_read_as_well_as_a_word(self) -> None:
+        self.assertEqual(workshop_findings(OPTIONS_LINE.format("18"))[1], [])
+
+    def test_a_description_reflowed_across_a_line_still_matches(self) -> None:
+        """`wrapped()` exists because prose moves; assert it applies here too, or this check
+        drifts silent the way README.md's did in #422."""
+        line = OPTIONS_LINE.format("Eighteen").replace("in Qud's", "in\nQud's")
+        counted, items = workshop_findings(line)
+        self.assertEqual(counted, 1, "a reflowed claim stopped being checked")
+        self.assertEqual(items, [])
+
+    def test_a_pattern_naming_an_unknown_fact_is_reported(self) -> None:
+        _, items = workshop_findings(OPTIONS_LINE.format("Eighteen"), known={})
+        self.assertTrue(items)
+        self.assertIn("unknown fact", items[0][1])
+
+    def test_no_claim_at_all_checks_nothing_and_reports_nothing(self) -> None:
+        """The vacuous case, stated rather than assumed: zero checked is not zero problems."""
+        counted, items = workshop_findings("[h1]Nothing quantified here[/h1]")
+        self.assertEqual(counted, 0)
+        self.assertEqual([i for i in items if i[0] == "workshop-figure"], [])
+
+
+class WorkshopVersion(unittest.TestCase):
+    """The two places that go stale the moment manifest.json bumps."""
+
+    def test_matching_versions_pass(self) -> None:
+        items = workshop_version_findings(VERSION_LINES.format(v="2.6.0"), "2.6.0")
+        self.assertEqual(items, [])
+
+    def test_a_stale_version_is_reported(self) -> None:
+        items = workshop_version_findings(VERSION_LINES.format(v="2.6.0"), "2.7.0")
+        self.assertEqual(len(items), 2, "both sites must be reported")
+        self.assertTrue(all(c == "workshop-version" for c, _ in items))
+        self.assertTrue(any("New in" in d for _, d in items))
+        self.assertTrue(any("Version and saves" in d for _, d in items))
+
+    def test_an_older_release_cited_in_prose_is_not_dragged_forward(self) -> None:
+        """The quill arrow line says it shipped in 2.3.0. That is history, not a claim about
+        what ships now, and a bare version regex would rewrite the past."""
+        text = (
+            VERSION_LINES.format(v="2.7.0") + "\nIt shipped in 2.3.0 with a bad bleed."
+        )
+        items = workshop_version_findings(text, "2.7.0")
+        self.assertEqual(items, [])
+
+    def test_a_reworded_heading_is_reported_rather_than_passing_quietly(self) -> None:
+        """A pattern that matches nothing is the silence this whole file exists to break."""
+        items = workshop_version_findings(
+            "[h1]What's new[/h1]\nno version here", "2.7.0"
+        )
+        self.assertTrue(items, "a missing version site was not reported")
+        self.assertTrue(all(c == "workshop-version" for c, _ in items))
+        self.assertIn("missing or reworded", items[0][1])
 
 
 if __name__ == "__main__":

@@ -944,6 +944,7 @@ seconds rather than after a round trip.
 | XML and map-file well-formedness | `wellformed` in `tools/validate_mod.py` |
 | `manifest.json` / `workshop.json` validity, and the upload target | `json`, `manifest`, `workshop-target` |
 | The Workshop description fitting inside Steam's 8000-character limit | `workshop-description` |
+| Figures and the version quoted by the Workshop description, which ships with a release | `workshop-figure`, `workshop-version` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
@@ -1069,6 +1070,8 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `wiki-figure` | `check_docs.py` | every figure the wiki quotes, against the mod it describes |
 | `wiki-link` | `check_docs.py` | the wiki anchors the documents point at |
 | `workshop-description` | `validate_mod.py` | the Workshop description fitting Steam's 8000-character limit |
+| `workshop-figure` | `check_docs.py` | every figure the Workshop description quotes, against the mod it describes |
+| `workshop-version` | `check_docs.py` | the version in the Workshop description, against `manifest.json` |
 | `workshop-target` | `validate_mod.py` | the upload target |
 
 `qud-api-snapshot` is the odd one out: several checks emit it when `tools/qud-api.json` is missing or
