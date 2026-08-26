@@ -1014,6 +1014,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `dangling-blueprint-ref` | `validate_mod.py` | a blueprint-valued part attribute naming one that exists |
 | `dead-chip-grade` | `validate_mod.py` | a chip grading a mutation that cannot level |
 | `deployed` | `check_build_log.py` | the log belonging to the copy the game actually compiled |
+| `duplicate-child` | `validate_mod.py` | one `<object>` never naming two children the same, which Qud merges rather than keeps |
 | `filename-space` | `validate_mod.py` | filenames without spaces |
 | `finesse-visible` | `validate_mod.py` | a `Finesse` tag and its rules text implying each other |
 | `fresh` | `check_build_log.py` | the log post-dating that copy |

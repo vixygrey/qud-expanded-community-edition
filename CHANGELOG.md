@@ -40,6 +40,28 @@ recorded because contributors need them, not because subscribers do.
   changes it the mod stops compiling and CI says so on the next Qud update rather than the behaviour
   quietly rotting.
 
+- **Four vibro weapons stopped losing their charge description** (#448).
+
+  `Raven_Vibro Vinereaper`, `Vixy_Vibro Glaive`, `Vixy_Vibro Spear` and `Vixy_Vibro Quarterstaff`
+  each carried **two** `<part Name="RulesDescription">` elements. Qud does not keep both:
+  `ObjectBlueprintXMLChildNodeCollection.Add` reports the duplicate and then merges the second into
+  the first, so the later `Text` overwrote the earlier. A player examining a Vibro Spear was told
+  about Finesse and never told what charging it does, which is the entire point of a vibro weapon.
+
+  The two texts are now one, keeping both facts.
+
+  **`finesse-visible` caused it.** That check requires a `Finesse` tag and its rules text to imply
+  each other, so satisfying it meant adding a `RulesDescription` — and on these four, one already
+  existed. A check demanding text is what deleted other text. It arrived across #390 and #391, both
+  of which passed all ten required checks, and has been shipping since.
+
+  `duplicate-child` now holds every `<object>` against naming two children the same, across `part`,
+  `tag`, `stat`, `mutation`, `skill`, `intproperty` and `property`.
+
+  **Only the game ever noticed.** It writes `MODERROR` to its log on every launch and nothing reads
+  that; the XML is well-formed, so neither `prettier` nor anything in `tools/` had an opinion. Found
+  by launching Qud to test something unrelated.
+
 - **(internal)** `ruff` v0.16.3 → v0.16.4, in both places it is pinned.
 
   A patch release, and the interesting part is the second file. `.pre-commit-config.yaml` is what
