@@ -40,6 +40,14 @@ ABSTRACT_MARKERS = ("Base", "Projectile")
 # rather than reporting it (#224).
 MOD_PREFIXES = ("Raven_", "Vixy_")
 
+# The tag prefix that self-registers a blueprint into a spawn pool without any PopulationTables.xml
+# entry. docs/STYLEGUIDE.md §3.3 covers when to reach for it over an explicit entry.
+DYNAMIC_TABLE_PREFIX = "DynamicObjectsTable:"
+
+# The tag that gates a blueprint's dynamic-encounter eligibility on a mod option, with no C#
+# involved. Its value is an option ID, optionally prefixed with "!" to invert.
+OPTION_GATE_TAG = "ExcludeFromDynamicEncountersOption"
+
 # New objects the mod declares WITHOUT one of the MOD_PREFIXES. They are new declarations, not
 # vanilla replacements, so merge-discipline does not apply. Anything not listed here and not
 # mod-prefixed is treated as a vanilla record.
@@ -592,6 +600,13 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     Both directions fail silently in game. A declared option appears in the menu and does nothing
     when changed; an option read but never declared makes Options.GetOption always return its
     fallback, so the feature is permanently stuck at its default. Neither produces an error.
+
+    There are two ways to read one, and only counting the first reported the creature-variants
+    option as dead when it was wired the whole time (#171). C# calling `Options.GetOption` is the
+    usual route. The other is data: a `<tag Name="ExcludeFromDynamicEncountersOption">` value names
+    an option ID that `GameObjectBlueprint.IsExcludedFromDynamicEncounters` resolves itself, with a
+    leading `!` inverting it. Vanilla ships that path unused, so it is easy to forget it exists -
+    which is the argument for encoding it here rather than remembering it.
     """
     declared: set[str] = set()
     for path, root in all_roots.items():
@@ -605,6 +620,13 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         read |= set(
             re.findall(r'"(Option[A-Za-z0-9_]+)"', cs.read_text(encoding="utf-8-sig"))
         )
+    for root in all_roots.values():
+        for tag in root.iter("tag"):
+            if tag.get("Name") != OPTION_GATE_TAG:
+                continue
+            value = (tag.get("Value") or "").lstrip("!")
+            if value:
+                read.add(value)
 
     for missing in sorted(declared - read):
         f.add(
@@ -1810,14 +1832,29 @@ def check_skill_option_coverage(f: Findings) -> None:
 
 
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every new blueprint must be obtainable: in a population table, or tinkerable.
+    """Every new blueprint must be obtainable: in a population table, tagged, or tinkerable.
 
     This is the check that surfaces #6 (72 unreachable chips) and #7 (9 unreachable armor
     pieces).
+
+    A `DynamicObjectsTable:` tag is the third route, and it took #171 to notice: creature
+    variants self-register into spawn tables with a tag and appear in no `PopulationTables.xml`
+    entry at all, so checking only `Blueprint=` called all 32 of them unobtainable while they
+    spawned perfectly well. For the tiered pools it is not merely *a* route but the only additive
+    one - `PopulationManager.RequireTable` returns early when a table of that name already exists,
+    so declaring one replaces vanilla's whole fabricated pool instead of joining it.
+
+    What this deliberately does NOT check is whether the table name is one vanilla defines.
+    Emitting `Baboons_Creatures` when the real table is `Baboons` fabricates a pool nothing draws
+    from, and the variant never spawns with no error anywhere - but answering that needs the game,
+    and this script runs in CI without it. `tools/report_dynamic_tables.py` owns that question: a
+    bogus name shows up as a pool new to this mod in the snapshot diff, and the `dynamic-pools`
+    pre-commit hook blocks on it.
     """
     roots = blueprint_sources(all_roots)
     defined: dict[str, Path] = {}
     tinkerable: set[str] = set()
+    tagged: set[str] = set()
     for path, root in roots.items():
         for obj in root.iter("object"):
             name = obj.get("Name")
@@ -1832,6 +1869,18 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             defined[name] = path
             if any(p.get("Name") == "TinkerItem" for p in obj.iter("part")):
                 tinkerable.add(name)
+            for tag in obj.iter("tag"):
+                tag_name = tag.get("Name") or ""
+                if not tag_name.startswith(DYNAMIC_TABLE_PREFIX):
+                    continue
+                # `:Weight`, `:Number` and `:Builder` modify an entry rather than creating one,
+                # and a removal is the opposite of a route - 72 of the creature variants' tags
+                # are `*delete` precisely to keep them OUT of a table.
+                if tag_name.endswith((":Weight", ":Number", ":Builder")):
+                    continue
+                if tag.get("Value") in ("*delete", "{{{remove}}}"):
+                    continue
+                tagged.add(name)
 
     # An object is reachable if ANYTHING references it: a population table (Blueprint=), a map
     # file placing it into a cell, or another object pointing at it (e.g. a cybernetic's
@@ -1850,10 +1899,11 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     in_tables = referenced
 
     for name, path in sorted(defined.items()):
-        if name not in in_tables and name not in tinkerable:
+        if name not in in_tables and name not in tinkerable and name not in tagged:
             f.add(
                 "unreachable",
-                f"{name} ({path.name}) is in no population table and has no TinkerItem",
+                f"{name} ({path.name}) is in no population table, carries no "
+                f"{DYNAMIC_TABLE_PREFIX} tag, and has no TinkerItem",
             )
 
 

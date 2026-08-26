@@ -160,6 +160,92 @@ class PrefixRecognition(unittest.TestCase):
                 )
                 self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
 
+    def test_dynamic_table_tag_counts_as_reachable(self) -> None:
+        """#171: creature variants self-register with a tag and sit in no population table.
+
+        Checking only `Blueprint=` called all 32 unobtainable while they spawned perfectly well.
+        """
+        for prefix in COVERED_PREFIXES:
+            with self.subTest(prefix=prefix):
+                tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+                write_mod(
+                    tmp,
+                    f'  <object Name="{prefix}BrindleDog" Inherits="Dog">\n'
+                    '    <tag Name="DynamicObjectsTable:Hills_Creatures" />\n'
+                    "  </object>",
+                )
+                self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
+
+    def test_dynamic_table_tag_that_only_removes_is_not_reachable(self) -> None:
+        """The direction that would have made the fix vacuous.
+
+        A variant carries `*delete` tags to stay OUT of the tables it inherits. Counting those as
+        distribution would pass every blueprint that names a table for any reason at all, and the
+        check would go quiet on exactly the defect it exists for. Same for the `:Weight` modifier,
+        which tunes an entry rather than creating one.
+        """
+        for prefix in COVERED_PREFIXES:
+            for tag in (
+                '<tag Name="DynamicObjectsTable:Hills_Creatures" Value="*delete" />',
+                '<tag Name="DynamicObjectsTable:Hills_Creatures" Value="{{{remove}}}" />',
+                '<tag Name="DynamicObjectsTable:Hills_Creatures:Weight" Value="3" />',
+            ):
+                with self.subTest(prefix=prefix, tag=tag):
+                    tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+                    write_mod(
+                        tmp,
+                        f'  <object Name="{prefix}Orphan" Inherits="Dog">\n'
+                        f"    {tag}\n"
+                        "  </object>",
+                    )
+                    items = findings_for(validate_mod.check_reachability, tmp)
+                    self.assertTrue(
+                        any("Orphan" in detail for _, detail in items),
+                        f"{tag} is not a distribution route but was treated as one",
+                    )
+
+    # ------------------------------------------------------------------- option wiring
+
+    def _option_mod(self, blueprints: str) -> Path:
+        """A mod declaring one option, plus whatever blueprints the case needs."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        mod = write_mod(tmp, blueprints)
+        (mod / "Options.xml").write_text(
+            '<?xml version="1.0" encoding="utf-8" ?>\n<options>\n'
+            '  <option ID="OptionTestGate" DisplayText="t" Category="Mods" '
+            'Type="Checkbox" Default="Yes">\n    <helptext>t</helptext>\n  </option>\n'
+            "</options>\n",
+            encoding="utf-8",
+        )
+        return tmp
+
+    def test_option_read_only_by_blueprint_tag_is_wired(self) -> None:
+        """#171: an option can be read entirely in data, with no C# anywhere.
+
+        `ExcludeFromDynamicEncountersOption` names an option ID that the game resolves itself.
+        Scanning only mod/Scripting/*.cs called that option dead while it was doing its job.
+        """
+        for value in ("OptionTestGate", "!OptionTestGate"):
+            with self.subTest(value=value):
+                tmp = self._option_mod(
+                    '  <object Name="Vixy_Gated">\n'
+                    f'    <tag Name="ExcludeFromDynamicEncountersOption" Value="{value}" />\n'
+                    "  </object>"
+                )
+                self.assertEqual(
+                    findings_for(validate_mod.check_option_wiring, tmp), []
+                )
+
+    def test_option_with_no_reader_at_all_is_still_reported(self) -> None:
+        """The positive control. Widening what counts as a read must not make the check vacuous -
+        an option nothing reads is still the silent failure this check exists for."""
+        tmp = self._option_mod('  <object Name="Vixy_Ungated" />')
+        items = findings_for(validate_mod.check_option_wiring, tmp)
+        self.assertTrue(
+            any("OptionTestGate" in detail for _, detail in items),
+            "an option read by nothing was not reported",
+        )
+
     # ------------------------------------------------------------------ table targets
 
     def test_dangling_mod_blueprint_reference_is_reported(self) -> None:
