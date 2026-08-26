@@ -400,11 +400,23 @@ def ascii_violations(styles: dict[str, Style]) -> list[tuple[str, str]]:
 
 
 # The claims this repository makes about #184's design, as executable assertions. Each is a
-# (label, context, expected winning namestyle) triple. "expected" of None means "no style
-# matches"; NAMEGENFAIL means the game would return a literal "NameGenFail<n>" as the name.
+# (label, context, expected winning namestyle) triple. NAMEGENFAIL means the game would return
+# a literal "NameGenFail<n>" as the name.
+#
+# There is no player scenario here, and that is the finding rather than an omission.
+# GenerateRandomPlayerName calls NameMaker.MakeName(null, null, Type) -- For is null, so
+# Generate never populates Gender, Species or Tag, and the player's random name is drawn
+# gender-blind from Qudish no matter what these namestyles say. Reaching it needs a handler on
+# BOOTEVENT_GENERATERANDOMPLAYERNAME, which is separate work.
 SCENARIOS = [
     ("female human villager", "Species=human,Gender=female", "Vixy_Qudish Feminine"),
     ("male human villager", "Species=human,Gender=male", "Qudish"),
+    ("nonspecific villager", "Species=human,Gender=nonspecific", "Vixy_Qudish Neutral"),
+    (
+        "neuterperson villager",
+        "Species=human,Gender=neuterperson",
+        "Vixy_Qudish Neutral",
+    ),
     ("female snapjaw", "Species=snapjaw,Gender=female,Faction=Snapjaws", "Snapjaw"),
     ("female Templar", "Species=human,Gender=female,Faction=Templar", "Templar"),
     (
@@ -413,11 +425,7 @@ SCENARIOS = [
         "Barathrumite",
     ),
     ("female bear", "Species=bear,Gender=female,Faction=Beasts", "Animal"),
-    (
-        "player chose Femme",
-        "Species=human,Gender=male,Tag=Vixy_Femme",
-        "Vixy_Qudish Feminine",
-    ),
+    ("hindren third gender", "Species=human,Gender=hartind", "Qudish"),
     ("a site name", "Type=Site,Culture=Qudish", "Qudish Site"),
 ]
 

@@ -50,11 +50,11 @@ repos:
     hooks:
       - id: typos
         args: [--config, .typos.toml]
-        # .typos.toml's [files] extend-exclude does NOT cover this. pre-commit passes changed
+        # .typos.toml's [files] extend-exclude does NOT cover these. pre-commit passes changed
         # files as explicit arguments, and an explicitly named file overrides the config's
         # exclusions. CI runs the action over the whole tree instead, where the config does apply,
-        # so the generated snapshot has to be excluded in both places or it is excluded in neither.
-        exclude: ^tools/qud-api\.json$
+        # so anything skipped has to be skipped in both places or it is skipped in neither.
+        exclude: ^(tools/qud-api\.json|mod/Naming\.xml)$
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.1
