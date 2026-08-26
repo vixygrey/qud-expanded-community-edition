@@ -486,6 +486,55 @@ def vanilla_figures() -> dict[str, str]:
         return {}
 
 
+# Every marker git writes into a conflicted file. `|||||||` is the diff3 base marker -- the third
+# section, showing the common ancestor -- and it is the one pre-commit's check-merge-conflict hook
+# does NOT match. #446: a resolution that removed the other three and left this one passed that
+# hook, passed every check here, passed CI, and merged.
+#
+# The three with a trailing space, and the bare "=======" line, are matched exactly as the upstream
+# hook matches them. That precision is the point: "=======" is also a Markdown setext underline for
+# an H1, and LICENSE-CONTENT rules its sections off with 71 of them. A startswith on seven-then-
+# newline distinguishes a conflict marker from both.
+CONFLICT_MARKERS = ("<<<<<<< ", "||||||| ", "======= ", ">>>>>>> ")
+CONFLICT_BARE = "======="
+
+
+def tracked_files() -> list[Path]:
+    """Every file git tracks. Binary ones are skipped when they fail to decode."""
+    out = subprocess.run(
+        ["git", "ls-files", "-z"], capture_output=True, text=True, check=True
+    ).stdout
+    return [Path(p) for p in out.split("\0") if p]
+
+
+def check_conflict_markers(f: Findings) -> int:
+    """No tracked file carries a leftover conflict marker.
+
+    Scans everything git tracks rather than the document list, because the marker that got through
+    was in CHANGELOG.md but nothing about the failure was specific to a document -- a resolution
+    can leave one anywhere, and the file it lands in is the file nobody was reading.
+
+    Returns the number of files scanned, so a run that silently scanned nothing is visible.
+    """
+    scanned = 0
+    for path in tracked_files():
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, FileNotFoundError, IsADirectoryError):
+            continue  # binary, or a submodule pointer
+        scanned += 1
+        for number, line in enumerate(text.split("\n"), start=1):
+            hit = next((m for m in CONFLICT_MARKERS if line.startswith(m)), None)
+            if hit is None and line == CONFLICT_BARE:
+                hit = CONFLICT_BARE
+            if hit is not None:
+                f.add(
+                    "conflict-markers",
+                    f"{path}:{number}: leftover conflict marker {hit.strip()!r}",
+                )
+    return scanned
+
+
 def check_vanilla_figures(f: Findings) -> int:
     """Hold every quoted vanilla figure to what the game actually says."""
     figures = vanilla_figures()
@@ -1378,6 +1427,12 @@ def main() -> int:
         help="check an existing wiki clone instead of cloning one (implies --wiki)",
     )
     ap.add_argument(
+        "--conflict-markers",
+        action="store_true",
+        help="scan tracked files for leftover conflict markers and nothing else (fast; for the "
+        "pre-commit hook, which must run on every file rather than this script's usual subset)",
+    )
+    ap.add_argument(
         "--ruleset",
         action="store_true",
         help="compare tools/required-checks.json against GitHub's live ruleset (needs gh)",
@@ -1387,6 +1442,15 @@ def main() -> int:
         return check_wiki(args.wiki_path)
     if args.ruleset:
         return compare_ruleset()
+    if args.conflict_markers:
+        f = Findings()
+        scanned = check_conflict_markers(f)
+        for check, detail in sorted(f.items):
+            print(f"  [{check}] {detail}", file=sys.stderr)
+        if f.items:
+            return 1
+        print(f"OK - {scanned} tracked file(s) carry no leftover conflict markers")
+        return 0
 
     if not MOD.is_dir():
         print("error: run from the repository root (mod/ not found)", file=sys.stderr)
@@ -1405,6 +1469,7 @@ def main() -> int:
     check_check_names(f)
     check_required_checks(f)
     check_preserved(f)
+    markers = check_conflict_markers(f)
 
     if f.items:
         print(f"FAIL - {len(f.items)} problem(s):", file=sys.stderr)
@@ -1421,7 +1486,8 @@ def main() -> int:
     print(
         f"OK - {checked} documented figure(s) match the mod, {from_game} match the game, "
         f"{appendix} chip row(s) and {items} item-table figure(s) match their blueprints; "
-        f"links, sections, check names and preserved documents all clean"
+        f"links, sections, check names and preserved documents all clean; "
+        f"{markers} tracked file(s) carry no conflict markers"
     )
     return 0
 

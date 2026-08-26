@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -879,6 +880,70 @@ class WikiFigures(unittest.TestCase):
         """
         self.assertNotIn("chip-slots-mutatedhuman", check_docs.facts())
         self.assertNotIn("chip-slots-humanoid", check_docs.facts())
+
+
+class ConflictMarkers(unittest.TestCase):
+    """#446. The marker that reached main was the one nothing looked for.
+
+    pre-commit's check-merge-conflict matches "<<<<<<< ", "======= " and ">>>>>>> " and not the
+    diff3 base marker, so a resolution removing the other three passed every gate and merged. These
+    tests watch each shape fire, and watch the Markdown lookalikes stay quiet -- "=======" is also a
+    setext H1 underline, and LICENSE-CONTENT rules its sections off with 71 of them.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+        subprocess.run(["git", "init", "-q"], cwd=self.tmp, check=True)
+
+    def findings(self, body: str) -> list[str]:
+        (self.tmp / "doc.md").write_text(body, encoding="utf-8")
+        subprocess.run(["git", "add", "-A"], cwd=self.tmp, check=True)
+        f = check_docs.Findings()
+        cwd = os.getcwd()
+        os.chdir(self.tmp)
+        try:
+            check_docs.check_conflict_markers(f)
+        finally:
+            os.chdir(cwd)
+        return [d for _, d in f.items]
+
+    def test_the_diff3_base_marker_fires(self):
+        """The one that got through. pre-commit's own hook does not match this."""
+        found = self.findings("a\n||||||| 0e0d9de\nb\n")
+        self.assertTrue(any("|||||||" in d for d in found), found)
+
+    def test_the_three_the_upstream_hook_catches_fire_too(self):
+        for marker in ("<<<<<<< HEAD", "======= ", ">>>>>>> main"):
+            with self.subTest(marker=marker):
+                self.assertTrue(self.findings(f"a\n{marker}\nb\n"), marker)
+
+    def test_a_bare_seven_equals_line_fires(self):
+        self.assertTrue(self.findings("a\n=======\nb\n"))
+
+    def test_a_long_rule_is_not_a_marker(self):
+        """LICENSE-CONTENT rules its sections off with 71 equals signs."""
+        self.assertEqual(self.findings("Attribution 4.0\n" + "=" * 71 + "\n"), [])
+
+    def test_a_short_setext_underline_is_not_a_marker(self):
+        self.assertEqual(self.findings("Heading\n===\n"), [])
+
+    def test_a_marker_without_its_trailing_space_is_not_one(self):
+        """git always writes a space after the name markers; requiring it is what keeps this from
+        firing on prose that happens to start with angle brackets."""
+        self.assertEqual(self.findings("a\n<<<<<<<not-a-marker\nb\n"), [])
+
+    def test_a_clean_file_is_quiet(self):
+        self.assertEqual(self.findings("# Title\n\nOrdinary prose.\n"), [])
+
+    def test_the_line_number_is_reported(self):
+        found = self.findings("one\ntwo\n||||||| base\n")
+        self.assertTrue(any("doc.md:3:" in d for d in found), found)
+
+    def test_a_binary_file_is_skipped_rather_than_crashing(self):
+        (self.tmp / "blob.bin").write_bytes(b"\x00\xff\xfe<<<<<<< HEAD\n")
+        self.assertEqual(self.findings("clean\n"), [])
 
 
 if __name__ == "__main__":
