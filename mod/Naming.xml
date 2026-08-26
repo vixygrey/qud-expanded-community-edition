@@ -20,6 +20,19 @@
          namestyles below, because putting them in the shared pool would soften every name in
          the game regardless of gender - which is the thing this deliberately does not do. -->
     <namestyle Name="Qudish">
+      <scopes>
+        <!-- The player-facing half. mod/Scripting/Vixy_NameFlavourModule.cs replaces the
+           random player name at BOOTEVENT_GENERATERANDOMPLAYERNAME, passing the Tag the player
+           asked for - which is the only way to reach a character whose name is generated before
+           the character exists.
+
+           Priority 200 with Combine="false" because an explicit choice should win outright.
+           Vixy_Random is Priority 50 and combines instead: all three namestyles carry it at the
+           same priority, so the weighted draw splits evenly between them, which is what "random"
+           means here rather than a fourth pool. -->
+        <scope Name="Vixy_Masc" Tag="Vixy_Masc" Priority="200" Combine="false" />
+        <scope Name="Vixy_Random" Tag="Vixy_Random" Priority="50" Combine="true" />
+      </scopes>
       <prefixes>
         <prefix Name="ae" />
         <prefix Name="be" />
@@ -104,6 +117,17 @@
          losing to them. naming-priority holds the ceiling. -->
     <namestyle Name="Vixy_Qudish Feminine" Format="TitleCase">
       <scopes>
+        <!-- The player-facing half. mod/Scripting/Vixy_NameFlavourModule.cs replaces the
+           random player name at BOOTEVENT_GENERATERANDOMPLAYERNAME, passing the Tag the player
+           asked for - which is the only way to reach a character whose name is generated before
+           the character exists.
+
+           Priority 200 with Combine="false" because an explicit choice should win outright.
+           Vixy_Random is Priority 50 and combines instead: all three namestyles carry it at the
+           same priority, so the weighted draw splits evenly between them, which is what "random"
+           means here rather than a fourth pool. -->
+        <scope Name="Vixy_Femme" Tag="Vixy_Femme" Priority="200" Combine="false" />
+        <scope Name="Vixy_Random" Tag="Vixy_Random" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender" Species="human" Gender="female" Priority="50" Combine="true" />
       </scopes>
       <prefixes Amount="1">
@@ -214,6 +238,17 @@
          hindren third gender rather than a general one, and hindren have their own namestyle. -->
     <namestyle Name="Vixy_Qudish Neutral" Format="TitleCase">
       <scopes>
+        <!-- The player-facing half. mod/Scripting/Vixy_NameFlavourModule.cs replaces the
+           random player name at BOOTEVENT_GENERATERANDOMPLAYERNAME, passing the Tag the player
+           asked for - which is the only way to reach a character whose name is generated before
+           the character exists.
+
+           Priority 200 with Combine="false" because an explicit choice should win outright.
+           Vixy_Random is Priority 50 and combines instead: all three namestyles carry it at the
+           same priority, so the weighted draw splits evenly between them, which is what "random"
+           means here rather than a fourth pool. -->
+        <scope Name="Vixy_Neutral" Tag="Vixy_Neutral" Priority="200" Combine="false" />
+        <scope Name="Vixy_Random" Tag="Vixy_Random" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender neuterperson" Species="human" Gender="neuterperson" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender nonspecific" Species="human" Gender="nonspecific" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender elverson" Species="human" Gender="elverson" Priority="50" Combine="true" />

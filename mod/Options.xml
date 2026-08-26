@@ -271,4 +271,31 @@
             the pools - that is the option above.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCENameFlavour"
+    DisplayText="{{C|Qud Expanded}}: how your own random name sounds"
+    Category="Mods"
+    Type="Combo"
+    Values="Random,Masc,Femme,Neutral"
+    Default="Random"
+    SearchKeywords="qud expanded name random player character masc femme neutral sound"
+  >
+    <helptext>
+            Chooses which pool your character's name is drawn from when you leave the name blank
+            and let the game roll one.
+
+            This is the one character the rest of the naming changes cannot reach. Your name is
+            generated before your character exists, so the game has nothing to look at - not your
+            gender, not your genotype, nothing. Left alone it draws from the same pool everyone
+            drew from before.
+
+            Masc gives the hard-stopped endings vanilla has always used. Femme gives the open,
+            vowel-final ones. Neutral gives an even mix of both. Random splits evenly between all
+            three, which is what you get if you never touch this.
+
+            It has no effect at all if you type a name in, which is always the surest way to get
+            the one you want. It also does not touch anyone else in the world - the two naming
+            options above govern them.
+        </helptext>
+  </option>
 </options>

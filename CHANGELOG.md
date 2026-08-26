@@ -16,6 +16,33 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Your own random name can sound how you want it to** (#184).
+
+  Everything in the naming change scopes on a creature's gender and species, and **none of it could
+  reach the player**. `GenerateRandomPlayerName` calls `NameMaker.MakeName(null, null, Type)` with no
+  GameObject — the name is generated before the player object exists — so `Generate` never populates
+  `Gender`, `Species` or `Tag`, and your name came out gender-blind however the namestyles were
+  scoped. There was nothing to hang a property on.
+
+  A new option picks the pool instead: **Random** (the default, an even three-way split), **Masc**,
+  **Femme** or **Neutral**. Typing a name in bypasses it, which is still the surest way to get the
+  one you want, and it does not touch anyone else in the world.
+
+  **This is the first time this mod's C# runs during character creation**, and it raises charter
+  rule 5's ceiling for the second time since the fork. `mod/Scripting/Vixy_NameFlavourModule.cs` is
+  an `AbstractEmbarkBuilderModule` that handles one boot event. None of rule 5's hard limits moves:
+  the base class declares **no abstract members**, so it overrides one public virtual method; the
+  game instantiates it from a class name in `mod/EmbarkModules.xml` exactly as it instantiates a part
+  from a blueprint, so the reflection is the game's rather than the mod's; and it declares no module
+  data, because `AbstractEmbarkBuilderModuleData` is `[Serializable]` and travels in build codes — a
+  module holding state would put this mod's shape into other people's saved characters. The
+  alternative was Harmony, which rule 5 refuses and which breaks on arm64 macOS anyway.
+
+  It is a module rather than an `EmbarkEvent` handler because `fireBootEvent` iterates
+  `enabledModules` regardless of `game`, while `EmbarkEvent.Send` goes through `Game?.HandleEvent` —
+  and character creation's own *"roll me another name"* passes `game: null`. An event handler would
+  have changed the name you started with and not the one you were shown while choosing it.
+
 - **(internal)** The harness predicts the character-creation gender and pronoun lists (#435).
 
   Qud ships a complete gender and pronoun system switched off, and #435 is about turning it on. Both
