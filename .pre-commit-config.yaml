@@ -77,6 +77,18 @@ repos:
         pass_filenames: false
         files: ^(mod/|docs/|tools/validate_mod\.py$|[A-Z]+\.md$|NOTICE$)
 
+      # Deliberately unscoped, unlike check-docs above. #446 put a diff3 base marker into
+      # CHANGELOG.md and every gate passed it: pre-commit's own check-merge-conflict hook matches
+      # "<<<<<<< ", "======= " and ">>>>>>> " but NOT "||||||| ", and check-docs only runs on the
+      # paths above, so a marker in a workflow or a tool would not have been looked at either.
+      # This runs on every commit and reads every tracked file, in 0.1s.
+      - id: conflict-markers
+        name: no leftover conflict markers (including the diff3 |||||||)
+        entry: python3 tools/check_docs.py --conflict-markers
+        language: system
+        pass_filenames: false
+        always_run: true
+
       # Automatic, unlike check-build-log below: this needs the game's assemblies but not a game
       # *launch*, and it finishes in under half a second. It skips with a notice when the game or a
       # .NET SDK is absent, so a contributor without either is not blocked by a hook they have no

@@ -16,6 +16,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `conflict-markers` looks for the marker nothing else did (#446).
+
+  I left a stray `||||||| 0e0d9de` in `CHANGELOG.md` resolving a merge. It was committed, it passed
+  every gate, it merged, and it sat on `main` in a player-facing document until I happened to trip
+  over it resolving the next one.
+
+  **Nothing could have caught it.** `pre-commit`'s `check-merge-conflict` matches `<<<<<<< `,
+  `======= ` and `>>>>>>> ` — and **not `||||||| `**, the diff3 base marker git writes as the third
+  section of a conflict. `check_docs.py` reads figures and links and has no opinion about stray
+  lines; `validate_mod.py` does not read the changelog at all; and it renders as ordinary text in
+  GitHub Markdown, so it did not even look broken.
+
+  It is also the marker most likely to survive a resolution, because the other three arrive as a
+  matched set that is obvious when one is left behind, while the base marker is optional and easy to
+  forget a file ever had.
+
+  The check reads **every tracked file**, not the document list — the file a bad resolution lands in
+  is the file nobody is reading. It is wired as its own **unscoped** pre-commit hook rather than
+  folded into `check-docs`, which only runs on `mod/`, `docs/` and top-level Markdown; a marker in a
+  workflow or a tool would not have been looked at either. It costs 0.1s over 140 files.
+
+  Precision is deliberate: `=======` is also a Markdown setext underline for an H1, and
+  `LICENSE-CONTENT` rules its sections off with 71 of them. Matching the upstream hook's exact
+  shapes — a trailing space, or exactly seven characters then end of line — tells a conflict marker
+  from a horizontal rule. Nine tests, both directions, including the lookalikes.
+
 - **Your own random name can sound how you want it to** (#184).
 
   Everything in the naming change scopes on a creature's gender and species, and **none of it could
