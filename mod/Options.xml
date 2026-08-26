@@ -18,7 +18,7 @@
     DisplayText="{{C|Qud Expanded}}: graded burden"
     Category="Mods"
     Type="Checkbox"
-    Default="false"
+    Default="No"
     SearchKeywords="qud expanded burden encumbrance weight carry capacity overburdened"
   >
     <helptext>
