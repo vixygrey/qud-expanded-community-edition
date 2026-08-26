@@ -73,6 +73,7 @@ WORD_NUMBERS = {
     "fourteen": 14,
     "fifteen": 15,
     "sixteen": 16,
+    "seventeen": 17,
     "eighteen": 18,
     # The wiki's genotype/slot table writes zero as a word, because "| Mutated Human | 0 |" reads
     # like a typo where "none" reads like a decision.
