@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `docs/LESSONS.md` records what launching the game found that no check could.
+
+  Six pull requests of naming and gender work reached `main` fully green — validator, docs checks,
+  354 tests, a purpose-built harness reimplementing `XRL.Names`, and the C# compiled against the
+  game's own assemblies. Launching Qud then found five defects in an hour, four of them mine.
+
+  None was a correctness error in the sense any of those tools measure. Every one was a question
+  about **when something happens**: when a list is populated, when a flag is re-read, which object a
+  call passes, what a loader does with a collision. The harness modelled how a name *resolves* and
+  answered that well; it does not model a lifecycle, and neither does a compiler.
+
+  The entry keeps two specifics — that Qud writes `MODERROR` to its own log on every launch and
+  nothing here reads it, and that `check_build_log.py` reported the mod compiled and loaded on the
+  same launch where a character-creation row was silently missing. Both verdicts were true and
+  neither was about behaviour.
+
 - **Your chosen name flavour follows you, and Neutral is gone** (#184).
 
   Two things the first in-game test turned up.
