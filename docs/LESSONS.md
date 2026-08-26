@@ -1481,3 +1481,45 @@ you are re-pricing before you finish, not just the file you are in. `implant-tab
 `tools/validate_mod.py` now holds this particular coupling, per charter rule 4 — but the general
 version has no check and probably cannot have one. Bracket names, tier names and table names are all
 assertions, and the thing that makes them dangerous is that they are usually right.
+
+## A knob that accepts your value and rounds it away is worse than no knob
+
+`DynamicObjectsTable:<Table>:Weight` looks like a rarity dial. Vanilla sets it on ten blueprints —
+`Astral Tabby` at 0.2, `Ixlthyxl` at 0.1, `Issachari Raider` at 3 — and I read that spread as
+evidence the game tunes creature rarity with it deliberately. I then built a whole rarity curve on
+top: 0.5 for common coats, 0.25 for uncommon, 0.08 for the albinos. It was internally consistent,
+documented, and completely inert.
+
+Three facts compose, and no one of them is visible from the XML:
+
+1. **No creature table is ever requested in the `:Tier` form.** Zero occurrences across the whole of
+   `StreamingAssets/Base`, so they are all built by `FabricateDynamicObjectsTable` rather than the
+   multitier path — and the two methods weight entries completely differently.
+2. **In that method the tier-delta bonus is unreachable.** `num` and `num2` initialise to `-1` and
+   are never assigned, so the `TierDeltaWeights` lookup guarded by `num != -1` never runs. The base
+   weight is exactly `1u` for every entry.
+3. **`:Weight` is a multiplier wrapped in `(uint)Math.Ceiling`.** `ceil(1 × 0.25)` is 1. So is
+   `ceil(1 × 0.08)`. So is every fraction below one.
+
+The floor is 1 and there is nothing under it. Vanilla's own fractional weights do nothing either,
+which is the detail that should have warned me and instead reassured me: I had counted them, made a
+5%/95% argument out of the count, and never asked whether the 5% *worked*.
+
+> **A setting the engine accepts, stores, and quietly discards is indistinguishable from one that
+> works — from the outside, and from the diff.** Vanilla using a value is evidence that vanilla's
+> authors believed in it, not evidence that it does anything.
+
+This is the same family as the vacuous shell loop and the scope that matches nothing: **silence read
+as success.** What makes this one nastier is that there is no silence to notice. The tag parses, the
+table builds, the creature spawns. Everything works; only the number is a fiction.
+
+**What to do instead.** When a value is meant to change a frequency, find the code that consumes it
+before writing the curve, and check what the value is multiplied *by* rather than only what it is.
+`ilspycmd -t <Type> Assembly-CSharp.dll` answers this in about a minute and would have saved the
+entire v0.2 weight design. And where a mechanism turns out not to exist, say so where the values
+would have gone — `docs/FEATURES.md` §17.5 exists so the next person does not rediscover the ceiling
+by writing 0.08 and waiting to see whether albinos feel rare.
+
+**The mechanism that did work was three lines further down the same method.** `AggregateWith` bundles
+a family into one slot weighted by its max member, which is how vanilla stops the eight snapjaws from
+owning their tables. I had read past it twice while looking for a weight to set.

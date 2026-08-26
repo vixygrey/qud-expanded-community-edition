@@ -634,7 +634,17 @@ A new item can reach the world by an explicit entry in `mod/PopulationTables.xml
 **Reach for an explicit entry when you want a chosen weight in a named table.** That is what the
 other 56 merged tables are, it is reviewable as a number in a diff, and `validate_mod.py` checks the
 blueprint resolves. **Every new item should have one** — the tags below are additions on top, not
-substitutes, and today every tagged blueprint in this fork also has an explicit entry.
+substitutes, and every tagged *item* in this fork also has an explicit entry.
+
+**Creatures are the exception, and it is forced rather than chosen.** The 32 creature variants in
+`docs/FEATURES.md` §17 carry a tag and no explicit entry, because for them an explicit entry is not
+merely unnecessary but destructive. A `<Biome>_Creatures` pool does not exist in any file — it is
+*fabricated* on demand by `PopulationManager.RequireTable`, which returns early the moment a table
+of that name already exists. Declaring `DynamicObjectsTable:Hills_Creatures` in
+`mod/PopulationTables.xml` would therefore not join vanilla's pool, it would **replace** it, and
+every vanilla creature in the hills would stop spawning. That is charter rule 1's failure mode
+exactly, and it produces no error. So for a creature the tag is the only additive route, and the
+rule above does not apply.
 
 **Reach for a tag when you want the item in vanilla's specialist pool for its category** — the hatter
 stocking your helmets, the legendary gunsmith stocking your guns. Only nineteen of vanilla's

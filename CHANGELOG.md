@@ -16,25 +16,47 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
-- **(internal)** `docs/LESSONS.md` records that a scope which looks load-bearing may match nothing (#456).
+- **32 creature colour variants**, on by default and toggleable in the mod options (#171).
 
-  `Naming.xml` scopes on `Culture` 50 times, naming 36 cultures — twice as often as it scopes on
-  `Species`. Seven of those 36 can never match a creature, and one of them is `Qudish`: **no
-  blueprint in Caves of Qud carries `Culture="Qudish"`**, so that scope has never fired in any game
-  anyone has played. `GetCulture()` is `GetPropertyOrTag("Culture") ?? GetSpecies()`, the tag appears
-  41 times in the whole game, and exactly one line in the 12 MB assembly writes it at runtime.
+  Thirteen common creatures pick up regional coats: brindle, rangy, pied, ash-coated and marsh dogs,
+  dun and cragged and black goats, bristleback and russet and pale boars, mangy and silverback and
+  rust-furred baboons, silt and pale crocs, copper and ember and glass dragonflies, verdigris and
+  pale glowfish, marbled and ashen salamanders, mottled and sand horned chameleons, mossbacked and
+  scarred tortoises, a banded honey skunk, an ashwing glowmoth, and midden, rust and salt beetles.
+  Each appears in the one biome its name argues for.
 
-  `Ape` is dead for a second reason worth its own paragraph: apes carry no tag, so the fallback
-  supplies `ape`, and the scope asks for `Ape`. `NameScope.ApplyTo` compares with `!=`. `Bear` and
-  `Bird` look identical and work, because a blueprint tags each with the capitalised spelling.
+  **Purely cosmetic.** A variant differs in name, colour and description and in nothing else, so a
+  pied dog fights exactly as a feral dog does. Two identical glyphs that behave differently, with
+  only colour to warn you, reads as a bug when it kills you.
 
-  The rule the entry lands on is that a scope, a tag, a table reference and an `Inherits=` are all
-  assertions that something is there, and every one of them parses, validates and ships whether or
-  not it is. Counting the other end took two commands and settled a design question I had been
-  arguing on taste. `AGENTS.md` gets the short version.
+  **The spawn tables do not grow.** Each variant shares its vanilla parent's slot through
+  `AggregateWith` rather than taking one of its own, so creatures turn up exactly as often as they
+  do in vanilla — you meet the same number of dogs, and some of them are brindle. Twenty-nine of the
+  32 add nothing at all to any table; the marsh dog, rust beetle and salt beetle each keep a biome
+  their parent does not, so those three cost one slot apiece.
 
-  The uncomfortable half is that `tools/naming_harness.py` could have answered this before #436 was
-  written. It was built for exactly this and I read the XML instead.
+  Five carry their own descriptions, because the inherited text names a colour they do not have: the
+  salamanders inherit "ovoid spots, crimson and coral and citrine" and the beetles inherit "shining
+  black elytra". The ashwing glowmoth is detailed in cyan rather than gold for the same reason —
+  vanilla's `interdictor` is the precedent for an ash-coloured thing that still reads as luminous.
+
+  The option costs no C#: `ExcludeFromDynamicEncountersOption` lets a blueprint name an option ID
+  that the game resolves itself. It governs zones generated after you change it rather than ones you
+  have already visited, which the helptext says. `docs/FEATURES.md` §17 is the full reference.
+
+- **(internal)** `docs/LESSONS.md` records that a knob which rounds your value away is worse than no
+  knob (#171).
+
+  `DynamicObjectsTable:<Table>:Weight` reads as a rarity dial and is not one. Creature tables are
+  never requested in the `:Tier` form, so they are built by `FabricateDynamicObjectsTable`, where the
+  tier-delta bonus is unreachable and the base weight is exactly 1 — and `:Weight` is a multiplier
+  wrapped in `(uint)Math.Ceiling`, so `ceil(1 × 0.08)` is 1 and every fraction below one is inert.
+  Vanilla's own `Astral Tabby` at 0.2 and `Ixlthyxl` at 0.1 do nothing either.
+
+  I had built a documented 0.5 / 0.25 / 0.08 rarity curve on the assumption it worked, and counted
+  vanilla's ten weighted blueprints as evidence without ever asking whether their fractions did
+  anything. Nothing errors: the tag parses, the table builds, the creature spawns. Only the number is
+  a fiction.
 
 - **(internal)** Recorded that adding genders widened what the world generates, not just the chargen list (#435).
 
@@ -425,6 +447,43 @@ recorded because contributors need them, not because subscribers do.
   the document no longer makes a claim its own code contradicts.
 
 ### Changed
+
+- **(internal)** `tools/validate_mod.py` learned the two routes it was blind to (#171).
+
+  `check_reachability` now counts a `DynamicObjectsTable:` tag as a distribution route — it had
+  reported all 32 creature variants as unobtainable while they spawned perfectly well, because they
+  sit in no `PopulationTables.xml` entry. `*delete`, `{{{remove}}}` and the `:Weight` / `:Number` /
+  `:Builder` modifiers deliberately do not count, since a removal is the opposite of a route.
+
+  `check_option_wiring` now also counts an option read by an `ExcludeFromDynamicEncountersOption`
+  tag, having called the creature-variants option dead while it was doing its job. Both directions
+  are covered by tests, including the positive controls that keep the widened checks from going
+  vacuous.
+
+  `docs/STYLEGUIDE.md` §3.3 gains the creature carve-out: its "every new item also gets an explicit
+  population entry" rule cannot apply to a creature, because `PopulationManager.RequireTable` returns
+  early on an existing name — declaring a `<Biome>_Creatures` table would replace vanilla's fabricated
+  pool rather than join it, and silently stop every vanilla creature in that biome from spawning.
+
+- **(internal)** `docs/LESSONS.md` records that a scope which looks load-bearing may match nothing (#456).
+
+  `Naming.xml` scopes on `Culture` 50 times, naming 36 cultures — twice as often as it scopes on
+  `Species`. Seven of those 36 can never match a creature, and one of them is `Qudish`: **no
+  blueprint in Caves of Qud carries `Culture="Qudish"`**, so that scope has never fired in any game
+  anyone has played. `GetCulture()` is `GetPropertyOrTag("Culture") ?? GetSpecies()`, the tag appears
+  41 times in the whole game, and exactly one line in the 12 MB assembly writes it at runtime.
+
+  `Ape` is dead for a second reason worth its own paragraph: apes carry no tag, so the fallback
+  supplies `ape`, and the scope asks for `Ape`. `NameScope.ApplyTo` compares with `!=`. `Bear` and
+  `Bird` look identical and work, because a blueprint tags each with the capitalised spelling.
+
+  The rule the entry lands on is that a scope, a tag, a table reference and an `Inherits=` are all
+  assertions that something is there, and every one of them parses, validates and ships whether or
+  not it is. Counting the other end took two commands and settled a design question I had been
+  arguing on taste. `AGENTS.md` gets the short version.
+
+  The uncomfortable half is that `tools/naming_harness.py` could have answered this before #436 was
+  written. It was built for exactly this and I read the XML instead.
 
 - **(internal)** The wiki's figures are checked, not only its links (#427).
 
