@@ -905,6 +905,40 @@ def check_naming_option_coverage(
                     )
 
 
+def check_duplicate_children(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Within one <object>, no two named children may share a Name.
+
+    Qud does not keep both and does not drop the object. ObjectBlueprintXMLChildNodeCollection.Add
+    reports the duplicate and then merges the second into the first, so a later attribute silently
+    overwrites an earlier one -- which on four vibro weapons destroyed the charge description and
+    left only the Finesse line (#448).
+
+    The XML is well-formed either way, so nothing else here or in prettier had an opinion. The only
+    thing that ever noticed was the game, which writes MODERROR to its log on every launch.
+
+    Worth knowing how it arrived: `finesse-visible` requires a Finesse tag and its rules text to
+    imply each other, so satisfying it meant adding a RulesDescription -- and on these four, one
+    already existed. A check demanding text is what deleted other text.
+    """
+    named = ("part", "tag", "stat", "mutation", "skill", "intproperty", "property")
+    for path, root in blueprint_sources(all_roots).items():
+        for obj in root.iter("object"):
+            for tag in named:
+                seen: dict[str, int] = {}
+                for child in obj.findall(tag):
+                    name = child.get("Name")
+                    if name:
+                        seen[name] = seen.get(name, 0) + 1
+                for name, count in sorted(seen.items()):
+                    if count > 1:
+                        f.add(
+                            "duplicate-child",
+                            f'{path}: <object Name="{obj.get("Name")}"> has {count} '
+                            f'<{tag} Name="{name}"> - Qud merges them, so the later one\'s '
+                            f"attributes overwrite the earlier one's",
+                        )
+
+
 def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every mod-prefixed part referenced by a blueprint needs a matching C# class.
 
@@ -2244,6 +2278,7 @@ def run() -> Findings:
     check_joppa_sync(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
+    check_duplicate_children(f, roots)
     check_naming_discipline(f, roots)
     check_naming_syllables(f, roots)
     check_naming_priority(f, roots)

@@ -507,7 +507,7 @@
     />
     <part
       Name="RulesDescription"
-      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value. Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
     />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
@@ -515,10 +515,6 @@
     <part Name="VibroWeapon" ChargeUse="100" />
     <tag Name="Mods" Value="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
     <tag Name="Finesse" />
-    <part
-      Name="RulesDescription"
-      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
-    />
     <tag Name="Tier" Value="5" />
     <part Name="Physics" Weight="3" />
   </object>
@@ -750,13 +746,9 @@
     />
     <part
       Name="RulesDescription"
-      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value. Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
     />
     <tag Name="Finesse" />
-    <part
-      Name="RulesDescription"
-      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
-    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
@@ -1692,13 +1684,9 @@
     />
     <part
       Name="RulesDescription"
-      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value. Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
     />
     <tag Name="Finesse" />
-    <part
-      Name="RulesDescription"
-      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
-    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
@@ -2385,13 +2373,9 @@
     />
     <part
       Name="RulesDescription"
-      Text="When charged, this weapon's penetration value is equal to the defender's armor value."
+      Text="When charged, this weapon's penetration value is equal to the defender's armor value. Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
     />
     <tag Name="Finesse" />
-    <part
-      Name="RulesDescription"
-      Text="Finesse: with the Finesse skill, penetration rolls with this weapon use your Agility modifier instead of your Strength modifier, whenever Agility is higher."
-    />
     <part Name="Examiner" Complexity="5" />
     <part Name="TinkerItem" Bits="0015" CanDisassemble="true" CanBuild="true" />
     <part Name="VibroWeapon" ChargeUse="100" />
