@@ -326,6 +326,48 @@ it), and **guard the input's identity** rather than trusting it — the script r
 the base is 418×312, because every offset is measured against that logo and a swapped base would
 misplace the marks instead of erroring.
 
+## Static checks answer "is it correct". Launching answers "does it happen"
+
+Six pull requests of naming and gender work reached `main` fully green: `validate_mod.py`,
+`check_docs.py`, 354 tests, a purpose-built harness reimplementing `XRL.Names`, and
+`compile_scripting.py` building the C# against the game's own assemblies. Then I launched Qud and
+found five defects in an hour, four of them in code I had written and argued for in detail.
+
+None of the five was a correctness error in the sense any of those tools measure:
+
+| what was wrong | what it actually was |
+|---|---|
+| The Pronoun Set row never appeared | `QudCustomizeCharacterModule.Init()` calls `PronounSet.Reinit()`, which re-reads `EnableSelection="false"` as the screen opens |
+| The name-flavour re-roll ignored its option | `EmbarkInfo._modules` is not filled until character creation *ends*, so the re-roll consulted an empty list |
+| Renaming in game ignored it too | `GiveProperName` passes the *object*, so `Generate` reads gender off it and an option is invisible |
+| Four vibro weapons lost a rules description | two `<part Name="RulesDescription">` in one object; Qud merges them and the later `Text` wins |
+
+Every one is a question about **when something happens** — when a list is populated, when a flag is
+re-read, which object a call passes, what a loader does with a collision. The harness modelled how a
+name *resolves*, which is a question about correctness, and it answered that question well. It could
+not have answered any of these, because it does not model a lifecycle. Neither does a compiler.
+
+> **A check proves the thing it models. Launch the game to find out what it does not.**
+
+Two specifics worth keeping:
+
+- **The game reports errors nothing here reads.** Qud writes `MODERROR` lines to
+  `~/Library/Logs/Freehold Games/CavesOfQud/Player.log` on every launch. The four duplicate-part
+  errors had been printed there since #390 and nobody had looked. `tools/check_build_log.py` already
+  reads a *different* game-written file to prove the C# compiled — the same trick against `Player.log`
+  is worth building, and #448 records the thought.
+- **"It compiled and loaded" is not "it ran".** `check_build_log.py` reported that the game compiled
+  all 51 files from source byte-identical to the tree and loaded the mod, on the same launch where
+  the Pronoun Set row was silently missing. That verdict was true and said nothing about behaviour.
+
+This is the same shape as *A gate is only evidence about the property it checks*, one level up: there
+the question was which property a check inspects, here it is which *kind* of question a whole class
+of tooling can be asked. Both end the same way — before trusting green, name the question it answers.
+
+The practical rule: **anything that touches a screen, a lifecycle, or an event order gets a
+`tools/sync_mod.py --dev` pass before it merges**, not after. Content and value changes can lean on
+the checks; behaviour cannot.
+
 ## A gate is only evidence about the property it checks
 
 Reformatting the XML in #78 produced output that `tools/validate_mod.py`,
