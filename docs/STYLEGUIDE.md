@@ -1028,6 +1028,10 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
 | `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
 | `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
+| `naming-amounts` | `validate_mod.py` | a new namestyle stating `Format` and every pool `Amount`, which default to silence |
+| `naming-ascii` | `validate_mod.py` | syllables staying ASCII, as all 3,074 of vanilla's are |
+| `naming-merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla namestyles, and mod-prefixed names on scopes added to them |
+| `naming-priority` | `validate_mod.py` | a combining scope sitting above 0 and below 100 |
 | `option-slider` | `validate_mod.py` | slider `Min` above 1, which crashes Qud's options menu (#51) |
 | `option-wiring` | `validate_mod.py` | an option declared but unread, or read but undeclared |
 | `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |
