@@ -276,26 +276,27 @@
     DisplayText="{{C|Qud Expanded}}: how your own random name sounds"
     Category="Mods"
     Type="Combo"
-    Values="Random,Masc,Femme,Neutral"
+    Values="Random,Masc,Femme"
     Default="Random"
-    SearchKeywords="qud expanded name random player character masc femme neutral sound"
+    SearchKeywords="qud expanded name random player character masc femme sound rename"
   >
     <helptext>
-            Chooses which pool your character's name is drawn from when you leave the name blank
-            and let the game roll one.
-
-            This is the one character the rest of the naming changes cannot reach. Your name is
-            generated before your character exists, so the game has nothing to look at - not your
-            gender, not your genotype, nothing. Left alone it draws from the same pool everyone
-            drew from before.
+            Chooses which pool your character's name is drawn from when the game rolls one for
+            you, rather than you typing one in.
 
             Masc gives the hard-stopped endings vanilla has always used. Femme gives the open,
-            vowel-final ones. Neutral gives an even mix of both. Random splits evenly between all
-            three, which is what you get if you never touch this.
+            vowel-final ones. Random splits evenly between those two and a mixed pool, which is
+            what you get if you never touch this.
 
-            It has no effect at all if you type a name in, which is always the surest way to get
-            the one you want. It also does not touch anyone else in the world - the two naming
-            options above govern them.
+            It does nothing at all if you type a name in, which is always the surest way to get
+            the one you want. Re-rolling a random name in character creation does follow it, so
+            you can keep pressing until you like what you see.
+
+            It follows you afterwards too. Renaming yourself in game draws from the same pool
+            rather than from whatever your gender would suggest, and changing this mid-run takes
+            effect on your next rename.
+
+            It does not touch anyone else in the world. The two naming options above govern them.
         </helptext>
   </option>
   <option

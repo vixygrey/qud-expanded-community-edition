@@ -247,7 +247,6 @@
            Vixy_Random is Priority 50 and combines instead: all three namestyles carry it at the
            same priority, so the weighted draw splits evenly between them, which is what "random"
            means here rather than a fourth pool. -->
-        <scope Name="Vixy_Neutral" Tag="Vixy_Neutral" Priority="200" Combine="false" />
         <scope Name="Vixy_Random" Tag="Vixy_Random" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender neuterperson" Species="human" Gender="neuterperson" Priority="50" Combine="true" />
         <scope Name="Vixy_Gender nonspecific" Species="human" Gender="nonspecific" Priority="50" Combine="true" />

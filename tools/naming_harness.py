@@ -466,11 +466,11 @@ SCENARIOS = [
     # and only Subtype and the Tag Vixy_NameFlavourModule supplies are in play.
     ("player chose Masc", "Subtype=Greybeard,Tag=Vixy_Masc", "Qudish"),
     ("player chose Femme", "Subtype=Greybeard,Tag=Vixy_Femme", "Vixy_Qudish Feminine"),
-    (
-        "player chose Neutral",
-        "Subtype=Greybeard,Tag=Vixy_Neutral",
-        "Vixy_Qudish Neutral",
-    ),
+    # Random is a real tag rather than the absence of one: all three namestyles carry a
+    # Vixy_Random scope at equal priority, so the draw splits evenly between them. That is what
+    # keeps the neutral pool reachable now that it has no option of its own. None means "expect an
+    # even three-way split" rather than a single winner.
+    ("player chose Random", "Subtype=Greybeard,Tag=Vixy_Random", None),
 ]
 
 VANILLA_POOLS = {"Qudish": (29, 20, 24)}
@@ -727,7 +727,7 @@ def main() -> int:
             if winner is None and split:
                 winner = max(split, key=split.get)
             got = winner or "(none)"
-            ok = got == expected
+            ok = len(split) == 3 if expected is None else got == expected
             detail = ""
             if len(split) > 1:
                 detail = "   split: " + ", ".join(
@@ -740,7 +740,10 @@ def main() -> int:
                     f"Priority {sc.priority})"
                 )
             if not ok:
-                failures.append(f"{label}: expected {expected}, got {got}")
+                failures.append(
+                    f"{label}: expected "
+                    f"{'an even three-way split' if expected is None else expected}, got {got}"
+                )
 
     if args.sample:
         ctx = parse_ctx(args.sample)

@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Your chosen name flavour follows you, and Neutral is gone** (#184).
+
+  Two things the first in-game test turned up.
+
+  **Renaming yourself in game ignored the option.** That path is `GameObject.GiveProperName`, which
+  calls `NameMaker.MakeName(this, …)` — a valid `For`, so `Generate` reads `Gender`, `Species` and
+  `Tag` off the object and an option is invisible to it. Character creation followed your choice and
+  every rename afterwards followed your gender. The module now writes the chosen tag onto the player
+  as a `NamingTag` property, and `Raven_Options` rewrites it whenever the option changes, so it stays
+  reversible rather than baked in — change your mind mid-run and the next rename uses the new choice.
+
+  **`Neutral` is cut.** It drew from the mixed pool every time, which for a single name is
+  indistinguishable from `Random` drawing that pool one time in three — both mean *"I am not
+  specifying"*, and two ways to say it is a wart rather than a capability. `Random` still reaches
+  that pool, so nothing is lost.
+
+  **And the re-roll button in character creation now follows it**, which took working out.
+  `EmbarkBuilder` fills `EmbarkInfo._modules` at the very *end* of character creation, so until then
+  the list is empty and the Name row's re-roll consulted nobody — a setting whose re-roll ignores it
+  is worse than no setting. The module now adds itself to that list in `Init()`. `EmbarkInfo.modules`
+  is a public property, so this is a public member rather than a Harmony patch, and if Freehold
+  changes it the mod stops compiling and CI says so on the next Qud update rather than the behaviour
+  quietly rotting.
+
 - **(internal)** `ruff` v0.16.3 → v0.16.4, in both places it is pinned.
 
   A patch release, and the interesting part is the second file. `.pre-commit-config.yaml` is what

@@ -2362,10 +2362,15 @@ default name as its element and takes back whatever the modules return. So
 
 | choice | drawn from | resolves to |
 | --- | --- | --- |
-| `Random` *(default)* | all three, evenly | 33% / 33% / 33% |
+| `Random` *(default)* | all three pools, evenly | 33% / 33% / 33% |
 | `Masc` | the widened Qudish pool | `Qudish` |
 | `Femme` | the open, vowel-final endings | `Vixy_Qudish Feminine` |
-| `Neutral` | an even mix of both | `Vixy_Qudish Neutral` |
+
+There is no `Neutral` choice. It existed briefly and was cut: it drew from the mixed pool every
+time, which for a single name is indistinguishable from `Random` drawing that pool one time in
+three. Both mean *"I am not specifying"*, and offering two ways to say it is a wart rather than a
+capability. `Random` still reaches the mixed pool, so nothing was lost — `Vixy_Qudish Neutral` keeps
+its `Vixy_Random` scope and its gender scopes, which is how it serves non-binary NPCs.
 
 `NameMaker.MakeName` takes `Tag` as an ordinary parameter, so reaching a tag-scoped namestyle needs
 no GameObject — just the argument. `GameObject.Validate(ref null)` returns false, so `Generate` skips
@@ -2380,6 +2385,32 @@ The `Tag` scopes sit at `Priority="200"` with `Combine="false"`, because an expl
 outright. `Vixy_Random` is the exception: `Priority="50"` and combining, carried at the same priority
 by all three namestyles, so the weighted draw splits evenly. Random is the absence of a preference
 rather than a fourth pool.
+
+**The re-roll works, and it takes one line to explain why it nearly did not.** `EmbarkBuilder` fills
+`EmbarkInfo._modules` with `embarkInfo.modules.AddRange(...)` at the very *end* of character
+creation. Until then the list is empty — so the Name row's re-roll, which calls
+`builder.info.fireBootEvent(...)`, consulted nobody and handed back a name drawn the old way. The
+module therefore adds *itself* to that list in `Init()`. `EmbarkInfo.modules` is a public property,
+so this is a public member rather than a patch, and if Freehold ever changes it the mod stops
+compiling and `tools/compile_scripting.py` says so on the next Qud update.
+
+The cost is that the module is in the list twice once `EmbarkBuilder` adds it too, so
+`handleBootEvent` fires twice per boot event. Checked rather than assumed: build codes never see it
+(`generateCode()` reads the *builder's* list, and `IncludeInBuildCodes()` returns `getData() != null`,
+which is null here), `embarkInfo._data` gains nothing for the same reason, and both handlers are
+idempotent.
+
+Whichever name you were shown is the one you keep: the preview writes `data.name`, and
+`BEFOREBOOTPLAYEROBJECT` restores it over anything the boot-time roll produced. Leave the row on
+`<random>` and the boot-time roll is what you get, flavoured the same way.
+
+**It follows the character afterwards.** Renaming yourself in game goes through
+`GameObject.GiveProperName`, which calls `NameMaker.MakeName(this, …)` — a valid `For`, so `Generate`
+reads `Gender`, `Species` and `Tag` off the object and an option is invisible to it. The module
+therefore writes the chosen tag onto the player as a `NamingTag` property at
+`AFTERBOOTPLAYEROBJECT`, and `Raven_Options` rewrites it whenever the option changes, so the property
+matches the option's current value rather than being a one-way edit. Without that, character creation
+followed the option and every rename afterwards followed your gender instead.
 
 Typing a name in bypasses all of this, which is always the surest way to get the one you want.
 
