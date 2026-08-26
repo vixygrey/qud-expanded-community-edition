@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<genders>
+  <!-- There is no Load attribute anywhere in this file, and that is not an omission.
+       Gender.LoadGendersNode has none: it looks the name up, reuses the existing Gender when it
+       finds one, and overwrites only the attributes stated. Merge is not a mode you opt into,
+       it is the only behaviour - so adding a gender is pure addition and touching a vanilla one
+       is surgical. <removegender> exists and this file deliberately does not use it, for the
+       reason docs/STYLEGUIDE.md section 1.0b gives about <removetable>.
+
+       Person terms are vanilla's own, taken from `elverson`: person / child / friend / child /
+       sibling / parent. The game already answered what a generic non-binary gender calls its
+       people, so this derives rather than invents - charter rule 2. -->
+  <!-- Already written, already complete, hidden behind one attribute. `elverson` ships with full
+       pronouns and person terms and Generic="false", which is the only thing keeping it out of
+       Gender.GetAllGenericPersonalSingular and so out of character creation.
+
+       `hartind` is the other hidden one and is deliberately left hidden. Its person terms are
+       hartind / faun, which makes it the hindren third gender rather than a general one, and its
+       pronouns duplicate `nonspecific` exactly. Freehold set Generic="false" on it for a reason. -->
+  <gender Name="elverson" Generic="true" />
+  <!-- Vanilla ships these three as pronoun SETS but not as genders, so they appear in character
+       creation's Pronoun Set row and never in its Gender row. Declaring them as genders puts them
+       in both.
+
+       DoNotReplicateAsPronounSet is load-bearing. ReplicateGenders="true" mirrors every gender
+       into a pronoun set, skipping any whose name already exists - but a pronoun set is NAMED by
+       all eleven of its forms, person terms included. Vanilla's hand-written sets carry the
+       defaults (human / sib / progenitor) while these carry elverson's, so the names differ and
+       the replica would NOT be skipped. Each would appear twice in the list, identical pronouns,
+       differing only in whether a stranger calls you `person` or `human`.
+
+       The genders mode of tools/naming_harness.py demonstrates both the duplicate
+       and this fix. -->
+  <gender
+    Name="xe"
+    Subjective="xe"
+    Objective="xem"
+    PossessiveAdjective="xyr"
+    SubstantivePossessive="xyrs"
+    Reflexive="xemself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+    DoNotReplicateAsPronounSet="true"
+  />
+  <gender
+    Name="ze"
+    Subjective="ze"
+    Objective="zir"
+    PossessiveAdjective="zir"
+    SubstantivePossessive="zirs"
+    Reflexive="zirself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+    DoNotReplicateAsPronounSet="true"
+  />
+  <gender
+    Name="sie"
+    Subjective="sie"
+    Objective="hir"
+    PossessiveAdjective="hir"
+    SubstantivePossessive="hirs"
+    Reflexive="hirself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+    DoNotReplicateAsPronounSet="true"
+  />
+  <!-- New to Qud. These have no hand-written pronoun set to collide with, so they replicate
+       normally and reach both rows.
+
+       `spivak` is e/em/eir and `elverson` above is ey/em/eir - one letter apart, and both are
+       real, distinct, documented sets rather than a typo for one another. -->
+  <gender
+    Name="fae"
+    Subjective="fae"
+    Objective="faer"
+    PossessiveAdjective="faer"
+    SubstantivePossessive="faers"
+    Reflexive="faerself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+  />
+  <gender
+    Name="spivak"
+    Subjective="e"
+    Objective="em"
+    PossessiveAdjective="eir"
+    SubstantivePossessive="eirs"
+    Reflexive="emself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+  />
+  <gender
+    Name="ve"
+    Subjective="ve"
+    Objective="ver"
+    PossessiveAdjective="vis"
+    SubstantivePossessive="vis"
+    Reflexive="verself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+  />
+  <gender
+    Name="per"
+    Subjective="per"
+    Objective="per"
+    PossessiveAdjective="pers"
+    SubstantivePossessive="pers"
+    Reflexive="perself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+  />
+  <gender
+    Name="ne"
+    Subjective="ne"
+    Objective="nem"
+    PossessiveAdjective="nir"
+    SubstantivePossessive="nirs"
+    Reflexive="nemself"
+    PersonTerm="person"
+    ImmaturePersonTerm="child"
+    FormalAddressTerm="friend"
+    OffspringTerm="child"
+    SiblingTerm="sibling"
+    ParentTerm="parent"
+  />
+</genders>

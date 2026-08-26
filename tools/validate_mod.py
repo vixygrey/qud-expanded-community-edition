@@ -544,6 +544,48 @@ def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 )
 
 
+def check_option_defaults(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """An option's Default is the value the game reads until the player touches it.
+
+    Options.GetOption returns the stored value, then the XML Default, then the caller's fallback --
+    so the C# fallback only ever applies to an option that is not declared at all. Whatever is in
+    Default is what Raven_Options.Enabled compares against, and it compares against "Yes".
+
+    A Checkbox stores exactly "Yes" or "No":
+
+        Options.SetOption(option.ID, (Options.GetOption(option.ID) == "Yes") ? "No" : "Yes");
+
+    Anything else is simply not "Yes" and reads as off. `Default="false"` therefore worked, and
+    worked by accident (#443). `Default="true"` would not: an option meant to default on would ship
+    off, the checkbox would render unchecked, and nothing would error.
+
+    The Combo half is preventative -- every Combo in this file is correct today. A Default that is
+    not one of the option's own Values leaves the option reading a value the menu cannot show, which
+    fails the same silent way.
+    """
+    for path, root in all_roots.items():
+        if "option" not in path.name.lower():
+            continue
+        for option in root.iter("option"):
+            ident = option.get("ID", "?")
+            kind = option.get("Type")
+            default = option.get("Default")
+            if kind == "Checkbox" and default not in ("Yes", "No"):
+                f.add(
+                    "option-default",
+                    f'{path}: {ident} is a Checkbox with Default="{default}" — a Checkbox stores '
+                    f'"Yes" or "No", so anything else reads as off however it was meant',
+                )
+            elif kind in ("Combo", "BigCombo"):
+                values = (option.get("Values") or "").split(",")
+                if default not in values:
+                    f.add(
+                        "option-default",
+                        f'{path}: {ident} has Default="{default}", which is not one of its '
+                        f"Values ({', '.join(values)})",
+                    )
+
+
 def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every declared option must be read, and every option read must be declared.
 
@@ -2198,6 +2240,7 @@ def run() -> Findings:
     check_manifest(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
+    check_option_defaults(f, roots)
     check_joppa_sync(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)

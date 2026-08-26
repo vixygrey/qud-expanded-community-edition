@@ -43,6 +43,58 @@ recorded because contributors need them, not because subscribers do.
   and character creation's own *"roll me another name"* passes `game: null`. An event handler would
   have changed the name you started with and not the one you were shown while choosing it.
 
+- **You can choose your gender and pronouns, and there are thirteen of them** (#435).
+
+  Qud has a complete gender and pronoun system — 13 genders with full grammar tables, a separate
+  pronoun-set system, replication between the two, and a selection UI rendered down to its screen
+  coordinates. **It ships every part of it switched off.** Both data files carry
+  `EnableSelection="false"`, and character creation yields the Gender and Pronoun Set rows only when
+  those are true, so neither row is ever emitted and the game picks a gender for you at random.
+
+  Character creation now offers both rows. The gender list goes from **4 to 13**: `elverson` (ey/em)
+  unhidden, `xe`, `ze` and `sie` promoted from pronoun sets to genders, and `fae`, `spivak` (e/em),
+  `ve`, `per` and `ne` added. The pronoun list goes from **8 to 14**.
+
+  Every addition uses vanilla's own person terms for a generic non-binary gender, taken from
+  `elverson` — `person / child / friend / child / sibling / parent`. The game had already answered
+  that question, so this derives rather than invents.
+
+  **`hartind` stays hidden, deliberately.** It is the other gender behind `Generic="false"`, its
+  person terms are `hartind` / `faun`, and its pronouns duplicate `nonspecific` exactly — it is the
+  hindren third gender rather than a general one, and offering it would change nothing about the
+  grammar while putting a hindren cultural gender in everyone's list.
+
+  **Turning it on is C# rather than the one-attribute XML version, and that is the whole point.** A
+  `mod/Genders.xml` carrying `EnableSelection="true"` would work — but XML loads unconditionally and
+  could never be switched off. Two options set the fields instead, so charter rule 6 holds.
+
+  `DoNotReplicateAsPronounSet="true"` on the three promoted genders prevents a duplicate that would
+  otherwise have shipped: a replicated pronoun set is named by all eleven of its forms, **person
+  terms included**, so a promoted gender whose terms differ from vanilla's defaults does not collide
+  with the hand-written set it was promoted from — it appears twice, identical pronouns, differing
+  only in whether a stranger calls you `person` or `human`.
+
+- **(internal)** `option-default` holds a Checkbox default to the two values a Checkbox stores (#443).
+
+  Thirteen of the fourteen options used `Default="Yes"` or `Default="No"`. Graded burden used
+  `Default="false"` — and it worked, which is the part worth fixing.
+
+  A Checkbox stores exactly `"Yes"` or `"No"`
+  (`SetOption(ID, GetOption(ID) == "Yes" ? "No" : "Yes")`), and `GetOption` returns the XML `Default`
+  before any C# fallback, so the XML value is what `Enabled` compares against until the player
+  touches the option. `"false"` is simply not `"Yes"`, so it read as off, which is what graded burden
+  wanted. **`Default="true"` would not have been so lucky**: an option meant to default on would have
+  shipped off, the checkbox would have rendered unchecked, and nothing would have errored — leaving a
+  player looking at an option that appears not to work, and a one-character cause in a file nobody
+  would suspect.
+
+  The one wrong value in the file being a *working* example is what made it worth a check rather than
+  a correction: the next person adding an option had a coin flip on which line to copy.
+
+  The Combo half is preventative and I would rather say so than imply it caught something — every
+  Combo in the file is correct. A `Default` outside the option's own `Values` fails the same silent
+  way. `Default="false"` is now `Default="No"`, which changes no behaviour at all.
+
 - **(internal)** The harness predicts the character-creation gender and pronoun lists (#435).
 
   Qud ships a complete gender and pronoun system switched off, and #435 is about turning it on. Both

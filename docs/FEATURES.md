@@ -2056,9 +2056,10 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 15 options (§13)
+├── Options.xml                 # 17 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
+├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
@@ -2110,7 +2111,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Fifteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Seventeen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2147,6 +2148,8 @@ rather than anything the mod already was.
 | wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
 | gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
 | how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.5. |
+| choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
+| choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2391,6 +2394,107 @@ Typing a name in bypasses all of this, which is always the surest way to get the
   a site call.
 - **The player's own random name**, by any of the gender scoping above — see §15.5, which reaches
   it a different way.
+
+## 16. Gender and pronouns (`Genders.xml`)
+
+Qud has a complete gender and pronoun system and ships every part of it switched off. This turns it
+on and widens it.
+
+### 16.1 What vanilla already has, and cannot reach
+
+`Genders.xml` and `PronounSets.xml` are both vanilla files. Between them they define **13 genders**
+with full grammar tables — subjective, objective, possessive, substantive possessive, reflexive, plus
+six person terms — a separate pronoun-set system, automatic replication of genders into pronoun sets,
+procedural gender generation, and a selection UI rendered down to its screen coordinates and click
+regions. **141 vanilla creature blueprints declare a `Gender` tag.**
+
+All of it is unreachable. Both files carry `EnableSelection="false"` on their root element, and
+`QudCustomizeCharacterModuleWindow.GetSelections()` yields the **Gender:** row only
+`if (Gender.EnableSelection)` and the **Pronoun Set:** row only `if (PronounSet.EnableSelection)`.
+Both false means neither row is emitted, so character creation offers Name / Pet / World Seed and the
+handler that would run the choosers can never be reached. Absent a choice, the player is assigned
+`Gender.GetAnyGenericPersonalSingular()` — a random draw from `male`, `female`, `neuterperson`,
+`nonspecific`.
+
+The same gate sits on the in-game customization screen, where *"buy a new **random** gender for 4
+MP"* renders unconditionally but the line that lets you **choose** one does not.
+
+### 16.2 Turning it on is C#, not XML, and that is deliberate
+
+`Gender.EnableSelection` and `PronounSet.EnableSelection` are public static fields, set from the root
+attribute of their XML files. A mod could ship a four-line `mod/Genders.xml` with
+`EnableSelection="true"` and it would work — the loader reads the attribute off whatever `<genders>`
+root it is handed, base sorts before mods, and it is a plain static assignment, so last write wins.
+
+**That version cannot be switched off.** XML loads unconditionally, and charter rule 6 wants this to
+be the player's choice. So `Raven_Options.cs` sets the two fields from two options instead. That is
+the only reason C# is involved.
+
+### 16.3 The gender row goes from four to thirteen
+
+| | gender | pronouns |
+| --- | --- | --- |
+| *vanilla* | `male` | he / him / his / his / himself |
+| *vanilla* | `female` | she / her / her / hers / herself |
+| *vanilla* | `neuterperson` | it / it / its / its / itself |
+| *vanilla* | `nonspecific` | they / them / their / theirs / themself |
+| **unhidden** | `elverson` | ey / em / eir / eirs / emself |
+| **promoted** | `xe` | xe / xem / xyr / xyrs / xemself |
+| **promoted** | `ze` | ze / zir / zir / zirs / zirself |
+| **promoted** | `sie` | sie / hir / hir / hirs / hirself |
+| **new** | `fae` | fae / faer / faer / faers / faerself |
+| **new** | `spivak` | e / em / eir / eirs / emself |
+| **new** | `ve` | ve / ver / vis / vis / verself |
+| **new** | `per` | per / per / pers / pers / perself |
+| **new** | `ne` | ne / nem / nir / nirs / nemself |
+
+**Unhidden** means vanilla already ships it, complete, behind `Generic="false"` — the one attribute
+that keeps it out of `GetAllGenericPersonalSingular`. **Promoted** means vanilla ships it as a pronoun
+*set* but not as a gender, so it appeared in one row and never the other.
+
+Every addition uses vanilla's own person terms for a generic non-binary gender, taken from
+`elverson`: `person / child / friend / child / sibling / parent`. The game already answered that
+question, so this derives rather than invents.
+
+The Pronoun Set row goes from **8 to 14**.
+
+### 16.4 `hartind` stays hidden, on purpose
+
+It is the other gender behind `Generic="false"`, and it stays there. Its person terms are `hartind` /
+**`faun`**, which makes it the hindren third gender rather than a general one, and its pronouns
+duplicate `nonspecific` exactly. Offering it would put a hindren cultural gender in a human's list
+while changing nothing about the grammar.
+
+### 16.5 The duplicate that `DoNotReplicateAsPronounSet` prevents
+
+`ReplicateGenders="true"` mirrors every gender into a pronoun set — but a pronoun set is **named by
+all eleven of its forms, person terms included**, and replication is skipped only when a set of that
+exact name already exists.
+
+Vanilla's hand-written `xe`, `ze` and `sie` sets carry the field defaults, `human / child / friend /
+child / sib / progenitor`. The promoted genders carry elverson's. The names therefore differ, the
+replica is **not** skipped, and each would appear twice in the Pronoun Set row — identical pronouns,
+differing only in whether a stranger calls you `person` or `human`.
+
+`DoNotReplicateAsPronounSet="true"` on the three promoted genders prevents it. The genders mode of
+`tools/naming_harness.py` demonstrates both the duplicate and the fix.
+
+One consequence worth knowing: the **gender** `xe` carries `person / sibling / parent` while vanilla's
+hand-written **pronoun set** `xe/xem/…` keeps `human / sib / progenitor`. A player who leaves the
+Pronoun Set row on its `<from gender>` default — which is what it defaults to — never meets the
+difference.
+
+### 16.6 What this does not do
+
+- **No vanilla gender is removed or altered**, apart from `elverson`'s one `Generic` attribute.
+  `<removegender>` exists and this file deliberately does not use it, for the reason §1.0b of
+  `docs/STYLEGUIDE.md` gives about `<removetable>`.
+- **`EnableGeneration` stays off.** It is a third switch on both files, and it invents genders at
+  runtime — pronouns assembled from a syllable kit, a generated name, generated person terms. Roughly
+  half of what it produces reads as a plausible neopronoun and half does not, and a bad roll is
+  visible for a whole run. Investigated and declined in #435.
+- **NPC naming is unaffected.** §15's namestyles scope on gender, so a gender added here will reach
+  them, but nothing in this file changes how anyone is named.
 
 ## Appendix A — every merged vanilla melee weapon
 
