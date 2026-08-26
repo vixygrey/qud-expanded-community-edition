@@ -20,6 +20,7 @@ import os
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from contextlib import contextmanager
 from pathlib import Path
 from typing import ClassVar
@@ -611,6 +612,214 @@ class Constants(unittest.TestCase):
         never exercise it and would still pass. This is the one assertion that notices.
         """
         self.assertEqual(set(validate_mod.MOD_PREFIXES), set(COVERED_PREFIXES))
+
+
+class NamingChecksTest(unittest.TestCase):
+    """`<naming>` is outside check_merge_discipline's reach, and its failures are silent.
+
+    Every test is a positive control in both directions: the check fires on a fragment that earns
+    it and stays quiet on one that does not. These checks take all_roots directly, so no mod tree
+    is needed — the roots dict is the whole input.
+    """
+
+    def roots(self, body: str) -> dict[Path, ET.Element]:
+        return {Path("mod/Naming.xml"): ET.fromstring(body)}
+
+    def findings(self, check, body: str) -> list[str]:
+        f = validate_mod.Findings()
+        check(f, self.roots(body))
+        return [d for _, d in f.items]
+
+    # -- merge discipline ----------------------------------------------------------------------
+
+    def test_vanilla_namestyle_without_merge_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_discipline,
+            """
+            <naming><namestyles><namestyle Name="Qudish">
+              <prefixes><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("removes a vanilla namestyle" in d for d in found), found)
+
+    def test_merge_on_the_root_cascades_and_is_quiet(self):
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_discipline,
+                """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <prefixes><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_a_child_overriding_merge_back_off_is_a_finding(self):
+        """The cascade is `GetAttribute("Load") ?? LoadMode`, so a child can undo the root's."""
+        found = self.findings(
+            validate_mod.check_naming_discipline,
+            """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <prefixes Load="Replace"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("discards vanilla" in d for d in found), found)
+
+    def test_a_new_namestyle_needs_no_merge(self):
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_discipline,
+                """
+            <naming><namestyles><namestyle Name="Vixy_Qudish Feminine" Format="TitleCase">
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_an_unprefixed_scope_on_a_vanilla_namestyle_is_a_finding(self):
+        """Scopes merge by Name, so <scope Name="General"> rewrites vanilla's rather than adding."""
+        found = self.findings(
+            validate_mod.check_naming_discipline,
+            """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <scopes><scope Name="General" Priority="50" Combine="true" /></scopes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("rewrites vanilla's scope" in d for d in found), found)
+
+    def test_a_prefixed_scope_on_a_vanilla_namestyle_is_quiet(self):
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_discipline,
+                """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <scopes><scope Name="Vixy_Masc" Tag="Vixy_Masc" Priority="200" Combine="false" /></scopes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    # -- syllables -----------------------------------------------------------------------------
+
+    def test_non_ascii_syllable_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_syllables,
+            """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <prefixes><prefix Name="n\u00e9e" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("non-ASCII" in d for d in found), found)
+
+    def test_ascii_syllables_are_quiet(self):
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_syllables,
+                """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <prefixes><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_a_new_pool_without_amount_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_syllables,
+            """
+            <naming><namestyles><namestyle Name="Vixy_New" Format="TitleCase">
+              <prefixes><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("defaults to" in d and "0" in d for d in found), found)
+
+    def test_a_merge_omitting_amount_is_quiet(self):
+        """A merge omits Amount deliberately: the loader keeps vanilla's when it is absent."""
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_syllables,
+                """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <prefixes><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_a_new_namestyle_without_format_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_syllables,
+            """
+            <naming><namestyles><namestyle Name="Vixy_New">
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("AsIs" in d for d in found), found)
+
+    # -- priority ------------------------------------------------------------------------------
+
+    def test_a_combining_scope_at_priority_zero_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_priority,
+            """
+            <naming><namestyles><namestyle Name="Vixy_New" Format="TitleCase">
+              <scopes><scope Name="General" Priority="0" Combine="true" /></scopes>
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("NameGenFail" in d for d in found), found)
+
+    def test_a_combining_scope_at_100_is_a_finding(self):
+        found = self.findings(
+            validate_mod.check_naming_priority,
+            """
+            <naming><namestyles><namestyle Name="Vixy_New" Format="TitleCase">
+              <scopes><scope Name="G" Gender="female" Priority="100" Combine="true" /></scopes>
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+        )
+        self.assertTrue(any("displacing the faction" in d for d in found), found)
+
+    def test_a_combining_scope_at_50_is_quiet(self):
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_priority,
+                """
+            <naming><namestyles><namestyle Name="Vixy_New" Format="TitleCase">
+              <scopes><scope Name="G" Gender="female" Priority="50" Combine="true" /></scopes>
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_an_exclusive_scope_above_100_is_quiet(self):
+        """Combine="false" takes over by design; the ceiling only binds combining scopes."""
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_priority,
+                """
+            <naming><namestyles><namestyle Name="Vixy_New" Format="TitleCase">
+              <scopes><scope Name="T" Tag="Vixy_Femme" Priority="200" Combine="false" /></scopes>
+              <prefixes Amount="1"><prefix Name="ze" /></prefixes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
+
+    def test_a_vanilla_namestyle_is_not_held_to_the_priority_rules(self):
+        """Vanilla's own Qudish sits at General/0 and must not be reported as a mod defect."""
+        self.assertEqual(
+            self.findings(
+                validate_mod.check_naming_priority,
+                """
+            <naming Load="Merge"><namestyles><namestyle Name="Qudish">
+              <scopes><scope Name="General" Priority="0" Combine="true" /></scopes>
+            </namestyle></namestyles></naming>""",
+            ),
+            [],
+        )
 
 
 if __name__ == "__main__":

@@ -16,6 +16,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Four checks hold `<naming>`, which merge discipline never reached (#184).
+
+  `check_merge_discipline` walks `<object>` and `<population>`. A `<namestyle Name="Qudish">` without
+  `Load="Merge"` passed CI, and the cost of that is not the one the existing check guards against:
+  `LoadNameStyleNode`'s replacement branch removes the style from `_NameStyleList`, builds a fresh
+  one, writes it to `_NameStyleTable` and **never adds it back to the list**. `Generate` iterates the
+  list. The namestyle does not lose its pools — it leaves name generation entirely, and every
+  procedurally named human comes back as the literal string `NameGenFail1`, `NameGenFail2`.
+
+  `naming-merge-discipline` holds the attribute and its cascade, and holds one thing the object-side
+  check has no analogue for: **scopes merge by `Name`**, so `<scope Name="General">` on a vanilla
+  namestyle rewrites vanilla's scope in place rather than adding one. A new scope needs a mod prefix.
+
+  `naming-priority` holds a combining scope above 0 and below 100. Both ends are silent failures that
+  look like sensible defaults. At 0 the weighted draw skips the entry, so two such scopes send the
+  total to zero and return `NameGenFail<n>` as a creature's name — vanilla's own `Qudish` sits at 0
+  and survives only by being the single `General`-scope namestyle in the file. At 100 the exclusion
+  test `other.priority > scope.priority` stops holding, so the scope displaces the faction namestyles
+  instead of losing to them, and female Templars stop being named like Templars.
+
+  `naming-amounts` holds `Format` and every pool's `Amount` on a **new** namestyle, because
+  `NameStyle` defaults them to `"AsIs"` and `"0"` — omit them and the style generates the empty
+  string rather than erroring. A merge omits `Amount` deliberately, and the check knows the
+  difference. `naming-ascii` holds the line the prior-art builder already held: vanilla is 3,074
+  syllables for 3,074 ASCII, with no exceptions.
+
 - **(internal)** `tools/naming_harness.py` resolves name generation without launching the game (#184).
 
   Everything this repository knows about `Naming.xml` was read out of `Assembly-CSharp.dll`, and

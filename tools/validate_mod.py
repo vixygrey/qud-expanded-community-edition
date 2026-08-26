@@ -668,6 +668,146 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                     )
 
 
+def _naming_roots(all_roots: dict[Path, ET.Element]) -> dict[Path, ET.Element]:
+    """Qud resolves modded XML by root element, not filename — so this is `<naming>`, not
+    `Naming.xml`. STYLEGUIDE.md section 1."""
+    return {p: r for p, r in all_roots.items() if r.tag == "naming"}
+
+
+def _load_mode(node: ET.Element, inherited: str | None) -> str | None:
+    """LoadNamingNode and every level below: `Reader.GetAttribute("Load") ?? LoadMode`."""
+    return node.get("Load") or inherited
+
+
+def check_naming_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Charter rule 1 for `<naming>`, which check_merge_discipline does not reach.
+
+    That check walks `<object>` and `<population>` only, so a `<namestyle Name="Qudish">` without
+    Load="Merge" passes CI today. The consequence is worse than the one merge-discipline guards
+    against. LoadNameStyleNode's replacement branch removes the style from _NameStyleList, builds
+    a fresh one, writes it to _NameStyleTable and **never adds it back to the list** — and
+    Generate iterates the list. So the namestyle does not lose its pools, it leaves name
+    generation entirely, surviving only for `Base=` lookups. Doing that to Qudish takes every
+    procedurally named human in the game with it, each one coming back as the literal string
+    "NameGenFail1", "NameGenFail2", and so on.
+
+    Scopes are matched by Name, so a merged `<scope Name="General">` rewrites vanilla's in place
+    rather than adding one. A new scope on a vanilla namestyle needs a mod-prefixed Name.
+    """
+    for path, root in _naming_roots(all_roots).items():
+        file_mode = _load_mode(root, None)
+        for styles_node in root:
+            if styles_node.tag != "namestyles":
+                continue
+            styles_mode = _load_mode(styles_node, file_mode)
+            for style in styles_node:
+                if style.tag != "namestyle":
+                    continue
+                name = style.get("Name", "")
+                style_mode = _load_mode(style, styles_mode)
+                vanilla = not name.startswith(MOD_PREFIXES)
+                if vanilla and style_mode != "Merge":
+                    f.add(
+                        "naming-merge-discipline",
+                        f'{path}: <namestyle Name="{name}"> removes a vanilla namestyle from '
+                        f"name generation",
+                    )
+                    continue
+                for child in style:
+                    child_mode = _load_mode(child, style_mode)
+                    if vanilla and child_mode != "Merge":
+                        f.add(
+                            "naming-merge-discipline",
+                            f'{path}: <{child.tag}> under vanilla namestyle "{name}" '
+                            f"discards vanilla's entries",
+                        )
+                    if child.tag != "scopes" or not vanilla:
+                        continue
+                    for scope in child:
+                        sname = scope.get("Name", "")
+                        if not sname.startswith(MOD_PREFIXES):
+                            f.add(
+                                "naming-merge-discipline",
+                                f'{path}: <scope Name="{sname}"> on vanilla namestyle "{name}" '
+                                f"rewrites vanilla's scope — scopes merge by Name, so a new one "
+                                f"needs a mod prefix",
+                            )
+
+
+def check_naming_syllables(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Two silent failures in a new namestyle, plus the ASCII line the builder already held.
+
+    Amount defaults to "0" and Format to "AsIs" on a fresh NameStyle, so a new style that omits
+    them generates the empty string rather than erroring. A merge omits Amount deliberately —
+    the loader only assigns it when the attribute is non-empty, so vanilla's survives.
+
+    ASCII is not a preference. Vanilla is 3,074 syllables for 3,074 across all 148 namestyles,
+    with no exceptions, and diacritics are a font-rendering risk in Qud's tileset.
+    """
+    pools = ("prefixes", "infixes", "postfixes")
+    for path, root in _naming_roots(all_roots).items():
+        for style in root.iter("namestyle"):
+            name = style.get("Name", "")
+            new_style = name.startswith(MOD_PREFIXES)
+            if new_style and not style.get("Base") and not style.get("Format"):
+                f.add(
+                    "naming-amounts",
+                    f'{path}: new namestyle "{name}" states no Format, so it defaults to '
+                    f'"AsIs" and its names arrive lowercase',
+                )
+            for child in style:
+                if child.tag in pools and new_style and not child.get("Amount"):
+                    f.add(
+                        "naming-amounts",
+                        f'{path}: <{child.tag}> on new namestyle "{name}" states no Amount, '
+                        f'which defaults to "0" — the pool is never drawn from',
+                    )
+                for el in child:
+                    syllable = el.get("Name", "")
+                    if any(ord(c) > 127 for c in syllable):
+                        f.add(
+                            "naming-ascii",
+                            f'{path}: non-ASCII syllable "{syllable}" in "{name}"',
+                        )
+
+
+def check_naming_priority(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A combining scope at Priority 0 is a landmine, and it looks like vanilla's own default.
+
+    Generate's weighted draw skips every entry at Priority <= 0. With one combining candidate the
+    `case 1:` branch ignores Priority entirely, which is why vanilla's Qudish survives at 0 — it
+    is the only General-scope namestyle in the file. Add a second and the total goes to zero, and
+    a creature's name comes back as the literal string "NameGenFail<n>".
+
+    The ceiling is the same test read the other way. Exclusion is `other.priority > scope.priority`,
+    so a combining scope at 100 does not lose to the faction styles that sit at exactly 100 with
+    Combine="false" — it displaces them, and female Templars stop being named like Templars.
+    """
+    for path, root in _naming_roots(all_roots).items():
+        for style in root.iter("namestyle"):
+            name = style.get("Name", "")
+            if not name.startswith(MOD_PREFIXES):
+                continue
+            for scope in style.iter("scope"):
+                if scope.get("Combine") != "true":
+                    continue
+                priority = int(scope.get("Priority", "0"))
+                sname = scope.get("Name", "")
+                if priority <= 0:
+                    f.add(
+                        "naming-priority",
+                        f'{path}: <scope Name="{sname}"> on "{name}" combines at Priority '
+                        f"{priority}, which the weighted draw skips — two such scopes return "
+                        f'"NameGenFail<n>" as a creature\'s name',
+                    )
+                elif priority >= 100:
+                    f.add(
+                        "naming-priority",
+                        f'{path}: <scope Name="{sname}"> on "{name}" combines at Priority '
+                        f"{priority}, displacing the faction namestyles at 100",
+                    )
+
+
 def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every mod-prefixed part referenced by a blueprint needs a matching C# class.
 
@@ -2006,6 +2146,9 @@ def run() -> Findings:
     check_joppa_sync(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
+    check_naming_discipline(f, roots)
+    check_naming_syllables(f, roots)
+    check_naming_priority(f, roots)
     check_scripting_parts(f, roots)
     check_scripting_policy(f)
     check_subtype_tiles(f, roots)
