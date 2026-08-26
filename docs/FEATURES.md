@@ -2567,6 +2567,31 @@ difference.
 - **NPC naming is unaffected.** §15's namestyles scope on gender, so a gender added here will reach
   them, but nothing in this file changes how anyone is named.
 
+### 16.7 It also widened what the world generates, which was not the intent
+
+Adding nine genders changes more than the character-creation list, and I did not think of this when
+I argued for it.
+
+`Gender.CheckSpecial` resolves a set of keywords a blueprint can use in place of a gender name —
+`genericpersonalsingular`, `personalsingular`, `any`, `generic` and others — and they resolve through
+the same `GetAllGenericPersonalSingular()` the chargen row uses. **That list went from 4 to 13.**
+
+Nine vanilla creature blueprints use one of those keywords in their `RandomGender` tag. Those
+creatures now turn up as `fae`, `xe`, `spivak`, `ve`, `per`, `ne`, `ze`, `sie` or `elverson` where
+before they could only be `male`, `female`, `neuterperson` or `nonspecific`.
+
+`male` and `female` are untouched — `CheckSpecial` passes an ordinary gender name straight through
+(`_ => Name`), so `RandomGender="male,female"`, which 117 of the 126 human blueprints inherit from
+`BaseHuman`, is still the same coin flip it always was. Only the blueprints that deliberately asked
+for "any generic personal singular gender" see a wider one.
+
+I think this is right — a blueprint asking for any generic gender should get any generic gender, and
+narrowing it would mean the fork adding genders and then hiding them from the world it added them
+to. But it is a change to what the world generates rather than to what a player can pick, it was not
+argued for, and it should not have been discovered by someone noticing a village full of women and
+asking whether something had skewed. Recorded here so the next person meets it as a decision rather
+than a surprise.
+
 ## Appendix A — every merged vanilla melee weapon
 
 Full listing of the 79 `Load="Merge"` edits in `MeleeWeapons.xml`. Blank cells mean the mod did

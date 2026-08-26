@@ -16,6 +16,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** Recorded that adding genders widened what the world generates, not just the chargen list (#435).
+
+  `Gender.CheckSpecial` resolves keywords a blueprint can use in place of a gender name —
+  `genericpersonalsingular`, `personalsingular`, `any` — through the same
+  `GetAllGenericPersonalSingular()` the character-creation row uses, and that list went from **4 to
+  13**. Nine vanilla blueprints use one of those keywords, so those creatures now generate as `fae`,
+  `xe`, `spivak` and the rest.
+
+  `male` and `female` pass through untouched, so `RandomGender="male,female"` — which 117 of the 126
+  human blueprints inherit — is the same coin flip it always was.
+
+  I think the behaviour is right: a blueprint asking for any generic gender should get any generic
+  gender. But it changes what the world generates rather than what a player can pick, it was not
+  argued for in #442, and I found it only because a village came up all-female and I went looking for
+  a cause rather than assuming coincidence. §16.7 records it as a decision rather than leaving it a
+  surprise.
+
 - **A follower can wear a psionic chip, and the documentation now says so** (#417).
 
   Confirmed in game: a humanoid companion equipped a `Raven_Simple Disintegration Chip` unprompted,
