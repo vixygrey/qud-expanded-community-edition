@@ -88,7 +88,7 @@ jobs:
         # Must match the ruff-pre-commit rev in .pre-commit-config.yaml. Dependabot updates that
         # file and cannot see this pin, so bumping ruff is always a two-file change - and if the
         # two drift, CI's `ruff format --check` can disagree with the hook a contributor just ran.
-        run: pipx install ruff==0.16.3
+        run: pipx install ruff==0.16.4
 
       - name: ruff check
         run: ruff check tools/

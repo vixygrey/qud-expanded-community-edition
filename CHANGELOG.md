@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `ruff` v0.16.3 → v0.16.4, in both places it is pinned.
+
+  A patch release, and the interesting part is the second file. `.pre-commit-config.yaml` is what
+  Dependabot can see; `ci.yml` installs ruff by an explicit `pipx install ruff==` pin that it cannot,
+  so a bump of the hook alone leaves CI's formatter a version behind the one contributors run — and
+  `ruff format --check` disagreeing with the hook that just formatted your code is worse than having
+  neither. The pin carries a comment saying it must move in step, and this is the first bump since
+  that comment was written to actually test whether anyone reads it.
+
+  Verified the way #110 established: every one of the 17 hooks run against the whole tree on the new
+  version. All pass, **nothing was modified**, and the byte-order-mark count is unchanged at 19 —
+  which matters because the mod's XML depends on those marks and a hook that stripped them would
+  break the mod quietly.
+
 - **(internal)** `conflict-markers` looks for the marker nothing else did (#446).
 
   I left a stray `||||||| 0e0d9de` in `CHANGELOG.md` resolving a merge. It was committed, it passed
