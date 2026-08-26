@@ -43,11 +43,6 @@ namespace QudExpandedCE
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
-        /// <summary>
-        /// Read by Vixy_NameFlavourModule rather than here. There is nothing to apply: it governs
-        /// one string generated during character creation, not a field on a record this class can
-        /// write. Declared here so every option ID lives in one place.
-        /// </summary>
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
         /// <summary>
@@ -480,11 +475,80 @@ namespace QudExpandedCE
         /// This does not touch the genders themselves. Turning the option off hides the rows; a
         /// character who already picked a gender keeps it, because the gender is stored on the
         /// object rather than re-read from this flag.
+        ///
+        /// Setting them here is necessary and NOT sufficient. QudCustomizeCharacterModule.Init
+        /// calls PronounSet.Reinit(), which clears the pronoun sets and re-reads PronounSets.xml -
+        /// whose root carries EnableSelection="false" - so character creation undoes the pronoun
+        /// half of this as it opens. Gender has no equivalent Reinit and survives, which is why
+        /// the bug showed as one row appearing and the other not. Vixy_NameFlavourModule.Init
+        /// calls this again afterwards.
         /// </summary>
-        private static void ApplyChargenSelection()
+        /// <summary>
+        /// Public because Vixy_NameFlavourModule.Init has to call it again. Character creation
+        /// resets one of these two flags as it opens; see that method for why.
+        /// </summary>
+        public static void ApplyChargenSelection()
         {
             Gender.EnableSelection = Enabled(GenderSelectionID, "Yes");
             PronounSet.EnableSelection = Enabled(PronounSelectionID, "Yes");
+        }
+
+        /// <summary>
+        /// The NamingTag each name-flavour choice asks for, or null for a value this does not know.
+        ///
+        /// These are identifiers: mod/Naming.xml scopes on them by name, and STYLEGUIDE.md section
+        /// 1 applies - renaming one here without renaming it there fails silently, because a tag
+        /// nothing scopes on selects nothing.
+        ///
+        /// "Random" is a real tag rather than the absence of one. All three namestyles carry a
+        /// Vixy_Random scope at equal priority, so the weighted draw splits evenly between them -
+        /// which is what makes an explicit even split different from simply not asking.
+        /// </summary>
+        public static string NameFlavourTag()
+        {
+            switch (Options.GetOption(NameFlavourID, "Random"))
+            {
+                case "Masc":
+                    return "Vixy_Masc";
+                case "Femme":
+                    return "Vixy_Femme";
+                case "Random":
+                    return "Vixy_Random";
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Keep the player's NamingTag matching the option.
+        ///
+        /// The tag has to live on the object because renaming yourself in game goes through
+        /// GameObject.GiveProperName, which calls NameMaker.MakeName(this, ...) - a valid `For`,
+        /// so Generate reads Gender, Species and Tag off the object and ignores anything an option
+        /// knows. Without this, character creation followed the option and every rename afterwards
+        /// followed your gender instead.
+        ///
+        /// Written here as well as at boot so the option stays reversible, which is what charter
+        /// rule 5 asks of anything mutating loaded data: this makes the property match the option's
+        /// current value rather than performing a one-way edit, so changing your mind mid-run takes
+        /// effect on the next rename.
+        /// </summary>
+        public static void ApplyPlayerNameFlavour()
+        {
+            GameObject player = The.Player;
+            if (player == null)
+            {
+                return;
+            }
+            string tag = NameFlavourTag();
+            if (tag == null)
+            {
+                player.RemoveStringProperty("NamingTag");
+            }
+            else
+            {
+                player.SetStringProperty("NamingTag", tag);
+            }
         }
 
         [OptionFlagUpdate]
@@ -504,6 +568,7 @@ namespace QudExpandedCE
             ApplyWiderNames();
             ApplyGenderedNames();
             ApplyChargenSelection();
+            ApplyPlayerNameFlavour();
         }
 
         private static bool Enabled(string id, string fallback)

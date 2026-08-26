@@ -2,6 +2,7 @@
 using XRL.CharacterBuilds;
 using XRL.CharacterBuilds.Qud;
 using XRL.Names;
+using XRL.World;
 using XRL.UI;
 
 namespace QudExpandedCE
@@ -37,19 +38,69 @@ namespace QudExpandedCE
     /// </summary>
     public class Vixy_NameFlavourModule : AbstractEmbarkBuilderModule
     {
+
         /// <summary>
-        /// The NamingTag each choice asks for. These are identifiers: mod/Naming.xml scopes on
-        /// them by name, and STYLEGUIDE.md section 1 applies - renaming one here without renaming
-        /// it there fails silently, because a tag nothing scopes on simply selects nothing.
+        /// Put the chargen selection flags back after character creation has cleared one of them.
         ///
-        /// "Random" is absent on purpose. It is not a fourth pool; it is the absence of a
-        /// preference, and it works by asking for Vixy_Random, which all three namestyles scope
-        /// at equal priority so the weighted draw splits evenly between them.
+        /// QudCustomizeCharacterModule.Init calls PronounSet.Reinit(), which clears every pronoun
+        /// set and re-reads PronounSets.xml - whose root carries EnableSelection="false". So
+        /// whatever Raven_Options set at option-update time is gone by the time GetSelections asks,
+        /// and the Pronoun Set row never appears. Gender has no equivalent Reinit, which is why the
+        /// symptom was one row present and the other missing rather than both.
+        ///
+        /// EmbarkBuilder Inits every module in EmbarkBuilderConfiguration.activeModules order,
+        /// which is XML load order, and DataFile.CompareTo sorts base files before mod files
+        /// unconditionally. So a base module's Init always runs before this one's, and this always
+        /// runs after the Reinit that clears the flag.
+        ///
+        /// Found by launching the game. The harness models how a name resolves, not the lifecycle
+        /// of a character-creation module, so nothing short of opening the screen could have.
         /// </summary>
-        private const string MascTag = "Vixy_Masc";
-        private const string FemmeTag = "Vixy_Femme";
-        private const string NeutralTag = "Vixy_Neutral";
-        private const string RandomTag = "Vixy_Random";
+        public override void Init()
+        {
+            Raven_Options.ApplyChargenSelection();
+            JoinTheBootEventList();
+            base.Init();
+        }
+
+        /// <summary>
+        /// Put this module into EmbarkInfo's list early, so the Name row's re-roll reaches it.
+        ///
+        /// EmbarkBuilder fills that list with `embarkInfo.modules.AddRange(...)` at the very END of
+        /// character creation, after the player has finished choosing. Until then it is empty - so
+        /// the re-roll, which calls `builder.info.fireBootEvent(...)`, consults nobody and hands
+        /// back the name the game generated the old way. A setting whose re-roll button ignores it
+        /// is worse than no setting, so this adds itself and the preview starts working.
+        ///
+        /// DO NOT DELETE THIS AS REDUNDANT. It looks redundant precisely because the framework does
+        /// add this module later; the point is that "later" is after the only moment it matters.
+        ///
+        /// The cost is that the module appears in the list twice once EmbarkBuilder adds it too, so
+        /// handleBootEvent fires twice per boot event. That is survivable and was checked rather
+        /// than assumed:
+        ///
+        ///   - build codes never see it. generateCode() reads EmbarkBuilder's own list, not this
+        ///     one, and IncludeInBuildCodes() returns getData() != null - which is null here,
+        ///     because this module deliberately declares no data.
+        ///   - embarkInfo._data gains nothing, for the same reason.
+        ///   - the two handlers are idempotent: setting NamingTag twice writes the same string, and
+        ///     generating a name twice only wastes a draw, since BEFOREBOOTPLAYEROBJECT restores
+        ///     whatever the player was actually shown.
+        ///
+        /// If Freehold ever changes EmbarkInfo.modules, this stops compiling and
+        /// tools/compile_scripting.py says so on the next Qud update - which is the reason to reach
+        /// for a public member rather than a Harmony patch. The other two ways this could rot -
+        /// the list being filled earlier, or the preview learning to consult modules itself - both
+        /// degrade to the behaviour that shipped before this method existed.
+        /// </summary>
+        private void JoinTheBootEventList()
+        {
+            EmbarkInfo info = builder?.info;
+            if (info != null && !info.modules.Contains(this))
+            {
+                info.modules.Add(this);
+            }
+        }
 
         public override object handleBootEvent(
             string id,
@@ -58,12 +109,33 @@ namespace QudExpandedCE
             object element = null
         )
         {
+            if (id == QudGameBootModule.BOOTEVENT_AFTERBOOTPLAYEROBJECT)
+            {
+                // Renaming yourself in game goes through GameObject.GiveProperName, which calls
+                // NameMaker.MakeName(this, ...) - a valid `For`, so Generate reads Gender, Species
+                // and Tag off the object and an option is invisible to it. Putting the tag on the
+                // player is what makes a rename follow the choice rather than the gender.
+                if (element is GameObject player)
+                {
+                    string chosen = Raven_Options.NameFlavourTag();
+                    if (chosen == null)
+                    {
+                        player.RemoveStringProperty("NamingTag");
+                    }
+                    else
+                    {
+                        player.SetStringProperty("NamingTag", chosen);
+                    }
+                }
+                return base.handleBootEvent(id, game, info, element);
+            }
+
             if (id != QudGameBootModule.BOOTEVENT_GENERATERANDOMPLAYERNAME)
             {
                 return base.handleBootEvent(id, game, info, element);
             }
 
-            string tag = TagFor(Options.GetOption(Raven_Options.NameFlavourID, "Random"));
+            string tag = Raven_Options.NameFlavourTag();
             if (tag == null)
             {
                 return base.handleBootEvent(id, game, info, element);
@@ -81,28 +153,5 @@ namespace QudExpandedCE
             return string.IsNullOrEmpty(name) ? base.handleBootEvent(id, game, info, element) : name;
         }
 
-        /// <summary>
-        /// null means "leave the default alone", which is what an unrecognised value gets. The
-        /// option is a Combo whose Values are held against this by validate_mod.py, so an
-        /// unrecognised value should be impossible - but silently doing nothing is the right
-        /// failure for a cosmetic choice, and it is what a player who has never opened the options
-        /// menu would want anyway.
-        /// </summary>
-        private static string TagFor(string choice)
-        {
-            switch (choice)
-            {
-                case "Masc":
-                    return MascTag;
-                case "Femme":
-                    return FemmeTag;
-                case "Neutral":
-                    return NeutralTag;
-                case "Random":
-                    return RandomTag;
-                default:
-                    return null;
-            }
-        }
     }
 }

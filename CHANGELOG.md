@@ -16,6 +16,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Your chosen name flavour follows you, and Neutral is gone** (#184).
+
+  Two things the first in-game test turned up.
+
+  **Renaming yourself in game ignored the option.** That path is `GameObject.GiveProperName`, which
+  calls `NameMaker.MakeName(this, …)` — a valid `For`, so `Generate` reads `Gender`, `Species` and
+  `Tag` off the object and an option is invisible to it. Character creation followed your choice and
+  every rename afterwards followed your gender. The module now writes the chosen tag onto the player
+  as a `NamingTag` property, and `Raven_Options` rewrites it whenever the option changes, so it stays
+  reversible rather than baked in — change your mind mid-run and the next rename uses the new choice.
+
+  **`Neutral` is cut.** It drew from the mixed pool every time, which for a single name is
+  indistinguishable from `Random` drawing that pool one time in three — both mean *"I am not
+  specifying"*, and two ways to say it is a wart rather than a capability. `Random` still reaches
+  that pool, so nothing is lost.
+
+  **And the re-roll button in character creation now follows it**, which took working out.
+  `EmbarkBuilder` fills `EmbarkInfo._modules` at the very *end* of character creation, so until then
+  the list is empty and the Name row's re-roll consulted nobody — a setting whose re-roll ignores it
+  is worse than no setting. The module now adds itself to that list in `Init()`. `EmbarkInfo.modules`
+  is a public property, so this is a public member rather than a Harmony patch, and if Freehold
+  changes it the mod stops compiling and CI says so on the next Qud update rather than the behaviour
+  quietly rotting.
+
 - **Four vibro weapons stopped losing their charge description** (#448).
 
   `Raven_Vibro Vinereaper`, `Vixy_Vibro Glaive`, `Vixy_Vibro Spear` and `Vixy_Vibro Quarterstaff`
@@ -290,6 +314,24 @@ recorded because contributors need them, not because subscribers do.
   tests in `tools/test_naming_harness.py`, synthetic XML only, so CI runs them without a game.
 
 ### Fixed
+
+- **The Pronoun Set row never appeared, because character creation switched it back off** (#435).
+
+  Both chargen options defaulted on and both set their flag, but only the Gender row showed up.
+  `QudCustomizeCharacterModule.Init()` calls `PronounSet.Reinit()`, which clears every pronoun set
+  and re-reads `PronounSets.xml` — whose root carries `EnableSelection="false"`. So character
+  creation undid the pronoun half **as it opened**. `Gender` has no equivalent `Reinit` and
+  survived, which is exactly why the symptom was one row present and one missing rather than both
+  gone.
+
+  `Vixy_NameFlavourModule.Init()` now reapplies both. `EmbarkBuilder` calls `Init()` on every module
+  in load order, and `DataFile.CompareTo` sorts base files before mod files unconditionally, so a mod
+  module's `Init` always runs after a base module's.
+
+  **Found by launching the game**, on the first character created with the mod installed. Nothing
+  else could have: the harness models how a name resolves, not the lifecycle of a character-creation
+  module, and the C# compiled and loaded without complaint. It is the exact shape of defect
+  `docs/LESSONS.md` keeps returning to — every check green over something nobody had looked at.
 
 - **The documentation said an NPC's Chip Interface slot could never be filled, and it can** (#417).
 
