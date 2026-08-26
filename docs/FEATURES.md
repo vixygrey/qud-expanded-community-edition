@@ -2430,6 +2430,19 @@ root it is handed, base sorts before mods, and it is a plain static assignment, 
 be the player's choice. So `Raven_Options.cs` sets the two fields from two options instead. That is
 the only reason C# is involved.
 
+**And setting them once is not enough.** `QudCustomizeCharacterModule.Init()` calls
+`PronounSet.Reinit()`, which clears every pronoun set and re-reads `PronounSets.xml` — whose root
+carries `EnableSelection="false"`. Character creation therefore undoes the pronoun half of this *as
+it opens*. `Gender` has no equivalent `Reinit`, so it survives, and the symptom was one row
+appearing and the other not.
+
+`Vixy_NameFlavourModule.Init()` reapplies both afterwards. `EmbarkBuilder` calls `Init()` on every
+module in load order and `DataFile.CompareTo` sorts base files before mod files unconditionally, so
+a mod module's `Init` always runs after a base module's.
+
+This was found by launching the game. The harness models how a name resolves, not the lifecycle of a
+character-creation module, so nothing short of opening the screen would have caught it.
+
 ### 16.3 The gender row goes from four to thirteen
 
 | | gender | pronouns |

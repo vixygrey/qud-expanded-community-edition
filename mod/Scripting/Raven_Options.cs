@@ -480,8 +480,19 @@ namespace QudExpandedCE
         /// This does not touch the genders themselves. Turning the option off hides the rows; a
         /// character who already picked a gender keeps it, because the gender is stored on the
         /// object rather than re-read from this flag.
+        ///
+        /// Setting them here is necessary and NOT sufficient. QudCustomizeCharacterModule.Init
+        /// calls PronounSet.Reinit(), which clears the pronoun sets and re-reads PronounSets.xml -
+        /// whose root carries EnableSelection="false" - so character creation undoes the pronoun
+        /// half of this as it opens. Gender has no equivalent Reinit and survives, which is why
+        /// the bug showed as one row appearing and the other not. Vixy_NameFlavourModule.Init
+        /// calls this again afterwards.
         /// </summary>
-        private static void ApplyChargenSelection()
+        /// <summary>
+        /// Public because Vixy_NameFlavourModule.Init has to call it again. Character creation
+        /// resets one of these two flags as it opens; see that method for why.
+        /// </summary>
+        public static void ApplyChargenSelection()
         {
             Gender.EnableSelection = Enabled(GenderSelectionID, "Yes");
             PronounSet.EnableSelection = Enabled(PronounSelectionID, "Yes");

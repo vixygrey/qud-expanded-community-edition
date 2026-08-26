@@ -269,6 +269,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **The Pronoun Set row never appeared, because character creation switched it back off** (#435).
+
+  Both chargen options defaulted on and both set their flag, but only the Gender row showed up.
+  `QudCustomizeCharacterModule.Init()` calls `PronounSet.Reinit()`, which clears every pronoun set
+  and re-reads `PronounSets.xml` — whose root carries `EnableSelection="false"`. So character
+  creation undid the pronoun half **as it opened**. `Gender` has no equivalent `Reinit` and
+  survived, which is exactly why the symptom was one row present and one missing rather than both
+  gone.
+
+  `Vixy_NameFlavourModule.Init()` now reapplies both. `EmbarkBuilder` calls `Init()` on every module
+  in load order, and `DataFile.CompareTo` sorts base files before mod files unconditionally, so a mod
+  module's `Init` always runs after a base module's.
+
+  **Found by launching the game**, on the first character created with the mod installed. Nothing
+  else could have: the harness models how a name resolves, not the lifecycle of a character-creation
+  module, and the C# compiled and loaded without complaint. It is the exact shape of defect
+  `docs/LESSONS.md` keeps returning to — every check green over something nobody had looked at.
+
 - **The documentation said an NPC's Chip Interface slot could never be filled, and it can** (#417).
 
   `docs/FEATURES.md` §13.1 read *"nothing here ever fills those slots, so the reason to turn it off is

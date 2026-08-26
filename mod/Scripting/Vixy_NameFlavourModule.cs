@@ -51,6 +51,29 @@ namespace QudExpandedCE
         private const string NeutralTag = "Vixy_Neutral";
         private const string RandomTag = "Vixy_Random";
 
+        /// <summary>
+        /// Put the chargen selection flags back after character creation has cleared one of them.
+        ///
+        /// QudCustomizeCharacterModule.Init calls PronounSet.Reinit(), which clears every pronoun
+        /// set and re-reads PronounSets.xml - whose root carries EnableSelection="false". So
+        /// whatever Raven_Options set at option-update time is gone by the time GetSelections asks,
+        /// and the Pronoun Set row never appears. Gender has no equivalent Reinit, which is why the
+        /// symptom was one row present and the other missing rather than both.
+        ///
+        /// EmbarkBuilder Inits every module in EmbarkBuilderConfiguration.activeModules order,
+        /// which is XML load order, and DataFile.CompareTo sorts base files before mod files
+        /// unconditionally. So a base module's Init always runs before this one's, and this always
+        /// runs after the Reinit that clears the flag.
+        ///
+        /// Found by launching the game. The harness models how a name resolves, not the lifecycle
+        /// of a character-creation module, so nothing short of opening the screen could have.
+        /// </summary>
+        public override void Init()
+        {
+            Raven_Options.ApplyChargenSelection();
+            base.Init();
+        }
+
         public override object handleBootEvent(
             string id,
             XRLGame game,
