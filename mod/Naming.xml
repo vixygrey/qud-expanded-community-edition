@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<naming Load="Merge">
+  <!-- Load="Merge" sits here once and cascades: LoadNamingNode reads it and every level below
+       inherits it via `Reader.GetAttribute("Load") ?? LoadMode`. Do not remove it, and do not
+       override it lower down. Without it LoadNameStyleNode removes the namestyle from
+       _NameStyleList and never adds the replacement back, so Qudish leaves name generation
+       entirely and every procedurally named human is called NameGenFail1, NameGenFail2, ...
+       tools/validate_mod.py's naming-merge-discipline check refuses to let that ship. -->
+  <namestyles>
+    <!-- Measured from the shipped Naming.xml: 29 prefixes, 20 infixes, 24 postfixes, drawn as
+         prefix=1, infix=0-2, postfix=1. That is ~93,500 distinct names, so exact repeats are NOT
+         what a player notices - about 0.2% across 20 rolls. Repeated *syllables* are: a 50%
+         chance of a repeated opening after 6.3 draws. So this widens openings and endings and
+         deliberately leaves the infix pool alone.
+
+         No Amount attributes: the loader only assigns Amount when the attribute is non-empty,
+         so omitting it keeps vanilla's. A merge states only what it changes.
+
+         Only hard and neutral endings go here. The soft, vowel-final endings live in the two
+         namestyles below, because putting them in the shared pool would soften every name in
+         the game regardless of gender - which is the thing this deliberately does not do. -->
+    <namestyle Name="Qudish">
+      <prefixes>
+        <prefix Name="ae" />
+        <prefix Name="be" />
+        <prefix Name="ce" />
+        <prefix Name="dho" />
+        <prefix Name="el" />
+        <prefix Name="en" />
+        <prefix Name="esh" />
+        <prefix Name="hy" />
+        <prefix Name="ia" />
+        <prefix Name="ish" />
+        <prefix Name="je" />
+        <prefix Name="kae" />
+        <prefix Name="le" />
+        <prefix Name="li" />
+        <prefix Name="lu" />
+        <prefix Name="mya" />
+        <prefix Name="ne" />
+        <prefix Name="oa" />
+        <prefix Name="pe" />
+        <prefix Name="phi" />
+        <prefix Name="re" />
+        <prefix Name="rhy" />
+        <prefix Name="sa" />
+        <prefix Name="se" />
+        <prefix Name="she" />
+        <prefix Name="shy" />
+        <prefix Name="sse" />
+        <prefix Name="te" />
+        <prefix Name="the" />
+        <prefix Name="va" />
+        <prefix Name="ve" />
+        <prefix Name="vi" />
+        <prefix Name="wa" />
+        <prefix Name="we" />
+        <prefix Name="xa" />
+        <prefix Name="ye" />
+        <prefix Name="za" />
+        <prefix Name="ze" />
+        <prefix Name="zi" />
+      </prefixes>
+      <infixes>
+        <infix Name="ala" />
+        <infix Name="eli" />
+        <infix Name="ien" />
+        <infix Name="isa" />
+        <infix Name="nye" />
+        <infix Name="sya" />
+        <infix Name="thi" />
+        <infix Name="vae" />
+      </infixes>
+      <postfixes>
+        <postfix Name="ek" />
+        <postfix Name="eth" />
+        <postfix Name="ik" />
+        <postfix Name="ith" />
+        <postfix Name="oq" />
+        <postfix Name="orr" />
+        <postfix Name="oth" />
+        <postfix Name="uk" />
+        <postfix Name="urn" />
+        <postfix Name="yr" />
+        <postfix Name="yth" />
+        <postfix Name="zar" />
+      </postfixes>
+    </namestyle>
+    <!-- Qud's name generation is very nearly gender-blind: exactly one namestyle in the whole
+         vanilla file uses a Gender attribute. What reads as male-coded is a phonetic property of
+         the postfix pool - 23 of vanilla's 24 endings are hard stops, `la` being the only open
+         one. The ending carries almost all of the gendered read, so it is the lever.
+
+         117 of the 126 blueprints that resolve to Qudish inherit RandomGender="male,female"
+         from BaseHuman - a coin flip rolled before the name is generated. So half of every
+         generated human already IS female, and was drawing from the hard-stop pool.
+
+         Species="human" is load-bearing. A scope carrying only Gender matches every female
+         creature in the game, and female bears would draw Qudish names.
+
+         Priority 50 is load-bearing too. Exclusion is `other.priority > scope.priority`, and the
+         faction namestyles that must keep winning - Templar, Barathrumite, Mechanimist, Snapjaw -
+         sit at exactly 100 with Combine="false". At 100 this would displace them instead of
+         losing to them. naming-priority holds the ceiling. -->
+    <namestyle Name="Vixy_Qudish Feminine" Format="TitleCase">
+      <scopes>
+        <scope Name="Vixy_Gender" Species="human" Gender="female" Priority="50" Combine="true" />
+      </scopes>
+      <prefixes Amount="1">
+        <prefix Name="ae" />
+        <prefix Name="be" />
+        <prefix Name="ce" />
+        <prefix Name="dho" />
+        <prefix Name="el" />
+        <prefix Name="en" />
+        <prefix Name="esh" />
+        <prefix Name="hy" />
+        <prefix Name="ia" />
+        <prefix Name="ish" />
+        <prefix Name="je" />
+        <prefix Name="kae" />
+        <prefix Name="le" />
+        <prefix Name="li" />
+        <prefix Name="lu" />
+        <prefix Name="mya" />
+        <prefix Name="ne" />
+        <prefix Name="oa" />
+        <prefix Name="pe" />
+        <prefix Name="phi" />
+        <prefix Name="re" />
+        <prefix Name="rhy" />
+        <prefix Name="sa" />
+        <prefix Name="se" />
+        <prefix Name="she" />
+        <prefix Name="shy" />
+        <prefix Name="sse" />
+        <prefix Name="te" />
+        <prefix Name="the" />
+        <prefix Name="va" />
+        <prefix Name="ve" />
+        <prefix Name="vi" />
+        <prefix Name="wa" />
+        <prefix Name="we" />
+        <prefix Name="xa" />
+        <prefix Name="ye" />
+        <prefix Name="za" />
+        <prefix Name="ze" />
+        <prefix Name="zi" />
+      </prefixes>
+      <infixes Amount="0-2">
+        <infix Name="ala" />
+        <infix Name="eli" />
+        <infix Name="ien" />
+        <infix Name="isa" />
+        <infix Name="nye" />
+        <infix Name="sya" />
+        <infix Name="thi" />
+        <infix Name="vae" />
+      </infixes>
+      <postfixes Amount="1">
+        <!-- A lean, not a rule. The hard endings are here on purpose, so a name never
+             states the gender outright. About one in five draws takes one. -->
+        <postfix Name="a" />
+        <postfix Name="ae" />
+        <postfix Name="ai" />
+        <postfix Name="ala" />
+        <postfix Name="ana" />
+        <postfix Name="ea" />
+        <postfix Name="ela" />
+        <postfix Name="ena" />
+        <postfix Name="eya" />
+        <postfix Name="ia" />
+        <postfix Name="iel" />
+        <postfix Name="ila" />
+        <postfix Name="ina" />
+        <postfix Name="isa" />
+        <postfix Name="iya" />
+        <postfix Name="la" />
+        <postfix Name="lee" />
+        <postfix Name="lia" />
+        <postfix Name="lis" />
+        <postfix Name="na" />
+        <postfix Name="nia" />
+        <postfix Name="oa" />
+        <postfix Name="ola" />
+        <postfix Name="ona" />
+        <postfix Name="sa" />
+        <postfix Name="sha" />
+        <postfix Name="shia" />
+        <postfix Name="sia" />
+        <postfix Name="ssa" />
+        <postfix Name="ua" />
+        <postfix Name="ula" />
+        <postfix Name="una" />
+        <postfix Name="ya" />
+        <postfix Name="yla" />
+        <postfix Name="yna" />
+        <postfix Name="ysa" />
+        <postfix Name="eth" />
+        <postfix Name="ith" />
+        <postfix Name="yr" />
+        <postfix Name="ana" />
+        <postfix Name="orr" />
+      </postfixes>
+    </namestyle>
+    <!-- An even mix of both ending types, for the genders that are neither.
+
+         One scope per gender, because NameScope.Gender is a single exact-match string rather
+         than a list. `elverson` is scoped here even though vanilla hides it behind
+         Generic="false" - the scope is simply inert until something makes that gender
+         reachable, and inert is the right state for it to be in meanwhile.
+
+         `hartind` is deliberately absent. Its person terms are hartind/faun, which makes it the
+         hindren third gender rather than a general one, and hindren have their own namestyle. -->
+    <namestyle Name="Vixy_Qudish Neutral" Format="TitleCase">
+      <scopes>
+        <scope Name="Vixy_Gender neuterperson" Species="human" Gender="neuterperson" Priority="50" Combine="true" />
+        <scope Name="Vixy_Gender nonspecific" Species="human" Gender="nonspecific" Priority="50" Combine="true" />
+        <scope Name="Vixy_Gender elverson" Species="human" Gender="elverson" Priority="50" Combine="true" />
+      </scopes>
+      <prefixes Amount="1">
+        <prefix Name="ae" />
+        <prefix Name="be" />
+        <prefix Name="ce" />
+        <prefix Name="dho" />
+        <prefix Name="el" />
+        <prefix Name="en" />
+        <prefix Name="esh" />
+        <prefix Name="hy" />
+        <prefix Name="ia" />
+        <prefix Name="ish" />
+        <prefix Name="je" />
+        <prefix Name="kae" />
+        <prefix Name="le" />
+        <prefix Name="li" />
+        <prefix Name="lu" />
+        <prefix Name="mya" />
+        <prefix Name="ne" />
+        <prefix Name="oa" />
+        <prefix Name="pe" />
+        <prefix Name="phi" />
+        <prefix Name="re" />
+        <prefix Name="rhy" />
+        <prefix Name="sa" />
+        <prefix Name="se" />
+        <prefix Name="she" />
+        <prefix Name="shy" />
+        <prefix Name="sse" />
+        <prefix Name="te" />
+        <prefix Name="the" />
+        <prefix Name="va" />
+        <prefix Name="ve" />
+        <prefix Name="vi" />
+        <prefix Name="wa" />
+        <prefix Name="we" />
+        <prefix Name="xa" />
+        <prefix Name="ye" />
+        <prefix Name="za" />
+        <prefix Name="ze" />
+        <prefix Name="zi" />
+      </prefixes>
+      <infixes Amount="0-2">
+        <infix Name="ala" />
+        <infix Name="eli" />
+        <infix Name="ien" />
+        <infix Name="isa" />
+        <infix Name="nye" />
+        <infix Name="sya" />
+        <infix Name="thi" />
+        <infix Name="vae" />
+      </infixes>
+      <postfixes Amount="1">
+        <postfix Name="a" />
+        <postfix Name="ae" />
+        <postfix Name="ai" />
+        <postfix Name="ala" />
+        <postfix Name="ana" />
+        <postfix Name="ea" />
+        <postfix Name="ela" />
+        <postfix Name="ena" />
+        <postfix Name="eya" />
+        <postfix Name="ia" />
+        <postfix Name="iel" />
+        <postfix Name="ila" />
+        <postfix Name="ina" />
+        <postfix Name="isa" />
+        <postfix Name="iya" />
+        <postfix Name="la" />
+        <postfix Name="lee" />
+        <postfix Name="lia" />
+        <postfix Name="ek" />
+        <postfix Name="eth" />
+        <postfix Name="ik" />
+        <postfix Name="ith" />
+        <postfix Name="oq" />
+        <postfix Name="orr" />
+        <postfix Name="oth" />
+        <postfix Name="uk" />
+        <postfix Name="urn" />
+        <postfix Name="yr" />
+        <postfix Name="yth" />
+        <postfix Name="zar" />
+        <postfix Name="bas" />
+        <postfix Name="kas" />
+        <postfix Name="kat" />
+        <postfix Name="met" />
+        <postfix Name="mir" />
+        <postfix Name="mut" />
+      </postfixes>
+    </namestyle>
+  </namestyles>
+</naming>

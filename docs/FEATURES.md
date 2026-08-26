@@ -2056,7 +2056,8 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 12 options (§13)
+├── Options.xml                 # 14 options (§13)
+├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
@@ -2074,7 +2075,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 49 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, the chip-slot mutator,
 │                               # burden, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2108,7 +2109,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twelve options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Fourteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2142,6 +2143,8 @@ rather than anything the mod already was.
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
+| wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
+| gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2265,6 +2268,91 @@ name*, which is `"sprinting"` by default and configurable per `Run` part. Matchi
 would never fire, and the restriction would have shipped silently inert.
 
 ---
+
+## 15. Name pools (`Naming.xml`)
+
+Procedurally generated humans stopped sounding alike, and the half of them who are women stopped
+sounding like men.
+
+### 15.1 What a player was actually noticing
+
+Vanilla's Qudish namestyle has **29 prefixes, 20 infixes and 24 postfixes**, drawn as prefix=1,
+infix=0–2, postfix=1 — about **93,500 distinct names**. So exact repeats are *not* what anyone was
+seeing: roughly 0.2% across 20 rolls.
+
+**Repeated syllables are.** There is a 50% chance of a repeated *opening* after 6.3 draws. That
+inverts the obvious fix: widen prefixes and postfixes, and leave the infix pool alone, because the
+infix is not where the collision is.
+
+| pool | vanilla | now | 50% repeat at | expected repeats in 20 names |
+| ---------- | ------: | --: | ------------: | ---------------------------: |
+| prefixes | 29 | 68 | 7 → 11 draws | 6.6 → 2.8 |
+| infixes | 20 | 28 | *unchanged by design* | — |
+| postfixes | 24 | 36 | 7 → 11 draws | 7.9 → 2.6 |
+
+Widening halves perceived repetition. It cannot do much better than that: the effect scales with the
+square root of the pool, so reaching "you would never notice" needs roughly ten times the syllables.
+
+### 15.2 The ending carries the gendered read
+
+Qud's name generation is very nearly gender-blind — exactly **one** namestyle in the whole vanilla
+file uses a `Gender` attribute, and it is a Warden honorific. What reads as male-coded is a phonetic
+property of the postfix pool: **23 of vanilla's 24 endings are hard stops** (`-q -t -m -r -s`), with
+`la` the only open, vowel-final one.
+
+That matters more than it sounds, because the game already knows each character's gender.
+**117 of the 126 blueprints that resolve to Qudish inherit `RandomGender="male,female"` from
+`BaseHuman`** — a coin flip rolled at creation, before the name is generated, and passed to the
+generator. So half of every generated human in Qud already *was* female, drawing from a pool of hard
+stops.
+
+Two namestyles use it:
+
+| namestyle | scoped to | ending pool |
+| ------------------------ | ---------------------------------------- | ------------------------------------ |
+| `Vixy_Qudish Feminine` | `Species="human"`, `Gender="female"` | 36 open + 5 hard |
+| `Vixy_Qudish Neutral` | `Species="human"`, the non-binary genders | 18 open + 18 hard |
+
+The hard endings in the feminine pool are deliberate. It is a lean, not a rule — about one draw in
+five takes one, so a name never states the gender outright.
+
+`Vixy_Qudish Neutral` carries one scope per gender, because `NameScope.Gender` is a single
+exact-match string rather than a list: `neuterperson`, `nonspecific`, and `elverson`. The last is
+inert today — vanilla hides that gender behind `Generic="false"` — and inert is the right state for
+it until something makes the gender reachable.
+
+**`hartind` is deliberately absent.** Its person terms are `hartind` / `faun`, which makes it the
+hindren third gender rather than a general one, and hindren have their own namestyle.
+
+### 15.3 Three attributes doing more work than they look like
+
+- **`Load="Merge"` sits once on `<naming>`** and cascades — `LoadNamingNode` reads it and every level
+  below inherits it. Without it, `LoadNameStyleNode` removes the namestyle from `_NameStyleList`,
+  builds a replacement and **never adds it back to the list**, which `Generate` iterates. Qudish
+  would leave name generation entirely and every procedurally named human would be called
+  `NameGenFail1`, `NameGenFail2`, and so on.
+- **`Species="human"`** bounds both new namestyles. A scope carrying only `Gender` matches every
+  female creature in the game, and female bears would draw Qudish names.
+- **`Priority="50"`** is under a hard ceiling of 100. Exclusion is `other.priority > scope.priority`,
+  and the faction namestyles that must keep winning — Templar, Barathrumite, Mechanimist, Snapjaw —
+  sit at exactly 100 with `Combine="false"`. At 100 these would displace them.
+
+All three are held by `tools/validate_mod.py`, and `tools/naming_harness.py` resolves the whole file
+against vanilla without launching the game.
+
+### 15.4 What this does not touch
+
+- **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
+  blueprint and never call the generator.
+- **Non-human creatures.** Snapjaws, robots, animals, plants, reptiles, Templars and Mechanimists all
+  have their own syllable pools, reached by their own scopes.
+- **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
+  scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
+  a site call.
+- **The player's own random name.** `GenerateRandomPlayerName` calls
+  `NameMaker.MakeName(null, null, Type)` — `For` is null, so `Generate` never populates `Gender`,
+  `Species` or `Tag`, and the player's name is drawn gender-blind from Qudish regardless of what
+  these namestyles say. Reaching it needs a handler on `BOOTEVENT_GENERATERANDOMPLAYERNAME`.
 
 ## Appendix A — every merged vanilla melee weapon
 

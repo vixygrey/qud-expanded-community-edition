@@ -16,6 +16,64 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Both halves of the name change are options** (#184).
+
+  `wider name pools` and `gendered name endings`, separate on purpose: wanting more variety and
+  wanting names to signal gender are different opinions, and rule 6 says nobody should have to take
+  one to get the other. Both default **on** — they are cosmetic and grant no power, so rule 6's
+  default-off exception does not apply.
+
+  Both are reversible rather than undoable, which is what rule 5 asks of anything that mutates
+  loaded game data. The widening sets `Weight` to 0 on the syllables this mod added, which
+  `GetRandomNameElement` skips while leaving the element in place; the gendered endings set `Chance`
+  to 0 on the two new namestyles' scopes, which `ApplyTo` evaluates last, so the scope stops matching
+  and naming falls back to Qudish exactly as vanilla does it. Off is vanilla, exactly.
+
+  **The syllable list is restated in C# and a check holds the two halves together.** Nothing at
+  runtime can tell a merged-in syllable from a vanilla one — the loader appends both into the same
+  `List` and neither carries a marker — and reading the XML back would be file I/O, which rule 5
+  forbids. It lives in its own `Vixy_NameSyllables.cs` so the spell checker can skip it — these are
+  invented fragments, and `Raven_Options.cs` is 700 lines of real prose that should stay checked.
+  `naming-option-coverage` holds the two files against `mod/Naming.xml` in both
+  directions: a syllable in the XML the option cannot reach, and a syllable in the C# the XML does
+  not add. The second is the dangerous one, because zeroing a weight on something this mod does not
+  own means silencing vanilla's.
+
+  `tools/naming_harness.py` covers the case CI cannot see: a syllable that shares a name with a
+  vanilla one **merges into a single element**, so it does not lengthen the pool and there is no tail
+  to inspect. The harness reads the fragment's own declarations against the installed game instead.
+  None of the 59 collide today.
+
+- **Names stopped repeating, and half the people in Qud stopped sounding like men** (#184).
+
+  Vanilla's Qudish namestyle has 29 prefixes, 20 infixes and 24 postfixes — about 93,500 distinct
+  names, so exact repeats were never what anyone was noticing (0.2% across 20 rolls). **Syllable**
+  repeats were: a 50% chance of a repeated *opening* after 6.3 draws. So this widens openings and
+  endings and deliberately leaves the infix pool alone, because the infix is not where the collision
+  is. Prefixes 29 → 68, postfixes 24 → 36, which moves a repeated opening from 7 draws to 11 and
+  halves how often you see one across 20 names.
+
+  The second half is the one I did not expect. Qud's name generation is very nearly gender-blind —
+  exactly **one** namestyle in the whole vanilla file uses a `Gender` attribute, and it is a Warden
+  honorific. What reads as male-coded is a phonetic property of the pool: **23 of vanilla's 24
+  endings are hard stops**, `la` being the only open one. And the game already knows: **117 of the
+  126 blueprints that resolve to Qudish inherit `RandomGender="male,female"` from `BaseHuman`**, a
+  coin flip rolled before the name is generated and handed to the generator. Half of every generated
+  human in Qud already was female, drawing from a pool of hard stops.
+
+  `Vixy_Qudish Feminine` and `Vixy_Qudish Neutral` use the gender the game had all along. The
+  feminine pool keeps five hard endings on purpose — it is a lean, not a rule, so a name never states
+  the gender outright. The neutral pool is an even mix, scoped one gender at a time because
+  `NameScope.Gender` is a single exact-match string. `hartind` is deliberately excluded: its person
+  terms are `hartind` / `faun`, which makes it the hindren third gender rather than a general one.
+
+  **What this does not touch**, which turned out to be most of the game: hand-authored NPCs carry
+  their names on the blueprint and never call the generator; snapjaws, robots, animals, plants,
+  Templars and Mechanimists have their own pools; and village and site names come from `Qudish Site`,
+  a separate namestyle whose scopes gate on `Type` and can never be reached by a person-name call.
+  The player's own random name is untouched too — `GenerateRandomPlayerName` passes no `GameObject`,
+  so it is generated gender-blind no matter what these namestyles say.
+
 - **(internal)** Four checks hold `<naming>`, which merge discipline never reached (#184).
 
   `check_merge_discipline` walks `<object>` and `<population>`. A `<namestyle Name="Qudish">` without

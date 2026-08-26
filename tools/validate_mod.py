@@ -808,6 +808,61 @@ def check_naming_priority(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                     )
 
 
+def check_naming_option_coverage(
+    f: Findings, all_roots: dict[Path, ET.Element]
+) -> None:
+    """The syllables the option can switch off must be exactly the syllables the XML adds.
+
+    Nothing at runtime can tell a merged-in syllable from a vanilla one -- the loader appends both
+    into the same List and neither carries a marker -- and reading the XML back would be file I/O,
+    which charter rule 5 forbids. So `Raven_Options.cs` restates the list, and the two halves live
+    in different files with neither naming the other. That is the shape #421 came from, and
+    skill-option-coverage exists for the same reason.
+
+    Held in both directions:
+
+      a syllable in the XML but not the C#  -> a syllable the option cannot switch off
+      a syllable in the C# but not the XML  -> the option zeroes a weight on something else,
+                                               which for a vanilla syllable means silencing it
+    """
+    arrays = {
+        "prefixes": "AddedPrefixes",
+        "infixes": "AddedInfixes",
+        "postfixes": "AddedPostfixes",
+    }
+    source = MOD / "Scripting" / "Vixy_NameSyllables.cs"
+    if not source.is_file():
+        return
+    text = source.read_text(encoding="utf-8-sig")
+
+    declared: dict[str, set[str]] = {}
+    for pool, array in arrays.items():
+        match = re.search(rf"string\[\]\s+{array}\s*=\s*\{{(.*?)\}};", text, re.DOTALL)
+        declared[pool] = (
+            set(re.findall(r'"([^"]+)"', match.group(1))) if match else set()
+        )
+
+    for path, root in _naming_roots(all_roots).items():
+        for style in root.iter("namestyle"):
+            if style.get("Name") != "Qudish":
+                continue
+            for pool, array in arrays.items():
+                node = style.find(pool)
+                in_xml = {el.get("Name") for el in node} if node is not None else set()
+                for missing in sorted(in_xml - declared[pool]):
+                    f.add(
+                        "naming-option-coverage",
+                        f"{path}: {pool[:-2]} {missing!r} is added to Qudish but absent from "
+                        f"{array} — the option cannot switch it off",
+                    )
+                for extra in sorted(declared[pool] - in_xml):
+                    f.add(
+                        "naming-option-coverage",
+                        f"{source}: {array} names {extra!r}, which Qudish does not add — "
+                        f"the option would zero the weight on something it does not own",
+                    )
+
+
 def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Every mod-prefixed part referenced by a blueprint needs a matching C# class.
 
@@ -2149,6 +2204,7 @@ def run() -> Findings:
     check_naming_discipline(f, roots)
     check_naming_syllables(f, roots)
     check_naming_priority(f, roots)
+    check_naming_option_coverage(f, roots)
     check_scripting_parts(f, roots)
     check_scripting_policy(f)
     check_subtype_tiles(f, roots)

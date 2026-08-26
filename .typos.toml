@@ -34,4 +34,11 @@ extend-exclude = [
   # Allowlisting these would exempt them from every document in the repo, including player-facing
   # text, which is exactly the padding this policy exists to prevent.
   "tools/qud-api.json",
+  # Name syllables, not prose. `thi`, `sya`, `nye` and the rest are fragments assembled into
+  # invented names -- nobody wrote a word here and there is no typo to fix. Excluded as a file
+  # for the same reason as the snapshot above: allowlisting `thi` as a word would exempt it from
+  # every document in the repo including player-facing text, which is the padding this policy
+  # exists to prevent.
+  "mod/Naming.xml",
+  "mod/Scripting/Vixy_NameSyllables.cs", # the same syllables, restated for the option
 ]
