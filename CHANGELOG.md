@@ -72,6 +72,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **A new preview image, and it is my own work rather than Mura's logo** (#500).
+
+  The old one was Mura's Caves of Qud Expanded logo with two marks composited on top — a green
+  `- CE` after "Expanded" and `& VixyGrey` under "by TLR". It was also 504×382, where Freehold
+  recommend a square 512×512, so the mod manager was letterboxing it.
+
+  The new image is original: a stratigraphic cross-section built entirely from Caves of Qud's own
+  eighteen fixed colours, laid out on the game's own 16×24 character cell, with scan lines and a
+  vignette pitched to be noticed on a second look rather than a first. Both names sit in it, in the
+  same face and weight. **Charter rule 3 obliges credit, not the reuse of someone else's artwork**,
+  and a fork wearing its own identity while naming its origin honours that better than a borrowed
+  logo with a suffix bolted on.
+
+  `tools/preview-base.png` — Mura's logo — is deleted, since nothing composites onto it any more,
+  and `COPYING.md` no longer lists the preview under Mura's grant. `tools/build_preview.sh` becomes
+  `tools/build_preview.py`, which reads no image at all and so cannot repeat the double-composite
+  trap `docs/LESSONS.md` records. It writes a 128px proof beside the output, because 128 is the size
+  the mod manager actually displays and the design has to survive it.
+
+  The reasoning behind the design is kept in `docs/PREVIEW_DESIGN.md` rather than discarded, on the
+  same argument the old script made for itself: the alternative is that the next person to change it
+  guesses at the intent.
+
 - **The Joppa home base option now takes effect on restart, and applies to Joppa as it is first
   generated** (#498).
 

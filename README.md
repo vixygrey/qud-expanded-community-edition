@@ -264,15 +264,20 @@ loaded doesn't fail, it hands you the nearest one that does.
 `mod/preview.png` is committed, so you only need this if you're changing it:
 
 ```bash
-tools/build_preview.sh
+python3 tools/build_preview.py
 ```
 
-It composites the fork's green `- CE` and `& VixyGrey` marks onto `tools/preview-base.png` —
-Mura's original logo, kept unmodified and byte-identical to `git show upstream-2.2:preview.png`.
-Unlike the validators it needs ImageMagick and a macOS system font, so I left it out of the
-validation gate and it doesn't run in CI. Sizes, angles and colours live in the script rather than
-in someone's image editor; see the header, and `docs/STYLEGUIDE.md` §7.3 for why the fork's marks
-deliberately don't match Mura's lettering.
+The image is **original work** — a stratigraphic cross-section in Caves of Qud's own eighteen fixed
+colours, on its own 16×24 character cell. It is not derived from Mura's logo, which the preview used
+to composite onto; Mura is credited in the image itself, in `manifest.json`, and here. The reasoning
+behind the design is in [`docs/PREVIEW_DESIGN.md`](docs/PREVIEW_DESIGN.md), so the next person to
+change it inherits the intent rather than guessing at it.
+
+Unlike the validators it needs Pillow, so it stays out of the validation gate and doesn't run in CI —
+`tools/validate_mod.py` is Python-stdlib-only precisely so every contributor can run it. It also
+needs GeistMono; set `QUD_PREVIEW_FONTS` if it isn't where the script looks. Every size and interval
+lives in the script rather than in someone's image editor, and it writes a 128px proof beside the
+output because that is the size the mod manager actually displays.
 
 ### Local hooks — worth installing
 
