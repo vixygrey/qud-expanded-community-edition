@@ -72,6 +72,28 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Three drifted section numbers fixed, and a check so they cannot drift again
+  (#496, #503).
+
+  `docs/DESIGN_balance.md` carried **two section 4.5s**, so `§4.5` had no correct reading, and its
+  §5.9 sat above §5.8. `docs/FEATURES.md` had §15.5 above §15.4, so following the numbering led to
+  the wrong section. None changes a claim; all three make a cross-reference ambiguous, and
+  `check_sections` could not see it because the number a citation names still resolved to *a*
+  heading.
+
+  Fixed the way that keeps every citation valid: DESIGN_balance's two are a **reorder** (its seven
+  references to §5.8 and §5.9 are untouched) and a renumber of the duplicate to §4.6 (nothing cites
+  it). FEATURES' pair is a **renumber**, because "What this does not touch" is a closing section and
+  belongs last — its three references to §15.5 now name §15.4.
+
+  The new `heading-order` check holds it. It deliberately does not flag the letter suffix these
+  documents already use for a section inserted later — §17.3a, §18.4b — since that convention is
+  what makes renumbering unnecessary in the first place.
+
+  Also the one non-ASCII character in the mod's shipped XML, a `÷` in an `Ammo.xml` comment. Qud
+  reads XML as code page 437 regardless of the declaration, and there is no way to say otherwise
+  outside the `lang-experimental` branch, so mod XML stays ASCII.
+
 - **(internal)** Five findings from the wiki audit moved out of the issue tracker and into the
   documents (#492, #495, #501, #504, #505).
 

@@ -394,7 +394,7 @@
 
        Ambient regression is a FLOOR, not a curve. Temperature returns by Math.Max(5, |diff| * 0.02)
        every turn, a flat 5 at these magnitudes, and a shotgun connects with only a fraction of its
-       pellets. So the ÷8 lands on top of a second division nobody chose, and what is left is
+       pellets. So the divide-by-8 lands on top of a second division nobody chose, and what is left is
        measured against a fixed 5 a turn:
 
            -6 a pellet, 3 of 8 connect:  -18 a shot, and a turn spent moving hands +5 straight back

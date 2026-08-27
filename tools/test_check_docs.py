@@ -1065,6 +1065,59 @@ class WorkshopVersion(unittest.TestCase):
         self.assertIn("missing or reworded", items[0][1])
 
 
+class HeadingOrder(unittest.TestCase):
+    """#496. A repeated or backwards section number does not change a claim - it makes a
+    cross-reference ambiguous, which `check_sections` cannot see because the number it cites still
+    resolves to *a* heading."""
+
+    def run_on(self, body: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp()) / "T.md"
+        tmp.write_text(body, encoding="utf-8")
+        f = check_docs.Findings()
+        original = check_docs.DOCS
+        check_docs.DOCS = [tmp]
+        try:
+            check_docs.check_heading_order(f)
+        finally:
+            check_docs.DOCS = original
+        return [message for _, message in f.items]
+
+    def test_ascending_numbers_are_silent(self) -> None:
+        self.assertEqual(
+            self.run_on("## 1 a\n\n### 1.1 b\n\n### 1.2 c\n\n## 2 d\n"), []
+        )
+
+    def test_a_repeated_number_is_reported(self) -> None:
+        """DESIGN_balance carried two section 4.5s, and `§4.5` had no correct reading."""
+        found = self.run_on("### 4.5 What is not blocked\n\n### 4.5 Settled\n")
+        self.assertEqual(len(found), 1)
+        self.assertIn("repeats", found[0])
+
+    def test_a_backwards_number_is_reported(self) -> None:
+        """FEATURES carried 15.5 above 15.4, so following the numbering led to the wrong place."""
+        found = self.run_on("### 15.3 x\n\n### 15.5 y\n\n### 15.4 z\n")
+        self.assertEqual(len(found), 1)
+        self.assertIn("reading order disagree", found[0])
+
+    def test_the_letter_suffix_convention_is_not_flagged(self) -> None:
+        """These documents insert a later section as 17.3a rather than renumbering its neighbours,
+        which is the convention that makes renumbering unnecessary. Flagging it would punish the
+        one habit that avoids the defect."""
+        self.assertEqual(
+            self.run_on("### 17.3 a\n\n### 17.3a b\n\n### 17.3b c\n\n### 17.4 d\n"), []
+        )
+
+    def test_a_suffix_going_backwards_is_still_reported(self) -> None:
+        found = self.run_on("### 17.3b a\n\n### 17.3a b\n")
+        self.assertEqual(len(found), 1)
+
+    def test_the_real_documents_are_clean(self) -> None:
+        """The check exists because three had drifted; this is what keeps them from drifting back."""
+        f = check_docs.Findings()
+        check_docs.check_heading_order(f)
+        self.assertEqual([m for _, m in f.items], [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

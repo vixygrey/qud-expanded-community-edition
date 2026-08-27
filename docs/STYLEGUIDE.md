@@ -1211,6 +1211,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `armor-curve` | `validate_mod.py` | AV against §3.2.1's ceiling, per slot and for shields |
 | `built` | `check_build_log.py` | the game's own build log says the C# compiled |
 | `changelog-sections` | `check_docs.py` | no duplicate `### Added` / `### Changed` heading inside one release |
+| `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |
 | `check-names` | `check_docs.py` | this one — a documented check name exists, and an emitted one is documented |
 | `class-filename` | `validate_mod.py` | a C# class living in a file named for it |
 | `conflict-markers` | `check_docs.py` | no tracked file carrying a leftover conflict marker, the diff3 `\|\|\|\|\|\|\|` included |
