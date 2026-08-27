@@ -868,7 +868,7 @@ does not mean *excluded*: the delta simply misses `TierDeltaWeights` and it join
 
 **Role lives in two stores.** The weighting asks
 `Tags.TryGetValue("Role", …) || Props.TryGetValue("Role", …)`, and `<property Name="Role">` lands in
-`Props` while `<tag Name="Role">` lands in `Tags`. Vanilla declares it as a tag 352 times and as a
+`Props` while `<tag Name="Role">` lands in `Tags`. Vanilla declares it as a tag 349 times and as a
 property never. This fork does the exact opposite, thirteen times, on the Zetachrome items — so
 reading only tags weighted them ×100 too heavily and put `BaseShield` Tier8 at 97% when it is 69%.
 
@@ -1389,6 +1389,15 @@ deliberately… ElementTree does not see inside a comment"* — written because 
 reported those same two vibro war hammers as violations nobody could fix. **The knowledge existed in
 a docstring in the validator and nowhere a person writing an edit script would look.** That is the
 part worth fixing, and why this is here.
+
+**And counting by pattern fails the same way as editing by pattern.** Establishing that vanilla
+declares `Role` as a tag and never as a property, I ran `grep -c 'tag Name="Role"'` over
+`ObjectBlueprints/` and got 352. The real figure is **349**: three of those lines sit inside
+commented-out blueprints in `Creatures.xml`, one of them a robot called Graftek. I had the number
+wrong in a changelog entry, a lesson on this very page, an issue and a pull request before parsing
+the same files and getting a different answer. `requested_inherits_slices` strips comments before it
+counts, for exactly this reason, and says so — I did not extend the courtesy to a one-line check of
+my own. **A figure that is going into prose deserves the parse too**, because prose has no test.
 
 The general shape: **a validator that ignores a region cannot protect that region.** Anything
 deliberately excluded from checking is somewhere mistakes accumulate silently, so a change that

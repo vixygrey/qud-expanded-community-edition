@@ -176,7 +176,7 @@
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="4" UsesTwoSlots="true" FlameTemperature="99999" VaporTemperature="9999" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Vibro Battle Axe" Inherits="BaseAxe">
@@ -480,7 +480,7 @@
     <part Name="TinkerItem" Bits="0008" CanDisassemble="true" CanBuild="true" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Battle Axe8th" Load="Merge">
@@ -1248,7 +1248,7 @@
     />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Zetachrome Katana" Inherits="BaseLongBlade">
@@ -1273,7 +1273,7 @@
     />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="3" UsesTwoSlots="true" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Vibro Rapier" Inherits="BaseLongBlade">
@@ -1816,7 +1816,7 @@
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="1" FlameTemperature="99999" VaporTemperature="9999" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Vibro Wristblade" Inherits="BaseDagger">
@@ -2109,7 +2109,7 @@
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="2" FlameTemperature="99999" VaporTemperature="9999" />
     <tag Name="HitSound" Value="meleeTier8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Zetachrome Maceth" Inherits="BaseCudgel">
@@ -2130,7 +2130,7 @@
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="5" FlameTemperature="99999" VaporTemperature="9999" UsesTwoSlots="true" />
     <tag Name="HitSound" Value="meleeTier8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <!-- rework these or remove them

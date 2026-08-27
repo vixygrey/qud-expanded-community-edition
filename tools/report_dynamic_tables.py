@@ -251,7 +251,7 @@ def resolved_role(index: BlueprintIndex, name: str) -> str | None:
     """The Role the weighting reads, which lives in either of two stores.
 
     `Tags.TryGetValue("Role", ...) || Props.TryGetValue("Role", ...)`, in that order. Vanilla
-    declares Role as a tag 352 times and as a property never; this fork does the exact opposite,
+    declares Role as a tag 349 times and as a property never; this fork does the exact opposite,
     thirteen times, on the Zetachrome items. Both work, and reading only tags weighted those
     thirteen a hundred times too heavily - which put `BaseShield` Tier8 at 97% when it is 69%
     (#520).

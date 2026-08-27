@@ -130,7 +130,7 @@
     <part Name="TinkerItem" Bits="003" CanDisassemble="true" CanBuild="true" />
     <part Name="Metal" />
     <tag Name="Tier" Value="3" />
-    <property Name="Role" Value="Uncommon" />
+    <tag Name="Role" Value="Uncommon" />
   </object>
 
   <!-- Hands -->
@@ -649,7 +649,7 @@
     <part Name="Physics" Weight="2" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <object Name="Raven_Nanoweave Cloak" Inherits="BaseCloak">
@@ -792,7 +792,7 @@
     <part Name="Physics" Weight="1" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <!--Bucklers-->
@@ -935,7 +935,7 @@
     <part Name="Physics" Weight="2" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <!-- Shields -->
@@ -1023,7 +1023,7 @@
     <part Name="Physics" Weight="5" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <!-- Greatshields -->
@@ -1134,7 +1134,7 @@
     <part Name="Physics" Weight="7" />
     <part Name="Zetachrome" />
     <tag Name="Tier" Value="8" />
-    <property Name="Role" Value="Rare" />
+    <tag Name="Role" Value="Rare" />
   </object>
 
   <!-- Face -->

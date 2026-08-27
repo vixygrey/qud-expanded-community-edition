@@ -108,6 +108,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `Role` is declared as a tag, the way vanilla declares it (#522).
+
+  Thirteen blueprints — the twelve Zetachrome items and the reinforced suspension — carried
+  `<property Name="Role" Value="Rare" />`. Vanilla declares Role as a `<tag>` 349 times and as a
+  property never, and its own tier-8 weapons are the exact precedent: `Long Sword8` is
+  `<tag Name="Tier" Value="8" />` followed by `<tag Name="Role" Value="Rare" />`, which is now
+  character-for-character what these thirteen are.
+
+  Behaviour is identical and I checked rather than assumed it. `Property.Rebase(Blueprint.Props)`
+  puts a blueprint property onto the live object, and both `GetPropertyOrTag` and
+  `GetTagOrStringProperty` fall through to the blueprint's tags when no property is there — so
+  every consumer returns `Rare` before and after. No ancestor of the thirteen declares a competing
+  Role, so the two lookup orders never disagreed. The proof is that
+  `report_dynamic_tables.py --check` passes against an unchanged `tools/inherited-pools.json`: not
+  one weight moved.
+
+  The new `role-form` check keeps it that way. Nothing depends on it — the report reads both stores
+  since #520 — but the divergence is what made that report wrong, and a convention worth having is
+  worth enforcing. `tools/qud-api.json` gains `"Role": "tag"`, read out of the game's own data,
+  which `snapshot-coverage` demanded the moment the tag appeared.
+
+  Also corrects 349 from 352 in the #520 entry, `docs/LESSONS.md` and the report's own docstring. I
+  had counted with `grep -c`, and three of vanilla's Role tags sit inside commented-out blueprints.
+
 - **(internal)** The inherited-pool report reads Tier and Role the way the game does (#520).
 
   `report_dynamic_tables.py` weights every member of a `DynamicInheritsTable:` pool by its tier
@@ -122,7 +146,7 @@ recorded because contributors need them, not because subscribers do.
   weight in the untiered table, which 731 blueprints do.
 
   The weighting also asks `Tags.TryGetValue("Role", …) || Props.TryGetValue("Role", …)`. Vanilla
-  declares Role as a tag 352 times and as a property never; this fork does the exact opposite,
+  declares Role as a tag 349 times and as a property never; this fork does the exact opposite,
   thirteen times, on the Zetachrome items. Reading only tags weighted those thirteen ×100 too
   heavily and put `BaseShield` Tier8 at 96.7% when it is 69.5%.
 

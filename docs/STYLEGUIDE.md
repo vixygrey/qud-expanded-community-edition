@@ -1272,6 +1272,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
 | `tag-form` | `validate_mod.py` | `<tag>` vs `<stag>` against vanilla's usage of that tag name |
+| `role-form` | `validate_mod.py` | `Role` declared as a `<tag>`, the way vanilla declares it and never otherwise |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `scatter-share` | `validate_mod.py` | this fork's share of a vanilla table's scattered content |
 | `inherits-share` | `report_dynamic_tables.py` | this fork's share of an inherited pool, per tier (needs the game) |
