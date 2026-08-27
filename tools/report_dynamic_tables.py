@@ -635,6 +635,13 @@ def collect(
         for el in index.objects[name].findall("tag"):
             tag = el.get("Name") or ""
             if tag.startswith(TAG_PREFIX):
+                # `:Weight`, `:Number` and `:Builder` modify an entry rather than creating one, so
+                # a blueprint carrying `DynamicObjectsTable:EnergyCells:Tier8:Weight` is in the
+                # EnergyCells pool and not in a pool of its own. `check_reachability` has known
+                # this since #171; this did not, and the first `:Weight` tag written on a tagged
+                # pool put seven blueprint-shaped fictions in the snapshot (#535).
+                if tag.endswith((WEIGHT_TAG_SUFFIX, ":Number", ":Builder")):
+                    continue
                 # A *delete is a declaration that the tag does NOT apply. Listing it as a route
                 # would name Corpse as putting things in DynamicObjectsTable:Items when vanilla
                 # explicitly takes it out (#261).

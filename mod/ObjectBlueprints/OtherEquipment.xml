@@ -68,6 +68,11 @@
     <tag Name="Tier" Value="8" />
     <tag Name="DynamicObjectsTable:EnergyCells" />
     <tag Name="NoSparkingQuest" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier4-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier5-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier6-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier7:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier8:Weight" Value="0.2" />
   </object>
 
   <object Name="Raven_Solar Cell Array" Inherits="Energy Cell">
@@ -113,6 +118,13 @@
     <tag Name="DynamicObjectsTable:EnergyCells" />
     <tag Name="TinkerCategory" Value="ammo and energy cells" />
     <tag Name="NoSparkingQuest" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier3-7:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier4-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier5-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier6:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier6-8:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier7:Weight" Value="0.2" />
+    <tag Name="DynamicObjectsTable:EnergyCells:Tier8:Weight" Value="0.2" />
   </object>
 
   <!-- Floating Nearby -->
