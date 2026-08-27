@@ -212,6 +212,38 @@ class Collect(unittest.TestCase):
         self.assertEqual(data["reaches"], [])
 
 
+class CollectIgnoresModifierTags(unittest.TestCase):
+    """#535. `:Weight`, `:Number` and `:Builder` modify an entry rather than creating one, so a
+    blueprint carrying `DynamicObjectsTable:EnergyCells:Tier8:Weight` is in the EnergyCells pool -
+    not in a pool of its own. The first such tag written on a tagged pool put seven
+    blueprint-shaped fictions in the snapshot."""
+
+    def collected(self, tag: str):
+        xml = f'<objects><object Name="Vixy_Cell"><part Name="Render" /><tag Name="{tag}" /></object></objects>'
+        index = BlueprintIndex(roots(xml))
+        return collect(index, {"Vixy_Cell"}, {tag: {"Vixy_Cell"}})
+
+    def test_a_weight_tag_is_not_a_pool(self) -> None:
+        self.assertEqual(
+            self.collected("DynamicObjectsTable:EnergyCells:Tier8:Weight"), {}
+        )
+
+    def test_number_and_builder_are_not_pools_either(self) -> None:
+        for suffix in (":Number", ":Builder"):
+            with self.subTest(suffix=suffix):
+                self.assertEqual(
+                    self.collected(f"DynamicObjectsTable:EnergyCells{suffix}"), {}
+                )
+
+    def test_the_pool_tag_itself_still_counts(self) -> None:
+        """The positive control: without it this suite would pass on a `collect` that returned
+        nothing at all."""
+        got = self.collected("DynamicObjectsTable:EnergyCells")
+        self.assertEqual(
+            got["DynamicObjectsTable:EnergyCells"]["reaches"], ["Vixy_Cell"]
+        )
+
+
 class Snapshot(unittest.TestCase):
     """#303. Nothing enforced pool membership, so #261 and #262 could come back in silence.
 

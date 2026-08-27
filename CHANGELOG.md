@@ -182,6 +182,40 @@ recorded because contributors need them, not because subscribers do.
   satisfied. But tinkering is a thing a player *does*, not a rate at which a thing *appears*, and
   nothing was asking the difference.
 
+- **Two energy cells are as rare in the world as their price says they are** (#493, #535).
+
+  `Raven_Dark Matter Cell` is Weight **1** in `Artifact 8R` where vanilla's `Antimatter Cell` is
+  **5** — five times rarer, deliberately, because it holds 500,000 charge at 70 lb against
+  antimatter's 200,000 and is valued 1200 against 125. `Raven_Solar Cell Nexus` sits at Weight 1 in
+  `Ammo 7` and `8` beside the nuclear cell's 5.
+
+  In `DynamicObjectsTable:EnergyCells` both were at **exact parity** with those peers, because
+  nothing had ever set a weight there. And that pool is not a loot table — it is how artifacts get
+  loaded:
+
+  ```xml
+  <part Name="EnergyCellSocket" SlottedType="#Solar Cell,@DynamicObjectsTable:EnergyCells:Tier{zonetier}" />
+  ```
+
+  So in late-game zones roughly half the cells that came pre-slotted in an artifact were the rarest
+  artifact I ship.
+
+  | slice | cell | before | after | its peer, after |
+  |---|---|---:|---:|---:|
+  | `Tier8` | Dark Matter | 45.2% | **15.0%** | Antimatter 75.1% |
+  | `Tier7` | Solar Nexus | 43.0% | **13.9%** | Nuclear 69.3% |
+  | `Tier6-8` | both | 19.1% | **5.5%** | peer 27.5% |
+
+  Twelve `:Weight="0.2"` tags, on every tiered slice where a cell holds at least 1% of the weight.
+  The untiered slice is left alone and cannot be otherwise: it takes the flat fabricator at base 1,
+  where `ceil(1 × 0.2)` is 1 — and it needs nothing, because all thirteen cells sit at 7.7% there by
+  design.
+
+  Writing the first `:Weight` tag on a *tagged* pool also exposed a gap in the report: `collect`
+  matched every tag starting with `DynamicObjectsTable:` and so filed seven modifier tags as pools
+  of their own. `check_reachability` has skipped `:Weight`, `:Number` and `:Builder` since #171 —
+  the knowledge existed in one tool and not in the other.
+
 - **(internal)** Six reported slices were ones the game never rolls (#533).
 
   `ResolveTier` handles the `{zonetier}` forms itself rather than leaving them to
