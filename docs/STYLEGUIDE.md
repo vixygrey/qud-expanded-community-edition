@@ -945,6 +945,7 @@ seconds rather than after a round trip.
 | `manifest.json` / `workshop.json` validity, and the upload target | `json`, `manifest`, `workshop-target` |
 | The Workshop description fitting inside Steam's 8000-character limit | `workshop-description` |
 | Figures and the version quoted by the Workshop description, which ships with a release | `workshop-figure`, `workshop-version` |
+| Vanilla creatures swept into an `AggregateWith` slot by inheritance | `aggregate-sweep` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
@@ -1069,6 +1070,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `wellformed` | `validate_mod.py` | XML and map-file well-formedness |
 | `wiki-figure` | `check_docs.py` | every figure the wiki quotes, against the mod it describes |
 | `wiki-link` | `check_docs.py` | the wiki anchors the documents point at |
+| `aggregate-sweep` | `validate_mod.py` | vanilla descendants folded into an `AggregateWith` slot this fork merges |
 | `workshop-description` | `validate_mod.py` | the Workshop description fitting Steam's 8000-character limit |
 | `workshop-figure` | `check_docs.py` | every figure the Workshop description quotes, against the mod it describes |
 | `workshop-version` | `check_docs.py` | the version in the Workshop description, against `manifest.json` |

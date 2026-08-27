@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **432** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **224** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **234** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -567,7 +567,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **432 active** | **224** |
+| **Total** | **432 active** | **234** |
 
 ### 6.2 Melee weapons
 
@@ -2686,22 +2686,54 @@ occupies a single slot rather than one per member — vanilla uses this on the s
 this purpose. Each variant aggregates with its vanilla parent, which needs the same tag merged onto
 the parent, so 13 of the mod's `Load="Merge"` edits exist only for this.
 
-The result is that **the tables do not grow.** A family appears exactly as often as it does in
-vanilla; the variants divide its appearances rather than adding to them. You meet the same number of
-dogs, and some of them are brindle.
+The result is that **a family appears exactly as often as it does in vanilla.** The variants divide
+its appearances rather than adding to them: you meet the same number of dogs, and some of them are
+brindle. Because a variant inherits its parent's `Role`, it carries the same weight, so the split
+inside a family is even:
 
-| Family | Parent weight | Vanilla parent | Each variant |
-|---|---|---|---|
-| Dog | Minion (4) | 44% | 11% × 5 |
-| Giant Beetle | Minion (4) | 57% | 14% × 3 |
-| Salamander | Minion (4) | 67% | 17% × 2 |
-| Goat, Boar, Baboon | Brute / Skirmisher (1) | 25% | 25% × 3 |
-| Croc, Horned Chameleon, Glowfish, Irritable Tortoise | (1) | 33% | 33% × 2 |
-| Glowmoth, Honey Skunk | (1) | 50% | 50% × 1 |
+| Table | Family | Chance the encounter is a variant |
+|---|---|---|
+| every table below except those noted | parent + one variant | **50%** |
+| Mountains | Goat — black goat *and* cragged goat share the slot | **67%** |
+| Saltmarsh | Dog — only the marsh dog, no vanilla dog here | **100%** |
+| BaroqueRuins | Giant Beetle — only the rust beetle | **100%** |
+| Saltdunes | Giant Beetle — only the salt beetle | **100%** |
 
-**29 of the 32 add nothing to any table at all.** The marsh dog, rust beetle and salt beetle each
-keep a table their parent is not in, so those three form a lone aggregate worth one slot apiece —
-+1 against Saltmarsh's 56, BaroqueRuins' 23 and Saltdunes' 21.
+**29 of the 32 add nothing to any table.** The marsh dog, rust beetle and salt beetle each keep a
+table their parent is not in, so those three form a lone aggregate worth one slot apiece — the
+`+1` in Saltmarsh, BaroqueRuins and Saltdunes.
+
+#### 17.4b The exemptions, and the defect that made them necessary
+
+**`AggregateWith` inherits, and that reaches vanilla's own descendants — not only this fork's
+variants.** The first version of this section shipped without accounting for it, and a playtest
+found what no check could:
+
+| Head | Vanilla creatures folded into its slot |
+|---|---|
+| `Baboon` | Hulking Baboon, Shrewd Baboon, Baboon Hero 1 |
+| `Giant Beetle` | ClockworkBeetle, Farm Giant Beetle, TutorialClockworkBeetlePariah |
+| `Croc` | Sultan Croc |
+| `Boar` | Two-Headed Boar |
+| `Goat` | Farm Goat |
+| `Glowfish` | Uplifted Glowfish |
+
+Baboons in the hills went from four spawn slots to one — roughly **four times rarer** — and a
+clockwork beetle, which is a machine, competed for the giant beetle's slot. Hills lost 5 slots,
+DesertCanyon and Jungle 4 each, Ruins 3. The tables had not failed to grow; they had **shrunk**,
+which is the opposite of what this section claimed. Nothing errored at any point.
+
+The mechanism was never the problem — vanilla builds aggregates by inheritance too, and
+`Snapjaw Scavanger` appears once in the whole game with Scavenger 0/1/2 inheriting it. The problem
+is choosing a head that has vanilla descendants vanilla wanted in their own slots. So each of those
+ten carries a merged `AggregateWith` of `*delete`, which is vanilla's own idiom for dropping an
+inherited tag, and keeps the slot it always had.
+
+**That list is not maintained by hand.** `tools/qud-api.json` records every vanilla descendant of an
+aggregated parent, and `validate_mod.py`'s `aggregate-sweep` check fails until each is exempted. A
+future Qud patch adding a descendant to one of those six families changes the snapshot,
+`snapshot-check` reports it stale, and regenerating brings the new name here — so the next
+occurrence is a red run rather than quietly rarer baboons.
 
 ### 17.5 Why there is no `:Weight` tag
 

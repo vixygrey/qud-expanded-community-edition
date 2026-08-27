@@ -78,7 +78,7 @@ have that — nobody should need to swallow the whole mod to get one part of it.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
 document is also the complete reference for the mod itself: every system, all 432 new blueprints and
-224 vanilla merges.
+234 vanilla merges.
 
 ## Requires a new character
 

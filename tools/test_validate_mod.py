@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -1008,6 +1009,96 @@ class OptionDefaultTest(unittest.TestCase):
         }
         validate_mod.check_option_defaults(f, roots)
         self.assertEqual([d for _, d in f.items], [])
+
+
+class AggregateSweep(unittest.TestCase):
+    """#171: an AggregateWith merged onto a vanilla parent reaches vanilla's descendants too.
+
+    This shipped. Hulking Baboon, Shrewd Baboon and Baboon Hero 1 folded into Baboon's single
+    spawn slot, taking baboons in the hills from four slots to one, and a playtest found it rather
+    than any check. Nothing errors: the tag parses, the table builds, the creatures just get
+    rarer.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def _mod(self, blueprints: str, descendants: dict) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        mod = write_mod(tmp, blueprints)
+        del mod
+        snapshot = json.loads((tmp / "tools" / "qud-api.json").read_text())
+        snapshot["aggregate_descendants"] = descendants
+        (tmp / "tools" / "qud-api.json").write_text(
+            json.dumps(snapshot), encoding="utf-8"
+        )
+        return tmp
+
+    def test_an_unexempted_vanilla_descendant_is_reported(self) -> None:
+        tmp = self._mod(
+            '  <object Name="Baboon" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="Baboon" />\n'
+            "  </object>",
+            {"Baboon": ["Hulking Baboon"]},
+        )
+        items = findings_for(validate_mod.check_aggregate_sweep, tmp)
+        self.assertTrue(items, "a swept-in vanilla descendant was not reported")
+        self.assertEqual(items[0][0], "aggregate-sweep")
+        self.assertIn("Hulking Baboon", items[0][1])
+        self.assertIn("Baboon", items[0][1])
+
+    def test_an_exempted_descendant_passes(self) -> None:
+        tmp = self._mod(
+            '  <object Name="Baboon" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="Baboon" />\n'
+            "  </object>\n"
+            '  <object Name="Hulking Baboon" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="*delete" />\n'
+            "  </object>",
+            {"Baboon": ["Hulking Baboon"]},
+        )
+        self.assertEqual(findings_for(validate_mod.check_aggregate_sweep, tmp), [])
+
+    def test_every_descendant_is_reported_not_just_the_first(self) -> None:
+        """Three baboons shipped swept-in. A check that stopped at one would have hidden two."""
+        tmp = self._mod(
+            '  <object Name="Baboon" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="Baboon" />\n'
+            "  </object>",
+            {"Baboon": ["Hulking Baboon", "Shrewd Baboon", "Baboon Hero 1"]},
+        )
+        items = findings_for(validate_mod.check_aggregate_sweep, tmp)
+        self.assertEqual(len(items), 3)
+
+    def test_a_head_with_no_descendants_reports_nothing(self) -> None:
+        """Seven of the thirteen families are genuinely safe; they must stay quiet."""
+        tmp = self._mod(
+            '  <object Name="Dog" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="Dog" />\n'
+            "  </object>",
+            {"Dog": []},
+        )
+        self.assertEqual(findings_for(validate_mod.check_aggregate_sweep, tmp), [])
+
+    def test_a_snapshot_without_the_key_does_not_pass_vacuously(self) -> None:
+        """An older snapshot cannot tell "no descendants" from "never recorded". It returns early
+        rather than reporting clean - but assert that explicitly, because a silent early return is
+        the failure this file exists to catch, and the value is that it CANNOT be mistaken for a
+        pass elsewhere: snapshot-check fails on a stale file first."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            '  <object Name="Baboon" Load="Merge">\n'
+            '    <tag Name="AggregateWith" Value="Baboon" />\n'
+            "  </object>",
+        )
+        snapshot = json.loads((tmp / "tools" / "qud-api.json").read_text())
+        snapshot.pop("aggregate_descendants", None)
+        (tmp / "tools" / "qud-api.json").write_text(
+            json.dumps(snapshot), encoding="utf-8"
+        )
+        self.assertEqual(findings_for(validate_mod.check_aggregate_sweep, tmp), [])
 
 
 if __name__ == "__main__":

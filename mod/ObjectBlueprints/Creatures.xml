@@ -432,4 +432,52 @@
   <object Name="Giant Beetle" Load="Merge">
     <tag Name="AggregateWith" Value="Giant Beetle" />
   </object>
+
+  <!-- The exemptions the aggregate above requires (#171).
+
+       AggregateWith INHERITS, so merging it onto a vanilla parent reaches every vanilla
+       DESCENDANT of that parent as well - not only this fork's variants. Without these ten,
+       Hulking Baboon, Shrewd Baboon and Baboon Hero 1 fold into Baboon's single slot and baboons
+       in the hills go from four slots to one; ClockworkBeetle, which is a machine, competes for
+       the giant beetle's slot; and Sultan Croc shares the ordinary croc's. That shipped, and it
+       took a playtest to notice, because nothing about it errors.
+
+       *delete is vanilla's own idiom for dropping an inherited tag, used on AggregateWith twice
+       in the base game. Each of these keeps the spawn slot vanilla gave it.
+
+       This list is not maintained by hand. tools/qud-api.json records every vanilla descendant of
+       an aggregated parent, and validate_mod.py's `aggregate-sweep` check fails until each one is
+       exempted - so a future Qud patch adding a descendant to one of these six families turns up
+       as a red run rather than as quietly rarer baboons. -->
+
+  <object Name="Baboon Hero 1" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Hulking Baboon" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Shrewd Baboon" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Two-Headed Boar" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Sultan Croc" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="ClockworkBeetle" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Farm Giant Beetle" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="TutorialClockworkBeetlePariah" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Uplifted Glowfish" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
+  <object Name="Farm Goat" Load="Merge">
+    <tag Name="AggregateWith" Value="*delete" />
+  </object>
 </objects>

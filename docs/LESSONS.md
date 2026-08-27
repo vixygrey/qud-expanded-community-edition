@@ -1523,3 +1523,42 @@ by writing 0.08 and waiting to see whether albinos feel rare.
 **The mechanism that did work was three lines further down the same method.** `AggregateWith` bundles
 a family into one slot weighted by its max member, which is how vanilla stops the eight snapjaws from
 owning their tables. I had read past it twice while looking for a weight to set.
+
+## A tag you merge onto a parent lands on every child that parent ever had
+
+`AggregateWith` bundles everything carrying the same value into one slot in a spawn table. I merged
+it onto thirteen vanilla creatures so each of my variants would share its parent's slot instead of
+taking a new one, and wrote in the feature reference that the tables therefore did not grow.
+
+They shrank. The tag **inherits**, so merging it onto `Baboon` also reached `Hulking Baboon`,
+`Shrewd Baboon` and `Baboon Hero 1` — three distinct creatures vanilla had given three separate
+slots — and folded all four into one. Baboons in the hills became roughly four times rarer.
+`ClockworkBeetle`, a machine, began competing for the giant beetle's slot. `Sultan Croc`, a named
+legendary, shared the ordinary croc's. Hills lost five slots, DesertCanyon and Jungle four each.
+
+> **Merging a tag onto a vanilla record is not an edit to that record. It is an edit to that record
+> and to everything descended from it.** The blast radius is the subtree, and the subtree is not
+> visible from the diff — which shows one `<object Name="Baboon" Load="Merge">` and three lines.
+
+The charter already says to know the blast radius, and I had even applied it correctly elsewhere:
+the `Chip Interface` merge into base `Humanoid` is documented as reaching every humanoid in the
+game. I did not think of `Baboon` as a base. It has a display name, an icon and a description; it
+reads as one animal rather than as the head of a family. **Anything with an `Inherits` pointing at
+it is a base, whatever else it looks like.**
+
+Two things made this survive review. Every static check passed, because nothing errors: the tag
+parses, the table builds, the creatures simply get rarer. And my own arithmetic in the pull request
+was right about the variants and never asked the second question — I counted what I was adding and
+never counted what vanilla already had underneath.
+
+**What found it was playing the game.** Grey walked a run of zones and reported seeing exactly one
+named variant, plus goats called "goat" and baboons called "baboon". That is a symptom no check I
+had written could produce, and the first honest read of it was that my design was wrong rather than
+that the observation was.
+
+**What to do.** Before merging a tag onto a vanilla record, list its descendants — one pass over
+`Inherits` answers it — and decide for each whether the tag belongs there. Where it does not,
+`*delete` is vanilla's own idiom for dropping an inherited tag. Then encode the answer: `tools/
+qud-api.json` records the descendant list and `aggregate-sweep` in `tools/validate_mod.py` fails
+until each is exempted, so a Qud patch adding a descendant becomes a red run instead of a slow
+change in what the world spawns.

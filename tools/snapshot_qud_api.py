@@ -64,6 +64,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -579,6 +580,72 @@ def _chain_tag(chain, key: str) -> str | None:
 RESISTANCES = ("Heat", "Cold", "Acid", "Elec")
 
 
+def collect_aggregate_descendants(game: Path) -> dict[str, list[str]]:
+    """Vanilla blueprints that would inherit an `AggregateWith` this mod merges onto a parent.
+
+    `AggregateWith` bundles everything carrying the same value into ONE slot in a fabricated
+    spawn table. The tag inherits, so merging it onto a vanilla parent reaches every vanilla
+    *descendant* of that parent too - and collapses records vanilla deliberately kept apart.
+    #171 shipped exactly that: `Hulking Baboon`, `Shrewd Baboon` and `Baboon Hero 1` joined
+    `Baboon`'s slot, taking baboons in the hills from four slots to one, and `ClockworkBeetle` -
+    a machine - began competing for the giant beetle's. Nothing errored.
+
+    Vanilla builds aggregates the same way, by inheritance, so the mechanism is not the problem:
+    `Snapjaw Scavanger` appears once in the whole game and Scavenger 0/1/2 inherit it. What
+    matters is whether the chosen head has vanilla descendants vanilla wanted in their own slots.
+
+    Recorded here rather than computed in validate_mod.py because that runs in CI without a game.
+    The list changing on a Qud update is caught by --check, which is the point: a patch adding a
+    descendant to one of these families is exactly the drift that would otherwise be invisible.
+    """
+    index = BlueprintIndex(load_all(game, lenient=True))
+    heads = aggregate_heads()
+    if not heads:
+        return {}
+
+    spawns: dict[str, bool] = {}
+    for name, obj in index.objects.items():
+        del obj
+        spawns[name] = any(
+            tag.get("Name", "").startswith("DynamicObjectsTable:")
+            and not tag.get("Name", "").endswith((":Weight", ":Number", ":Builder"))
+            and tag.get("Value") not in ("*delete", "{{{remove}}}")
+            for record in index.chain(name)
+            for tag in record.findall("tag")
+        )
+
+    out: dict[str, list[str]] = {}
+    for head in sorted(heads):
+        swept = [
+            name
+            for name in sorted(index.objects)
+            if name != head
+            and spawns.get(name)
+            and any(r.get("Name") == head for r in index.chain(name))
+        ]
+        out[head] = swept
+    return out
+
+
+def aggregate_heads() -> set[str]:
+    """Vanilla blueprints this mod merges an `AggregateWith` tag onto."""
+    heads: set[str] = set()
+    for path in sorted(MOD.rglob("*.xml")):
+        try:
+            root = parse(path)
+        except (ET.ParseError, OSError):
+            # validate_mod.py's check_wellformed owns a malformed mod file and says so in its own
+            # words; failing the snapshot here as well would report one defect twice.
+            continue
+        for obj in root.iter("object"):
+            name = obj.get("Name")
+            if not name or obj.get("Load") != "Merge":
+                continue
+            if obj.find("tag[@Name='AggregateWith']") is not None:
+                heads.add(name)
+    return heads
+
+
 def collect_merged_records(game: Path) -> dict[str, dict]:
     """What vanilla says about each record this mod merges into.
 
@@ -890,6 +957,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     mutation_classes = collect_mutation_classes(game)
     figures.update(collect_census(game))
     merged_records = collect_merged_records(game)
+    aggregate_descendants = collect_aggregate_descendants(game)
     table_weights = collect_table_weights(game)
     skill_powers = collect_skill_powers(game)
 
@@ -935,6 +1003,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + json.dumps(table_weights, sort_keys=True)
             + "\0"
             + json.dumps(skill_powers, sort_keys=True)
+            + "\0"
+            + json.dumps(aggregate_descendants, sort_keys=True)
         ).encode()
     ).hexdigest()[:16]
     return {
@@ -968,6 +1038,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
             "skill_powers": len(skill_powers),
+            "aggregate_descendants": len(aggregate_descendants),
         },
         "mutation_classes": mutation_classes,
         "non_leveling_mutations": non_leveling,
@@ -979,6 +1050,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "merged_records": dict(sorted(merged_records.items())),
         "table_weights": dict(sorted(table_weights.items())),
         "skill_powers": dict(sorted(skill_powers.items())),
+        "aggregate_descendants": dict(sorted(aggregate_descendants.items())),
     }
 
 

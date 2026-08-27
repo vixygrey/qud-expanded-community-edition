@@ -22,6 +22,11 @@ inh = "inh"
 # name syllables it appears in genuine player-facing prose - the option helptext, FEATURES.md and
 # the changelog - so it belongs here rather than in a file exclusion. #435.
 sie = "sie"
+# Vanilla's own misspelling. `AggregateWith` on four snapjaw blueprints carries the literal value
+# "Snapjaw Scavanger" while the creature is named "Snapjaw Scavenger" - Freehold typed it once and
+# the tag has to match exactly or the aggregate silently splits. Quoted verbatim in the docstrings
+# and docs explaining the mechanism, so the misspelling is the accurate thing to write. #171.
+Scavanger = "Scavanger"
 
 [files]
 extend-exclude = [

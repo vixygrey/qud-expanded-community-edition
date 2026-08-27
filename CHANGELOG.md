@@ -427,6 +427,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Baboons, boars, beetles and crocs stopped getting rarer** (#171).
+
+  The creature variants shipped with a defect that made parts of the world quieter rather than more
+  varied. `AggregateWith`, the tag that lets a variant share its parent's spawn slot instead of
+  taking a new one, **inherits** — so merging it onto `Baboon` also reached `Hulking Baboon`,
+  `Shrewd Baboon` and `Baboon Hero 1`, and folded four separate spawn slots into one. Baboons in
+  the hills became roughly four times rarer. `ClockworkBeetle` — a machine — competed for the giant
+  beetle's slot, and `Sultan Croc` for the ordinary croc's. Hills lost five slots, the desert canyon
+  and the jungle four each, the ruins three.
+
+  Ten vanilla creatures now carry `*delete` on that tag, which is vanilla's own idiom for dropping
+  an inherited one, and each keeps the slot it always had. Every table is back to its vanilla slot
+  count, and the only three additions are the ones the design always intended: the marsh dog, rust
+  beetle and salt beetle each keep a biome their parent does not.
+
+  A side effect of the fix is that the variants are now easier to meet, which is what surfaced the
+  bug — a run through a dozen zones turned up one named variant where the design predicted many.
+  Within a family it is an even split now: half the dogs in the hills are brindle, half the goats on
+  the mountains are black or cragged.
+
 - **The Pronoun Set row never appeared, because character creation switched it back off** (#435).
 
   Both chargen options defaulted on and both set their flag, but only the Gender row showed up.
@@ -467,6 +487,19 @@ recorded because contributors need them, not because subscribers do.
   the document no longer makes a claim its own code contradicts.
 
 ### Changed
+
+- **(internal)** `aggregate-sweep` holds a blast radius that nothing could see (#171).
+
+  Merging a tag onto a vanilla record edits that record *and everything descended from it*, and the
+  subtree is not visible from a diff showing one `<object Load="Merge">` and three lines. Every
+  static check passed while baboons quietly got four times rarer; what found it was playing the
+  game.
+
+  `tools/qud-api.json` now records every vanilla descendant of a parent this fork aggregates, and
+  `validate_mod.py` fails until each is deliberately exempted. Because the list comes from the
+  snapshot, a Qud patch adding a descendant to one of those families makes `snapshot-check` report
+  stale, and regenerating turns the new name into a red run rather than a slow change in what the
+  world spawns. `docs/LESSONS.md` records the reasoning; `docs/FEATURES.md` §17.4b has the table.
 
 - **(internal)** `tools/validate_mod.py` learned the two routes it was blind to (#171).
 
