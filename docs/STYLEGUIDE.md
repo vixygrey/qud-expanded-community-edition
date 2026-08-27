@@ -660,6 +660,44 @@ merged entry as a scatter entry reported `Melee Weapons 5C` at 75.2% where the t
 and did the same to twelve more. Splitting by "does this entry carry a `Weight`" needs no resolution
 at all, because vanilla's disjointness above makes that question equivalent.
 
+#### A third route, which nobody writes
+
+`table-share` and `scatter-share` both govern entries **someone typed**. There is a third way
+content reaches a player, and it has no entry at all: the game fabricates
+`DynamicInheritsTable:<Base>` from every blueprint descending from `<Base>`, filters it by tier, and
+a population table draws from it. **Joining is a consequence of `Inherits=`.** No tag, no table
+entry, nothing in the diff.
+
+The ceiling applies here too — but only above a **minimum of ten blueprints in the pool at that
+tier.** Below that a share stops describing texture and starts describing vanilla's stock:
+`DynamicInheritsTable:BaseArmor:Tier0` is 1 of 1 this fork's, which does not mean it dominates
+tier-0 armour. It means vanilla ships none and this fork ships one.
+
+**Ten is a chosen number like half, but unlike half the data picks it.** Across every over-ceiling
+cell, vanilla's pool sizes are 1, 3, 5, 6, 7, 8 — and then 17. **Nothing sits between 9 and 16**, so
+every floor in that band flags exactly the same seven cells; the cut goes through a gap rather than
+through cases. It also lands where one blueprint stops dominating the arithmetic: at three
+blueprints a single addition moves the share 33 points, at ten it moves it 10, and at seventeen
+under 6.
+
+**The dial is different here, and coarser.** There is no per-item weight to lower — the fix §3.2.1
+prescribes for the other two routes. Membership is binary, and the only lever is
+`<tag Name="ExcludeFromDynamicEncounters" />`, which removes a blueprint from **every** dynamic pool
+at once, `DynamicObjectsTable:` included, because `FabricateDynamicObjectsTable` and
+`FabricateDynamicInheritsTable` share the `IsEligibleForDynamicEncounters` predicate.
+
+So it is only usable on content that is **reachable another way**. That makes the rule sequential
+rather than absolute:
+
+> **A blueprint may be excluded from the generic pools only once it has a home someone chose.**
+> Excluding an item that has no explicit population entry does not lower a share, it deletes the
+> item.
+
+`Raven_Base Psionic Chip` is the worked example (#481): 144 chips, every one placed by hand in
+`Raven_Chips Tier 1`–`3`, so one tag on the base took `BaseArmor:Tier8` from 96% to 0% and cost
+nothing. The four `MeleeWeapon` tiers still over the ceiling cannot follow until #482 gives their
+vinereapers and vibro weapons an entry.
+
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 

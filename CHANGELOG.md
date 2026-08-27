@@ -47,6 +47,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.2.1 now covers the third way content reaches a player, and
+  says when the ceiling does not apply (#481).
+
+  `table-share` and `scatter-share` both govern entries someone typed. `DynamicInheritsTable:` pools
+  are built from whatever descends from a base — joining is a consequence of `Inherits=`, with no
+  tag and nothing in the diff. The ceiling applies there too, **above a minimum of ten blueprints in
+  the pool at that tier**, because below that a share describes vanilla's stock rather than this
+  fork's presence: `BaseArmor:Tier0` is 1 of 1 mine, and that means vanilla ships none.
+
+  Ten is chosen, but the data picks it. Vanilla's pool sizes across every over-ceiling cell run 1,
+  3, 5, 6, 7, 8 and then 17 — nothing between 9 and 16 — so the cut goes through a gap rather than
+  through cases.
+
+  The section also records that the dial here is coarser: no per-item weight to lower, only
+  `ExcludeFromDynamicEncounters`, which removes a blueprint from every dynamic pool at once. So it
+  is usable only on content that already has a home someone chose — which is why the chips could be
+  excluded outright and the melee weapons cannot until #482.
+
 - **(internal)** I documented, in five places, that Qud's biome-keyed dynamic pools have no consumer.
   They all do (#177, #171).
 
