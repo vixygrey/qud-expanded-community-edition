@@ -13,6 +13,12 @@
       "Vixy_SilverBaboon"
     ]
   },
+  "DynamicObjectsTable:BananaGrove_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Sweetfrond"
+    ]
+  },
   "DynamicObjectsTable:Chests": {
     "conditional": [],
     "reaches": [
@@ -519,6 +525,12 @@
       "Vixy_RangyDog"
     ]
   },
+  "DynamicObjectsTable:Mountains_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Cragwort"
+    ]
+  },
   "DynamicObjectsTable:Ruins_Creatures": {
     "conditional": [],
     "reaches": [
@@ -538,6 +550,12 @@
       "Vixy_PaleGlowfish",
       "Vixy_SiltCroc",
       "Vixy_VerdigrisGlowfish"
+    ]
+  },
+  "DynamicObjectsTable:Saltmarsh_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Brinereed"
     ]
   },
   "DynamicObjectsTable:Trinkets": {

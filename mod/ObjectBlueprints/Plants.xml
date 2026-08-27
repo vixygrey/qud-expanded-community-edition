@@ -36,7 +36,14 @@
          sweetfrond      / fibre / frond     - frond is Yempuris's word; Fiber stays the
                                                inherited 'strip', which is right for a broad leaf
 
-       Nothing checks these. -->
+       Nothing checks these.
+
+       Each plant also carries DynamicObjectsTable:<Biome>_Plants. That pool is rolled by procedural
+       village generation - VillageBase.cs:1430 picks a region's plant to name and describe a
+       village's walls with - so without the tag these three could only ever be chosen by already
+       being in the zone, never through the pool vanilla uses. Wild flora carries _Plants alone;
+       brinestalk is the model. _FarmablePlants is deliberately absent: that is for crops villagers
+       grow, which witchwood and yuckwheat are and these are not. -->
 
   <!-- Mountains: scrub clinging to rock, ochre against grey.
 
@@ -79,6 +86,7 @@
       Name="Description"
       Short="It takes the mountain at its word and grows anyway, prising a living out of a seam too narrow to name. The sprigs come away bitter and smelling of cold stone."
     />
+    <tag Name="DynamicObjectsTable:Mountains_Plants" />
     <stag Name="Fiber" Value="twine" />
     <stag Name="FiberMaterial" Value="thatch" />
     <stag Name="Plank" Value="thatch" />
@@ -114,6 +122,7 @@
       Name="Description"
       Short="Salt creeps up the stem and stops, a tidemark drawn each night and redrawn each morning. The shoots below it stay sweet; the ones above crust over and snap."
     />
+    <tag Name="DynamicObjectsTable:Saltmarsh_Plants" />
     <stag Name="Fiber" Value="rope" />
     <stag Name="FiberMaterial" Value="fibre" />
     <stag Name="Plank" Value="bundle" />
@@ -150,6 +159,7 @@
       Name="Description"
       Short="It grows in the shade the banana trees cast and asks nothing else of them. Split a frond lengthwise and the heart is pale, dense and faintly sweet, like something kept back for later."
     />
+    <tag Name="DynamicObjectsTable:BananaGrove_Plants" />
     <stag Name="FiberMaterial" Value="fibre" />
     <stag Name="Plank" Value="frond" />
   </object>
