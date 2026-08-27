@@ -47,9 +47,12 @@ recorded because contributors need them, not because subscribers do.
   `docs/FEATURES.md` §10 row 6 stated the opposite — that `<stag>` is not an element Qud reads —
   and #50 changed two of them to `<tag>` on that reading. Vanilla writes `Floating` and `Trinket`
   **only** as `<stag>`, so that change made the advanced hoversled and the sphere of negative weight
-  the only objects in the game carrying the unprefixed names. Both are recorded in #478 rather than
-  reverted here: undoing them also needs `curve_exempt` to learn both forms, and #50 was a credited
-  contribution.
+  the only objects in the game carrying the unprefixed names. **Both are reverted**, and
+  `curve_exempt` learned both forms in the same commit — it recognised a trinket only by `<tag>`, so
+  correcting the blueprint on its own would have quietly dropped the sphere's exemption and priced
+  it at 100 against a curve of 1280, reported as a defect in the item rather than in the check.
+
+  With those two gone, `tools/validation-baseline.json` is **empty again**.
 
   A new `tag-form` check compares every tag this mod writes against vanilla's usage of that name,
   from a new `tag_forms` citation in the snapshot. It cannot judge a name vanilla never writes, or

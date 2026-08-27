@@ -1964,6 +1964,22 @@ class CurveExemptions(unittest.TestCase):
             [],
         )
 
+    def test_a_trinket_marked_the_way_vanilla_marks_one_is_exempt(self) -> None:
+        """#478. Vanilla writes Trinket as <stag>, and reverting #50 made this fork's sphere of
+        negative weight match. A reader knowing only <tag> would have stopped exempting it in
+        the same commit that corrected the blueprint - turning a fix into a false price of 100
+        against a curve of 1280, reported as a defect in the item rather than in the check."""
+        self.assertEqual(
+            self._curve(
+                '  <object Name="Vixy_Thing">\n'
+                '    <part Name="Commerce" Value="7" />\n'
+                '    <stag Name="Trinket" />\n'
+                '    <tag Name="Tier" Value="3" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
     def test_armour_granting_no_av_is_exempt(self) -> None:
         """A slot occupier rather than armour — the curve prices protection."""
         self.assertEqual(

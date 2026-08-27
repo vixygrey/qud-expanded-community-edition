@@ -291,7 +291,13 @@ def curve_exempt(obj: ET.Element, name: str) -> str | None:
         return "cells are priced by charge, not by tier"
     if "Backpack" in parts:
         return "containers are priced by what they carry"
-    if any(e.get("Name") == "Trinket" for e in obj.findall("tag")):
+    if any(
+        e.get("Name") == "Trinket" for e in obj.findall("tag") + obj.findall("stag")
+    ):
+        # Both forms, because vanilla marks a trinket with <stag> and this fork spent #50 and
+        # #478 discovering that. A reader that knows only one form silently stops recognising
+        # the thing the moment the blueprint is corrected - which is how an exemption becomes a
+        # false price rather than a loud failure.
         return "a trinket is priced against its vanilla sibling, not the curve"
     if parts & {"Food", "PreparedCookingIngredient"}:
         # Food is priced by what eating it does, and the curve prices tier. Vanilla is emphatic
@@ -959,7 +965,16 @@ def check_duplicate_children(f: Findings, all_roots: dict[Path, ET.Element]) -> 
     imply each other, so satisfying it meant adding a RulesDescription -- and on these four, one
     already existed. A check demanding text is what deleted other text.
     """
-    named = ("part", "tag", "stat", "mutation", "skill", "intproperty", "property")
+    named = (
+        "part",
+        "tag",
+        "stag",
+        "stat",
+        "mutation",
+        "skill",
+        "intproperty",
+        "property",
+    )
     for path, root in blueprint_sources(all_roots).items():
         for obj in root.iter("object"):
             for tag in named:
