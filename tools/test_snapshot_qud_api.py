@@ -415,5 +415,53 @@ class StaleIsNotASkip(unittest.TestCase):
         self.assertNotIn("SKIPPED", text)
 
 
+class TagFormsAbsent(unittest.TestCase):
+    """#507. `tag_forms` is keyed on the tag names this mod writes, so adding one leaves the
+    snapshot incomplete - and "not in tag_forms" used to mean both "vanilla has no opinion" and
+    "the snapshot has never seen this". Recording the reason is what lets validate_mod tell those
+    apart without needing the game.
+    """
+
+    SNAPSHOT = Path(__file__).resolve().parent / "qud-api.json"
+
+    def api(self) -> dict:
+        return json.loads(self.SNAPSHOT.read_text())
+
+    def test_the_committed_snapshot_carries_it(self) -> None:
+        api = self.api()
+        absent = api["tag_forms_absent"]
+        self.assertEqual(api["counts"]["tag_forms_absent"], len(absent))
+        self.assertEqual(set(absent.values()) - {"both", "absent"}, set())
+
+    def test_the_two_reasons_are_recorded_separately(self) -> None:
+        """They are not the same fact. `Fiber` has a vanilla usage that simply disagrees with
+        itself; `Vixy_CreatureVariant` has none at all, and only this fork's C# reads it."""
+        absent = self.api()["tag_forms_absent"]
+        self.assertEqual(absent.get("Fiber"), "both")
+        self.assertEqual(absent.get("Vixy_CreatureVariant"), "absent")
+
+    def test_no_name_is_in_both_sections(self) -> None:
+        """A name with a form has an opinion; one here has none. Both would make the coverage
+        check pass for the wrong reason."""
+        api = self.api()
+        self.assertEqual(set(api["tag_forms"]) & set(api["tag_forms_absent"]), set())
+
+    def test_together_they_cover_every_tag_name_this_mod_writes(self) -> None:
+        """The invariant check_snapshot_coverage enforces, asserted here against the real mod so
+        the two cannot drift apart silently."""
+        mod = Path(__file__).resolve().parent.parent / "mod" / "ObjectBlueprints"
+        written = {
+            child.get("Name")
+            for f in sorted(mod.glob("*.xml"))
+            for obj in snapshot_qud_api.parse(f, lenient=True).iter("object")
+            for child in obj
+            if child.tag in ("tag", "stag") and child.get("Name")
+        }
+        api = self.api()
+        self.assertEqual(
+            written - set(api["tag_forms"]) - set(api["tag_forms_absent"]), set()
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

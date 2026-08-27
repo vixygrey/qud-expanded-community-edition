@@ -760,6 +760,49 @@ def collect_tag_forms(game: Path) -> dict[str, str]:
     return {name: next(iter(k)) for name, k in sorted(forms.items()) if len(k) == 1}
 
 
+def collect_tag_forms_absent(game: Path) -> dict[str, str]:
+    """Why a tag name this mod writes has no entry in `tag_forms`, for each name that has none.
+
+    A citation of an absence, the same bargain `collect_absent_tables` makes and for the same
+    reason: without it, "not in `tag_forms`" means either "vanilla has no opinion about this name"
+    or "the snapshot predates this tag", and nothing can tell those apart. That ambiguity is #507 -
+    a mod change that adds a tag name goes unnoticed until someone with the game installed happens
+    to run the digest check, which twice in one day meant blocking a commit that had nothing to do
+    with it.
+
+    With both recorded, `validate_mod.py` can assert that every tag name this mod writes is
+    accounted for one way or the other, from files that are all in the repository. That check needs
+    no Caves of Qud install and so runs where it matters, which the digest never can.
+
+    Two reasons, and they are not the same fact:
+
+    - `both` - vanilla writes the name as `<tag>` somewhere and `<stag>` somewhere else, so it
+      carries no opinion about which this mod should use. There are four: `Fiber`, `Furniture`,
+      `LightSource` and `Scrap`.
+    - `absent` - vanilla never writes the name at all, so there is nothing to copy. `Finesse` and
+      `Vixy_CreatureVariant` are this mod's own, read only by its own C#.
+    """
+    wanted: set[str] = set()
+    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+        for obj in parse(f, lenient=True).iter("object"):
+            for child in obj:
+                if child.tag in ("tag", "stag") and child.get("Name"):
+                    wanted.add(child.get("Name"))
+
+    forms: dict[str, set[str]] = {}
+    for f in sorted((game / "ObjectBlueprints").glob("*.xml")):
+        for obj in parse(f, lenient=True).iter("object"):
+            for child in obj:
+                if child.tag in ("tag", "stag") and child.get("Name") in wanted:
+                    forms.setdefault(child.get("Name"), set()).add(child.tag)
+
+    return {
+        name: ("both" if len(forms.get(name, ())) > 1 else "absent")
+        for name in sorted(wanted)
+        if len(forms.get(name, ())) != 1
+    }
+
+
 def collect_scatter_quantities(game: Path) -> dict[str, float]:
     """Vanilla's expected scattered quantity for each population table this mod adds entries to.
 
@@ -1037,6 +1080,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     aggregate_descendants = collect_aggregate_descendants(game)
     table_weights = collect_table_weights(game)
     tag_forms = collect_tag_forms(game)
+    tag_forms_absent = collect_tag_forms_absent(game)
     scatter_quantities = collect_scatter_quantities(game)
     absent_tables = collect_absent_tables(game)
     skill_powers = collect_skill_powers(game)
@@ -1084,6 +1128,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + json.dumps(tag_forms, sort_keys=True)
             + "\0"
+            + json.dumps(tag_forms_absent, sort_keys=True)
+            + "\0"
             + json.dumps(scatter_quantities, sort_keys=True)
             + "\0"
             + json.dumps(absent_tables, sort_keys=True)
@@ -1125,6 +1171,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
             "tag_forms": len(tag_forms),
+            "tag_forms_absent": len(tag_forms_absent),
             "scatter_quantities": len(scatter_quantities),
             "absent_tables": len(absent_tables),
             "skill_powers": len(skill_powers),
@@ -1140,6 +1187,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "merged_records": dict(sorted(merged_records.items())),
         "table_weights": dict(sorted(table_weights.items())),
         "tag_forms": tag_forms,
+        "tag_forms_absent": tag_forms_absent,
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
         "absent_tables": absent_tables,
         "skill_powers": dict(sorted(skill_powers.items())),

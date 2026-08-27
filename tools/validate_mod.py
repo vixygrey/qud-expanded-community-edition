@@ -1534,6 +1534,18 @@ def snapshot_tag_forms() -> dict[str, str]:
     return json.loads(QUD_API_PATH.read_text()).get("tag_forms", {})
 
 
+def snapshot_tag_forms_absent() -> dict[str, str]:
+    """Why a tag name this fork writes has no `tag_forms` entry, from tools/qud-api.json.
+
+    `both` where vanilla writes the name two ways and so has no opinion, `absent` where vanilla
+    never writes it. Paired with `snapshot_tag_forms`, the two cover every name this fork writes -
+    which is what lets `check_snapshot_coverage` tell a cited absence from a stale snapshot.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("tag_forms_absent", {})
+
+
 def snapshot_absent_tables() -> set[str]:
     """Tables this fork merges into that vanilla does not define, from tools/qud-api.json.
 
@@ -1755,6 +1767,75 @@ def check_tag_form(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     f"vanilla writes <{expected}> - this produces the tag {produces!r} and "
                     f"vanilla's own objects carry {wants!r}",
                 )
+
+
+def check_snapshot_coverage(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Something this mod writes that tools/qud-api.json has never been told about.
+
+    The snapshot's mod-scoped sections take their KEYS from this mod and their VALUES from the
+    game: `tag_forms` records how vanilla writes each tag name *this mod uses*, `table_weights` and
+    `scatter_quantities` cover the tables *this mod merges into*. So adding a tag or merging into a
+    new table makes the snapshot incomplete, and until #507 the only thing that noticed was the
+    digest in `snapshot_qud_api.py --check`.
+
+    That digest needs Caves of Qud installed, which means CI skips it and a stale snapshot merges
+    green. It surfaces later, on whichever machine has the game, as a failure blocking a commit
+    that did not cause it - twice in one day, which is what filed #507.
+
+    This check needs no game. Every input is in the repository: the mod's own XML on one side, the
+    committed snapshot on the other. It asks only whether the snapshot has an opinion, never what
+    the opinion is - deciding that still requires the install, and `check_tag_form` still does it.
+
+    An absence must be *cited* rather than merely observed, which is why `tag_forms_absent` and
+    `absent_tables` exist. Without them "not in the snapshot" means both "vanilla has nothing to say
+    about this" and "the snapshot has never seen it", and those want opposite responses.
+    """
+    forms = snapshot_tag_forms()
+    if not forms:
+        return
+
+    known = set(forms) | set(snapshot_tag_forms_absent())
+    seen: set[str] = set()
+    for path, root in all_roots.items():
+        if path.parent.name != "ObjectBlueprints":
+            continue
+        for obj in root.iter("object"):
+            for child in obj:
+                name = child.get("Name")
+                if child.tag not in ("tag", "stag") or not name or name in known:
+                    continue
+                if name in seen:
+                    continue
+                seen.add(name)
+                f.add(
+                    "snapshot-coverage",
+                    f'{path}: {obj.get("Name")} writes <{child.tag} Name="{name}"> and '
+                    f"{QUD_API_PATH} has no record of that name - regenerate it with "
+                    "'python3 tools/snapshot_qud_api.py --assembly'",
+                )
+
+    _, table_weights = snapshot_records()
+    covered = (
+        set(table_weights)
+        | set(snapshot_scatter_quantities())
+        | snapshot_absent_tables()
+    )
+    if not covered:
+        return
+
+    tables = MOD / "PopulationTables.xml"
+    root = all_roots.get(tables)
+    if root is None:
+        return
+    for pop in root.iter("population"):
+        name = pop.get("Name")
+        if not name or pop.get("Load") != "Merge" or name in covered:
+            continue
+        f.add(
+            "snapshot-coverage",
+            f"{tables}: merges into {name!r} and {QUD_API_PATH} has no record of that table - "
+            "regenerate it with 'python3 tools/snapshot_qud_api.py --assembly'",
+        )
 
 
 NUMBER_FORMS = (
@@ -2632,6 +2713,7 @@ def run() -> Findings:
     check_damage_ceiling(f, roots)
     check_weight_curve(f, roots)
     check_tag_form(f, roots)
+    check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
     check_scatter_share(f, roots)
     check_implant_table_cost(f, roots)

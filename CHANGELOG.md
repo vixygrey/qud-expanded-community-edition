@@ -72,6 +72,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** A stale API snapshot now fails where it is noticed, instead of blocking whoever
+  commits next (#507).
+
+  `tools/qud-api.json`'s mod-scoped sections take their **keys** from this mod and their **values**
+  from the game: `tag_forms` records how vanilla writes each tag name *this fork uses*,
+  `table_weights` and `scatter_quantities` cover the tables *this fork merges into*. So adding a tag
+  or merging into a new table leaves the snapshot incomplete — and the only thing that noticed was a
+  digest comparison that needs Caves of Qud installed.
+
+  CI has no game, so it skipped, and a stale snapshot merged green. It surfaced later on whichever
+  machine had the install, as a failure blocking a commit that had not caused it. That happened
+  twice in one day: #486 left it stale for the next person, and #489 was blocked by its own change
+  with a message reading `installed game gives <digest>` when the game had not moved at all.
+
+  The new `snapshot-coverage` check needs no game, because both sides are already in the
+  repository — the mod's XML and the committed snapshot. It asks only whether the snapshot has an
+  *opinion* about each tag name and merged table, never what the opinion is; deciding that still
+  needs the install, and `tag-form` still does it.
+
+  That required recording absences as well as values, since "not in `tag_forms`" meant both "vanilla
+  has nothing to say about this name" and "the snapshot has never seen it". `tag_forms_absent` now
+  separates the two: `both` where vanilla writes a name two ways and so has no opinion — `Fiber`,
+  `Furniture`, `LightSource`, `Scrap` — and `absent` where vanilla never writes it, which is
+  `Finesse` and `Vixy_CreatureVariant`. `absent_tables` had already made the same bargain for
+  tables, and its own note says why: an absence is a citation worth as much as a figure.
+
 - **(internal)** `docs/STYLEGUIDE.md` §3.3 stopped saying that Qud's biome pools have no consumer,
   and stopped miscounting how many pools do (#490, #491).
 
