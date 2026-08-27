@@ -216,6 +216,37 @@ recorded because contributors need them, not because subscribers do.
   of their own. `check_reachability` has skipped `:Weight`, `:Number` and `:Builder` since #171 —
   the knowledge existed in one tool and not in the other.
 
+- **(internal)** A zone is never tier 0, so `{zonetier}` cannot ask for a Tier0 slice (#537).
+
+  #533 fixed the offset forms and deliberately kept a bare `{zonetier}` at tiers 0–8, on the grounds
+  that `ResolveTier` returns `zoneGenerationContextTier` unconstrained. That is true of `ResolveTier`
+  and false of the value it reads: `Zone.NewTier` ends `if (_NewTier < 1) _NewTier = 1`, the static
+  default is 1, `GetZoneTier` returns 1 on every early exit, and no zone template or `Worlds.xml`
+  entry declares `Tier="0"`.
+
+  Fifteen more phantom slices leave the ledger, including the largest figure in the whole report:
+
+  | slice | reported |
+  |---|---:|
+  | `BaseShield:Tier0` | **93.3%** |
+  | `BaseAxe:Tier0` | 65.7% |
+  | `BaseLongBlade:Tier0` | 50.0% |
+  | `Item:Tier0` | 40.2% |
+
+  **`{ownertier}` is the one form that keeps tier 0**, because it is a *blueprint's* tier rather than
+  a zone's, and blueprint tiers really are 0 — this fork's whole bronze line is. The game uses it
+  three times, on `Armor`, `MeleeWeapon` and `EnergyCells`, and those are exactly the pools that keep
+  a Tier0 slice. The inherited count moves 201 → 185.
+
+  Found by Grey asking whether vanilla shipping no tier-0 armour might be deliberate. It is not —
+  bronze is tier 0 on this fork's own documented ladder, the twelve bronze weapons match vanilla's
+  twelve tier-0 weapons exactly, and per item the bronze armour sits at the same weight as vanilla's
+  `Clay Pot`. Chasing the question is what turned up the zone floor.
+
+  Third correction to the same expander in one day. Each of #520, #533 and this one was only findable
+  once the one before it was fixed, and a test asserting the wrong range had to be corrected each
+  time.
+
 - **(internal)** Six reported slices were ones the game never rolls (#533).
 
   `ResolveTier` handles the `{zonetier}` forms itself rather than leaving them to

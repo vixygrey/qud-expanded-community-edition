@@ -386,19 +386,24 @@ def resolved_weight_tags(index: BlueprintIndex, name: str) -> dict[str, float]:
 def substituted_tiers(spec: str) -> set[tuple[int, int]]:
     """Which tiers a `{...}` spec can actually resolve to.
 
-    `ResolveTier` handles the zonetier forms itself rather than leaving them to
-    `ReplaceVariables`, and every OFFSET goes through `Tier.Constrain`, which is
-    `Math.Min(Math.Max(Tier, 1), 8)` - **floor 1, not 0**. So `Tier{zonetier+1}` can never be
-    `Tier0` and neither can `Tier{zonetier-2}`. The game ships test cases saying so:
-    `[TestCase("Tier{zonetier-2}", 1, 1)]`.
+    **Only `{ownertier}` reaches tier 0.** Everything else floors at 1, for two different reasons
+    that both had to be found the hard way:
 
-    A bare `{zonetier}` returns `zoneGenerationContextTier` with no constraint, and `{ownertier}`
-    is substituted from `OwningObject.GetTier()`, so both of those keep tier 0.
+    - An OFFSET goes through `Tier.Constrain`, which is `Math.Min(Math.Max(Tier, 1), 8)`. The game
+      ships test cases saying so: `[TestCase("Tier{zonetier-2}", 1, 1)]` (#533).
+    - A bare `{zonetier}` is returned from `ZoneManager.zoneGenerationContextTier` unconstrained -
+      but **a zone is never tier 0**. `Zone.NewTier` ends `if (_NewTier < 1) _NewTier = 1`, the
+      static default is 1, `GetZoneTier` returns 1 on every early exit, and no zone template or
+      `Worlds.xml` entry declares `Tier="0"` (#537).
 
-    Expanding every spec to 0-8 put six slices in the reports that the game never rolls, four of
-    them in "each pool at its worst slice" - `BaseGlove:Tier0` at 84.3% chief among them (#533).
+    `{ownertier}` is substituted by `ReplaceVariables` from `OwningObject.GetTier()` - a *blueprint*
+    tier rather than a zone one, and blueprint tiers really are 0: this fork's whole bronze line is.
+    So `DynamicInheritsTable:Armor:Tier{ownertier}` can genuinely ask for `Armor:Tier0`.
+
+    Getting this wrong put 28 slices in the reports that the game never rolls, `BaseShield:Tier0` at
+    93.3% - the most dominated slice in the whole report - among them.
     """
-    low = 1 if ("+" in spec or "-" in spec) else 0
+    low = 0 if "ownertier" in spec else 1
     return {(n, n) for n in range(low, 9)}
 
 

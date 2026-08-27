@@ -671,9 +671,12 @@ entry, nothing in the diff.
 **Measure a slice, not a pool, and weigh it rather than counting it.** Both halves of that were
 wrong when the check was first written, and #494 fixed them together:
 
-- A request names a slice — `DynamicInheritsTable:BaseShield:Tier0` and `:Tier8` are different
+- A request names a slice — `DynamicInheritsTable:BaseShield:Tier1` and `:Tier8` are different
   tables. Vanilla asks for every tier from 1 to 8 by name, for `Tier{zonetier}` in thirty-six
-  places, for three ranges like `Tier4-7`, and for three pools with no tier at all.
+  places, for three ranges like `Tier4-7`, and for three pools with no tier at all. **A substituted
+  spec reaches tiers 1-8, not 0-8**: a zone is never tier 0, and an offset is clamped by
+  `Tier.Constrain`. Only `{ownertier}` reaches tier 0, because it is a blueprint's tier and this
+  fork's bronze line is tier 0 (#533, #537).
 - **A slice holds every member of its pool**, not the ones at its own tier. What the tier changes is
   the weight: a blueprint at the requested tier weighs 10⁸ and each step away divides by ten, then
   `Role` multiplies, then a `:Weight` tag does — 200 blueprints carry one, 167 of them vanilla's. So
@@ -705,7 +708,7 @@ very differently depending which slice is asked for:
 | `BaseShield` | 30.7% – 93.4% |
 | `BaseCloak` | 4.6% – 70.0% |
 
-So "N of 201 slices are over half" counted tier requests while reading as a count of breaches. What
+So "N of 185 slices are over half" counted tier requests while reading as a count of breaches. What
 the report prints instead is a ranking — the ten most dominated slices, and **every pool at its own
 worst slice**, so no pool hides behind its good tiers.
 
@@ -722,8 +725,8 @@ different things move and they want telling apart:
 the pool's **total** size by a gap between 9 and 16 in the size distribution; there is no such gap —
 it was measured over the already-over-half cells only. The second put the floor on vanilla's count
 **at that tier**, and rested on "no cell has vanilla holding four, five or six" out of thirty-four
-cells. Both counted members. Once slices are weighed rather than counted there are two hundred and
-one of them, not thirty-four, and neither derivation survives contact with the real numbers. The
+cells. Both counted members. Once slices are weighed rather than counted there are a hundred and
+eighty-five of them, not thirty-four, and neither derivation survives contact with the real numbers. The
 floor that remains — five vanilla blueprints in the pool — binds on nothing today and is kept only
 so that a pool where vanilla ships almost nothing cannot produce a percentage that reads as
 dominance.)*
