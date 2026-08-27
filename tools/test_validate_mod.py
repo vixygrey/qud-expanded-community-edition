@@ -1101,6 +1101,53 @@ class AggregateSweep(unittest.TestCase):
         self.assertEqual(findings_for(validate_mod.check_aggregate_sweep, tmp), [])
 
 
+class WorkshopDescriptionLength(unittest.TestCase):
+    """Steam's limit is bytes. Measuring characters shipped a false pass (#171).
+
+    A 7,963-character description was 8,019 bytes, because it carried 28 em dashes at three bytes
+    each. The check said fine, Steam said k_EResultInvalidParam, and the upload failed - a check
+    being wrong in the one direction that matters, at the one moment it was for.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def _findings(self, description: str):
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        (tmp / "mod").mkdir()
+        (tmp / "mod" / "workshop.json").write_text(
+            json.dumps({"WorkshopId": 1, "Description": description}), encoding="utf-8"
+        )
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_workshop_description(f)
+            return f.items
+
+    def test_ascii_under_the_limit_passes(self) -> None:
+        self.assertEqual(self._findings("a" * 7999), [])
+
+    def test_ascii_over_the_limit_is_reported(self) -> None:
+        self.assertTrue(self._findings("a" * 8001))
+
+    def test_multibyte_over_the_limit_is_reported(self) -> None:
+        """The real case: comfortably under the limit in characters, over it in bytes."""
+        text = "\u2014" * 2700  # 2,700 em dashes = 2,700 chars but 8,100 bytes
+        self.assertLess(
+            len(text), 8000, "the fixture must be under the limit in CHARACTERS"
+        )
+        self.assertGreater(len(text.encode("utf-8")), 8000)
+        items = self._findings(text)
+        self.assertTrue(items, "a description over the byte limit was not reported")
+        self.assertIn("8100 bytes", items[0][1])
+
+    def test_multibyte_under_the_limit_passes(self) -> None:
+        """The other direction, so the fix cannot be a blanket rejection of non-ASCII."""
+        text = "\u2014" * 2600  # 7,800 bytes
+        self.assertLessEqual(len(text.encode("utf-8")), 8000)
+        self.assertEqual(self._findings(text), [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

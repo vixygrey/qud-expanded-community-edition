@@ -12,6 +12,23 @@ never edited.
 Entries marked **(internal)** do not affect the shipped mod and are invisible to players. They are
 recorded because contributors need them, not because subscribers do.
 
+## [Unreleased]
+
+### Fixed
+
+- **(internal)** The Workshop description length check measured characters, not bytes (#171).
+
+  Steam rejected the 2.7.0 upload with `k_EResultInvalidParam`. The description was 7,963
+  characters and **8,019 bytes**: it carries 28 em dashes, and an em dash is three bytes in UTF-8.
+  `check_workshop_description` measured `len(str)`, so it passed a description Steam would not take.
+
+  A check that is wrong in the direction of saying "fine" is worse than no check, and this one was
+  wrong at the single moment it existed for — the release it was written to protect. It now measures
+  `len(str.encode("utf-8"))`, and the tests cover both directions of the multibyte case so the fix
+  cannot degrade into rejecting non-ASCII outright.
+
+  The description is trimmed to 7,951 bytes.
+
 ## [2.7.0] - 2026-08-27
 
 ### Added
