@@ -727,6 +727,39 @@ def collect_skill_powers(game: Path) -> dict[str, dict]:
     return out
 
 
+def collect_tag_forms(game: Path) -> dict[str, str]:
+    """Which element vanilla writes each tag name with: `tag` or `stag`.
+
+    They are not interchangeable, and the difference is invisible in the XML.
+    `XRL.World.GameObjectFactory` loads both into the same dictionary, but renames one:
+
+        if (item8.Value.NodeName == "stag") { text = "Semantic" + text; ... }
+        gameObjectBlueprint.Tags.Add(text, value);
+
+    So `<stag Name="Floating" />` produces the tag **`SemanticFloating`**, not `Floating`, and a
+    consumer looking for one will not find the other. Writing a tag in the form vanilla does not
+    use puts it on a key nothing reads - which fails the way an unread declaration always fails
+    here, in silence.
+
+    Scoped to the tag names this mod actually writes, so this stays a citation set rather than a
+    dump of vanilla's 710. Names vanilla writes both ways carry no opinion and are omitted.
+    """
+    wanted: set[str] = set()
+    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+        for obj in parse(f, lenient=True).iter("object"):
+            for child in obj:
+                if child.tag in ("tag", "stag") and child.get("Name"):
+                    wanted.add(child.get("Name"))
+
+    forms: dict[str, set[str]] = {}
+    for f in sorted((game / "ObjectBlueprints").glob("*.xml")):
+        for obj in parse(f, lenient=True).iter("object"):
+            for child in obj:
+                if child.tag in ("tag", "stag") and child.get("Name") in wanted:
+                    forms.setdefault(child.get("Name"), set()).add(child.tag)
+    return {name: next(iter(k)) for name, k in sorted(forms.items()) if len(k) == 1}
+
+
 def collect_table_weights(game: Path) -> dict[str, int]:
     """Vanilla's total drop weight for each population table this mod adds entries to.
 
@@ -959,6 +992,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     merged_records = collect_merged_records(game)
     aggregate_descendants = collect_aggregate_descendants(game)
     table_weights = collect_table_weights(game)
+    tag_forms = collect_tag_forms(game)
     skill_powers = collect_skill_powers(game)
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
@@ -1002,6 +1036,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + json.dumps(table_weights, sort_keys=True)
             + "\0"
+            + json.dumps(tag_forms, sort_keys=True)
+            + "\0"
             + json.dumps(skill_powers, sort_keys=True)
             + "\0"
             + json.dumps(aggregate_descendants, sort_keys=True)
@@ -1037,6 +1073,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "non_leveling_mutations": len(non_leveling),
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
+            "tag_forms": len(tag_forms),
             "skill_powers": len(skill_powers),
             "aggregate_descendants": len(aggregate_descendants),
         },
@@ -1049,6 +1086,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "figures": dict(sorted(figures.items())),
         "merged_records": dict(sorted(merged_records.items())),
         "table_weights": dict(sorted(table_weights.items())),
+        "tag_forms": tag_forms,
         "skill_powers": dict(sorted(skill_powers.items())),
         "aggregate_descendants": dict(sorted(aggregate_descendants.items())),
     }

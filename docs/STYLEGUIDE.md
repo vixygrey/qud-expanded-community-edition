@@ -720,6 +720,31 @@ tags that decide this live on vanilla blueprints, so nothing in CI can check it 
 
 ## 4. XML conventions
 
+### 4.0b `<tag>` and `<stag>` are different tags
+
+They look like a spelling variation and they are not. `XRL.World.GameObjectFactory` loads both into
+the same dictionary and **renames one**:
+
+```csharp
+if (item8.Value.NodeName == "stag") { text = "Semantic" + text; ... }
+gameObjectBlueprint.Tags.Add(text, value);
+```
+
+So `<stag Name="Plank" Value="thatch" />` produces the tag **`SemanticPlank`**, and
+`<tag Name="Plank" Value="thatch" />` produces `Plank`. A consumer looks for exactly one of them,
+and the wrong choice leaves the tag sitting on a key nothing reads — the object loads, the tag
+exists, nothing happens.
+
+**Which form is correct depends on what reads the tag, and that lives in the assembly rather than
+the data.** So the rule is vanilla's own usage: write a tag the way vanilla writes that name.
+`tag-form` checks it against the snapshot's `tag_forms`, which records vanilla's choice for each of
+the 29 tag names this mod writes. Four names vanilla writes both ways — `Fiber`, `Furniture`,
+`LightSource`, `Scrap` — carry no opinion and are skipped, as is any name vanilla never uses, since
+nothing outside this mod can say what is right for `Vixy_CreatureVariant`.
+
+Vanilla leans hard: 8,203 `<tag>` against 961 `<stag>`, and the `<stag>` names are categorisation —
+`Contemporary`, `Historical`, `Power`, `Plank`, `Crafts` — feeding `DynamicSemanticTable:*`.
+
 ### 4.1 Line endings — LF
 
 **LF everywhere**, enforced by `.gitattributes` (`* text=auto eol=lf`) so contributor platform
@@ -1077,6 +1102,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
+| `tag-form` | `validate_mod.py` | `<tag>` vs `<stag>` against vanilla's usage of that tag name |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |

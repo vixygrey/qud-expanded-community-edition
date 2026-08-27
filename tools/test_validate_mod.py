@@ -1697,6 +1697,76 @@ class SnapshotBackedChecks(unittest.TestCase):
         )
         self.assertEqual(findings_for(validate_mod.check_table_share, tmp), [])
 
+    # ----------------------------------------------------------------------- tag-form
+
+    FORMS: ClassVar[dict] = {"tag_forms": {"Floating": "stag", "Tier": "tag"}}
+
+    def _tag_form(self, blueprints: str, forms: dict | None = None):
+        tmp = self._mod(blueprints, snapshot=forms if forms is not None else self.FORMS)
+        return findings_for(validate_mod.check_tag_form, tmp)
+
+    def test_a_stag_written_as_a_tag_is_reported(self) -> None:
+        """#478, verbatim: the shape #50 introduced believing it was removing one."""
+        items = self._tag_form(
+            '  <object Name="Vixy_Sled">\n    <tag Name="Floating" />\n  </object>'
+        )
+        self.assertTrue(items, "a tag on the wrong key was not reported")
+        self.assertEqual(items[0][0], "tag-form")
+        self.assertIn("'Floating'", items[0][1])
+        self.assertIn("'SemanticFloating'", items[0][1])
+
+    def test_a_tag_written_as_a_stag_is_reported(self) -> None:
+        """The other direction, which is the likelier mistake now that stag is understood."""
+        items = self._tag_form(
+            '  <object Name="Vixy_Thing">\n    <stag Name="Tier" Value="4" />\n  </object>'
+        )
+        self.assertTrue(items)
+        self.assertIn("'SemanticTier'", items[0][1])
+
+    def test_matching_vanillas_form_is_quiet(self) -> None:
+        self.assertEqual(
+            self._tag_form(
+                '  <object Name="Vixy_Sled">\n    <stag Name="Floating" />\n  </object>'
+            ),
+            [],
+        )
+        self.assertEqual(
+            self._tag_form(
+                '  <object Name="Vixy_Thing">\n    <tag Name="Tier" Value="4" />\n  </object>'
+            ),
+            [],
+        )
+
+    def test_a_name_vanilla_never_writes_carries_no_opinion(self) -> None:
+        """Vixy_CreatureVariant is read only by this mod's own C#, so nothing can judge it."""
+        self.assertEqual(
+            self._tag_form(
+                '  <object Name="Vixy_Goat">\n'
+                '    <stag Name="Vixy_CreatureVariant" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_name_vanilla_writes_both_ways_carries_no_opinion(self) -> None:
+        """Four of them, Fiber among them. The snapshot omits an ambiguous name entirely."""
+        self.assertEqual(
+            self._tag_form(
+                '  <object Name="Vixy_Reed">\n    <tag Name="Fiber" Value="rope" />\n  </object>'
+            ),
+            [],
+        )
+
+    def test_a_snapshot_without_the_key_checks_nothing(self) -> None:
+        """The vacuous case: silence here must mean "no opinion", not "nothing looked"."""
+        self.assertEqual(
+            self._tag_form(
+                '  <object Name="Vixy_Sled">\n    <tag Name="Floating" />\n  </object>',
+                forms={"tag_forms": {}},
+            ),
+            [],
+        )
+
     # -------------------------------------------------------------- implant-table-cost
 
     def _implant(self, cost: str, table: str) -> Path:
@@ -1888,6 +1958,22 @@ class CurveExemptions(unittest.TestCase):
                 '  <object Name="Vixy_Thing">\n'
                 '    <part Name="Commerce" Value="7" />\n'
                 '    <tag Name="Trinket" />\n'
+                '    <tag Name="Tier" Value="3" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_a_trinket_marked_the_way_vanilla_marks_one_is_exempt(self) -> None:
+        """#478. Vanilla writes Trinket as <stag>, and reverting #50 made this fork's sphere of
+        negative weight match. A reader knowing only <tag> would have stopped exempting it in
+        the same commit that corrected the blueprint - turning a fix into a false price of 100
+        against a curve of 1280, reported as a defect in the item rather than in the check."""
+        self.assertEqual(
+            self._curve(
+                '  <object Name="Vixy_Thing">\n'
+                '    <part Name="Commerce" Value="7" />\n'
+                '    <stag Name="Trinket" />\n'
                 '    <tag Name="Tier" Value="3" />\n'
                 "  </object>"
             ),
