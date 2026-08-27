@@ -765,9 +765,16 @@ class RequestedDynamicSlices(unittest.TestCase):
         )
         self.assertEqual(got["Guns"], {(n, n) for n in range(1, 9)})
 
-    def test_a_bare_zonetier_still_contributes_every_tier(self) -> None:
+    def test_a_bare_zonetier_starts_at_one(self) -> None:
+        """#537: a zone is never tier 0, so neither is a slice a zone asks for."""
         got = self.slices(
             '<population><table Name="DynamicObjectsTable:Guns:Tier{zonetier}" /></population>'
+        )
+        self.assertEqual(got["Guns"], {(n, n) for n in range(1, 9)})
+
+    def test_an_ownertier_request_reaches_tier_zero(self) -> None:
+        got = self.slices(
+            '<population><table Name="DynamicObjectsTable:Guns:Tier{ownertier}" /></population>'
         )
         self.assertEqual(got["Guns"], {(n, n) for n in range(9)})
 
@@ -1036,14 +1043,21 @@ class SubstitutedTiers(unittest.TestCase):
     def tiers(self, spec: str) -> list[int]:
         return sorted(low for low, _ in substituted_tiers(spec))
 
-    def test_a_bare_zonetier_keeps_tier_zero(self) -> None:
-        """`zoneGenerationContextTier` is returned with no constraint at all."""
-        self.assertEqual(self.tiers("{zonetier}"), list(range(9)))
+    def test_a_bare_zonetier_cannot_reach_tier_zero(self) -> None:
+        """#537. `ResolveTier` returns `zoneGenerationContextTier` unconstrained - but a zone is
+        never tier 0. `Zone.NewTier` ends `if (_NewTier < 1) _NewTier = 1`, the static default is
+        1, and `GetZoneTier` returns 1 on every early exit. #533 fixed the offsets and left this
+        one wrong on exactly that distinction."""
+        self.assertEqual(self.tiers("{zonetier}"), list(range(1, 9)))
 
-    def test_ownertier_keeps_tier_zero(self) -> None:
-        """Substituted by `ReplaceVariables` from `OwningObject.GetTier()`, which can be 0 - the
-        whole bronze line is tier 0."""
+    def test_ownertier_is_the_only_form_that_keeps_tier_zero(self) -> None:
+        """Substituted by `ReplaceVariables` from `OwningObject.GetTier()` - a BLUEPRINT tier
+        rather than a zone one, and blueprint tiers really are 0: the whole bronze line is. Three
+        requests in the game use it, and they are the only source of a Tier0 slice."""
         self.assertEqual(self.tiers("{ownertier}"), list(range(9)))
+        for spec in ("{zonetier}", "{zonetier+1}", "{zonetier-1}"):
+            with self.subTest(spec=spec):
+                self.assertNotIn(0, self.tiers(spec))
 
     def test_a_positive_offset_cannot_reach_tier_zero(self) -> None:
         """The game's own case: `[TestCase("Tier{zonetier+1}", 8, 8)]`."""
@@ -1088,11 +1102,19 @@ class RequestedInheritsSlices(unittest.TestCase):
             {(4, 7)},
         )
 
-    def test_a_substituted_spec_contributes_every_tier(self) -> None:
-        """{zonetier} is resolved at runtime and can land anywhere, so all nine are reachable and
-        pinning only the ones blueprints happen to carry is what #494 fixed."""
+    def test_a_substituted_spec_contributes_every_tier_a_zone_can_be(self) -> None:
+        """`{zonetier}` is resolved at runtime and can land on any tier a ZONE can be, which is
+        1-8: `Zone.NewTier` floors at 1 (#537). Pinning only the tiers blueprints happen to carry
+        is what #494 fixed; assuming the range started at 0 is what #537 fixed."""
         self.assertEqual(
             self.slices('<table Name="DynamicInheritsTable:P:Tier{zonetier}" />')["P"],
+            {(n, n) for n in range(1, 9)},
+        )
+
+    def test_an_ownertier_spec_reaches_tier_zero(self) -> None:
+        """A blueprint tier, not a zone tier - and blueprint tiers really are 0."""
+        self.assertEqual(
+            self.slices('<table Name="DynamicInheritsTable:P:Tier{ownertier}" />')["P"],
             {(n, n) for n in range(9)},
         )
 
