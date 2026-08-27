@@ -1242,6 +1242,92 @@ class SnapshotCoverage(unittest.TestCase):
         )
 
 
+class DirectoryCoverage(unittest.TestCase):
+    """#498. Declaring `Directories` changes loading from "everything under mod/" to "these paths
+    only", and a path that does not match loads nothing with no error. Both sides are in the
+    repository, so this needs no game."""
+
+    def coverage(self, tree: dict, directories) -> list[str]:
+        tmp = Path(tempfile.mkdtemp())
+        mod = tmp / "mod"
+        for rel, body in tree.items():
+            target = mod / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(body, encoding="utf-8")
+        manifest = {
+            "id": "T",
+            "title": "T",
+            "version": "1.0.0",
+            "author": "Mura",
+            "description": "d",
+        }
+        if directories is not None:
+            manifest["Directories"] = directories
+        (mod / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_directory_coverage(f)
+            return [detail for _, detail in f.items]
+
+    TREE: ClassVar = {"Core/A.xml": "<x/>", "Optional/Gated/B.rpm": "<x/>"}
+    GOOD: ClassVar = [
+        {"Paths": ["Core"]},
+        {"Path": "Optional/Gated", "Options": "OptionX==Yes"},
+    ]
+
+    def test_a_correct_declaration_is_silent(self) -> None:
+        self.assertEqual(self.coverage(self.TREE, self.GOOD), [])
+
+    def test_no_directories_array_is_silent(self) -> None:
+        """Without one the game loads the root, so everything is reachable by definition. Silent
+        rather than vacuous: this check ships before the restructure it guards."""
+        self.assertEqual(self.coverage(self.TREE, None), [])
+
+    def test_a_path_wrong_only_in_case_is_reported(self) -> None:
+        """macOS accepts it and Linux does not, so `Path.exists()` cannot be the test - the
+        comparison has to be against real directory entries."""
+        found = self.coverage(self.TREE, [{"Paths": ["core"]}, self.GOOD[1]])
+        self.assertEqual(len(found), 1)
+        self.assertIn("exactly that spelling", found[0])
+
+    def test_a_broken_path_does_not_cascade(self) -> None:
+        """Every file under a path that does not resolve is unreachable, so sweeping would bury
+        the one finding that matters under its own consequences."""
+        found = self.coverage(
+            {"Core/A.xml": "<x/>", "Core/B.xml": "<x/>", "Core/C.xml": "<x/>"},
+            [{"Paths": ["core"]}],
+        )
+        self.assertEqual(len(found), 1)
+
+    def test_an_entry_containing_another_is_reported(self) -> None:
+        """The trap that decides whether gating works at all: the game keeps one of two overlapping
+        entries, and the loser's conditions go with it - so a root entry ungates everything."""
+        found = self.coverage(
+            self.TREE,
+            [{"Path": "."}, {"Path": "Optional/Gated", "Options": "OptionX==Yes"}],
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("conditions are discarded", found[0])
+
+    def test_an_unreachable_file_is_reported(self) -> None:
+        found = self.coverage(self.TREE, [{"Paths": ["Core"]}])
+        self.assertEqual(len(found), 1)
+        self.assertIn("B.rpm", found[0])
+
+    def test_manifest_files_are_not_content(self) -> None:
+        """workshop.json and the preview are read by the mod manager, not loaded as content, so
+        they sit outside every declared path by design."""
+        tree = dict(self.TREE, **{"workshop.json": "{}", "preview.png": "x"})
+        self.assertEqual(self.coverage(tree, self.GOOD), [])
+
+    def test_the_shorthand_and_the_array_are_both_accepted(self) -> None:
+        """`Path` and `Paths` are mutually exclusive in a manifest but both are legal, and reading
+        only one would pass a manifest this check never looked at."""
+        self.assertEqual(
+            self.coverage(self.TREE, [{"Path": "Core"}, {"Path": "Optional/Gated"}]), []
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
 
