@@ -16,6 +16,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** One creature variant, to prove the distribution route (#171).
+
+  A single `dun goat` — a cosmetic colour variant of vanilla's goat — reaches the hills through an
+  explicit merged entry in `mod/PopulationTables.xml`, which is how every other piece of this fork's
+  content is distributed.
+
+  It is deliberately alone. The previous attempt built 32 variants on a
+  `DynamicObjectsTable:<Biome>_Creatures` tag that reaches no consumer, and none of them ever
+  spawned; the defect was found by playing rather than by any check. So this one goes in first and
+  gets walked in a running game before the other 31 follow.
+
+  Both ends are verified this time. `ZoneTemplates.xml`'s `Hills` zonetemplate reads
+  `HillsZoneGlobals-Reachable` in its `<global>` block, and that table is where vanilla lists `Goat`,
+  `Dog` and `Boar` as explicit entries. `Chance` and `Number` are set high on purpose so the proof
+  is observable in a handful of zones; they come down before the rest land.
+
+  **Not releasable as it stands** — charter rule 6's option arrives with the full set, since the
+  option mechanism the first attempt used is gated on the same dead tag and needs replacing too.
+
 - **(internal)** The Workshop description's figures are checked, not only its length (#459).
 
   `check_docs.py` recounts 51 figures from `mod/` across the README, the charter and the feature

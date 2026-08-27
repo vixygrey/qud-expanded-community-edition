@@ -1192,4 +1192,25 @@
       <object Weight="1" Number="1" Blueprint="Raven_Advanced Neutral Spirit Chipset" />
     </group>
   </population>
+
+  <!-- Creature variants (#171) - PROOF OF MECHANISM, one entry only.
+
+       This is the route the first attempt should have taken. Vanilla's `Hills` zonetemplate reads
+       HillsZoneGlobals-Reachable in its <global> block, so an entry here is what actually puts a
+       creature in front of a player. The DynamicObjectsTable:<Biome>_Creatures tag the first
+       attempt used reaches no consumer at all.
+
+       Merged, per charter rule 1: the group keeps vanilla's Chance, Number and Style, and this adds
+       one object beside the goats rather than restating the list. Style on the vanilla group is
+       `pickeach`, so every entry rolls its own Chance independently and this does not take a share
+       from anything already there.
+
+       Chance and Number are set high deliberately, to make the proof observable in a handful of
+       zones rather than a hundred. They are provisional and come down before the other 31 land. -->
+
+  <population Name="HillsZoneGlobals-Reachable" Load="Merge">
+    <group Name="Creatures" Load="Merge">
+      <object Chance="50" Number="1d3" Blueprint="Vixy_DunGoat" />
+    </group>
+  </population>
 </populations>

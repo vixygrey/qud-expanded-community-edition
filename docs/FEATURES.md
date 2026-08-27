@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **400** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **401** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **56** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **57** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -567,7 +567,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **400 active** | **211** |
+| **Total** | **401 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1802,7 +1802,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-78 table definitions: **56 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+79 table definitions: **57 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2085,7 +2085,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 78 tables (56 merge / 22 new)
+├── PopulationTables.xml        # 79 tables (57 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
