@@ -1516,9 +1516,12 @@ table builds, the creature spawns. Everything works; only the number is a fictio
 **What to do instead.** When a value is meant to change a frequency, find the code that consumes it
 before writing the curve, and check what the value is multiplied *by* rather than only what it is.
 `ilspycmd -t <Type> Assembly-CSharp.dll` answers this in about a minute and would have saved the
-entire v0.2 weight design. And where a mechanism turns out not to exist, say so where the values
-would have gone — `docs/FEATURES.md` §17.5 exists so the next person does not rediscover the ceiling
-by writing 0.08 and waiting to see whether albinos feel rare.
+entire weight design.
+
+**The postscript is worse than the lesson.** All of the above is true, and none of it mattered:
+`DynamicObjectsTable:<Biome>_Creatures` has no consumer at all, so the weights I was so carefully
+computing governed a pool the game never rolls. I audited the arithmetic of a mechanism twice
+without once asking whether anything called it. See the entry below.
 
 **The mechanism that did work was three lines further down the same method.** `AggregateWith` bundles
 a family into one slot weighted by its max member, which is how vanilla stops the eight snapjaws from
@@ -1562,3 +1565,36 @@ that the observation was.
 qud-api.json` records the descendant list and `aggregate-sweep` in `tools/validate_mod.py` fails
 until each is exempted, so a Qud patch adding a descendant becomes a red run instead of a slow
 change in what the world spawns.
+
+## Count the consumers before you count anything else
+
+Everything above about creature spawn weights is accurate and was worth nothing, because
+`DynamicObjectsTable:<Biome>_Creatures` **has no consumer**. 191 vanilla creature blueprints tag
+themselves into those tables. Nothing draws from them. `Hills_Creatures` appears in exactly one file
+in the entire game — `ObjectBlueprints/Creatures.xml`, where creatures declare membership — and no
+population table references it, no zone builder requires it.
+
+Biome creatures come from ordinary hand-written populations. `HillsZoneGlobals-Reachable` lists
+`Goat`, `Dog`, `Boar` and `Salamander` as explicit `<object Blueprint=>` entries, which is exactly
+what a player meets in the hills.
+
+I built a whole feature on that tag: 32 blueprints, 72 `*delete` tags to control which pools they
+joined, 13 merges and 10 exemptions to balance the slots. All of it aimed at tables nobody rolls.
+Three rounds of decompiling, two shipped pull requests, and a validator check written to guard the
+mechanism — none of which could fail, because everything I built was internally consistent.
+
+> **A declaration is evidence that someone wrote it, not that anything reads it.** Before building
+> on a mechanism, find the *other end*: grep for the name outside the files that declare it. If
+> every hit is a declaration, there is no mechanism.
+
+`docs/LESSONS.md` already carried this, from nine hours earlier: *a scope that looks load-bearing may
+match nothing at all*, written after finding that `Culture="Qudish"` matches no blueprint in the
+game. I wrote that entry, filed the issue, and then made the identical mistake inside the next
+feature — because there I was counting *vanilla's* usage rather than my own, and 191 tags felt like
+proof. It is proof that Freehold typed them.
+
+**And what found it was the game, not the code.** Grey played, saw plain goats and boars where the
+design predicted half variants, and reported it. Every static check passed throughout. The wish
+`population:findblueprint <name>` enumerates every table in `PopulationManager.Populations` with the
+odds of that blueprint appearing in each — it is the fastest way to answer "does my thing actually
+spawn", and one run of it would have settled in seconds what I spent hours inferring.

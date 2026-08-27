@@ -636,15 +636,19 @@ other 56 merged tables are, it is reviewable as a number in a diff, and `validat
 blueprint resolves. **Every new item should have one** — the tags below are additions on top, not
 substitutes, and every tagged *item* in this fork also has an explicit entry.
 
-**Creatures are the exception, and it is forced rather than chosen.** The 32 creature variants in
-`docs/FEATURES.md` §17 carry a tag and no explicit entry, because for them an explicit entry is not
-merely unnecessary but destructive. A `<Biome>_Creatures` pool does not exist in any file — it is
-*fabricated* on demand by `PopulationManager.RequireTable`, which returns early the moment a table
-of that name already exists. Declaring `DynamicObjectsTable:Hills_Creatures` in
-`mod/PopulationTables.xml` would therefore not join vanilla's pool, it would **replace** it, and
-every vanilla creature in the hills would stop spawning. That is charter rule 1's failure mode
-exactly, and it produces no error. So for a creature the tag is the only additive route, and the
-rule above does not apply.
+**Creature spawning does not work this way at all, and it cost a shipped feature to learn.** The
+`DynamicObjectsTable:<Biome>_Creatures` tables look like the route — 191 vanilla creature blueprints
+tag themselves into them — but **nothing consumes them**. `Hills_Creatures` appears in exactly one
+file in the whole game, `ObjectBlueprints/Creatures.xml`, where creatures declare membership; no
+population table references it and no zone builder requires it. Verified at runtime too: after a
+session that generated hills, canyon and saltmarsh zones, `population:findblueprint` listed every
+table in `PopulationManager.Populations` and not one `DynamicObjectsTable:*_Creatures` was among
+them.
+
+Biome creatures come from ordinary hand-written populations — `HillsZoneGlobals-Reachable` lists
+`Goat`, `Dog`, `Boar`, `Salamander` and the rest as explicit `<object Blueprint=>` entries. **So a
+new creature reaches the world the same way a new item does: an explicit entry in
+`mod/PopulationTables.xml`.** See #171.
 
 **Reach for a tag when you want the item in vanilla's specialist pool for its category** — the hatter
 stocking your helmets, the legendary gunsmith stocking your guns. Only nineteen of vanilla's

@@ -17,8 +17,8 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **432** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **234** `Load="Merge"` edits to existing objects |
+| **New item blueprints** | **400** brand-new objects across 8 blueprint files |
+| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -567,7 +567,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **432 active** | **234** |
+| **Total** | **400 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -2081,7 +2081,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 18 options (§13)
+├── Options.xml                 # 17 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Eighteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Seventeen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2591,193 +2591,6 @@ to. But it is a change to what the world generates rather than to what a player 
 argued for, and it should not have been discovered by someone noticing a village full of women and
 asking whether something had skewed. Recorded here so the next person meets it as a decision rather
 than a surprise.
-
-## 17. Creature variants (`ObjectBlueprints/Creatures.xml`)
-
-**32 regional colour and name variants of thirteen common creatures** (#171). Pure XML — no C#, and
-no `PopulationTables.xml` entry either. Option-gated by `OptionQudExpandedCECreatureVariants`,
-default **on**.
-
-### 17.1 The one rule that keeps this cosmetic
-
-> **A variant may differ in name, colour and flavour text. It must not differ in stats.**
-
-The moment a "vampire bat" drains life this stops being a texture mod and becomes a balance mod, and
-every variant needs testing at every tier it spawns in. It also breaks player expectation unfairly:
-two identically-sized glyphs behaving differently, with nothing but colour to warn you, reads as a
-bug when it kills you. Nothing below declares a `<stat>`, and nothing declares a part other than
-`Render` and `Description`.
-
-### 17.2 The catalogue
-
-✦ marks a variant carrying its own description, because the inherited one names a colour it does not
-have — both salamanders inherit "ovoid spots, crimson and coral and citrine", and the three beetles
-inherit "shining black elytra".
-
-| Family (vanilla parent) | Variant | Biome | Glyph / detail |
-|---|---|---|---|
-| `Dog` | brindle dog | Hills | `&w` / `K` |
-|  | rangy dog | DesertCanyon | `&w` / `y` |
-|  | pied dog | Flowerfields | `&Y` / `w` |
-|  | ash-coated dog | Mountains | `&y` / `K` |
-|  | marsh dog | Saltmarsh | `&K` / `w` |
-| `Goat` | dun goat | Hills | `&w` / `W` |
-|  | cragged goat | Mountains | `&y` / `w` |
-|  | black goat | Mountains | `&K` / `y` |
-| `Boar` | bristleback boar | Hills | `&w` / `K` |
-|  | russet boar | Jungle | `&r` / `w` |
-|  | pale boar | DesertCanyon | `&Y` / `y` |
-| `Baboon` | mangy baboon | DesertCanyon | `&w` / `y` |
-|  | silverback baboon | Hills | `&y` / `w` |
-|  | rust-furred baboon | Baboons | `&r` / `w` |
-| `Croc` | silt croc | Saltmarsh | `&w` / `g` |
-|  | pale croc | Water | `&y` / `g` |
-| `GiantDragonfly` | copper dragonfly | Flowerfields | `&o` / `W` |
-|  | ember dragonfly | DesertCanyon | `&R` / `W` |
-|  | glass dragonfly | Water | `&C` / `Y` |
-| `Glowfish` | verdigris glowfish | Saltmarsh | `&c` / `C` |
-|  | pale glowfish | Water | `&Y` / `C` |
-| `Salamander` | marbled salamander ✦ | Jungle | `&K` / `W` |
-|  | ashen salamander ✦ | DesertCanyon | `&y` / `r` |
-| `Horned Chameleon` | mottled horned chameleon | Jungle | `&g` / `W` |
-|  | sand horned chameleon | DesertCanyon | `&W` / `w` |
-| `IrritableTortoise` | mossbacked tortoise | Flowerfields | `&g` / `w` |
-|  | scarred tortoise | Hills | `&K` / `w` |
-| `Honey Skunk` | banded honey skunk | Hills | `&K` / `Y` |
-| `Glowmoth` | ashwing glowmoth | Ruins | `&y` / `C` |
-| `Giant Beetle` | midden beetle ✦ | Ruins | `&w` / `K` |
-|  | rust beetle ✦ | BaroqueRuins | `&r` / `K` |
-|  | salt beetle ✦ | Saltdunes | `&y` / `w` |
-
-The `ashwing glowmoth` keeps `&y` ash wings but details in `&C` rather than gold. Vanilla's
-`interdictor` is the precedent — `&y` body, `C` detail, and it reads as luminous — and it means the
-inherited "radiant mirrorwings" is no longer contradicted without writing a fourth description.
-
-### 17.3 Naming register
-
-Names follow what vanilla does to its own creatures: **keep the word carrying species identity, swap
-the word carrying the distinction.** `baboon` becomes `hulking baboon`, `shrewd baboon`,
-`quartz baboon`; `hindren villager` becomes `hindren trader`; and `giant beetle` becomes
-`clockwork beetle`, which is why the beetle variants below drop "giant" rather than keeping it.
-
-Across all 1,072 vanilla creature display names, **no vanilla variant replaces its parent's species
-noun.** That is why `horned chameleon` keeps "horned" — the horns are anatomy, not a coat — while
-`irritable tortoise` does not keep "irritable", which is temperament and therefore itself a
-distinction. Four-word names like `mottled horned chameleon` are inside vanilla's register:
-`low-light laser turret tinker` and `reprogrammed scrap shoveler` both ship.
-
-### 17.4 How they spawn, and the two mechanics that make it work
-
-A creature self-registers into a spawn pool with a `DynamicObjectsTable:<Table>` tag.
-`PopulationTables.xml` is never touched.
-
-**Tags inherit, and `:Weight` does not follow them.** A variant silently joins every table its parent
-belongs to, and the paired `:Weight` tag binds only the table it names. Left alone the marsh dog
-spawns at full weight in the desert canyon, the hills, the mountains and the flowerfields — every
-biome except the one it is named for. So each variant keeps the single table its name argues for and
-carries `Value="*delete"` on the rest. That is **72 delete tags**, and they are the entire reason the
-regional theming means anything.
-
-**There is no `:Weight` tag anywhere in this section, and that is deliberate.** See §17.5.
-
-**`AggregateWith` is what actually controls how often these appear.** Members sharing a value are
-bundled into one `pickone` group whose outer weight is the **max** of its members, so a family
-occupies a single slot rather than one per member — vanilla uses this on the snapjaws for exactly
-this purpose. Each variant aggregates with its vanilla parent, which needs the same tag merged onto
-the parent, so 13 of the mod's `Load="Merge"` edits exist only for this.
-
-The result is that **a family appears exactly as often as it does in vanilla.** The variants divide
-its appearances rather than adding to them: you meet the same number of dogs, and some of them are
-brindle. Because a variant inherits its parent's `Role`, it carries the same weight, so the split
-inside a family is even:
-
-| Table | Family | Chance the encounter is a variant |
-|---|---|---|
-| every table below except those noted | parent + one variant | **50%** |
-| Mountains | Goat — black goat *and* cragged goat share the slot | **67%** |
-| Saltmarsh | Dog — only the marsh dog, no vanilla dog here | **100%** |
-| BaroqueRuins | Giant Beetle — only the rust beetle | **100%** |
-| Saltdunes | Giant Beetle — only the salt beetle | **100%** |
-
-**29 of the 32 add nothing to any table.** The marsh dog, rust beetle and salt beetle each keep a
-table their parent is not in, so those three form a lone aggregate worth one slot apiece — the
-`+1` in Saltmarsh, BaroqueRuins and Saltdunes.
-
-#### 17.4b The exemptions, and the defect that made them necessary
-
-**`AggregateWith` inherits, and that reaches vanilla's own descendants — not only this fork's
-variants.** The first version of this section shipped without accounting for it, and a playtest
-found what no check could:
-
-| Head | Vanilla creatures folded into its slot |
-|---|---|
-| `Baboon` | Hulking Baboon, Shrewd Baboon, Baboon Hero 1 |
-| `Giant Beetle` | ClockworkBeetle, Farm Giant Beetle, TutorialClockworkBeetlePariah |
-| `Croc` | Sultan Croc |
-| `Boar` | Two-Headed Boar |
-| `Goat` | Farm Goat |
-| `Glowfish` | Uplifted Glowfish |
-
-Baboons in the hills went from four spawn slots to one — roughly **four times rarer** — and a
-clockwork beetle, which is a machine, competed for the giant beetle's slot. Hills lost 5 slots,
-DesertCanyon and Jungle 4 each, Ruins 3. The tables had not failed to grow; they had **shrunk**,
-which is the opposite of what this section claimed. Nothing errored at any point.
-
-The mechanism was never the problem — vanilla builds aggregates by inheritance too, and
-`Snapjaw Scavanger` appears once in the whole game with Scavenger 0/1/2 inheriting it. The problem
-is choosing a head that has vanilla descendants vanilla wanted in their own slots. So each of those
-ten carries a merged `AggregateWith` of `*delete`, which is vanilla's own idiom for dropping an
-inherited tag, and keeps the slot it always had.
-
-**That list is not maintained by hand.** `tools/qud-api.json` records every vanilla descendant of an
-aggregated parent, and `validate_mod.py`'s `aggregate-sweep` check fails until each is exempted. A
-future Qud patch adding a descendant to one of those six families changes the snapshot,
-`snapshot-check` reports it stale, and regenerating brings the new name here — so the next
-occurrence is a red run rather than quietly rarer baboons.
-
-### 17.5 Why there is no `:Weight` tag
-
-**`:Weight` cannot make anything rarer than baseline on a creature table.** This is worth stating at
-length because it looks like it works, and the design that preceded this section was built on the
-assumption that it does.
-
-No creature table is ever requested in the `:Tier` form — zero occurrences across the whole of
-`StreamingAssets/Base` — so they are all built by `GameObjectFactory.FabricateDynamicObjectsTable`
-rather than the multitier path. In that method the tier-delta bonus is unreachable: `num` and `num2`
-initialise to `-1` and are never assigned, so the `TierDeltaWeights` lookup guarded by `num != -1`
-never fires and the base weight stays exactly `1u`. `:Weight` is then applied as a **multiplier**,
-wrapped in `(uint)Math.Ceiling`:
-
-```csharp
-uint num6 = num3;                                  // 1
-if (list[i].Tags.ContainsKey(key3))
-    num6 = (uint)Math.Ceiling((double)num6 * Convert.ToDouble(list[i].Tags[key3]));
-```
-
-So `ceil(1 × 0.08) = 1`, and every fraction below one is inert. **Vanilla's own `Astral Tabby` at
-0.2 and `Ixlthyxl` at 0.1 do nothing either**; only `Issachari Raider` at 3 has any effect, because
-it is the one value at or above 1. `Role` hits the same ceiling — `Rare` is a 0.01 multiplier and
-still lands on 1. Only `Common` and `Minion` at 4.0 move anything upward.
-
-A fractional weight here would read as deliberate tuning while changing nothing, which is worse than
-no weight at all. **Rarity in this section is expressed by how many variants share a family, and
-nowhere else.**
-
-### 17.6 The option is data, not code
-
-`ExcludeFromDynamicEncountersOption` is read by `GameObjectBlueprint.IsExcludedFromDynamicEncounters`,
-which resolves the tag's value as an option ID and inverts it when the value carries a leading `!`.
-So `Value="!OptionQudExpandedCECreatureVariants"` means *excluded unless that option is Yes*, and
-charter rule 6's obligation is met with no C# at all — the one feature in this document whose
-off-switch costs nothing against rule 5.
-
-Two caveats, both stated in the option's `<helptext>`:
-
-- **It is not a live toggle.** `GameObjectBlueprint` caches the answer in a `bool?` that nothing ever
-  resets, and a fabricated table is cached in `PopulationManager.Populations` once built. The option
-  governs tables built after it is set, not zones already generated.
-- **Nothing in vanilla uses this tag.** It is an extension point the game supports but does not
-  exercise, so it wants confirming in a running game rather than on the strength of a decompile.
 
 ## Appendix A — every merged vanilla melee weapon
 
