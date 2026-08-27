@@ -72,6 +72,40 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **Creature variants are a fifth of two generic creature pools instead of half** (#524).
+
+  The 26 animal and reptile variants each reach the world by an explicit entry I placed in the biome
+  they belong to. They *also* join `DynamicInheritsTable:BaseAnimal` and `:BaseReptile` simply by
+  inheriting from a vanilla parent, and those pools are biome-blind — a marsh dog could walk out in a
+  flower field, and so could a jungle boar.
+
+  It showed most in `FlowerFieldsPopulation`, whose creature group is `pickone` where
+  `PopulationItem.Weight` defaults to 1. The fourteen named creatures there specify `Chance`, not
+  `Weight`, so they weigh 1 apiece against that pool's 25 — **half of every creature pick went to a
+  pool I was half of**, in the low-tier zones where a new character spends its first hours.
+
+  The weight was not spread across 26 animals. Seven held 49.4% of `BaseAnimal:Tier1` and the other
+  eleven held 2.9%, because `Dog` and `Bat` carry `Role="Minion"` — a ×4.0 multiplier, the largest
+  there is — while `Goat` and `Boar` carry `Brute` at ×0.25. I chose a parent, not a number.
+
+  | | before | after |
+  |---|---:|---:|
+  | `BaseAnimal` Tier0/1 | 52.3% | **18.0%** |
+  | `BaseAnimal` Tier2 | 45.0% | **14.1%** |
+  | `BaseReptile` Tier0/1 | 43.8% | **13.5%** |
+  | `BaseReptile` Tier2 | 56.6% | **20.7%** |
+
+  Done with vanilla's own `:Weight` tag — 78 of them, `Value="0.2"`, tiers 0–2 of the two pools. It
+  is a multiplier applied inside one pool, so the deliberate entries and the inherited
+  `DynamicObjectsTable:<Biome>_Creatures` village route are both untouched; membership does not
+  change and no variant is harder to find where I put it. Vanilla uses the same tag 81 times across
+  28 pools — `Holographic Banana Tree` is 0.2 of `DynamicObjectsTable:BananaGrove_Plants`.
+
+  `report_dynamic_tables.py` learned the multiplier in the same change, because without it
+  `tools/inherited-pools.json` would have shown no movement at all while the game rolled 18% — a
+  green check reporting a number that had stopped being true. That also corrects a comment in that
+  file claiming no blueprint in any tracked pool carries a `:Weight` tag; two do.
+
 - **A new preview image, and it is my own work rather than Mura's logo** (#500).
 
   The old one was Mura's Caves of Qud Expanded logo with two marks composited on top — a green

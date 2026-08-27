@@ -824,6 +824,37 @@ This is the same principle as the positive control two lessons up, one level out
 test suite that needs a case which must pass, here it is any search, grep or patch whose silence
 you are about to treat as evidence.
 
+## Inheriting a blueprint inherits its Role, and Role is a x4 lever
+
+Thirty-two creature variants, each three lines over a vanilla parent - a name, a colour, a marker
+tag. Every one is distributed by an explicit entry I placed in the biome it belongs to. And every one
+also joins `DynamicInheritsTable:BaseAnimal` or `:BaseReptile`, because `Inherits="Dog"` is
+membership and nothing else is required.
+
+That much I knew. What I had not looked at was where the *weight* went. `BaseAnimal:Tier1` totals
+5.67 billion, and **seven of my blueprints hold 49.4% of it while the other eleven hold 2.9%**.
+
+`Dog` and `Bat` carry `<tag Name="Role" Value="Minion" />`, and `Minion` is a **x4.0** multiplier -
+the largest in `InitWeights`, tied with `Common`. `Goat` and `Boar` carry `Brute`, which is **x0.25**.
+So `Vixy_MarshDog` weighs 400,000,000 and is 7.06% of the pool on its own, while `Vixy_DunGoat`
+weighs 25,000,000 and is sixteen times lighter. I did not choose either number. I chose a parent.
+
+The lesson is not "check the Role tag" - it is that **a one-line `Inherits=` carries a distribution
+profile with it**, and the profile is built from values that live on the parent and are multiplied by
+values that live in the engine. A cosmetic re-skin is cosmetic in the blueprint and not at all
+cosmetic in the population tables.
+
+> **When a new blueprint inherits from a vanilla one, ask what the parent is a member of and what
+> multipliers it carries, before asking what the new one looks like.** `Role`, `Tier`, `Level` and
+> every `DynamicObjectsTable:` tag come along, and none of them appear in the diff.
+
+The fix is `:Weight`, which is worth knowing exists: `<tag Name="<resolved table name>:Weight">` is a
+multiplier applied inside one pool after the tier delta and Role. **Vanilla ships 81 of them across
+28 pools** at 0.05-0.3 - `Holographic Banana Tree` is 0.2 of `DynamicObjectsTable:BananaGrove_Plants`.
+The key is the table name *as requested*, and `TryResolvePopulation` substitutes `{zonetier}` before
+`RequireTable` sees it, so a tiered slice carries its tier in the key and each slice needs its own
+tag. A value of zero is not a small weight but an exclusion - `if (value == 0) continue`.
+
 ## A change to a dynamic pool has one witness, and you have to go and find him
 
 A `DynamicObjectsTable:X` change is observable only through whatever consumes that pool, and the
