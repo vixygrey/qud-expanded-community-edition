@@ -47,6 +47,7 @@ from report_dynamic_tables import (
     slice_label,
     slice_weight,
     snapshot_of,
+    substituted_tiers,
     weight_tag_key,
     worst_per_pool,
 )
@@ -724,9 +725,17 @@ class RequestedDynamicSlices(unittest.TestCase):
             {"EnergyCells": {None}},
         )
 
-    def test_a_substituted_spec_contributes_every_tier(self) -> None:
+    def test_an_offset_spec_cannot_contribute_tier_zero(self) -> None:
+        """#533. `Tier.Constrain` floors an offset at 1, so `Guns:Tier0` was a slice the game never
+        rolled - and this test asserted it did until the clamp was found."""
         got = self.slices(
             '<population><table Name="DynamicObjectsTable:Guns:Tier{zonetier+1}" /></population>'
+        )
+        self.assertEqual(got["Guns"], {(n, n) for n in range(1, 9)})
+
+    def test_a_bare_zonetier_still_contributes_every_tier(self) -> None:
+        got = self.slices(
+            '<population><table Name="DynamicObjectsTable:Guns:Tier{zonetier}" /></population>'
         )
         self.assertEqual(got["Guns"], {(n, n) for n in range(9)})
 
@@ -985,6 +994,37 @@ class InheritsSnapshot(unittest.TestCase):
             describe_inherits_drift(old, {}),
             ["Pool: this fork no longer reaches this inherited pool"],
         )
+
+
+class SubstitutedTiers(unittest.TestCase):
+    """#533. `ResolveTier` handles the zonetier forms itself, and every OFFSET goes through
+    `Tier.Constrain` - `Math.Min(Math.Max(Tier, 1), 8)`, floor 1. Expanding them all to 0-8 put six
+    slices in the reports that the game never rolls."""
+
+    def tiers(self, spec: str) -> list[int]:
+        return sorted(low for low, _ in substituted_tiers(spec))
+
+    def test_a_bare_zonetier_keeps_tier_zero(self) -> None:
+        """`zoneGenerationContextTier` is returned with no constraint at all."""
+        self.assertEqual(self.tiers("{zonetier}"), list(range(9)))
+
+    def test_ownertier_keeps_tier_zero(self) -> None:
+        """Substituted by `ReplaceVariables` from `OwningObject.GetTier()`, which can be 0 - the
+        whole bronze line is tier 0."""
+        self.assertEqual(self.tiers("{ownertier}"), list(range(9)))
+
+    def test_a_positive_offset_cannot_reach_tier_zero(self) -> None:
+        """The game's own case: `[TestCase("Tier{zonetier+1}", 8, 8)]`."""
+        self.assertEqual(self.tiers("{zonetier+1}"), list(range(1, 9)))
+
+    def test_a_negative_offset_cannot_reach_tier_zero_either(self) -> None:
+        """`[TestCase("Tier{zonetier-2}", 1, 1)]` - clamped at the bottom, not wrapped."""
+        self.assertEqual(self.tiers("{zonetier-2}"), list(range(1, 9)))
+
+    def test_the_top_is_eight_on_every_form(self) -> None:
+        for spec in ("{zonetier}", "{ownertier}", "{zonetier+1}", "{zonetier-1}"):
+            with self.subTest(spec=spec):
+                self.assertEqual(max(self.tiers(spec)), 8)
 
 
 class RequestedInheritsSlices(unittest.TestCase):

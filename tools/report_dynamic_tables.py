@@ -209,7 +209,7 @@ def requested_inherits_slices(game: Path) -> dict[str, set[tuple[int, int] | Non
             if not tiered:
                 want.add(None)
             elif "{" in spec:
-                want.update((n, n) for n in range(9))
+                want.update(substituted_tiers(spec))
             elif "-" in spec:
                 low, _, high = spec.partition("-")
                 want.add((int(low), int(high)))
@@ -283,7 +283,7 @@ def requested_dynamic_slices(game: Path) -> dict[str, set[tuple[int, int] | None
             if not tiered:
                 want.add(None)
             elif "{" in spec:
-                want.update((n, n) for n in range(9))
+                want.update(substituted_tiers(spec))
             elif "-" in spec:
                 low, _, high = spec.partition("-")
                 want.add((int(low), int(high)))
@@ -381,6 +381,25 @@ def resolved_weight_tags(index: BlueprintIndex, name: str) -> dict[str, float]:
             except (TypeError, ValueError):
                 continue
     return out
+
+
+def substituted_tiers(spec: str) -> set[tuple[int, int]]:
+    """Which tiers a `{...}` spec can actually resolve to.
+
+    `ResolveTier` handles the zonetier forms itself rather than leaving them to
+    `ReplaceVariables`, and every OFFSET goes through `Tier.Constrain`, which is
+    `Math.Min(Math.Max(Tier, 1), 8)` - **floor 1, not 0**. So `Tier{zonetier+1}` can never be
+    `Tier0` and neither can `Tier{zonetier-2}`. The game ships test cases saying so:
+    `[TestCase("Tier{zonetier-2}", 1, 1)]`.
+
+    A bare `{zonetier}` returns `zoneGenerationContextTier` with no constraint, and `{ownertier}`
+    is substituted from `OwningObject.GetTier()`, so both of those keep tier 0.
+
+    Expanding every spec to 0-8 put six slices in the reports that the game never rolls, four of
+    them in "each pool at its worst slice" - `BaseGlove:Tier0` at 84.3% chief among them (#533).
+    """
+    low = 1 if ("+" in spec or "-" in spec) else 0
+    return {(n, n) for n in range(low, 9)}
 
 
 def slice_label(window: tuple[int, int] | None) -> str:

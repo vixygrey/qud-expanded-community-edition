@@ -705,7 +705,7 @@ very differently depending which slice is asked for:
 | `BaseShield` | 30.7% – 93.4% |
 | `BaseCloak` | 4.6% – 70.0% |
 
-So "N of 205 slices are over half" counted tier requests while reading as a count of breaches. What
+So "N of 201 slices are over half" counted tier requests while reading as a count of breaches. What
 the report prints instead is a ranking — the ten most dominated slices, and **every pool at its own
 worst slice**, so no pool hides behind its good tiers.
 
@@ -723,7 +723,7 @@ the pool's **total** size by a gap between 9 and 16 in the size distribution; th
 it was measured over the already-over-half cells only. The second put the floor on vanilla's count
 **at that tier**, and rested on "no cell has vanilla holding four, five or six" out of thirty-four
 cells. Both counted members. Once slices are weighed rather than counted there are two hundred and
-five of them, not thirty-four, and neither derivation survives contact with the real numbers. The
+one of them, not thirty-four, and neither derivation survives contact with the real numbers. The
 floor that remains — five vanilla blueprints in the pool — binds on nothing today and is kept only
 so that a pool where vanilla ships almost nothing cannot produce a percentage that reads as
 dominance.)*
