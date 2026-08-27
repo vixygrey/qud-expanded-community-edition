@@ -182,6 +182,32 @@ recorded because contributors need them, not because subscribers do.
   satisfied. But tinkering is a thing a player *does*, not a rate at which a thing *appears*, and
   nothing was asking the difference.
 
+- **(internal)** Six reported slices were ones the game never rolls (#533).
+
+  `ResolveTier` handles the `{zonetier}` forms itself rather than leaving them to
+  `ReplaceVariables`, and every **offset** goes through `Tier.Constrain`, which is
+  `Math.Min(Math.Max(Tier, 1), 8)` — floor 1, not 0. So `Tier{zonetier+1}` can never resolve to
+  `Tier0`, and neither can `Tier{zonetier-2}`; the game ships test cases saying exactly that. Both
+  slice expanders here treated any `{...}` as tiers 0–8.
+
+  That put six phantom slices in the reports, four of them in *each pool at its worst slice*:
+
+  | slice | reported | actually |
+  |---|---:|---|
+  | `BaseGlove:Tier0` | 84.3% | never rolled |
+  | `BaseBoot:Tier0` | 75.7% | never rolled |
+  | `Headwear:Tier0` | 71.5% | never rolled |
+  | `BaseCloak:Tier0` | 70.0% | never rolled |
+  | `BaseArmor:Tier0` | 44.6% | never rolled |
+  | `Guns:Tier0` | 1% | never rolled |
+
+  `BaseGlove` drops from 84.3% to **48.9%** at its real worst slice, and the inherited count moves
+  205 → 201. A bare `{zonetier}` and `{ownertier}` keep tier 0, because neither is constrained.
+
+  Found by Grey asking whether vanilla shipping no tier-0 headwear might be deliberate. It is —
+  vanilla ships 19 tier-0 items and **not one is armour** — but the answer that mattered was that
+  nothing asks for `Headwear:Tier0` in the first place.
+
 - **(internal)** The tagged-pool route is measured, not just listed (#531).
 
   `tools/dynamic-pools.json` pinned which of my blueprints each `DynamicObjectsTable:` pool reaches
@@ -215,7 +241,7 @@ recorded because contributors need them, not because subscribers do.
   (#481, #529).
 
   The 50% ceiling on that route was reported and never enforced, and it does not survive looking at
-  the distribution it was drawn across: 205 slices running smoothly from 0% to 93% with no break
+  the distribution it was drawn across: 201 slices running smoothly from 0% to 93% with no break
   anywhere. `BaseLongBlade` is **21 of 42 members** — headcount parity to the blueprint — so where
   its members weigh alike the share is exactly **50.00000%**, with four sibling slices inside a
   fiftieth of a point. Whether those were in breach came down to the fourth decimal.
@@ -244,7 +270,7 @@ recorded because contributors need them, not because subscribers do.
   `BaseHindrenClue` and `BaseAnimatedObject`.
 
   Counting all 143 as live pool members inflated vanilla's side everywhere, so this fork's share was
-  understated across **43 of 205 slices**: `BaseAnimal` Tier0/1 by 13 points, `Creature` Tier0/1 from
+  understated across **43 of 201 slices**: `BaseAnimal` Tier0/1 by 13 points, `Creature` Tier0/1 from
   21.4% to **38.1%**. The fork writes no mixins, so the error ran in one direction only.
 
   `chain()` keeps its `Inherits=`-only meaning, because that is what `GameObjectBlueprint.DescendsFrom`

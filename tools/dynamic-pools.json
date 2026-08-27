@@ -174,7 +174,6 @@
       "Raven_HandCannonMod"
     ],
     "shares": {
-      "Tier0": 1,
       "Tier1": 1,
       "Tier2": 4,
       "Tier3": 14,
@@ -196,7 +195,6 @@
       "Raven_Nanoweave Helmet"
     ],
     "shares": {
-      "Tier0": 72,
       "Tier1": 20,
       "Tier2": 5,
       "Tier3": 11,
