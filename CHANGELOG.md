@@ -47,7 +47,8 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
-- **(internal)** The one distribution route with no check now has one: `inherits-share` (#481).
+- **(internal)** The one distribution route with no check now has one: `inherits-share` (#481,
+  #494).
 
   Three ways content reaches a player were guarded — weighted entries, scatter entries, and
   `DynamicObjectsTable:` tags. The fourth was not, and it is the one nobody writes: the game builds
@@ -56,29 +57,40 @@ recorded because contributors need them, not because subscribers do.
 
   `report_dynamic_tables.py` already had the inheritance index and the eligibility predicate, so the
   check lives there rather than in the validator — it needs the game for the same reason the rest of
-  that tool does. It measures each pool per tier and applies §3.2.1's ceiling where vanilla holds at
-  least five blueprints.
+  that tool does.
 
-  Seven cells are already over it, and **none can be fixed mechanically**: the lever is
-  per-blueprint and binary, so going under half means choosing *which* ten of nineteen ranged
-  weapons stop appearing in generic pools. They are recorded in a `KNOWN_OVER` ledger against the
-  issues that will settle them — #481 for three, #482 for the four whose weapons have no explicit
-  population entry to fall back on. Like the validation baseline, it only shrinks.
+  **Its first cut measured the wrong thing, and the correction is the more useful half of this**
+  (#494). It counted blueprints whose own tier matched the one requested. The game does not: a
+  `:Tier{n}` slice holds *every* member of its pool, weighted by distance from that tier — 10⁸ at
+  the tier itself, divided by ten per step away. Counting instead of weighing reported two slices as
+  clean that were over half, and building cells only from tiers blueprints happen to carry meant
+  most slices were never looked at. Fifty-five became a hundred and sixty-nine.
+
+  So the ceiling is **reported here, not enforced**. Fifty of those slices sit above half, and that
+  is not drift: completing a weapon or armour family across every tier is what this fork is for, and
+  it necessarily takes most of that family's pool. A rule that fails the build on the mod's own
+  premise is the wrong rule, and a ledger of fifty permanent exemptions is what the validation
+  baseline exists to avoid. What fails instead is drift against `tools/inherited-pools.json`, which
+  pins membership per pool and share per slice — they move independently, and a share can shift on
+  its own when a Qud update moves vanilla's content relative to a tier.
+
+  Ranges and the untiered table are modelled too, including vanilla's own bug of measuring a range's
+  distance from `minTier` twice, so `maxTier` never reaches the comparison. Reproducing it is the
+  only way the report agrees with what a player actually rolls.
 
 - **(internal)** `docs/STYLEGUIDE.md` §3.2.1 now covers the third way content reaches a player, and
-  says when the ceiling does not apply (#481).
+  how to measure it (#481, #494).
 
   `table-share` and `scatter-share` both govern entries someone typed. `DynamicInheritsTable:` pools
   are built from whatever descends from a base — joining is a consequence of `Inherits=`, with no
-  tag and nothing in the diff. The ceiling applies there too, **where vanilla holds at least five
-  blueprints in that pool at that tier**, because below that a share describes vanilla's stock rather
-  than this fork's presence: `BaseArmor:Tier0` is 1 of 1 mine, and that means vanilla ships none.
+  tag and nothing in the diff.
 
-  The threshold counts **vanilla's** blueprints, not the pool's total, and that is the point: half is
-  a texture decision about preserving the game you bought, so where vanilla ships nothing there is
-  nothing to preserve. Of the 34 cells this fork exceeds half in, 27 have vanilla holding three or
-  fewer and the other seven have it holding seven or more — none holds four to six, so the exact
-  number is not load-bearing.
+  The section now says to measure a **slice** rather than a pool, and to **weigh** it rather than
+  count it, which is the #494 correction. It also records that two earlier attempts to justify a
+  floor are void: one rested on a gap between 9 and 16 in the pool-size distribution that does not
+  exist, the other on "no cell has vanilla holding four to six" across 34 cells. Both counted
+  members. Weighed properly there are 169 slices, not 34, and neither derivation survives the real
+  numbers.
 
   The section also records that the dial here is coarser: no per-item weight to lower, only
   `ExcludeFromDynamicEncounters`, which removes a blueprint from every dynamic pool at once. So it
