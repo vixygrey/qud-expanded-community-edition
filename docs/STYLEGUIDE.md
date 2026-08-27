@@ -1038,6 +1038,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `implant-table-cost` | `validate_mod.py` | an implant's loot table matching its licence cost |
 | `item-curve` | `validate_mod.py` | tier and value curve consistency |
 | `item-tables` | `check_docs.py` | every figure in FEATURES' item tables, against its blueprint |
+| `file-rows` | `check_docs.py` | every row of FEATURES §6.1, against a recount of the file it names |
 | `joppa-sync` | `validate_mod.py` | the Joppa map and its option agreeing |
 | `json` | `validate_mod.py` | `manifest.json` and `workshop.json` parsing |
 | `links` | `check_docs.py` | every relative link in the documents resolving |

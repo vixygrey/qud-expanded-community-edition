@@ -1065,3 +1065,104 @@ class WorkshopVersion(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+TABLE = """### 6.1 Counts by file
+
+| File | New objects | Merged vanilla objects |
+|---|---|---|
+{rows}
+| **Total** | **444 active** | **211** |
+
+### 6.2 Melee weapons
+"""
+
+
+def row_findings(rows: str, known: dict | None = None):
+    """Run check_file_rows against a synthetic §6.1 table."""
+    if known is None:
+        known = {
+            "file:Armor.xml:new": 61,
+            "file:Armor.xml:merged": 38,
+            "file:Armor.xml:dormant": 0,
+        }
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "docs").mkdir()
+    (tmp / "docs" / "FEATURES.md").write_text(TABLE.format(rows=rows))
+    f = check_docs.Findings()
+    with chdir(tmp):
+        counted = check_docs.check_file_rows(f, known)
+    return counted, sorted(f.items)
+
+
+class FileRows(unittest.TestCase):
+    """#473: three of eleven rows had drifted and the Total row still matched.
+
+    The per-file figures had been computed here since the table was written and no CLAIMS pattern
+    ever quoted one, so nothing looked. Both directions, and both structural cases: a row for a
+    file that is gone, and a file with no row.
+    """
+
+    def test_a_correct_row_passes_and_is_counted(self) -> None:
+        counted, items = row_findings("| `Armor.xml` | 61 | 38 |")
+        self.assertEqual(items, [])
+        self.assertEqual(counted, 2, "the row must actually have been checked")
+
+    def test_a_stale_new_count_is_reported(self) -> None:
+        """Verbatim the shape that shipped wrong: Creatures.xml said 2 and held 46."""
+        _, items = row_findings("| `Armor.xml` | 2 | 38 |")
+        self.assertTrue(items, "a stale new count was not reported")
+        self.assertEqual(items[0][0], "file-rows")
+        self.assertIn("new says 2", items[0][1])
+        self.assertIn("it is 61", items[0][1])
+
+    def test_a_stale_merged_count_is_reported(self) -> None:
+        _, items = row_findings("| `Armor.xml` | 61 | 79 |")
+        self.assertTrue(items)
+        self.assertIn("merged says 79", items[0][1])
+
+    def test_a_row_for_a_file_that_does_not_exist_is_reported(self) -> None:
+        _, items = row_findings("| `Armor.xml` | 61 | 38 |\n| `Gone.xml` | 1 | 1 |")
+        self.assertTrue(items)
+        self.assertIn("not in mod/ObjectBlueprints", items[0][1])
+
+    def test_a_file_with_no_row_is_reported(self) -> None:
+        """The direction that let Plants.xml arrive without anyone deciding it belonged."""
+        _, items = row_findings("")
+        self.assertTrue(items, "a file with no row was not reported")
+        self.assertIn("has no row", items[0][1])
+
+    def test_a_dormant_count_is_checked_when_written(self) -> None:
+        known = {
+            "file:Ammo.xml:new": 22,
+            "file:Ammo.xml:merged": 1,
+            "file:Ammo.xml:dormant": 22,
+        }
+        self.assertEqual(
+            row_findings("| `Ammo.xml` | 22 (22 dormant) | 1 |", known)[1], []
+        )
+        _, items = row_findings("| `Ammo.xml` | 22 (20 dormant) | 1 |", known)
+        self.assertTrue(items, "the stale parenthetical that shipped was not reported")
+        self.assertIn("dormant says 20", items[0][1])
+
+    def test_unwritten_dormant_objects_are_reported(self) -> None:
+        """A file that holds commented-out objects must say so, or the figure hides."""
+        known = {
+            "file:Ammo.xml:new": 22,
+            "file:Ammo.xml:merged": 1,
+            "file:Ammo.xml:dormant": 22,
+        }
+        _, items = row_findings("| `Ammo.xml` | 22 | 1 |", known)
+        self.assertTrue(items, "a hidden dormant count was not reported")
+        self.assertIn("holds 22 commented-out object(s)", items[0][1])
+
+    def test_a_renamed_heading_is_reported_rather_than_passing_quietly(self) -> None:
+        """The vacuous case: a table this cannot find must fail, not check zero rows."""
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "docs").mkdir()
+        (tmp / "docs" / "FEATURES.md").write_text("### 6.1b Counts\n\nnothing here\n")
+        f = check_docs.Findings()
+        with chdir(tmp):
+            check_docs.check_file_rows(f, {})
+        self.assertTrue(f.items)
+        self.assertIn("heading not found", min(f.items)[1])

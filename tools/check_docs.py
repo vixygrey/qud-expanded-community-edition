@@ -187,6 +187,7 @@ def facts() -> dict[str, int]:
     """Recompute every figure the documents are allowed to quote."""
     new = merged = 0
     per_file: dict[str, tuple[int, int]] = {}
+    dormant: dict[str, int] = {}
     for f in sorted(MOD.rglob("*.xml")):
         try:
             root = parse(f)
@@ -202,6 +203,7 @@ def facts() -> dict[str, int]:
                 fn += 1
         if f.parent.name == "ObjectBlueprints":
             per_file[f.name] = (fn, fm)
+            dormant[f.name] = dormant_objects(f)
         new += fn
         merged += fm
 
@@ -233,7 +235,22 @@ def facts() -> dict[str, int]:
     for name, (n, m) in per_file.items():
         out[f"file:{name}:new"] = n
         out[f"file:{name}:merged"] = m
+        out[f"file:{name}:dormant"] = dormant[name]
     return out
+
+
+def dormant_objects(path: Path) -> int:
+    """Objects commented out inside an XML file rather than deleted.
+
+    `Ammo.xml` keeps the ten cut bullets and the quill arrow commented as a record of what was
+    tried (#146, #210), and docs/FEATURES.md 6.1 quotes that number beside the live one. An
+    element inside a comment is invisible to the parser, so it has to be counted from the text.
+    """
+    text = path.read_text(encoding="utf-8-sig")
+    return sum(
+        len(re.findall(r"<object\s", block))
+        for block in re.findall(r"<!--(.*?)-->", text, re.DOTALL)
+    )
 
 
 def optioned_requirements() -> set[tuple[str, str]]:
@@ -1102,6 +1119,84 @@ def item_table_index() -> tuple[BlueprintIndex, dict[str, str]]:
     return index, names
 
 
+def check_file_rows(f: Findings, known: dict[str, int]) -> int:
+    """Every row of docs/FEATURES.md 6.1 against a recount of the file it names.
+
+    The per-file figures have been computed here since the table was written and nothing ever
+    quoted them, so three of eleven rows drifted unnoticed (#473). The Total row did not, because
+    it is recounted from mod/ rather than added up from the rows - and two of the errors happened
+    to cancel in the merged column, so even a reader adding it up by hand would have seen 211.
+
+    A CLAIMS pattern cannot do this: a claim pairs one regex with a fixed list of fact names by
+    capture group, and this needs the filename out of the row to pick the fact.
+
+    Both directions are checked. A row naming a file that does not exist is as much a defect as a
+    file with no row - the second is what let Plants.xml arrive without anyone deciding whether it
+    belonged in the table.
+    """
+    text = Path("docs/FEATURES.md").read_text()
+    heading = re.search(r"^### 6\.1 .*$", text, re.MULTILINE)
+    if not heading:
+        f.add(
+            "file-rows",
+            "docs/FEATURES.md: 6.1 heading not found - has it been renamed?",
+        )
+        return 0
+
+    table = text[heading.end() :].split("\n###", 1)[0]
+    row = re.compile(
+        r"^\|\s*`(?P<file>[^`]+\.xml)`\s*\|"
+        r"\s*(?P<new>\d+)(?:\s*\((?P<dormant>\d+) dormant\))?\s*\|"
+        r"\s*(?P<merged>\d+)\s*\|",
+        re.MULTILINE,
+    )
+
+    checked = 0
+    seen: set[str] = set()
+    for m in row.finditer(table):
+        name = m.group("file")
+        seen.add(name)
+        if f"file:{name}:new" not in known:
+            f.add(
+                "file-rows",
+                f"docs/FEATURES.md 6.1: row names {name}, which is not in mod/ObjectBlueprints",
+            )
+            continue
+        for column in ("new", "merged", "dormant"):
+            raw = m.group(column)
+            if raw is None:
+                continue
+            checked += 1
+            actual = known[f"file:{name}:{column}"]
+            if int(raw) != actual:
+                f.add(
+                    "file-rows",
+                    f"docs/FEATURES.md 6.1: {name} {column} says {raw}, "
+                    f"recounted from mod/ it is {actual}",
+                )
+        if m.group("dormant") is None and known[f"file:{name}:dormant"]:
+            f.add(
+                "file-rows",
+                f"docs/FEATURES.md 6.1: {name} holds "
+                f"{known[f'file:{name}:dormant']} commented-out object(s) and the row does not "
+                f"say so - write it as 'N (M dormant)'",
+            )
+
+    for key in known:
+        parts = key.split(":")
+        if (
+            len(parts) == 3
+            and parts[0] == "file"
+            and parts[2] == "new"
+            and parts[1] not in seen
+        ):
+            f.add(
+                "file-rows",
+                f"docs/FEATURES.md 6.1: mod/ObjectBlueprints/{parts[1]} has no row",
+            )
+    return checked
+
+
 def check_item_tables(f: Findings) -> int:
     """Every Tier, Value and Weight in FEATURES' item tables, against the blueprint it describes.
 
@@ -1609,6 +1704,7 @@ def main() -> int:
     check_claim_coverage(f)
     appendix = check_appendix_b(f)
     items = check_item_tables(f)
+    file_rows = check_file_rows(f, known)
     check_links(f)
     check_sections(f)
     check_changelog_sections(f)
@@ -1632,7 +1728,8 @@ def main() -> int:
     print(
         f"OK - {checked} documented figure(s) match the mod, {from_game} match the game, "
         f"{workshop} Workshop description figure(s) match the mod, "
-        f"{appendix} chip row(s) and {items} item-table figure(s) match their blueprints; "
+        f"{appendix} chip row(s), {items} item-table figure(s) and {file_rows} per-file "
+        f"row figure(s) match their blueprints; "
         f"links, sections, check names and preserved documents all clean; "
         f"{markers} tracked file(s) carry no conflict markers"
     )
