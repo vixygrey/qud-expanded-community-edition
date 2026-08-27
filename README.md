@@ -289,7 +289,8 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 The hooks run the same checks CI does, so they fail in seconds instead of after a round trip. One of
 them CI **cannot** run: `no-commit-to-main` refuses a commit on `main` before it exists. By the time
 CI sees such a commit it has already been made, and the server-side ruleset can only reject the
-push afterwards.
+push afterwards. It runs at `pre-commit` only — pushes are the ruleset's business, and asking this
+question at `pre-push` refused release tags, which belong on `main` (#469).
 
 I know that one matters because I skipped installing these and then committed to `main` (#120).
 

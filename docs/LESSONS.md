@@ -407,6 +407,33 @@ command answers it. Ask.
 It's also why `serializable-shape` and `subtype-tile` were written: each exists because nothing else
 was looking at that property, and "nothing was looking" is not the same as "nothing is wrong".
 
+## A guard that fires on a correct action teaches people to disable it
+
+`no-commit-to-main` tests the branch you are standing on. At `pre-commit` that is exactly the right
+question. `default_install_hook_types` also installs `pre-push`, and the hook set no `stages:`, so it
+ran there too — where the same question is the wrong one. It refused
+`git push origin refs/tags/v2.7.0` from `main`, which is precisely where a release tag belongs.
+
+I got the tag up with `--no-verify`. That is the part worth recording: **the workaround for a guard
+that is wrong once is the same keystroke as the workaround for a guard that is right**, and having
+formed the reflex on a correct action I would reach for it again on a mistaken one.
+
+A `pre-push` hook receives `<local ref> <local sha> <remote ref> <remote sha>` on stdin, so a correct
+version could refuse only when a line's remote ref is `refs/heads/main` and ignore `refs/tags/`. I
+did not write that, because the guard does not need to exist at that stage at all: the `main
+protection` ruleset requires a pull request, forbids deletion and non-fast-forward, demands linear
+history and passing checks, and lists **no bypass actors**. The server is the authority on pushes and
+cannot be talked out of it.
+
+> **Scope a hook to the stage where its question is the right question.** A check that is correct at
+> one stage is not automatically harmless at another, and `stages:` is cheaper than teaching everyone
+> a bypass.
+
+One thing to know while checking the premise: **that ruleset does not appear under classic branch
+protection.** `GET /repos/:owner/:repo/branches/main/protection` answers `404 Branch not protected`,
+and I nearly wrote up "main is unprotected" as a finding on the strength of it. Rulesets live at
+`GET /repos/:owner/:repo/rulesets`.
+
 ## A hook that was never installed protects nothing, and this one failed to install quietly
 
 I committed straight to `main` in #119. The GitHub ruleset rejected the push so nothing was lost,

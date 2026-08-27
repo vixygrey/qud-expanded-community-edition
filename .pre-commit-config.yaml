@@ -145,9 +145,22 @@ repos:
         stages: [manual]
 
       - id: no-commit-to-main
-        # GitHub protects main server-side, but failing here beats a rejected push. See #20.
+        # The one check CI cannot run: it refuses the commit before it exists. See #20.
+        #
+        # pre-commit ONLY, because this tests the branch you are standing on and nothing else, and
+        # at pre-push that is the wrong question: it refused `git push origin refs/tags/v2.7.0`
+        # from main, which is exactly where a release tag belongs. A guard that fires on a correct
+        # action teaches --no-verify, and that reflex then gets used on the pushes it is for (#469).
+        #
+        # Pushes are the server's business. The `main protection` ruleset requires a pull request,
+        # forbids deletion and non-fast-forward, demands linear history and passing checks, and
+        # lists NO bypass actors - so a direct push to main is refused for everyone including me.
+        # Note it is a ruleset rather than classic branch protection, so the
+        # `/branches/main/protection` API answers 404 and the repo looks unprotected if you ask
+        # that way.
         name: refuse commits on main
         entry: bash -c '[ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] || { echo "Refusing to commit on main. Branch first — see CONTRIBUTING.md."; exit 1; }'
         language: system
         pass_filenames: false
         always_run: true
+        stages: [pre-commit]
