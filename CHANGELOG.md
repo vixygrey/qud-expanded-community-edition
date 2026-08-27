@@ -16,6 +16,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **A village's signature dish can now be made with the local preserved plant** (#489).
+
+  Qud gives each village a signature dish built from one to three ingredients, 80% of them drawn
+  from its region's ingredient pool. Dried cragwort, salted brinereed and candied sweetfrond were
+  not in those pools, so a mountain village could describe a dish of bear, boar and goat jerky and
+  never the plant growing outside it.
+
+  24 of vanilla's 40 preserved cooking ingredients are in one of these pools, and the split is the
+  argument for joining: every regional plant preserve is in — starapple preserves, fermented
+  yondercane, dried lah petals — while what stays out is mostly manufactured or placeless, like the
+  food cube and the crusty loaf. Raw snacks stay out on both sides; only what has been put up for
+  keeping is a village's stock.
+
+  The banana grove is the one worth naming. Its ingredient pool held **exactly one** thing, and a
+  dish that wants two distinct ingredients retries 25 times before giving up and repeating itself.
+  Adding candied sweetfrond makes this fork half of that pool, which is more than I would normally
+  take — but a pool of one cannot serve a mechanic that asks for two, so this is closer to repairing
+  it than to crowding it.
+
+  §18.7 had recorded the opposite decision, on the reasoning that an ingredient placed *only* in
+  that pool would turn up in villages rather than in the wild. That is still true of the plants, and
+  they still reach the world by explicit entry. It was never true of their preserves, which have no
+  population entry at all and are made rather than found — so the tag adds a route instead of
+  replacing one.
+
 - **Villages in the mountains, saltmarsh and banana grove can now be built and described with the
   local plant** (#177).
 

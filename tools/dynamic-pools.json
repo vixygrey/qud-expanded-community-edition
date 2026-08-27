@@ -13,6 +13,12 @@
       "Vixy_SilverBaboon"
     ]
   },
+  "DynamicObjectsTable:BananaGrove_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Candied Sweetfrond"
+    ]
+  },
   "DynamicObjectsTable:BananaGrove_Plants": {
     "conditional": [],
     "reaches": [
@@ -525,6 +531,12 @@
       "Vixy_RangyDog"
     ]
   },
+  "DynamicObjectsTable:Mountains_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Dried Cragwort"
+    ]
+  },
   "DynamicObjectsTable:Mountains_Plants": {
     "conditional": [],
     "reaches": [
@@ -550,6 +562,12 @@
       "Vixy_PaleGlowfish",
       "Vixy_SiltCroc",
       "Vixy_VerdigrisGlowfish"
+    ]
+  },
+  "DynamicObjectsTable:Saltmarsh_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Salted Brinereed"
     ]
   },
   "DynamicObjectsTable:Saltmarsh_Plants": {

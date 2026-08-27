@@ -1606,6 +1606,37 @@ design predicted half variants, and reported it. Every static check passed throu
 odds of that blueprint appearing in each — it is the fastest way to answer "does my thing actually
 spawn", and one run of it would have settled in seconds what I spent hours inferring.
 
+> **Reach for `population:generate:<table>#<amount>` instead when the question is about a table
+> rather than a blueprint.** It rolls a named table N times and breaks down what came out, and
+> Freehold's [wish list](https://wiki.cavesofqud.com/wiki/Wishes) says it takes dynamic tables
+> directly:
+>
+> ```
+> population:generate:DynamicObjectsTable:BananaGrove_Ingredients#100
+> ```
+>
+> The difference is not convenience, it is that **`findblueprint` cannot see a table that has not
+> been built yet.** It enumerates `PopulationManager.Populations`, which holds what has already been
+> fabricated — so a pool nothing has rolled in that session is simply absent, and absence reads
+> exactly like "no consumer". That is the false negative below: I ran it after a session with no
+> village in it, saw no `*_Creatures` table, and called the family decoration. Naming the table
+> sends it through `RequireTable`, which fabricates it on demand, so the question gets answered
+> instead of dodged.
+>
+> **It has a false negative of its own, though, and it looks identical to failure.** `RequireTable`
+> fabricates a pool for *any* name carrying the prefix, so a misspelled one builds an empty table,
+> caches it, and reports nothing — no error, no "unknown table". Grey typed
+> `SaltMarshes_Ingredients` for `Saltmarsh_Ingredients` while checking #489 and got
+> "did not generate any results", which reads exactly like a tag that did not take. Had that been
+> the first pool tried rather than the third, I would have gone hunting a bug that was not there.
+>
+> **So an empty result is only evidence once the name is known to be right.** Confirm the spelling
+> against the blueprint that declares it — `grep -o 'DynamicObjectsTable:[A-Za-z_]*'` over the file
+> you just edited — before reading emptiness as anything at all.
+
+I did not know that wish existed until I indexed the wiki (#506), which is its own small argument
+for `docs/WIKI.md`: the tool that would have prevented this entry was documented the whole time.
+
 **The rule generalises, and #177 is where I found out how far — then how far it does not.** Adding
 harvestable plants, the obvious way to distribute a preserved cooking ingredient was
 `DynamicObjectsTable:<Biome>_Ingredients`. No population table names one, so I wrote that the whole
