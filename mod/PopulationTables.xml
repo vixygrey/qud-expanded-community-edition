@@ -1372,15 +1372,6 @@
     </group>
   </population>
 
-  <population Name="LowerTremblingDunesZoneGlobals" Load="Merge">
-    <!-- Giant Centipede 45/1-2 -->
-    <object Chance="45" Number="1" Blueprint="Vixy_ChalkCentipede" />
-    <!-- Bat 90/1-3 -->
-    <object Chance="90" Number="1" Blueprint="Vixy_HoaryBat" />
-    <!-- Bear 95/1 - Number is already 1, so the chance halves instead -->
-    <object Chance="50" Number="1" Blueprint="Vixy_BlackBear" />
-  </population>
-
   <!-- Harvestable plants (#177). One entry per biome, merged into the table the zone template
        actually draws from - the same route the creature variants take above, and the one #171
        established after the dynamic-tag route turned out to have no consumer.
@@ -1402,5 +1393,45 @@
 
   <population Name="BananaGroveZoneGlobals" Load="Merge">
     <object Chance="50" Number="10-18" Blueprint="Vixy_Sweetfrond" />
+  </population>
+
+  <!-- The Trembling Dunes three, rehomed (#476).
+
+       These were merged into LowerTremblingDunesZoneGlobals, whose contents Freehold had commented
+       out. The merge created the table rather than landing nowhere - confirmed in a running game -
+       so this fork's three were 100% of that zone's global population.
+
+       The first rehoming attempt sent them to Redrock, on the reasoning that it is desert canyon
+       country and holds all three parents. Measured afterwards, Redrock is reached by **1 of the
+       game's 87 zonetemplates**: one world-map cell, x=0-2 y=0-2, Mutable="false". That is exactly
+       as narrow as the place they came from, so it fixed the share and not the problem. The
+       Rustwells are the same shape, and so is every other named landmark.
+
+       Breadth is the thing to optimise, and it is measurable: follow each zonetemplate's
+       <population Table=> through nested <table> references and count which templates reach a
+       given table. These three now sit in the broadest table that holds each parent without
+       doubling up on a variant already there:
+
+         hoary bat       Tier3CavePopulation    14 of 87 zonetemplates
+         black bear      Tier3CavePopulation    14
+         chalk centipede Shale Cave Critters 2   8   (Tier2CaveCreatures is 14, but already
+                                                      holds Vixy_SlateCentipede)
+
+       Weights follow FEATURES 17.3 - the parent's Chance or Weight in that same table, and about
+       half its Number; where Number is already 1, the weight halves instead:
+
+         Bat              Weight 5, Number 1     ->  Weight 2, Number 1
+         Bear             Weight 5, Number 1     ->  Weight 2, Number 1
+         Giant Centipede  Chance 25, Number 1-4  ->  Chance 25, Number 1-2 -->
+
+  <population Name="Tier3CavePopulation" Load="Merge">
+    <group Name="Creatures" Load="Merge">
+      <object Weight="2" Number="1" Blueprint="Vixy_HoaryBat" />
+      <object Weight="2" Number="1" Blueprint="Vixy_BlackBear" />
+    </group>
+  </population>
+
+  <population Name="Shale Cave Critters 2" Load="Merge">
+    <object Chance="25" Number="1-2" Blueprint="Vixy_ChalkCentipede" />
   </population>
 </populations>

@@ -36,6 +36,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **The chalk centipede, hoary bat and black bear lived in a table Caves of Qud has switched off**,
+  and now live somewhere you will actually meet them (#476).
+
+  They were merged into `LowerTremblingDunesZoneGlobals`, whose contents Freehold commented out
+  along with the rest of the Trembling Dunes globals. The zone is still built and its template still
+  asks for that table, so the merge *created* it — which made these three **100% of that zone's
+  global population**, and re-enabled something the game had deliberately emptied.
+
+  The first fix moved them to Redrock, which holds all three parents and reads as the right kind of
+  country. Measured afterwards, Redrock is **one world-map cell**, reached by 1 of the game's 87
+  zone templates — exactly as narrow as the place they came from. It would have fixed the share and
+  left the animals just as hard to meet. Every named landmark is that shape, the Rustwells included.
+
+  So they went to the broadest table holding each parent instead: the hoary bat and black bear to
+  `Tier3CavePopulation` (14 of 87 templates), the chalk centipede to `Shale Cave Critters 2` (8).
+  Not `Tier2CaveCreatures`, which is also 14 but already carries the slate centipede — two variants
+  of one parent in one table is not what the frequency curve describes. Weights follow it as usual:
+  the parent's weight halved where its `Number` is already 1.
+
+  `tools/validation-baseline.json` is empty again.
+
 - **(internal)** `<stag>` is not a typo for `<tag>`, and the document that said so was wrong (#478).
 
   `XRL.World.GameObjectFactory` reads both, into the same dictionary — but it renames one:
