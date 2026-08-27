@@ -500,6 +500,38 @@ def declared_paths(data: dict) -> list[str] | None:
     return paths
 
 
+def check_map_id(f: Findings) -> None:
+    """A `.rpm` map patch with no `ID`, whose identity is therefore its path.
+
+    `MapFile.CacheFile` keys a map by its `ID` attribute, or - when there is none - by the file's
+    path relative to the mod root, normalised by `MapFile.GetKey`, which truncates at the first dot.
+    So `mod/Joppa.rpm` keys as `joppa` and patches vanilla's Joppa, and the same file at
+    `mod/Optional/JoppaBuilding/Joppa.rpm` keys as `optional_joppabuilding_joppa` and patches
+    nothing.
+
+    Nothing reports that. The file loads, the game logs the directory, every check here passes, and
+    the only symptom is content that is not in the world - which is how #498 shipped a Joppa with no
+    building in it through a green run and into a playtest.
+
+    An explicit `ID` makes the key independent of where the file sits, which is the difference
+    between a patch that survives being moved and one that quietly stops applying. `Load="Merge"`
+    is what makes this matter: a merge onto a vanilla map is the case where the key has to match
+    something.
+    """
+    for path in sorted(MOD.rglob("*.rpm")):
+        try:
+            root = parse(path)
+        except ET.ParseError:
+            continue  # check_wellformed owns this
+        if root.get("ID"):
+            continue
+        f.add(
+            "map-id",
+            f"{path} has no ID attribute, so the game keys it by its path - moving the file would "
+            'silently stop it patching anything. Add ID="<name>.rpm" naming the map it patches',
+        )
+
+
 def check_layout(f: Findings) -> None:
     """A file the tools read that is not where they expect it.
 
@@ -2806,6 +2838,7 @@ def run() -> Findings:
     check_workshop_description(f)
     check_manifest(f)
     check_layout(f)
+    check_map_id(f)
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)

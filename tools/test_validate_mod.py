@@ -1330,6 +1330,35 @@ class DirectoryCoverage(unittest.TestCase):
         )
 
 
+class MapId(unittest.TestCase):
+    """#498. A map with no ID is keyed by its path, so moving the file silently stops it patching
+    anything - no error, every check green, and content simply absent from the world."""
+
+    def maps(self, body: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp())
+        target = tmp / "mod" / "Optional" / "Thing" / "Joppa.rpm"
+        target.parent.mkdir(parents=True)
+        target.write_text(body, encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_map_id(f)
+            return [detail for _, detail in f.items]
+
+    def test_a_map_with_an_id_is_accepted(self) -> None:
+        self.assertEqual(
+            self.maps('<Map ID="Joppa.rpm" Load="Merge"><cell /></Map>'), []
+        )
+
+    def test_a_map_without_one_is_reported(self) -> None:
+        found = self.maps('<Map Load="Merge"><cell /></Map>')
+        self.assertEqual(len(found), 1)
+        self.assertIn("keys it by its path", found[0])
+
+    def test_an_empty_id_does_not_count(self) -> None:
+        """An attribute present but blank falls back to the path exactly as an absent one does."""
+        self.assertEqual(len(self.maps('<Map ID="" Load="Merge"><cell /></Map>')), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

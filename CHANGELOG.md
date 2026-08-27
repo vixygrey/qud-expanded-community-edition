@@ -110,6 +110,15 @@ recorded because contributors need them, not because subscribers do.
   carry `Dependencies`, `Exclusions`, `Version` and `Build` — so version-conditional content, or a
   shim for another mod, no longer needs a sub-mod or any C# at all.
 
+  **The move also broke the map patch, and nothing static caught it.** `MapFile.CacheFile` keys a
+  map by its `ID` attribute, or — when there is none — by its path relative to the mod root, which
+  `MapFile.GetKey` truncates at the first dot. So `mod/Joppa.rpm` keyed as `joppa` and patched
+  vanilla's Joppa; from `Optional/JoppaBuilding/` it keyed as `optional_joppabuilding_joppa` and
+  patched nothing. The file loaded, the game logged the directory, every check passed, and Joppa
+  simply had no building in it — in *both* option states. A playtest found it. `<Map ID="Joppa.rpm">`
+  makes the key independent of the path, and the new `map-id` check requires an `ID` on every `.rpm`
+  so the next move cannot repeat it.
+
   `Naming.xml`'s typo allowance had to move with the file — in **both** places that hold it,
   `.typos.toml` and the pre-commit hook's own `exclude`, because pre-commit passes changed files as
   explicit arguments and an explicitly named file overrides the config. The hook's comment already
