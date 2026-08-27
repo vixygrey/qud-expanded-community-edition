@@ -28,6 +28,7 @@ type to go and read.
 | How do I not break other mods? | [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) — prefixing, merging, named arguments |
 | Where does a zone's content come from? | [Zone Builders](https://wiki.cavesofqud.com/wiki/Modding:Zone_Builders) |
 | What colour codes exist? | [Colors & Object Rendering](https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering) |
+| Where else can a tag come from? | [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) — `<mixin>`, which `Inherits=` alone will not find (#526) |
 | How do I test this without playing to it? | [Wishes](https://wiki.cavesofqud.com/wiki/Wishes) — the full player-facing list |
 
 ## Core Concepts
@@ -36,7 +37,7 @@ type to go and read.
 |---|---|
 | [Overview](https://wiki.cavesofqud.com/wiki/Modding:Overview) | File structure, what a mod may do, the incompatible-mod flag |
 | [XML](https://wiki.cavesofqud.com/wiki/Modding:XML) | Syntax, how data loads, **load strategies**, debugging |
-| [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) | Blueprint definitions, the component system, the supported tag list, and the part catalogue by category |
+| [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) | Blueprint definitions, the component system, the supported tag list, the part catalogue by category, and **`<mixin>` — the second inheritance mechanism, with `Include` / `Exclude` / `Priority` / `Load="Fill"`** |
 | [Parts](https://wiki.cavesofqud.com/wiki/Modding:Parts) | What a part is and the kinds there are |
 | [Active Parts](https://wiki.cavesofqud.com/wiki/Modding:Active_Parts) | `IActivePart` — statuses, `IsReady()`, `IPoweredPart`, and the configuration points that reconfigure all of it from XML |
 | [Events](https://wiki.cavesofqud.com/wiki/Modding:Events) | String events and MinEvents — listening, firing, handling, cascading |

@@ -824,6 +824,75 @@ This is the same principle as the positive control two lessons up, one level out
 test suite that needs a case which must pass, here it is any search, grep or patch whose silence
 you are about to treat as evidence.
 
+## I built the reference, then did not read it
+
+`docs/WIKI.md` exists because I asked for it: an index of Freehold's fifty-three modding pages so
+that the next question about engine behaviour would be answered from their documentation instead of
+from my guess. I wrote it in #509.
+
+`<mixin>` is a second inheritance mechanism. A blueprint can pull tags, parts and stats from another
+blueprint without inheriting from it, and 143 vanilla blueprints are kept out of every dynamic pool
+by an `ExcludeFromDynamicEncounters` that arrives that way. `BlueprintIndex.chain()` followed
+`Inherits=` and nothing else, so every one of those looked like a live pool member, and this fork's
+share of forty-three slices was understated - `BaseAnimal:Tier1` by thirteen points.
+
+The wiki documents `<mixin>` **nine times on `Modding:Objects`**, with `Include`, `Exclude`,
+`Priority` and the `Load="Fill"` before-or-after rule stated plainly. `Modding:Objects` is in my
+index. My one-line summary of it said *"blueprint definitions, the component system, the supported
+tag list, and the part catalogue by category"* and did not mention the mechanism.
+
+Three chances, and I took none of them:
+
+1. **The reference named the page.** I did not open it while building the index that models
+   inheritance.
+2. **My own probe printed the word.** Checking something else this session, I listed the element
+   kinds the index does not handle and `mixin` was in the output. I read past it.
+3. **I re-derived it from the decompiled loader instead** - the mixin ordering, `Include`/`Exclude`,
+   `Load="Fill"` - twenty minutes of reading IL to recover what one wiki page states in five lines.
+
+A playtest found it. Not a check, not a review, not the reference.
+
+> **When modelling engine behaviour, read Freehold's page on it before reading the assembly.** The
+> decompiler answers *what this build does*; the wiki answers *what the mechanism is*, including
+> the parts of it nothing in the data happens to exercise. `Priority` is real, documented, and used
+> by no vanilla blueprint - I would never have found it in the data.
+
+The narrower trap, worth keeping separately: **a search for `mixin` in the wiki's own search index
+returns nothing.** `insource:/mixin/` across all namespaces reports zero pages, while fetching
+`Modding:Objects` directly and grepping finds nine. Another empty result that was not an answer -
+see *A search that finds nothing has two explanations* above.
+
+## Inheriting a blueprint inherits its Role, and Role is a x4 lever
+
+Thirty-two creature variants, each three lines over a vanilla parent - a name, a colour, a marker
+tag. Every one is distributed by an explicit entry I placed in the biome it belongs to. And every one
+also joins `DynamicInheritsTable:BaseAnimal` or `:BaseReptile`, because `Inherits="Dog"` is
+membership and nothing else is required.
+
+That much I knew. What I had not looked at was where the *weight* went. `BaseAnimal:Tier1` totals
+5.67 billion, and **seven of my blueprints hold 49.4% of it while the other eleven hold 2.9%**.
+
+`Dog` and `Bat` carry `<tag Name="Role" Value="Minion" />`, and `Minion` is a **x4.0** multiplier -
+the largest in `InitWeights`, tied with `Common`. `Goat` and `Boar` carry `Brute`, which is **x0.25**.
+So `Vixy_MarshDog` weighs 400,000,000 and is 7.06% of the pool on its own, while `Vixy_DunGoat`
+weighs 25,000,000 and is sixteen times lighter. I did not choose either number. I chose a parent.
+
+The lesson is not "check the Role tag" - it is that **a one-line `Inherits=` carries a distribution
+profile with it**, and the profile is built from values that live on the parent and are multiplied by
+values that live in the engine. A cosmetic re-skin is cosmetic in the blueprint and not at all
+cosmetic in the population tables.
+
+> **When a new blueprint inherits from a vanilla one, ask what the parent is a member of and what
+> multipliers it carries, before asking what the new one looks like.** `Role`, `Tier`, `Level` and
+> every `DynamicObjectsTable:` tag come along, and none of them appear in the diff.
+
+The fix is `:Weight`, which is worth knowing exists: `<tag Name="<resolved table name>:Weight">` is a
+multiplier applied inside one pool after the tier delta and Role. **Vanilla ships 81 of them across
+28 pools** at 0.05-0.3 - `Holographic Banana Tree` is 0.2 of `DynamicObjectsTable:BananaGrove_Plants`.
+The key is the table name *as requested*, and `TryResolvePopulation` substitutes `{zonetier}` before
+`RequireTable` sees it, so a tiered slice carries its tier in the key and each slice needs its own
+tag. A value of zero is not a small weight but an exclusion - `if (value == 0) continue`.
+
 ## A change to a dynamic pool has one witness, and you have to go and find him
 
 A `DynamicObjectsTable:X` change is observable only through whatever consumes that pool, and the

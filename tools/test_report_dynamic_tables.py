@@ -38,9 +38,11 @@ from report_dynamic_tables import (
     requested_inherits_slices,
     resolved_role,
     resolved_tier,
+    resolved_weight_tags,
     slice_label,
     slice_weight,
     snapshot_of,
+    weight_tag_key,
 )
 
 
@@ -476,6 +478,196 @@ class ResolvedRole(unittest.TestCase):
             slice_weight(8, (8, 8), resolved_role(index, "X")),
             math.ceil(TIER_DELTA_WEIGHTS[0] * 0.01),
         )
+
+
+class Mixins(unittest.TestCase):
+    """#526. `<mixin>` is a second inheritance mechanism, documented on the wiki's Modding:Objects
+    page, and the index followed only `Inherits=`. That hid the
+    `ExcludeFromDynamicEncounters` on `BaseVehicleGolem` and `BaseChiliadCreatureStats`, and with
+    it 143 vanilla blueprints that are in no dynamic pool - understating this fork's share of 43
+    slices. Caught by a playtest, not by a check."""
+
+    def index(self, body: str) -> BlueprintIndex:
+        return BlueprintIndex(roots(f"<objects>{body}</objects>"))
+
+    GOLEM = (
+        '<object Name="BaseVehicleGolem"><tag Name="ExcludeFromDynamicEncounters" /></object>'
+        '<object Name="BaseAntelope"><part Name="Render" /></object>'
+        '<object Name="Antelope Golem" Inherits="BaseAntelope">'
+        '<mixin Name="BaseVehicleGolem" /></object>'
+    )
+
+    def test_a_tag_arrives_through_a_mixin(self) -> None:
+        index = self.index(self.GOLEM)
+        self.assertTrue(index.has_tag("Antelope Golem", "ExcludeFromDynamicEncounters"))
+
+    def test_that_tag_takes_the_blueprint_out_of_the_pool(self) -> None:
+        """The whole consequence: `eligible` reads it, and 143 vanilla blueprints turn on this."""
+        self.assertFalse(eligible(self.index(self.GOLEM), "Antelope Golem"))
+
+    def test_a_mixin_does_not_confer_membership(self) -> None:
+        """`DescendsFrom` walks `ShallowParent`, which is `Inherits=` and nothing else. Following
+        a mixin here would have put 66 golems in the `Creature` pool."""
+        index = self.index(self.GOLEM)
+        self.assertEqual(
+            [o.get("Name") for o in index.chain("Antelope Golem")],
+            ["Antelope Golem", "BaseAntelope"],
+        )
+
+    def test_exclude_keeps_a_kind_out(self) -> None:
+        """Vanilla's one use: `<mixin Name="Creature" Exclude="part" />`."""
+        index = self.index(
+            '<object Name="Creature"><part Name="Render" />'
+            '<tag Name="Wanted" /></object>'
+            '<object Name="Thing"><mixin Name="Creature" Exclude="part" /></object>'
+        )
+        self.assertTrue(index.has_tag("Thing", "Wanted"))
+        self.assertFalse(index.has_part("Thing", "Render"))
+
+    def test_include_admits_only_what_it_names(self) -> None:
+        index = self.index(
+            '<object Name="Src"><part Name="Render" /><tag Name="Wanted" /></object>'
+            '<object Name="Thing"><mixin Name="Src" Include="part" /></object>'
+        )
+        self.assertTrue(index.has_part("Thing", "Render"))
+        self.assertFalse(index.has_tag("Thing", "Wanted"))
+
+    def test_an_ordinary_mixin_outranks_the_inherits_parent(self) -> None:
+        """The loader applies `Inherits` and then ordinary mixins, each overwriting the last."""
+        index = self.index(
+            '<object Name="Parent"><tag Name="Colour" Value="parent" /></object>'
+            '<object Name="Mix"><tag Name="Colour" Value="mixin" /></object>'
+            '<object Name="Thing" Inherits="Parent"><mixin Name="Mix" /></object>'
+        )
+        self.assertEqual(index.tag_value("Thing", "Colour"), "mixin")
+
+    def test_a_fill_mixin_is_outranked_by_the_inherits_parent(self) -> None:
+        """`Load="Fill"` applies BEFORE normal inheritance, so the parent wins."""
+        index = self.index(
+            '<object Name="Parent"><tag Name="Colour" Value="parent" /></object>'
+            '<object Name="Mix"><tag Name="Colour" Value="mixin" /></object>'
+            '<object Name="Thing" Inherits="Parent">'
+            '<mixin Name="Mix" Load="Fill" /></object>'
+        )
+        self.assertEqual(index.tag_value("Thing", "Colour"), "parent")
+
+    def test_the_blueprints_own_declaration_still_wins(self) -> None:
+        index = self.index(
+            '<object Name="Mix"><tag Name="Colour" Value="mixin" /></object>'
+            '<object Name="Thing"><mixin Name="Mix" />'
+            '<tag Name="Colour" Value="own" /></object>'
+        )
+        self.assertEqual(index.tag_value("Thing", "Colour"), "own")
+
+    def test_a_cycle_terminates(self) -> None:
+        index = self.index(
+            '<object Name="A"><mixin Name="B" /></object>'
+            '<object Name="B"><mixin Name="A" /></object>'
+        )
+        self.assertEqual(
+            {o.get("Name") for o in index.lookup_chain("A", "tag")}, {"A", "B"}
+        )
+
+
+class WeightTag(unittest.TestCase):
+    """#524. The game's third multiplier, after the tier delta and Role. Vanilla uses it 81 times
+    across 28 pools; this fork uses it to damp the creature variants inside two pools without
+    touching the entries that distribute them deliberately."""
+
+    def index(self, body: str) -> BlueprintIndex:
+        return BlueprintIndex(roots(f"<objects>{body}</objects>"))
+
+    def test_the_key_carries_the_tier(self) -> None:
+        """`{zonetier}` is substituted before `RequireTable` sees the name, so the fabricator keys
+        on the resolved name - which is why damping a pool costs a tag per tier."""
+        self.assertEqual(
+            weight_tag_key("BaseAnimal", (1, 1)),
+            "DynamicInheritsTable:BaseAnimal:Tier1:Weight",
+        )
+
+    def test_the_key_keeps_a_range_intact(self) -> None:
+        self.assertEqual(
+            weight_tag_key("BaseShield", (3, 7)),
+            "DynamicInheritsTable:BaseShield:Tier3-7:Weight",
+        )
+
+    def test_the_untiered_key_has_no_tier(self) -> None:
+        self.assertEqual(
+            weight_tag_key("PhysicalObject", None),
+            "DynamicInheritsTable:PhysicalObject:Weight",
+        )
+
+    def test_it_multiplies_the_weight_the_other_two_produced(self) -> None:
+        full = slice_weight(1, (1, 1), "Minion")
+        self.assertEqual(slice_weight(1, (1, 1), "Minion", 0.2), math.ceil(full * 0.2))
+
+    def test_zero_is_an_exclusion_not_a_weight(self) -> None:
+        """`if (value == 0) continue` - the blueprint leaves the slice entirely."""
+        self.assertEqual(slice_weight(1, (1, 1), "Minion", 0.0), 0)
+
+    def test_a_tag_is_read_and_inherited(self) -> None:
+        index = self.index(
+            '<object Name="Dog">'
+            '<tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.2" /></object>'
+            '<object Name="Vixy_MarshDog" Inherits="Dog" />'
+        )
+        self.assertEqual(
+            resolved_weight_tags(index, "Vixy_MarshDog"),
+            {"DynamicInheritsTable:BaseAnimal:Tier1:Weight": 0.2},
+        )
+
+    def test_a_value_the_game_cannot_parse_is_skipped_not_zeroed(self) -> None:
+        """`Convert.ToDouble` throws, vanilla catches and logs it, and the weight is untouched.
+        Reading it as zero would silently delete the blueprint from the slice instead."""
+        index = self.index(
+            '<object Name="X">'
+            '<tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="lots" /></object>'
+        )
+        self.assertEqual(resolved_weight_tags(index, "X"), {})
+
+    def test_only_weight_tags_are_collected(self) -> None:
+        index = self.index(
+            '<object Name="X"><tag Name="Vixy_CreatureVariant" />'
+            '<tag Name="DynamicObjectsTable:Hills_Creatures" /></object>'
+        )
+        self.assertEqual(resolved_weight_tags(index, "X"), {})
+
+
+class WeightTagIsSliceScoped(unittest.TestCase):
+    """The property the whole of #524 rests on: a tag damps ONE slice. If it leaked across tiers,
+    78 tags would be doing the job of 6 and the numbers would be wrong everywhere."""
+
+    XML = (
+        "<objects>"
+        '<object Name="BaseAnimal"><part Name="Render" />'
+        '<tag Name="BaseObject" Value="*noinherit" /><tag Name="Tier" Value="1" /></object>'
+        '<object Name="Vanilla Dog" Inherits="BaseAnimal" />'
+        '<object Name="Vixy_MarshDog" Inherits="BaseAnimal">'
+        '<tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.2" /></object>'
+        "</objects>"
+    )
+
+    def shares(self):
+        index = BlueprintIndex(roots(self.XML))
+        members = inherits_members(index, {"BaseAnimal"})
+        cells = inherits_cells(
+            members, {"BaseAnimal": {(1, 1), (2, 2)}}, {"Vixy_MarshDog"}
+        )
+        return {label: cells[("BaseAnimal", label)] for label in ("Tier1", "Tier2")}
+
+    def test_the_tagged_slice_is_damped(self) -> None:
+        mine, vanilla, _, _ = self.shares()["Tier1"]
+        self.assertEqual(mine, math.ceil(vanilla * 0.2))
+
+    def test_every_other_slice_is_untouched(self) -> None:
+        mine, vanilla, _, _ = self.shares()["Tier2"]
+        self.assertEqual(mine, vanilla)
+
+    def test_the_member_is_still_in_the_pool(self) -> None:
+        """Damped, not removed - the count must not move, or the ledger would report a departure
+        that never happened."""
+        for label in ("Tier1", "Tier2"):
+            self.assertEqual(self.shares()[label][2:], (1, 1))
 
 
 class SliceWeight(unittest.TestCase):

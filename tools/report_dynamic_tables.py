@@ -36,9 +36,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from check_vanilla_drift import BlueprintIndex, find_game, load_all
 
+# A pool member as the weighting needs it: who, its tier, its Role, and its `:Weight` tags.
+Member = tuple[str, int | None, str | None, dict[str, float]]
+
 MOD_DIR = Path("mod")
 TAG_PREFIX = "DynamicObjectsTable:"
 INHERITS_PREFIX = "DynamicInheritsTable:"
+
+# The game's third weight multiplier, after the tier delta and Role. Every fabricator builds the key
+# as `tableName + ":Weight"` where tableName is the name AS REQUESTED - so for a tiered slice it
+# includes the tier, because `TryResolvePopulation` substitutes `{zonetier}` before `RequireTable`
+# ever sees the name. `DynamicInheritsTable:BaseAnimal:Tier1:Weight` weights that slice and no other.
+WEIGHT_TAG_SUFFIX = ":Weight"
 
 # docs/STYLEGUIDE.md 3.2.1. Half is the same ceiling the other two share checks use, but on this
 # route it is REPORTED rather than enforced - see #494. Membership here is a consequence of
@@ -73,10 +82,11 @@ TIER_DELTA_WEIGHTS = {
 }
 DEFAULT_TIER_WEIGHT = 1
 
-# Also InitWeights, applied after the tier weight as ceil(weight * multiplier). The game applies a
-# third multiplier after this one, from a `<Table>:Weight` tag; no blueprint in any consumed pool
-# carries one, in vanilla or here, so it is not modelled. Role is, because 108 of the 1330 members
-# carry one.
+# Also InitWeights, applied after the tier weight as ceil(weight * multiplier). Role is modelled
+# because 108 of the 1330 members carry one, and so is the third multiplier the game applies after
+# it - see WEIGHT_TAG_SUFFIX. An earlier version of this comment said no blueprint in any consumed
+# pool carried a `:Weight` tag; vanilla ships 81 of them across 28 pools, two of which this report
+# tracks (#524).
 ROLE_WEIGHT_MULTIPLIERS = {
     "Common": 4.0,
     "Minion": 4.0,
@@ -207,6 +217,32 @@ def requested_inherits_slices(game: Path) -> dict[str, set[tuple[int, int] | Non
     return slices
 
 
+def resolved_weight_tags(index: BlueprintIndex, name: str) -> dict[str, float]:
+    """Every `*:Weight` tag reaching `name`, keyed by the full tag name.
+
+    Collected in one pass rather than looked up per slice, because a blueprint carries one tag per
+    slice it damps and the caller knows which slice it is asking about.
+
+    A value the game cannot parse is skipped, not treated as zero: `Convert.ToDouble` throws,
+    vanilla catches it, logs `Invalid table weight tag on:` and leaves the weight untouched. Zero
+    IS meaningful - it removes the blueprint from that slice - so the two must not be conflated.
+    """
+    out: dict[str, float] = {}
+    for depth, obj in enumerate(index.chain(name)):
+        for el in obj.findall("tag"):
+            tag = el.get("Name") or ""
+            if not tag.endswith(WEIGHT_TAG_SUFFIX) or tag in out:
+                continue
+            value = el.get("Value")
+            if value == "*delete" or (depth > 0 and value == "*noinherit"):
+                continue
+            try:
+                out[tag] = float(value)
+            except (TypeError, ValueError):
+                continue
+    return out
+
+
 def slice_label(window: tuple[int, int] | None) -> str:
     """How a slice is named in a report and pinned in the snapshot."""
     if window is None:
@@ -262,8 +298,25 @@ def resolved_role(index: BlueprintIndex, name: str) -> str | None:
     return index.prop_value(name, "Role")
 
 
+def weight_tag_key(pool: str, window: tuple[int, int] | None) -> str:
+    """The `:Weight` tag name that weights exactly this slice.
+
+    The fabricator keys on the name AS REQUESTED, and `TryResolvePopulation` substitutes
+    `{zonetier}` before `RequireTable` sees it - so a tiered slice carries its tier in the key and
+    the untiered table does not. One tag per slice, which is why damping a pool costs a tag per
+    tier rather than one tag (#524).
+    """
+    name = f"{INHERITS_PREFIX}{pool}"
+    if window is not None:
+        name += f":{slice_label(window)}"
+    return name + WEIGHT_TAG_SUFFIX
+
+
 def slice_weight(
-    tier: int | None, window: tuple[int, int] | None, role: str | None
+    tier: int | None,
+    window: tuple[int, int] | None,
+    role: str | None,
+    weight_tag: float | None = None,
 ) -> int:
     """One blueprint's weight in one slice, as the game computes it.
 
@@ -275,6 +328,11 @@ def slice_weight(
     applies. In the untiered table the forced-zero delta reaches it first and it weighs full, like
     everything else. 731 eligible blueprints are in this position, 604 of them under
     `PhysicalObject`, which does request the untiered table.
+
+    `weight_tag` is the `<slice>:Weight` multiplier, applied last, after the tier delta and Role.
+    Vanilla uses it 81 times across 28 pools at 0.05-0.3 - `Holographic Banana Tree` is 0.2 of
+    `DynamicObjectsTable:BananaGrove_Plants` - and this fork uses it to damp the creature variants
+    inside two pools without touching the entries that distribute them deliberately (#524).
 
     For a blueprint outside the window, the distance is measured from the LOW end twice. Vanilla
     writes `Math.Min(Math.Abs(minTier - t), Math.Abs(minTier - t))` - the same expression on both
@@ -297,12 +355,15 @@ def slice_weight(
     multiplier = ROLE_WEIGHT_MULTIPLIERS.get(role or "")
     if multiplier is not None:
         weight = math.ceil(weight * multiplier)
+    if weight_tag is not None:
+        # Third and last, applied to the result of the other two - and a zero here is not a weight
+        # of zero but an exclusion: the game does `if (value == 0) continue`, dropping the
+        # blueprint from the slice entirely.
+        weight = math.ceil(weight * weight_tag)
     return weight
 
 
-def inherits_members(
-    index: BlueprintIndex, pools: set[str]
-) -> dict[str, list[tuple[str, int | None, str | None]]]:
+def inherits_members(index: BlueprintIndex, pools: set[str]) -> dict[str, list[Member]]:
     """Every eligible blueprint each pool reaches, with the Tier and Role its weight needs.
 
     Membership is not declared anywhere: the game fabricates the pool from everything descending
@@ -313,20 +374,21 @@ def inherits_members(
     earlier version of this took the `Tier` tag and the `Role` tag at face value, which dropped
     every creature in the game and misweighted thirteen of this fork's own items (#520).
     """
-    members: dict[str, list[tuple[str, int | None, str | None]]] = {}
+    members: dict[str, list[Member]] = {}
     for name in sorted(index.objects):
         if not eligible(index, name):
             continue
         tier = resolved_tier(index, name)
         role = resolved_role(index, name)
+        weights = resolved_weight_tags(index, name)
         ancestors = {obj.get("Name") for obj in index.chain(name)[1:]}
         for pool in ancestors & pools:
-            members.setdefault(pool, []).append((name, tier, role))
+            members.setdefault(pool, []).append((name, tier, role, weights))
     return members
 
 
 def inherits_cells(
-    members: dict[str, list[tuple[str, int | None, str | None]]],
+    members: dict[str, list[Member]],
     slices: dict[str, set[tuple[int, int] | None]],
     new_names: set[str],
 ) -> dict[tuple[str, str], tuple[int, int, int, int]]:
@@ -341,8 +403,9 @@ def inherits_cells(
         pooled = members.get(pool, [])
         for window in sorted(windows, key=lambda w: (w is not None, w or ())):
             mine = vanilla = mine_count = vanilla_count = 0
-            for name, tier, role in pooled:
-                weight = slice_weight(tier, window, role)
+            key = weight_tag_key(pool, window)
+            for name, tier, role, weights in pooled:
+                weight = slice_weight(tier, window, role, weights.get(key))
                 if name in new_names:
                     mine += weight
                     mine_count += 1
@@ -553,7 +616,7 @@ def inherits_snapshot_of(
     """
     snapshot: dict[str, dict] = {}
     for (pool, label), cell in sorted(cells.items()):
-        mine = sorted(name for name, _, _ in members.get(pool, ()) if name in new_names)
+        mine = sorted(name for name, *_ in members.get(pool, ()) if name in new_names)
         if not mine:
             continue
         entry = snapshot.setdefault(pool, {"mine": mine, "shares": {}})

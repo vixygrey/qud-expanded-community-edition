@@ -52,6 +52,9 @@
       Short="A coat the colour of dry hillside runs from =pronouns.possessive= shoulders to =pronouns.possessive= hocks, so that =pronouns.subjective= =verb:are:afterpronoun= easy to miss until =pronouns.subjective= =verb:move:afterpronoun=."
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
 
   <!-- Creature variants, the remaining 31 (#171).
@@ -68,42 +71,72 @@
   <object Name="Vixy_BrindleDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{w|brindle dog}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_RangyDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{w|rangy dog}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="y" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_PiedDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{Y|pied dog}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_AshcoatDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{y|ash-coated dog}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_MarshDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{K|marsh dog}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_CraggedGoat" Inherits="Goat">
     <part Name="Render" DisplayName="{{y|cragged goat}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_BlackGoat" Inherits="Goat">
     <part Name="Render" DisplayName="{{K|black goat}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_BristleBoar" Inherits="Boar">
     <part Name="Render" DisplayName="{{w|bristleback boar}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_RussetBoar" Inherits="Boar">
     <part Name="Render" DisplayName="{{r|russet boar}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_PaleBoar" Inherits="Boar">
     <part Name="Render" DisplayName="{{Y|pale boar}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="y" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_MangyBaboon" Inherits="Baboon">
     <part Name="Render" DisplayName="{{w|mangy baboon}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="y" />
@@ -126,10 +159,16 @@
   <object Name="Vixy_SiltCroc" Inherits="Croc">
     <part Name="Render" DisplayName="{{w|silt croc}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="g" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_PaleCroc" Inherits="Croc">
     <part Name="Render" DisplayName="{{y|pale croc}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="g" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_CopperDragonfly" Inherits="GiantDragonfly">
     <part Name="Render" DisplayName="{{o|copper dragonfly}}" ColorString="&amp;o" TileColor="&amp;o" DetailColor="W" />
@@ -170,6 +209,9 @@
       Short="Dark whorls run the length of =pronouns.possessive= back, veined pale where the light finds them, like wet stone split open."
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_AshenSalamander" Inherits="Salamander">
     <part Name="Render" DisplayName="{{y|ashen salamander}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="r" />
@@ -178,6 +220,9 @@
       Short="Pale grit has worked into every seam of =pronouns.possessive= hide, and the old island chain of spots shows through it like cinders banked under ash."
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_MottledHornedChameleon" Inherits="Horned Chameleon">
     <part
@@ -188,6 +233,9 @@
       DetailColor="W"
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_SandHornedChameleon" Inherits="Horned Chameleon">
     <part
@@ -198,6 +246,9 @@
       DetailColor="w"
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_MossbackTortoise" Inherits="IrritableTortoise">
     <part
@@ -208,10 +259,16 @@
       DetailColor="w"
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_ScarredTortoise" Inherits="IrritableTortoise">
     <part Name="Render" DisplayName="{{K|scarred tortoise}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseReptile:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_BandedHoneySkunk" Inherits="Honey Skunk">
     <part
@@ -222,6 +279,9 @@
       DetailColor="Y"
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_AshwingGlowmoth" Inherits="Glowmoth">
     <part Name="Render" DisplayName="{{y|ashwing glowmoth}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="C" />
@@ -261,10 +321,16 @@
   <object Name="Vixy_SorrelEquimax" Inherits="Equimax">
     <part Name="Render" DisplayName="{{r|sorrel equimax}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="w" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_PiebaldEquimax" Inherits="Equimax">
     <part Name="Render" DisplayName="{{Y|piebald equimax}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_CinderGlowcrow" Inherits="Glowcrow">
     <part Name="Render" DisplayName="{{K|cinder glowcrow}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="o" />
@@ -305,14 +371,23 @@
   <object Name="Vixy_RufousBat" Inherits="Bat">
     <part Name="Render" DisplayName="{{r|rufous bat}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_HoaryBat" Inherits="Bat">
     <part Name="Render" DisplayName="{{y|hoary bat}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_CinnamonBear" Inherits="Bear">
     <part Name="Render" DisplayName="{{r|cinnamon bear}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="W" />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
   <object Name="Vixy_BlackBear" Inherits="Bear">
     <part Name="Render" DisplayName="{{K|black bear}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
@@ -321,5 +396,8 @@
       Short="=pronouns.Possessive= coat is black to the roots and takes the light badly, so that =pronouns.subjective= =verb:read:afterpronoun= as a hole in the cave rather than a shape in it."
     />
     <tag Name="Vixy_CreatureVariant" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier0:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
+    <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
 </objects>
