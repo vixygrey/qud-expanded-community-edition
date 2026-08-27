@@ -865,13 +865,39 @@ exists, nothing happens.
 
 **Which form is correct depends on what reads the tag, and that lives in the assembly rather than
 the data.** So the rule is vanilla's own usage: write a tag the way vanilla writes that name.
-`tag-form` checks it against the snapshot's `tag_forms`, which records vanilla's choice for each of
-the 29 tag names this mod writes. Four names vanilla writes both ways — `Fiber`, `Furniture`,
-`LightSource`, `Scrap` — carry no opinion and are skipped, as is any name vanilla never uses, since
-nothing outside this mod can say what is right for `Vixy_CreatureVariant`.
+`tag-form` checks it against the snapshot's `tag_forms`, and `snapshot-coverage` checks that every
+name this fork writes is accounted for at all — 41 names, 38 with a recorded form and 3 cited in
+`tag_forms_absent`. Four names vanilla writes both ways — `Fiber`, `Furniture`, `LightSource`,
+`Scrap` — carry no opinion, and a name vanilla never uses has nothing to copy, since nothing outside
+this mod can say what is right for `Vixy_CreatureVariant`.
 
 Vanilla leans hard: 8,203 `<tag>` against 961 `<stag>`, and the `<stag>` names are categorisation —
-`Contemporary`, `Historical`, `Power`, `Plank`, `Crafts` — feeding `DynamicSemanticTable:*`.
+`Contemporary`, `Historical`, `Power`, `Plank`, `Crafts`.
+
+**Two different consumers read a `Semantic*` key, and an `<stag>` written for one reaches the other
+as well** (#501).
+
+- **Grammar.** `XRL.Language.Semantics` resolves these into the words the game writes about an
+  object. `Plank`, `Fiber` and `FiberMaterial` are what a village wall's description is made of, and
+  that is what the three harvestable plants carry them for.
+- **Distribution.** `GameObjectFactory.FabricateDynamicSemanticTable` takes the categories out of a
+  requested table name, prefixes each with `Semantic`, and builds a **population table** from every
+  blueprint carrying them. `DynamicSemanticTable:` is named in vanilla's `PopulationTables.xml` and
+  rolled by five zone builders — `Village`, `VillageCoda`, `VillageOutskirts`, `SultanDungeon` and
+  `GirshLairMakerBase`.
+
+So **an `<stag>` added for a grammar reason can put the object into a spawn pool**, with nothing in
+the diff to show it. Before adding one, check whether the category is consumed.
+
+**Checking that is harder than reading a list, and the list is the wrong instinct.** 24 categories
+are named literally in vanilla's population tables, but six sites build the name at runtime from
+village and dungeon template data — `"DynamicSemanticTable:" + text + "::" + villageTechTier` and
+similar — so **the live set has no fixed size**. Treat a category vanilla uses as consumed unless
+you have checked otherwise.
+
+This fork writes five: `Fiber`, `FiberMaterial`, `Plank`, `Floating`, `Trinket`. None is among the
+24 and none matches the runtime shapes, so nothing here is enrolled in a pool by accident — checked,
+rather than assumed.
 
 ### 4.1 Line endings — LF
 
