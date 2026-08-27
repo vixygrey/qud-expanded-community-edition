@@ -12,6 +12,23 @@
     <tag Name="BaseObject" Value="*noinherit" />
     <tag Name="NoSparkingQuest" />
     <tag Name="EquipSound" Value="sfx_equip_metal_quantum" />
+    <!-- Chips are not generic loot, and this tag is what makes that true (#481).
+
+         This base inherits BaseArmor, so all 144 chips descend from it and every dynamic pool
+         fabricated from that base picked them up: DynamicInheritsTable:BaseArmor ran 80% to 94%
+         this fork's at tiers 4 and above, and it was chips the whole way down rather than armour.
+         DynamicObjectsTable:Items took them too, because FabricateDynamicObjectsTable filters on
+         the same EncountersAPI.IsEligibleForDynamicEncounters predicate.
+
+         That was a route around the design rather than part of it. docs/STYLEGUIDE.md 3.2 is
+         explicit that a chip's price only sets what an unwanted one sells for, and that **rarity
+         is the access dial** - which the generic pools quietly bypassed.
+
+         Nothing becomes unreachable. Every chip is placed by hand: 48 each in Raven_Chips Tier 1
+         to 3, plus three apiece across the eighteen StartingGear_ tables.
+
+         No *noinherit, deliberately - inheriting to all 144 is the entire point. -->
+    <tag Name="ExcludeFromDynamicEncounters" />
   </object>
 
   <!-- Force -->
