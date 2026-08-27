@@ -1,12 +1,4 @@
 {
-  "_comment": "Known defects inherited from upstream 2.2 and from this fork's own earlier work, with the issue that tracks each one. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure. It reached EMPTY twice: after #373 cleared the 22 item-curve rows and #334 the 47 merge-value rows, and again after #478 reverted #50 rather than carrying its two tag-form rows. #476 holds the one entry here now, and it is a content decision away from empty a third time.",
-  "known": {
-    "scatter-share": {
-      "issue": 476,
-      "why": "Three creature variants merge into LowerTremblingDunesZoneGlobals, which vanilla commented out along with the rest of the Trembling Dunes globals. The merge creates the table rather than landing nowhere - confirmed in a running game, where the chalk centipede reports 45%, exactly the Chance declared - so this fork's three are 100% of that zone's global population, and the zone is reachable. What remains is a content decision about where those three belong, not a question about the mechanism.",
-      "items": [
-        "mod/PopulationTables.xml: vanilla does not define LowerTremblingDunesZoneGlobals, so this fork's 1.9 expected object(s) are the whole of it - check whether the merge still reaches a zone before treating the share as meaningful"
-      ]
-    }
-  }
+  "_comment": "Known defects inherited from upstream 2.2 and from this fork's own earlier work, with the issue that tracks each one. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure. It is currently EMPTY, for the third time: #373 cleared the 22 item-curve rows, #334 the 47 merge-value rows, #478 reverted #50 rather than carrying its two tag-form rows, and #476 rehomed the Trembling Dunes three rather than carrying its one. An empty ledger means every violation the validator can report is a new one, which is the state it was always meant to reach.",
+  "known": {}
 }

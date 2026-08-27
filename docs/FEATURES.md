@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **73** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **74** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -1803,7 +1803,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-95 table definitions: **73 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+96 table definitions: **74 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2086,7 +2086,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 95 tables (73 merge / 22 new)
+├── PopulationTables.xml        # 96 tables (74 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
@@ -2645,8 +2645,48 @@ which is the rarity the roster always wanted and the first attempt could not exp
 
 **Where the parent's `Number` is already 1 there is nothing to halve, so the `Chance` or `Weight`
 halves instead.** Without that a variant of a single-spawn animal would be purely additive at the
-parent's own rate — a black bear at the Trembling Dunes' 95% would mean a bear *and* a black bear in
-nearly every zone.
+parent's own rate — a black bear at the cave tables' `Bear` weight of 5 would mean a bear *and* a
+black bear drawn as readily as each other.
+
+### 17.3a Three of them lived in a table vanilla had switched off
+
+The black bear, chalk centipede and hoary bat were merged into
+`LowerTremblingDunesZoneGlobals`, whose contents **Freehold commented out** — along with
+`TrembleRocky` and `TremblingDunesSurfaceZoneGlobals`, all three inside one `<!-- -->` block. The
+zone template still names the table and `Worlds.xml` still builds the zone, so the merge *created*
+the table rather than landing nowhere: a running game reported the chalk centipede at 45%, exactly
+the `Chance` declared.
+
+Which meant this fork's three were **100% of that zone's global population**, in a place a player
+walks into — and it re-enabled something vanilla had deliberately emptied. Both are things §3.2.1
+and charter rule 2 exist to prevent, and nothing caught either, because `table-share` skipped a
+table absent from the snapshot in silence. `scatter-share` (#474) reports it instead, which is how
+this surfaced at all (#476).
+
+**Redrock was the wrong answer, and measuring is what showed it.** The first rehoming sent them to
+Redrock, on the reasoning that it is desert canyon country and holds all three parents. But Redrock
+is one world-map cell — `x="0-2" y="0-2"`, `Mutable="false"` — and is reached by **1 of the game's
+87 zonetemplates**. That is exactly as narrow as the place they came from: it would have fixed the
+share and left the content just as hard to meet. Every named landmark is the same shape; the
+Rustwells are also 1.
+
+**Breadth is measurable, so measure it.** Follow each zonetemplate's `<population Table=>` through
+nested `<table>` references and count which templates reach a given table. These three now sit in
+the broadest table holding each parent that does not already carry a variant of it:
+
+| variant | table | zonetemplates reaching it |
+|---|---|---:|
+| hoary bat | `Tier3CavePopulation` | 14 of 87 |
+| black bear | `Tier3CavePopulation` | 14 of 87 |
+| chalk centipede | `Shale Cave Critters 2` | 8 of 87 |
+
+The centipede does not go to `Tier2CaveCreatures`, which reaches 14, because
+`Vixy_SlateCentipede` is already there and two variants of one parent in one table is not what
+§17.3's curve describes.
+
+**The derivation was done against commented-out data.** The original weights carry notes reading
+`Giant Centipede 45/1-2` and `Bat 90/1-3` — figures taken from inside the comment block, which is
+why they looked authoritative. A commented-out record is not a record.
 
 ### 17.3b Which creatures can take a variant
 
@@ -2692,11 +2732,11 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 | ashen salamander ✦ | `Salamander` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d4 |
 | ashwing glowmoth | `Glowmoth` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=1 |
 | banded honey skunk | `Honey Skunk` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1 |
-| black bear ✦ | `Bear` | `LowerTremblingDunesZoneGlobals` | Chance=50 Number=1 |
+| black bear ✦ | `Bear` | `Tier3CavePopulation` | Weight=2 Number=1 |
 | black goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=1d3 |
 | brindle dog | `Dog` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
 | bristleback boar | `Boar` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
-| chalk centipede | `Giant Centipede` | `LowerTremblingDunesZoneGlobals` | Chance=45 Number=1 |
+| chalk centipede | `Giant Centipede` | `Shale Cave Critters 2` | Chance=25 Number=1-2 |
 | cinder glowcrow ✦ | `Glowcrow` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d6 |
 | cinnamon bear | `Bear` | `Tier2CaveCreatures` | Weight=2 Number=1 |
 | copper dragonfly | `GiantDragonfly` | `FlowerFieldsPopulation` | Chance=25 Number=1d6 |
@@ -2704,7 +2744,7 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 | dun goat ✦ | `Goat` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1d3 |
 | ember dragonfly | `GiantDragonfly` | `DesertCanyonZoneGlobals` | Chance=25 Number=1d6 |
 | glass dragonfly | `GiantDragonfly` | `WaterCreatures` | Weight=5 Number=1 |
-| hoary bat | `Bat` | `LowerTremblingDunesZoneGlobals` | Chance=90 Number=1 |
+| hoary bat | `Bat` | `Tier3CavePopulation` | Weight=2 Number=1 |
 | lantern glowcrow | `Glowcrow` | `FlowerFieldsPopulation` | Chance=10 Number=1d6 |
 | mangy baboon | `Baboon` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d2 |
 | marbled salamander ✦ | `Salamander` | `JungleZoneGlobals` | Chance=5 Number=1-2 |
