@@ -49,16 +49,17 @@ INHERITS_PREFIX = "DynamicInheritsTable:"
 # ever sees the name. `DynamicInheritsTable:BaseAnimal:Tier1:Weight` weights that slice and no other.
 WEIGHT_TAG_SUFFIX = ":Weight"
 
-# docs/STYLEGUIDE.md 3.2.1. Half is the same ceiling the other two share checks use, but on this
-# route it is REPORTED rather than enforced - see #494. Membership here is a consequence of
-# `Inherits=`, and completing a weapon family across every tier, which is what this fork is for,
-# necessarily takes most of the pool for that family. A rule that fails on the mod's own premise is
-# the wrong rule. What fails here is drift against tools/inherited-pools.json instead.
 # Declared rather than only interpolated, so check_docs.py can find it: docs/STYLEGUIDE.md 10.1
 # must list every check name a tool emits, and this tool reports without a Findings object.
 CHECK_NAME = "inherits-share"
 
-CEILING_PERCENT = 50
+# There is no ceiling on this route, and #529 retired the one there was. It sat at half, reported
+# and never enforced, and the distribution it was drawn across has no break in it anywhere - least
+# of all at fifty, where `BaseLongBlade` sits at exactly 50.00000% because it is 21 of 42 members
+# and its weights are alike. A pool's share also swings by thirty to eighty points across its own
+# slices, so "N slices over half" counted tier requests and read as a count of breaches. What this
+# reports instead is a ranking: the most dominated slices, and each pool's worst one.
+TOP_SLICES = 10
 
 # A pool where vanilla ships almost nothing is arithmetic about nothing. Counted across the whole
 # pool rather than one slice of it, because every slice contains every member - only the weights
@@ -428,22 +429,37 @@ def share_of(cell: tuple[int, int, int, int]) -> float:
     return mine / (mine + vanilla) * 100
 
 
-def over_ceiling(
+def most_dominated(
     cells: dict[tuple[str, str], tuple[int, int, int, int]],
 ) -> list[tuple[str, str]]:
-    """Slices where this fork holds more than half the weight, most dominant first.
+    """Every measurable slice, most dominated first.
 
-    Reported, never failed - see the note on CEILING_PERCENT. #481 decides what, if anything, to do
-    about the level; this only makes it visible.
+    A ranking rather than a threshold (#529). Reported, never failed: membership here is a
+    consequence of `Inherits=`, and completing a weapon family across every tier - which is what
+    this fork is for - necessarily takes most of that family's pool. What fails is drift against
+    tools/inherited-pools.json.
     """
     return sorted(
-        (
-            key
-            for key, cell in cells.items()
-            if cell[3] >= VANILLA_FLOOR and share_of(cell) > CEILING_PERCENT
-        ),
+        (key for key, cell in cells.items() if cell[3] >= VANILLA_FLOOR),
         key=lambda key: -share_of(cells[key]),
     )
+
+
+def worst_per_pool(
+    cells: dict[tuple[str, str], tuple[int, int, int, int]],
+) -> list[tuple[str, str]]:
+    """Each pool's most dominated slice, worst pool first.
+
+    The ranking alone lets a pool hide behind its own good tiers: `BaseGlove` runs from 2.9% to
+    84.3% across its nine slices, and only the top of that range says anything. One row per pool
+    puts every pool on the page at its worst.
+    """
+    worst: dict[str, tuple[str, str]] = {}
+    for key in most_dominated(
+        cells
+    ):  # already sorted, so the first per pool is its worst
+        worst.setdefault(key[0], key)
+    return sorted(worst.values(), key=lambda key: -share_of(cells[key]))
 
 
 def collect(
@@ -569,7 +585,6 @@ def report_inherits(
     is measuring.
     """
     measurable = {k: v for k, v in cells.items() if v[3] >= VANILLA_FLOOR}
-    breaches = over_ceiling(cells)
     # The floor binds on nothing today - every consumed pool carries far more than five vanilla
     # members - so saying "N measurable" every run would dress a no-op up as a filter. Mention it
     # only when it actually excludes something.
@@ -579,23 +594,32 @@ def report_inherits(
         f"\nInherited pool slices - {len(cells)} slice(s) across "
         f"{len({pool for pool, _ in cells})} pool(s){unmeasured}"
     )
-    ranked = sorted(measurable, key=lambda key: -share_of(measurable[key]))
-    for pool, label in ranked if show_all else ranked[:12]:
-        mine, vanilla, mine_count, vanilla_count = measurable[(pool, label)]
-        flag = "  OVER" if share_of((mine, vanilla, 0, 0)) > CEILING_PERCENT else ""
-        print(
-            f"  {pool + ':' + label:34} {share_of(measurable[(pool, label)]):5.1f}% by weight  "
-            f"({mine_count} of {mine_count + vanilla_count} members){flag}"
+
+    def row(key: tuple[str, str]) -> str:
+        _, _, mine_count, vanilla_count = measurable[key]
+        return (
+            f"  {key[0] + ':' + key[1]:34} {share_of(measurable[key]):5.1f}% by weight  "
+            f"({mine_count} of {mine_count + vanilla_count} members)"
         )
-    if not show_all and len(ranked) > 12:
-        print(f"  ... and {len(ranked) - 12} more (--all)")
-    if breaches:
-        print(
-            f"\n  {len(breaches)} of {len(measurable)} slice(s) are over "
-            f"{CEILING_PERCENT}% by weight. Reported, not enforced - completing a family across "
-            "every\n  tier takes most of that family's pool, which is what this fork is for. "
-            "#481 decides whether\n  any of it should change. docs/STYLEGUIDE.md 3.2.1."
-        )
+
+    ranked = most_dominated(measurable)
+    shown = ranked if show_all else ranked[:TOP_SLICES]
+    print(f"\n  Most dominated slice(s){'' if show_all else f', top {TOP_SLICES}'}:")
+    for key in shown:
+        print(row(key))
+    if not show_all and len(ranked) > TOP_SLICES:
+        print(f"  ... and {len(ranked) - TOP_SLICES} more (--all)")
+
+    # One row per pool, because the ranking above is dominated by whichever pools have the most
+    # slices - four of BaseShield's ten can fill it and leave every other pool off the page.
+    print("\n  Each pool at its worst slice:")
+    for key in worst_per_pool(measurable):
+        print(row(key))
+    print(
+        "\n  Reported, not enforced, and there is no ceiling here - completing a family across "
+        "every tier\n  takes most of that family's pool, which is what this fork is for. What "
+        "fails is drift against\n  tools/inherited-pools.json. docs/STYLEGUIDE.md 3.2.1."
+    )
 
 
 def inherits_snapshot_of(
@@ -829,12 +853,12 @@ def main() -> int:
             )
             return 1
         pools = len(snapshot_of(tables))
-        breaches = over_ceiling(cells)
+        ranked = most_dominated(cells)
+        worst = f"{share_of(cells[ranked[0]]):.1f}%" if ranked else "none"
         print(
             f"OK - dynamic pool membership matches {SNAPSHOT_PATH} across {pools} pool(s); "
             f"inherited membership and share match {INHERITS_SNAPSHOT_PATH} across "
-            f"{len(cells)} slice(s), {len(breaches)} of them over {CEILING_PERCENT}% "
-            "and reported only"
+            f"{len(cells)} slice(s), the most dominated at {worst}"
         )
         return 0
 

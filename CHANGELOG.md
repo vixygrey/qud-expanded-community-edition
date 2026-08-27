@@ -182,6 +182,30 @@ recorded because contributors need them, not because subscribers do.
   satisfied. But tinkering is a thing a player *does*, not a rate at which a thing *appears*, and
   nothing was asking the difference.
 
+- **(internal)** The inherited-pool report ranks slices instead of judging them against a line
+  (#481, #529).
+
+  The 50% ceiling on that route was reported and never enforced, and it does not survive looking at
+  the distribution it was drawn across: 205 slices running smoothly from 0% to 93% with no break
+  anywhere. `BaseLongBlade` is **21 of 42 members** — headcount parity to the blueprint — so where
+  its members weigh alike the share is exactly **50.00000%**, with four sibling slices inside a
+  fiftieth of a point. Whether those were in breach came down to the fourth decimal.
+
+  A pool's share is not one number either. `BaseGlove` runs 2.9% to 84.3% across its own nine slices,
+  `BaseShield` 30.7% to 93.4% — so "N of 205 over half" counted tier requests while reading as a
+  count of breaches.
+
+  What prints now is the ten most dominated slices and **every pool at its own worst slice**, so no
+  pool hides behind its good tiers. Nothing becomes less strict: drift against
+  `tools/inherited-pools.json` is what fails a commit, and it is untouched.
+
+  §3.2.1's third-route section is rewritten with it. Six of its claims had gone stale and two were
+  wrong mechanically rather than numerically — it said a `:Weight` tag would apply *"if any
+  existed"* (200 blueprints carry one), and that `ExcludeFromDynamicEncounters` was the only lever
+  and offered no partial exclusion (`:Weight` is exactly that, and `Value="0"` excludes from one
+  slice). `check_docs` could not see any of it, because they were claims rather than registered
+  figures.
+
 - **(internal)** The pool report follows `<mixin>`, which is a second inheritance mechanism (#526).
 
   `BlueprintIndex.chain()` walked `Inherits=` and nothing else. A blueprint can also pull tags,

@@ -676,19 +676,38 @@ wrong when the check was first written, and #494 fixed them together:
   places, for three ranges like `Tier4-7`, and for three pools with no tier at all.
 - **A slice holds every member of its pool**, not the ones at its own tier. What the tier changes is
   the weight: a blueprint at the requested tier weighs 10⁸ and each step away divides by ten, then
-  `Role` multiplies, then a `:Weight` tag would if any existed. So the nearest tier dominates, and
-  counting members answers a question the game never asks.
+  `Role` multiplies, then a `:Weight` tag does — 200 blueprints carry one, 167 of them vanilla's. So
+  the nearest tier dominates, and counting members answers a question the game never asks.
 
-Getting this wrong understated `MeleeWeapon:Tier8` as 59% when it is **91%**, and reported two
-slices as clean that were over half.
+Getting this wrong understated `MeleeWeapon:Tier8` by more than thirty points, and reported two
+slices as clean that were the most dominated in the pool.
 
-**The ceiling is reported here, not enforced.** On the other two routes a share is a number someone
-chose and can lower. Here it is a consequence of what this fork is *for*: completing a weapon or
-armour family across every tier necessarily takes most of that family's pool. Fifty of a hundred and
-sixty-nine slices sit above half, and `BaseShield`, `BaseAxe` and `BaseLongBlade` are above it in
-all but one of the slices vanilla asks for — nine of ten, eight of nine, eight of nine. A rule that fails the build on the mod's own premise is the wrong rule, and a
-ledger of fifty permanent exemptions would be worse — that is the failure mode
-`tools/validation-baseline.json` exists to avoid.
+**There is no ceiling here, and the level is reported rather than judged.** On the other two routes
+a share is a number someone chose and can lower. Here it is a consequence of what this fork is
+*for*: completing a weapon or armour family across every tier necessarily takes most of that
+family's pool. `BaseShield` is nine of ten slices above half and `BaseAxe` eight of nine — a rule
+that failed the build on the mod's own premise would be the wrong rule, and a ledger of forty-odd
+permanent exemptions would be worse, which is the failure mode `tools/validation-baseline.json`
+exists to avoid.
+
+**A threshold was tried and retired (#529).** It sat at half, and the distribution it was drawn
+across has no break in it anywhere: the shares run smoothly from 0% to 93% with the largest bucket
+at the bottom. Worse, `BaseLongBlade` is **21 of 42 members** — headcount parity to the blueprint —
+so where its members weigh alike the share is exactly **50.00000%**, and four sibling slices sit
+within a fiftieth of a point of it. Whether those were "in breach" came down to the fourth decimal.
+
+**And a pool's share is not one number.** The tier decides the weights, so the same content reads
+very differently depending which slice is asked for:
+
+| pool | share range across its own slices |
+|---|---|
+| `BaseGlove` | 2.9% – 84.3% |
+| `BaseShield` | 30.7% – 93.4% |
+| `BaseCloak` | 4.6% – 70.0% |
+
+So "N of 205 slices are over half" counted tier requests while reading as a count of breaches. What
+the report prints instead is a ranking — the ten most dominated slices, and **every pool at its own
+worst slice**, so no pool hides behind its good tiers.
 
 **What fails instead is drift.** `tools/inherited-pools.json` pins two things per pool, because two
 different things move and they want telling apart:
@@ -699,27 +718,44 @@ different things move and they want telling apart:
   content moves. A Qud update adding tier-8 weapons lowers my share of that slice without a line of
   mine changing, and that is worth being told.
 
-The ceiling survives as a printed line, so the level stays visible while #481 decides what, if
-anything, to do about it.
-
 *(Two earlier derivations here are void and worth recording as such. The first justified a floor on
 the pool's **total** size by a gap between 9 and 16 in the size distribution; there is no such gap —
 it was measured over the already-over-half cells only. The second put the floor on vanilla's count
 **at that tier**, and rested on "no cell has vanilla holding four, five or six" out of thirty-four
-cells. Both counted members. Once slices are weighed rather than counted there are a hundred and
-sixty-nine of them, not thirty-four, and neither derivation survives contact with the real numbers.
-The floor that remains — five vanilla blueprints in the pool — binds on nothing today and is kept
-only so that a pool where vanilla ships almost nothing cannot produce a percentage that reads as
+cells. Both counted members. Once slices are weighed rather than counted there are two hundred and
+five of them, not thirty-four, and neither derivation survives contact with the real numbers. The
+floor that remains — five vanilla blueprints in the pool — binds on nothing today and is kept only
+so that a pool where vanilla ships almost nothing cannot produce a percentage that reads as
 dominance.)*
 
-**The dial is different here, and coarser.** There is no per-item weight to lower — the fix §3.2.1
-prescribes for the other two routes. Membership is binary, and the only lever is
-`<tag Name="ExcludeFromDynamicEncounters" />`, which removes a blueprint from **every** dynamic pool
-at once, `DynamicObjectsTable:` included, because `FabricateDynamicObjectsTable` and
-`FabricateDynamicInheritsTable` share the `IsEligibleForDynamicEncounters` predicate.
+#### The two levers, and which one to reach for
 
-So it is only usable on content that is **reachable another way**. That makes the rule sequential
-rather than absolute:
+**`:Weight` is the fine one, and it is the one to reach for.** A
+`<tag Name="<resolved table name>:Weight" Value="0.1" />` multiplies a blueprint's weight **inside
+one slice and nowhere else**, after the tier delta and `Role`. Vanilla ships **167 blueprints**
+carrying one, at values from 0.05 to 0.3 — `Holographic Banana Tree` is 0.2 of
+`DynamicObjectsTable:BananaGrove_Plants`, a cosmetic oddity damped in the one pool where it would
+otherwise crowd.
+
+Two things follow from how the game builds the key, and both cost tags:
+
+- The key is the table name **as requested**, and `TryResolvePopulation` substitutes `{zonetier}`
+  *before* `RequireTable` sees it — so `DynamicInheritsTable:BaseAnimal:Tier1:Weight` weights that
+  slice and no other. Damping a pool costs **one tag per tier** you mean to damp.
+- The value is a multiplier, applied last and ceilinged, so it can only ever thin a blueprint's
+  weight. **`Value="0"` is not a small weight but an exclusion**: the game does
+  `if (value == 0) continue`, dropping the blueprint from that one slice entirely.
+
+The creature variants are the worked example (#524): 78 tags at `0.1` across tiers 0–2 took
+`BaseAnimal` from 69.6% to 18.6% and `BaseReptile` from 65.1% to 15.7%, while leaving membership,
+the explicit biome entries and the `DynamicObjectsTable:<Biome>_Creatures` village route all
+untouched. Verified in game — the report says 18.6% and a hundred rolls said 21%.
+
+**`ExcludeFromDynamicEncounters` is the coarse one, and it is sequential.** It removes a blueprint
+from **every** dynamic pool at once, `DynamicObjectsTable:` included, because
+`FabricateDynamicObjectsTable` and `FabricateDynamicInheritsTable` share the
+`IsEligibleForDynamicEncounters` predicate. So it is only usable on content that is reachable
+another way:
 
 > **A blueprint may be excluded from the generic pools only once it has a home someone chose.**
 > Excluding an item that has no explicit population entry does not lower a share, it deletes the
@@ -727,14 +763,8 @@ rather than absolute:
 
 `Raven_Base Psionic Chip` is the worked example (#481): 144 chips, every one placed by hand in
 `Raven_Chips Tier 1`–`3`, so one tag on the base took `BaseArmor:Tier8` from 96% to 0% and cost
-nothing. The `MeleeWeapon` tiers still over the ceiling cannot follow until #482 gives their
-vinereapers and vibro weapons an entry.
-
-**And half is not always reachable, which is part of why it is only reported.** There is no partial
-exclusion: a blueprint is in every dynamic pool or none. Bringing
-`DynamicInheritsTable:BaseMissileWeapon:Tier3` under the ceiling means excluding **ten of nineteen**
-ranged weapons and choosing *which* ten — a decision about individual items that no share figure
-makes for you.
+nothing. Reach for this when a blueprint should leave the generic pools altogether; reach for
+`:Weight` when it should stay and weigh less.
 
 
 ### 3.3 Two ways to distribute an item, and which to reach for
