@@ -2941,6 +2941,26 @@ checks these values.
 | brinereed | Saltmarsh | brinereed shoot | salted brinereed | `plantMinor` |
 | sweetfrond | BananaGrove | sweetfrond heart | candied sweetfrond | `starch` |
 
+### 18.6b They can be a village's plant, which needed a tag
+
+Each plant carries `DynamicObjectsTable:<Biome>_Plants`. That pool is rolled by procedural village
+generation — `VillageBase.cs:1430` picks a region's plant, and §18.5's `Plank`, `Fiber` and
+`FiberMaterial` words are what name it in the wall description. Without the tag these three could
+only ever be picked by already standing in the zone the village was built in, never through the pool
+vanilla uses.
+
+**Wild flora carries `_Plants` alone.** Brinestalk is the model, with `Saltmarsh_Plants` and nothing
+else. `_FarmablePlants` is deliberately absent: that pool is for crops villagers *grow*, which
+witchwood and yuckwheat are and these are not.
+
+| plant | pool | vanilla entries before | after |
+|---|---|---:|---:|
+| cragwort | `Mountains_Plants` | 4 | 5 |
+| brinereed | `Saltmarsh_Plants` | 2 | 3 |
+| sweetfrond | `BananaGrove_Plants` | 2 | 3 |
+
+`tools/dynamic-pools.json` pins all three, so a fourth arriving unnoticed fails a commit.
+
 ### 18.7 The ingredient pools are village pools, not loot pools
 
 `DynamicObjectsTable:<Biome>_Ingredients` looks like the obvious way to distribute a preserved

@@ -16,6 +16,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Villages in the mountains, saltmarsh and banana grove can now be built and described with the
+  local plant** (#177).
+
+  Qud names a village's walls after a plant of its region — *"thatch of cragwort, bound together
+  with tar and twine of cragwort thatch"* — choosing from a per-biome pool. The three harvestable
+  plants were not in that pool, so they could only ever be picked by already standing in the zone
+  the village was built in.
+
+  They carry the tag now, following brinestalk: wild flora joins the plant pool and not the
+  farmable one, which is for crops villagers actually grow.
+
 - **Three harvestable plants**, one each for the mountains, the saltmarsh and the banana grove
   (#177) — cragwort, brinereed and sweetfrond. Each can be harvested for a snack, and each snack
   preserves into a cooking ingredient.
