@@ -355,8 +355,9 @@
     SearchKeywords="qud expanded creature variants colour color coat spawn regional biome"
   >
     <helptext>
-            Adds 32 colour and name variants of thirteen common creatures - brindle and marsh dogs,
-            black goats, rust beetles, a glass dragonfly - each in the biome its name argues for.
+            Adds 44 colour and name variants of nineteen common creatures - brindle and marsh dogs,
+            black goats, rust beetles, sorrel equimaxes, hoary bats - each in the biome its name
+            argues for.
 
             Cosmetic only. A variant differs in name, colour and description and in nothing else, so
             a pied dog fights exactly as a feral dog does.

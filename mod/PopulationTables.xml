@@ -1258,6 +1258,12 @@
       <object Chance="10" Number="1d4" Blueprint="Baboon" />
       <!-- the Baboon entry added above, 10/1d4 -->
       <object Chance="10" Number="1d2" Blueprint="Vixy_MangyBaboon" />
+      <!-- Equimax 10/2d6 -->
+      <object Chance="10" Number="1d6" Blueprint="Vixy_SorrelEquimax" />
+      <!-- Glowcrow 10/2d6 -->
+      <object Chance="10" Number="1d6" Blueprint="Vixy_CinderGlowcrow" />
+      <!-- Salthopper 10/1d1 - Number is already 1, so the chance halves instead -->
+      <object Chance="5" Number="1" Blueprint="Vixy_OchreSalthopper" />
     </group>
   </population>
 
@@ -1287,6 +1293,12 @@
       <object Chance="25" Number="1d6" Blueprint="Vixy_CopperDragonfly" />
       <!-- IrritableTortoise 10/1d3 -->
       <object Chance="10" Number="1d2" Blueprint="Vixy_MossbackTortoise" />
+      <!-- Equimax 30/2d6 -->
+      <object Chance="30" Number="1d6" Blueprint="Vixy_PiebaldEquimax" />
+      <!-- Glowcrow 10/2d6 -->
+      <object Chance="10" Number="1d6" Blueprint="Vixy_LanternGlowcrow" />
+      <!-- Salthopper 10/1d1 - Number is already 1, so the chance halves instead -->
+      <object Chance="5" Number="1" Blueprint="Vixy_MeadowSalthopper" />
     </group>
   </population>
 
@@ -1348,5 +1360,24 @@
         <object Number="1-2" Blueprint="Vixy_SaltBeetle" />
       </group>
     </group>
+  </population>
+  <population Name="Tier2CaveCreatures" Load="Merge">
+    <group Name="Creatures" Load="Merge">
+      <!-- Giant Centipede w10/2-4 -->
+      <object Weight="10" Number="1-2" Blueprint="Vixy_SlateCentipede" />
+      <!-- Bat w5/1 - Number is already 1, so the weight halves instead -->
+      <object Weight="2" Number="1" Blueprint="Vixy_RufousBat" />
+      <!-- Bear w5/1 - likewise -->
+      <object Weight="2" Number="1" Blueprint="Vixy_CinnamonBear" />
+    </group>
+  </population>
+
+  <population Name="LowerTremblingDunesZoneGlobals" Load="Merge">
+    <!-- Giant Centipede 45/1-2 -->
+    <object Chance="45" Number="1" Blueprint="Vixy_ChalkCentipede" />
+    <!-- Bat 90/1-3 -->
+    <object Chance="90" Number="1" Blueprint="Vixy_HoaryBat" />
+    <!-- Bear 95/1 - Number is already 1, so the chance halves instead -->
+    <object Chance="50" Number="1" Blueprint="Vixy_BlackBear" />
   </population>
 </populations>
