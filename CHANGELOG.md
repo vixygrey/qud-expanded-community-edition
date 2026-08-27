@@ -74,6 +74,32 @@ recorded because contributors need them, not because subscribers do.
   with no row. Commented-out objects are counted too, which caught a fourth stale figure — the
   parenthetical on the `Ammo.xml` row said 20 dormant where the file holds 22, a number §10 already
   states correctly two thousand lines further down.
+- **(internal)** The loot-table share ceiling silently governed nothing for half the tables it was
+  meant to cover (#474).
+
+  `table-share` caps this fork's share of a vanilla table at half by summing `Weight`. Vanilla's
+  biome globals scatter with `Chance` and `Number` and carry no `Weight` at all, and neither does
+  anything this fork merges into them — so both sides summed to zero and the check could not fail
+  however much was added. Six merge blocks sat in that hole, every creature variant among them.
+  `HillsZoneGlobals-Reachable` computed 0 against 100 and would have gone on passing at fifty more
+  entries.
+
+  A second check, `scatter-share`, measures those entries as expected quantity —
+  `Chance ÷ 100 × Number` — which is what a scatter entry expresses. Twelve tables are guarded that
+  were not, at real shares from 39% down — including all three the harvestable plants merge into.
+  The weighted tables are untouched.
+
+  Unifying the two into one measure does not work, and the attempt is worth recording: a
+  `Load="Merge"` block carries no `Style`, because the group it merges into already has one, so a
+  merged entry cannot be resolved to its parent's style from this fork's XML. Reading every merged
+  entry as a scatter entry put `Melee Weapons 5C` at 75.2% against a true 42.6%, and twelve more
+  with it. Splitting on "does this entry carry a `Weight`" needs no resolution, because vanilla is
+  strictly disjoint there: all 4,860 of its `pickone` children carry `Weight` and none carries
+  `Chance`.
+
+  On its first run against real content it found #476 — a merge into a table Freehold has commented
+  out — which is now the one entry in `tools/validation-baseline.json`.
+
 - **(internal)** The Workshop description length check measured characters, not bytes (#171).
 
   Steam rejected the 2.7.0 upload with `k_EResultInvalidParam`. The description was 7,963

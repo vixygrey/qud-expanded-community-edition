@@ -1534,6 +1534,30 @@ def snapshot_tag_forms() -> dict[str, str]:
     return json.loads(QUD_API_PATH.read_text()).get("tag_forms", {})
 
 
+def snapshot_absent_tables() -> set[str]:
+    """Tables this fork merges into that vanilla does not define, from tools/qud-api.json.
+
+    An absence is a citation like any other. Without it a table vanilla has switched off is
+    indistinguishable from a table the snapshot has simply never seen, and the two want opposite
+    responses - one is a defect in the mod, the other a stale snapshot.
+    """
+    if not QUD_API_PATH.is_file():
+        return set()
+    return set(json.loads(QUD_API_PATH.read_text()).get("absent_tables", []))
+
+
+def snapshot_scatter_quantities() -> dict[str, float]:
+    """Vanilla's expected scattered quantity per table, from tools/qud-api.json.
+
+    Empty when the snapshot predates the key, in which case `check_scatter_share` returns early -
+    the same bargain the other snapshot-backed checks make, and the same reason to regenerate
+    after every Qud update.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("scatter_quantities", {})
+
+
 def snapshot_skill_powers() -> dict[str, dict]:
     """Vanilla's Cost, Minimum and Attribute for each skill power this mod merges into.
 
@@ -1731,6 +1755,130 @@ def check_tag_form(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     f"vanilla writes <{expected}> - this produces the tag {produces!r} and "
                     f"vanilla's own objects carry {wants!r}",
                 )
+
+
+NUMBER_FORMS = (
+    (re.compile(r"^(\d+)$"), lambda m: float(m[1])),
+    (re.compile(r"^(\d+)-(\d+)$"), lambda m: (float(m[1]) + float(m[2])) / 2),
+    (re.compile(r"^(\d+)d(\d+)$"), lambda m: float(m[1]) * (float(m[2]) + 1) / 2),
+    (
+        re.compile(r"^(\d+)d(\d+)([+-]\d+)$"),
+        lambda m: float(m[1]) * (float(m[2]) + 1) / 2 + float(m[3]),
+    ),
+)
+
+
+def number_midpoint(raw: str | None) -> float:
+    """The average count one entry produces. An absent Number means one.
+
+    Covers every form vanilla writes: a bare count, a `2-8` range, `2d6`, and `1d4+15`. An
+    unrecognised form returns 1 rather than 0, so a form nobody anticipated understates a share
+    rather than erasing the entry - the direction that fails loud rather than quiet.
+    """
+    text = (raw or "").strip()
+    if not text:
+        return 1.0
+    for pattern, value in NUMBER_FORMS:
+        m = pattern.match(text)
+        if m:
+            return max(value(m), 0.0)
+    return 1.0
+
+
+def scatter_quantity(pop: ET.Element) -> float:
+    """Expected number of objects one roll of this table scatters.
+
+    A population entry is written one of two ways and vanilla never mixes them: a `pickone` group
+    selects one child weighted by `Weight`, and everything else rolls each child independently at
+    its `Chance`. Across vanilla's 4,860 pickone children **every one carries `Weight` and none
+    carries `Chance`**, and the reverse holds for pickeach. This mod's own 703 entries split the
+    same way, with nothing carrying both.
+
+    So "carries no `Weight`" identifies a scatter entry exactly, with no need to resolve which
+    group it lands in - which matters, because a `Load="Merge"` block does not carry the `Style`
+    of the group it merges into. That fact is what made a single unified measure across both
+    styles come out wrong, and why this counts scatter entries **only** and leaves weighted ones
+    to `check_table_share` (#474).
+
+    `<table>` references are not followed: a shared sub-table belongs to whoever wrote it.
+    """
+    total = 0.0
+    for obj in pop.iter("object"):
+        if not obj.get("Blueprint") or obj.get("Weight") is not None:
+            continue
+        total += (
+            float(obj.get("Chance") or 100) / 100 * number_midpoint(obj.get("Number"))
+        )
+    return total
+
+
+def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """This fork's share of a vanilla table's *scattered* content stops at half.
+
+    The same ceiling as `table-share` and the same reasoning - docs/STYLEGUIDE.md 3.2.1 - applied
+    to the half of the tables that ceiling could never reach. `table-share` sums `Weight`, and a
+    scatter entry has none, so both sides summed to zero: six merge blocks, every creature variant
+    among them, sat in a check that could not fail however much was added.
+    `HillsZoneGlobals-Reachable` computed 0 against 100 and would have gone on passing at fifty
+    more entries (#474).
+
+    Share here is expected quantity, because that is what a scatter entry expresses and what the
+    rule is actually about - at the low tiers most of what a player *meets* should still be the
+    game they bought.
+
+    **A table the snapshot has never seen is reported, not skipped.** `merged_record_names` builds
+    the snapshot's table list from what this mod already merges, so merging into a table for the
+    first time leaves it absent until the snapshot is regenerated - and a check that skipped it
+    would be silently unguarded at exactly the moment new content arrived. `table-share` does skip
+    it, which is how `LowerTremblingDunesZoneGlobals` came to be unwatched; this one says so.
+    """
+    quantities = snapshot_scatter_quantities()
+    absent = snapshot_absent_tables()
+    if not quantities:
+        return
+
+    pops = Path("mod/PopulationTables.xml")
+    if not pops.is_file():
+        return
+    try:
+        root = ET.fromstring(pops.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    mine: dict[str, float] = {}
+    for pop in root.iter("population"):
+        name = pop.get("Name")
+        if name and pop.get("Load") == "Merge":
+            mine[name] = mine.get(name, 0.0) + scatter_quantity(pop)
+
+    for name, ours in sorted(mine.items()):
+        if ours <= 0:
+            continue  # this fork scatters nothing here; table-share owns its weighted entries
+        if name in absent:
+            f.add(
+                "scatter-share",
+                f"mod/PopulationTables.xml: vanilla does not define {name}, so this fork's "
+                f"{ours:.1f} expected object(s) are the whole of it - check whether the merge "
+                f"still reaches a zone before treating the share as meaningful",
+            )
+            continue
+        if name not in quantities:
+            f.add(
+                "scatter-share",
+                f"mod/PopulationTables.xml: {name} is not in the snapshot, so this fork's "
+                f"{ours:.1f} expected object(s) there are unguarded - regenerate with "
+                f"tools/snapshot_qud_api.py",
+            )
+            continue
+        vanilla = quantities[name]
+        if ours > vanilla:
+            share = ours / (ours + vanilla) * 100
+            f.add(
+                "scatter-share",
+                f"mod/PopulationTables.xml: {name} is {share:.1f}% this fork's scattered "
+                f"content ({ours:.1f} expected against vanilla's {vanilla:.1f}) - "
+                f"the ceiling is half",
+            )
 
 
 def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -2485,6 +2633,7 @@ def run() -> Findings:
     check_weight_curve(f, roots)
     check_tag_form(f, roots)
     check_table_share(f, roots)
+    check_scatter_share(f, roots)
     check_implant_table_cost(f, roots)
     check_skill_option_coverage(f)
     check_serializable_shape(f)

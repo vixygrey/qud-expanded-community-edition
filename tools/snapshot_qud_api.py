@@ -760,6 +760,50 @@ def collect_tag_forms(game: Path) -> dict[str, str]:
     return {name: next(iter(k)) for name, k in sorted(forms.items()) if len(k) == 1}
 
 
+def collect_scatter_quantities(game: Path) -> dict[str, float]:
+    """Vanilla's expected scattered quantity for each population table this mod adds entries to.
+
+    The companion to `collect_table_weights`, for the entries that carry no `Weight` and which
+    summed weight therefore measured as nothing at all (#474). The arithmetic is imported from
+    `validate_mod` rather than repeated here: two sides of a ratio computed by two copies of a
+    formula is a defect waiting for one copy to be edited, which is exactly how the weight version
+    came to measure zero on both sides without anyone noticing.
+    """
+    from validate_mod import scatter_quantity
+
+    _, wanted = merged_record_names()
+    totals: dict[str, float] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            name = pop.get("Name")
+            if name not in wanted:
+                continue
+            totals[name] = round(totals.get(name, 0.0) + scatter_quantity(pop), 4)
+    return totals
+
+
+def collect_absent_tables(game: Path) -> list[str]:
+    """Population tables this mod merges into that vanilla does not define.
+
+    A citation of an absence, which is worth as much as a citation of a figure and is otherwise
+    indistinguishable from "the snapshot is stale". `LowerTremblingDunesZoneGlobals` is the live
+    case: Freehold **commented the whole table out**, while `ZoneTemplates.xml` still names it in
+    the Trembling Dunes' `<population Table=…>` block. A `Load="Merge"` into it therefore has no
+    vanilla content to join.
+    """
+    merged = {
+        pop.get("Name")
+        for pop in parse(MOD / "PopulationTables.xml", lenient=True).iter("population")
+        if pop.get("Name") and pop.get("Load") == "Merge"
+    }
+    seen: set[str] = set()
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            if pop.get("Name"):
+                seen.add(pop.get("Name"))
+    return sorted(m for m in merged if m not in seen)
+
+
 def collect_table_weights(game: Path) -> dict[str, int]:
     """Vanilla's total drop weight for each population table this mod adds entries to.
 
@@ -993,6 +1037,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     aggregate_descendants = collect_aggregate_descendants(game)
     table_weights = collect_table_weights(game)
     tag_forms = collect_tag_forms(game)
+    scatter_quantities = collect_scatter_quantities(game)
+    absent_tables = collect_absent_tables(game)
     skill_powers = collect_skill_powers(game)
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
@@ -1038,6 +1084,10 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + json.dumps(tag_forms, sort_keys=True)
             + "\0"
+            + json.dumps(scatter_quantities, sort_keys=True)
+            + "\0"
+            + json.dumps(absent_tables, sort_keys=True)
+            + "\0"
             + json.dumps(skill_powers, sort_keys=True)
             + "\0"
             + json.dumps(aggregate_descendants, sort_keys=True)
@@ -1049,7 +1099,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "of entry, and the distinction is the rule this file is kept to. Most of it is "
             "IDENTIFIERS - part, blueprint, member and builder names, the same ones this mod's "
             'own XML already writes in every Load="Merge". The rest is CITATIONS: figures, '
-            "merged_records and table_weights hold values read out of Freehold's data, and each "
+            "merged_records, table_weights and scatter_quantities hold values read out of "
+            "Freehold's data, and each "
             "exists because something here depends on it - a document quotes it, or a check "
             "compares against a vanilla record this fork edits. No descriptions, text or art, and "
             "no value without a dependant: a list of citations, not a dump of the game. "
@@ -1074,6 +1125,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "merged_records": len(merged_records),
             "table_weights": len(table_weights),
             "tag_forms": len(tag_forms),
+            "scatter_quantities": len(scatter_quantities),
+            "absent_tables": len(absent_tables),
             "skill_powers": len(skill_powers),
             "aggregate_descendants": len(aggregate_descendants),
         },
@@ -1087,6 +1140,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "merged_records": dict(sorted(merged_records.items())),
         "table_weights": dict(sorted(table_weights.items())),
         "tag_forms": tag_forms,
+        "scatter_quantities": dict(sorted(scatter_quantities.items())),
+        "absent_tables": absent_tables,
         "skill_powers": dict(sorted(skill_powers.items())),
         "aggregate_descendants": dict(sorted(aggregate_descendants.items())),
     }

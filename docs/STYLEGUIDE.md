@@ -636,6 +636,30 @@ most of what a player finds should still be the game they bought.
 The ceiling does not apply to a table this fork defines itself — `Raven_Chips Tier 1` through `3`
 have no vanilla entry to be half of.
 
+**One ceiling, two measures, because vanilla writes entries two ways.** A `pickone` group selects
+exactly one child, weighted by `Weight`; everything else rolls each child independently at its
+`Chance`, producing `Number` of it. Vanilla never mixes them — across its 4,860 pickone children
+every one carries `Weight` and none carries `Chance`, and its pickeach children are the reverse — so
+which measure applies is decided by the entry itself:
+
+| entry style | measured as | check |
+|---|---|---|
+| carries `Weight` | summed weight | `table-share` |
+| carries no `Weight` | expected quantity, `Chance ÷ 100 × Number` | `scatter-share` |
+
+**`scatter-share` exists because the weight measure silently governed nothing for half the tables
+here** (#474). Biome globals scatter, so both sides summed to zero and the check could not fail
+however much was added: six merge blocks sat in it, every creature variant among them, and
+`HillsZoneGlobals-Reachable` computed 0 against 100 and would have gone on passing at fifty more
+entries.
+
+**Do not try to unify the two into one number.** I tried, and it fails on the tables that already
+worked: a `Load="Merge"` block carries no `Style`, because the group it merges into already has one,
+so a merged entry cannot be resolved to its parent's style from this fork's XML alone. Reading every
+merged entry as a scatter entry reported `Melee Weapons 5C` at 75.2% where the true share is 42.6%,
+and did the same to twelve more. Splitting by "does this entry carry a `Weight`" needs no resolution
+at all, because vanilla's disjointness above makes that question equivalent.
+
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 
@@ -1002,6 +1026,7 @@ seconds rather than after a round trip.
 | A merge keeping vanilla's value and resistances | `merge-value`, same source |
 | A chip grading a mutation that cannot level | `dead-chip-grade`, against the snapshot's `non_leveling_mutations` |
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
+| This fork's share of a vanilla table's *scattered* content | `scatter-share`, against the snapshot's `scatter_quantities` |
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
 | Every claim pattern matching something, so a reworded sentence cannot silence its check | `claim-coverage` |
@@ -1104,6 +1129,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
 | `tag-form` | `validate_mod.py` | `<tag>` vs `<stag>` against vanilla's usage of that tag name |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
+| `scatter-share` | `validate_mod.py` | this fork's share of a vanilla table's scattered content |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |
 | `unreachable` | `validate_mod.py` | blueprint reachability |
