@@ -1385,6 +1385,14 @@ def registered_check_names() -> set[str] | None:
     }
 
 
+CHECK_SOURCES = (
+    "validate_mod.py",
+    "check_build_log.py",
+    "check_docs.py",
+    "report_dynamic_tables.py",
+)
+
+
 def check_check_names(f: Findings) -> None:
     """Check names and the documents must agree, in both directions.
 
@@ -1402,12 +1410,15 @@ def check_check_names(f: Findings) -> None:
     # This script included: it emits named checks too, and leaving itself out is the very trap
     # the paragraph above describes. #242 walked into it - documenting `vanilla-figure`, a name
     # this file has emitted since it was written, failed here.
-    sources = ("validate_mod.py", "check_build_log.py", "check_docs.py")
+    sources = CHECK_SOURCES
     emitted: set[str] = set()
     for name in sources:
-        emitted |= set(
-            re.findall(r'f\.add\(\s*"([a-z-]+)"', (Path("tools") / name).read_text())
-        )
+        text = (Path("tools") / name).read_text()
+        emitted |= set(re.findall(r'f\.add\(\s*"([a-z-]+)"', text))
+        # Not every tool collects findings in a Findings object. report_dynamic_tables.py prints
+        # its own, so it declares the name as a constant rather than only interpolating it - a
+        # bare bracketed literal would match hook ids and YAML keys just as happily.
+        emitted |= set(re.findall(r'^CHECK_NAME = "([a-z-]+)"', text, re.MULTILINE))
     if not emitted:
         f.add(
             "check-names",

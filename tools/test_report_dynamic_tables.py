@@ -10,6 +10,7 @@ from __future__ import annotations
 import contextlib
 import io
 import sys
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -22,9 +23,12 @@ import report_dynamic_tables
 from check_vanilla_drift import BlueprintIndex
 from report_dynamic_tables import (
     collect,
+    consumed_inherits_pools,
     declarer,
     describe_drift,
     eligible,
+    inherits_cells,
+    inherits_violations,
     merged_objects,
     snapshot_of,
 )
@@ -278,3 +282,112 @@ class WithoutTheGame(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class InheritsPools(unittest.TestCase):
+    """#481: membership nobody declares, so nothing recorded it.
+
+    A blueprint joins `DynamicInheritsTable:<Base>` by descending from `<Base>` - there is no tag
+    to grep and nothing in a diff to review, which is why this is counted rather than read.
+    """
+
+    BASE = (
+        "<objects>"
+        '<object Name="BaseSword"><part Name="Render" />'
+        '<tag Name="BaseObject" Value="*noinherit" /><tag Name="Tier" Value="3" /></object>'
+        '<object Name="VanillaSword" Inherits="BaseSword" />'
+        '<object Name="Vixy_Sword" Inherits="BaseSword" />'
+        "</objects>"
+    )
+
+    def cells(self, xml: str | None = None, new: set[str] | None = None):
+        i = BlueprintIndex(roots(xml or self.BASE))
+        return inherits_cells(
+            i, {"BaseSword"}, new if new is not None else {"Vixy_Sword"}
+        )
+
+    def test_a_descendant_is_counted_on_the_side_it_belongs_to(self) -> None:
+        self.assertEqual(self.cells(), {("BaseSword", "3"): [1, 1]})
+
+    def test_the_base_itself_is_not_counted(self) -> None:
+        """It is not eligible, and counting it would inflate vanilla's side by one everywhere."""
+        self.assertEqual(sum(sum(v) for v in self.cells().values()), 2)
+
+    def test_tier_is_inherited_from_the_nearest_declaration(self) -> None:
+        """The pools are only ever consumed as :Tier{n} slices, so an unresolvable tier reaches
+        nothing and must not be counted into some default bucket."""
+        cells = self.cells(
+            "<objects>"
+            '<object Name="BaseSword"><part Name="Render" />'
+            '<tag Name="BaseObject" Value="*noinherit" /></object>'
+            '<object Name="Vixy_Sword" Inherits="BaseSword" />'
+            "</objects>"
+        )
+        self.assertEqual(cells, {})
+
+    def test_an_excluded_blueprint_leaves_the_pool(self) -> None:
+        """The one lever there is - and the reason the chip fix in #483 worked."""
+        cells = self.cells(
+            self.BASE.replace(
+                '<object Name="Vixy_Sword" Inherits="BaseSword" />',
+                '<object Name="Vixy_Sword" Inherits="BaseSword">'
+                '<tag Name="ExcludeFromDynamicEncounters" /></object>',
+            )
+        )
+        self.assertEqual(cells, {("BaseSword", "3"): [0, 1]})
+
+
+class InheritsCeiling(unittest.TestCase):
+    """docs/STYLEGUIDE.md 3.2.1 - half, but only where vanilla has a presence to protect."""
+
+    def test_over_half_with_a_real_vanilla_presence_is_reported(self) -> None:
+        new, known = inherits_violations({("Pool", "3"): [11, 9]})
+        self.assertEqual(known, [])
+        self.assertEqual(len(new), 1)
+        self.assertIn("55% this fork's", new[0])
+        self.assertIn("11 against vanilla's 9", new[0])
+
+    def test_at_half_exactly_is_not_reported(self) -> None:
+        self.assertEqual(inherits_violations({("Pool", "3"): [9, 9]}), ([], []))
+
+    def test_a_thin_vanilla_presence_is_exempt(self) -> None:
+        """1 of 1 does not mean this fork dominates the tier - it means vanilla ships none, and a
+        percentage there reports only that vanilla left a gap."""
+        self.assertEqual(inherits_violations({("Pool", "0"): [1, 0]}), ([], []))
+        self.assertEqual(inherits_violations({("Pool", "0"): [3, 3]}), ([], []))
+
+    def test_the_floor_is_on_vanillas_count_not_the_total(self) -> None:
+        """A cell of 40 that is 36 mine and 4 vanilla is exempt; one of 14 that is 9 mine and 5
+        vanilla is not. Sorting on the total would get both backwards."""
+        self.assertEqual(inherits_violations({("Pool", "3"): [36, 4]}), ([], []))
+        new, _ = inherits_violations({("Pool", "3"): [9, 5]})
+        self.assertEqual(len(new), 1)
+
+    def test_a_tracked_cell_does_not_fail_the_run(self) -> None:
+        """The ledger's whole purpose, and the same bargain validation-baseline.json makes."""
+        pool, tier = next(iter(report_dynamic_tables.KNOWN_OVER))
+        new, known = inherits_violations({(pool, tier): [11, 9]})
+        self.assertEqual(new, [])
+        self.assertEqual(len(known), 1)
+        self.assertIn("#", known[0])
+
+    def test_an_untracked_cell_still_fails(self) -> None:
+        """Without this the ledger could swallow everything and the check would read as passing."""
+        new, known = inherits_violations({("NotInTheLedger", "3"): [11, 9]})
+        self.assertEqual(known, [])
+        self.assertEqual(len(new), 1)
+
+
+class ConsumedInheritsPools(unittest.TestCase):
+    def test_a_commented_out_reference_does_not_count(self) -> None:
+        """Vanilla keeps a commented-out DynamicInheritsTable:BaseAnimal:Tier2. Counting it would
+        measure this fork's share of a pool nothing rolls."""
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "PopulationTables.xml").write_text(
+            "<populations>"
+            '<table Name="DynamicInheritsTable:Live:Tier1" />'
+            '<!-- <table Name="DynamicInheritsTable:Dead:Tier2" /> -->'
+            "</populations>",
+            encoding="utf-8",
+        )
+        self.assertEqual(consumed_inherits_pools(tmp), {"Live"})

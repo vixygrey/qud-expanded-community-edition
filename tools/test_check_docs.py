@@ -609,7 +609,9 @@ class CheckNameRegistry(unittest.TestCase):
                 + "\n\n### 10.2 After\n",
                 encoding="utf-8",
             )
-            for source in ("validate_mod.py", "check_build_log.py", "check_docs.py"):
+            # Every source the check actually reads, taken from the check rather than repeated:
+            # a fourth was added in #481 and a hardcoded list here turned that into three errors.
+            for source in check_docs.CHECK_SOURCES:
                 (root / "tools" / source).write_text(
                     'f.add("real-check", "x")\n', encoding="utf-8"
                 )
