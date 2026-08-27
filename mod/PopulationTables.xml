@@ -1210,6 +1210,7 @@
 
   <population Name="HillsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
+      <!-- Goat 50/2d6 -->
       <object Chance="50" Number="1d3" Blueprint="Vixy_DunGoat" />
     </group>
   </population>
@@ -1233,108 +1234,108 @@
   <population Name="HillsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Dog 25/1d4 -->
-      <object Chance="10" Number="1d4" Blueprint="Vixy_BrindleDog" />
+      <object Chance="25" Number="1d2" Blueprint="Vixy_BrindleDog" />
       <!-- Boar 25/1d4 -->
-      <object Chance="10" Number="1d4" Blueprint="Vixy_BristleBoar" />
+      <object Chance="25" Number="1d2" Blueprint="Vixy_BristleBoar" />
       <!-- IrritableTortoise 25/1d3 -->
-      <object Chance="10" Number="1d3" Blueprint="Vixy_ScarredTortoise" />
+      <object Chance="25" Number="1d2" Blueprint="Vixy_ScarredTortoise" />
       <!-- Honey Skunk 50/1d2 -->
-      <object Chance="25" Number="1d2" Blueprint="Vixy_BandedHoneySkunk" />
+      <object Chance="50" Number="1" Blueprint="Vixy_BandedHoneySkunk" />
     </group>
   </population>
 
   <population Name="DesertCanyonZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Dog 10/1d4 -->
-      <object Chance="5" Number="1d4" Blueprint="Vixy_RangyDog" />
+      <object Chance="10" Number="1d2" Blueprint="Vixy_RangyDog" />
       <!-- Boar 10/1d2 -->
-      <object Chance="5" Number="1d2" Blueprint="Vixy_PaleBoar" />
+      <object Chance="10" Number="1" Blueprint="Vixy_PaleBoar" />
       <!-- Salamander 10/2d4 -->
-      <object Chance="5" Number="2d4" Blueprint="Vixy_AshenSalamander" />
+      <object Chance="10" Number="1d4" Blueprint="Vixy_AshenSalamander" />
       <!-- Horned Chameleon 10/1d1 -->
-      <object Chance="5" Number="1d1" Blueprint="Vixy_SandHornedChameleon" />
+      <object Chance="10" Number="1" Blueprint="Vixy_SandHornedChameleon" />
       <!-- RESTORES vanilla intent; matches Dog 10/1d4 -->
       <object Chance="10" Number="1d4" Blueprint="Baboon" />
-      <!-- one step below the Baboon entry above -->
-      <object Chance="5" Number="1d4" Blueprint="Vixy_MangyBaboon" />
+      <!-- the Baboon entry added above, 10/1d4 -->
+      <object Chance="10" Number="1d2" Blueprint="Vixy_MangyBaboon" />
     </group>
   </population>
 
   <population Name="DesertCanyonZoneGlobals" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- GiantDragonfly 25/2d6 -->
-      <object Chance="10" Number="2d6" Blueprint="Vixy_EmberDragonfly" />
+      <object Chance="25" Number="1d6" Blueprint="Vixy_EmberDragonfly" />
     </group>
   </population>
 
   <population Name="MountainsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Dog 25/1d4 -->
-      <object Chance="10" Number="1d4" Blueprint="Vixy_AshcoatDog" />
+      <object Chance="25" Number="1d2" Blueprint="Vixy_AshcoatDog" />
       <!-- Goat 50/3d6 -->
-      <object Chance="25" Number="3d6" Blueprint="Vixy_CraggedGoat" />
-      <!-- Goat 50/3d6, two steps down and fewer: the rare coat -->
-      <object Chance="10" Number="1d3" Blueprint="Vixy_BlackGoat" />
+      <object Chance="50" Number="1d6" Blueprint="Vixy_CraggedGoat" />
+      <!-- Goat 50/3d6, held one step down on purpose - the rare coat -->
+      <object Chance="25" Number="1d3" Blueprint="Vixy_BlackGoat" />
     </group>
   </population>
 
   <population Name="FlowerFieldsPopulation" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Dog 10/1d4 -->
-      <object Chance="5" Number="1d4" Blueprint="Vixy_PiedDog" />
+      <object Chance="10" Number="1d2" Blueprint="Vixy_PiedDog" />
       <!-- GiantDragonfly 25/2d6 -->
-      <object Chance="10" Number="2d6" Blueprint="Vixy_CopperDragonfly" />
+      <object Chance="25" Number="1d6" Blueprint="Vixy_CopperDragonfly" />
       <!-- IrritableTortoise 10/1d3 -->
-      <object Chance="5" Number="1d3" Blueprint="Vixy_MossbackTortoise" />
+      <object Chance="10" Number="1d2" Blueprint="Vixy_MossbackTortoise" />
     </group>
   </population>
 
   <population Name="JungleZoneGlobals" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Boar 5/1-2 -->
-      <object Chance="5" Number="1-2" Blueprint="Vixy_RussetBoar" />
+      <object Chance="5" Number="1" Blueprint="Vixy_RussetBoar" />
       <!-- Salamander 5/1-4 -->
-      <object Chance="5" Number="1-4" Blueprint="Vixy_MarbledSalamander" />
+      <object Chance="5" Number="1-2" Blueprint="Vixy_MarbledSalamander" />
       <!-- Horned Chameleon 5/1 -->
       <object Chance="5" Number="1" Blueprint="Vixy_MottledHornedChameleon" />
     </group>
   </population>
 
   <population Name="SaltMarshZoneGlobals" Load="Merge">
-    <!-- Croc 50/(none) -->
-    <object Chance="25" Number="1" Blueprint="Vixy_SiltCroc" />
+    <!-- Croc 50/1 -->
+    <object Chance="50" Number="1" Blueprint="Vixy_SiltCroc" />
     <!-- Glowfish 75/2d4 -->
-    <object Chance="50" Number="2d4" Hint="Aquatic" Blueprint="Vixy_VerdigrisGlowfish" />
-    <!-- NEW CONTENT - no parent here to derive from -->
-    <object Chance="10" Number="1d2" Blueprint="Vixy_MarshDog" />
+    <object Chance="75" Number="1d4" Blueprint="Vixy_VerdigrisGlowfish" Hint="Aquatic" />
+    <!-- NEW CONTENT - no parent here; pitched between the marsh's own animals -->
+    <object Chance="25" Number="1d2" Blueprint="Vixy_MarshDog" />
   </population>
 
   <population Name="WaterCreatures" Load="Merge">
     <group Name="Creatures" Load="Merge">
       <!-- Croc w5/1 -->
-      <object Weight="2" Number="1" Blueprint="Vixy_PaleCroc" />
+      <object Weight="5" Number="1" Blueprint="Vixy_PaleCroc" />
       <!-- GiantDragonfly w5/1-2 -->
-      <object Weight="2" Number="1-2" Blueprint="Vixy_GlassDragonfly" />
+      <object Weight="5" Number="1" Blueprint="Vixy_GlassDragonfly" />
       <!-- Glowfish w5/1-2 -->
-      <object Weight="2" Number="1-2" Hint="Aquatic" Blueprint="Vixy_PaleGlowfish" />
+      <object Weight="5" Number="1" Blueprint="Vixy_PaleGlowfish" Hint="Aquatic" />
     </group>
   </population>
 
   <population Name="RuinsZoneGlobals-Creatures" Load="Merge">
     <!-- Giant Beetle 5/3-6 -->
-    <object Chance="5" Number="3-6" Blueprint="Vixy_MiddenBeetle" />
+    <object Chance="5" Number="2-3" Blueprint="Vixy_MiddenBeetle" />
     <!-- Giant Beetle 5/3-6 -->
-    <object Chance="5" Number="3-6" Blueprint="Vixy_RustBeetle" />
+    <object Chance="5" Number="2-3" Blueprint="Vixy_RustBeetle" />
     <!-- Glowmoth 5/1 -->
     <object Chance="5" Number="1" Blueprint="Vixy_AshwingGlowmoth" />
   </population>
 
   <population Name="BaboonParty" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Baboon 90/3-4; a couple join the troupe -->
-      <object Chance="25" Number="1-2" Blueprint="Vixy_SilverBaboon" />
-      <!-- the rarer coat -->
-      <object Chance="10" Number="1-2" Blueprint="Vixy_RustBaboon" />
+      <!-- Baboon 90/3-4 -->
+      <object Chance="90" Number="1-2" Blueprint="Vixy_SilverBaboon" />
+      <!-- Baboon 90/3-4, held down - the rarer coat -->
+      <object Chance="50" Number="1" Blueprint="Vixy_RustBaboon" />
     </group>
   </population>
 
@@ -1343,7 +1344,7 @@
        something already there, and it is weighted below every vanilla group here except Saltwurms. -->
   <population Name="SaltDuneCreatures" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <group Name="SaltBeetles" Style="pickeach" Weight="2">
+      <group Name="SaltBeetles" Style="pickeach" Weight="4">
         <object Number="1-2" Blueprint="Vixy_SaltBeetle" />
       </group>
     </group>

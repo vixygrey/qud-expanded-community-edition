@@ -2622,16 +2622,25 @@ shipped alone and was walked in a running game before the other 31 followed.
 
 ### 17.3 Weights are derived, not chosen
 
-A variant takes **one step down vanilla's own chance ladder** (90 / 75 / 50 / 25 / 10 / 5) from its
-parent's entry *in that same table*, and keeps the parent's `Number`. Where vanilla already sits at 5
-the variant matches rather than halving, there being no step left. In `pickone` groups the currency
-is `Weight` instead and a variant takes 2 against vanilla siblings at 5–10, which keeps this fork far
-under the half-share ceiling in `docs/STYLEGUIDE.md` §3.2.1.
+**A variant takes its parent's `Chance` in that same table, and about half its `Number`.** So you
+meet a variant roughly as often as you meet the animal it is a variant of, but there are fewer of
+them when you do — the ordinary animal stays the common one by *count*, not by how rarely it turns
+up. In `pickone` groups the currency is `Weight` and the same rule applies.
 
-The ordinary animal therefore stays the common one. The black goat takes two steps rather than one,
-which is the rarity the roster always wanted and the first attempt could not express — `:Weight` on
-the dead tables is a multiplier wrapped in `(uint)Math.Ceiling`, so every fraction below one was
-inert.
+That is the second version of this curve. The first put each variant one step below its parent on
+vanilla's chance ladder, which reads sensibly in the hills where vanilla sits at 25–50, and fails
+everywhere vanilla is already low: in the desert canyon and the jungle it pushed thirteen variants
+to a 5% floor, needing about 58 zones of the right biome apiece to meet one. Playtesting found them
+essentially invisible. Deriving from the parent's own frequency instead is what fixes it, and it can
+never make a variant likelier than the animal it varies.
+
+**Six are still uncommon, and deliberately so**: the jungle boar, salamander and chameleon and the
+ruins beetles and glowmoth sit at vanilla's own 5% in those tables. Their variants match, which means
+you will meet a russet boar about as often as a plain jungle boar — rarely, because vanilla makes
+boars rare in the jungle.
+
+The black goat and the rust-furred baboon are held one step below their parents rather than matching,
+which is the rarity the roster always wanted and the first attempt could not express at all.
 
 ### 17.4 One restoration and two additions
 
@@ -2659,38 +2668,38 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 
 | Variant | Parent | Table | Entry |
 |---|---|---|---|
-| ash-coated dog | `Dog` | `MountainsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
-| ashen salamander ✦ | `Salamander` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=2d4 |
+| ash-coated dog | `Dog` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| ashen salamander ✦ | `Salamander` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d4 |
 | ashwing glowmoth | `Glowmoth` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=1 |
-| banded honey skunk | `Honey Skunk` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
-| black goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=10 Number=1d3 |
-| brindle dog | `Dog` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
-| bristleback boar | `Boar` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
-| copper dragonfly | `GiantDragonfly` | `FlowerFieldsPopulation` | Chance=10 Number=2d6 |
-| cragged goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=3d6 |
+| banded honey skunk | `Honey Skunk` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1 |
+| black goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=1d3 |
+| brindle dog | `Dog` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| bristleback boar | `Boar` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| copper dragonfly | `GiantDragonfly` | `FlowerFieldsPopulation` | Chance=25 Number=1d6 |
+| cragged goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=50 Number=1d6 |
 | dun goat ✦ | `Goat` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1d3 |
-| ember dragonfly | `GiantDragonfly` | `DesertCanyonZoneGlobals` | Chance=10 Number=2d6 |
-| glass dragonfly | `GiantDragonfly` | `WaterCreatures` | Weight=2 Number=1-2 |
-| mangy baboon | `Baboon` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d4 |
-| marbled salamander ✦ | `Salamander` | `JungleZoneGlobals` | Chance=5 Number=1-4 |
-| marsh dog | `Dog` | `SaltMarshZoneGlobals` | Chance=10 Number=1d2 |
-| midden beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=3-6 |
-| mossbacked tortoise | `IrritableTortoise` | `FlowerFieldsPopulation` | Chance=5 Number=1d3 |
+| ember dragonfly | `GiantDragonfly` | `DesertCanyonZoneGlobals` | Chance=25 Number=1d6 |
+| glass dragonfly | `GiantDragonfly` | `WaterCreatures` | Weight=5 Number=1 |
+| mangy baboon | `Baboon` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d2 |
+| marbled salamander ✦ | `Salamander` | `JungleZoneGlobals` | Chance=5 Number=1-2 |
+| marsh dog | `Dog` | `SaltMarshZoneGlobals` | Chance=25 Number=1d2 |
+| midden beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=2-3 |
+| mossbacked tortoise | `IrritableTortoise` | `FlowerFieldsPopulation` | Chance=10 Number=1d2 |
 | mottled horned chameleon | `Horned Chameleon` | `JungleZoneGlobals` | Chance=5 Number=1 |
-| pale boar | `Boar` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d2 |
-| pale croc | `Croc` | `WaterCreatures` | Weight=2 Number=1 |
-| pale glowfish | `Glowfish` | `WaterCreatures` | Weight=2 Number=1-2 |
-| pied dog | `Dog` | `FlowerFieldsPopulation` | Chance=5 Number=1d4 |
-| rangy dog | `Dog` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d4 |
-| russet boar | `Boar` | `JungleZoneGlobals` | Chance=5 Number=1-2 |
-| rust beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=3-6 |
-| rust-furred baboon | `Baboon` | `BaboonParty` | Chance=10 Number=1-2 |
+| pale boar | `Boar` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1 |
+| pale croc | `Croc` | `WaterCreatures` | Weight=5 Number=1 |
+| pale glowfish | `Glowfish` | `WaterCreatures` | Weight=5 Number=1 |
+| pied dog | `Dog` | `FlowerFieldsPopulation` | Chance=10 Number=1d2 |
+| rangy dog | `Dog` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d2 |
+| russet boar | `Boar` | `JungleZoneGlobals` | Chance=5 Number=1 |
+| rust beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=2-3 |
+| rust-furred baboon | `Baboon` | `BaboonParty` | Chance=50 Number=1 |
 | salt beetle ✦ | `Giant Beetle` | `SaltDuneCreatures` | Number=1-2 |
-| sand horned chameleon | `Horned Chameleon` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d1 |
-| scarred tortoise | `IrritableTortoise` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d3 |
-| silt croc | `Croc` | `SaltMarshZoneGlobals` | Chance=25 Number=1 |
-| silverback baboon | `Baboon` | `BaboonParty` | Chance=25 Number=1-2 |
-| verdigris glowfish | `Glowfish` | `SaltMarshZoneGlobals` | Chance=50 Number=2d4 |
+| sand horned chameleon | `Horned Chameleon` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1 |
+| scarred tortoise | `IrritableTortoise` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| silt croc | `Croc` | `SaltMarshZoneGlobals` | Chance=50 Number=1 |
+| silverback baboon | `Baboon` | `BaboonParty` | Chance=90 Number=1-2 |
+| verdigris glowfish | `Glowfish` | `SaltMarshZoneGlobals` | Chance=75 Number=1d4 |
 
 ### 17.7 The option
 

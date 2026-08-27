@@ -37,6 +37,12 @@ recorded because contributors need them, not because subscribers do.
   marsh dog in the saltmarsh and a salt beetle out on the dunes, neither of which vanilla has an
   animal for.
 
+  A variant takes its parent's chance in the same table and about half its number, so you meet one
+  roughly as often as the animal it varies while the plain animal stays the more numerous. An
+  earlier curve put each variant a step below its parent, which made thirteen of them need about
+  58 zones apiece to turn up — invisible in play, and found by walking the biomes rather than by
+  any check.
+
   `docs/FEATURES.md` §17 is the full reference, including the catalogue and the derivation.
 
 - **(internal)** One creature variant, to prove the distribution route (#171).
