@@ -55,6 +55,12 @@
       "Raven_Nanoweave Helmet"
     ]
   },
+  "DynamicObjectsTable:Hills_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_DunGoat"
+    ]
+  },
   "DynamicObjectsTable:Items": {
     "conditional": [],
     "reaches": [
@@ -530,6 +536,12 @@
       "Vixy_Zetachrome Glaive",
       "Vixy_Zetachrome Quarterstaff",
       "Vixy_Zetachrome Spear"
+    ]
+  },
+  "DynamicObjectsTable:Mountains_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_DunGoat"
     ]
   },
   "DynamicObjectsTable:Trinkets": {
