@@ -852,6 +852,38 @@ both verified from `tools/report_dynamic_tables.py` for this reason, and moved t
 Worth pairing with *A search that finds nothing has two explanations* above: an empty merchant stock
 and an empty search result fail the same way, by looking like an answer.
 
+## A property the game *derives* is not the tag you can grep for
+
+`tools/report_dynamic_tables.py` reads a blueprint's Tier and Role in order to weight it the way the
+population code does. Both reads were wrong, in the same way, and neither had a symptom: the report
+kept printing a plausible number.
+
+**Tier is a fallback chain, not a tag.** `GameObjectBlueprint.Tier` returns the `Tier` tag when there
+is one, and otherwise `GetStat("Level").BaseValue / 5 + 1` clamped to 1–8. **Vanilla creatures carry
+`Level` and no `Tier` tag at all** — `Goat` is `<stat Name="Level" Value="1" />` and nothing else — so
+a report keyed on the tag dropped 593 eligible blueprints, 46 of them this fork's own creature
+variants. `BaseAnimal`, `BaseReptile` and `Humanoid` were reported as pools that did not exist, while
+I held 52%, 57% and 5 members of them. And `_Tier`'s `-999` sentinel, for a blueprint with neither,
+does not mean *excluded*: the delta simply misses `TierDeltaWeights` and it joins at weight 1.
+
+**Role lives in two stores.** The weighting asks
+`Tags.TryGetValue("Role", …) || Props.TryGetValue("Role", …)`, and `<property Name="Role">` lands in
+`Props` while `<tag Name="Role">` lands in `Tags`. Vanilla declares it as a tag 352 times and as a
+property never. This fork does the exact opposite, thirteen times, on the Zetachrome items — so
+reading only tags weighted them ×100 too heavily and put `BaseShield` Tier8 at 97% when it is 69%.
+
+Both are the *silent zero* two lessons up, one level in: not a search that could not match, but a
+**read of the wrong field on a match that did happen**. The tag was really absent. The conclusion
+drawn from its absence was not.
+
+> **Before reading a blueprint field, find the property on `GameObjectBlueprint` that the consumer
+> actually calls, and follow it to the end.** If it has a fallback, an alternative store, or a
+> sentinel, the XML you can grep for is one branch of three.
+
+The cost was not the wrong number so much as what rested on it. #481 is a design decision about pool
+dominance, and it was being weighed against these figures — including three pools the report said
+were empty. I found this only because #502 sent me back into `PopulationManager` for something else.
+
 ## Rescaling a per-action budget to per-hit has to clear whatever decays per turn
 
 The cryo arrow puts −50 on a target per action. A shell spends one piece of ammunition per action

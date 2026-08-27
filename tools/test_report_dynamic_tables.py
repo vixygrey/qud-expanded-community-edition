@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import contextlib
 import io
+import math
 import sys
 import tempfile
 import unittest
@@ -23,6 +24,7 @@ from unittest import mock
 import report_dynamic_tables
 from check_vanilla_drift import BlueprintIndex
 from report_dynamic_tables import (
+    TIER_DELTA_WEIGHTS,
     collect,
     declarer,
     describe_drift,
@@ -34,6 +36,8 @@ from report_dynamic_tables import (
     merged_objects,
     over_ceiling,
     requested_inherits_slices,
+    resolved_role,
+    resolved_tier,
     slice_label,
     slice_weight,
     snapshot_of,
@@ -324,18 +328,22 @@ class InheritsPools(unittest.TestCase):
         self.assertEqual(mine + vanilla, 2)
 
     def test_tier_is_inherited_from_the_nearest_declaration(self) -> None:
-        """A blueprint the game cannot place on the tier ladder reaches no slice, so it must not
-        be counted into some default bucket."""
-        self.assertEqual(
-            self.cells(
-                "<objects>"
-                '<object Name="BaseSword"><part Name="Render" />'
-                '<tag Name="BaseObject" Value="*noinherit" /></object>'
-                '<object Name="Vixy_Sword" Inherits="BaseSword" />'
-                "</objects>"
-            ),
-            {},
-        )
+        cell = self.cells()[("BaseSword", "Tier3")]
+        self.assertEqual(cell[0], TIER_DELTA_WEIGHTS[0])
+
+    def test_a_blueprint_with_no_tier_at_all_is_still_a_member(self) -> None:
+        """#520. The game does not skip it: `_Tier` keeps its -999 sentinel, the delta misses
+        `TierDeltaWeights`, and it joins at weight 1. Dropping it understated every pool it is in,
+        and 604 such blueprints sit under `PhysicalObject` alone."""
+        cell = self.cells(
+            "<objects>"
+            '<object Name="BaseSword"><part Name="Render" />'
+            '<tag Name="BaseObject" Value="*noinherit" /></object>'
+            '<object Name="Vixy_Sword" Inherits="BaseSword" />'
+            "</objects>"
+        )[("BaseSword", "Tier3")]
+        self.assertEqual(cell[0], 1)
+        self.assertEqual(cell[2:], (1, 0))
 
     def test_an_excluded_blueprint_leaves_the_pool(self) -> None:
         """The one lever there is - and the reason the chip fix in #483 worked."""
@@ -370,6 +378,106 @@ class InheritsPools(unittest.TestCase):
             self.assertEqual(cell[2:], (1, 1))
 
 
+class ResolvedTier(unittest.TestCase):
+    """#520. `GameObjectBlueprint.Tier` is not the `Tier` tag: it falls back to Level, and vanilla
+    creatures carry Level and no tag. Reading the tag alone dropped 593 eligible blueprints."""
+
+    def index(self, body: str) -> BlueprintIndex:
+        return BlueprintIndex(roots(f"<objects>{body}</objects>"))
+
+    def test_the_tag_decides_when_it_is_there(self) -> None:
+        index = self.index(
+            '<object Name="Sword"><tag Name="Tier" Value="6" /></object>'
+        )
+        self.assertEqual(resolved_tier(index, "Sword"), 6)
+
+    def test_level_supplies_the_tier_when_the_tag_does_not(self) -> None:
+        """Every creature in the game takes this route - Goat is Level 1 and has no Tier tag."""
+        index = self.index(
+            '<object Name="Goat"><stat Name="Level" Value="1" /></object>'
+        )
+        self.assertEqual(resolved_tier(index, "Goat"), 1)
+
+    def test_the_tag_wins_over_level(self) -> None:
+        index = self.index(
+            '<object Name="Thing"><tag Name="Tier" Value="2" />'
+            '<stat Name="Level" Value="40" /></object>'
+        )
+        self.assertEqual(resolved_tier(index, "Thing"), 2)
+
+    def test_level_is_clamped_to_the_ladder(self) -> None:
+        for level, want in ((0, 1), (1, 1), (35, 8), (400, 8)):
+            with self.subTest(level=level):
+                index = self.index(
+                    f'<object Name="X"><stat Name="Level" Value="{level}" /></object>'
+                )
+                self.assertEqual(resolved_tier(index, "X"), want)
+
+    def test_a_level_the_loader_cannot_parse_is_tier_one_not_no_tier(self) -> None:
+        """`Convert.ToInt32("18-20")` throws, the loader catches it, and BaseValue stays zero.
+        Thirty-two vanilla villagers declare Level that way and the game tiers them at 1."""
+        index = self.index(
+            '<object Name="Apothecary"><stat Name="Level" sValue="18-20" /></object>'
+        )
+        self.assertEqual(resolved_tier(index, "Apothecary"), 1)
+
+    def test_neither_tag_nor_level_is_no_tier(self) -> None:
+        """None, not zero - the game's -999 sentinel. It still belongs to the pool; see
+        SliceWeight."""
+        index = self.index('<object Name="Rock"><part Name="Render" /></object>')
+        self.assertIsNone(resolved_tier(index, "Rock"))
+
+    def test_level_is_inherited(self) -> None:
+        index = self.index(
+            '<object Name="Goat"><stat Name="Level" Value="1" /></object>'
+            '<object Name="Vixy_DunGoat" Inherits="Goat" />'
+        )
+        self.assertEqual(resolved_tier(index, "Vixy_DunGoat"), 1)
+
+
+class ResolvedRole(unittest.TestCase):
+    """#520. The weighting reads `Tags || Props`. Vanilla declares Role as a tag 352 times and as
+    a property never; this fork does the opposite thirteen times, and reading only tags weighted
+    those thirteen a hundred times too heavily."""
+
+    def index(self, body: str) -> BlueprintIndex:
+        return BlueprintIndex(roots(f"<objects>{body}</objects>"))
+
+    def test_a_tag_is_read(self) -> None:
+        index = self.index('<object Name="X"><tag Name="Role" Value="Hero" /></object>')
+        self.assertEqual(resolved_role(index, "X"), "Hero")
+
+    def test_a_property_is_read(self) -> None:
+        index = self.index(
+            '<object Name="Raven_Zetachrome Shield">'
+            '<property Name="Role" Value="Rare" /></object>'
+        )
+        self.assertEqual(resolved_role(index, "Raven_Zetachrome Shield"), "Rare")
+
+    def test_the_tag_is_consulted_first(self) -> None:
+        index = self.index(
+            '<object Name="X"><tag Name="Role" Value="Hero" />'
+            '<property Name="Role" Value="Rare" /></object>'
+        )
+        self.assertEqual(resolved_role(index, "X"), "Hero")
+
+    def test_an_erased_property_is_not_a_role(self) -> None:
+        index = self.index(
+            '<object Name="X"><property Name="Role" Value="*delete" /></object>'
+        )
+        self.assertIsNone(resolved_role(index, "X"))
+
+    def test_a_property_role_reaches_the_weighting(self) -> None:
+        """The whole point: BaseShield Tier8 read 96.67% until this landed, and is 69.45%."""
+        index = self.index(
+            '<object Name="X"><property Name="Role" Value="Rare" /></object>'
+        )
+        self.assertEqual(
+            slice_weight(8, (8, 8), resolved_role(index, "X")),
+            math.ceil(TIER_DELTA_WEIGHTS[0] * 0.01),
+        )
+
+
 class SliceWeight(unittest.TestCase):
     """#494: the game weights a slice's members by tier distance, and a flat count is a different
     question. At a factor of ten per step the nearest tier dominates completely."""
@@ -400,6 +508,15 @@ class SliceWeight(unittest.TestCase):
         way this report agrees with what a player rolls: tier 8 against Tier4-7 is four steps from
         the low end, not one from the high end."""
         self.assertEqual(slice_weight(8, (4, 7), None), 10**4)
+
+    def test_a_tier_less_member_weighs_one_in_a_tiered_slice(self) -> None:
+        """#520. The game computes a delta of about a thousand, misses TierDeltaWeights, and takes
+        the 1u fallback - it does not drop the blueprint."""
+        self.assertEqual(slice_weight(None, (4, 4), None), 1)
+
+    def test_a_tier_less_member_weighs_full_in_the_untiered_table(self) -> None:
+        """The forced-zero delta reaches it before its own tier is ever consulted."""
+        self.assertEqual(slice_weight(None, None, None), TIER_DELTA_WEIGHTS[0])
 
     def test_the_untiered_table_weighs_every_member_alike(self) -> None:
         self.assertEqual(slice_weight(0, None, None), slice_weight(8, None, None))

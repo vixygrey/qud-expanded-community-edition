@@ -215,11 +215,66 @@ def slice_label(window: tuple[int, int] | None) -> str:
     return f"Tier{low}" if low == high else f"Tier{low}-{high}"
 
 
-def slice_weight(tier: int, window: tuple[int, int] | None, role: str | None) -> int:
+def resolved_tier(index: BlueprintIndex, name: str) -> int | None:
+    """`GameObjectBlueprint.Tier`, which is not the `Tier` tag alone.
+
+    The tag decides when it is there. When it is not, the game falls back to
+    `GetStat("Level").BaseValue / 5 + 1`, clamped to 1-8 - and **vanilla creatures carry `Level`,
+    not `Tier`**. Reading only the tag dropped 593 eligible blueprints from this report, 46 of them
+    this fork's own creature variants, and made `BaseAnimal`, `BaseReptile` and `Humanoid` look
+    like pools that did not exist (#520).
+
+    `BaseValue` is zero whenever the loader could not parse a number, because `Convert.ToInt32`
+    throws and the loader catches it - so `sValue="18-20"` is tier 1, not an absent tier. Thirty-two
+    vanilla villagers depend on that.
+
+    None means the blueprint has no tier at all, which `_Tier`'s -999 sentinel expresses in the
+    game. It is not the same as being absent from the pool: see `slice_weight`.
+    """
+    declared = index.tag_value(name, "Tier")
+    if declared is not None:
+        try:
+            return int(declared)
+        except ValueError:
+            pass
+    if not index.has_stat(name, "Level"):
+        return None
+    raw = index.stat_attr(name, "Level", "Value")
+    try:
+        base = int(raw) if raw is not None else 0
+    except ValueError:
+        base = 0
+    return max(1, min(8, base // 5 + 1))
+
+
+def resolved_role(index: BlueprintIndex, name: str) -> str | None:
+    """The Role the weighting reads, which lives in either of two stores.
+
+    `Tags.TryGetValue("Role", ...) || Props.TryGetValue("Role", ...)`, in that order. Vanilla
+    declares Role as a tag 352 times and as a property never; this fork does the exact opposite,
+    thirteen times, on the Zetachrome items. Both work, and reading only tags weighted those
+    thirteen a hundred times too heavily - which put `BaseShield` Tier8 at 97% when it is 69%
+    (#520).
+    """
+    tagged = index.tag_value(name, "Role")
+    if tagged is not None:
+        return tagged
+    return index.prop_value(name, "Role")
+
+
+def slice_weight(
+    tier: int | None, window: tuple[int, int] | None, role: str | None
+) -> int:
     """One blueprint's weight in one slice, as the game computes it.
 
     For the untiered table the game forces the tier delta to zero, so every member weighs the same
     and only Role separates them.
+
+    A blueprint with no tier is still a member. `_Tier` keeps its -999 sentinel, the delta comes out
+    around a thousand, and `TierDeltaWeights` has no such key - so the fallback weight of one
+    applies. In the untiered table the forced-zero delta reaches it first and it weighs full, like
+    everything else. 731 eligible blueprints are in this position, 604 of them under
+    `PhysicalObject`, which does request the untiered table.
 
     For a blueprint outside the window, the distance is measured from the LOW end twice. Vanilla
     writes `Math.Min(Math.Abs(minTier - t), Math.Abs(minTier - t))` - the same expression on both
@@ -230,6 +285,11 @@ def slice_weight(tier: int, window: tuple[int, int] | None, role: str | None) ->
     """
     if window is None:
         delta = 0
+    elif tier is None:
+        # No key, so the lookup below takes the fallback - which is what a delta of about a
+        # thousand does in the game. Spelled as None rather than as that number because the
+        # number is an artefact of the sentinel, not a distance anyone meant.
+        delta = None
     else:
         low, high = window
         delta = 0 if low <= tier <= high else abs(low - tier)
@@ -242,32 +302,31 @@ def slice_weight(tier: int, window: tuple[int, int] | None, role: str | None) ->
 
 def inherits_members(
     index: BlueprintIndex, pools: set[str]
-) -> dict[str, list[tuple[str, int, str | None]]]:
+) -> dict[str, list[tuple[str, int | None, str | None]]]:
     """Every eligible blueprint each pool reaches, with the Tier and Role its weight needs.
 
     Membership is not declared anywhere: the game fabricates the pool from everything descending
     from a base, so a blueprint joins as a consequence of `Inherits=`. That is why this is counted
     rather than read - there is no tag to look up and nothing in a diff to review.
 
-    A blueprint with no resolvable tier reaches no slice and is skipped, the same as in the game,
-    where `GameObjectBlueprint.Tier` would have nothing to compare.
+    Tier and Role are resolved rather than read - see `resolved_tier` and `resolved_role`. An
+    earlier version of this took the `Tier` tag and the `Role` tag at face value, which dropped
+    every creature in the game and misweighted thirteen of this fork's own items (#520).
     """
-    members: dict[str, list[tuple[str, int, str | None]]] = {}
+    members: dict[str, list[tuple[str, int | None, str | None]]] = {}
     for name in sorted(index.objects):
         if not eligible(index, name):
             continue
-        tier = index.tag_value(name, "Tier")
-        if tier is None:
-            continue
-        role = index.tag_value(name, "Role")
+        tier = resolved_tier(index, name)
+        role = resolved_role(index, name)
         ancestors = {obj.get("Name") for obj in index.chain(name)[1:]}
         for pool in ancestors & pools:
-            members.setdefault(pool, []).append((name, int(tier), role))
+            members.setdefault(pool, []).append((name, tier, role))
     return members
 
 
 def inherits_cells(
-    members: dict[str, list[tuple[str, int, str | None]]],
+    members: dict[str, list[tuple[str, int | None, str | None]]],
     slices: dict[str, set[tuple[int, int] | None]],
     new_names: set[str],
 ) -> dict[tuple[str, str], tuple[int, int, int, int]]:
