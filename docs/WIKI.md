@@ -73,7 +73,7 @@ type to go and read.
 | [Zone Builders](https://wiki.cavesofqud.com/wiki/Modding:Zone_Builders) | The pre-existing builders, `ZoneBuilderSandbox`, `PlacePopulationInRegion`, pathfinding |
 | [Zone Procedural Generation](https://wiki.cavesofqud.com/wiki/Modding:Zone_Procedural_Generation) | FastNoise, NoiseMap, wave function collapse |
 | [Interior Zones](https://wiki.cavesofqud.com/wiki/Modding:Interior_Zones) | Zones attached to objects, vehicles, interior weights, and the limits |
-| [Maps](https://wiki.cavesofqud.com/wiki/Modding:Maps) | `.rpm` format, patching a shipped map, the map editor — what `mod/Joppa.rpm` is |
+| [Maps](https://wiki.cavesofqud.com/wiki/Modding:Maps) | `.rpm` format, patching a shipped map, the map editor — what `mod/Optional/JoppaBuilding/Joppa.rpm` is |
 | [Worlds](https://wiki.cavesofqud.com/wiki/Modding:Worlds) | `JoppaWorldBuilderExtension`, worldgen patterns, building a world of your own |
 
 ## Miscellanea

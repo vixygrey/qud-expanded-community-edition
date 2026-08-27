@@ -70,7 +70,66 @@ recorded because contributors need them, not because subscribers do.
   often a plant is ripe is derived from vanilla's own band rather than picked: all three sit between
   0.7 and 1.5 ripe plants a zone, beside dreadroot at 0.8 and urberry at 1.0.
 
+### Changed
+
+- **The Joppa home base option now takes effect on restart, and applies to Joppa as it is first
+  generated** (#498).
+
+  It used to be lopsided: turning it off removed the building the next time you entered Joppa, and
+  turning it back on never rebuilt it — a limitation the helptext had to spell out. It is
+  symmetrical now. Joppa is built once from whatever loaded, and a save keeps what it was built
+  with, in both directions. The option carries `Restart="true"`, so the options screen says so
+  itself.
+
+  A character who already has the building keeps it, and one made without it will not gain it later.
+
 ### Fixed
+
+- **(internal)** `mod/` is laid out for conditional loading, and the Joppa removal system is gone
+  (#498).
+
+  `manifest.json` now declares a `Directories` array: `Core`, `ObjectBlueprints`, `Scripting` and
+  `Textures` always load, and `Optional/JoppaBuilding` loads only while its option is `Yes`. The ten
+  loose XML files moved into `Core/`, because **no entry may name `mod/` itself** — the loader keeps
+  only one of two overlapping paths, so a root entry would load the gated directory unconditionally.
+
+  That deletes `Raven_JoppaBuildingSystem` and its mutator, 253 lines that removed 89 objects from
+  76 cells after the fact, plus the hand-maintained table of those objects and the
+  validator check that existed only to keep the table in step with the map. Data describing other data, and a
+  check guarding the copy, both stop existing rather than being maintained.
+
+  The premise they rested on was false. `docs/DESIGN_options.md` §4.5 said a map merge "cannot be
+  gated on an option — it happens as data loads, long before any option is read". Option defaults are
+  populated *before* directory initialisation, which is why the file declaring an option must have
+  `Option` in its name; `ModInfo.InitializeFiles` loads only the directories that passed their
+  conditions, and `MapFile.Reset` takes maps from that file list rather than scanning. A `.rpm` gates
+  like anything else.
+
+  **The restructure was done for what comes next rather than for this one feature.** A second
+  presence-shaped option now costs a directory instead of a system, and `Directories` entries also
+  carry `Dependencies`, `Exclusions`, `Version` and `Build` — so version-conditional content, or a
+  shim for another mod, no longer needs a sub-mod or any C# at all.
+
+  **The move also broke the map patch, and nothing static caught it.** `MapFile.CacheFile` keys a
+  map by its `ID` attribute, or — when there is none — by its path relative to the mod root, which
+  `MapFile.GetKey` truncates at the first dot. So `mod/Joppa.rpm` keyed as `joppa` and patched
+  vanilla's Joppa; from `Optional/JoppaBuilding/` it keyed as `optional_joppabuilding_joppa` and
+  patched nothing. The file loaded, the game logged the directory, every check passed, and Joppa
+  simply had no building in it — in *both* option states. A playtest found it. `<Map ID="Joppa.rpm">`
+  makes the key independent of the path, and the new `map-id` check requires an `ID` on every `.rpm`
+  so the next move cannot repeat it.
+
+  `Naming.xml`'s typo allowance had to move with the file — in **both** places that hold it,
+  `.typos.toml` and the pre-commit hook's own `exclude`, because pre-commit passes changed files as
+  explicit arguments and an explicitly named file overrides the config. The hook's comment already
+  warned that anything skipped has to be skipped in both places or it is skipped in neither, and I
+  updated one of them and was caught by the other.
+
+  Moving the files also caught something the move itself was not looking for: `table-share`,
+  `scatter-share`, `implant-table-cost` and `snapshot-coverage` each read `PopulationTables.xml`
+  through `if not path.is_file(): return`, so all four went quiet while `validate_mod.py` still
+  reported OK. The paths are constants now, and the new `layout` check says once and loudly when a
+  file the checks read is not where they expect it.
 
 - **(internal)** A check that the mod's declared load paths reach every file it ships (#498).
 

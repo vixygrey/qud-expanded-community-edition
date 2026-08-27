@@ -48,6 +48,6 @@ extend-exclude = [
   # for the same reason as the snapshot above: allowlisting `thi` as a word would exempt it from
   # every document in the repo including player-facing text, which is the padding this policy
   # exists to prevent.
-  "mod/Naming.xml",
+  "mod/Core/Naming.xml",
   "mod/Scripting/Vixy_NameSyllables.cs", # the same syllables, restated for the option
 ]

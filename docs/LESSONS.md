@@ -478,7 +478,7 @@ question it could not reach. The same shape as disabling the wiki because it had
 
 ## `git checkout <file>` restores from the index, not from HEAD
 
-While testing a new check in #80, `git checkout mod/Subtypes.xml` — which I used to undo a
+While testing a new check in #80, `git checkout mod/Core/Subtypes.xml` — which I used to undo a
 deliberately broken probe — also silently reverted the real fix in that file, because the fix had
 never been staged. The validator caught it moments later, but the command itself gave no sign it had
 discarded work.

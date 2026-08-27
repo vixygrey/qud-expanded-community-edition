@@ -168,7 +168,7 @@ def chip_slots() -> dict[str, int]:
     docs/LESSONS.md. So the wiki's mutant row is checked by nobody, and #427 says so rather than
     pretending otherwise.
     """
-    path = MOD / "Bodies.xml"
+    path = MOD / "Core" / "Bodies.xml"
     if not path.is_file():
         return {}
     root = parse(path)
@@ -207,7 +207,7 @@ def facts() -> dict[str, int]:
         new += fn
         merged += fm
 
-    pops = list(parse(MOD / "PopulationTables.xml").iter("population"))
+    pops = list(parse(MOD / "Core" / "PopulationTables.xml").iter("population"))
     chips = [
         o
         for o in parse(MOD / "ObjectBlueprints" / "PsionicChips.xml").iter("object")
@@ -220,8 +220,8 @@ def facts() -> dict[str, int]:
         "populations": len(pops),
         "populations-merged": sum(1 for p in pops if p.get("Load") == "Merge"),
         "populations-fresh": sum(1 for p in pops if p.get("Load") != "Merge"),
-        "options": len(list(parse(MOD / "Options.xml").iter("option"))),
-        "subtypes": len(list(parse(MOD / "Subtypes.xml").iter("subtype"))),
+        "options": len(list(parse(MOD / "Core" / "Options.xml").iter("option"))),
+        "subtypes": len(list(parse(MOD / "Core" / "Subtypes.xml").iter("subtype"))),
         "subtype-sprites": len(list((MOD / "Textures" / "Subtypes").glob("*.png"))),
         "chips": len(chips) - sum(1 for c in chips if "Base" in (c.get("Name") or "")),
         "chip-objects": len(chips),

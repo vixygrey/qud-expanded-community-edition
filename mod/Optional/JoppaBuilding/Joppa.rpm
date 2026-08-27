@@ -1,5 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Map Load="Merge">
+<?xml version="1.0" encoding="utf-8" ?>
+<Map ID="Joppa.rpm" Load="Merge">
+  <!--
+    ID is what keys this patch onto vanilla's Joppa, and it is required now that the file lives in a
+    subdirectory. MapFile.CacheFile keys a map by its ID attribute, or by its path relative to the mod
+    root when there is none - and MapFile.GetKey truncates at the first dot, so mod/Joppa.rpm used to
+    key as "joppa" and matched. From Optional/JoppaBuilding/ it would key as
+    "optional_joppabuilding_joppa" and match nothing: the file loads, no error, and the building never
+    appears. Naming the ID makes the key independent of where the file sits. #498.
+  -->
   <cell X="23" Y="13">
     <object Name="RustedMetalWall" />
   </cell>

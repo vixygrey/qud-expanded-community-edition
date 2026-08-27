@@ -1184,7 +1184,7 @@ An audit that lists only faults misrepresents the thing.
 - **Chip drop rate.** 9.09% per artifact roll, 48 entries per tier table, chipsets at a quarter the
   weight of single chips.
 - **Subtype stat budgets.** Net +1 to +3 across all eighteen, against vanilla's +2 for callings and
-  +3/+4 for castes. The comment at the top of `mod/Subtypes.xml` states the target and the file
+  +3/+4 for castes. The comment at the top of `mod/Core/Subtypes.xml` states the target and the file
   meets it.
 
 ---

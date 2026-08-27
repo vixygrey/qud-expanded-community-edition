@@ -2097,20 +2097,26 @@ document fill in.
 
 ```
 mod/                            # the only directory uploaded to the Workshop
-├── Mods.xml                    # makes Gigantic tinkerable
-├── Genotypes.xml               # Mutant + True Kin merges, Psionic Adept (new)
-├── Subtypes.xml                # 18 affinities in 2 categories
-├── Skills.xml                  # 7 tree edits
-├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 18 options (§13)
-├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
-├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.4)
-├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 96 tables (74 merge / 22 new)
-├── Joppa.rpm                   # 76-cell amenity building
-├── manifest.json               # id, version, author — the credit field is enforced
+├── manifest.json               # id, version, author, and the Directories array below
 ├── workshop.json               # Steam metadata + description
 ├── preview.png
+│
+├── Core/                       # always loaded
+│   ├── Mods.xml                # makes Gigantic tinkerable
+│   ├── Genotypes.xml           # Mutant + True Kin merges, Psionic Adept (new)
+│   ├── Subtypes.xml            # 18 affinities in 2 categories
+│   ├── Skills.xml              # 7 tree edits
+│   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
+│   ├── Options.xml             # 18 options (§13)
+│   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
+│   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
+│   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
+│   └── PopulationTables.xml    # 96 tables (74 merge / 22 new)
+│
+├── Optional/
+│   └── JoppaBuilding/          # loaded only while its option is Yes
+│       └── Joppa.rpm           # 76-cell amenity building
+│
 ├── ObjectBlueprints/
 │   ├── MeleeWeapons.xml        # 101 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
@@ -2123,10 +2129,16 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 52 classes: 36 mutation stubs, plus options,
-│                               # the Joppa system, the chip-slot mutator,
-│                               # burden, and four Finesse powers
+├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
+│                               # the chip-slot mutator, burden, the save-format
+│                               # guard, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
+
+manifest.json's `Directories` array names the four always-loaded paths and gates
+Optional/JoppaBuilding on its option. It must never name mod/ itself: the loader keeps
+only one of two overlapping entries, so a root entry would load the gated directory
+unconditionally. `directory-coverage` enforces that, and that every file here is
+reachable from exactly one declared path.
 
 Mura's original documents are NOT in mod/ — they live in docs/, outside what ships.
 ```
@@ -2501,7 +2513,7 @@ MP"* renders unconditionally but the line that lets you **choose** one does not.
 ### 16.2 Turning it on is C#, not XML, and that is deliberate
 
 `Gender.EnableSelection` and `PronounSet.EnableSelection` are public static fields, set from the root
-attribute of their XML files. A mod could ship a four-line `mod/Genders.xml` with
+attribute of their XML files. A mod could ship a four-line `mod/Core/Genders.xml` with
 `EnableSelection="true"` and it would work — the loader reads the attribute off whatever `<genders>`
 root it is handed, base sorts before mods, and it is a plain static assignment, so last write wins.
 
@@ -2627,7 +2639,7 @@ it kills you. Nothing below declares a `<stat>` or any part other than `Render` 
 
 ### 17.2 How they reach the world, and the attempt that did not
 
-Distribution is by **explicit entry in `mod/PopulationTables.xml`**, merged into the vanilla table a
+Distribution is by **explicit entry in `mod/Core/PopulationTables.xml`**, merged into the vanilla table a
 zone template actually draws from. That is how every other piece of this fork's content is
 distributed, and `docs/STYLEGUIDE.md` §3.3 says so.
 

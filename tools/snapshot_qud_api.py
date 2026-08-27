@@ -547,7 +547,7 @@ def merged_record_names() -> tuple[list[str], list[str]]:
             if obj.get("Load") == "Merge" and obj.get("Name"):
                 blueprints.add(obj.get("Name"))
     tables: set[str] = set()
-    pops = MOD / "PopulationTables.xml"
+    pops = MOD / "Core" / "PopulationTables.xml"
     if pops.is_file():
         for pop in parse(pops, lenient=True).iter("population"):
             if pop.get("Name"):
@@ -707,7 +707,7 @@ def collect_skill_powers(game: Path) -> dict[str, dict]:
     recorded, `None` where vanilla does not state one.
     """
     wanted: set[tuple[str, str]] = set()
-    skills = MOD / "Skills.xml"
+    skills = MOD / "Core" / "Skills.xml"
     if skills.is_file():
         for sk in parse(skills, lenient=True).iter("skill"):
             for pw in sk.iter("power"):
@@ -836,7 +836,9 @@ def collect_absent_tables(game: Path) -> list[str]:
     """
     merged = {
         pop.get("Name")
-        for pop in parse(MOD / "PopulationTables.xml", lenient=True).iter("population")
+        for pop in parse(MOD / "Core" / "PopulationTables.xml", lenient=True).iter(
+            "population"
+        )
         if pop.get("Name") and pop.get("Load") == "Merge"
     }
     seen: set[str] = set()

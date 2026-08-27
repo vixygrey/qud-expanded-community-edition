@@ -60,7 +60,8 @@ def write_mod(tmp: Path, blueprints: str = "", tables: str = "") -> Path:
         encoding="utf-8",
     )
     if tables:
-        (mod / "PopulationTables.xml").write_text(
+        (mod / "Core").mkdir(exist_ok=True)
+        (mod / "Core" / "PopulationTables.xml").write_text(
             f'<?xml version="1.0" encoding="utf-8" ?>\n<population>\n{tables}\n</population>\n',
             encoding="utf-8",
         )
@@ -211,7 +212,8 @@ class PrefixRecognition(unittest.TestCase):
         """A mod declaring one option, plus whatever blueprints the case needs."""
         tmp = Path(tempfile.mkdtemp(dir=self.tmp))
         mod = write_mod(tmp, blueprints)
-        (mod / "Options.xml").write_text(
+        (mod / "Core").mkdir(exist_ok=True)
+        (mod / "Core" / "Options.xml").write_text(
             '<?xml version="1.0" encoding="utf-8" ?>\n<options>\n'
             '  <option ID="OptionTestGate" DisplayText="t" Category="Mods" '
             'Type="Checkbox" Default="Yes">\n    <helptext>t</helptext>\n  </option>\n'
@@ -1328,6 +1330,35 @@ class DirectoryCoverage(unittest.TestCase):
         )
 
 
+class MapId(unittest.TestCase):
+    """#498. A map with no ID is keyed by its path, so moving the file silently stops it patching
+    anything - no error, every check green, and content simply absent from the world."""
+
+    def maps(self, body: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp())
+        target = tmp / "mod" / "Optional" / "Thing" / "Joppa.rpm"
+        target.parent.mkdir(parents=True)
+        target.write_text(body, encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_map_id(f)
+            return [detail for _, detail in f.items]
+
+    def test_a_map_with_an_id_is_accepted(self) -> None:
+        self.assertEqual(
+            self.maps('<Map ID="Joppa.rpm" Load="Merge"><cell /></Map>'), []
+        )
+
+    def test_a_map_without_one_is_reported(self) -> None:
+        found = self.maps('<Map Load="Merge"><cell /></Map>')
+        self.assertEqual(len(found), 1)
+        self.assertIn("keys it by its path", found[0])
+
+    def test_an_empty_id_does_not_count(self) -> None:
+        """An attribute present but blank falls back to the path exactly as an absent one does."""
+        self.assertEqual(len(self.maps('<Map ID="" Load="Merge"><cell /></Map>')), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -2127,7 +2158,8 @@ class SnapshotBackedChecks(unittest.TestCase):
                 "skill_powers": _VANILLA_TINKER3 if snapshot is None else snapshot
             },
         )
-        (tmp / "mod" / "Skills.xml").write_text(
+        (tmp / "mod" / "Core").mkdir(parents=True, exist_ok=True)
+        (tmp / "mod" / "Core" / "Skills.xml").write_text(
             '<?xml version="1.0" encoding="utf-8" ?>\n<skills>\n'
             '  <skill Name="Tinkering" Load="Merge">\n'
             f"    {power}\n"
