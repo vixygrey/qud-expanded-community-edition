@@ -1198,7 +1198,8 @@
        This is the route the first attempt should have taken. Vanilla's `Hills` zonetemplate reads
        HillsZoneGlobals-Reachable in its <global> block, so an entry here is what actually puts a
        creature in front of a player. The DynamicObjectsTable:<Biome>_Creatures tag the first
-       attempt used reaches no consumer at all.
+       attempt used is rolled by procedural village generation (VillageBase.cs:167), not by any
+       zone builder - so it decides who lives in a village, and nothing about a hillside.
 
        Merged, per charter rule 1: the group keeps vanilla's Chance, Number and Style, and this adds
        one object beside the goats rather than restating the list. Style on the vanilla group is
@@ -1374,7 +1375,7 @@
 
   <!-- Harvestable plants (#177). One entry per biome, merged into the table the zone template
        actually draws from - the same route the creature variants take above, and the one #171
-       established after the dynamic-tag route turned out to have no consumer.
+       established after the dynamic-tag route turned out to feed villages rather than zones.
 
        Chance x Number against each plant's StartRipeChance is what decides how many ripe plants a
        zone holds; the derivation and the resulting figures are in mod/ObjectBlueprints/Plants.xml.

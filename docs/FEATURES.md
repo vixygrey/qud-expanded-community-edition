@@ -2632,11 +2632,13 @@ zone template actually draws from. That is how every other piece of this fork's 
 distributed, and `docs/STYLEGUIDE.md` §3.3 says so.
 
 The first attempt used `DynamicObjectsTable:<Biome>_Creatures` tags, on the reading that a creature
-self-registers into a spawn table. **Nothing in the game reads those tables.** `Hills_Creatures` is
-named in exactly one file — the one where creatures declare membership — and no population table
-references it, no zone builder requires it. All 32 shipped, and none ever spawned. `docs/LESSONS.md`
-carries the full account; the short version is that 191 vanilla blueprints carrying a tag proves
-Freehold typed it, not that anything reads it.
+self-registers into a spawn table. **Those tables do not put a creature in a zone.** No population
+table references one and no zone builder requires one. All 32 shipped, and none ever spawned.
+
+They are not inert, though — I said they were, and that was wrong. Every biome-keyed pool is rolled
+by **procedural village generation** (`VillageBase.cs:167` for creatures), which decides who lives in
+a village rather than what walks a hillside. So the tags were pointed at villagers while the design
+was about wilderness. `docs/LESSONS.md` carries the full account and the correction.
 
 So every target table here was checked for a consumer **before** a line was written, and the dun goat
 shipped alone and was walked in a running game before the other 31 followed.
@@ -2917,18 +2919,25 @@ checks these values.
 | brinereed | Saltmarsh | brinereed shoot | salted brinereed | `plantMinor` |
 | sweetfrond | BananaGrove | sweetfrond heart | candied sweetfrond | `starch` |
 
-### 18.7 The ingredient pools have no consumer either
+### 18.7 The ingredient pools are village pools, not loot pools
 
 `DynamicObjectsTable:<Biome>_Ingredients` looks like the obvious way to distribute a preserved
-ingredient — 73 vanilla blueprints tag themselves into twelve of these pools. **Nothing rolls any of
-them.** The only dynamic pools `PopulationTables.xml` ever references are `Ammo`, `AnimatableFurniture`,
-`Baboons`, `Chests`, `Corpses`, `EnergyCells`, `Goatfolk`, `Grenades`, `Guns`, `Headwear`, `Items`,
-`Naphtaali`, `SecurityCards`, `Snapjaws`, `TechTurrets`, `Tonics_NonRare`, `TradeGoods` and
-`Trinkets` — all flat, none biome-keyed. The string `_Ingredients` does not appear in
-`Assembly-CSharp.dll` at all.
+ingredient — 73 vanilla blueprints tag themselves into twelve of these pools, and **no population
+table references one**. The only dynamic pools `PopulationTables.xml` ever names are `Ammo`,
+`AnimatableFurniture`, `Baboons`, `Chests`, `Corpses`, `EnergyCells`, `Goatfolk`, `Grenades`, `Guns`,
+`Headwear`, `Items`, `Naphtaali`, `SecurityCards`, `Snapjaws`, `TechTurrets`, `Tonics_NonRare`,
+`TradeGoods` and `Trinkets` — all flat.
 
-This is `<Biome>_Creatures` from §17.2 a second time, in a different category, and it was caught the
-same way: by looking for the other end before writing anything.
+**I first wrote that this meant nothing rolls them, and that was wrong.** `VillageBase.cs:2586` rolls
+`"DynamicObjectsTable:" + region + "_Ingredients"` when it stocks a village, and every other
+biome-keyed family has an equivalent line. The names are built by string concatenation at runtime, so
+no amount of grepping the data will find them — which is exactly why the data grep looked conclusive.
+
+The conclusion for this feature is unchanged: a preserved ingredient placed only in that pool would
+turn up in villages rather than in the wild, which is not what these plants are for. But the reason
+is "wrong consumer", not "no consumer", and the difference matters the moment someone *does* want
+village content. `docs/LESSONS.md` carries both the correction and the reason the original search
+failed.
 
 **The six new food objects do sit in `DynamicObjectsTable:Items`**, which *is* consumed. That comes
 from vanilla's `Item` base by inheritance, and every vanilla food is in it on the same route —
