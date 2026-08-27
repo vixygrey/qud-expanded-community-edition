@@ -47,6 +47,30 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Three script classes moved onto the `IScribed*` bases, while it was still free
+  (#497).
+
+  Freehold's [serialization page](https://wiki.cavesofqud.com/wiki/Modding:Serialization_(Saving/Loading))
+  recommends `IScribedPart`, `IScribedEffect` and `IScribedSystem` strongly for new code: they write
+  a component's fields by name, which is what lets a field be added or removed later without
+  breaking saves that already exist. It also warns that converting a class afterwards is "possible,
+  but nontrivial". `Vixy_AmmoPayload`, `Vixy_Burden` and `Vixy_Burdened` had no fields yet, so
+  converting them now cost nothing and the next field is free.
+
+  It is not quite a one-line change. `IComponent.Write` writes each serializable field unnamed, so a
+  component with none writes **nothing**; `WriteNamedFields` writes a count first, so the same
+  component writes a **zero**. One byte, but a real format change — and `IPart.Load` only
+  repositions the stream inside its error handler, so a reader expecting a count where none was
+  written would desynchronise the save rather than merely lose a field. Each of the three now reads
+  nothing from a save written by 2.7.0 or earlier, which is exactly what the old format meant.
+
+  `Raven_JoppaBuildingSystem` is deliberately left alone: #498 may remove it outright, and migrating
+  something that might not exist is wasted work.
+
+  The issue as I filed it said `Vixy_AmmoPayload` "carries risk today" because of an instance field.
+  That was wrong — the field is `[NonSerialized]` and documented as transient — and the four passes
+  it took me to settle what these classes actually serialize are written up in `docs/LESSONS.md`.
+
 - **(internal)** An index of the official modding wiki, so I stop re-deriving what Freehold already
   documents (#506).
 

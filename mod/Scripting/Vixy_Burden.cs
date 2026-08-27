@@ -27,7 +27,7 @@ namespace XRL.World.Parts
     /// </para>
     /// </remarks>
     [Serializable]
-    public class Vixy_Burden : IPart
+    public class Vixy_Burden : IScribedPart
     {
         public override bool WantTurnTick() => true;
 
@@ -73,6 +73,24 @@ namespace XRL.World.Parts
             // The effect stores nothing, so this is how a band change reaches the stat shifts and
             // the display name. Cheap: two integer reads and at most two stat writes.
             current.Refresh();
+        }
+
+        /// <summary>
+        /// Reads nothing from a save written before 2.8.0, which wrote no field block at all.
+        ///
+        /// This class has no serialisable state, so "read nothing" is exactly what the old format
+        /// meant. Once every save in circulation postdates the change this override can go, and
+        /// removing it is the only maintenance it will ever need. See
+        /// <c>QudExpandedCE.Vixy_SaveFormat</c> for why one byte is worth an override (#497).
+        /// </summary>
+        public override void Read(GameObject Basis, SerializationReader Reader)
+        {
+            if (QudExpandedCE.Vixy_SaveFormat.PredatesNamedFields(Reader))
+            {
+                return;
+            }
+
+            base.Read(Basis, Reader);
         }
     }
 }

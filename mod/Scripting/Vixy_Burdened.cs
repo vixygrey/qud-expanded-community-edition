@@ -10,7 +10,7 @@ namespace XRL.World.Effects
     /// <remarks>
     /// <para>
     /// <b>Carries no instance state.</b> The band is derived from the wearer's current load every
-    /// time it is asked for, so nothing is written into the save and the effect can never
+    /// time it is asked for, so no field of its own is written into the save and the effect can never
     /// disagree with the weight actually being carried. That also satisfies charter rule 5
     /// without needing an exception: <c>serializable-shape</c> has no allowlist, and here it did
     /// not need one — the first draft stored the band and the penalty, and neither had to exist.
@@ -31,7 +31,7 @@ namespace XRL.World.Effects
     /// </para>
     /// </remarks>
     [Serializable]
-    public class Vixy_Burdened : Effect
+    public class Vixy_Burdened : IScribedEffect
     {
         public const int None = 0;
         public const int Light = 1;
@@ -216,6 +216,24 @@ namespace XRL.World.Effects
                 return false;
             }
             return base.FireEvent(E);
+        }
+
+        /// <summary>
+        /// Reads nothing from a save written before 2.8.0, which wrote no field block at all.
+        ///
+        /// This class has no serialisable state, so "read nothing" is exactly what the old format
+        /// meant. Once every save in circulation postdates the change this override can go, and
+        /// removing it is the only maintenance it will ever need. See
+        /// <c>QudExpandedCE.Vixy_SaveFormat</c> for why one byte is worth an override (#497).
+        /// </summary>
+        public override void Read(GameObject Basis, SerializationReader Reader)
+        {
+            if (QudExpandedCE.Vixy_SaveFormat.PredatesNamedFields(Reader))
+            {
+                return;
+            }
+
+            base.Read(Basis, Reader);
         }
     }
 }
