@@ -139,6 +139,37 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **17 melee weapons now have a drop rate somebody chose** (#482, #527).
+
+  The six extended vinereapers and the eleven vibro weapons had no entry in any population table.
+  They reached a player only through the generic dynamic pools, which means their rarity was whatever
+  fell out of being one blueprint among hundreds in a tier slice. Vanilla places every one of its own
+  weapons in these families explicitly, and this fork agreed with that exactly once —
+  `Raven_Bronze Vinereaper` — while the other seventeen were added to complete the tier ladders and
+  never got one.
+
+  Vanilla files them by kind rather than by family, and so does this now:
+
+  | | goes to | weight | matching |
+  |---|---|---:|---|
+  | 11 vibro weapons, all tier 5 | `Artifact 5R` | 10 | `Vibro Blade`, exactly |
+  | 6 vinereapers, tiers 3–8 | `Melee Weapons 3C`–`8C` | 10 | `Steel Vinereaper` in `Melee Weapons 2C` |
+
+  **The weight is vanilla's and 20 would have been wrong.** `Melee Weapons 2C` grades its entries
+  20 / 10 / 5 — main weapons at 20, the vinereaper and the dagger at 10, kukri and utility knife at
+  5. A vinereaper is a niche harvesting weapon that vanilla prices at half a main weapon, and copying
+  20 from this fork's other entries would have doubled a rarity Freehold chose. It also keeps the
+  enforced ceiling honest: at 20 the first three tables land at exactly 50.0%, legal but with no
+  headroom ever after. At 10 the worst is 46.7%, and `docs/STYLEGUIDE.md` §3.2.1 already says which
+  way to resolve that — *the fix is a lower per-item weight, never less content*.
+
+  Putting the vibro line in `Artifact 5R` also makes it village tinker stock rather than a generic
+  pool roll (`docs/DESIGN_balance.md` §5.3).
+
+  `Raven_Bronze Vinereaper` stays at Weight 13, matching the bronze block it sits in rather than
+  vanilla's ratio — it is shipped and internally consistent, and only the newly priced six follow
+  Freehold's number.
+
 - **(internal)** The pool report follows `<mixin>`, which is a second inheritance mechanism (#526).
 
   `BlueprintIndex.chain()` walked `Inherits=` and nothing else. A blueprint can also pull tags,

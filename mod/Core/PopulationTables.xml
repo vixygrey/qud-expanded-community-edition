@@ -462,6 +462,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Carbide Mace" />
       <object Weight="20" Number="1" Blueprint="Vixy_Carbide Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Carbide Vinereaper" />
     </group>
   </population>
 
@@ -481,6 +482,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Folded Carbide Mace" />
       <object Weight="20" Number="1" Blueprint="Vixy_Folded Carbide Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Folded Carbide Vinereaper" />
     </group>
   </population>
 
@@ -499,6 +501,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Fullerite Mace" />
       <object Weight="20" Number="1" Blueprint="Vixy_Fullerite Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Fullerite Vinereaper" />
     </group>
   </population>
 
@@ -517,6 +520,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Crysteel Rapier" />
       <object Weight="20" Number="1" Blueprint="Vixy_Crysteel Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Crysteel Vinereaper" />
     </group>
   </population>
 
@@ -536,6 +540,7 @@
     <group Name="Items" Load="Merge">
       <object Weight="20" Number="1" Blueprint="Raven_Flawless Crysteel Rapier" />
       <object Weight="20" Number="1" Blueprint="Vixy_Flawless Crysteel Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Flawless Crysteel Vinereaper" />
     </group>
   </population>
 
@@ -556,6 +561,7 @@
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Rapier" />
       <object Weight="20" Number="1" Blueprint="Raven_Zetachrome Mace" />
       <object Weight="20" Number="1" Blueprint="Vixy_Zetachrome Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Raven_Zetachrome Vinereaper" />
     </group>
   </population>
 
@@ -997,6 +1003,17 @@
     <group Name="Items" Load="Merge">
       <object Weight="15" Number="1" Blueprint="Raven_Large Sphere of Negative Weight" />
       <object Weight="5" Number="1" Blueprint="Raven_Advanced Hoversled" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Battle Axe" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Greataxe" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Greatsword" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Halberd" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Katana" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Rapier" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Vinereaper" />
+      <object Weight="10" Number="1" Blueprint="Raven_Vibro Wristblade" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Vibro Glaive" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Vibro Quarterstaff" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Vibro Spear" />
     </group>
   </population>
 
