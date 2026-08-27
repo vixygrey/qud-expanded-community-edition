@@ -1907,6 +1907,58 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
 
 
+def check_aggregate_sweep(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """An `AggregateWith` merged onto a vanilla parent must not sweep in vanilla's descendants.
+
+    `AggregateWith` bundles every blueprint carrying the same value into ONE slot in a fabricated
+    spawn table, and the tag INHERITS. So merging it onto a vanilla parent reaches every vanilla
+    descendant of that parent too, and collapses records vanilla deliberately kept apart.
+
+    #171 shipped exactly that, and it took a playtest to find. `Hulking Baboon`, `Shrewd Baboon`
+    and `Baboon Hero 1` joined `Baboon`'s slot, taking baboons in the hills from four slots to one
+    and making the family roughly four times rarer; `ClockworkBeetle` - a machine - began
+    competing for the giant beetle's slot, and `Sultan Croc` for the ordinary croc's. Nothing
+    errored, nothing failed, and the mod's own documentation claimed the tables had not grown.
+    They had shrunk.
+
+    The mechanism is not the defect - vanilla builds aggregates by inheritance too, and
+    `Snapjaw Scavanger` appears once in the whole game with Scavenger 0/1/2 inheriting it. The
+    defect is choosing a head that has vanilla descendants of its own, so each one has to be
+    exempted deliberately with `AggregateWith` set to `*delete`, which is vanilla's own idiom.
+
+    The descendant list comes from the snapshot rather than from `mod/`, because the answer is in
+    the game and this runs in CI without one. A Qud patch adding a descendant to one of these
+    families changes the snapshot, `snapshot-check` reports it stale, and regenerating brings the
+    new name here - which turns future drift from invisible into a red run.
+    """
+    if not QUD_API_PATH.is_file():
+        return
+    descendants = json.loads(QUD_API_PATH.read_text()).get("aggregate_descendants")
+    if not descendants:
+        return  # a snapshot predating this key cannot distinguish "none" from "not recorded"
+
+    exempt: set[str] = set()
+    for root in blueprint_sources(all_roots).values():
+        for obj in root.iter("object"):
+            name = obj.get("Name")
+            if not name:
+                continue
+            for tag in obj.findall("tag"):
+                if tag.get("Name") == "AggregateWith" and tag.get("Value") == "*delete":
+                    exempt.add(name)
+
+    for head, swept in sorted(descendants.items()):
+        for name in swept:
+            if name in exempt:
+                continue
+            f.add(
+                "aggregate-sweep",
+                f"{name} inherits AggregateWith from {head}, so vanilla's own entry is folded "
+                f"into that one spawn slot - give {name} a merged AggregateWith of *delete, "
+                f"or stop aggregating {head}",
+            )
+
+
 def check_table_targets(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """A table entry naming a mod blueprint that doesn't exist can never spawn."""
     roots = blueprint_sources(all_roots)
@@ -2347,6 +2399,7 @@ def run() -> Findings:
     check_skill_option_coverage(f)
     check_serializable_shape(f)
     check_reachability(f, roots)
+    check_aggregate_sweep(f, roots)
     check_table_targets(f, roots)
     check_part_names(f, roots)
     check_blueprint_refs(f, roots)
