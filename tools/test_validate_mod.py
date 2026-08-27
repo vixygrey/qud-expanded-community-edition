@@ -1767,6 +1767,114 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    # ------------------------------------------------------------------- scatter-share
+
+    def _scatter(self, entries: str, name: str = "SaltMarshZoneGlobals", snapshot=None):
+        if snapshot is None:
+            snapshot = {"scatter_quantities": {"SaltMarshZoneGlobals": 10.0}}
+        tmp = self._mod(
+            "",
+            tables=f'  <population Name="{name}" Load="Merge">\n{entries}  </population>',
+            snapshot=snapshot,
+        )
+        return findings_for(validate_mod.check_scatter_share, tmp)
+
+    def test_a_chance_number_entry_is_counted_at_all(self) -> None:
+        """The regression #474 exists for.
+
+        Every biome-globals table scatters by Chance and Number and carries no Weight, so
+        table-share's summed weight read this fork's side as 0 and could not fail however much was
+        added. Six merge blocks sat in that hole, the creature variants among them.
+        """
+        items = self._scatter(
+            '    <object Blueprint="Vixy_Thing" Chance="50" Number="60" />\n'
+        )
+        self.assertTrue(items, "a Chance/Number entry still counts for nothing")
+        self.assertEqual(items[0][0], "scatter-share")
+        self.assertIn("30.0 expected", items[0][1])
+
+    def test_under_half_is_quiet(self) -> None:
+        self.assertEqual(
+            self._scatter(
+                '    <object Blueprint="Vixy_Thing" Chance="50" Number="10" />\n'
+            ),
+            [],
+        )
+
+    def test_chance_scales_the_quantity(self) -> None:
+        """25% of 40 is 10, which ties vanilla's 10 and must not fire."""
+        self.assertEqual(
+            self._scatter(
+                '    <object Blueprint="Vixy_Thing" Chance="25" Number="40" />\n'
+            ),
+            [],
+        )
+
+    def test_a_weighted_entry_is_left_to_table_share(self) -> None:
+        """The half this check must not touch, or #474's fix regresses 13 working tables.
+
+        A merge block carries no Style, so a weighted entry cannot be told from its group here -
+        but it does not have to be. Vanilla's pickone children all carry Weight and its pickeach
+        children never do, so 'has a Weight' identifies the other check's business exactly.
+        """
+        self.assertEqual(
+            self._scatter('    <object Blueprint="Vixy_Thing" Weight="9999" />\n'), []
+        )
+
+    def test_a_table_vanilla_does_not_define_is_named_as_such(self) -> None:
+        """#476. Distinct from a stale snapshot, and wanting the opposite response."""
+        items = self._scatter(
+            '    <object Blueprint="Vixy_Thing" Chance="100" Number="2" />\n',
+            name="GoneTable",
+            snapshot={
+                "scatter_quantities": {"SaltMarshZoneGlobals": 10.0},
+                "absent_tables": ["GoneTable"],
+            },
+        )
+        self.assertTrue(items)
+        self.assertIn("vanilla does not define GoneTable", items[0][1])
+
+    def test_a_table_the_snapshot_has_never_seen_is_reported_not_skipped(self) -> None:
+        """table-share skips these in silence, which is how #476 stayed invisible."""
+        items = self._scatter(
+            '    <object Blueprint="Vixy_Thing" Chance="100" Number="2" />\n',
+            name="BrandNewTable",
+        )
+        self.assertTrue(items, "an unseen table was skipped rather than reported")
+        self.assertIn("not in the snapshot", items[0][1])
+
+    def test_a_snapshot_without_the_key_checks_nothing_and_says_nothing(self) -> None:
+        """The vacuous case, stated rather than assumed: zero checked is not zero problems.
+
+        A snapshot predating this key cannot tell "nothing wrong" from "nothing checked", so the
+        check returns early rather than guessing - and this pins that it stays silent even with
+        999 objects in front of it.
+        """
+        self.assertEqual(
+            self._scatter(
+                '    <object Blueprint="Vixy_Thing" Chance="100" Number="999" />\n',
+                snapshot={"scatter_quantities": {}, "absent_tables": []},
+            ),
+            [],
+        )
+
+    def test_number_midpoint_reads_every_form_vanilla_writes(self) -> None:
+        for raw, expected in {
+            None: 1.0,
+            "": 1.0,
+            "3": 3.0,
+            "2-8": 5.0,
+            "2d6": 7.0,
+            "1d4+15": 17.5,
+        }.items():
+            self.assertEqual(
+                validate_mod.number_midpoint(raw), expected, f"Number={raw!r}"
+            )
+
+    def test_an_unrecognised_number_understates_rather_than_erases(self) -> None:
+        """1, not 0 - a form nobody anticipated must not delete the entry from the ratio."""
+        self.assertEqual(validate_mod.number_midpoint("2d6-1d3"), 1.0)
+
     # -------------------------------------------------------------- implant-table-cost
 
     def _implant(self, cost: str, table: str) -> Path:
