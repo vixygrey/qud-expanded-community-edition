@@ -467,6 +467,17 @@ def check_workshop_description(f: Findings) -> None:
 # and must not be reported as unreachable.
 MANIFEST_FILES = {"manifest.json", "workshop.json", "modconfig.json", "config.json"}
 
+# The mod's own layout, named once. Every tool reads these through a constant so that moving a
+# file is one edit here rather than a hunt through string literals - and so that check_layout
+# can say, loudly and in one place, when one of them is not where the tools expect (#498).
+CORE = MOD / "Core"
+POPULATION_TABLES = CORE / "PopulationTables.xml"
+OPTIONS_XML = CORE / "Options.xml"
+BODIES_XML = CORE / "Bodies.xml"
+SUBTYPES_XML = CORE / "Subtypes.xml"
+SKILLS_XML = CORE / "Skills.xml"
+GENOTYPES_XML = CORE / "Genotypes.xml"
+
 
 def declared_paths(data: dict) -> list[str] | None:
     """The `Paths` a manifest's `Directories` entries declare, or None when it declares none.
@@ -487,6 +498,38 @@ def declared_paths(data: dict) -> list[str] | None:
             p.strip("/\\") for p in many if isinstance(p, str) and p.strip("/\\")
         )
     return paths
+
+
+def check_layout(f: Findings) -> None:
+    """A file the tools read that is not where they expect it.
+
+    Most of this validator is layout-agnostic - `xml_files()` walks `mod/` recursively, so a file
+    that moves is still found. A handful of checks read one named file directly, and every one of
+    them guards with `if not path.is_file(): return`, because a synthetic fixture in the tests need
+    not contain it.
+
+    That guard is correct for a fixture and dangerous for the real mod. Moving `PopulationTables.xml`
+    into `Core/` during #498 turned off `table-share`, `scatter-share`, `implant-table-cost` and
+    `snapshot-coverage` at once, and `validate_mod.py` still reported OK - four checks silently
+    disabled by a file move, which is the failure this repository keeps meeting in new clothes.
+
+    So the guard stays, and this says once and loudly that the file is missing. One finding for one
+    cause, rather than four checks quietly answering a question nobody asked.
+    """
+    for path in (
+        POPULATION_TABLES,
+        OPTIONS_XML,
+        BODIES_XML,
+        SUBTYPES_XML,
+        SKILLS_XML,
+        GENOTYPES_XML,
+    ):
+        if not path.is_file():
+            f.add(
+                "layout",
+                f"{path} is missing - the checks that read it return silently, so a run can look "
+                "clean while several of them did nothing",
+            )
 
 
 def check_directory_coverage(f: Findings) -> None:
@@ -783,59 +826,6 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         f.add(
             "option-wiring",
             f"{undeclared} is read but never declared — GetOption will always return the fallback",
-        )
-
-
-JOPPA_SYSTEM = MOD / "Scripting" / "Raven_JoppaBuildingSystem.cs"
-
-
-def check_joppa_sync(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """The Joppa removal system embeds the map patch's contents; keep them in step.
-
-    Raven_JoppaBuildingSystem removes the building by exact (cell, blueprint) match, using a list
-    generated from mod/Joppa.rpm. If the map is edited and that list is not regenerated, the
-    option silently leaves the new objects behind — no error, just a half-removed building.
-    """
-    if not JOPPA_SYSTEM.is_file():
-        return
-    rpm = MOD / "Joppa.rpm"
-    if not rpm.is_file():
-        return
-
-    try:
-        root = parse(rpm)
-    except ET.ParseError:
-        return  # check_wellformed reports this
-    in_map = {
-        (int(c.get("X")), int(c.get("Y")), o.get("Name"))
-        for c in root.iter("cell")
-        for o in c.findall("object")
-    }
-
-    text = JOPPA_SYSTEM.read_text(encoding="utf-8-sig")
-    block = re.search(r"PlacedObjects\s*=\s*\{(.*?)\};", text, re.DOTALL)
-    if not block:
-        f.add(
-            "joppa-sync",
-            "Raven_JoppaBuildingSystem has no PlacedObjects array to check",
-        )
-        return
-    in_code = {
-        (int(x), int(y), name)
-        for x, y, name in re.findall(
-            r'new Cel\((\d+),\s*(\d+),\s*"([^"]+)"\)', block.group(1)
-        )
-    }
-
-    for missing in sorted(in_map - in_code):
-        f.add(
-            "joppa-sync",
-            f"Joppa.rpm places {missing[2]} at {missing[0]},{missing[1]} but the removal system does not know about it",
-        )
-    for extra in sorted(in_code - in_map):
-        f.add(
-            "joppa-sync",
-            f"the removal system expects {extra[2]} at {extra[0]},{extra[1]} but Joppa.rpm does not place it",
         )
 
 
@@ -1289,7 +1279,7 @@ def check_serializable_shape(f: Findings) -> None:
     an identifier ... renaming or removing a field can break saves that already exist."
 
     Today every such type holds zero instance state - the 36 mutation stubs are empty and
-    Raven_JoppaBuildingSystem is all static readonly - so save shape is trivially stable. This
+    the remaining scripted types hold no instance state - so save shape is trivially stable. This
     fires the moment that stops being true, which is the moment the obligation starts applying,
     rather than after a player's save has already broken.
 
@@ -1946,7 +1936,7 @@ def check_snapshot_coverage(f: Findings, all_roots: dict[Path, ET.Element]) -> N
     if not covered:
         return
 
-    tables = MOD / "PopulationTables.xml"
+    tables = POPULATION_TABLES
     root = all_roots.get(tables)
     if root is None:
         return
@@ -2041,7 +2031,7 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     if not quantities:
         return
 
-    pops = Path("mod/PopulationTables.xml")
+    pops = POPULATION_TABLES
     if not pops.is_file():
         return
     try:
@@ -2061,7 +2051,7 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         if name in absent:
             f.add(
                 "scatter-share",
-                f"mod/PopulationTables.xml: vanilla does not define {name}, so this fork's "
+                f"{POPULATION_TABLES}: vanilla does not define {name}, so this fork's "
                 f"{ours:.1f} expected object(s) are the whole of it - check whether the merge "
                 f"still reaches a zone before treating the share as meaningful",
             )
@@ -2069,7 +2059,7 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         if name not in quantities:
             f.add(
                 "scatter-share",
-                f"mod/PopulationTables.xml: {name} is not in the snapshot, so this fork's "
+                f"{POPULATION_TABLES}: {name} is not in the snapshot, so this fork's "
                 f"{ours:.1f} expected object(s) there are unguarded - regenerate with "
                 f"tools/snapshot_qud_api.py",
             )
@@ -2079,7 +2069,7 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             share = ours / (ours + vanilla) * 100
             f.add(
                 "scatter-share",
-                f"mod/PopulationTables.xml: {name} is {share:.1f}% this fork's scattered "
+                f"{POPULATION_TABLES}: {name} is {share:.1f}% this fork's scattered "
                 f"content ({ours:.1f} expected against vanilla's {vanilla:.1f}) - "
                 f"the ceiling is half",
             )
@@ -2098,7 +2088,7 @@ def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     if not vanilla_totals:
         return
 
-    pops = Path("mod/PopulationTables.xml")
+    pops = POPULATION_TABLES
     if not pops.is_file():
         return
     try:
@@ -2122,7 +2112,7 @@ def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             share = mine / (mine + vanilla) * 100
             f.add(
                 "table-share",
-                f"mod/PopulationTables.xml: {name} is {share:.1f}% this fork's content "
+                f"{POPULATION_TABLES}: {name} is {share:.1f}% this fork's content "
                 f"({mine} against vanilla's {vanilla}) - the ceiling is half",
             )
 
@@ -2145,7 +2135,7 @@ def check_implant_table_cost(f: Findings, all_roots: dict[Path, ET.Element]) -> 
     Only this fork's blueprints are checked. Vanilla's placements are vanilla's to be wrong about,
     and the merges do not change `Cost`.
     """
-    pops = Path("mod/PopulationTables.xml")
+    pops = POPULATION_TABLES
     if not pops.is_file():
         return
     try:
@@ -2179,7 +2169,7 @@ def check_implant_table_cost(f: Findings, all_roots: dict[Path, ET.Element]) -> 
                     continue
                 f.add(
                     "implant-table-cost",
-                    f"mod/PopulationTables.xml: {blueprint} costs {cost} licence point(s) "
+                    f"{POPULATION_TABLES}: {blueprint} costs {cost} licence point(s) "
                     f"but sits in {pop.get('Name')}, which is for {low}"
                     + (f"-{high}" if high != low else "")
                     + (" and up" if high == 99 else ""),
@@ -2228,7 +2218,7 @@ def check_skill_option_coverage(f: Findings) -> None:
     if not vanilla:
         return  # no snapshot, or one predating this key; regenerating is the fix
 
-    skills = Path("mod/Skills.xml")
+    skills = SKILLS_XML
     if not skills.is_file():
         return
     try:
@@ -2259,7 +2249,7 @@ def check_skill_option_coverage(f: Findings) -> None:
             if name not in optioned:
                 f.add(
                     "skill-option-coverage",
-                    f"mod/Skills.xml: {name[0]} / {name[1]} changes "
+                    f"{SKILLS_XML}: {name[0]} / {name[1]} changes "
                     f"{', '.join(differs)} against vanilla, but no option restores it - "
                     f"either put vanilla's value back or add it to Raven_Options.cs",
                 )
@@ -2815,11 +2805,11 @@ def run() -> Findings:
     check_workshop_target(f)
     check_workshop_description(f)
     check_manifest(f)
+    check_layout(f)
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
     check_option_defaults(f, roots)
-    check_joppa_sync(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
     check_duplicate_children(f, roots)

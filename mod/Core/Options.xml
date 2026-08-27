@@ -169,12 +169,13 @@
     Category="Mods"
     Type="Checkbox"
     Default="Yes"
+    Restart="true"
     SearchKeywords="qud expanded joppa building home base becoming nook"
   >
     <helptext>
             Adds a walled building near Argyve's workshop in Joppa: a bed, storage, an oven, and a becoming nook with a cybernetics rack.
 
-            {{y|Set this before starting a new character.}} Turning it off removes the building the next time you enter Joppa. Turning it back on does {{r|not}} rebuild it - once removed from a save it is gone.
+            {{y|Takes effect when you restart the game, and applies to Joppa as it is first generated.}} A character who already has the building keeps it, and one made without it will not gain it later - Joppa is built once, and what it was built with is in the save.
         </helptext>
   </option>
 

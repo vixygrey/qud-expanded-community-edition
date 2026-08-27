@@ -90,7 +90,7 @@ Credit is the one condition attached to the fork permission, so it isn't negotia
 - **No build step.** `mod/` is loaded directly by the game. Keep it that way; it's why anyone
   can contribute without a toolchain.
 - **Validation is one command, and it fails loudly.** `python3 tools/validate_mod.py`, which grew
-  out of a heredoc pasted into a document — the `mod/Skills.xml` bug survived years precisely
+  out of a heredoc pasted into a document — the `mod/Core/Skills.xml` bug survived years precisely
   because nothing ran automatically. Keep new checks in the script rather than in prose.
 - Issue → branch → small PR → squash merge.
 
@@ -122,7 +122,7 @@ also:
 - registers a `[Serializable]` `IGameSystem` that handles a zone event and creates and destroys
   objects within one zone
 - **registers a character-creation module** — an `AbstractEmbarkBuilderModule` subclass, declared
-  by class name in `mod/EmbarkModules.xml`, which handles one boot event and replaces the string
+  by class name in `mod/Core/EmbarkModules.xml`, which handles one boot event and replaces the string
   the game generated for the player's name
 
 **I raised that ceiling twice, deliberately, and neither time was drift** — drift is the failure
@@ -272,7 +272,7 @@ of this was ever about getting it to run.
 |---|---|
 | `mod/workshop.json` carried `"WorkshopId": 1134036260` — Mura's item — plus their pre-handoff description asking that the mod not be forked | `WorkshopId` cleared so the fork publishes as a **new** item; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). The placeholder `0` it was cleared to blocked the first upload and is a defect in its own right (#163) |
 | `Artifact 3`–`8` were full table replacements, not merges | All six merge, each contributing one `Raven_Chips Tier N` entry (#3, fixed in #34). See `docs/FEATURES.md` §7.3 |
-| `mod/Skills.xml` failed a strict XML parse — a duplicate `Tile` attribute on Berserk! | Cosmetic, and settled before the fix: Qud's loader tolerated it, so §4's skill changes had been shipping all along. Attribute removed (#5) |
+| `mod/Core/Skills.xml` failed a strict XML parse — a duplicate `Tile` attribute on Berserk! | Cosmetic, and settled before the fix: Qud's loader tolerated it, so §4's skill changes had been shipping all along. Attribute removed (#5) |
 | 72 of 144 psionic chips could not drop | `Raven_Chips Tier 1/2/3` now hold 48 entries each (#6, fixed in #36) |
 | Nine armor pieces and `Raven_Iron Maceth` were unobtainable — no drop entry, no tinker recipe | All reachable; `tools/validate_mod.py` reports **0** known inherited defects (#7, fixed in #38) |
 

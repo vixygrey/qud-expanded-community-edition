@@ -56,7 +56,7 @@ not showing up often enough, they are underweighted — the vanilla cascade is n
 
 ### 1.0c Skills merge per power, by name
 
-`mod/Skills.xml` touches six vanilla skills — Axe, Cooking and Gathering, Cudgel, Long Blade,
+`mod/Core/Skills.xml` touches six vanilla skills — Axe, Cooking and Gathering, Cudgel, Long Blade,
 Multiweapon Fighting, Tinkering — and edits individual powers inside them without restating the
 rest.
 
@@ -739,7 +739,7 @@ makes for you.
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 
-A new item can reach the world by an explicit entry in `mod/PopulationTables.xml`, or by carrying a
+A new item can reach the world by an explicit entry in `mod/Core/PopulationTables.xml`, or by carrying a
 `DynamicObjectsTable:X` tag. They do different jobs and this fork uses both.
 
 **Reach for an explicit entry when you want a chosen weight in a named table.** That is what the
@@ -752,7 +752,7 @@ substitutes, and every tagged *item* in this fork also has an explicit entry.
 tag themselves into sixteen of them — and they do not put a creature in a zone. Biome creatures come
 from ordinary hand-written populations instead: `HillsZoneGlobals-Reachable` lists `Goat`, `Dog`,
 `Boar`, `Salamander` and the rest as explicit `<object Blueprint=>` entries. **So a new creature
-reaches a zone the same way a new item does: an explicit entry in `mod/PopulationTables.xml`.** See
+reaches a zone the same way a new item does: an explicit entry in `mod/Core/PopulationTables.xml`.** See
 #171.
 
 **They are not unread, though, and this section said they were.** Every biome-keyed pool is rolled
@@ -1170,7 +1170,6 @@ seconds rather than after a round trip.
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
 | Filenames without spaces | `filename-space` |
-| The Joppa removal system matching the map patch | `joppa-sync` |
 | Line endings | `.gitattributes` |
 | XML formatting | `prettier` with `@prettier/plugin-xml`, checked in CI |
 | Python lint and format for `tools/` | `ruff`, pinned to the same version `pre-commit` runs |
@@ -1215,6 +1214,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |
 | `check-names` | `check_docs.py` | this one — a documented check name exists, and an emitted one is documented |
 | `class-filename` | `validate_mod.py` | a C# class living in a file named for it |
+| `layout` | `validate_mod.py` | the named files the checks read being where they expect, so a move cannot silently disable them |
 | `directory-coverage` | `validate_mod.py` | every file under `mod/` being reachable from exactly one path `manifest.json` declares, matching case |
 | `conflict-markers` | `check_docs.py` | no tracked file carrying a leftover conflict marker, the diff3 `\|\|\|\|\|\|\|` included |
 | `count` | `check_build_log.py` | the log covering every script the mod ships |
@@ -1234,7 +1234,6 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `item-curve` | `validate_mod.py` | tier and value curve consistency |
 | `item-tables` | `check_docs.py` | every figure in FEATURES' item tables, against its blueprint |
 | `file-rows` | `check_docs.py` | every row of FEATURES §6.1, against a recount of the file it names |
-| `joppa-sync` | `validate_mod.py` | the Joppa map and its option agreeing |
 | `json` | `validate_mod.py` | `manifest.json` and `workshop.json` parsing |
 | `links` | `check_docs.py` | every relative link in the documents resolving |
 | `loaded` | `check_build_log.py` | the game loading the mod rather than skipping it |

@@ -289,11 +289,24 @@ Two candidate approaches, both unproven:
 the patch is a self-contained 76-cell file with no dependencies. That reasoning was sound in
 isolation and wrong for this mod, which is deliberately self-contained (`docs/CHARTER.md` rule 6).
 
-A map merge cannot be gated on an option — it happens as data loads, long before any option is
-read — so the building is **removed after the fact**, on `ZoneActivatedEvent`, by a scribed
-`IGameSystem` registered at character creation via `[PlayerMutator]`.
+**That sentence was wrong, and the removal system it justified is gone (#498).** It read: "a map
+merge cannot be gated on an option — it happens as data loads, long before any option is read".
+`manifest.json`'s `Directories` array gates a whole directory on an option requirement spec, and
+`Options.LoadModOptionDefaults` populates option defaults *before* directory initialisation — which
+is exactly why the wiki notes that the file declaring the option must have `Option` in its name.
+`ModInfo.InitializeFiles` then loads only the directories that passed, and `MapFile.Reset` takes maps
+from that file list rather than a directory scan, so a `.rpm` is gated like anything else.
 
-What made it safe was computing the patch's contents by diffing `mod/Joppa.rpm` against
+So `mod/Optional/JoppaBuilding/Joppa.rpm` is now loaded only while the option is `Yes`, the option
+carries `Restart="true"`, and the 253-line `Raven_JoppaBuildingSystem` with its 89-cell table is
+deleted.
+
+**The contract changed with it, and improved.** It used to be lopsided: turning the option off
+removed the building on the next visit, and turning it back on never rebuilt it, which this section
+had to spell out as a limitation. Gating is symmetrical — Joppa is built once from whatever was
+loaded, and a save keeps what it was built with in both directions.
+
+What made it safe was computing the patch's contents by diffing `mod/Optional/JoppaBuilding/Joppa.rpm` against
 **vanilla's own `Joppa.rpm`**: 89 objects across 76 cells, of which 66 cells were empty ground and
 10 held a `DirtPath` the patch covered. Removal matches **blueprint *and* cell**, because the patch
 places 45 `DirtPath` and 27 `RustedMetalWall` — objects that exist all over Joppa. Matching by name
@@ -302,8 +315,10 @@ alone would have stripped half the village.
 The modded Joppa is identified by this mod's own objects at their expected cells rather than by a
 hardcoded zone ID.
 
-**One limitation, stated in the helptext:** turning the option back on does not rebuild. The
-building is map data, and once removed from a save it is gone.
+**Approach 2 is worth re-reading in this light.** It was rejected as a *sub-mod*, on charter rule 6
+— and rightly, since a second Workshop item is not what this mod is. Directory gating is not that:
+one mod, one manifest, one item, with a directory that loads conditionally. The objection was to
+splitting the distribution, not to splitting the folder.
 
 ### 4.6 Loot participation — `Checkbox`, fully live
 

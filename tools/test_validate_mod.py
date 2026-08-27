@@ -60,7 +60,8 @@ def write_mod(tmp: Path, blueprints: str = "", tables: str = "") -> Path:
         encoding="utf-8",
     )
     if tables:
-        (mod / "PopulationTables.xml").write_text(
+        (mod / "Core").mkdir(exist_ok=True)
+        (mod / "Core" / "PopulationTables.xml").write_text(
             f'<?xml version="1.0" encoding="utf-8" ?>\n<population>\n{tables}\n</population>\n',
             encoding="utf-8",
         )
@@ -211,7 +212,8 @@ class PrefixRecognition(unittest.TestCase):
         """A mod declaring one option, plus whatever blueprints the case needs."""
         tmp = Path(tempfile.mkdtemp(dir=self.tmp))
         mod = write_mod(tmp, blueprints)
-        (mod / "Options.xml").write_text(
+        (mod / "Core").mkdir(exist_ok=True)
+        (mod / "Core" / "Options.xml").write_text(
             '<?xml version="1.0" encoding="utf-8" ?>\n<options>\n'
             '  <option ID="OptionTestGate" DisplayText="t" Category="Mods" '
             'Type="Checkbox" Default="Yes">\n    <helptext>t</helptext>\n  </option>\n'
@@ -2127,7 +2129,8 @@ class SnapshotBackedChecks(unittest.TestCase):
                 "skill_powers": _VANILLA_TINKER3 if snapshot is None else snapshot
             },
         )
-        (tmp / "mod" / "Skills.xml").write_text(
+        (tmp / "mod" / "Core").mkdir(parents=True, exist_ok=True)
+        (tmp / "mod" / "Core" / "Skills.xml").write_text(
             '<?xml version="1.0" encoding="utf-8" ?>\n<skills>\n'
             '  <skill Name="Tinkering" Load="Merge">\n'
             f"    {power}\n"

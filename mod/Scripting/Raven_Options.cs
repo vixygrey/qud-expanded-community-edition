@@ -47,8 +47,13 @@ namespace QudExpandedCE
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
         /// <summary>
-        /// Read by Raven_JoppaBuildingSystem rather than here: the building is map data, removed
-        /// when a zone activates, not a field on a record this class can write.
+        /// Read by nothing in this class, and by no C# at all. The building is a map patch, and
+        /// manifest.json gates the directory holding it on this option - so the option decides
+        /// whether the file is ever loaded rather than what any code then does about it.
+        ///
+        /// Kept here because every option ID in this mod is declared in one place, and because a
+        /// reader looking for the one that is missing should find this note instead. See #498 and
+        /// docs/DESIGN_options.md 4.5.
         /// </summary>
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
 

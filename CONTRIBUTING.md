@@ -65,7 +65,7 @@ Four of those are less obvious than they look:
   population-table edit and a blueprint edit can look identical in a diff and have completely
   different blast radii. Never mix a defect fix with a design change in one commit.
 - **Conventional commits**, with scopes matching this repo's structure:
-  `tables` (`mod/PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
+  `tables` (`mod/Core/PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
   `genotypes` · `bodies` · `workshop` · `scripting` · `docs`.
 
   Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #3)`.
