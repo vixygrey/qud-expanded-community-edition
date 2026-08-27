@@ -36,9 +36,12 @@
        block, which is what puts a goat in front of a player.
 
        It carries no DynamicObjectsTable tag of its own, and tools/dynamic-pools.json still records
-       it in Hills_Creatures and Mountains_Creatures: those come from Goat by inheritance. Harmless,
-       because nothing consumes them - but recorded rather than papered over with *delete tags,
-       which would only be tidying a pool that is never rolled.
+       it in Hills_Creatures and Mountains_Creatures: those come from Goat by inheritance. Left as
+       recorded rather than papered over with *delete tags.
+
+       Those pools ARE rolled - by village generation, VillageBase.cs:167 - so an inherited
+       membership here means a dun goat can live in a hills or mountains village. That is a
+       reasonable place for one, which is why it stays. See docs/STYLEGUIDE.md 3.3.
 
        The other 31 stay out until this one is seen in a running game. -->
 

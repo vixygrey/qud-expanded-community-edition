@@ -748,25 +748,53 @@ blueprint resolves. **Every new item should have one** — the tags below are ad
 substitutes, and every tagged *item* in this fork also has an explicit entry.
 
 **Creature spawning does not work this way at all, and it cost a shipped feature to learn.** The
-`DynamicObjectsTable:<Biome>_Creatures` tables look like the route — 191 vanilla creature blueprints
-tag themselves into them — but **nothing consumes them**. `Hills_Creatures` appears in exactly one
-file in the whole game, `ObjectBlueprints/Creatures.xml`, where creatures declare membership; no
-population table references it and no zone builder requires it. Verified at runtime too: after a
-session that generated hills, canyon and saltmarsh zones, `population:findblueprint` listed every
-table in `PopulationManager.Populations` and not one `DynamicObjectsTable:*_Creatures` was among
-them.
+`DynamicObjectsTable:<Biome>_Creatures` tables look like the route — 123 vanilla creature blueprints
+tag themselves into sixteen of them — and they do not put a creature in a zone. Biome creatures come
+from ordinary hand-written populations instead: `HillsZoneGlobals-Reachable` lists `Goat`, `Dog`,
+`Boar`, `Salamander` and the rest as explicit `<object Blueprint=>` entries. **So a new creature
+reaches a zone the same way a new item does: an explicit entry in `mod/PopulationTables.xml`.** See
+#171.
 
-Biome creatures come from ordinary hand-written populations — `HillsZoneGlobals-Reachable` lists
-`Goat`, `Dog`, `Boar`, `Salamander` and the rest as explicit `<object Blueprint=>` entries. **So a
-new creature reaches the world the same way a new item does: an explicit entry in
-`mod/PopulationTables.xml`.** See #171.
+**They are not unread, though, and this section said they were.** Every biome-keyed pool is rolled
+by procedural village generation — `VillageBase.cs:167` for creatures, and the `_Plants`,
+`_Ingredients` and `_FarmablePlants` families beside it — deciding who lives in a village rather than
+what walks a hillside. So the tag is for villagers, and the original design was expecting
+wilderness. #489 later used the `_Ingredients` half deliberately, which is the same route working as
+intended once pointed at the right question.
+
+**The two things that made the wrong answer look proven are worth more than the answer** (#490).
+Neither was a careless step; both are the normal way to check.
+
+- **Grepping the data.** `Hills_Creatures` really does appear in exactly one file. The names are
+  built by string concatenation at runtime — `"DynamicObjectsTable:" + region + "_Creatures"` — so
+  no search of the XML can find the consumer, and the search coming back clean reads as proof.
+- **Checking at runtime with the wrong wish.** `population:findblueprint` enumerates
+  `PopulationManager.Populations`, which holds tables *already fabricated*. The session used to
+  confirm this had generated hills, canyon and saltmarsh zones and no village, so no `*_Creatures`
+  table had been built and none was listed. Absence of a table that nothing had asked for read as
+  absence of a consumer.
+
+  `population:generate:<table>#<amount>` names the table instead, which sends it through
+  `RequireTable` and fabricates it on demand. **Use that one when the question is about a table.**
+  `docs/LESSONS.md` carries both failures, and the second one's own trap: a misspelt pool name
+  builds an empty table and reports nothing, which looks identical to a tag that did not take.
 
 **Reach for a tag when you want the item in vanilla's specialist pool for its category** — the hatter
-stocking your helmets, the legendary gunsmith stocking your guns. Only nineteen of vanilla's
-seventy-nine declared tables are consumed anywhere, and only a handful of those correspond to gear
-this fork adds: `Ammo`, `Guns`, `Headwear`, `EnergyCells`, `Daggers`, `Trinkets`. There is no vanilla
-pool for boots, gloves, body armour, shields, cloaks or most melee families, so for those an explicit
-entry is the only route and no decision arises.
+stocking your helmets, the legendary gunsmith stocking your guns. Six of vanilla's seventy-nine
+declared pools correspond to gear this fork adds, and all six are named directly in
+`PopulationTables.xml`: `Ammo`, `Guns`, `Headwear`, `EnergyCells`, `Daggers`, `Trinkets`.
+
+There is **no declared pool at all** for boots, gloves, body armour, shields or cloaks, so for those
+an explicit entry is the only route and no decision arises. `MeleeWeapons` is the exception worth
+knowing: it *is* declared, and it is one of only three pools in the whole game that nothing rolls —
+`HumanoidCorpses` and `Mushrooms` are the others. Tagging into it would do nothing today and might do
+something after a Qud patch, which is a reason to leave it alone and a reason to know it is there.
+
+*(An earlier draft said "only nineteen of seventy-nine are consumed anywhere". Nineteen is how many
+are named in the game's XML; **seventy-six of the seventy-nine are consumed**, the other fifty-seven
+from code — the biome families above, plus `AjiConch`, `FarmablePlants` and `Jungle_Creatures` as
+literals. The word was "anywhere" and only the data had been searched, which is the same mistake as
+the paragraph above it and was made in the same sitting. #491.)*
 
 **A tag cannot be replaced by an explicit entry where the consumer is tiered.** Every one of these
 pools is consumed in the `:Tier{n}` form — `DynamicObjectsTable:Guns:Tier{zonetier+1}` and the like —
