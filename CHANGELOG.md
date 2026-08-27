@@ -52,13 +52,15 @@ recorded because contributors need them, not because subscribers do.
 
   `table-share` and `scatter-share` both govern entries someone typed. `DynamicInheritsTable:` pools
   are built from whatever descends from a base — joining is a consequence of `Inherits=`, with no
-  tag and nothing in the diff. The ceiling applies there too, **above a minimum of ten blueprints in
-  the pool at that tier**, because below that a share describes vanilla's stock rather than this
-  fork's presence: `BaseArmor:Tier0` is 1 of 1 mine, and that means vanilla ships none.
+  tag and nothing in the diff. The ceiling applies there too, **where vanilla holds at least five
+  blueprints in that pool at that tier**, because below that a share describes vanilla's stock rather
+  than this fork's presence: `BaseArmor:Tier0` is 1 of 1 mine, and that means vanilla ships none.
 
-  Ten is chosen, but the data picks it. Vanilla's pool sizes across every over-ceiling cell run 1,
-  3, 5, 6, 7, 8 and then 17 — nothing between 9 and 16 — so the cut goes through a gap rather than
-  through cases.
+  The threshold counts **vanilla's** blueprints, not the pool's total, and that is the point: half is
+  a texture decision about preserving the game you bought, so where vanilla ships nothing there is
+  nothing to preserve. Of the 34 cells this fork exceeds half in, 27 have vanilla holding three or
+  fewer and the other seven have it holding seven or more — none holds four to six, so the exact
+  number is not load-bearing.
 
   The section also records that the dial here is coarser: no per-item weight to lower, only
   `ExcludeFromDynamicEncounters`, which removes a blueprint from every dynamic pool at once. So it
