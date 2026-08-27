@@ -72,6 +72,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** A check that the mod's declared load paths reach every file it ships (#498).
+
+  Groundwork, landing before the restructure it exists to guard. Declaring a `Directories` array in
+  `manifest.json` changes loading from "everything under `mod/`" to "these paths only", and **a path
+  that does not match loads nothing, with no error** — the same silence as an unread tag, in the one
+  place where it costs a whole feature rather than one blueprint.
+
+  `directory-coverage` asks three things, all without the game because both sides are in the
+  repository. That every declared path exists **matching case exactly**, since macOS accepts a
+  wrong-case path and Linux does not, so `Path.exists()` cannot be the test. That no declared path
+  contains another, because the game keeps only one of two overlapping entries and the loser's
+  conditions go with it — which is what would make a gated subdirectory load unconditionally. And
+  that every content file is reachable, since one that is not still ships to subscribers.
+
+  Proved against a working prototype of the intended layout rather than only against synthetic
+  fixtures: the layout comes back clean, a path misspelled in case gives exactly one finding, a root
+  entry is caught as swallowing its sibling, and a forgotten directory reports each orphaned file.
+
 - **(internal)** Three drifted section numbers fixed, and a check so they cannot drift again
   (#496, #503).
 

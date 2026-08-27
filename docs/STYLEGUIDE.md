@@ -1165,6 +1165,7 @@ seconds rather than after a round trip.
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
+| A file under `mod/` no declared path loads | `directory-coverage`, against `manifest.json`'s `Directories` |
 | A tag name or merged table the snapshot has never seen | `snapshot-coverage`, against `tag_forms` + `tag_forms_absent` and the table sections |
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
@@ -1214,6 +1215,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |
 | `check-names` | `check_docs.py` | this one — a documented check name exists, and an emitted one is documented |
 | `class-filename` | `validate_mod.py` | a C# class living in a file named for it |
+| `directory-coverage` | `validate_mod.py` | every file under `mod/` being reachable from exactly one path `manifest.json` declares, matching case |
 | `conflict-markers` | `check_docs.py` | no tracked file carrying a leftover conflict marker, the diff3 `\|\|\|\|\|\|\|` included |
 | `count` | `check_build_log.py` | the log covering every script the mod ships |
 | `counts` | `check_docs.py` | the file and blueprint counts the documents quote |

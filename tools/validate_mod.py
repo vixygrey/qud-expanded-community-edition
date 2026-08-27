@@ -463,6 +463,129 @@ def check_workshop_description(f: Findings) -> None:
         )
 
 
+# Read by the mod manager rather than loaded as content, so they sit outside every declared path
+# and must not be reported as unreachable.
+MANIFEST_FILES = {"manifest.json", "workshop.json", "modconfig.json", "config.json"}
+
+
+def declared_paths(data: dict) -> list[str] | None:
+    """The `Paths` a manifest's `Directories` entries declare, or None when it declares none.
+
+    `Path` is the single-entry shorthand and is mutually exclusive with `Paths`; both are accepted
+    here because both are accepted by the game.
+    """
+    entries = data.get("Directories") or data.get("directories")
+    if not entries:
+        return None
+    paths: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        one = entry.get("Path") or entry.get("path")
+        many = entry.get("Paths") or entry.get("paths") or ([one] if one else [])
+        paths.extend(
+            p.strip("/\\") for p in many if isinstance(p, str) and p.strip("/\\")
+        )
+    return paths
+
+
+def check_directory_coverage(f: Findings) -> None:
+    """A file under mod/ that no declared path reaches, and paths that swallow each other.
+
+    Declaring `Directories` in manifest.json changes loading from "everything under mod/" to "these
+    paths only", and **a path that does not match loads nothing, with no error**. That is the same
+    silence as an unread tag or a scope that matches nothing, in the one place where it costs the
+    whole feature rather than one blueprint.
+
+    Three things are checked, all without the game, because both sides are in the repository.
+
+    1. **Every declared path exists, matching case exactly.** The wiki warns that paths are
+       case-sensitive on some operating systems; macOS is not one of them, so a manifest saying
+       `ObjectBlueprints` against a folder named `objectblueprints` works here and silently loads
+       nothing for a player on Linux. `Path.exists()` would not catch it, so the comparison is
+       against the real directory entries.
+
+    2. **No declared path contains another.** `ModInfo.InitializeFiles` skips a directory whose
+       ancestor is already listed and evicts descendants when an ancestor arrives, so of two
+       overlapping entries only one survives - and the loser's conditions go with it. An entry
+       naming the mod root would therefore make every gated subdirectory load unconditionally,
+       which is the trap that decides whether option gating works at all (#498).
+
+    3. **Every content file is reachable from some declared path.** A file outside them all is
+       shipped to subscribers and never read.
+
+    Silent while no `Directories` array exists, because the game then loads the root and everything
+    is reachable by definition. That is deliberate rather than vacuous: this lands before the
+    restructure it guards, so the move is checked from its first commit instead of afterwards.
+    """
+    path = MOD / "manifest.json"
+    if not path.is_file():
+        return  # check_manifest reports this
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return  # check_json reports this
+
+    declared = declared_paths(data)
+    if declared is None:
+        return
+
+    roots: list[Path] = []
+    broken = False
+    for entry in declared:
+        target = MOD / entry
+        # Walk the components against real directory entries, so a case difference macOS would
+        # accept is still reported - it is a Linux player who pays for it.
+        current = MOD
+        ok = True
+        for part in Path(entry).parts:
+            names = {p.name for p in current.iterdir()} if current.is_dir() else set()
+            if part not in names:
+                ok = False
+                break
+            current = current / part
+        if not ok or not target.is_dir():
+            f.add(
+                "directory-coverage",
+                f"manifest.json declares the path {entry!r}, which is not a directory under mod/ "
+                "with exactly that spelling - it would load nothing, silently",
+            )
+            broken = True
+            continue
+        roots.append(target)
+
+    for outer in roots:
+        for inner in roots:
+            if outer is not inner and inner.is_relative_to(outer):
+                f.add(
+                    "directory-coverage",
+                    f"manifest.json declares both {outer.relative_to(MOD)} and "
+                    f"{inner.relative_to(MOD)}, and the first contains the second - the game keeps "
+                    "only one, so the other's conditions are discarded",
+                )
+
+    # A path that does not resolve makes every file under it unreachable, so sweeping now would
+    # bury the one finding that matters under a cascade of its consequences. Fix the path first.
+    if broken or not roots:
+        return
+    for item in sorted(MOD.rglob("*")):
+        if item.is_dir() or item.name in MANIFEST_FILES:
+            continue
+        if item.parent == MOD and item.suffix.lower() in {
+            ".png",
+            ".jpg",
+            ".bmp",
+            ".md",
+        }:
+            continue  # preview image and any root-level readme, not loaded content
+        if not any(item.is_relative_to(r) for r in roots):
+            f.add(
+                "directory-coverage",
+                f"{item} is under mod/ but no declared path reaches it - it ships to subscribers "
+                "and is never loaded",
+            )
+
+
 def check_manifest(f: Findings) -> None:
     """manifest.json carries mod identity, and two fields have consequences beyond display.
 
@@ -2692,6 +2815,7 @@ def run() -> Findings:
     check_workshop_target(f)
     check_workshop_description(f)
     check_manifest(f)
+    check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
     check_option_defaults(f, roots)
