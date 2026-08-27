@@ -660,6 +660,54 @@ merged entry as a scatter entry reported `Melee Weapons 5C` at 75.2% where the t
 and did the same to twelve more. Splitting by "does this entry carry a `Weight`" needs no resolution
 at all, because vanilla's disjointness above makes that question equivalent.
 
+#### A third route, which nobody writes
+
+`table-share` and `scatter-share` both govern entries **someone typed**. There is a third way
+content reaches a player, and it has no entry at all: the game fabricates
+`DynamicInheritsTable:<Base>` from every blueprint descending from `<Base>`, filters it by tier, and
+a population table draws from it. **Joining is a consequence of `Inherits=`.** No tag, no table
+entry, nothing in the diff.
+
+The ceiling applies here too — but only where **vanilla holds at least five blueprints in that pool
+at that tier.**
+
+That exemption follows from what the ceiling is *for*. Half is a texture decision: at the low tiers
+most of what a player finds should still be the game they bought. Where vanilla ships nothing, there
+is no game-they-bought to protect. `DynamicInheritsTable:BaseArmor:Tier0` is 1 of 1 this fork's,
+which does not mean it dominates tier-0 armour — it means **vanilla ships none** and this fork ships
+one. Enforcing a percentage there would say only that vanilla left a gap.
+
+Counting *vanilla's* blueprints rather than the pool's total is the whole of it. Of the 34 cells this
+fork currently exceeds half in, **27 have vanilla holding three or fewer** — seven of them holding
+none at all — and the other seven have vanilla holding seven or more. **No cell has vanilla holding
+four, five or six**, so any threshold in that range picks out the same seven cells and the exact
+number is not load-bearing.
+
+*(An earlier draft put the floor on the pool's **total** size and justified it by a gap between 9 and
+16 in the size distribution. There is no such gap: that was measured over the already-over-half
+cells only, and vanilla's real distribution includes 9, 10, 11, 12, 14 and 15. It is sparse in the
+tail — 13 and 16 happen to be unused — but sparse is not a break, and a threshold cannot be
+justified by one. The rule above rests on the ceiling's stated purpose instead, which is what it
+should have rested on.)*
+
+**The dial is different here, and coarser.** There is no per-item weight to lower — the fix §3.2.1
+prescribes for the other two routes. Membership is binary, and the only lever is
+`<tag Name="ExcludeFromDynamicEncounters" />`, which removes a blueprint from **every** dynamic pool
+at once, `DynamicObjectsTable:` included, because `FabricateDynamicObjectsTable` and
+`FabricateDynamicInheritsTable` share the `IsEligibleForDynamicEncounters` predicate.
+
+So it is only usable on content that is **reachable another way**. That makes the rule sequential
+rather than absolute:
+
+> **A blueprint may be excluded from the generic pools only once it has a home someone chose.**
+> Excluding an item that has no explicit population entry does not lower a share, it deletes the
+> item.
+
+`Raven_Base Psionic Chip` is the worked example (#481): 144 chips, every one placed by hand in
+`Raven_Chips Tier 1`–`3`, so one tag on the base took `BaseArmor:Tier8` from 96% to 0% and cost
+nothing. The four `MeleeWeapon` tiers still over the ceiling cannot follow until #482 gives their
+vinereapers and vibro weapons an entry.
+
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 
