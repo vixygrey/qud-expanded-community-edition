@@ -61,9 +61,6 @@ NEW_UNPREFIXED = {
     "PsionicAdept",
 }
 
-# New population tables the mod declares. Same reasoning as NEW_UNPREFIXED.
-NEW_TABLE_PREFIXES = ("StartingGear_",)
-
 # Tier -> material, from docs/STYLEGUIDE.md 3.2. Longest first so "flawless crysteel"
 # wins over "crysteel" and "folded carbide" over "carbide".
 TIER_MATERIALS = [
@@ -500,6 +497,49 @@ def declared_paths(data: dict) -> list[str] | None:
     return paths
 
 
+def check_subtype_gear(f: Findings) -> None:
+    """A subtype whose `Gear` names a population table nothing defines.
+
+    `QudSubtypeModule` rolls this once, on `BOOTEVENT_BOOTPLAYEROBJECT`, and a name that resolves to
+    nothing logs `Unknown gear population table` and hands the character no starting kit. That is a
+    louder failure than most things here, but it happens at *someone else's* character creation
+    rather than at commit time, and the two files that have to agree are 18 names apart in different
+    directories.
+
+    Scoped to names carrying one of this fork's prefixes, because those are the ones it can answer
+    for. A bare name is vanilla's - `StartingGear_Common` is, and this fork's tables draw from it -
+    and nothing in the repository lists vanilla's population tables, so verifying one would need the
+    game. That is the same line `check_tag_form` draws, and it means a typo in a *vanilla* gear name
+    still gets through to the log.
+    """
+    subtypes = CORE / "Subtypes.xml"
+    if not subtypes.is_file() or not POPULATION_TABLES.is_file():
+        return  # check_layout reports a missing file
+    try:
+        defined = {
+            pop.get("Name")
+            for pop in parse(POPULATION_TABLES).iter("population")
+            if pop.get("Name")
+        }
+        entries = list(parse(subtypes).iter("subtype"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    for entry in entries:
+        gear = entry.get("Gear")
+        if not gear:
+            continue
+        for name in (part.strip() for part in gear.split(",")):
+            if not name or not name.startswith(MOD_PREFIXES) or name in defined:
+                continue
+            f.add(
+                "subtype-gear",
+                f"{subtypes}: subtype {entry.get('Name')!r} names the gear table {name!r}, which "
+                "nothing defines - the game would log 'Unknown gear population table' and start "
+                "that character with nothing",
+            )
+
+
 def check_map_id(f: Findings) -> None:
     """A `.rpm` map patch with no `ID`, whose identity is therefore its path.
 
@@ -890,8 +930,6 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                 if not name or name.startswith(MOD_PREFIXES):
                     continue
                 if name in NEW_UNPREFIXED or name.startswith(ABSTRACT_MARKERS):
-                    continue
-                if tag == "population" and name.startswith(NEW_TABLE_PREFIXES):
                     continue
                 if el.get("Load") != "Merge":
                     f.add(
@@ -2839,6 +2877,7 @@ def run() -> Findings:
     check_manifest(f)
     check_layout(f)
     check_map_id(f)
+    check_subtype_gear(f)
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)

@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <populations>
   <!-- Starting Equipment -->
 
-  <population Name="StartingGear_Force Psionic">
+  <population Name="Vixy_StartingGear_Force Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Disintegration Psionic Rifle" Number="1" />
@@ -23,7 +23,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Fire Psionic">
+  <population Name="Vixy_StartingGear_Fire Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Fire Psionic Rifle" Number="1" />
@@ -44,7 +44,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Ice Psionic">
+  <population Name="Vixy_StartingGear_Ice Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Ice Psionic Rifle" Number="1" />
@@ -64,7 +64,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Lightning Psionic">
+  <population Name="Vixy_StartingGear_Lightning Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Lightning Psionic Pistol" Number="1" />
@@ -84,7 +84,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Light Psionic">
+  <population Name="Vixy_StartingGear_Light Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Light Psionic Pistol" Number="1" />
@@ -105,7 +105,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Corrosive Psionic">
+  <population Name="Vixy_StartingGear_Corrosive Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Acid Psionic Rifle" Number="1" />
@@ -125,7 +125,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Blood Psionic">
+  <population Name="Vixy_StartingGear_Blood Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Blood Psionic Pistol" Number="2" />
@@ -145,7 +145,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Mental Psionic">
+  <population Name="Vixy_StartingGear_Mental Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Perception Psionic Rifle" Number="1" />
@@ -165,7 +165,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Temporal Psionic">
+  <population Name="Vixy_StartingGear_Temporal Psionic">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Temporal Psionic Rifle" Number="1" />
@@ -185,7 +185,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Force Guardian">
+  <population Name="Vixy_StartingGear_Force Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Long Sword2" Number="1" />
@@ -204,7 +204,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Fire Guardian">
+  <population Name="Vixy_StartingGear_Fire Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Steel Halberd" Number="1" />
@@ -222,7 +222,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Ice Guardian">
+  <population Name="Vixy_StartingGear_Ice Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Steel War Hammerth" Number="1" />
@@ -240,7 +240,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Lightning Guardian">
+  <population Name="Vixy_StartingGear_Lightning Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Long Sword2" Number="1" />
@@ -260,7 +260,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Light Guardian">
+  <population Name="Vixy_StartingGear_Light Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Iron Plate Armor" Number="1" />
@@ -282,7 +282,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Corrosive Guardian">
+  <population Name="Vixy_StartingGear_Corrosive Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Steel Long Swordth" Number="1" />
@@ -300,7 +300,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Blood Guardian">
+  <population Name="Vixy_StartingGear_Blood Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Vine-Weave Tunic" Number="1" />
@@ -318,7 +318,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Mental Guardian">
+  <population Name="Vixy_StartingGear_Mental Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Battle Axe3" Number="1" />
@@ -339,7 +339,7 @@
     </group>
   </population>
 
-  <population Name="StartingGear_Temporal Guardian">
+  <population Name="Vixy_StartingGear_Temporal Guardian">
     <group Name="Items" Style="pickeach">
       <table Name="StartingGear_Common" />
       <object Blueprint="Raven_Temporal Psionic Pistol" Number="2" />

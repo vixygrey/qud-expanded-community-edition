@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <subtypes>
   <!-- The subtype stat bonuses are aimed at a total value of 2-3 by adding the bonuses together then subtracting the penalties. True Kin all have 3-4 bonus points, and Mutants all have 2 -->
 
@@ -11,7 +11,7 @@
       <subtype
         Name="Force, Watchers of the World"
         Code="a"
-        Gear="StartingGear_Force Psionic"
+        Gear="Vixy_StartingGear_Force Psionic"
         Tile="Subtypes/forcePsionic.bmp"
         DetailColor="K"
       >
@@ -34,7 +34,7 @@
       <subtype
         Name="Fire, Defenders of the Core"
         Code="b"
-        Gear="StartingGear_Fire Psionic"
+        Gear="Vixy_StartingGear_Fire Psionic"
         Tile="Subtypes/firePsionic.bmp"
         DetailColor="o"
       >
@@ -58,7 +58,7 @@
       <subtype
         Name="Ice, Bulwark of the Throne"
         Code="c"
-        Gear="StartingGear_Ice Psionic"
+        Gear="Vixy_StartingGear_Ice Psionic"
         Tile="Subtypes/icePsionic.bmp"
         DetailColor="C"
       >
@@ -82,7 +82,7 @@
       <subtype
         Name="Lightning, Hunters of the Defilers"
         Code="d"
-        Gear="StartingGear_Lightning Psionic"
+        Gear="Vixy_StartingGear_Lightning Psionic"
         Tile="Subtypes/lightningPsionic.bmp"
         DetailColor="W"
       >
@@ -106,7 +106,7 @@
       <subtype
         Name="Light, Seekers of the Path"
         Code="e"
-        Gear="StartingGear_Light Psionic"
+        Gear="Vixy_StartingGear_Light Psionic"
         Tile="Subtypes/lightPsionic.bmp"
         DetailColor="O"
       >
@@ -133,7 +133,7 @@
       <subtype
         Name="Corrosive, Builders of the Wall"
         Code="f"
-        Gear="StartingGear_Corrosive Psionic"
+        Gear="Vixy_StartingGear_Corrosive Psionic"
         Tile="Subtypes/corrosivePsionic.bmp"
         DetailColor="g"
       >
@@ -158,7 +158,7 @@
       <subtype
         Name="Blood, Lurkers of the Unknown"
         Code="g"
-        Gear="StartingGear_Blood Psionic"
+        Gear="Vixy_StartingGear_Blood Psionic"
         Tile="Subtypes/bloodPsionic.bmp"
         DetailColor="R"
       >
@@ -183,7 +183,7 @@
       <subtype
         Name="Mental, Guides of the Lost"
         Code="h"
-        Gear="StartingGear_Mental Psionic"
+        Gear="Vixy_StartingGear_Mental Psionic"
         Tile="Subtypes/mentalPsionic.bmp"
         DetailColor="M"
       >
@@ -210,7 +210,7 @@
       <subtype
         Name="Temporal, Keepers of the Records"
         Code="q"
-        Gear="StartingGear_Temporal Psionic"
+        Gear="Vixy_StartingGear_Temporal Psionic"
         Tile="Subtypes/temporalPsionic.bmp"
         DetailColor="Y"
       >
@@ -239,7 +239,7 @@
       <subtype
         Name="Force, Main Battalion"
         Code="i"
-        Gear="StartingGear_Force Guardian"
+        Gear="Vixy_StartingGear_Force Guardian"
         Tile="Subtypes/forceGuardian.bmp"
         DetailColor="K"
       >
@@ -261,7 +261,7 @@
       <subtype
         Name="Fire, Berserker Battalion"
         Code="j"
-        Gear="StartingGear_Fire Guardian"
+        Gear="Vixy_StartingGear_Fire Guardian"
         Tile="Subtypes/fireGuardian.bmp"
         DetailColor="o"
       >
@@ -285,7 +285,7 @@
       <subtype
         Name="Ice, Assault Battalion"
         Code="k"
-        Gear="StartingGear_Ice Guardian"
+        Gear="Vixy_StartingGear_Ice Guardian"
         Tile="Subtypes/iceGuardian.bmp"
         DetailColor="C"
       >
@@ -309,7 +309,7 @@
       <subtype
         Name="Lightning, Skirmish Battalion"
         Code="l"
-        Gear="StartingGear_Lightning Guardian"
+        Gear="Vixy_StartingGear_Lightning Guardian"
         Tile="Subtypes/lightningGuardian.bmp"
         DetailColor="W"
       >
@@ -334,7 +334,7 @@
       <subtype
         Name="Light, Ranged Battalion"
         Code="m"
-        Gear="StartingGear_Light Guardian"
+        Gear="Vixy_StartingGear_Light Guardian"
         Tile="Subtypes/lightGuardian.bmp"
         DetailColor="O"
       >
@@ -361,7 +361,7 @@
       <subtype
         Name="Corrosive, Flank Battalion"
         Code="n"
-        Gear="StartingGear_Corrosive Guardian"
+        Gear="Vixy_StartingGear_Corrosive Guardian"
         Tile="Subtypes/corrosiveGuardian.bmp"
         DetailColor="g"
       >
@@ -386,7 +386,7 @@
       <subtype
         Name="Blood, Assassin Battalion"
         Code="o"
-        Gear="StartingGear_Blood Guardian"
+        Gear="Vixy_StartingGear_Blood Guardian"
         Tile="Subtypes/bloodGuardian.bmp"
         DetailColor="R"
       >
@@ -412,7 +412,7 @@
       <subtype
         Name="Mental, Technical Battalion"
         Code="p"
-        Gear="StartingGear_Mental Guardian"
+        Gear="Vixy_StartingGear_Mental Guardian"
         Tile="Subtypes/mentalGuardian.bmp"
         DetailColor="M"
       >
@@ -435,7 +435,7 @@
       <subtype
         Name="Temporal, Support Battalion"
         Code="r"
-        Gear="StartingGear_Temporal Guardian"
+        Gear="Vixy_StartingGear_Temporal Guardian"
         Tile="Subtypes/temporalGuardian.bmp"
         DetailColor="Y"
       >

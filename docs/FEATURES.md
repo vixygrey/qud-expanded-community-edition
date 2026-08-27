@@ -383,7 +383,7 @@ exceptions: every grade of each is 20, for the reason in §3.2.
 > `TinkerItem` part, they could not be built either, leaving **half the flagship catalogue
 > wish-only**. Each tier table now holds **48** entries (#6, fixed in #36).
 >
-> The 18 `StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
+> The 18 `Vixy_StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
 > deliberate — a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
 > sample of the whole catalogue.
 >
@@ -423,7 +423,7 @@ because tags inherit — `BaseArmor:Tier8` goes 96% → 0%, and `Armor` tiers 4,
 61–69% to 16–19%.
 
 Nothing became harder to find: every chip is placed by hand, 48 apiece in `Raven_Chips Tier 1`–`3`
-and three apiece across the eighteen `StartingGear_` tables. What changed is that the hand-written
+and three apiece across the eighteen `Vixy_StartingGear_` tables. What changed is that the hand-written
 rates above are now the whole story.
 
 `tools/dynamic-pools.json` pins the result, so a chip re-entering `DynamicObjectsTable:Items` fails
@@ -1830,7 +1830,7 @@ the effect arrows a drop route alongside the cells already merged into `Ammo 4`�
 
 ### 7.1 Starting gear (18 new tables)
 
-One `StartingGear_*` table per Psionic Adept subtype. Common pattern:
+One `Vixy_StartingGear_*` table per Psionic Adept subtype. Common pattern:
 
 **Lore Seekers (casters)** — `StartingGear_Common`, their affinity's psionic pistol or rifle,
 cloth robe, sandals, 3 half-full waterskins, 1d3 salve tonic, a dagger, **their affinity's basic

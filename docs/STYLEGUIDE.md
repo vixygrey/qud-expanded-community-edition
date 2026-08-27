@@ -1167,6 +1167,7 @@ seconds rather than after a round trip.
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
 | A file under `mod/` no declared path loads | `directory-coverage`, against `manifest.json`'s `Directories` |
 | A `.rpm` map patch whose identity is its file path | `map-id` |
+| A subtype's starting gear table not resolving | `subtype-gear` |
 | A tag name or merged table the snapshot has never seen | `snapshot-coverage`, against `tag_forms` + `tag_forms_absent` and the table sections |
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
@@ -1260,6 +1261,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `sections` | `check_docs.py` | the section headings the documents cross-reference |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
 | `snapshot-coverage` | `validate_mod.py` | everything this fork writes being something `tools/qud-api.json` has an opinion about, so a snapshot the mod has outrun fails without needing the game |
+| `subtype-gear` | `validate_mod.py` | a subtype's `Gear` naming a table this fork actually defines |
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |
