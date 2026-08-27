@@ -5,6 +5,14 @@
       "Raven_Rusted Door"
     ]
   },
+  "DynamicObjectsTable:Baboons": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_MangyBaboon",
+      "Vixy_RustBaboon",
+      "Vixy_SilverBaboon"
+    ]
+  },
   "DynamicObjectsTable:Chests": {
     "conditional": [],
     "reaches": [
@@ -25,6 +33,31 @@
       "Raven_Zetachrome Wristblade"
     ]
   },
+  "DynamicObjectsTable:DesertCanyon_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_AshcoatDog",
+      "Vixy_AshenSalamander",
+      "Vixy_BrindleDog",
+      "Vixy_BristleBoar",
+      "Vixy_CopperDragonfly",
+      "Vixy_EmberDragonfly",
+      "Vixy_GlassDragonfly",
+      "Vixy_MangyBaboon",
+      "Vixy_MarbledSalamander",
+      "Vixy_MarshDog",
+      "Vixy_MossbackTortoise",
+      "Vixy_MottledHornedChameleon",
+      "Vixy_PaleBoar",
+      "Vixy_PiedDog",
+      "Vixy_RangyDog",
+      "Vixy_RussetBoar",
+      "Vixy_RustBaboon",
+      "Vixy_SandHornedChameleon",
+      "Vixy_ScarredTortoise",
+      "Vixy_SilverBaboon"
+    ]
+  },
   "DynamicObjectsTable:EnergyCells": {
     "conditional": [],
     "reaches": [
@@ -32,6 +65,28 @@
       "Raven_Dark Matter Cell",
       "Raven_Solar Cell Array",
       "Raven_Solar Cell Nexus"
+    ]
+  },
+  "DynamicObjectsTable:Flowerfields_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_AshcoatDog",
+      "Vixy_AshenSalamander",
+      "Vixy_BrindleDog",
+      "Vixy_BristleBoar",
+      "Vixy_CopperDragonfly",
+      "Vixy_EmberDragonfly",
+      "Vixy_GlassDragonfly",
+      "Vixy_MarbledSalamander",
+      "Vixy_MarshDog",
+      "Vixy_MossbackTortoise",
+      "Vixy_MottledHornedChameleon",
+      "Vixy_PaleBoar",
+      "Vixy_PiedDog",
+      "Vixy_RangyDog",
+      "Vixy_RussetBoar",
+      "Vixy_SandHornedChameleon",
+      "Vixy_ScarredTortoise"
     ]
   },
   "DynamicObjectsTable:Guns": {
@@ -58,7 +113,27 @@
   "DynamicObjectsTable:Hills_Creatures": {
     "conditional": [],
     "reaches": [
-      "Vixy_DunGoat"
+      "Vixy_AshcoatDog",
+      "Vixy_AshenSalamander",
+      "Vixy_BandedHoneySkunk",
+      "Vixy_BlackGoat",
+      "Vixy_BrindleDog",
+      "Vixy_BristleBoar",
+      "Vixy_CraggedGoat",
+      "Vixy_DunGoat",
+      "Vixy_MangyBaboon",
+      "Vixy_MarbledSalamander",
+      "Vixy_MarshDog",
+      "Vixy_MossbackTortoise",
+      "Vixy_MottledHornedChameleon",
+      "Vixy_PaleBoar",
+      "Vixy_PiedDog",
+      "Vixy_RangyDog",
+      "Vixy_RussetBoar",
+      "Vixy_RustBaboon",
+      "Vixy_SandHornedChameleon",
+      "Vixy_ScarredTortoise",
+      "Vixy_SilverBaboon"
     ]
   },
   "DynamicObjectsTable:Items": {
@@ -421,6 +496,25 @@
       "Vixy_Zetachrome Spear"
     ]
   },
+  "DynamicObjectsTable:Jungle_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_AshenSalamander",
+      "Vixy_BandedHoneySkunk",
+      "Vixy_BristleBoar",
+      "Vixy_CopperDragonfly",
+      "Vixy_EmberDragonfly",
+      "Vixy_GlassDragonfly",
+      "Vixy_MarbledSalamander",
+      "Vixy_MiddenBeetle",
+      "Vixy_MottledHornedChameleon",
+      "Vixy_PaleBoar",
+      "Vixy_RussetBoar",
+      "Vixy_RustBeetle",
+      "Vixy_SaltBeetle",
+      "Vixy_SandHornedChameleon"
+    ]
+  },
   "DynamicObjectsTable:MeleeWeapons": {
     "conditional": [],
     "reaches": [
@@ -541,7 +635,35 @@
   "DynamicObjectsTable:Mountains_Creatures": {
     "conditional": [],
     "reaches": [
-      "Vixy_DunGoat"
+      "Vixy_AshcoatDog",
+      "Vixy_BlackGoat",
+      "Vixy_BrindleDog",
+      "Vixy_CraggedGoat",
+      "Vixy_DunGoat",
+      "Vixy_MarshDog",
+      "Vixy_PiedDog",
+      "Vixy_RangyDog"
+    ]
+  },
+  "DynamicObjectsTable:Ruins_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_AshwingGlowmoth",
+      "Vixy_MiddenBeetle",
+      "Vixy_RustBeetle",
+      "Vixy_SaltBeetle"
+    ]
+  },
+  "DynamicObjectsTable:Saltmarsh_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_CopperDragonfly",
+      "Vixy_EmberDragonfly",
+      "Vixy_GlassDragonfly",
+      "Vixy_PaleCroc",
+      "Vixy_PaleGlowfish",
+      "Vixy_SiltCroc",
+      "Vixy_VerdigrisGlowfish"
     ]
   },
   "DynamicObjectsTable:Trinkets": {
@@ -552,6 +674,18 @@
       "Raven_Large Sphere of Negative Weight",
       "Raven_Solar Cell Array",
       "Raven_Solar Cell Nexus"
+    ]
+  },
+  "DynamicObjectsTable:Water_Creatures": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_CopperDragonfly",
+      "Vixy_EmberDragonfly",
+      "Vixy_GlassDragonfly",
+      "Vixy_PaleCroc",
+      "Vixy_PaleGlowfish",
+      "Vixy_SiltCroc",
+      "Vixy_VerdigrisGlowfish"
     ]
   }
 }
