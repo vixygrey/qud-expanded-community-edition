@@ -46,7 +46,7 @@
     "shares": {
       "Tier0": 56,
       "Tier1": 12,
-      "Tier2": 8,
+      "Tier2": 9,
       "Tier3": 9,
       "Tier4": 19,
       "Tier5": 29,
@@ -78,10 +78,10 @@
       "Vixy_SorrelEquimax"
     ],
     "shares": {
-      "Tier0": 18,
-      "Tier1": 18,
-      "Tier2": 14,
-      "Tier3": 20,
+      "Tier0": 19,
+      "Tier1": 19,
+      "Tier2": 11,
+      "Tier3": 22,
       "Tier4": 1,
       "Tier5": 0,
       "Tier6": 0,
@@ -185,10 +185,10 @@
       "Raven_Zetachromeweave Cloak"
     ],
     "shares": {
-      "Tier0": 69,
-      "Tier1": 4,
-      "Tier2": 16,
-      "Tier3": 24,
+      "Tier0": 70,
+      "Tier1": 5,
+      "Tier2": 23,
+      "Tier3": 25,
       "Tier4": 27,
       "Tier4-7": 39,
       "Tier5": 40,
@@ -370,10 +370,10 @@
       "Vixy_SiltCroc"
     ],
     "shares": {
-      "Tier0": 13,
-      "Tier1": 13,
-      "Tier2": 21,
-      "Tier3": 18,
+      "Tier0": 17,
+      "Tier1": 17,
+      "Tier2": 16,
+      "Tier3": 19,
       "Tier4": 1,
       "Tier5": 0,
       "Tier6": 0,
@@ -467,11 +467,11 @@
       "Vixy_VerdigrisGlowfish"
     ],
     "shares": {
-      "Tier0": 21,
-      "Tier1": 21,
-      "Tier2": 17,
-      "Tier3": 20,
-      "Tier4": 2,
+      "Tier0": 38,
+      "Tier1": 38,
+      "Tier2": 20,
+      "Tier3": 21,
+      "Tier4": 3,
       "Tier5": 0,
       "Tier6": 0,
       "Tier7": 0,
@@ -487,9 +487,9 @@
       "Vixy_SilverBaboon"
     ],
     "shares": {
-      "Tier0": 3,
-      "Tier1": 3,
-      "Tier2": 10,
+      "Tier0": 5,
+      "Tier1": 5,
+      "Tier2": 12,
       "Tier3": 2,
       "Tier4": 0,
       "Tier5": 0,
@@ -720,9 +720,9 @@
     ],
     "shares": {
       "Tier0": 40,
-      "Tier1": 18,
+      "Tier1": 19,
       "Tier2": 15,
-      "Tier3": 27,
+      "Tier3": 28,
       "Tier4": 23,
       "Tier5": 37,
       "Tier6": 27,
@@ -1173,9 +1173,9 @@
     ],
     "shares": {
       "Tier0": 8,
-      "Tier1": 17,
-      "Tier2": 14,
-      "Tier3": 20,
+      "Tier1": 23,
+      "Tier2": 15,
+      "Tier3": 21,
       "Tier4": 12,
       "Tier5": 18,
       "Tier6": 11,
@@ -1198,7 +1198,7 @@
       "Tier6": 47,
       "Tier7": 8,
       "Tier8": 8,
-      "untiered": 8
+      "untiered": 10
     }
   }
 }

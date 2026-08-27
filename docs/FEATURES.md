@@ -1735,7 +1735,7 @@ over, and there is no better shell to replace these. Vanilla keeps plain `Shotgu
 
 Mura's ten effect bullets are **cut**, decided in #146. Six had already been cut from the arrows and
 the shells for reasons that did not change, and the razor bullet — the one worth arguing about —
-failed the test this whole line is built on. **813 of 897 creature blueprints bleed**, robots
+failed the test this whole line is built on. **813 of 904 creature blueprints bleed**, robots
 included, so it had no dead matchup: a straight upgrade over a plain slug rather than a trade.
 
 What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chance="5"`.
@@ -1748,7 +1748,7 @@ What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chanc
 | Dead to | anything carrying only non-metal — `Rusted.Apply` opens on `!HasPart<Metal>` |
 | Costs you | `Rusted` drops an item to **1%** of its value, and a second one destroys it outright |
 
-**This is a narrow round, and that is the trade it is priced on.** 721 of 897 creature blueprints
+**This is a narrow round, and that is the trade it is priced on.** 728 of 904 creature blueprints
 are dead to `RustOnHit` — but that number alone describes a round that does nothing, and the useful
 half is the other one: **134 of 340 humanoid creature blueprints have a rustable item**, against
 202 that do not. It is a round for the armed and the armoured and dead weight against beasts, and
@@ -1763,7 +1763,7 @@ what a blueprint declares is the least it can be carrying.
 
 ##### Natural gear is invisible to it
 
-The largest dead category is not creatures carrying nothing. It is **351 of 897 creature blueprints
+The largest dead category is not creatures carrying nothing. It is **351 of 904 creature blueprints
 carry only natural gear**, and they are immune however armed they look — a temple mecha holding a
 `MachinedEdge` that *has* `<part Name="Metal" />` cannot be rusted at all.
 

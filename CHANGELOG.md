@@ -72,7 +72,7 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
-- **Creature variants are a fifth of two generic creature pools instead of half** (#524).
+- **Creature variants are a fifth of two generic creature pools instead of two thirds** (#524).
 
   The 26 animal and reptile variants each reach the world by an explicit entry I placed in the biome
   they belong to. They *also* join `DynamicInheritsTable:BaseAnimal` and `:BaseReptile` simply by
@@ -82,29 +82,26 @@ recorded because contributors need them, not because subscribers do.
   It showed most in `FlowerFieldsPopulation`, whose creature group is `pickone` where
   `PopulationItem.Weight` defaults to 1. The fourteen named creatures there specify `Chance`, not
   `Weight`, so they weigh 1 apiece against that pool's 25 — **half of every creature pick went to a
-  pool I was half of**, in the low-tier zones where a new character spends its first hours.
+  pool I held two thirds of**, in the low-tier zones where a new character spends its first hours.
 
-  The weight was not spread across 26 animals. Seven held 49.4% of `BaseAnimal:Tier1` and the other
-  eleven held 2.9%, because `Dog` and `Bat` carry `Role="Minion"` — a ×4.0 multiplier, the largest
-  there is — while `Goat` and `Boar` carry `Brute` at ×0.25. I chose a parent, not a number.
+  The weight was not spread across 26 animals. Seven held most of it, because `Dog` and `Bat` carry
+  `Role="Minion"` — a ×4.0 multiplier, the largest there is — while `Goat` and `Boar` carry `Brute`
+  at ×0.25. I chose a parent, not a number.
 
   | | before | after |
   |---|---:|---:|
-  | `BaseAnimal` Tier0/1 | 52.3% | **18.0%** |
-  | `BaseAnimal` Tier2 | 45.0% | **14.1%** |
-  | `BaseReptile` Tier0/1 | 43.8% | **13.5%** |
-  | `BaseReptile` Tier2 | 56.6% | **20.7%** |
+  | `BaseAnimal` Tier0/1 | 69.6% | **18.6%** |
+  | `BaseAnimal` Tier2 | 55.7% | **11.2%** |
+  | `BaseReptile` Tier0/1 | 66.6% | **16.6%** |
+  | `BaseReptile` Tier2 | 65.1% | **15.7%** |
 
-  Done with vanilla's own `:Weight` tag — 78 of them, `Value="0.2"`, tiers 0–2 of the two pools. It
+  Done with vanilla's own `:Weight` tag — 78 of them, `Value="0.1"`, tiers 0–2 of the two pools. It
   is a multiplier applied inside one pool, so the deliberate entries and the inherited
   `DynamicObjectsTable:<Biome>_Creatures` village route are both untouched; membership does not
   change and no variant is harder to find where I put it. Vanilla uses the same tag 81 times across
-  28 pools — `Holographic Banana Tree` is 0.2 of `DynamicObjectsTable:BananaGrove_Plants`.
-
-  `report_dynamic_tables.py` learned the multiplier in the same change, because without it
-  `tools/inherited-pools.json` would have shown no movement at all while the game rolled 18% — a
-  green check reporting a number that had stopped being true. That also corrects a comment in that
-  file claiming no blueprint in any tracked pool carries a `:Weight` tag; two do.
+  28 pools — `Holographic Banana Tree` is 0.2 of `DynamicObjectsTable:BananaGrove_Plants`. 0.1 lands
+  each pool just under its own headcount share, so the variants stop being over-represented rather
+  than being suppressed.
 
 - **A new preview image, and it is my own work rather than Mura's logo** (#500).
 
@@ -141,6 +138,33 @@ recorded because contributors need them, not because subscribers do.
   A character who already has the building keeps it, and one made without it will not gain it later.
 
 ### Fixed
+
+- **(internal)** The pool report follows `<mixin>`, which is a second inheritance mechanism (#526).
+
+  `BlueprintIndex.chain()` walked `Inherits=` and nothing else. A blueprint can also pull tags,
+  parts and stats from another blueprint with `<mixin Name="…" />`, and **143 vanilla blueprints are
+  kept out of every dynamic pool by an `ExcludeFromDynamicEncounters` that arrives that way** — 66
+  golems through `BaseVehicleGolem`, 60 Chiliad creatures through `BaseChiliadCreatureStats`, plus
+  `BaseHindrenClue` and `BaseAnimatedObject`.
+
+  Counting all 143 as live pool members inflated vanilla's side everywhere, so this fork's share was
+  understated across **43 of 205 slices**: `BaseAnimal` Tier0/1 by 13 points, `Creature` Tier0/1 from
+  21.4% to **38.1%**. The fork writes no mixins, so the error ran in one direction only.
+
+  `chain()` keeps its `Inherits=`-only meaning, because that is what `GameObjectBlueprint.DescendsFrom`
+  walks and **a mixin does not confer pool membership** — following one there would have put 66
+  golems in the `Creature` pool. The new `lookup_chain(name, kind)` is what every tag, part, stat and
+  property lookup uses, in the loader's precedence order: own, ordinary mixins, the `Inherits` chain,
+  then `Load="Fill"` mixins. `Include`, `Exclude` and `Priority` are all honoured.
+
+  It also corrects the creature census, which is quoted in `docs/FEATURES.md` and in `Ammo.xml`:
+  **897 creature blueprints becomes 904**. The seven are the furniture golems — `Bed Golem`,
+  `Chair Golem`, `Door Golem`, `Infrastructure Golem`, `Iron Maiden Golem`, `Table Golem`,
+  `Wall Golem` — which are creatures by way of `<mixin Name="Creature" Exclude="part" />` on
+  `BaseAnimatedObject`, vanilla's only use of that filter. `creature-rust-dead` moves 721 → 728 with
+  it; the shares those sentences turn on do not change.
+
+  Found by a playtest, not by a check: the reported figure was 18% and the game rolled 33%.
 
 - **(internal)** `Role` is declared as a tag, the way vanilla declares it (#522).
 

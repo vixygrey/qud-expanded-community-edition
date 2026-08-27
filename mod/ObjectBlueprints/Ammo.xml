@@ -674,7 +674,7 @@
 
        Mura's ten effect bullets are all cut. Six were already cut from the arrows and the shells for
        reasons that did not change here, and the razor bullet - the one that looked most worth
-       keeping - failed the test this ammunition line is built on: 813 of 897 creature blueprints
+       keeping - failed the test this ammunition line is built on: 813 of 904 creature blueprints
        bleed, robots included, so it had no dead matchup and was a straight upgrade over a plain
        slug rather than a trade. The commented block below is kept as reference for naming and
        colour, not as a queue.
@@ -692,12 +692,12 @@
        waterskin while a carbide axe sits in the same pack.
 
        The figures here were wrong until #242 and are now recomputed from the game by
-       tools/snapshot_qud_api.py, so they cannot quietly stop being true. 721 of 897 creature
+       tools/snapshot_qud_api.py, so they cannot quietly stop being true. 728 of 904 creature
        blueprints are dead to RustOnHit. That number on its own describes a round that does nothing,
        though, and the honest claim needs its other half: 134 of 340 humanoid creature blueprints
        have a rustable item, against 202 that do not. Armed and armoured, yes; beasts, no.
 
-       The largest dead category is the one nobody would guess from reading RustOnHit: 351 of 897
+       The largest dead category is the one nobody would guess from reading RustOnHit: 351 of 904
        creature blueprints carry only natural gear, and they are immune however armed they look.
        NaturalWeapon sets Natural=1; BodyPart.DoEquip opens with EquipAsDefaultBehavior(), true for
        anything IsNatural(), and that branch assigns DefaultBehavior rather than _Equipped;

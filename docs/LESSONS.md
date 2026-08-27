@@ -824,6 +824,44 @@ This is the same principle as the positive control two lessons up, one level out
 test suite that needs a case which must pass, here it is any search, grep or patch whose silence
 you are about to treat as evidence.
 
+## I built the reference, then did not read it
+
+`docs/WIKI.md` exists because I asked for it: an index of Freehold's fifty-three modding pages so
+that the next question about engine behaviour would be answered from their documentation instead of
+from my guess. I wrote it in #509.
+
+`<mixin>` is a second inheritance mechanism. A blueprint can pull tags, parts and stats from another
+blueprint without inheriting from it, and 143 vanilla blueprints are kept out of every dynamic pool
+by an `ExcludeFromDynamicEncounters` that arrives that way. `BlueprintIndex.chain()` followed
+`Inherits=` and nothing else, so every one of those looked like a live pool member, and this fork's
+share of forty-three slices was understated - `BaseAnimal:Tier1` by thirteen points.
+
+The wiki documents `<mixin>` **nine times on `Modding:Objects`**, with `Include`, `Exclude`,
+`Priority` and the `Load="Fill"` before-or-after rule stated plainly. `Modding:Objects` is in my
+index. My one-line summary of it said *"blueprint definitions, the component system, the supported
+tag list, and the part catalogue by category"* and did not mention the mechanism.
+
+Three chances, and I took none of them:
+
+1. **The reference named the page.** I did not open it while building the index that models
+   inheritance.
+2. **My own probe printed the word.** Checking something else this session, I listed the element
+   kinds the index does not handle and `mixin` was in the output. I read past it.
+3. **I re-derived it from the decompiled loader instead** - the mixin ordering, `Include`/`Exclude`,
+   `Load="Fill"` - twenty minutes of reading IL to recover what one wiki page states in five lines.
+
+A playtest found it. Not a check, not a review, not the reference.
+
+> **When modelling engine behaviour, read Freehold's page on it before reading the assembly.** The
+> decompiler answers *what this build does*; the wiki answers *what the mechanism is*, including
+> the parts of it nothing in the data happens to exercise. `Priority` is real, documented, and used
+> by no vanilla blueprint - I would never have found it in the data.
+
+The narrower trap, worth keeping separately: **a search for `mixin` in the wiki's own search index
+returns nothing.** `insource:/mixin/` across all namespaces reports zero pages, while fetching
+`Modding:Objects` directly and grepping finds nine. Another empty result that was not an answer -
+see *A search that finds nothing has two explanations* above.
+
 ## Inheriting a blueprint inherits its Role, and Role is a x4 lever
 
 Thirty-two creature variants, each three lines over a vanilla parent - a name, a colour, a marker

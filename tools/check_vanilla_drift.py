@@ -133,7 +133,17 @@ class BlueprintIndex:
                     self.objects[name] = obj
 
     def chain(self, name: str) -> list[ET.Element]:
-        """The blueprint and its ancestors, nearest first. Cycles terminate rather than hang."""
+        """The blueprint and its `Inherits=` ancestors, nearest first. Cycles terminate.
+
+        LINEAGE, not lookup. This is what `GameObjectBlueprint.DescendsFrom` models - it walks
+        `ShallowParent`, which is the `Inherits` parent and nothing else - so this is the right
+        chain for asking what pools a blueprint belongs to. **A `<mixin>` does not confer
+        membership**, and following one here would put 66 golems in the `Creature` pool.
+
+        For asking what value reaches a blueprint, use `lookup_chain`: mixins do carry tags, parts
+        and stats, and reading them through this method missed 143 vanilla blueprints that are
+        excluded from dynamic encounters by a mixin (#526).
+        """
         seen: set[str] = set()
         out: list[ET.Element] = []
         while name and name in self.objects and name not in seen:
@@ -141,6 +151,68 @@ class BlueprintIndex:
             out.append(self.objects[name])
             name = self.objects[name].get("Inherits")
         return out
+
+    def lookup_chain(self, name: str, kind: str) -> list[ET.Element]:
+        """Every blueprint that can supply a `<kind>` child to `name`, highest precedence first.
+
+        `<mixin Name="X" />` is a second inheritance mechanism and the loader applies it with the
+        same `Inherit()` call as `Inherits=`, so a mixin's tags, parts and stats reach the
+        blueprint exactly as an ancestor's do. Following only `Inherits=` made `BaseVehicleGolem`
+        and `BaseChiliadCreatureStats` invisible, and with them the `ExcludeFromDynamicEncounters`
+        that keeps 143 vanilla blueprints out of every dynamic pool (#526).
+
+        Precedence is the loader's, which applies Fill mixins first, then `Inherits`, then ordinary
+        mixins, then the blueprint's own children - each overwriting what came before. Reversed
+        into nearest-first that is: own, ordinary mixins, the `Inherits` chain, Fill mixins.
+
+        `Include` / `Exclude` on a mixin filter by child-node kind, comma-delimited, and propagate
+        to everything that mixin brings with it - vanilla uses this once, as
+        `<mixin Name="Creature" Exclude="part" />`. `Priority` orders them, lower first.
+
+        All four attributes are documented on the wiki's Modding:Objects page, which
+        `docs/WIKI.md` has indexed since #509. I did not read it, and derived this from the loader
+        instead - see docs/LESSONS.md.
+
+        `*noinherit` needs no special handling here: the loader strips such a tag after each merge,
+        so it confines the tag to its declarer whichever mechanism carried it, and the existing
+        depth check in `has_tag` still expresses that.
+        """
+        out: list[ET.Element] = []
+        seen: set[str] = set()
+
+        def walk(name: str | None) -> None:
+            if not name or name in seen or name not in self.objects:
+                return
+            seen.add(name)
+            obj = self.objects[name]
+            out.append(obj)
+            # Priority orders the mixins, lower first - `Mixin.CompareTo` is
+            # `Priority.CompareTo(Other.Priority)` and the loader sorts before applying. No
+            # vanilla blueprint sets it, so every mixin is priority 0 today and this is stable
+            # sorting on equal keys; modelled anyway because the wiki documents the attribute.
+            mixins = sorted(
+                (m for m in obj.findall("mixin") if self._mixin_supplies(m, kind)),
+                key=lambda m: int(m.get("Priority") or 0),
+            )
+            for m in mixins:
+                if m.get("Load") != "Fill":
+                    walk(m.get("Name"))
+            walk(obj.get("Inherits"))
+            for m in mixins:
+                if m.get("Load") == "Fill":
+                    walk(m.get("Name"))
+
+        walk(name)
+        return out
+
+    @staticmethod
+    def _mixin_supplies(mixin: ET.Element, kind: str) -> bool:
+        """Whether `mixin` may contribute a `<kind>` child, per its Include/Exclude filters."""
+        include = mixin.get("Include")
+        exclude = mixin.get("Exclude")
+        if include and kind not in [p.strip() for p in include.split(",")]:
+            return False
+        return not (exclude and kind in [p.strip() for p in exclude.split(",")])
 
     def has_tag(self, name: str, tag: str) -> bool:
         """True when `tag` reaches `name`, whether declared on it or inherited.
@@ -159,7 +231,7 @@ class BlueprintIndex:
         `:Trinkets`, among 126 others. Missing it made this over-report - counting blueprints as
         pool members that the game had explicitly removed (#261).
         """
-        for depth, obj in enumerate(self.chain(name)):
+        for depth, obj in enumerate(self.lookup_chain(name, "tag")):
             for el in obj.findall("tag"):
                 if el.get("Name") == tag:
                     value = el.get("Value")
@@ -175,7 +247,7 @@ class BlueprintIndex:
         tag outright, `*noinherit` confines one to the blueprint declaring it. Returning None for
         both keeps this the value-shaped twin of that method rather than a second set of rules.
         """
-        for depth, obj in enumerate(self.chain(name)):
+        for depth, obj in enumerate(self.lookup_chain(name, "tag")):
             for el in obj.findall("tag"):
                 if el.get("Name") == tag:
                     value = el.get("Value")
@@ -191,7 +263,7 @@ class BlueprintIndex:
         declares only what it changes, so a value the mod overrides is found on the mod's own
         element and one it leaves alone falls through to the ancestor. Parts have no `*noinherit`.
         """
-        for obj in self.chain(name):
+        for obj in self.lookup_chain(name, "part"):
             for el in obj.findall("part"):
                 if el.get("Name") == part and el.get(attr) is not None:
                     return el.get(attr)
@@ -201,7 +273,7 @@ class BlueprintIndex:
         """True when `part` is declared anywhere on the chain. Parts have no `*noinherit`."""
         return any(
             el.get("Name") == part
-            for obj in self.chain(name)
+            for obj in self.lookup_chain(name, "part")
             for el in obj.findall("part")
         )
 
@@ -218,7 +290,7 @@ class BlueprintIndex:
         `{{{remove}}}` and `*delete` are the loader's two erasures, checked as substrings because
         that is how it checks them. Properties have no `*noinherit`.
         """
-        for obj in self.chain(name):
+        for obj in self.lookup_chain(name, "property"):
             for el in obj.findall("property"):
                 if el.get("Name") == key:
                     value = el.get("Value")
@@ -239,7 +311,7 @@ class BlueprintIndex:
         """
         return any(
             el.get("Name") == stat
-            for obj in self.chain(name)
+            for obj in self.lookup_chain(name, "stat")
             for el in obj.findall("stat")
         )
 
@@ -253,7 +325,7 @@ class BlueprintIndex:
         - `ObjectBlueprintXMLChildNode.Merge` copies attributes one key at a time, so a child
         adding `sValue` to an inherited `Value` keeps both.
         """
-        for obj in self.chain(name):
+        for obj in self.lookup_chain(name, "stat"):
             for el in obj.findall("stat"):
                 if el.get("Name") == stat and el.get(attr) is not None:
                     return el.get(attr)
