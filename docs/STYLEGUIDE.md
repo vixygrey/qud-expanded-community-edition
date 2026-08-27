@@ -1139,6 +1139,7 @@ seconds rather than after a round trip.
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
+| A tag name or merged table the snapshot has never seen | `snapshot-coverage`, against `tag_forms` + `tag_forms_absent` and the table sections |
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
 | Filenames without spaces | `filename-space` |
@@ -1228,6 +1229,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `scripting-policy` | `validate_mod.py` | charter rule 5's banned APIs in `mod/Scripting/` |
 | `sections` | `check_docs.py` | the section headings the documents cross-reference |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
+| `snapshot-coverage` | `validate_mod.py` | everything this fork writes being something `tools/qud-api.json` has an opinion about, so a snapshot the mod has outrun fails without needing the game |
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
 | `subtype-tile` | `validate_mod.py` | subtype tiles existing and named for their affinity |

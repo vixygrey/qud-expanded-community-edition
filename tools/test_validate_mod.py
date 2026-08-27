@@ -1148,6 +1148,100 @@ class WorkshopDescriptionLength(unittest.TestCase):
         self.assertEqual(self._findings(text), [])
 
 
+class SnapshotCoverage(unittest.TestCase):
+    """#507: the snapshot's mod-scoped sections take their keys from the mod, so a mod change can
+    outrun them. The digest that noticed needs Caves of Qud installed, so CI skipped it and a stale
+    snapshot merged green - twice in one day, each time surfacing as a failure that blocked a
+    commit which had not caused it. This check needs no game: both sides are in the repository."""
+
+    def coverage(self, blueprints: str = "", tables: str = "") -> list[tuple[str, str]]:
+        tmp = Path(tempfile.mkdtemp())
+        write_mod(tmp, blueprints=blueprints, tables=tables)
+        return findings_for(validate_mod.check_snapshot_coverage, tmp)
+
+    def test_a_tag_name_the_snapshot_records_is_accepted(self) -> None:
+        """BaseObject is in tag_forms, so it is covered and says nothing."""
+        self.assertEqual(
+            self.coverage('<object Name="T"><tag Name="BaseObject" /></object>'), []
+        )
+
+    def test_a_cited_absence_is_accepted(self) -> None:
+        """Vixy_CreatureVariant is in tag_forms_absent because vanilla never writes it. A cited
+        absence is an answer, which is the whole point of recording one."""
+        self.assertEqual(
+            self.coverage(
+                '<object Name="T"><tag Name="Vixy_CreatureVariant" /></object>'
+            ),
+            [],
+        )
+
+    def test_a_name_in_neither_is_reported(self) -> None:
+        """The #486 and #489 case: a tag the snapshot predates, which nothing without the game
+        could previously notice."""
+        found = self.coverage(
+            '<object Name="T"><tag Name="Vixy_BrandNewTag" /></object>'
+        )
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0][0], "snapshot-coverage")
+        self.assertIn("Vixy_BrandNewTag", found[0][1])
+        self.assertIn("snapshot_qud_api.py", found[0][1])
+
+    def test_an_stag_is_covered_too(self) -> None:
+        """Both elements land in the same dictionary, so both must be checked."""
+        found = self.coverage(
+            '<object Name="T"><stag Name="Vixy_BrandNewTag" /></object>'
+        )
+        self.assertEqual(len(found), 1)
+
+    def test_a_repeated_name_is_reported_once(self) -> None:
+        """One missing name is one thing to fix, however many blueprints carry it - and this fork
+        puts the same tag on dozens."""
+        found = self.coverage(
+            '<object Name="A"><tag Name="Vixy_BrandNewTag" /></object>'
+            '<object Name="B"><tag Name="Vixy_BrandNewTag" /></object>'
+        )
+        self.assertEqual(len(found), 1)
+
+    def test_a_merged_table_the_snapshot_records_is_accepted(self) -> None:
+        """`Ammo 2` is one of the 72 tables this fork merges into, so the snapshot holds vanilla's
+        side of it. Note the snapshot's table sections are themselves mod-scoped - a table this
+        fork does not merge into has no entry, which is exactly the gap this check closes."""
+        found = self.coverage(
+            tables='<population Name="Ammo 2" Load="Merge">'
+            '<object Blueprint="X" Weight="1" /></population>'
+        )
+        self.assertEqual(found, [])
+
+    def test_a_merged_table_in_neither_is_reported(self) -> None:
+        found = self.coverage(
+            tables='<population Name="Vixy_UnknownTable" Load="Merge">'
+            '<object Blueprint="X" Weight="1" /></population>'
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("Vixy_UnknownTable", found[0][1])
+
+    def test_a_table_this_fork_defines_is_not_a_merge(self) -> None:
+        """A table with no Load="Merge" is this fork's own and vanilla has nothing to say about it,
+        so demanding a snapshot record would fail every new table."""
+        found = self.coverage(
+            tables='<population Name="Vixy_MyOwnTable">'
+            '<object Blueprint="X" Weight="1" /></population>'
+        )
+        self.assertEqual(found, [])
+
+    def test_it_says_nothing_without_a_snapshot(self) -> None:
+        """A contributor without the snapshot gets silence rather than a wall of false findings -
+        the same bargain every other snapshot-backed check makes."""
+        tmp = Path(tempfile.mkdtemp())
+        mod = write_mod(
+            tmp, '<object Name="T"><tag Name="Vixy_BrandNewTag" /></object>'
+        )
+        (tmp / "tools" / "qud-api.json").unlink()
+        self.assertEqual(
+            findings_for(validate_mod.check_snapshot_coverage, mod.parent), []
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
 
