@@ -205,6 +205,60 @@ class BlueprintIndex:
             for el in obj.findall("part")
         )
 
+    def prop_value(self, name: str, key: str) -> str | None:
+        """The value `<property Name="key">` resolves to on `name`, or None.
+
+        Properties are the other half of a lookup the game treats as one. `GameObjectFactory`
+        reads `<property>` into `GameObjectBlueprint.Props`, and every consumer that matters here
+        checks both stores - the population weighting asks
+        `Tags.TryGetValue("Role", ...) || Props.TryGetValue("Role", ...)`. Reading only tags means
+        a value declared the other way is invisible, which is how thirteen of this fork's items
+        came to be weighted a hundred times too heavily (#520).
+
+        `{{{remove}}}` and `*delete` are the loader's two erasures, checked as substrings because
+        that is how it checks them. Properties have no `*noinherit`.
+        """
+        for obj in self.chain(name):
+            for el in obj.findall("property"):
+                if el.get("Name") == key:
+                    value = el.get("Value")
+                    if value is not None and (
+                        "{{{remove}}}" in value or "*delete" in value
+                    ):
+                        return None
+                    return value
+        return None
+
+    def has_stat(self, name: str, stat: str) -> bool:
+        """True when `stat` is declared anywhere on the chain, whatever it carries.
+
+        The game's `HasStat`, and separate from `stat_attr` because the difference between them is
+        load-bearing. `<stat Name="Level" sValue="18-20" />` declares Level with no numeric
+        `Value`: `HasStat` is true, `BaseValue` is left at zero, and the blueprint lands in tier 1
+        rather than having no tier at all. Thirty-two vanilla villagers are shaped that way.
+        """
+        return any(
+            el.get("Name") == stat
+            for obj in self.chain(name)
+            for el in obj.findall("stat")
+        )
+
+    def stat_attr(self, name: str, stat: str, attr: str) -> str | None:
+        """The nearest declaration of `stat`'s `attr` on the chain, or None.
+
+        The stat-shaped twin of `part_attr`, and it exists for `Level`: a blueprint with no `Tier`
+        tag takes its tier from `Level`, which is how every creature in the game is tiered.
+
+        Nearest-per-attribute rather than nearest-whole-node, because that is what the loader does
+        - `ObjectBlueprintXMLChildNode.Merge` copies attributes one key at a time, so a child
+        adding `sValue` to an inherited `Value` keeps both.
+        """
+        for obj in self.chain(name):
+            for el in obj.findall("stat"):
+                if el.get("Name") == stat and el.get(attr) is not None:
+                    return el.get(attr)
+        return None
+
 
 def anatomy(roots: list[ET.Element], name: str) -> ET.Element | None:
     for r in roots:

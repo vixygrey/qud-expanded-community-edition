@@ -108,6 +108,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** The inherited-pool report reads Tier and Role the way the game does (#520).
+
+  `report_dynamic_tables.py` weights every member of a `DynamicInheritsTable:` pool by its tier
+  distance and its role. It read both from tags, and the game reads neither from a tag alone.
+
+  `GameObjectBlueprint.Tier` uses the `Tier` tag when there is one and otherwise
+  `GetStat("Level").BaseValue / 5 + 1`, clamped to 1–8. **Vanilla creatures carry `Level` and no
+  `Tier` tag**, so 593 eligible blueprints were dropped — 46 of them my own creature variants — and
+  `BaseAnimal`, `BaseReptile` and `Humanoid` were reported as pools that did not exist. I hold 52%
+  of `BaseAnimal` Tier1 and 57% of `BaseReptile` Tier2. A blueprint with neither tag nor `Level` is
+  not excluded either: its delta misses `TierDeltaWeights` and it joins at weight 1, or at full
+  weight in the untiered table, which 731 blueprints do.
+
+  The weighting also asks `Tags.TryGetValue("Role", …) || Props.TryGetValue("Role", …)`. Vanilla
+  declares Role as a tag 352 times and as a property never; this fork does the exact opposite,
+  thirteen times, on the Zetachrome items. Reading only tags weighted those thirteen ×100 too
+  heavily and put `BaseShield` Tier8 at 96.7% when it is 69.5%.
+
+  169 slices across 16 pools becomes **205 across 22**. The count over the reported 50% ceiling
+  barely moves, 50 to 49, but the list is materially different — which matters, because #481 is
+  being decided on it. `BlueprintIndex` gains `prop_value`, `has_stat` and `stat_attr` to make the
+  three-way resolution readable, and `tools/inherited-pools.json` is re-pinned.
+
 - **(internal)** The 18 subtype gear tables carry this fork's prefix (#499).
 
   `StartingGear_Force Psionic` and its seventeen siblings sat in vanilla's namespace. A population
