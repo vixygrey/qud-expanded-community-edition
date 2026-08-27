@@ -16,7 +16,7 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
-- **32 creature colour variants**, on by default and toggleable in the mod options (#171).
+- **44 creature colour variants**, on by default and toggleable in the mod options (#171).
 
   Thirteen common creatures pick up regional coats: brindle, rangy, pied, ash-coated and marsh dogs,
   dun and cragged and black goats, bristleback and russet and pale boars, mangy and silverback and
@@ -44,6 +44,16 @@ recorded because contributors need them, not because subscribers do.
   any check.
 
   `docs/FEATURES.md` §17 is the full reference, including the catalogue and the derivation.
+
+  A second wave adds six more families, chosen by the two rules the first wave arrived at the hard
+  way — the animal must have a live population entry, and its colour must not already mean something.
+  Sorrel and piebald equimaxes on the canyon floor and in the flowerfields, cinder and lantern
+  glowcrows, ochre and meadow salthoppers, slate and chalk centipedes, rufous and hoary bats, and
+  cinnamon and black bears through the caves and the Trembling Dunes. Birds were thin on the ground
+  in Qud, so the glowcrows are the ones I most wanted.
+
+  The svardym are deliberately left alone: their green, red, blue and bright green are rank markers
+  rather than coats, and a variant there would read as a different tier of enemy.
 
 - **(internal)** One creature variant, to prove the distribution route (#171).
 

@@ -246,4 +246,75 @@
     />
     <tag Name="Vixy_CreatureVariant" />
   </object>
+
+  <!-- Creature variants, second wave (#171).
+
+       Six more families, chosen by the rule the first wave arrived at the hard way: the parent must
+       have a LIVE population entry, and its colour must not be doing mechanical work. That last one
+       rules out the svardym, whose green/red/blue/bright-green is their rank rather than their coat -
+       a variant there would read as a different tier of enemy. -->
+  <object Name="Vixy_SorrelEquimax" Inherits="Equimax">
+    <part Name="Render" DisplayName="{{r|sorrel equimax}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_PiebaldEquimax" Inherits="Equimax">
+    <part Name="Render" DisplayName="{{Y|piebald equimax}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_CinderGlowcrow" Inherits="Glowcrow">
+    <part Name="Render" DisplayName="{{K|cinder glowcrow}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="o" />
+    <part
+      Name="Description"
+      Short="No light comes off =pronouns.object= at all until =pronouns.subjective= =verb:turn:afterpronoun=, and then a seam of ember shows between the feathers like a coal breathed on."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_LanternGlowcrow" Inherits="Glowcrow">
+    <part Name="Render" DisplayName="{{W|lantern glowcrow}}" ColorString="&amp;W" TileColor="&amp;W" DetailColor="Y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_OchreSalthopper" Inherits="Salthopper">
+    <part Name="Render" DisplayName="{{w|ochre salthopper}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="W" />
+    <part
+      Name="Description"
+      Short="Dust the colour of old brick has settled into the seams of =pronouns.possessive= thorax, so that =pronouns.subjective= =verb:are:afterpronoun= lost against the canyon wall until =pronouns.subjective= =verb:jump:afterpronoun=."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MeadowSalthopper" Inherits="Salthopper">
+    <part Name="Render" DisplayName="{{g|meadow salthopper}}" ColorString="&amp;g" TileColor="&amp;g" DetailColor="W" />
+    <part
+      Name="Description"
+      Short="=pronouns.Possessive= long body has taken the green of the stalks =pronouns.subjective= =verb:feed:afterpronoun= among, down to a faint bloom of pollen along the thorax."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_SlateCentipede" Inherits="Giant Centipede">
+    <part Name="Render" DisplayName="{{K|slate centipede}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_ChalkCentipede" Inherits="Giant Centipede">
+    <part Name="Render" DisplayName="{{Y|chalk centipede}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_RufousBat" Inherits="Bat">
+    <part Name="Render" DisplayName="{{r|rufous bat}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_HoaryBat" Inherits="Bat">
+    <part Name="Render" DisplayName="{{y|hoary bat}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_CinnamonBear" Inherits="Bear">
+    <part Name="Render" DisplayName="{{r|cinnamon bear}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="W" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_BlackBear" Inherits="Bear">
+    <part Name="Render" DisplayName="{{K|black bear}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
+    <part
+      Name="Description"
+      Short="=pronouns.Possessive= coat is black to the roots and takes the light badly, so that =pronouns.subjective= =verb:read:afterpronoun= as a hole in the cave rather than a shape in it."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
 </objects>

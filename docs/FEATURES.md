@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **432** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **444** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **68** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **70** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -567,7 +567,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **432 active** | **211** |
+| **Total** | **444 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1802,7 +1802,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-90 table definitions: **68 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+92 table definitions: **70 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2085,7 +2085,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 90 tables (68 merge / 22 new)
+├── PopulationTables.xml        # 92 tables (70 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
@@ -2594,7 +2594,7 @@ than a surprise.
 
 ## 17. Creature variants (`ObjectBlueprints/Creatures.xml`)
 
-**32 cosmetic colour and name variants of thirteen common creatures** (#171). Option-gated by
+**44 cosmetic colour and name variants of nineteen common creatures** (#171). Option-gated by
 `OptionQudExpandedCECreatureVariants`, default **on**.
 
 ### 17.1 The one rule that keeps this cosmetic
@@ -2642,6 +2642,25 @@ boars rare in the jungle.
 The black goat and the rust-furred baboon are held one step below their parents rather than matching,
 which is the rarity the roster always wanted and the first attempt could not express at all.
 
+**Where the parent's `Number` is already 1 there is nothing to halve, so the `Chance` or `Weight`
+halves instead.** Without that a variant of a single-spawn animal would be purely additive at the
+parent's own rate — a black bear at the Trembling Dunes' 95% would mean a bear *and* a black bear in
+nearly every zone.
+
+### 17.3b Which creatures can take a variant
+
+Two rules, both learned the hard way:
+
+**The parent must have a live population entry.** Not a `DynamicObjectsTable` tag — those distribute
+into pools nothing reads. Grep for the blueprint name outside the file that declares it; if every hit
+is a declaration, there is no route.
+
+**Its colour must not be doing mechanical work.** This is what rules out the svardym, whose hatchling
+green, scrounge red, eld blue and jut bright-green encode *rank* rather than coat. A variant there
+would read as a different tier of enemy, which is the "two identical glyphs behaving differently"
+failure §17.1 exists to prevent. Named uniques and vanilla's own variants are out for the same family
+of reason — `Sultan Croc`, `Astral Tabby`, `Two-Headed Boar`.
+
 ### 17.4 One restoration and two additions
 
 **`Baboon` is added to the desert canyon.** Vanilla's own tags say baboons belong there and the
@@ -2672,25 +2691,35 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 | ashen salamander ✦ | `Salamander` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d4 |
 | ashwing glowmoth | `Glowmoth` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=1 |
 | banded honey skunk | `Honey Skunk` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1 |
+| black bear ✦ | `Bear` | `LowerTremblingDunesZoneGlobals` | Chance=50 Number=1 |
 | black goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=1d3 |
 | brindle dog | `Dog` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
 | bristleback boar | `Boar` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| chalk centipede | `Giant Centipede` | `LowerTremblingDunesZoneGlobals` | Chance=45 Number=1 |
+| cinder glowcrow ✦ | `Glowcrow` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d6 |
+| cinnamon bear | `Bear` | `Tier2CaveCreatures` | Weight=2 Number=1 |
 | copper dragonfly | `GiantDragonfly` | `FlowerFieldsPopulation` | Chance=25 Number=1d6 |
 | cragged goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=50 Number=1d6 |
 | dun goat ✦ | `Goat` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1d3 |
 | ember dragonfly | `GiantDragonfly` | `DesertCanyonZoneGlobals` | Chance=25 Number=1d6 |
 | glass dragonfly | `GiantDragonfly` | `WaterCreatures` | Weight=5 Number=1 |
+| hoary bat | `Bat` | `LowerTremblingDunesZoneGlobals` | Chance=90 Number=1 |
+| lantern glowcrow | `Glowcrow` | `FlowerFieldsPopulation` | Chance=10 Number=1d6 |
 | mangy baboon | `Baboon` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d2 |
 | marbled salamander ✦ | `Salamander` | `JungleZoneGlobals` | Chance=5 Number=1-2 |
 | marsh dog | `Dog` | `SaltMarshZoneGlobals` | Chance=25 Number=1d2 |
+| meadow salthopper ✦ | `Salthopper` | `FlowerFieldsPopulation` | Chance=5 Number=1 |
 | midden beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=2-3 |
 | mossbacked tortoise | `IrritableTortoise` | `FlowerFieldsPopulation` | Chance=10 Number=1d2 |
 | mottled horned chameleon | `Horned Chameleon` | `JungleZoneGlobals` | Chance=5 Number=1 |
+| ochre salthopper ✦ | `Salthopper` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1 |
 | pale boar | `Boar` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1 |
 | pale croc | `Croc` | `WaterCreatures` | Weight=5 Number=1 |
 | pale glowfish | `Glowfish` | `WaterCreatures` | Weight=5 Number=1 |
+| piebald equimax | `Equimax` | `FlowerFieldsPopulation` | Chance=30 Number=1d6 |
 | pied dog | `Dog` | `FlowerFieldsPopulation` | Chance=10 Number=1d2 |
 | rangy dog | `Dog` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d2 |
+| rufous bat | `Bat` | `Tier2CaveCreatures` | Weight=2 Number=1 |
 | russet boar | `Boar` | `JungleZoneGlobals` | Chance=5 Number=1 |
 | rust beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=2-3 |
 | rust-furred baboon | `Baboon` | `BaboonParty` | Chance=50 Number=1 |
@@ -2699,6 +2728,8 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 | scarred tortoise | `IrritableTortoise` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
 | silt croc | `Croc` | `SaltMarshZoneGlobals` | Chance=50 Number=1 |
 | silverback baboon | `Baboon` | `BaboonParty` | Chance=90 Number=1-2 |
+| slate centipede | `Giant Centipede` | `Tier2CaveCreatures` | Weight=10 Number=1-2 |
+| sorrel equimax | `Equimax` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d6 |
 | verdigris glowfish | `Glowfish` | `SaltMarshZoneGlobals` | Chance=75 Number=1d4 |
 
 ### 17.7 The option
