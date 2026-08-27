@@ -1647,7 +1647,7 @@ Recovering them takes four lines:
 ```python
 import re
 b = open(dll, 'rb').read()
-lits = {m.decode('utf-16-le') for m in re.findall(rb'(?:[\x20-\x7e]\x00){3,}', b)}
+literals = {m.decode('utf-16-le') for m in re.findall(rb'(?:[\x20-\x7e]\x00){3,}', b)}
 ```
 
 That turns up 28,872 literals in this build, including the `_Ingredients`, `_Creatures` and `_Plants`
