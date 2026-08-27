@@ -2123,7 +2123,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 51 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 52 classes: 36 mutation stubs, plus options,
 │                               # the Joppa system, the chip-slot mutator,
 │                               # burden, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark

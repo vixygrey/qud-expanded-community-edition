@@ -1662,6 +1662,47 @@ The reliable answer is to decompile and grep the source: `ilspycmd -o <dir> -p A
 writes 5,435 `.cs` files in a couple of minutes, and a grep over those finds the call site with its
 containing method, which is what actually answers the question.
 
+## A field declaration is three lines long, and I keep reading one of them
+
+Converting three classes to `IScribedPart` (#497) turned on one question: do they hold any state
+that a change of serialization format would lose? I answered it four times and got three different
+answers, because I kept reading the declaration and not the attribute above it.
+
+**First pass**, filing the issue: I grepped for field declarations, saw
+`private string Pending;` on `Vixy_AmmoPayload`, and wrote that it "carries risk today — it holds an
+instance field, which is precisely the case migration protects." The line directly above it is
+`[NonSerialized]`, and the comment above *that* explains at length that the field is transient by
+construction. I had read neither.
+
+**Second pass**: I found that both writers default to `BindingFlags.Instance | BindingFlags.Public`,
+so a private field is never serialized anyway. Right conclusion, and it made the first one wrong
+twice over.
+
+**Third pass**: `IPart` declares `public GameObject _ParentObject`, and `Effect` declares five more —
+`ID`, `DisplayName`, `Duration`, `_Object`, `_StatShifter`. Inherited public fields *are* included by
+`GetCachedFields()`, so I concluded all three classes did carry state after all, and that the whole
+conversion was unsafe.
+
+**Fourth pass**: every one of those six is `[NonSerialized]` too, and the mask in `WriteNamedFields`
+excludes exactly that. `Effect.Load` reads `ID`, `DisplayName` and `Duration` explicitly before
+calling `Read`, which is *why* they are marked — the container owns them, not field reflection.
+
+The answer was the one I first assumed, arrived at only on the fourth try, and I would have shipped
+a save-desynchronising change on the third if I had stopped there feeling vindicated.
+
+> **In C# a field's serialization behaviour is not in its declaration.** It is in the attribute
+> above it, the `BindingFlags` of whoever reflects over it, and the `FieldAttributes` mask that
+> reflector applies. Reading the declaration alone answers a question nobody asked.
+
+This is the same shape as the `<stag>` misread in #478 and the `*noinherit` inversion in #171: a
+symbol whose meaning lives in a modifier I did not look at. The tell each time was that the finding
+felt like it settled the matter after one grep.
+
+**What to do instead.** When the question is "is this serialized", read the whole declaration
+including attributes, then find the reflector and read its flags and mask, then check whether a
+container reads the field explicitly. Three places, and any one of them can make the other two
+irrelevant.
+
 ## A palette copied from another plant is not a palette chosen for this one
 
 Cragwort took noisegrass's sprite and, without my thinking about it, noisegrass's colours: `&K` on a

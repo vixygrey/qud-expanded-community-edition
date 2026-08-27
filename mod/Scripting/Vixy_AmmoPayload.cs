@@ -34,7 +34,7 @@ namespace XRL.World.Parts
     /// uses reflection internally, but that is the game's own public API doing it, not us.
     /// </summary>
     [Serializable]
-    public class Vixy_AmmoPayload : IPart
+    public class Vixy_AmmoPayload : IScribedPart
     {
         /// <summary>
         /// Parts that define a projectile's identity rather than its payload. The whole point is to
@@ -203,6 +203,24 @@ namespace XRL.World.Parts
             }
             PayloadParts[blueprint] = cached;
             return cached;
+        }
+
+        /// <summary>
+        /// Reads nothing from a save written before 2.8.0, which wrote no field block at all.
+        ///
+        /// This class has no serialisable state, so "read nothing" is exactly what the old format
+        /// meant. Once every save in circulation postdates the change this override can go, and
+        /// removing it is the only maintenance it will ever need. See
+        /// <c>QudExpandedCE.Vixy_SaveFormat</c> for why one byte is worth an override (#497).
+        /// </summary>
+        public override void Read(GameObject Basis, SerializationReader Reader)
+        {
+            if (QudExpandedCE.Vixy_SaveFormat.PredatesNamedFields(Reader))
+            {
+                return;
+            }
+
+            base.Read(Basis, Reader);
         }
     }
 }
