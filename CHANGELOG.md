@@ -85,8 +85,9 @@ recorded because contributors need them, not because subscribers do.
   entries.
 
   A second check, `scatter-share`, measures those entries as expected quantity —
-  `Chance ÷ 100 × Number` — which is what a scatter entry expresses. Eleven tables are guarded that
-  were not, at real shares from 39% down. The weighted tables are untouched.
+  `Chance ÷ 100 × Number` — which is what a scatter entry expresses. Twelve tables are guarded that
+  were not, at real shares from 39% down — including all three the harvestable plants merge into.
+  The weighted tables are untouched.
 
   Unifying the two into one measure does not work, and the attempt is worth recording: a
   `Load="Merge"` block carries no `Style`, because the group it merges into already has one, so a
