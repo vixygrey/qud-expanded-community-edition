@@ -34,15 +34,17 @@ from report_dynamic_tables import (
     inherits_members,
     inherits_snapshot_of,
     merged_objects,
-    over_ceiling,
+    most_dominated,
     requested_inherits_slices,
     resolved_role,
     resolved_tier,
     resolved_weight_tags,
+    share_of,
     slice_label,
     slice_weight,
     snapshot_of,
     weight_tag_key,
+    worst_per_pool,
 )
 
 
@@ -726,34 +728,13 @@ class SliceWeight(unittest.TestCase):
         self.assertEqual(slice_weight(3, (3, 3), None), 10**8)
 
 
-class InheritsCeiling(unittest.TestCase):
-    """docs/STYLEGUIDE.md 3.2.1 - reported, not enforced, since #494."""
+class InheritsRanking(unittest.TestCase):
+    """docs/STYLEGUIDE.md 3.2.1 - reported, not enforced, and #529 retired the threshold. A ranking
+    says where this fork dominates without a line that separates neighbours differing by nothing."""
 
-    def test_over_half_by_weight_is_reported(self) -> None:
+    def test_the_most_dominated_slice_comes_first(self) -> None:
         self.assertEqual(
-            over_ceiling({("Pool", "Tier3"): (11, 9, 11, 9)}), [("Pool", "Tier3")]
-        )
-
-    def test_at_half_exactly_is_not_reported(self) -> None:
-        self.assertEqual(over_ceiling({("Pool", "Tier3"): (9, 9, 9, 9)}), [])
-
-    def test_a_thin_vanilla_presence_is_exempt(self) -> None:
-        """1 of 1 does not mean this fork dominates the slice - it means vanilla ships none, and a
-        percentage there reports only that vanilla left a gap."""
-        self.assertEqual(over_ceiling({("Pool", "Tier0"): (1, 0, 1, 0)}), [])
-        self.assertEqual(over_ceiling({("Pool", "Tier0"): (3, 3, 3, 3)}), [])
-
-    def test_the_floor_is_on_vanillas_member_count_not_its_weight(self) -> None:
-        """Weight and count answer different questions: five vanilla members can carry very little
-        weight in a distant slice, and that slice is still worth measuring."""
-        self.assertEqual(
-            over_ceiling({("Pool", "Tier3"): (10**8, 10, 1, 5)}), [("Pool", "Tier3")]
-        )
-        self.assertEqual(over_ceiling({("Pool", "Tier3"): (10**8, 10, 1, 4)}), [])
-
-    def test_the_ranking_puts_the_most_dominated_slice_first(self) -> None:
-        self.assertEqual(
-            over_ceiling(
+            most_dominated(
                 {
                     ("Pool", "Tier1"): (60, 40, 6, 40),
                     ("Pool", "Tier2"): (90, 10, 9, 10),
@@ -761,6 +742,57 @@ class InheritsCeiling(unittest.TestCase):
             ),
             [("Pool", "Tier2"), ("Pool", "Tier1")],
         )
+
+    def test_a_slice_under_half_is_still_ranked(self) -> None:
+        """The point of retiring the ceiling: 49% and 51% are neighbours, and dropping one of them
+        off the page was the old behaviour."""
+        self.assertEqual(
+            most_dominated({("Pool", "Tier3"): (9, 91, 9, 91)}), [("Pool", "Tier3")]
+        )
+
+    def test_a_thin_vanilla_presence_is_exempt(self) -> None:
+        """1 of 1 does not mean this fork dominates the slice - it means vanilla ships none, and a
+        percentage there reports only that vanilla left a gap."""
+        self.assertEqual(most_dominated({("Pool", "Tier0"): (1, 0, 1, 0)}), [])
+        self.assertEqual(most_dominated({("Pool", "Tier0"): (3, 3, 3, 3)}), [])
+
+    def test_the_floor_is_on_vanillas_member_count_not_its_weight(self) -> None:
+        """Weight and count answer different questions: five vanilla members can carry very little
+        weight in a distant slice, and that slice is still worth measuring."""
+        self.assertEqual(
+            most_dominated({("Pool", "Tier3"): (10**8, 10, 1, 5)}), [("Pool", "Tier3")]
+        )
+        self.assertEqual(most_dominated({("Pool", "Tier3"): (10**8, 10, 1, 4)}), [])
+
+
+class WorstPerPool(unittest.TestCase):
+    """#529: the ranking alone lets a pool hide behind its own good tiers. BaseGlove runs 2.9% to
+    84.3% across nine slices and only the top of that range says anything."""
+
+    CELLS: ClassVar[dict] = {
+        ("Shields", "Tier0"): (93, 7, 20, 9),
+        ("Shields", "Tier2"): (31, 69, 20, 9),
+        ("Gloves", "Tier0"): (84, 16, 5, 13),
+        ("Gloves", "Tier8"): (3, 97, 5, 13),
+    }
+
+    def test_one_row_per_pool(self) -> None:
+        self.assertEqual(
+            [key[0] for key in worst_per_pool(self.CELLS)], ["Shields", "Gloves"]
+        )
+
+    def test_it_picks_the_pools_worst_slice_not_its_first(self) -> None:
+        self.assertEqual(
+            worst_per_pool(self.CELLS),
+            [("Shields", "Tier0"), ("Gloves", "Tier0")],
+        )
+
+    def test_pools_are_ordered_worst_first(self) -> None:
+        shares = [share_of(self.CELLS[key]) for key in worst_per_pool(self.CELLS)]
+        self.assertEqual(shares, sorted(shares, reverse=True))
+
+    def test_a_pool_with_no_measurable_slice_is_absent(self) -> None:
+        self.assertEqual(worst_per_pool({("Thin", "Tier0"): (1, 0, 1, 0)}), [])
 
 
 class InheritsSnapshot(unittest.TestCase):
