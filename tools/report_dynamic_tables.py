@@ -218,6 +218,145 @@ def requested_inherits_slices(game: Path) -> dict[str, set[tuple[int, int] | Non
     return slices
 
 
+# `VillageBase`, `VillageCoda` and `VillageCodaBase` build these names at runtime as
+# `"DynamicObjectsTable:" + region + suffix`, so no amount of grepping the data finds the request.
+# Every one is flat - no `:Tier` is ever appended - which is what puts fourteen biome pools on the
+# base-weight-1 path. Listed rather than discovered, because a constructed name cannot be (#531).
+RUNTIME_POOL_SUFFIXES = ("_Creatures", "_Plants", "_Ingredients", "_FarmablePlants")
+
+
+def flat_weight(role: str | None, weight_tag: float | None = None) -> int:
+    """One blueprint's weight in a pool requested with no tier, as `FabricateDynamicObjectsTable`
+    computes it.
+
+    A different fabricator from the tiered path and it weighs differently: the base is 1 and `num`
+    and `num2` are left at -1, so the tier and tech-tier deltas never apply at all. Only Role and
+    `:Weight` move it.
+
+    That flattens Role hard. `ceil(1 * 0.25)` is 1, so `Brute`, `Rare` and no Role are
+    indistinguishable here, and only `Common` and `Minion` at x4 stand out - which is why a share
+    on this path sits close to raw headcount.
+
+    `:Weight` still works, and an earlier note in this file was wrong to call it dead. A fraction
+    cannot push a no-Role blueprint below 1, but a value above 1 raises it, a fraction cuts a
+    Role-boosted one, and **zero excludes it from this pool alone** - finer than
+    `ExcludeFromDynamicEncounters`, which empties a blueprint out of every dynamic pool at once.
+    """
+    weight = DEFAULT_TIER_WEIGHT
+    multiplier = ROLE_WEIGHT_MULTIPLIERS.get(role or "")
+    if multiplier is not None:
+        weight = math.ceil(weight * multiplier)
+    if weight_tag is not None:
+        weight = math.ceil(weight * weight_tag)
+    return weight
+
+
+def requested_dynamic_slices(game: Path) -> dict[str, set[tuple[int, int] | None]]:
+    """The `DynamicObjectsTable:` slices the game actually asks for, per pool.
+
+    Consumption, not declaration: `<tag Name="DynamicObjectsTable:Guns" />` puts a blueprint IN the
+    pool, while `<table Name="...">` and `Blueprint="@..."` draw FROM it. Counting tags as requests
+    reports every pool as consumed, which is how a first pass here made `MeleeWeapon`'s pool look
+    live when nothing in the game draws from it at all.
+
+    The `@` form is the one easy to miss - `<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />`
+    is the only consumer of the daggers pool, and a scan looking only at `Name=` finds none.
+
+    Comment-stripped for the reason `requested_inherits_slices` gives, and the runtime-built biome
+    pools are added flat from `RUNTIME_POOL_SUFFIXES`.
+    """
+    slices: dict[str, set[tuple[int, int] | None]] = {}
+    pattern = re.compile(
+        r'(?:<table\b[^>]*\bName|\bBlueprint)="@?'
+        + TAG_PREFIX
+        + r'([A-Za-z_]+)(:Tier([^"]*))?"'
+    )
+    for f in sorted(game.rglob("*.xml")):
+        text = re.sub(
+            r"<!--.*?-->",
+            "",
+            f.read_text(encoding="utf-8-sig", errors="replace"),
+            flags=re.DOTALL,
+        )
+        for pool, tiered, spec in pattern.findall(text):
+            want = slices.setdefault(pool, set())
+            if not tiered:
+                want.add(None)
+            elif "{" in spec:
+                want.update((n, n) for n in range(9))
+            elif "-" in spec:
+                low, _, high = spec.partition("-")
+                want.add((int(low), int(high)))
+            elif spec.isdigit():
+                want.add((int(spec), int(spec)))
+    return slices
+
+
+def dynamic_members(index: BlueprintIndex, pools: set[str]) -> dict[str, list[Member]]:
+    """Every eligible blueprint each tagged pool holds.
+
+    Membership is the tag, resolved through inheritance - `BaseArrow` carries
+    `DynamicObjectsTable:Ammo` and puts six revived arrows in the pool without one of them saying
+    so (#261). Both sides are counted, unlike `collect`, which reports only this fork's reach:
+    a share needs vanilla's half too.
+    """
+    members: dict[str, list[Member]] = {}
+    for name in sorted(index.objects):
+        if not eligible(index, name):
+            continue
+        role = resolved_role(index, name)
+        tier = resolved_tier(index, name)
+        weights = resolved_weight_tags(index, name)
+        for pool in pools:
+            if index.has_tag(name, TAG_PREFIX + pool):
+                members.setdefault(pool, []).append((name, tier, role, weights))
+    return members
+
+
+def dynamic_cells(
+    members: dict[str, list[Member]],
+    slices: dict[str, set[tuple[int, int] | None]],
+    new_names: set[str],
+) -> dict[tuple[str, str], tuple[int, int, int, int]]:
+    """This fork's and vanilla's weight in each requested slice of each tagged pool.
+
+    The untiered slice takes `flat_weight` rather than `slice_weight`, because a tierless
+    `DynamicObjectsTable:` request is a different fabricator from a tierless
+    `DynamicInheritsTable:` one - base 1 against 10^8. Conflating them would report every flat pool
+    as though tier mattered in it.
+    """
+    cells: dict[tuple[str, str], tuple[int, int, int, int]] = {}
+    for pool, windows in sorted(slices.items()):
+        pooled = members.get(pool, [])
+        for window in sorted(windows, key=lambda w: (w is not None, w or ())):
+            key = (
+                f"{TAG_PREFIX}{pool}"
+                + ("" if window is None else f":{slice_label(window)}")
+                + WEIGHT_TAG_SUFFIX
+            )
+            mine = vanilla = mine_count = vanilla_count = 0
+            for name, tier, role, weights in pooled:
+                weight = (
+                    flat_weight(role, weights.get(key))
+                    if window is None
+                    else slice_weight(tier, window, role, weights.get(key))
+                )
+                if name in new_names:
+                    mine += weight
+                    mine_count += 1
+                else:
+                    vanilla += weight
+                    vanilla_count += 1
+            if mine + vanilla:
+                cells[(pool, slice_label(window))] = (
+                    mine,
+                    vanilla,
+                    mine_count,
+                    vanilla_count,
+                )
+    return cells
+
+
 def resolved_weight_tags(index: BlueprintIndex, name: str) -> dict[str, float]:
     """Every `*:Weight` tag reaching `name`, keyed by the full tag name.
 
@@ -574,6 +713,60 @@ def report(tables: dict[str, dict]) -> None:
     print("^ inherits the tag from a base this mod wrote; ~ inherits it from vanilla.")
 
 
+def report_dynamic_shares(
+    cells: dict[tuple[str, str], tuple[int, int, int, int]],
+    show_all: bool,
+) -> None:
+    """This fork's share of each requested slice of a tagged pool, most dominated first.
+
+    The membership section above says which pools this fork is in. This says how much of what
+    comes out of one is this fork's, which is a different question and the one nothing answered
+    until #531 - `DynamicObjectsTable:Mountains_Creatures` is 79% this fork's and had never been
+    measured.
+
+    Slices this fork is in none of are dropped: vanilla's own pools are not this report's business.
+    """
+    present = {k: v for k, v in cells.items() if v[2]}
+    mine = {k: v for k, v in present.items() if v[3] >= VANILLA_FLOOR}
+    thin = {k: v for k, v in present.items() if v[3] < VANILLA_FLOOR}
+    if not present:
+        return
+    ranked = sorted(mine, key=lambda key: -share_of(mine[key]))
+    print(
+        f"\nTagged pool slices - {len(mine)} slice(s) this fork is in, across "
+        f"{len({pool for pool, _ in mine})} pool(s)"
+    )
+    for pool, label in ranked if show_all else ranked[:TOP_SLICES]:
+        cell = mine[(pool, label)]
+        name = f"{pool}:{label}" if label != "untiered" else pool
+        print(
+            f"  {name:44} {share_of(cell):5.1f}% by weight  "
+            f"({cell[2]} of {cell[2] + cell[3]} members)"
+        )
+    if not show_all and len(ranked) > TOP_SLICES:
+        print(f"  ... and {len(ranked) - TOP_SLICES} more (--all)")
+    if thin:
+        # Named rather than counted, unlike the inherited side, because here the floor actually
+        # binds - and on the biome pools it hides the largest share in the report. Vanilla shipping
+        # three creatures in the mountains is the reason the number is 79%, and that is worth
+        # seeing next to the number rather than instead of it.
+        print(
+            f"\n  Vanilla ships fewer than {VANILLA_FLOOR} here, so the share says more about that "
+            "gap than about this fork:"
+        )
+        for pool, label in sorted(thin, key=lambda key: -share_of(thin[key])):
+            cell = thin[(pool, label)]
+            name = f"{pool}:{label}" if label != "untiered" else pool
+            print(
+                f"  {name:44} {share_of(cell):5.1f}% by weight  "
+                f"({cell[2]} of {cell[2] + cell[3]} members)"
+            )
+    print(
+        "\n  An untiered slice weighs every member alike but for Role, so its share sits near raw\n"
+        "  headcount. Reported, not enforced. docs/STYLEGUIDE.md 3.2.1."
+    )
+
+
 def report_inherits(
     cells: dict[tuple[str, str], tuple[int, int, int, int]],
     show_all: bool,
@@ -679,15 +872,26 @@ def describe_inherits_drift(old: dict, new: dict) -> list[str]:
     return out
 
 
-def snapshot_of(tables: dict[str, dict]) -> dict[str, dict[str, list[str]]]:
-    """The comparable part of a report: which of this mod's blueprints each pool reaches.
+def snapshot_of(
+    tables: dict[str, dict],
+    cells: dict[tuple[str, str], tuple[int, int, int, int]] | None = None,
+) -> dict[str, dict]:
+    """The comparable part of a report: which of this mod's blueprints each pool reaches, and how
+    much of each requested slice that comes to.
 
     Deliberately not `declared_on`, which names vanilla blueprints like `Item` and `MeleeWeapon`
     and would turn any Qud update into a diff about vanilla's own structure. `reaches` already
     catches the case that matters - a vanilla base gaining a pooled tag shows up as this mod's
     blueprints arriving in a pool, which is the thing worth being told about.
+
+    `shares` is the half this file went without until #531. Membership answers "am I in it"; the
+    share answers "how much of what comes out is mine", and only the second moves when *vanilla's*
+    content changes. Rounded to whole percent so ordinary content work does not churn the file over
+    a tenth of a point, and absent for a pool nothing requests - `DynamicObjectsTable:MeleeWeapon`
+    holds 112 of this fork's blueprints and no consumer anywhere, so it has no slice to have a
+    share of.
     """
-    return {
+    out: dict[str, dict] = {
         tag: {
             "reaches": sorted(data["reaches"]),
             "conditional": sorted(data["conditional"]),
@@ -695,6 +899,13 @@ def snapshot_of(tables: dict[str, dict]) -> dict[str, dict[str, list[str]]]:
         for tag, data in sorted(tables.items())
         if data["reaches"] or data["conditional"]
     }
+    if cells is None:
+        return out
+    for (pool, label), cell in sorted(cells.items()):
+        entry = out.get(TAG_PREFIX + pool)
+        if entry is not None and cell[2]:
+            entry.setdefault("shares", {})[label] = round(share_of(cell))
+    return out
 
 
 def describe_drift(old: dict, new: dict) -> list[str]:
@@ -712,6 +923,20 @@ def describe_drift(old: dict, new: dict) -> list[str]:
                 out.append(f"{tag}: {name} is now in this pool ({field})")
             for name in sorted(was - now):
                 out.append(f"{tag}: {name} is no longer in this pool ({field})")
+        old_shares = old.get(tag, {}).get("shares", {})
+        new_shares = new.get(tag, {}).get("shares", {})
+        for label in sorted(set(old_shares) | set(new_shares)):
+            before, after = old_shares.get(label), new_shares.get(label)
+            if before is None:
+                out.append(f"{tag}:{label}: slice is newly requested ({after}%)")
+            elif after is None:
+                out.append(
+                    f"{tag}:{label}: slice is no longer requested (was {before}%)"
+                )
+            elif before != after:
+                out.append(
+                    f"{tag}:{label}: this fork's share moved {before}% -> {after}%"
+                )
     return out
 
 
@@ -791,9 +1016,21 @@ def main() -> int:
     cells = inherits_cells(members, slices, new_names)
     inherited = inherits_snapshot_of(cells, members, new_names)
 
+    # The tagged route's own share (#531). The pools this fork is in but the game never requests
+    # are added flat when they are runtime-built, and left out otherwise: a pool nothing draws from
+    # has no slice to have a share of.
+    dyn_slices = requested_dynamic_slices(game)
+    for tag in tables:
+        pool = tag[len(TAG_PREFIX) :]
+        if pool.endswith(RUNTIME_POOL_SUFFIXES):
+            dyn_slices.setdefault(pool, set()).add(None)
+    dyn_cells = dynamic_cells(
+        dynamic_members(index, set(dyn_slices)), dyn_slices, new_names
+    )
+
     if args.snapshot:
         SNAPSHOT_PATH.write_text(
-            json.dumps(snapshot_of(tables), indent=2, sort_keys=True) + "\n",
+            json.dumps(snapshot_of(tables, dyn_cells), indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
         INHERITS_SNAPSHOT_PATH.write_text(
@@ -816,11 +1053,12 @@ def main() -> int:
                 )
                 return 1
         drift = describe_drift(
-            json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8")), snapshot_of(tables)
+            json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8")),
+            snapshot_of(tables, dyn_cells),
         )
         if drift:
             print(
-                f"FAIL - {len(drift)} change(s) to dynamic pool membership:",
+                f"FAIL - {len(drift)} change(s) to dynamic pool membership or share:",
                 file=sys.stderr,
             )
             for line in drift:
@@ -852,7 +1090,7 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-        pools = len(snapshot_of(tables))
+        pools = len(snapshot_of(tables, dyn_cells))
         ranked = most_dominated(cells)
         worst = f"{share_of(cells[ranked[0]]):.1f}%" if ranked else "none"
         print(
@@ -864,6 +1102,7 @@ def main() -> int:
 
     print(f"{len(new_names)} blueprint(s) introduced by this mod\n")
     report(tables)
+    report_dynamic_shares(dyn_cells, args.all)
     report_inherits(cells, args.all)
     return 0
 

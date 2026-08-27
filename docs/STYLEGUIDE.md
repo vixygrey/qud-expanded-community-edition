@@ -737,6 +737,21 @@ carrying one, at values from 0.05 to 0.3 — `Holographic Banana Tree` is 0.2 of
 `DynamicObjectsTable:BananaGrove_Plants`, a cosmetic oddity damped in the one pool where it would
 otherwise crowd.
 
+**It works on both fabricators, which is not obvious and I had it wrong once.** A pool requested
+with a tier is built by `FabricateMultitierDynamicPopulationTable`, base 10⁸, where any fraction
+bites. A pool requested with no tier is built by `FabricateDynamicObjectsTable`, base **1**, and
+there only one case rounds away:
+
+| on the flat path | result |
+|---|---|
+| no `Role`, `Value="0.2"` | `ceil(0.2)` = **1** — the one case that does nothing |
+| no `Role`, `Value="3"` | 3 — commoner |
+| `Role="Minion"` (×4), `Value="0.25"` | `ceil(4 × 0.25)` = 1 — a fourfold cut |
+| any `Role`, **`Value="0"`** | 0 → `continue` — **excluded from that pool alone** |
+
+The zero case is worth knowing about on its own: it is a **per-pool exclusion**, and the only one
+there is. `ExcludeFromDynamicEncounters` cannot be aimed at a single pool.
+
 Two things follow from how the game builds the key, and both cost tags:
 
 - The key is the table name **as requested**, and `TryResolvePopulation` substitutes `{zonetier}`

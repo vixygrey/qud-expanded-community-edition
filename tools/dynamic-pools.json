@@ -3,7 +3,10 @@
     "conditional": [],
     "reaches": [
       "Raven_Rusted Door"
-    ]
+    ],
+    "shares": {
+      "untiered": 0
+    }
   },
   "DynamicObjectsTable:Baboons": {
     "conditional": [],
@@ -11,25 +14,45 @@
       "Vixy_MangyBaboon",
       "Vixy_RustBaboon",
       "Vixy_SilverBaboon"
-    ]
+    ],
+    "shares": {
+      "untiered": 38
+    }
   },
   "DynamicObjectsTable:BananaGrove_Ingredients": {
     "conditional": [],
     "reaches": [
       "Vixy_Candied Sweetfrond"
-    ]
+    ],
+    "shares": {
+      "untiered": 50
+    }
   },
   "DynamicObjectsTable:BananaGrove_Plants": {
     "conditional": [],
     "reaches": [
       "Vixy_Sweetfrond"
-    ]
+    ],
+    "shares": {
+      "untiered": 33
+    }
   },
   "DynamicObjectsTable:Chests": {
     "conditional": [],
     "reaches": [
       "Raven_Empty Armor Rack"
-    ]
+    ],
+    "shares": {
+      "Tier0": 4,
+      "Tier1": 4,
+      "Tier2": 18,
+      "Tier3": 3,
+      "Tier4": 0,
+      "Tier5": 0,
+      "Tier6": 0,
+      "Tier7": 0,
+      "Tier8": 0
+    }
   },
   "DynamicObjectsTable:Daggers": {
     "conditional": [],
@@ -43,7 +66,10 @@
       "Raven_Steel Wristblade",
       "Raven_Vibro Wristblade",
       "Raven_Zetachrome Wristblade"
-    ]
+    ],
+    "shares": {
+      "Tier2": 18
+    }
   },
   "DynamicObjectsTable:DesertCanyon_Creatures": {
     "conditional": [],
@@ -74,7 +100,10 @@
       "Vixy_ScarredTortoise",
       "Vixy_SilverBaboon",
       "Vixy_SorrelEquimax"
-    ]
+    ],
+    "shares": {
+      "untiered": 41
+    }
   },
   "DynamicObjectsTable:EnergyCells": {
     "conditional": [],
@@ -83,7 +112,26 @@
       "Raven_Dark Matter Cell",
       "Raven_Solar Cell Array",
       "Raven_Solar Cell Nexus"
-    ]
+    ],
+    "shares": {
+      "Tier0": 0,
+      "Tier0-4": 17,
+      "Tier1": 0,
+      "Tier1-5": 25,
+      "Tier2": 1,
+      "Tier2-6": 28,
+      "Tier3": 25,
+      "Tier3-7": 37,
+      "Tier4": 34,
+      "Tier4-8": 40,
+      "Tier5": 46,
+      "Tier5-8": 42,
+      "Tier6": 15,
+      "Tier6-8": 40,
+      "Tier7": 48,
+      "Tier8": 50,
+      "untiered": 31
+    }
   },
   "DynamicObjectsTable:Flowerfields_Creatures": {
     "conditional": [],
@@ -111,7 +159,10 @@
       "Vixy_SandHornedChameleon",
       "Vixy_ScarredTortoise",
       "Vixy_SorrelEquimax"
-    ]
+    ],
+    "shares": {
+      "untiered": 67
+    }
   },
   "DynamicObjectsTable:Guns": {
     "conditional": [],
@@ -121,7 +172,18 @@
       "Raven_Drum Shotgun",
       "Raven_Fine-Tuned Handgun",
       "Raven_HandCannonMod"
-    ]
+    ],
+    "shares": {
+      "Tier0": 1,
+      "Tier1": 1,
+      "Tier2": 4,
+      "Tier3": 14,
+      "Tier4": 14,
+      "Tier5": 23,
+      "Tier6": 18,
+      "Tier7": 2,
+      "Tier8": 2
+    }
   },
   "DynamicObjectsTable:Headwear": {
     "conditional": [],
@@ -132,7 +194,18 @@
       "Raven_Folded Carbide Helmet",
       "Raven_Iron Helmet",
       "Raven_Nanoweave Helmet"
-    ]
+    ],
+    "shares": {
+      "Tier0": 72,
+      "Tier1": 20,
+      "Tier2": 5,
+      "Tier3": 11,
+      "Tier4": 23,
+      "Tier5": 32,
+      "Tier6": 31,
+      "Tier7": 4,
+      "Tier8": 1
+    }
   },
   "DynamicObjectsTable:Hills_Creatures": {
     "conditional": [],
@@ -158,7 +231,10 @@
       "Vixy_SandHornedChameleon",
       "Vixy_ScarredTortoise",
       "Vixy_SilverBaboon"
-    ]
+    ],
+    "shares": {
+      "untiered": 40
+    }
   },
   "DynamicObjectsTable:Items": {
     "conditional": [],
@@ -380,7 +456,18 @@
       "Vixy_Zetachrome Glaive",
       "Vixy_Zetachrome Quarterstaff",
       "Vixy_Zetachrome Spear"
-    ]
+    ],
+    "shares": {
+      "Tier0": 51,
+      "Tier1": 21,
+      "Tier2": 18,
+      "Tier3": 33,
+      "Tier4": 26,
+      "Tier5": 40,
+      "Tier6": 32,
+      "Tier7": 29,
+      "Tier8": 33
+    }
   },
   "DynamicObjectsTable:Jungle_Creatures": {
     "conditional": [],
@@ -399,7 +486,10 @@
       "Vixy_RustBeetle",
       "Vixy_SaltBeetle",
       "Vixy_SandHornedChameleon"
-    ]
+    ],
+    "shares": {
+      "untiered": 37
+    }
   },
   "DynamicObjectsTable:MeleeWeapons": {
     "conditional": [],
@@ -529,19 +619,28 @@
       "Vixy_MarshDog",
       "Vixy_PiedDog",
       "Vixy_RangyDog"
-    ]
+    ],
+    "shares": {
+      "untiered": 79
+    }
   },
   "DynamicObjectsTable:Mountains_Ingredients": {
     "conditional": [],
     "reaches": [
       "Vixy_Dried Cragwort"
-    ]
+    ],
+    "shares": {
+      "untiered": 25
+    }
   },
   "DynamicObjectsTable:Mountains_Plants": {
     "conditional": [],
     "reaches": [
       "Vixy_Cragwort"
-    ]
+    ],
+    "shares": {
+      "untiered": 17
+    }
   },
   "DynamicObjectsTable:Ruins_Creatures": {
     "conditional": [],
@@ -550,7 +649,10 @@
       "Vixy_MiddenBeetle",
       "Vixy_RustBeetle",
       "Vixy_SaltBeetle"
-    ]
+    ],
+    "shares": {
+      "untiered": 23
+    }
   },
   "DynamicObjectsTable:Saltmarsh_Creatures": {
     "conditional": [],
@@ -562,19 +664,28 @@
       "Vixy_PaleGlowfish",
       "Vixy_SiltCroc",
       "Vixy_VerdigrisGlowfish"
-    ]
+    ],
+    "shares": {
+      "untiered": 14
+    }
   },
   "DynamicObjectsTable:Saltmarsh_Ingredients": {
     "conditional": [],
     "reaches": [
       "Vixy_Salted Brinereed"
-    ]
+    ],
+    "shares": {
+      "untiered": 25
+    }
   },
   "DynamicObjectsTable:Saltmarsh_Plants": {
     "conditional": [],
     "reaches": [
       "Vixy_Brinereed"
-    ]
+    ],
+    "shares": {
+      "untiered": 25
+    }
   },
   "DynamicObjectsTable:Trinkets": {
     "conditional": [],
@@ -584,7 +695,10 @@
       "Raven_Large Sphere of Negative Weight",
       "Raven_Solar Cell Array",
       "Raven_Solar Cell Nexus"
-    ]
+    ],
+    "shares": {
+      "Tier1": 0
+    }
   },
   "DynamicObjectsTable:Water_Creatures": {
     "conditional": [],
@@ -596,6 +710,9 @@
       "Vixy_PaleGlowfish",
       "Vixy_SiltCroc",
       "Vixy_VerdigrisGlowfish"
-    ]
+    ],
+    "shares": {
+      "untiered": 47
+    }
   }
 }

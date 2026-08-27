@@ -29,12 +29,16 @@ from report_dynamic_tables import (
     declarer,
     describe_drift,
     describe_inherits_drift,
+    dynamic_cells,
+    dynamic_members,
     eligible,
+    flat_weight,
     inherits_cells,
     inherits_members,
     inherits_snapshot_of,
     merged_objects,
     most_dominated,
+    requested_dynamic_slices,
     requested_inherits_slices,
     resolved_role,
     resolved_tier,
@@ -633,6 +637,136 @@ class WeightTag(unittest.TestCase):
             '<tag Name="DynamicObjectsTable:Hills_Creatures" /></object>'
         )
         self.assertEqual(resolved_weight_tags(index, "X"), {})
+
+
+class FlatWeight(unittest.TestCase):
+    """#531. `FabricateDynamicObjectsTable` is a different fabricator from the tiered one: base 1,
+    and the tier deltas never apply because `num` and `num2` stay at -1."""
+
+    def test_the_base_is_one_not_the_tier_table(self) -> None:
+        self.assertEqual(flat_weight(None), 1)
+
+    def test_role_still_multiplies(self) -> None:
+        self.assertEqual(flat_weight("Minion"), 4)
+
+    def test_the_fractional_roles_all_ceiling_to_one(self) -> None:
+        """Which is why a share on this path sits near raw headcount: Brute, Rare and no Role are
+        indistinguishable, and only Common and Minion stand out."""
+        for role in ("Brute", "Rare", "Hero", None):
+            with self.subTest(role=role):
+                self.assertEqual(flat_weight(role), 1)
+
+    def test_a_fraction_cannot_push_a_no_role_member_below_one(self) -> None:
+        """The one case that rounds away, and the one an earlier note here generalised into a
+        claim that `:Weight` did nothing on this path at all."""
+        self.assertEqual(flat_weight(None, 0.2), 1)
+
+    def test_a_fraction_does_cut_a_role_boosted_member(self) -> None:
+        self.assertEqual(flat_weight("Minion", 0.25), 1)
+
+    def test_a_value_above_one_raises_it(self) -> None:
+        self.assertEqual(flat_weight(None, 3.0), 3)
+
+    def test_zero_excludes_from_this_pool_alone(self) -> None:
+        """Finer than `ExcludeFromDynamicEncounters`, which empties a blueprint out of every
+        dynamic pool at once."""
+        self.assertEqual(flat_weight("Minion", 0.0), 0)
+
+
+class RequestedDynamicSlices(unittest.TestCase):
+    """#531. Consumption, not declaration - a `<tag>` puts a blueprint IN a pool, a `<table>` or an
+    `@` blueprint draws FROM it."""
+
+    def slices(self, xml: str):
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        (tmp / "P.xml").write_text(xml, encoding="utf-8")
+        return requested_dynamic_slices(tmp)
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.mkdtemp()
+
+    def test_a_tag_is_not_a_request(self) -> None:
+        """The failure this was written against: counting tags reported every pool as consumed,
+        including `MeleeWeapons`, which nothing in the game draws from."""
+        self.assertEqual(
+            self.slices(
+                '<objects><object Name="X">'
+                '<tag Name="DynamicObjectsTable:MeleeWeapons" /></object></objects>'
+            ),
+            {},
+        )
+
+    def test_a_table_reference_is_a_request(self) -> None:
+        self.assertEqual(
+            self.slices(
+                '<population><table Name="DynamicObjectsTable:Guns:Tier4" /></population>'
+            ),
+            {"Guns": {(4, 4)}},
+        )
+
+    def test_the_at_form_is_a_request(self) -> None:
+        """`<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />` is the only consumer
+        of the daggers pool, and a scan looking only at `Name=` finds none."""
+        self.assertEqual(
+            self.slices(
+                '<objects><object Name="X">'
+                '<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />'
+                "</object></objects>"
+            ),
+            {"Daggers": {(2, 2)}},
+        )
+
+    def test_an_untiered_request_is_the_flat_table(self) -> None:
+        self.assertEqual(
+            self.slices(
+                '<population><table Name="DynamicObjectsTable:EnergyCells" /></population>'
+            ),
+            {"EnergyCells": {None}},
+        )
+
+    def test_a_substituted_spec_contributes_every_tier(self) -> None:
+        got = self.slices(
+            '<population><table Name="DynamicObjectsTable:Guns:Tier{zonetier+1}" /></population>'
+        )
+        self.assertEqual(got["Guns"], {(n, n) for n in range(9)})
+
+
+class DynamicCells(unittest.TestCase):
+    """#531. Membership is the tag, resolved through inheritance, and the untiered slice takes the
+    flat fabricator rather than the tiered one."""
+
+    XML = (
+        "<objects>"
+        '<object Name="BaseArrow"><part Name="Render" />'
+        '<tag Name="BaseObject" Value="*noinherit" />'
+        '<tag Name="DynamicObjectsTable:Ammo" /><tag Name="Tier" Value="3" /></object>'
+        '<object Name="Vanilla Arrow" Inherits="BaseArrow" />'
+        '<object Name="Vixy_Arrow" Inherits="BaseArrow" />'
+        "</objects>"
+    )
+
+    def cells(self, windows):
+        index = BlueprintIndex(roots(self.XML))
+        members = dynamic_members(index, {"Ammo"})
+        return dynamic_cells(members, {"Ammo": windows}, {"Vixy_Arrow"})
+
+    def test_membership_is_inherited_from_the_tagged_base(self) -> None:
+        """`BaseArrow` carries the tag and puts its descendants in the pool without one of them
+        saying so - #261, and the reason this is resolved rather than read."""
+        cell = self.cells({None})[("Ammo", "untiered")]
+        self.assertEqual(cell[2:], (1, 1))
+
+    def test_the_base_itself_is_not_counted(self) -> None:
+        self.assertEqual(sum(self.cells({None})[("Ammo", "untiered")][2:]), 2)
+
+    def test_the_untiered_slice_uses_the_flat_base(self) -> None:
+        """Base 1, not the 10^8 a tierless DynamicInheritsTable request would give."""
+        mine, vanilla, _, _ = self.cells({None})[("Ammo", "untiered")]
+        self.assertEqual((mine, vanilla), (1, 1))
+
+    def test_a_tiered_slice_uses_the_tier_table(self) -> None:
+        mine, _, _, _ = self.cells({(3, 3)})[("Ammo", "Tier3")]
+        self.assertEqual(mine, TIER_DELTA_WEIGHTS[0])
 
 
 class WeightTagIsSliceScoped(unittest.TestCase):

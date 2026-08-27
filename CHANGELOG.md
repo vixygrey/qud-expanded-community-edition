@@ -182,6 +182,35 @@ recorded because contributors need them, not because subscribers do.
   satisfied. But tinkering is a thing a player *does*, not a rate at which a thing *appears*, and
   nothing was asking the difference.
 
+- **(internal)** The tagged-pool route is measured, not just listed (#531).
+
+  `tools/dynamic-pools.json` pinned which of my blueprints each `DynamicObjectsTable:` pool reaches
+  and nothing else, so **how much of what comes out of one is mine had never been computed** — on
+  the route `docs/STYLEGUIDE.md` §3.3 actively recommends. `inherits-share` has done this for the
+  inherited route since #494; the tagged route had no equivalent.
+
+  It needed one. `DynamicObjectsTable:Mountains_Creatures` is **79.3%** mine, `Flowerfields_Creatures`
+  66.7%, `Headwear:Tier0` 71.5% and `Items:Tier0` 51.3% — none of it visible before.
+
+  The check has to know which of two fabricators built the pool, because they weigh differently. A
+  `:TierN` request goes through `FabricateMultitierDynamicPopulationTable` at base 10⁸; a tierless
+  one through `FabricateDynamicObjectsTable` at base **1**, with the tier deltas never applying at
+  all. Seven of the pools this fork is in are tiered and the rest flat, and **every biome pool is
+  built at runtime** as `"DynamicObjectsTable:" + region + "_Creatures"` in `VillageBase` and its
+  siblings — so those requests cannot be found by reading the data and are listed instead.
+
+  Two traps went into the scan. A `<tag>` declares membership while a `<table>` consumes, so
+  counting tags reported every pool as live — including `MeleeWeapons`, which **nothing in the game
+  draws from**, and which holds 112 of my blueprints through a tag vanilla puts on `MeleeWeapon`
+  itself. And the daggers pool's only consumer is
+  `<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />`, which a scan reading `Name=`
+  alone never sees.
+
+  §3.2.1 gains what I had wrong: `:Weight` works on **both** fabricators. On the flat path only one
+  case rounds away — a no-Role blueprint given a fraction — while a value above 1 raises it, a
+  fraction cuts a Role-boosted one, and **`Value="0"` excludes it from that pool alone**, which is
+  the only per-pool exclusion there is.
+
 - **(internal)** The inherited-pool report ranks slices instead of judging them against a line
   (#481, #529).
 
