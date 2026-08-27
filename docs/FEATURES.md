@@ -2104,7 +2104,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
 ├── Options.xml                 # 18 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
-├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
+├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.4)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
 ├── PopulationTables.xml        # 96 tables (74 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
@@ -2193,7 +2193,7 @@ rather than anything the mod already was.
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
 | wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
 | gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
-| how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.5. |
+| how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.4. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
 
@@ -2393,7 +2393,7 @@ hindren third gender rather than a general one, and hindren have their own names
 All three are held by `tools/validate_mod.py`, and `tools/naming_harness.py` resolves the whole file
 against vanilla without launching the game.
 
-### 15.5 The player's own name, which needed a different mechanism entirely
+### 15.4 The player's own name, which needed a different mechanism entirely
 
 Everything above scopes on a creature's gender and species. **None of it can reach the player**, and
 the reason is worth stating because it looks like an oversight and is not.
@@ -2462,7 +2462,7 @@ followed the option and every rename afterwards followed your gender instead.
 
 Typing a name in bypasses all of this, which is always the surest way to get the one you want.
 
-### 15.4 What this does not touch
+### 15.5 What this does not touch
 
 - **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
   blueprint and never call the generator.
@@ -2471,7 +2471,7 @@ Typing a name in bypasses all of this, which is always the surest way to get the
 - **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
   scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
   a site call.
-- **The player's own random name**, by any of the gender scoping above — see §15.5, which reaches
+- **The player's own random name**, by any of the gender scoping above — see §15.4, which reaches
   it a different way.
 
 ## 16. Gender and pronouns (`Genders.xml`)

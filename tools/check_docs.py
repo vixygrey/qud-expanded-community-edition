@@ -1298,6 +1298,67 @@ def sections_of(path: Path) -> set[str]:
     }
 
 
+def heading_numbers(path: Path) -> list[tuple[int, str]]:
+    """Every numbered heading in a document, as (line number, number), in file order."""
+    return [
+        (i, m.group(1))
+        for i, line in enumerate(path.read_text().splitlines(), 1)
+        if (m := re.match(r"^#+\s+(?:§\s*)?([0-9]+(?:\.[0-9a-z]+)*)\.?\s", line))
+    ]
+
+
+def sort_key(number: str) -> tuple:
+    """Order a section number so `17.3` < `17.3a` < `17.4`, the convention these documents use.
+
+    A letter suffix means "inserted after", so it sorts between its parent and the next whole
+    number. Each component becomes (digits, letters) - absent letters sort first, which is what
+    puts the unsuffixed heading ahead of its own insertions.
+    """
+    parts = []
+    for piece in number.split("."):
+        m = re.match(r"^(\d+)([a-z]*)$", piece)
+        parts.append((int(m.group(1)), m.group(2)) if m else (0, piece))
+    return tuple(parts)
+
+
+def check_heading_order(f: Findings) -> None:
+    """A numbered heading that repeats one above it, or goes backwards.
+
+    Neither changes a claim, and both make a cross-reference ambiguous - `§4.5` naming two different
+    sections has no correct reading, and §15.5 sitting above §15.4 sends anyone following the
+    numbering to the wrong place. `check_sections` already verifies that a cited number *exists*;
+    it cannot tell that two headings answer to it, or that the order is a lie.
+
+    This is drift rather than error: every one of the three found in #496 was a section inserted
+    later without renumbering its neighbours. The documents already have a convention for that -
+    a letter suffix, as in §17.3a and §18.4b - which sorts between its parent and the next number
+    and needs nothing renumbered at all.
+    """
+    for doc in DOCS:
+        if not doc.is_file():
+            continue
+        seen: dict[str, int] = {}
+        previous: tuple | None = None
+        previous_number = ""
+        for line_no, number in heading_numbers(doc):
+            if number in seen:
+                f.add(
+                    "heading-order",
+                    f"{doc}:{line_no}: section {number} repeats the one at line {seen[number]} - "
+                    "a cross-reference to it has no correct reading",
+                )
+            else:
+                seen[number] = line_no
+            key = sort_key(number)
+            if previous is not None and key < previous:
+                f.add(
+                    "heading-order",
+                    f"{doc}:{line_no}: section {number} comes after {previous_number}, so the "
+                    "numbering and the reading order disagree",
+                )
+            previous, previous_number = key, number
+
+
 def check_sections(f: Findings) -> None:
     known = {d.name: sections_of(d) for d in DOCS if d.is_file()}
     for doc in DOCS:
@@ -1718,6 +1779,7 @@ def main() -> int:
     file_rows = check_file_rows(f, known)
     check_links(f)
     check_sections(f)
+    check_heading_order(f)
     check_changelog_sections(f)
     check_check_names(f)
     check_required_checks(f)
