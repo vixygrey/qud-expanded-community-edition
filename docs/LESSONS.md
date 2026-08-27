@@ -321,10 +321,15 @@ Two things make this worth remembering rather than filing under "obvious":
   option's value rather than performing a one-way edit.
 
 Two habits catch it: make `regenerate → diff against the committed artefact` part of finishing the
-work (`tools/build_preview.sh` reproduces `mod/preview.png` byte-for-byte, and a second run proves
-it), and **guard the input's identity** rather than trusting it — the script refuses to run unless
-the base is 418×312, because every offset is measured against that logo and a swapped base would
-misplace the marks instead of erroring.
+work, and **guard the input's identity** rather than trusting it — that script refused to run unless
+the base was 418×312, because every offset was measured against that logo and a swapped base would
+have misplaced the marks instead of erroring.
+
+> **The pipeline this describes no longer exists** (#500). `mod/preview.png` is now generated from
+> nothing but code — `tools/build_preview.py` reads no image at all, so the failure mode it taught
+> me is structurally impossible there now. The lesson keeps its place because the general form is
+> what matters: *any* generator whose output overwrites its own input has stopped being idempotent,
+> and the one here happened to be an image.
 
 ## Static checks answer "is it correct". Launching answers "does it happen"
 

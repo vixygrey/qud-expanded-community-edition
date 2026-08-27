@@ -15,7 +15,7 @@ with any redistribution — so the caveat can't get separated from the code it q
 | C# in `mod/Scripting/`, and the tooling in `tools/` and `.github/` | **Apache-2.0** | [`LICENSE`](LICENSE) |
 | XML data, map patches, documentation — my contributions | **CC BY 4.0** | [`LICENSE-CONTENT`](LICENSE-CONTENT) |
 | Everything in the `upstream-2.2` tag | **Apache-2.0 / CC BY 4.0** — Mura agreed on 17 Aug 2026 | [`docs/PERMISSION.md`](docs/PERMISSION.md) §8 |
-| `mod/preview.png`, `tools/preview-base.png` | Same — Mura's artwork, Mura's grant | [`docs/PERMISSION.md`](docs/PERMISSION.md) §8 |
+| `mod/preview.png` | **CC BY 4.0** — original work, mine, not derived from Mura's logo | [`LICENSE-CONTENT`](LICENSE-CONTENT) |
 | **The 18 subtype sprites** | **Noble Lark's. Not covered.** Used with credit; ask him before reusing | [`docs/PERMISSION.md`](docs/PERMISSION.md) §8.2 |
 
 Code under Apache-2.0 rather than MIT deliberately: Apache has a `NOTICE` file that downstream

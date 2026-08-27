@@ -1072,13 +1072,19 @@ save-baked identifiers changed during the fork.
 
 ### 7.3 `preview.png`
 
-- PNG, **under 1 MB** (Steam limit). The current file is 504×382 and 71 KB.
-- Must be readable as a thumbnail — it is displayed small.
-- Path declared in `workshop.json` `ImagePath`.
-- **Mura's original lettering stays untouched and stays dominant.** The fork's own marks — the
-  green `- CE` and `& VixyGrey` — are additions layered on top of it, deliberately in a different
-  face so they read as tacked on rather than as part of the original logo. Charter rule 3: the
-  maintainer credit sits *under* Mura's, it does not replace or restyle it.
+- PNG, **under 1 MB** (Steam limit). The current file is 512×512 and 35 KB.
+- **Square, and readable as a thumbnail.** Freehold recommend 512×512; the mod manager displays it
+  at 128×128 and Steam's front page at up to 435×435, so it has to survive reduction. Design for the
+  small view first — `tools/build_preview.py` writes a 128px proof beside the output for exactly
+  that reason.
+- Path declared in `workshop.json` `ImagePath` and `manifest.json` `previewImage`.
+- **Original work, not Mura's logo.** Until #500 the preview composited the fork's marks onto
+  `tools/preview-base.png`, which was Mura's artwork. It is now an original design in Caves of Qud's
+  own eighteen fixed colours, and Mura is credited *in the image*, alongside me, in the same face and
+  weight. Charter rule 3 obliges credit, not the reuse of someone else's artwork — and a fork wearing
+  its own identity while naming its origin honours that better than a borrowed logo with a suffix.
+- Reasoning behind the design lives in [`PREVIEW_DESIGN.md`](PREVIEW_DESIGN.md), so a later change
+  inherits the intent rather than guessing at it.
 
 ### 7.4 Description content
 
