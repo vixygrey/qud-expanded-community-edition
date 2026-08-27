@@ -104,6 +104,24 @@
       "untiered": 41
     }
   },
+  "DynamicObjectsTable:DesertCanyon_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Cured Shadetooth"
+    ],
+    "shares": {
+      "untiered": 12
+    }
+  },
+  "DynamicObjectsTable:DesertCanyon_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Shadetooth"
+    ],
+    "shares": {
+      "untiered": 17
+    }
+  },
   "DynamicObjectsTable:EnergyCells": {
     "conditional": [],
     "reaches": [
@@ -231,6 +249,24 @@
     ],
     "shares": {
       "untiered": 40
+    }
+  },
+  "DynamicObjectsTable:Hills_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Pickled Rimeburr"
+    ],
+    "shares": {
+      "untiered": 11
+    }
+  },
+  "DynamicObjectsTable:Hills_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Rimeburr"
+    ],
+    "shares": {
+      "untiered": 17
     }
   },
   "DynamicObjectsTable:Items": {
@@ -417,6 +453,7 @@
       "Raven_ZetachromeHandBones",
       "Raven_Zetachromeweave Cloak",
       "Vixy_Brinereed Shoot",
+      "Vixy_Broadglove Cap",
       "Vixy_Bronze Glaive",
       "Vixy_Bronze Quarterstaff",
       "Vixy_Bronze Spear",
@@ -428,6 +465,7 @@
       "Vixy_Crysteel Glaive",
       "Vixy_Crysteel Quarterstaff",
       "Vixy_Crysteel Spear",
+      "Vixy_Cured Shadetooth",
       "Vixy_Dried Cragwort",
       "Vixy_Flawless Crysteel Glaive",
       "Vixy_Flawless Crysteel Quarterstaff",
@@ -441,8 +479,12 @@
       "Vixy_Iron Glaive",
       "Vixy_Iron Quarterstaff",
       "Vixy_Iron Spear",
+      "Vixy_Pickled Rimeburr",
+      "Vixy_Pressed Broadglove",
+      "Vixy_Rimeburr Head",
       "Vixy_Salted Brinereed",
       "Vixy_Scour Slug",
+      "Vixy_Shadetooth Pad",
       "Vixy_Steel Glaive",
       "Vixy_Steel Quarterstaff",
       "Vixy_Steel Spear",
@@ -486,6 +528,24 @@
     ],
     "shares": {
       "untiered": 37
+    }
+  },
+  "DynamicObjectsTable:Jungle_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Pressed Broadglove"
+    ],
+    "shares": {
+      "untiered": 8
+    }
+  },
+  "DynamicObjectsTable:Jungle_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Broadglove"
+    ],
+    "shares": {
+      "untiered": 8
     }
   },
   "DynamicObjectsTable:MeleeWeapons": {

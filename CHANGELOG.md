@@ -16,6 +16,44 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Three more harvestable plants — rimeburr, shadetooth and broadglove** (#177, #540).
+
+  Counting distinct species rather than blueprints, `Hills`, `DesertCanyon` and `Jungle` each offered
+  the same three things: starapple, its Barathrumite variant, and witchwood. **Two species, and the
+  same two, across the biomes a player crosses most.** Wave one gave Mountains, Saltmarsh and
+  BananaGrove something of their own; these three had nothing distinctive at all.
+
+  | | Hills | DesertCanyon | Jungle |
+  |---|---|---|---|
+  | plant | rimeburr | shadetooth | broadglove |
+  | yield | head | pad | cap |
+  | preserve | pickled | cured | pressed |
+  | cooking effect | `tastyMinor` | `thirst` | `medicinal` |
+
+  Each effect is one vanilla already ships and uses once or twice, so none adds to the vocabulary —
+  the charter rule 2 line wave one held. Everything is data, so no rule 5 budget either.
+
+  The shadetooth is a water-holding succulent that grows only in the canyon wall's shade, and it
+  ripens ochre to cyan — the ripe colour is the ingredient's own argument, since the preserve is what
+  carries `thirst`. The broadglove is a shelf fungus rather than the broadleaf first drafted: its
+  tile is Brightshroom's, and a plant should match the tile it borrows rather than the other way
+  round.
+
+  Ripeness is derived, not chosen. `Chance × Number ÷ StartRipeChance` puts them at **0.73, 0.63 and
+  0.92** ripe plants per zone, inside vanilla's dense band of 0.6–1.0 — `docs/FEATURES.md` §18.3 has
+  the full table. Scatter shares stay well under half: `JungleZoneGlobals` 4.5%,
+  `DesertCanyonZoneGlobals` 10.8%, `HillsZoneGlobals` 17.3%.
+
+  Each carries its biome's `_Plants` tag so a village can be built and described with it, and each
+  preserve carries `_Ingredients` so it can be a village's signature dish. The fibre stags take a
+  named vanilla neighbour rather than a guess, and only where the inherited default is wrong: Primal
+  Grass's set for the burr, Fracti's for the succulent, and Fungus's single `Plank="mass"` for the
+  shelf fungus.
+
+  **No mod option**, which #177 left undecided. Wave one shipped without one and nothing asked; and
+  unlike the creature variants these are not cosmetic — they feed cooking, village dishes and village
+  descriptions, so an option that removed them would remove content other systems reference.
+
 - **A village's signature dish can now be made with the local preserved plant** (#489).
 
   Qud gives each village a signature dish built from one to three ingredients, 80% of them drawn

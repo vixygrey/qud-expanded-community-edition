@@ -180,4 +180,137 @@
     -->
     <tag Name="DynamicObjectsTable:BananaGrove_Ingredients" />
   </object>
+
+  <!-- Wave two (#540). Same chain as the three above: snack -> PreservableItem -> preserved
+       ingredient -> PreparedCookingIngredient. Each effect type is one vanilla already ships and
+       uses once or twice, so none of these adds to the vocabulary. -->
+
+  <object Name="Vixy_Rimeburr Head" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{c|rimeburr head}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;c"
+      DetailColor="w"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="3" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="0"
+      Healing="0"
+      Message="It is dry and faintly sweet, and the husk sticks to your fingers."
+    />
+    <part Name="PreservableItem" Result="Vixy_Pickled Rimeburr" Number="3" />
+    <part Name="Description" Short="A tight head of seed still wearing its frost, picked before the wind takes it." />
+  </object>
+
+  <object Name="Vixy_Pickled Rimeburr" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="pickled {{c|rimeburr}}"
+      Tile="Items/sw_grass_bundle.bmp"
+      RenderString="%"
+      ColorString="&amp;c"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="3" />
+    <part Name="PreparedCookingIngredient" type="tastyMinor" charges="1" />
+    <part
+      Name="Description"
+      Short="Soured in its own liquor until the husk gives, which is the only way anyone has found to make it worth chewing."
+    />
+    <tag Name="Plant" />
+    <tag Name="DynamicObjectsTable:Hills_Ingredients" />
+  </object>
+
+  <object Name="Vixy_Shadetooth Pad" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{y|shadetooth pad}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;y"
+      DetailColor="C"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="2"
+      Healing="0"
+      Message="It is cold inside, and wetter than anything growing out here has any right to be."
+    />
+    <part Name="PreservableItem" Result="Vixy_Cured Shadetooth" Number="3" />
+    <part
+      Name="Description"
+      Short="A flat pad cut from the shaded side, heavy with what the canyon wall let it keep."
+    />
+  </object>
+
+  <object Name="Vixy_Cured Shadetooth" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="cured {{y|shadetooth}}"
+      Tile="Items/sw_vinewafer_sheaf.bmp"
+      RenderString="%"
+      ColorString="&amp;y"
+      DetailColor="C"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part Name="PreparedCookingIngredient" type="thirst" charges="1" />
+    <part
+      Name="Description"
+      Short="Split and laid on hot rock until the outside seals, which holds the water in rather than driving it off."
+    />
+    <tag Name="Plant" />
+    <tag Name="DynamicObjectsTable:DesertCanyon_Ingredients" />
+  </object>
+
+  <object Name="Vixy_Broadglove Cap" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{m|broadglove cap}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;m"
+      DetailColor="w"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="0"
+      Healing="0"
+      Message="It is bitter enough to make your jaw ache, and the ache passes."
+    />
+    <part Name="PreservableItem" Result="Vixy_Pressed Broadglove" Number="3" />
+    <part Name="Description" Short="A cap the width of a palm, cut where it shelves away from the wood." />
+  </object>
+
+  <object Name="Vixy_Pressed Broadglove" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="pressed {{m|broadglove}}"
+      Tile="Items/sw_vinewafer_sheaf.bmp"
+      RenderString="%"
+      ColorString="&amp;m"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="5" />
+    <part Name="PreparedCookingIngredient" type="medicinal" charges="1" />
+    <part
+      Name="Description"
+      Short="Pressed flat between boards and hung, which concentrates the bitterness rather than curing it. That is what it is kept for."
+    />
+    <tag Name="Plant" />
+    <tag Name="DynamicObjectsTable:Jungle_Ingredients" />
+  </object>
 </objects>

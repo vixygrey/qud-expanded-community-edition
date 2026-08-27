@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **453** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **462** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **74** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **75** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -585,10 +585,10 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 46 | 1 |
-| `Food.xml` | 6 | 2 |
-| `Plants.xml` | 3 | 0 |
+| `Food.xml` | 12 | 2 |
+| `Plants.xml` | 6 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **453 active** | **211** |
+| **Total** | **462 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1823,7 +1823,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-96 table definitions: **74 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+97 table definitions: **75 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2111,7 +2111,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
-│   └── PopulationTables.xml    # 96 tables (74 merge / 22 new)
+│   └── PopulationTables.xml    # 97 tables (75 merge / 22 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2822,9 +2822,9 @@ but that tag is read only by the dynamic table fabricators, so on this route it 
 
 ## 18. Harvestable plants (`ObjectBlueprints/Plants.xml`)
 
-**Three harvestable plants, one each for Mountains, Saltmarsh and BananaGrove** (#177), with a
-yield and a preserved cooking ingredient apiece. Everything here is data — no scripting, so no
-charter rule 5 budget spent.
+**Six harvestable plants, one each for Mountains, Saltmarsh, BananaGrove, Hills, DesertCanyon and
+Jungle** (#177, #540), with a yield and a preserved cooking ingredient apiece. Everything here is
+data — no scripting, so no charter rule 5 budget spent.
 
 ### 18.1 How thin vanilla actually is
 
@@ -2842,7 +2842,14 @@ Resolving every biome's population tables transitively — following `<table>` r
 plant per biome**. The cooking-ingredient pools tell the same story from the other end:
 `BananaGrove_Ingredients` holds one entry and `Mountains_Ingredients` three.
 
-The three biomes chosen here are the thinnest of those with unambiguous theming.
+Wave one took the thinnest three of those with unambiguous theming. **Wave two took the three that
+shared an identical list**: counting distinct species rather than blueprints, `Hills`, `DesertCanyon`
+and `Jungle` each offered starapple, its Barathrumite variant and witchwood — two species, and the
+same two, across the biomes a player crosses most.
+
+`Water` and `Ruins` report no harvestables at all, and are deliberately left alone: their `_Plants`
+pools hold mangroves and star palms, which is a village-building tree list rather than a foraging
+gap.
 
 ### 18.2 The chain, and that all of it is data
 
@@ -2870,16 +2877,16 @@ band runs 0.07 (witchwood tree) to 8.1 (watervine), and it is dense between 0.6 
 | vanilla plant | ripe per zone | | this fork | ripe per zone |
 |---|---:|---|---|---:|
 | watervine | 8.10 | | brinereed | 1.50 |
-| yuckwheat | 6.67 | | sweetfrond | 0.88 |
-| noisegrass | 3.20 | | cragwort | 0.72 |
-| urberry bush | 1.04 | | | |
-| dreadroot | 0.84 | | | |
-| banana tree | 0.81 | | | |
+| yuckwheat | 6.67 | | broadglove | 0.92 |
+| noisegrass | 3.20 | | sweetfrond | 0.88 |
+| urberry bush | 1.04 | | rimeburr | 0.73 |
+| dreadroot | 0.84 | | cragwort | 0.72 |
+| banana tree | 0.81 | | shadetooth | 0.63 |
 | witchwood tree | 0.07 | | | |
 
-All three land in the dense part of vanilla's band, and the highest is brinereed — whose yield is
-also the cheapest of the three. Cheap staples sitting commoner than valuable ones is vanilla's own
-shape.
+All six land in the dense part of vanilla's band, and the highest is brinereed — whose yield is
+also the cheapest of the six. Cheap staples sitting commoner than valuable ones is vanilla's own
+shape. The lowest is shadetooth, in the biome with the least of everything.
 
 **Three files hold the inputs**, so changing a `Number` in `PopulationTables.xml` without
 recomputing against `StartRipeChance` moves a figure this section states. Nothing checks it.
