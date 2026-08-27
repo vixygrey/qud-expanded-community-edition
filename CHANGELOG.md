@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Three rows of `docs/FEATURES.md` §6.1 were wrong, and the total was right only
+  because two of the errors cancelled (#473).
+
+  `MeleeWeapons.xml` said 71 new / 79 merged and holds 101 / 77. `RangedWeapons.xml` said 9 merged
+  and holds 11. `Creatures.xml` said 2 new and holds 46, having gone stale the moment the creature
+  variants landed. The merged column drifted by −2 and +2, which sum to zero, so the Total row's
+  **211** still matched — and the new column's Total matched too, because it is recounted from
+  `mod/` rather than added up from the rows. The rows have never summed to the total.
+
+  `check_docs.py` had computed the per-file figures since the table was written and published them
+  as `file:<name>:new` and `file:<name>:merged`, and **no claim pattern had ever quoted one**. They
+  are checked now, in both directions: a row naming a file that is gone fails, and so does a file
+  with no row. Commented-out objects are counted too, which caught a fourth stale figure — the
+  parenthetical on the `Ammo.xml` row said 20 dormant where the file holds 22, a number §10 already
+  states correctly two thousand lines further down.
+
 - **(internal)** The Workshop description length check measured characters, not bytes (#171).
 
   Steam rejected the 2.7.0 upload with `k_EResultInvalidParam`. The description was 7,963

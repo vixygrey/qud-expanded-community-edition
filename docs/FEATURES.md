@@ -556,17 +556,17 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 
 | File | New objects | Merged vanilla objects |
 |---|---|---|
-| `MeleeWeapons.xml` | 71 | 79 |
+| `MeleeWeapons.xml` | 101 (4 dormant) | 77 |
 | `Armor.xml` | 61 | 38 |
-| `RangedWeapons.xml` | 49 | 9 |
+| `RangedWeapons.xml` | 49 | 11 |
 | `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 9 | 14 |
 | `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 0 |
-| `Creatures.xml` | 2 | 1 |
+| `Creatures.xml` | 46 | 1 |
 | `Food.xml` | 0 | 2 |
-| `Ammo.xml` | 22 (20 disabled) | 1 |
+| `Ammo.xml` | 22 (22 dormant) | 1 |
 | **Total** | **444 active** | **211** |
 
 ### 6.2 Melee weapons
