@@ -72,6 +72,41 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Five findings from the wiki audit moved out of the issue tracker and into the
+  documents (#492, #495, #501, #504, #505).
+
+  **`:Weight` is not universally inert** (#492). `LESSONS` said the base weight in
+  `FabricateDynamicObjectsTable` is "exactly `1u` for every entry". There is a third multiplier in
+  the same loop that I never traced, and unlike the tier delta it is reachable: `Role`. `Common` and
+  `Minion` multiply the base to **4**, where a `:Weight` of 0.5 gives 2 rather than 1. `Dog` is
+  `Role="Minion"` and is one of my own variant parents, so the curve I called inert would have
+  worked on exactly the coats I was writing it for. 63 vanilla blueprints carry a `Role` the
+  multiplier table has never heard of.
+
+  **`<stag>` reaches two consumers, and §4.0b named only one** (#501). The section knew about
+  `DynamicSemanticTable`; it did not say that the same key is what `XRL.Language.Semantics` reads for
+  grammar, nor — the part that matters to a contributor — that an `<stag>` added for a wall
+  description can enrol the object in a spawn pool five zone builders draw from. It also said this
+  fork writes 29 tag names; it writes **41**. Checking a category against a list is the wrong
+  instinct anyway: 24 are named in vanilla's XML, six more sites build the name at runtime, and the
+  live set has no fixed size.
+
+  **A pool with no members can still be live** (#505), which is the mirror of the trap this fork
+  keeps hitting. `Coda_<region>_Plants` is rolled on every coda village and **no vanilla blueprint
+  declares into it** — an extension point with zero members and a fallback behind it. Set beside
+  `<Biome>_Creatures`, which 123 blueprints declare into and nothing rolls for zones, the pair says
+  membership count and liveness are independent and both have to be asked.
+
+  **The `*delete` correction is now complete** (#504). Freehold's wiki says the tag is broken both
+  with `Load="Merge"` and on inherited tags. Neither holds: `Bake` skips a `*delete` tag while
+  flattening, and `ObjectBlueprintXMLChildNode.Merge` copies the incoming `Value` over the target's
+  own, so the merged tag is skipped like any other.
+
+  **And one entry is stale rather than wrong** (#495). The warning that `core.hooksPath` silently
+  disables per-repo hooks stands — but my own global directory gained a full delegator set, so
+  `pre-push` is reached here now. Recorded as fixed rather than deleted, because the mechanism is
+  real and a contributor's setup may still be the shape it describes.
+
 - **(internal)** A stale API snapshot now fails where it is noticed, instead of blocking whoever
   commits next (#507).
 

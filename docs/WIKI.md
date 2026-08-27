@@ -114,12 +114,21 @@ The wiki is written by people, some of it years ago, and I have found places whe
 moved on. These are the ones I have checked against the decompiled assembly myself. The assembly
 wins; the wiki entry is noted so nobody re-derives the same correction.
 
-**`<tag Value="*delete">` is not broken.** [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects)
-says it "appears to currently be broken because it does not work in combination with `Load="Merge"`
-or on inherited tags". `GameObjectFactory.Bake` skips any tag whose `Value` contains `*delete` while
-baking a blueprint's flattened node tree, so an inherited tag genuinely does not survive. This fork
-relies on that in seven blueprints and it works. I have not tested the `Load="Merge"` half of the
-claim, so treat that half as open.
+**`<tag Value="*delete">` is not broken, in either of the two ways the wiki says it is.**
+[Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) says it "appears to currently be broken
+because it does not work in combination with `Load="Merge"` or on inherited tags". Both halves fail
+against the assembly:
+
+- **On inherited tags.** `GameObjectFactory.Bake` skips any tag whose `Value` contains `*delete`
+  while baking a blueprint's flattened node tree, so an inherited tag does not survive. This fork
+  relies on that in seven blueprints, and #171 confirmed it by measuring pool membership before and
+  after.
+- **With `Load="Merge"`.** `ObjectBlueprintXMLChildNode.Merge` copies the incoming node's attributes
+  over the existing ones — `Attributes[attribute.Key] = attribute.Value` — so merging
+  `<tag Name="X" Value="*delete" />` sets `Value` on the target's own node, and `Bake` then skips it
+  like any other. Settled by reading the loader rather than by running it: this fork has no
+  `*delete` on a merge, so there is no case in the repository to point at. A ten-second check with
+  `population:generate` would close that gap before the correction is worth offering upstream (#504).
 
 **`<stag>` is not only a grammar mechanism.** The same page describes it as adding an object to a
 dynamic semantic table; `docs/STYLEGUIDE.md` §4.0b describes it as the semantic-term layer. Both are

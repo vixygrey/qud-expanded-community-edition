@@ -432,9 +432,19 @@ Two things make this worth writing down rather than filing under "install your t
   difference in any check. It's the same shape as a missing `[PlayerMutator]` attribute — the
   feature simply doesn't happen. The only signal was the mistake it was meant to prevent.
 - **`core.hooksPath` also silently disables per-repo hooks it has no delegator for.** Git consults
-  *only* that directory. My global directory holds a single `pre-commit` file, so `.git/hooks/`
-  `pre-push` is never read, and `default_install_hook_types: [pre-commit, pre-push]` is half inert.
-  Harmless while no hook declares `stages: [pre-push]`, and a trap the moment one does.
+  *only* that directory, so a per-repo hook with no counterpart there is never read — and nothing
+  says so.
+
+  > **No longer true here, and worth recording as fixed rather than deleted** (#495). When this was
+  > written my global directory held a single `pre-commit` file, so `.git/hooks/pre-push` was
+  > unreachable and `default_install_hook_types: [pre-commit, pre-push]` was half inert. That
+  > directory now holds a full delegator set whose helper documents its first step as running *"the
+  > repository's own hook (`.git/hooks/<type>`)"*, so `pre-push` is reached. What remains is
+  > harmless rather than inert: the config installs a `pre-push` hook that currently runs nothing,
+  > because no hook in `.pre-commit-config.yaml` declares `stages: [pre-push]`.
+  >
+  > The mechanism is still real and still silent, which is why the entry stays. Only my machine
+  > changed, and a contributor's `core.hooksPath` may well be the shape this describes.
 
 > **After installing hooks, prove one fires.** Attempt the thing it forbids. `git commit` on `main`
 > takes a second and is the only evidence that any of it is wired up.
@@ -1496,14 +1506,44 @@ Three facts compose, and no one of them is visible from the XML:
    `StreamingAssets/Base`, so they are all built by `FabricateDynamicObjectsTable` rather than the
    multitier path — and the two methods weight entries completely differently.
 2. **In that method the tier-delta bonus is unreachable.** `num` and `num2` initialise to `-1` and
-   are never assigned, so the `TierDeltaWeights` lookup guarded by `num != -1` never runs. The base
-   weight is exactly `1u` for every entry.
-3. **`:Weight` is a multiplier wrapped in `(uint)Math.Ceiling`.** `ceil(1 × 0.25)` is 1. So is
-   `ceil(1 × 0.08)`. So is every fraction below one.
+   are never assigned, so the `TierDeltaWeights` lookup guarded by `num != -1` never runs.
+3. **`:Weight` is a multiplier wrapped in `(uint)Math.Ceiling`.** On a base of 1, `ceil(1 × 0.25)`
+   is 1, `ceil(1 × 0.08)` is 1, and so is every fraction below one.
 
 The floor is 1 and there is nothing under it. Vanilla's own fractional weights do nothing either,
 which is the detail that should have warned me and instead reassured me: I had counted them, made a
 5%/95% argument out of the count, and never asked whether the 5% *worked*.
+
+> **Corrected in #492, and the correction is where the interest is.** I wrote above that "the base
+> weight is exactly `1u` for every entry". It is not. There is a **third** multiplier in the same
+> loop, and unlike the tier delta it is reachable:
+>
+> ```csharp
+> if ((list[i].Tags.TryGetValue("Role", out var value2) || list[i].Props.TryGetValue("Role", out value2))
+>     && RoleWeightMultipliers.TryGetValue(value2, out var value3))
+> {
+>     num6 = (uint)Math.Ceiling((double)num6 * value3);
+> }
+> ```
+>
+> `InitWeights()` fills that table with `Common` and `Minion` at **4.0**, `Skirmisher` at 1.0,
+> `Artillery`/`Uncommon`/`Brute`/`Tank` at 0.25, `Specialist`/`Leader`/`Hero` at 0.1, and
+> `Rare`/`Epic` at 0.01. Every one of those below 1.0 still ceilings to 1 — but 4.0 does not. **On a
+> `Common` or `Minion` blueprint the base weight is 4**, and there `:Weight` 0.5 gives 2 and 0.75
+> gives 3. The dial works.
+>
+> The part that stings: `Dog` is `Role="Minion"`, and it is one of my own variant parents. The 0.5 I
+> chose for common coats would have done something on the dog variants and nothing on the goat, boar,
+> bear and equimax ones, whose parents are all `Brute`. **"Completely inert" was a tidier story than
+> the truth, and I preferred it without checking.**
+>
+> Worth knowing while you are in there: `Controller`, `Lurker`, `NPC`, `Summoner`, `Breeder` and
+> `Unspecified` are used on **63** vanilla blueprints and appear in no multiplier table at all, so
+> they silently take the plain base weight.
+>
+> Nothing shipped depends on this — every `:Weight` tag was removed from `Creatures.xml`. It is the
+> lesson that was wrong, and the lesson is what future me will trust. The other half, where the dial
+> works in *every* `:Tier`-requested pool rather than only on two roles, is #493.
 
 > **A setting the engine accepts, stores, and quietly discards is indistinguishable from one that
 > works — from the outside, and from the diff.** Vanilla using a value is evidence that vanilla's
@@ -1566,6 +1606,49 @@ that the observation was.
 qud-api.json` records the descendant list and `aggregate-sweep` in `tools/validate_mod.py` fails
 until each is exempted, so a Qud patch adding a descendant becomes a red run instead of a slow
 change in what the world spawns.
+
+## A pool with no members can be live, and a pool with 191 can be dead
+
+Four times I shipped something aimed at a declaration whose consumer I had not traced — #171, #177,
+#476, #478 — and the rule that came out of it is above: *"Does anything read this?" is the wrong
+question. "Does the thing that reads it run where I need my content to appear?" is the right one.*
+
+Auditing against Freehold's own wiki I found the mirror image, and it matters because the obvious
+defence against my usual mistake gets this one exactly backwards (#505).
+
+`VillageCodaBase.cs:1694` picks a plant for a coda village in three steps:
+
+```csharp
+string populationName = ResolvePopulationTableName("Village_Plants");
+if (PopulationManager.HasPopulation(populationName)) { text = ...RollOneFrom(populationName)...; }
+if (text == null) { text = ...RollOneFrom("DynamicObjectsTable:Coda_" + region + "_Plants")...; }
+if (text == null) { text = ...RollOneFrom("DynamicObjectsTable:" + region + "_Plants")...; }
+```
+
+`Coda_<region>_Plants` is rolled every time a coda village is built, and **no vanilla blueprint
+declares membership in it.** I searched every XML file in the install. It is an extension point with
+zero members and a documented fallback behind it.
+
+Set that beside `<Biome>_Creatures`, which **123 vanilla blueprints** declare into and which does
+not put a creature in a zone, and the pair says the thing plainly:
+
+> **Membership count and liveness are independent, and neither implies the other.** A pool with no
+> members can be rolled on every village. A pool with a hundred and twenty-three can be rolled by
+> nobody. "Who declares this?" is not a proxy for "is this real?" — they are two questions and both
+> have to be asked.
+
+The cheerful consequence: my three plants reach coda villages through that third line for free,
+without a `Coda_` tag, because the fallback catches them.
+
+**What to do instead.** Ask the two questions separately and answer each at its own end. Membership
+is answered in the data — grep the tag. Liveness is answered in the assembly, or with
+`population:generate:<table>#<amount>`, which fabricates the table by name rather than waiting for
+something to have rolled it.
+
+This is also the first time in the audit that checking the far end came back *"no consumer, nothing
+to worry about"* rather than *"you built the wrong thing"* — the `<stag>` categories in #501 were
+the other. Worth saying, because four bad results in a row make the check feel like a formality
+right up until it is not.
 
 ## Count the consumers before you count anything else
 
