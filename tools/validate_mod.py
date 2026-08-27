@@ -430,11 +430,15 @@ def check_workshop_description(f: Findings) -> None:
         data = json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return  # check_json reports this
-    length = len(data.get("Description", ""))
+    # Steam's limit is BYTES, not characters, and this description is full of em dashes at three
+    # bytes each. Measuring characters passed a 7,963-character description that was 8,019 bytes,
+    # and Steam rejected the upload with k_EResultInvalidParam - a check giving a false pass at
+    # exactly the moment it was meant to be useful.
+    length = len(data.get("Description", "").encode("utf-8"))
     if length > STEAM_DESCRIPTION_MAX:
         f.add(
             "workshop-description",
-            f"workshop.json Description is {length} characters against Steam's "
+            f"workshop.json Description is {length} bytes against Steam's "
             f"{STEAM_DESCRIPTION_MAX} limit. Steam truncates the overflow at upload without "
             f"reporting it. Cut it, or move the detail to CHANGELOG.md and link it.",
         )
