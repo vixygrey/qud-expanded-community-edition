@@ -12,7 +12,7 @@ never edited.
 Entries marked **(internal)** do not affect the shipped mod and are invisible to players. They are
 recorded because contributors need them, not because subscribers do.
 
-## [Unreleased]
+## [2.7.0] - 2026-08-27
 
 ### Added
 
@@ -3397,7 +3397,8 @@ Every release carries the credit list in [`docs/PERMISSION.md`](docs/PERMISSION.
 **Mura** (`@mura_raven`) for the original mod, and **Noble Lark** for the psionic subtype sprites,
 named explicitly as the one condition of the fork permission.
 
-[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.4.0...main
+[Unreleased]: https://github.com/vixygrey/qud-expanded-community-edition/compare/v2.7.0...main
+[2.7.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.7.0
 [2.4.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.4.0
 [2.3.1]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.1
 [2.3.0]: https://github.com/vixygrey/qud-expanded-community-edition/releases/tag/v2.3.0
