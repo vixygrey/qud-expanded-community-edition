@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **401** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **432** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **57** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **68** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -567,7 +567,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 2 | 1 |
 | `Food.xml` | 0 | 2 |
 | `Ammo.xml` | 22 (20 disabled) | 1 |
-| **Total** | **401 active** | **211** |
+| **Total** | **432 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1802,7 +1802,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-79 table definitions: **57 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+90 table definitions: **68 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2081,11 +2081,11 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Subtypes.xml                # 18 affinities in 2 categories
 ├── Skills.xml                  # 7 tree edits
 ├── Bodies.xml                  # Chip Interface part; TrueKin + PsionicAdept anatomies
-├── Options.xml                 # 17 options (§13)
+├── Options.xml                 # 18 options (§13)
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 79 tables (57 merge / 22 new)
+├── PopulationTables.xml        # 90 tables (68 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
@@ -2136,7 +2136,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Seventeen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Eighteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
 building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
 field on a loaded record.
@@ -2591,6 +2591,119 @@ to. But it is a change to what the world generates rather than to what a player 
 argued for, and it should not have been discovered by someone noticing a village full of women and
 asking whether something had skewed. Recorded here so the next person meets it as a decision rather
 than a surprise.
+
+## 17. Creature variants (`ObjectBlueprints/Creatures.xml`)
+
+**32 cosmetic colour and name variants of thirteen common creatures** (#171). Option-gated by
+`OptionQudExpandedCECreatureVariants`, default **on**.
+
+### 17.1 The one rule that keeps this cosmetic
+
+> **A variant may differ in name, colour and flavour text. It must not differ in stats.**
+
+Two identically-sized glyphs behaving differently, with only colour to warn you, reads as a bug when
+it kills you. Nothing below declares a `<stat>` or any part other than `Render` and `Description`.
+
+### 17.2 How they reach the world, and the attempt that did not
+
+Distribution is by **explicit entry in `mod/PopulationTables.xml`**, merged into the vanilla table a
+zone template actually draws from. That is how every other piece of this fork's content is
+distributed, and `docs/STYLEGUIDE.md` §3.3 says so.
+
+The first attempt used `DynamicObjectsTable:<Biome>_Creatures` tags, on the reading that a creature
+self-registers into a spawn table. **Nothing in the game reads those tables.** `Hills_Creatures` is
+named in exactly one file — the one where creatures declare membership — and no population table
+references it, no zone builder requires it. All 32 shipped, and none ever spawned. `docs/LESSONS.md`
+carries the full account; the short version is that 191 vanilla blueprints carrying a tag proves
+Freehold typed it, not that anything reads it.
+
+So every target table here was checked for a consumer **before** a line was written, and the dun goat
+shipped alone and was walked in a running game before the other 31 followed.
+
+### 17.3 Weights are derived, not chosen
+
+A variant takes **one step down vanilla's own chance ladder** (90 / 75 / 50 / 25 / 10 / 5) from its
+parent's entry *in that same table*, and keeps the parent's `Number`. Where vanilla already sits at 5
+the variant matches rather than halving, there being no step left. In `pickone` groups the currency
+is `Weight` instead and a variant takes 2 against vanilla siblings at 5–10, which keeps this fork far
+under the half-share ceiling in `docs/STYLEGUIDE.md` §3.2.1.
+
+The ordinary animal therefore stays the common one. The black goat takes two steps rather than one,
+which is the rarity the roster always wanted and the first attempt could not express — `:Weight` on
+the dead tables is a multiplier wrapped in `(uint)Math.Ceiling`, so every fraction below one was
+inert.
+
+### 17.4 One restoration and two additions
+
+**`Baboon` is added to the desert canyon.** Vanilla's own tags say baboons belong there and the
+mechanism that would have delivered them is dead, so this is authored intent being restored rather
+than a placement invented.
+
+**Two placements have no vanilla backing and are deliberate new content:** the **marsh dog** and the
+**salt beetle**. Nothing in vanilla, live or dead, puts a dog in the saltmarsh or a beetle on the
+dunes. Both are marked in the XML. The marsh dog stands without a plain dog beside it on purpose —
+it is a marsh-adapted animal, not a coat on something that already lives there.
+
+### 17.5 Naming
+
+Names follow what vanilla does to its own creatures: keep the word carrying species identity, swap
+the word carrying the distinction. `giant beetle` becomes `clockwork beetle` in vanilla, which is why
+the beetles here drop "giant"; `horned chameleon` keeps "horned", because horns are anatomy. Across
+all 1,072 vanilla creature display names, no vanilla variant replaces its parent's species noun.
+
+### 17.6 The catalogue
+
+✦ marks a variant carrying its own description, because the inherited one names a colour it does not
+have — both salamanders inherit "ovoid spots, crimson and coral and citrine", and the beetles inherit
+"shining black elytra".
+
+| Variant | Parent | Table | Entry |
+|---|---|---|---|
+| ash-coated dog | `Dog` | `MountainsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
+| ashen salamander ✦ | `Salamander` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=2d4 |
+| ashwing glowmoth | `Glowmoth` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=1 |
+| banded honey skunk | `Honey Skunk` | `HillsZoneGlobals-Reachable` | Chance=25 Number=1d2 |
+| black goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=10 Number=1d3 |
+| brindle dog | `Dog` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
+| bristleback boar | `Boar` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d4 |
+| copper dragonfly | `GiantDragonfly` | `FlowerFieldsPopulation` | Chance=10 Number=2d6 |
+| cragged goat | `Goat` | `MountainsZoneGlobals-Reachable` | Chance=25 Number=3d6 |
+| dun goat ✦ | `Goat` | `HillsZoneGlobals-Reachable` | Chance=50 Number=1d3 |
+| ember dragonfly | `GiantDragonfly` | `DesertCanyonZoneGlobals` | Chance=10 Number=2d6 |
+| glass dragonfly | `GiantDragonfly` | `WaterCreatures` | Weight=2 Number=1-2 |
+| mangy baboon | `Baboon` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d4 |
+| marbled salamander ✦ | `Salamander` | `JungleZoneGlobals` | Chance=5 Number=1-4 |
+| marsh dog | `Dog` | `SaltMarshZoneGlobals` | Chance=10 Number=1d2 |
+| midden beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=3-6 |
+| mossbacked tortoise | `IrritableTortoise` | `FlowerFieldsPopulation` | Chance=5 Number=1d3 |
+| mottled horned chameleon | `Horned Chameleon` | `JungleZoneGlobals` | Chance=5 Number=1 |
+| pale boar | `Boar` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d2 |
+| pale croc | `Croc` | `WaterCreatures` | Weight=2 Number=1 |
+| pale glowfish | `Glowfish` | `WaterCreatures` | Weight=2 Number=1-2 |
+| pied dog | `Dog` | `FlowerFieldsPopulation` | Chance=5 Number=1d4 |
+| rangy dog | `Dog` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d4 |
+| russet boar | `Boar` | `JungleZoneGlobals` | Chance=5 Number=1-2 |
+| rust beetle ✦ | `Giant Beetle` | `RuinsZoneGlobals-Creatures` | Chance=5 Number=3-6 |
+| rust-furred baboon | `Baboon` | `BaboonParty` | Chance=10 Number=1-2 |
+| salt beetle ✦ | `Giant Beetle` | `SaltDuneCreatures` | Number=1-2 |
+| sand horned chameleon | `Horned Chameleon` | `DesertCanyonZoneGlobals-Reachable` | Chance=5 Number=1d1 |
+| scarred tortoise | `IrritableTortoise` | `HillsZoneGlobals-Reachable` | Chance=10 Number=1d3 |
+| silt croc | `Croc` | `SaltMarshZoneGlobals` | Chance=25 Number=1 |
+| silverback baboon | `Baboon` | `BaboonParty` | Chance=25 Number=1-2 |
+| verdigris glowfish | `Glowfish` | `SaltMarshZoneGlobals` | Chance=50 Number=2d4 |
+
+### 17.7 The option
+
+`OptionQudExpandedCECreatureVariants`, default on, read by `Raven_Options.ApplyCreatureVariants`. It
+walks `PopulationManager.Populations` and detaches every entry whose blueprint carries the
+`Vixy_CreatureVariant` tag, remembering where each came from so the toggle is reversible — the same
+shape as the psionic chip option in §13.
+
+The tag matters: a `Vixy_` prefix match would also catch 32 glaives, spears and quarterstaves and
+quietly empty three weapon families out of the loot tables.
+
+The first attempt gated this with `ExcludeFromDynamicEncountersOption`, which costs no C# at all —
+but that tag is read only by the dynamic table fabricators, so on this route it gated nothing.
 
 ## Appendix A — every merged vanilla melee weapon
 

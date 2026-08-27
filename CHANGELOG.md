@@ -16,6 +16,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **32 creature colour variants**, on by default and toggleable in the mod options (#171).
+
+  Thirteen common creatures pick up regional coats: brindle, rangy, pied, ash-coated and marsh dogs,
+  dun and cragged and black goats, bristleback and russet and pale boars, mangy and silverback and
+  rust-furred baboons, silt and pale crocs, copper and ember and glass dragonflies, verdigris and
+  pale glowfish, marbled and ashen salamanders, mottled and sand horned chameleons, mossbacked and
+  scarred tortoises, a banded honey skunk, an ashwing glowmoth, and midden, rust and salt beetles.
+
+  **Purely cosmetic.** A variant differs in name, colour and description and in nothing else, so a
+  pied dog fights exactly as a feral dog does.
+
+  **The ordinary animal stays the common one.** Each variant sits one step below its vanilla parent
+  on the game's own chance ladder in the same table, so a variant is the occasional find rather than
+  the rule. Half the goats on a mountainside are not black; the black goat is two steps down and
+  meant to be a surprise.
+
+  **Baboons now reach the desert canyon**, which vanilla's own data always said they should — the
+  mechanism that would have delivered them was never wired up. Two placements are genuinely new: a
+  marsh dog in the saltmarsh and a salt beetle out on the dunes, neither of which vanilla has an
+  animal for.
+
+  `docs/FEATURES.md` §17 is the full reference, including the catalogue and the derivation.
+
 - **(internal)** One creature variant, to prove the distribution route (#171).
 
   A single `dun goat` — a cosmetic colour variant of vanilla's goat — reaches the hills through an

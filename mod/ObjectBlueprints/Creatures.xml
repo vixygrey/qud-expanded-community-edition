@@ -18,7 +18,7 @@
     <part Name="Body" Anatomy="PsionicAdept" />
   </object>
 
-  <!-- Creature variants (#171) - PROOF OF MECHANISM, one variant only.
+  <!-- Creature variants (#171) - the dun goat, which proved the route.
 
        A cosmetic colour variant of a common creature. It differs in name, colour and description
        and in nothing else: no <stat>, no part beyond Render.
@@ -47,5 +47,203 @@
       Name="Description"
       Short="A coat the colour of dry hillside runs from =pronouns.possessive= shoulders to =pronouns.possessive= hocks, so that =pronouns.subjective= =verb:are:afterpronoun= easy to miss until =pronouns.subjective= =verb:move:afterpronoun=."
     />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+
+  <!-- Creature variants, the remaining 31 (#171).
+
+       Cosmetic only: name, colour and flavour text, nothing else. No <stat>, no part beyond Render
+       and Description.
+
+       Distribution is by explicit entry in mod/PopulationTables.xml, which is how everything else
+       in this fork reaches the world. The first attempt used DynamicObjectsTable:<Biome>_Creatures
+       tags and none of the 32 ever spawned, because nothing in the game reads those tables - see
+       docs/LESSONS.md. Every target table here was checked for a consumer before a line was
+       written, and the dun goat was shipped alone and walked in a running game first. -->
+  <object Name="Vixy_BrindleDog" Inherits="Dog">
+    <part Name="Render" DisplayName="{{w|brindle dog}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_RangyDog" Inherits="Dog">
+    <part Name="Render" DisplayName="{{w|rangy dog}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_PiedDog" Inherits="Dog">
+    <part Name="Render" DisplayName="{{Y|pied dog}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_AshcoatDog" Inherits="Dog">
+    <part Name="Render" DisplayName="{{y|ash-coated dog}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MarshDog" Inherits="Dog">
+    <part Name="Render" DisplayName="{{K|marsh dog}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_CraggedGoat" Inherits="Goat">
+    <part Name="Render" DisplayName="{{y|cragged goat}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_BlackGoat" Inherits="Goat">
+    <part Name="Render" DisplayName="{{K|black goat}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_BristleBoar" Inherits="Boar">
+    <part Name="Render" DisplayName="{{w|bristleback boar}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_RussetBoar" Inherits="Boar">
+    <part Name="Render" DisplayName="{{r|russet boar}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_PaleBoar" Inherits="Boar">
+    <part Name="Render" DisplayName="{{Y|pale boar}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MangyBaboon" Inherits="Baboon">
+    <part Name="Render" DisplayName="{{w|mangy baboon}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_SilverBaboon" Inherits="Baboon">
+    <part Name="Render" DisplayName="{{y|silverback baboon}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_RustBaboon" Inherits="Baboon">
+    <part
+      Name="Render"
+      DisplayName="{{r|rust-furred baboon}}"
+      ColorString="&amp;r"
+      TileColor="&amp;r"
+      DetailColor="w"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_SiltCroc" Inherits="Croc">
+    <part Name="Render" DisplayName="{{w|silt croc}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="g" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_PaleCroc" Inherits="Croc">
+    <part Name="Render" DisplayName="{{y|pale croc}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="g" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_CopperDragonfly" Inherits="GiantDragonfly">
+    <part Name="Render" DisplayName="{{o|copper dragonfly}}" ColorString="&amp;o" TileColor="&amp;o" DetailColor="W" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_EmberDragonfly" Inherits="GiantDragonfly">
+    <part Name="Render" DisplayName="{{R|ember dragonfly}}" ColorString="&amp;R" TileColor="&amp;R" DetailColor="W" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_GlassDragonfly" Inherits="GiantDragonfly">
+    <part Name="Render" DisplayName="{{C|glass dragonfly}}" ColorString="&amp;C" TileColor="&amp;C" DetailColor="Y" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_VerdigrisGlowfish" Inherits="Glowfish">
+    <part
+      Name="Render"
+      DisplayName="{{c|verdigris glowfish}}"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="C"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_PaleGlowfish" Inherits="Glowfish">
+    <part Name="Render" DisplayName="{{Y|pale glowfish}}" ColorString="&amp;Y" TileColor="&amp;Y" DetailColor="C" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MarbledSalamander" Inherits="Salamander">
+    <part
+      Name="Render"
+      DisplayName="{{K|marbled salamander}}"
+      ColorString="&amp;K"
+      TileColor="&amp;K"
+      DetailColor="W"
+    />
+    <part
+      Name="Description"
+      Short="Dark whorls run the length of =pronouns.possessive= back, veined pale where the light finds them, like wet stone split open."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_AshenSalamander" Inherits="Salamander">
+    <part Name="Render" DisplayName="{{y|ashen salamander}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="r" />
+    <part
+      Name="Description"
+      Short="Pale grit has worked into every seam of =pronouns.possessive= hide, and the old island chain of spots shows through it like cinders banked under ash."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MottledHornedChameleon" Inherits="Horned Chameleon">
+    <part
+      Name="Render"
+      DisplayName="{{g|mottled horned chameleon}}"
+      ColorString="&amp;g"
+      TileColor="&amp;g"
+      DetailColor="W"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_SandHornedChameleon" Inherits="Horned Chameleon">
+    <part
+      Name="Render"
+      DisplayName="{{W|sand horned chameleon}}"
+      ColorString="&amp;W"
+      TileColor="&amp;W"
+      DetailColor="w"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MossbackTortoise" Inherits="IrritableTortoise">
+    <part
+      Name="Render"
+      DisplayName="{{g|mossbacked tortoise}}"
+      ColorString="&amp;g"
+      TileColor="&amp;g"
+      DetailColor="w"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_ScarredTortoise" Inherits="IrritableTortoise">
+    <part Name="Render" DisplayName="{{K|scarred tortoise}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="w" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_BandedHoneySkunk" Inherits="Honey Skunk">
+    <part
+      Name="Render"
+      DisplayName="{{K|banded honey skunk}}"
+      ColorString="&amp;K"
+      TileColor="&amp;K"
+      DetailColor="Y"
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_AshwingGlowmoth" Inherits="Glowmoth">
+    <part Name="Render" DisplayName="{{y|ashwing glowmoth}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="C" />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_MiddenBeetle" Inherits="Giant Beetle">
+    <part Name="Render" DisplayName="{{w|midden beetle}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
+    <part
+      Name="Description"
+      Short="=pronouns.Possessive= elytra are the dull brown of turned earth, scuffed matte by whatever =pronouns.subjective= =verb:have:afterpronoun= been digging through."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_RustBeetle" Inherits="Giant Beetle">
+    <part Name="Render" DisplayName="{{r|rust beetle}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="K" />
+    <part
+      Name="Description"
+      Short="Oxide creeps across =pronouns.possessive= elytra in flaking orange plates, so that the goat-sized bug looks less hatched than corroded."
+    />
+    <tag Name="Vixy_CreatureVariant" />
+  </object>
+  <object Name="Vixy_SaltBeetle" Inherits="Giant Beetle">
+    <part Name="Render" DisplayName="{{y|salt beetle}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="w" />
+    <part
+      Name="Description"
+      Short="A crust of salt has dried pale across =pronouns.possessive= elytra and cracks quietly each time =pronouns.subjective= =verb:move:afterpronoun=."
+    />
+    <tag Name="Vixy_CreatureVariant" />
   </object>
 </objects>

@@ -35,6 +35,7 @@ namespace QudExpandedCE
         public const string SkillRequirementsID = "OptionQudExpandedCESkillRequirements";
         public const string SkillCostsID = "OptionQudExpandedCESkillCosts";
         public const string ChipDropsID = "OptionQudExpandedCEChipDrops";
+        public const string CreatureVariantsID = "OptionQudExpandedCECreatureVariants";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
@@ -90,12 +91,22 @@ namespace QudExpandedCE
         private const string ChipTablePrefix = "Raven_Chips";
 
         /// <summary>
+        /// The tag every cosmetic creature variant carries. A `Vixy_` prefix will not do: the same
+        /// prefix is on 32 glaives, spears and quarterstaves, and gating those would quietly empty
+        /// three weapon families out of the loot tables.
+        /// </summary>
+        private const string CreatureVariantTag = "Vixy_CreatureVariant";
+
+        /// <summary>
         /// Chip table references removed from loot tables, kept so they can be put back exactly.
         ///
         /// Holding the original PopulationTable instances, paired with the list each came out of,
         /// keeps this genuinely reversible: weight, number and hint all return as declared, with
         /// nothing rebuilt from assumptions.
         /// </summary>
+        private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedVariantEntries =
+            new List<KeyValuePair<PopulationList, PopulationItem>>();
+
         private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedChipEntries =
             new List<KeyValuePair<PopulationList, PopulationItem>>();
 
@@ -563,6 +574,7 @@ namespace QudExpandedCE
             ApplyTrueKinEgoDescription();
             ApplyChargenInfo();
             ApplyChipDrops();
+            ApplyCreatureVariants();
             ApplySkillRequirements();
             ApplySkillCosts();
             ApplyWiderNames();
@@ -772,6 +784,88 @@ namespace QudExpandedCE
         /// No chip carries a TinkerItem part, so removing these six references closes the supply
         /// completely rather than leaving tinkering as a way in.
         /// </summary>
+        /// <summary>
+        /// Take the cosmetic creature variants out of the spawn tables, or put them back.
+        ///
+        /// The first version of this feature gated the variants with an
+        /// `ExcludeFromDynamicEncountersOption` tag, which needs no C# at all - but that tag is read
+        /// only by the dynamic table fabricators, and these variants are distributed by explicit
+        /// population entries. It gated nothing. This does the same job the chip option does, on the
+        /// same live dictionary.
+        /// </summary>
+        private static void ApplyCreatureVariants()
+        {
+            if (Enabled(CreatureVariantsID, "Yes"))
+            {
+                foreach (KeyValuePair<PopulationList, PopulationItem> entry in DetachedVariantEntries)
+                {
+                    entry.Key.AddItem(entry.Value);
+                }
+
+                DetachedVariantEntries.Clear();
+                return;
+            }
+
+            foreach (PopulationInfo info in PopulationManager.Populations.Values)
+            {
+                DetachCreatureVariants(info);
+            }
+        }
+
+        /// <summary>
+        /// Recursively strip variant entries out of one population and remember where each came
+        /// from. Removing when already removed is a no-op, so repeated calls are safe.
+        /// </summary>
+        private static void DetachCreatureVariants(PopulationList list)
+        {
+            if (list?.Items == null)
+            {
+                return;
+            }
+
+            for (int i = list.Items.Count - 1; i >= 0; i--)
+            {
+                PopulationItem item = list.Items[i];
+
+                PopulationObject entry = item as PopulationObject;
+                if (entry != null)
+                {
+                    if (IsCreatureVariant(entry.Blueprint))
+                    {
+                        DetachedVariantEntries.Add(
+                            new KeyValuePair<PopulationList, PopulationItem>(list, entry));
+                        list.RemoveItem(entry);
+                    }
+
+                    continue;
+                }
+
+                // Groups nest - the salt beetle sits in a sub-group of a sub-group - and both
+                // PopulationInfo and PopulationGroup are PopulationList, so one cast covers every
+                // container.
+                PopulationList nested = item as PopulationList;
+                if (nested != null)
+                {
+                    DetachCreatureVariants(nested);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether a blueprint name belongs to a cosmetic creature variant, asked of the blueprint
+        /// rather than of the name, so a future variant is covered by carrying the tag.
+        /// </summary>
+        private static bool IsCreatureVariant(string blueprint)
+        {
+            if (blueprint.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            return GameObjectFactory.Factory.Blueprints.TryGetValue(blueprint, out GameObjectBlueprint found)
+                && found.HasTag(CreatureVariantTag);
+        }
+
         private static void ApplyChipDrops()
         {
             if (Enabled(ChipDropsID, "Yes"))
