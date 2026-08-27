@@ -47,6 +47,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** An index of the official modding wiki, so I stop re-deriving what Freehold already
+  documents (#506).
+
+  Most of what this fork has learned the hard way has a page on
+  [the official wiki](https://wiki.cavesofqud.com/wiki/Modding:Overview), and I did not know those
+  pages existed. `<stag>`, load strategies, the random functions a mod is supposed to call, save
+  migration, how an option can gate whole directories of XML — all documented, and all of it found
+  by me only after the mistake.
+
+  `docs/WIKI.md` indexes all 53 pages the modding navbox carries, grouped as the wiki groups them,
+  with a line on what each settles and a table of *the question I keep asking → the page that
+  answers it*. Nothing from the wiki is copied: it is CC BY-NC-SA, and a non-commercial clause does
+  not sit comfortably beside this repository's own licences, so the file holds links, titles,
+  section names and my own descriptions.
+
+  It also records where the wiki and the assembly **disagree**, because the assembly wins and nobody
+  should have to re-derive the same correction twice. Three so far: `*delete` is not broken on
+  inherited tags, `<stag>` is a distribution route and not only a grammar one, and dynamic tables
+  come in six kinds rather than three.
+
+  Two traps are written down with it, both of which cost me a detour. The wiki returns 403 to an
+  unrecognised user agent, so the obvious fetch fails. And the rendered navbox filters to the
+  `Modding:` namespace, which hides two pages the categories genuinely contain — reading the sidebar
+  and calling it the whole list is the same mistake as reading the XML and calling it the whole
+  game.
+
 - **(internal)** The one distribution route with no check now has one: `inherits-share` (#481,
   #494).
 
