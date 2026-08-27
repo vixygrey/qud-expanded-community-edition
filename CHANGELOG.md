@@ -53,6 +53,22 @@ recorded because contributors need them, not because subscribers do.
   exactly like a working search. `docs/LESSONS.md` now carries both the corrected rule and the four
   lines of Python that read the literals properly.
 
+- **Cragwort was almost invisible**, which is why a playtest crossing several parasangs of mountains
+  never found one.
+
+  It shipped in the darkest grey Qud has, on an equally dark tile — both inherited from noisegrass
+  along with its sprite. Noisegrass grows in fungal and underground zones where that reads fine;
+  cragwort grows on open mountain surface, next to dogthorn and witchwood, which are bright green
+  and white.
+
+  The tell was in the playtest rather than any check: witchwood turned up and cragwort did not,
+  from the same table, where cragwort is the **commoner** of the two. Cragwort is now brown-olive,
+  which keeps the ochre-on-rock look and is actually visible on rock.
+
+  Ripe cragwort now changes colour properly too. It used to shift a single detail pixel and leave
+  the tile black, so a ripe plant looked like an unripe one from more than a step away — vanilla
+  always moves the whole hue when a plant ripens.
+
 - **Psionic chips could turn up as ordinary loot, which was never the intention** (#481).
 
   `Raven_Base Psionic Chip` inherits `BaseArmor`, so all 144 chips descended from it — and the
