@@ -72,6 +72,33 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `docs/STYLEGUIDE.md` §3.3 stopped saying that Qud's biome pools have no consumer,
+  and stopped miscounting how many pools do (#490, #491).
+
+  #485 corrected the claim that `DynamicObjectsTable:<Biome>_Creatures` is read by nothing. It
+  reached LESSONS, FEATURES twice and two mod files, and missed the styleguide — which is the
+  normative document, and which FEATURES §17.2 cites as its authority. So the correction pointed at
+  the page still carrying the error.
+
+  Three figures in the same two paragraphs were wrong, all of them counted the same way:
+
+  | claim | actually |
+  |---|---|
+  | "nothing consumes them" | rolled by village generation, `VillageBase.cs:167` |
+  | "only nineteen of seventy-nine are consumed anywhere" | **seventy-six of seventy-nine** — nineteen is how many appear in the game's *XML* |
+  | "191 vanilla creature blueprints" | **123**, across sixteen pools (201 tag instances) |
+
+  §3.3 now also records the two searches that made the wrong answer look proven, because both are
+  the normal way to check and neither was careless. Grepping the data cannot find a consumer that
+  builds its table name by string concatenation. And `population:findblueprint` enumerates tables
+  *already fabricated*, so running it in a session with no village in it showed no `*_Creatures`
+  table and absence read as proof — where `population:generate` names the table and fabricates it on
+  demand.
+
+  Three pools genuinely are rolled by nothing: `HumanoidCorpses`, `MeleeWeapons` and `Mushrooms`.
+  The `MeleeWeapons` one matters, because §3.3 told contributors there is no vanilla pool for melee
+  families. There is one; it is simply dormant, and might not stay that way.
+
 - **(internal)** Three script classes moved onto the `IScribed*` bases, while it was still free
   (#497).
 

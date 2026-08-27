@@ -1570,9 +1570,9 @@ change in what the world spawns.
 ## Count the consumers before you count anything else
 
 Everything above about creature spawn weights is accurate and was worth nothing, because
-`DynamicObjectsTable:<Biome>_Creatures` **does not put a creature in a zone**. 191 vanilla creature
-blueprints tag themselves into those tables. No population table references one, and no zone builder
-requires one.
+`DynamicObjectsTable:<Biome>_Creatures` **does not put a creature in a zone**. 123 vanilla creature
+blueprints tag themselves into sixteen of those tables. No population table references one, and no
+zone builder requires one.
 
 > **Corrected later, and the correction is the more useful fact.** I originally wrote that these
 > pools have *no consumer at all*, on the strength of finding nothing in `Assembly-CSharp.dll`. That
