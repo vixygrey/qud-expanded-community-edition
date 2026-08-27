@@ -708,6 +708,15 @@ rather than absolute:
 nothing. The four `MeleeWeapon` tiers still over the ceiling cannot follow until #482 gives their
 vinereapers and vibro weapons an entry.
 
+**And half is not always reachable, which the rule has to live with.** There is no partial
+exclusion: a blueprint is in every dynamic pool or none. So bringing
+`DynamicInheritsTable:BaseMissileWeapon:Tier3` under the ceiling means excluding **ten of nineteen**
+ranged weapons and choosing *which* ten — a decision about individual items that no share figure
+makes for you. `inherits-share` therefore reports and tracks rather than prescribing: its
+`KNOWN_OVER` ledger in `tools/report_dynamic_tables.py` holds the seven cells that were already over
+when it was written, each against the issue that will settle it. Like the validation baseline, it
+only shrinks, and an entry is a decision deferred rather than a rule waived.
+
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 
@@ -1178,6 +1187,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `tag-form` | `validate_mod.py` | `<tag>` vs `<stag>` against vanilla's usage of that tag name |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `scatter-share` | `validate_mod.py` | this fork's share of a vanilla table's scattered content |
+| `inherits-share` | `report_dynamic_tables.py` | this fork's share of an inherited pool, per tier (needs the game) |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |
 | `unreachable` | `validate_mod.py` | blueprint reachability |

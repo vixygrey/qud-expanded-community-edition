@@ -47,6 +47,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** The one distribution route with no check now has one: `inherits-share` (#481).
+
+  Three ways content reaches a player were guarded — weighted entries, scatter entries, and
+  `DynamicObjectsTable:` tags. The fourth was not, and it is the one nobody writes: the game builds
+  `DynamicInheritsTable:<Base>` from everything descending from a base, so a blueprint joins as a
+  consequence of `Inherits=`. No tag, no entry, nothing in a diff to review.
+
+  `report_dynamic_tables.py` already had the inheritance index and the eligibility predicate, so the
+  check lives there rather than in the validator — it needs the game for the same reason the rest of
+  that tool does. It measures each pool per tier and applies §3.2.1's ceiling where vanilla holds at
+  least five blueprints.
+
+  Seven cells are already over it, and **none can be fixed mechanically**: the lever is
+  per-blueprint and binary, so going under half means choosing *which* ten of nineteen ranged
+  weapons stop appearing in generic pools. They are recorded in a `KNOWN_OVER` ledger against the
+  issues that will settle them — #481 for three, #482 for the four whose weapons have no explicit
+  population entry to fall back on. Like the validation baseline, it only shrinks.
+
 - **(internal)** `docs/STYLEGUIDE.md` §3.2.1 now covers the third way content reaches a player, and
   says when the ceiling does not apply (#481).
 

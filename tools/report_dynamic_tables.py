@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -36,6 +37,38 @@ from check_vanilla_drift import BlueprintIndex, find_game, load_all
 
 MOD_DIR = Path("mod")
 TAG_PREFIX = "DynamicObjectsTable:"
+INHERITS_PREFIX = "DynamicInheritsTable:"
+
+# docs/STYLEGUIDE.md 3.2.1. Half is the same chosen ceiling the other two share checks use; the
+# floor is on VANILLA's count, because the ceiling protects vanilla's presence and there is nothing
+# to protect where vanilla ships nothing. No cell currently sits between four and six, so the exact
+# number is not load-bearing.
+# Declared rather than only interpolated, so check_docs.py can find it: docs/STYLEGUIDE.md 10.1
+# must list every check name a tool emits, and this tool reports without a Findings object.
+CHECK_NAME = "inherits-share"
+
+CEILING_PERCENT = 50
+VANILLA_FLOOR = 5
+
+# Cells already over the ceiling when this check was written, with the issue tracking each. A
+# ledger like tools/validation-baseline.json: it only shrinks, and an entry is a decision deferred
+# rather than a rule waived.
+#
+# None of these can be fixed mechanically. The lever is per-blueprint and binary - a blueprint is
+# in every dynamic pool or none - so there is no weight to lower, and getting under half means
+# choosing WHICH ten of nineteen ranged weapons stop appearing in generic pools. That is a content
+# decision about individual items, and #481 does not answer it.
+KNOWN_OVER: dict[tuple[str, str], int] = {
+    ("BaseMissileWeapon", "3"): 481,
+    ("MissileWeapon", "3"): 481,
+    ("MeleeWeapon", "1"): 481,
+    # These four also wait on #482: their vinereapers and vibro weapons have no explicit
+    # population entry, so excluding them would delete them rather than reweight them.
+    ("MeleeWeapon", "5"): 482,
+    ("MeleeWeapon", "6"): 482,
+    ("MeleeWeapon", "7"): 482,
+    ("MeleeWeapon", "8"): 482,
+}
 SNAPSHOT_PATH = Path("tools/dynamic-pools.json")
 
 
@@ -108,6 +141,83 @@ def declarer(index: BlueprintIndex, name: str, tag: str) -> str | None:
                     return None
                 return obj.get("Name")
     return None
+
+
+def consumed_inherits_pools(game: Path) -> set[str]:
+    """The `DynamicInheritsTable:<Base>` pools vanilla actually draws from.
+
+    Read out of the population tables with comments stripped, because vanilla keeps a commented-out
+    `DynamicInheritsTable:BaseAnimal:Tier2` that would otherwise look live. A pool nothing draws
+    from cannot put anything in front of a player, so measuring this fork's share of it would be
+    arithmetic about nothing.
+    """
+    pools: set[str] = set()
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        text = re.sub(
+            r"<!--.*?-->",
+            "",
+            f.read_text(encoding="utf-8-sig", errors="replace"),
+            flags=re.DOTALL,
+        )
+        pools.update(re.findall(rf"{INHERITS_PREFIX}([A-Za-z_]+)", text))
+    return pools
+
+
+def inherits_cells(
+    index: BlueprintIndex, pools: set[str], new_names: set[str]
+) -> dict[tuple[str, str], list[int]]:
+    """This fork's and vanilla's eligible blueprint counts, per (pool, tier).
+
+    Membership here is not declared anywhere: the game fabricates the pool from everything
+    descending from a base, so a blueprint joins as a consequence of `Inherits=`. That is why this
+    is counted rather than read - there is no tag to look up and nothing in a diff to review.
+
+    Tier comes from the nearest `Tier` tag on the chain, the same resolution the game uses to build
+    the `:Tier{n}` slices these pools are always consumed as. A blueprint with no resolvable tier
+    reaches no slice and is skipped.
+    """
+    cells: dict[tuple[str, str], list[int]] = {}
+    for name in sorted(index.objects):
+        if not eligible(index, name):
+            continue
+        tier = index.tag_value(name, "Tier")
+        if tier is None:
+            continue
+        ancestors = {obj.get("Name") for obj in index.chain(name)[1:]}
+        for pool in ancestors & pools:
+            cell = cells.setdefault((pool, tier), [0, 0])
+            cell[0 if name in new_names else 1] += 1
+    return cells
+
+
+def inherits_violations(
+    cells: dict[tuple[str, str], list[int]],
+) -> tuple[list[str], list[str]]:
+    """Cells over the ceiling, split into new ones and the ones KNOWN_OVER already tracks.
+
+    Returns (new, known). Only the first fails a run - the second is reported under `--all`, the
+    same bargain tools/validation-baseline.json makes: debt that is catalogued does not block, and
+    debt that is not is a defect.
+    """
+    new: list[str] = []
+    known: list[str] = []
+    for (pool, tier), (mine, vanilla) in sorted(cells.items()):
+        if vanilla < VANILLA_FLOOR:
+            continue
+        total = mine + vanilla
+        if not total or mine / total * 100 <= CEILING_PERCENT:
+            continue
+        line = (
+            f"[{CHECK_NAME}] {INHERITS_PREFIX}{pool}:Tier{tier} is "
+            f"{mine / total * 100:.0f}% this fork's ({mine} against vanilla's {vanilla}) - "
+            "the ceiling is half"
+        )
+        issue = KNOWN_OVER.get((pool, tier))
+        if issue:
+            known.append(f"{line} [#{issue}]")
+        else:
+            new.append(line)
+    return new, known
 
 
 def collect(
@@ -222,6 +332,45 @@ def report(tables: dict[str, dict]) -> None:
     print("^ inherits the tag from a base this mod wrote; ~ inherits it from vanilla.")
 
 
+def report_inherits(
+    cells: dict[tuple[str, str], list[int]],
+    breaches: list[str],
+    known_over: list[str],
+    show_known: bool,
+) -> None:
+    """The inherited-membership side, which no tag and no table entry records.
+
+    Printed even when nothing is over the ceiling, because the interesting number here is usually
+    the one just under it - and because a section that only appears on failure teaches nobody what
+    it is measuring.
+    """
+    graded = [
+        (mine / (mine + vanilla) * 100, pool, tier, mine, vanilla)
+        for (pool, tier), (mine, vanilla) in cells.items()
+        if mine and vanilla >= VANILLA_FLOOR
+    ]
+    print(
+        f"\nInherited pool membership - {len(cells)} pool tier(s), "
+        f"{len(graded)} with content from this fork and a vanilla presence to measure against"
+    )
+    if not graded:
+        return
+    for share, pool, tier, mine, vanilla in sorted(graded, reverse=True)[:12]:
+        flag = "  OVER" if share > CEILING_PERCENT else ""
+        print(
+            f"  {pool + ':Tier' + tier:34} {mine:4} / {mine + vanilla:4} = {share:5.1f}%{flag}"
+        )
+    if breaches:
+        print(f"\n  {len(breaches)} newly over the ceiling. docs/STYLEGUIDE.md 3.2.1.")
+    if known_over:
+        print(
+            f"  {len(known_over)} tracked in KNOWN_OVER" + (":" if show_known else ".")
+        )
+        if show_known:
+            for line in known_over:
+                print(f"    {line}")
+
+
 def snapshot_of(tables: dict[str, dict]) -> dict[str, dict[str, list[str]]]:
     """The comparable part of a report: which of this mod's blueprints each pool reaches.
 
@@ -265,6 +414,11 @@ def main() -> int:
         "--require",
         action="store_true",
         help="fail instead of skipping when the game is missing",
+    )
+    ap.add_argument(
+        "--all",
+        action="store_true",
+        help="list the inherited pool tiers KNOWN_OVER already tracks",
     )
     ap.add_argument(
         "--snapshot",
@@ -324,6 +478,8 @@ def main() -> int:
 
     index = BlueprintIndex(merged_objects(van_roots, mod_roots))
     tables = collect(index, new_names, mod_declared)
+    cells = inherits_cells(index, consumed_inherits_pools(game), new_names)
+    breaches, known_over = inherits_violations(cells)
 
     if args.snapshot:
         SNAPSHOT_PATH.write_text(
@@ -358,14 +514,33 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
+        if breaches:
+            print(
+                f"FAIL - {len(breaches)} inherited pool tier(s) newly over the ceiling:",
+                file=sys.stderr,
+            )
+            for line in breaches:
+                print(f"  {line}", file=sys.stderr)
+            print(
+                "\nNothing declares this membership - a blueprint joins by what it Inherits, so "
+                "there is no entry to reweight.\nThe only lever is "
+                '<tag Name="ExcludeFromDynamicEncounters" />, which removes a blueprint from every '
+                "dynamic\npool at once - so it is usable only on content that already has an "
+                "explicit population entry.\ndocs/STYLEGUIDE.md 3.2.1.",
+                file=sys.stderr,
+            )
+            return 1
         pools = len(snapshot_of(tables))
+        tracked = f", {len(known_over)} tracked in KNOWN_OVER" if known_over else ""
         print(
-            f"OK - dynamic pool membership matches {SNAPSHOT_PATH} across {pools} pool(s)"
+            f"OK - dynamic pool membership matches {SNAPSHOT_PATH} across {pools} pool(s); "
+            f"no new inherited pool tier over the ceiling{tracked}"
         )
         return 0
 
     print(f"{len(new_names)} blueprint(s) introduced by this mod\n")
     report(tables)
+    report_inherits(cells, breaches, known_over, args.all)
     return 0
 
 
