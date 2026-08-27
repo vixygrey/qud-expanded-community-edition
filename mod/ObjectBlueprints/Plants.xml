@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <!-- Harvestable plants (#177).
+
+       Vanilla's overworld is thin here: resolving every biome's population tables transitively,
+       no biome reaches more than three harvestable plants and most reach one or two, with
+       Starapple Tree in nearly all of them. These three fill the biomes whose cooking-ingredient
+       vocabulary is thinnest - Mountains and Saltmarsh at three entries, BananaGrove at one.
+
+       Everything here is data. The chain is plant -> Harvestable -> yield -> PreservableItem ->
+       preserved ingredient -> PreparedCookingIngredient, and every link is a vanilla part with
+       vanilla attributes. No scripting, so no rule 5 budget spent.
+
+       StartRipeChance is derived rather than chosen. The number that matters is how many ripe
+       plants a zone actually holds, which is Chance x Number / StartRipeChance across the entry
+       in mod/PopulationTables.xml. Vanilla's band runs 0.07 (witchwood tree) to 8.1 (watervine),
+       and it is dense between 0.6 and 1.0 - dreadroot 0.84, banana tree 0.81, urberry 1.04 - with
+       only the cheapest staples climbing above 3. These three land at 0.72, 1.50 and 0.88, and the
+       one highest is brinereed, whose yield is also the cheapest of the three at 2.
+
+       All three inputs live in two files, so changing any one of them moves a figure this comment
+       states. Recompute it rather than adjusting a Number in isolation.
+
+       Tiles are vanilla's, recoloured. That is the same route the creature variants took in #171,
+       and it is why these cost no art: new sprites are parked, and the reasons are in the
+       design notes rather than cheap to revisit. -->
+
+  <!-- Mountains: scrub clinging to rock, ochre against grey. -->
+  <object Name="Vixy_Cragwort" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="cragwort"
+      RenderString="157"
+      ColorString="&amp;K"
+      DetailColor="w"
+      Occluding="false"
+      Tile="Terrain/sw_noise_grass_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_noise_grass_1.bmp,Terrain/sw_noise_grass_2.bmp,Terrain/sw_noise_grass_3.bmp,Terrain/sw_noise_grass_4.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Cragwort Sprig"
+      StartRipeChance="1:10"
+      RipeColor="&amp;W"
+      RipeTileColor="&amp;K"
+      RipeDetailColor="W"
+      UnripeColor="&amp;K"
+      UnripeTileColor="&amp;K"
+      UnripeDetailColor="y"
+    />
+    <part
+      Name="Description"
+      Short="It takes the mountain at its word and grows anyway, prising a living out of a seam too narrow to name. The sprigs come away bitter and smelling of cold stone."
+    />
+  </object>
+
+  <!-- Saltmarsh: brackish reed, green stem going salt-white at the tip. -->
+  <object Name="Vixy_Brinereed" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="brinereed"
+      RenderString="245"
+      ColorString="&amp;g"
+      DetailColor="W"
+      Occluding="false"
+      Tile="Terrain/sw_wheat_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_wheat_1.bmp,Terrain/sw_wheat_2.bmp,Terrain/sw_wheat_3.bmp,Terrain/sw_wheat_4.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Brinereed Shoot"
+      StartRipeChance="1:20"
+      RipeColor="&amp;W"
+      RipeTileColor="&amp;g"
+      RipeDetailColor="W"
+      UnripeColor="&amp;g"
+      UnripeTileColor="&amp;g"
+      UnripeDetailColor="k"
+    />
+    <part
+      Name="Description"
+      Short="Salt creeps up the stem and stops, a tidemark drawn each night and redrawn each morning. The shoots below it stay sweet; the ones above crust over and snap."
+    />
+  </object>
+
+  <!-- BananaGrove: broad understory leaf, bright green going yellow. -->
+  <object Name="Vixy_Sweetfrond" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="sweetfrond"
+      RenderString="005"
+      ColorString="&amp;G"
+      TileColor="&amp;G"
+      DetailColor="W"
+      Occluding="false"
+      Tile="Terrain/sw_urberry_bush_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_urberry_bush_1.bmp,Terrain/sw_urberry_bush_2.bmp,Terrain/sw_urberry_bush_3.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Sweetfrond Heart"
+      StartRipeChance="1:8"
+      RipeColor="&amp;W"
+      RipeTileColor="&amp;G"
+      RipeDetailColor="W"
+      UnripeColor="&amp;G"
+      UnripeTileColor="&amp;G"
+      UnripeDetailColor="g"
+    />
+    <part
+      Name="Description"
+      Short="It grows in the shade the banana trees cast and asks nothing else of them. Split a frond lengthwise and the heart is pale, dense and faintly sweet, like something kept back for later."
+    />
+  </object>
+</objects>

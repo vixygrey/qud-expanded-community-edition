@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **444** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **453** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **70** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **73** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -565,9 +565,10 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 46 | 1 |
-| `Food.xml` | 0 | 2 |
+| `Food.xml` | 6 | 2 |
+| `Plants.xml` | 3 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **444 active** | **211** |
+| **Total** | **453 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1802,7 +1803,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-92 table definitions: **70 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+95 table definitions: **73 merged** into vanilla, **22 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2085,7 +2086,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── Naming.xml                  # widened Qudish pools + 2 new namestyles (§15)
 ├── EmbarkModules.xml           # declares the name-flavour chargen module (§15.5)
 ├── Genders.xml                 # 8 new genders + 1 unhidden (§16)
-├── PopulationTables.xml        # 92 tables (70 merge / 22 new)
+├── PopulationTables.xml        # 95 tables (73 merge / 22 new)
 ├── Joppa.rpm                   # 76-cell amenity building
 ├── manifest.json               # id, version, author — the credit field is enforced
 ├── workshop.json               # Steam metadata + description
@@ -2744,6 +2745,114 @@ quietly empty three weapon families out of the loot tables.
 
 The first attempt gated this with `ExcludeFromDynamicEncountersOption`, which costs no C# at all —
 but that tag is read only by the dynamic table fabricators, so on this route it gated nothing.
+
+## 18. Harvestable plants (`ObjectBlueprints/Plants.xml`)
+
+**Three harvestable plants, one each for Mountains, Saltmarsh and BananaGrove** (#177), with a
+yield and a preserved cooking ingredient apiece. Everything here is data — no scripting, so no
+charter rule 5 budget spent.
+
+### 18.1 How thin vanilla actually is
+
+Resolving every biome's population tables transitively — following `<table>` references as well as
+`<object>` entries — no biome in the game reaches more than three harvestable plants:
+
+| Harvestables reachable | Biomes |
+|---:|---|
+| 0 | RainbowWood, SaltDesert, SecretRuins |
+| 1 | BananaGrove, Jungle, Ruins, LakeHinnom, PalladiumReef, Golgotha, GritGate |
+| 2 | Hills, Mountains, DesertCanyon, DeepJungle, BaroqueRuins, Rivers, MoonStair |
+| 3 | Saltmarsh — the richest biome in the game |
+
+`Starapple Tree` appears in nearly all of them, so the real variety is closer to **one distinctive
+plant per biome**. The cooking-ingredient pools tell the same story from the other end:
+`BananaGrove_Ingredients` holds one entry and `Mountains_Ingredients` three.
+
+The three biomes chosen here are the thinnest of those with unambiguous theming.
+
+### 18.2 The chain, and that all of it is data
+
+```
+plant (Harvestable) ──▶ yield (Snack) ──PreservableItem──▶ ingredient (PreparedCookingIngredient)
+```
+
+`Harvestable` is an attribute-only part — `OnSuccess`, `OnSuccessAmount`, `StartRipeChance`,
+`DestroyOnHarvest`, and the ripe/unripe colour and tile fields. Every link is a vanilla part used
+the way vanilla uses it.
+
+**No new cooking effect is introduced.** `regenLowtier`, `plantMinor` and `starch` are all carried
+by vanilla plants today, so the cooking system gains ingredients rather than behaviour. That was the
+point of starting here: a new reagent with no consumer is inventory clutter.
+
+Tiles are vanilla's, recoloured — the same route the creature variants took in §17, and the reason
+these cost no art.
+
+### 18.3 Ripeness is derived, not chosen
+
+The number that matters is not `StartRipeChance` on its own but **how many ripe plants a zone
+actually holds**, which is `Chance × Number ÷ StartRipeChance` across the population entry. Vanilla's
+band runs 0.07 (witchwood tree) to 8.1 (watervine), and it is dense between 0.6 and 1.0:
+
+| vanilla plant | ripe per zone | | this fork | ripe per zone |
+|---|---:|---|---|---:|
+| watervine | 8.10 | | brinereed | 1.50 |
+| yuckwheat | 6.67 | | sweetfrond | 0.88 |
+| noisegrass | 3.20 | | cragwort | 0.72 |
+| urberry bush | 1.04 | | | |
+| dreadroot | 0.84 | | | |
+| banana tree | 0.81 | | | |
+| witchwood tree | 0.07 | | | |
+
+All three land in the dense part of vanilla's band, and the highest is brinereed — whose yield is
+also the cheapest of the three. Cheap staples sitting commoner than valuable ones is vanilla's own
+shape.
+
+**Three files hold the inputs**, so changing a `Number` in `PopulationTables.xml` without
+recomputing against `StartRipeChance` moves a figure this section states. Nothing checks it.
+
+### 18.4 Prices are anchored to a neighbour, not to the value curve
+
+The value curve does not describe food, and **`item-curve` now exempts it** — of vanilla's 32
+edibles carrying both a `Tier` tag and a price, none sits on the curve, at ratios from 0.006 to
+6.25. `docs/STYLEGUIDE.md` §3.2 carries the reasoning and the measurement.
+
+So each price is anchored to a named vanilla neighbour instead:
+
+| item | value | anchored to |
+|---|---:|---|
+| cragwort sprig | 4 | witchwood bark, 4 — also a mountain harvest |
+| dried cragwort | 4 | freeze-dried hoarshrooms and pickled mushrooms, both 4 |
+| brinereed shoot | 2 | dried lah petals and pickles, both 2 |
+| salted brinereed | 2 | pickles, 2 |
+| sweetfrond heart | 8 | the banana, 8 — from the same grove |
+| candied sweetfrond | 8 | sun-dried banana, 8 — likewise |
+
+### 18.5 The catalogue
+
+| plant | biome | yield | preserved into | cooking effect |
+|---|---|---|---|---|
+| cragwort | Mountains | cragwort sprig | dried cragwort | `regenLowtier` |
+| brinereed | Saltmarsh | brinereed shoot | salted brinereed | `plantMinor` |
+| sweetfrond | BananaGrove | sweetfrond heart | candied sweetfrond | `starch` |
+
+### 18.6 The ingredient pools have no consumer either
+
+`DynamicObjectsTable:<Biome>_Ingredients` looks like the obvious way to distribute a preserved
+ingredient — 73 vanilla blueprints tag themselves into twelve of these pools. **Nothing rolls any of
+them.** The only dynamic pools `PopulationTables.xml` ever references are `Ammo`, `AnimatableFurniture`,
+`Baboons`, `Chests`, `Corpses`, `EnergyCells`, `Goatfolk`, `Grenades`, `Guns`, `Headwear`, `Items`,
+`Naphtaali`, `SecurityCards`, `Snapjaws`, `TechTurrets`, `Tonics_NonRare`, `TradeGoods` and
+`Trinkets` — all flat, none biome-keyed. The string `_Ingredients` does not appear in
+`Assembly-CSharp.dll` at all.
+
+This is `<Biome>_Creatures` from §17.2 a second time, in a different category, and it was caught the
+same way: by looking for the other end before writing anything.
+
+**The six new food objects do sit in `DynamicObjectsTable:Items`**, which *is* consumed. That comes
+from vanilla's `Item` base by inheritance, and every vanilla food is in it on the same route —
+`Bundle of Noisegrass`, `Vinewafer Sheaf` and `Urberry` included. It is recorded in
+`tools/dynamic-pools.json` rather than stripped with `*delete`, because matching vanilla is the
+correct behaviour here rather than something to tidy away.
 
 ## Appendix A — every merged vanilla melee weapon
 

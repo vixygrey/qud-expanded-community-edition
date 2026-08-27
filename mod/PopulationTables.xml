@@ -1380,4 +1380,27 @@
     <!-- Bear 95/1 - Number is already 1, so the chance halves instead -->
     <object Chance="50" Number="1" Blueprint="Vixy_BlackBear" />
   </population>
+
+  <!-- Harvestable plants (#177). One entry per biome, merged into the table the zone template
+       actually draws from - the same route the creature variants take above, and the one #171
+       established after the dynamic-tag route turned out to have no consumer.
+
+       Chance x Number against each plant's StartRipeChance is what decides how many ripe plants a
+       zone holds; the derivation and the resulting figures are in mod/ObjectBlueprints/Plants.xml.
+       Do not change a Number here without recomputing it there.
+
+       Share stays small on purpose: one entry against vanilla's 4 in Mountains, 9 in Saltmarsh and
+       6 in BananaGrove. -->
+
+  <population Name="MountainsZoneGlobals" Load="Merge">
+    <object Chance="40" Number="12-24" Blueprint="Vixy_Cragwort" />
+  </population>
+
+  <population Name="SaltMarshZoneGlobals" Load="Merge">
+    <object Chance="60" Number="40-60" Blueprint="Vixy_Brinereed" />
+  </population>
+
+  <population Name="BananaGroveZoneGlobals" Load="Merge">
+    <object Chance="50" Number="10-18" Blueprint="Vixy_Sweetfrond" />
+  </population>
 </populations>
