@@ -391,6 +391,59 @@ IDLE_PHRASINGS: dict[str, str] = {
 
 
 # Each pattern's capture groups map, in order, to the facts they must equal.
+# What the Steam Workshop description claims, kept apart from CLAIMS for the same reason
+# WIKI_CLAIMS is: it is read against a different file. This one is not Markdown either - the text
+# lives inside a JSON string, so it is decoded before matching rather than pattern-matched against
+# the escaped source.
+#
+# It is the least defended text in the project and among the most read (#459).
+# `check_workshop_description` in validate_mod.py has always measured the Description's *length*
+# against Steam's limit and never its contents, so "Twelve settings in Qud's own options menu"
+# survived six new options across two releases. A wrong figure here reaches someone deciding whether
+# to subscribe, and it cannot be quietly corrected afterwards - it ships with a release.
+#
+# Deliberately absent: whether the options *list* is complete. The bullets are prose rather than IDs
+# and no honest pattern matches them. The count is what prompts a human to reread the list, which is
+# exactly how the six missing ones were found.
+WORKSHOP_CLAIMS: list[tuple[str, list[str]]] = [
+    (r"\[b\](\w+) settings in Qud's own options menu", ["options"]),
+    (r"(\d+) subtypes, casters and martial guardians", ["subtypes"]),
+    (r"\[b\](\d+) psionic chips\[/b\]", ["chips"]),
+    (r"(\d+) psionic subtype sprites", ["subtype-sprites"]),
+]
+
+
+WORKSHOP = MOD / "workshop.json"
+
+
+def workshop_description() -> str:
+    """The Steam description as a player reads it, decoded out of the JSON string.
+
+    Empty when the file is missing or malformed: `check_json` in the pre-commit hook owns the
+    malformed case, and reporting it twice in different words helps nobody.
+    """
+    if not WORKSHOP.is_file():
+        return ""
+    try:
+        data = json.loads(WORKSHOP.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return ""
+    return data.get("Description", "")
+
+
+def claim_text(doc: Path) -> str:
+    """The text a claim pattern is matched against.
+
+    Every source is read through here so `check_workshop_counts` and `check_claim_coverage` see the
+    *same* string. Matching the raw JSON in one and the decoded description in the other would work
+    today and rot the first time a claim landed either side of a newline - `\n` in the source, a
+    real break in the description.
+    """
+    if doc == WORKSHOP:
+        return workshop_description()
+    return doc.read_text(encoding="utf-8")
+
+
 CLAIMS: list[tuple[str, list[str]]] = [
     # Required checks. Written as words in every document that carries them, so the patterns
     # capture \w+ and WORD_NUMBERS resolves it. This claim was wrong for an unknown length of
@@ -615,6 +668,95 @@ def check_wiki_counts(wiki: Path, f: Findings, known: dict[str, int]) -> int:
     return checked
 
 
+def check_workshop_counts(f: Findings, known: dict[str, int]) -> int:
+    """Recount the Workshop description's figures from `mod/`.
+
+    Same machinery as `check_counts`, pointed at the one file it never read. Returns how many
+    figures were verified, so a silently-dead pattern shows up as a falling total rather than as
+    nothing at all.
+    """
+    text = claim_text(WORKSHOP)
+    if not text:
+        return 0
+    checked = 0
+    for pattern, names in WORKSHOP_CLAIMS:
+        for m in re.finditer(wrapped(pattern), text):
+            for group, name in enumerate(names, start=1):
+                raw = m.group(group)
+                if raw.isdigit():
+                    claimed = int(raw)
+                elif raw.lower() in WORD_NUMBERS:
+                    claimed = WORD_NUMBERS[raw.lower()]
+                else:
+                    f.add(
+                        "workshop-figure",
+                        f"workshop.json: {raw!r} is not a number this script knows - add it to "
+                        f"WORD_NUMBERS rather than leaving the claim unchecked",
+                    )
+                    continue
+                checked += 1
+                if name not in known:
+                    f.add(
+                        "workshop-figure",
+                        f"workshop.json: pattern names unknown fact {name!r}",
+                    )
+                elif claimed != known[name]:
+                    f.add(
+                        "workshop-figure",
+                        f"workshop.json says {name} is {claimed}; the mod says {known[name]} "
+                        f"- this is the text on the Workshop page, so it ships with the release "
+                        f"and cannot be corrected quietly afterwards",
+                    )
+    return checked
+
+
+def check_workshop_version(f: Findings) -> None:
+    """The description's version must be the version being shipped.
+
+    Two places go stale at the same moment `manifest.json` bumps, and neither is a figure any
+    recount reaches: the `New in X.Y.Z` heading and the version under `Version and saves`. This is
+    the coupling `check_version_matches_changelog` already holds for the changelog, one file
+    further out.
+
+    Both patterns are anchored on their surrounding markup rather than matching a bare version
+    number, because the description legitimately cites *older* releases - "It shipped in 2.3.0 with
+    a bleed that could never fire" is history and must not be dragged forward.
+    """
+    text = claim_text(WORKSHOP)
+    manifest = MOD / "manifest.json"
+    if not text or not manifest.is_file():
+        return
+    try:
+        version = json.loads(manifest.read_text(encoding="utf-8-sig")).get("version")
+    except json.JSONDecodeError:
+        return  # check_json owns this
+    if not version:
+        return
+
+    sites = [
+        (r"\[h1\]New in (\d+\.\d+\.\d+)\[/h1\]", "the 'New in' heading"),
+        (
+            r"\[h1\]Version and saves\[/h1\]\s*\[b\](\d+\.\d+\.\d+)\.\[/b\]",
+            "the version under 'Version and saves'",
+        ),
+    ]
+    for pattern, where in sites:
+        found = re.findall(pattern, text)
+        if not found:
+            f.add(
+                "workshop-version",
+                f"workshop.json: {where} is missing or reworded, so nothing checks it against "
+                f"manifest.json - restore the phrasing or update the pattern",
+            )
+            continue
+        for claimed in found:
+            if claimed != version:
+                f.add(
+                    "workshop-version",
+                    f"workshop.json: {where} says {claimed}; manifest.json ships {version}",
+                )
+
+
 def check_claim_coverage(f: Findings, wiki: Path | None = None) -> None:
     """Every claim pattern must match something, or say why it does not.
 
@@ -638,6 +780,7 @@ def check_claim_coverage(f: Findings, wiki: Path | None = None) -> None:
     tables = [
         ("CLAIMS", CLAIMS, counted),
         ("VANILLA_CLAIMS", VANILLA_CLAIMS, everywhere),
+        ("WORKSHOP_CLAIMS", WORKSHOP_CLAIMS, [WORKSHOP] if WORKSHOP.is_file() else []),
     ]
     # WIKI_CLAIMS is only checkable when there is a wiki to check it against. Including it on an
     # ordinary run would report all ten as dead - the false failure #427 flagged before any of this
@@ -647,7 +790,7 @@ def check_claim_coverage(f: Findings, wiki: Path | None = None) -> None:
 
     for label, patterns, sources in tables:
         for pattern, _ in patterns:
-            if any(re.search(wrapped(pattern), doc.read_text()) for doc in sources):
+            if any(re.search(wrapped(pattern), claim_text(doc)) for doc in sources):
                 continue
             reason = IDLE_PHRASINGS.get(pattern)
             if reason:
@@ -664,6 +807,7 @@ def check_claim_coverage(f: Findings, wiki: Path | None = None) -> None:
             {p for p, _ in CLAIMS}
             | {p for p, _ in VANILLA_CLAIMS}
             | {p for p, _ in WIKI_CLAIMS}
+            | {p for p, _ in WORKSHOP_CLAIMS}
         )
         if pattern in registered:
             continue
@@ -1459,6 +1603,8 @@ def main() -> int:
     f = Findings()
     known = facts()
     checked = check_counts(f, known)
+    workshop = check_workshop_counts(f, known)
+    check_workshop_version(f)
     from_game = check_vanilla_figures(f)
     check_claim_coverage(f)
     appendix = check_appendix_b(f)
@@ -1485,6 +1631,7 @@ def main() -> int:
 
     print(
         f"OK - {checked} documented figure(s) match the mod, {from_game} match the game, "
+        f"{workshop} Workshop description figure(s) match the mod, "
         f"{appendix} chip row(s) and {items} item-table figure(s) match their blueprints; "
         f"links, sections, check names and preserved documents all clean; "
         f"{markers} tracked file(s) carry no conflict markers"
