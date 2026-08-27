@@ -265,7 +265,7 @@ Turning it off means removing a genotype from the chargen list. Unproven.
 Interface is on base `Humanoid`, so every genotype has a slot. That is coherent and probably
 desirable: the chip system is the mod's best idea and does not depend on the genotype existing.
 
-The 18 subtypes and their `StartingGear_*` tables become dead data. Harmless.
+The 18 subtypes and their `Vixy_StartingGear_*` tables become dead data. Harmless.
 
 ### 4.4 Starting reputation — `Checkbox`
 

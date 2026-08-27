@@ -1359,6 +1359,62 @@ class MapId(unittest.TestCase):
         self.assertEqual(len(self.maps('<Map ID="" Load="Merge"><cell /></Map>')), 1)
 
 
+class SubtypeGear(unittest.TestCase):
+    """#499. QudSubtypeModule rolls a subtype's Gear table once at character creation; a name that
+    resolves to nothing logs 'Unknown gear population table' and hands out no kit. Loud, but at
+    someone else's character creation rather than at commit time."""
+
+    def gear(self, subtypes: str, tables: str) -> list[str]:
+        tmp = Path(tempfile.mkdtemp())
+        core = tmp / "mod" / "Core"
+        core.mkdir(parents=True)
+        (core / "Subtypes.xml").write_text(
+            f"<subtypes>{subtypes}</subtypes>", encoding="utf-8"
+        )
+        (core / "PopulationTables.xml").write_text(
+            f"<populations>{tables}</populations>", encoding="utf-8"
+        )
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_subtype_gear(f)
+            return [detail for _, detail in f.items]
+
+    TABLE: ClassVar = (
+        '<population Name="Vixy_StartingGear_A"><object Blueprint="X" /></population>'
+    )
+
+    def test_a_gear_table_that_exists_is_accepted(self) -> None:
+        self.assertEqual(
+            self.gear('<subtype Name="S" Gear="Vixy_StartingGear_A" />', self.TABLE), []
+        )
+
+    def test_a_gear_table_that_does_not_exist_is_reported(self) -> None:
+        found = self.gear(
+            '<subtype Name="S" Gear="Vixy_StartingGear_Typo" />', self.TABLE
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("Unknown gear population table", found[0])
+
+    def test_a_vanilla_name_is_left_alone(self) -> None:
+        """StartingGear_Common is vanilla's, and nothing in the repository lists vanilla's tables -
+        verifying one would need the game, so an unprefixed name is out of scope rather than wrong."""
+        self.assertEqual(
+            self.gear('<subtype Name="S" Gear="StartingGear_Common" />', self.TABLE), []
+        )
+
+    def test_a_comma_separated_list_is_checked_entry_by_entry(self) -> None:
+        """Gear is split on commas by the game, so one bad name among several must still report."""
+        found = self.gear(
+            '<subtype Name="S" Gear="Vixy_StartingGear_A,Vixy_StartingGear_Missing" />',
+            self.TABLE,
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("Vixy_StartingGear_Missing", found[0])
+
+    def test_a_subtype_with_no_gear_is_fine(self) -> None:
+        self.assertEqual(self.gear('<subtype Name="S" />', self.TABLE), [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

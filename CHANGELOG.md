@@ -85,6 +85,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** The 18 subtype gear tables carry this fork's prefix (#499).
+
+  `StartingGear_Force Psionic` and its seventeen siblings sat in vanilla's namespace. A population
+  table name is a lookup key, and the Compatibility page lists it among the identifiers a mod must
+  prefix — vanilla ships 25 `StartingGear_*` tables of its own, and following that naming meant
+  sitting inside it.
+
+  Safe to rename, which was the open question when this was filed. `QudSubtypeModule` reads a
+  subtype's `Gear` once, on `BOOTEVENT_BOOTPLAYEROBJECT`, rolls the table and adds the resulting
+  blueprints to the new character. **The table name is never written to a save**, and `SubtypeEntry`
+  is rebuilt from XML every boot, so §1.1's frozen-identifier rule does not reach it.
+
+  Two things follow from the prefix. `validate_mod.py` loses its `NEW_TABLE_PREFIXES` exemption,
+  which existed only so these unprefixed tables would not read as replacing vanilla records — with
+  the prefix, a bare `StartingGear_*` in this mod is now correctly a `merge-discipline` finding.
+  And the new `subtype-gear` check verifies each subtype's `Gear` names a table this fork defines,
+  which nothing did before: a typo would have surfaced as `Unknown gear population table` at
+  someone else's character creation, from two files eighteen names apart.
+
+  `StartingGear_Common` stays bare throughout. It is vanilla's, every subtype here draws from it,
+  and the check leaves unprefixed names alone because nothing in the repository lists vanilla's
+  tables — verifying one would need the game.
+
 - **(internal)** `mod/` is laid out for conditional loading, and the Joppa removal system is gone
   (#498).
 
