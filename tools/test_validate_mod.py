@@ -2004,6 +2004,86 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    # -------------------------------------------------------------------- tinker-only
+
+    TINKERABLE = (
+        '  <object Name="Raven_Vibro Katana">\n'
+        '    <part Name="TinkerItem" Bits="0015" />\n  </object>'
+    )
+
+    def _tinker_only(self, blueprints: str, tables: str = ""):
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints, tables=tables or '  <population Name="X" />')
+        return findings_for(validate_mod.check_tinker_only, tmp)
+
+    def test_a_tinkerable_blueprint_with_no_entry_is_reported(self) -> None:
+        """#527: the seventeen melee weapons. Reachable, because `TinkerItem` is a route - but a
+        route a player walks, not a rate at which the thing appears."""
+        items = self._tinker_only(self.TINKERABLE)
+        self.assertTrue(items, "a tinker-only blueprint was not reported")
+        self.assertEqual(items[0][0], "tinker-only")
+        self.assertIn("Raven_Vibro Katana", items[0][1])
+
+    def test_a_population_entry_settles_it(self) -> None:
+        self.assertEqual(
+            self._tinker_only(
+                self.TINKERABLE,
+                tables='  <population Name="Artifact 5R" Load="Merge">\n'
+                '    <object Weight="10" Blueprint="Raven_Vibro Katana" />\n'
+                "  </population>",
+            ),
+            [],
+        )
+
+    def test_a_dynamic_table_tag_settles_it(self) -> None:
+        """The route the creature variants use - self-registration, no table entry anywhere."""
+        self.assertEqual(
+            self._tinker_only(
+                '  <object Name="Raven_Vibro Katana">\n'
+                '    <part Name="TinkerItem" Bits="0015" />\n'
+                '    <tag Name="DynamicObjectsTable:Weapons" />\n  </object>'
+            ),
+            [],
+        )
+
+    def test_a_weight_tag_is_not_a_route(self) -> None:
+        """`:Weight` modifies an entry rather than creating one, so it settles nothing."""
+        self.assertTrue(
+            self._tinker_only(
+                '  <object Name="Raven_Vibro Katana">\n'
+                '    <part Name="TinkerItem" Bits="0015" />\n'
+                '    <tag Name="DynamicInheritsTable:MeleeWeapon:Tier5:Weight" Value="0.1" />\n'
+                "  </object>"
+            )
+        )
+
+    def test_a_deleted_tag_is_not_a_route(self) -> None:
+        """A `*delete` is a declaration that the tag does NOT apply - 72 of the creature variants
+        carry one precisely to stay OUT of a table."""
+        self.assertTrue(
+            self._tinker_only(
+                '  <object Name="Raven_Vibro Katana">\n'
+                '    <part Name="TinkerItem" Bits="0015" />\n'
+                '    <tag Name="DynamicObjectsTable:Weapons" Value="*delete" />\n  </object>'
+            )
+        )
+
+    def test_a_blueprint_without_tinkeritem_is_left_to_reachability(self) -> None:
+        """Reporting it here as well would say nothing `unreachable` does not already say."""
+        self.assertEqual(
+            self._tinker_only('  <object Name="Raven_Thing" />'),
+            [],
+        )
+
+    def test_a_merge_is_not_this_forks_to_place(self) -> None:
+        self.assertEqual(
+            self._tinker_only(
+                '  <object Name="Dagger3" Load="Merge">\n'
+                '    <part Name="TinkerItem" Bits="0015" />\n  </object>'
+            ),
+            [],
+        )
+
     # ---------------------------------------------------------------------- role-form
 
     def _role_form(self, blueprints: str):

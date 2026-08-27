@@ -2438,6 +2438,64 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
 
 
+def check_tinker_only(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A blueprint whose only route to a player is tinkering has no drop rate.
+
+    `check_reachability` accepts three routes and this fork's melee weapons passed on the third:
+    they carry `TinkerItem`, so they were obtainable and the check was satisfied. But tinkering is
+    a thing a player *does*, not a rate at which a thing *appears* - so eighteen blueprints reached
+    the world only as one blueprint among hundreds in a generic dynamic pool, at a rarity nobody
+    chose (#482, #527).
+
+    Vanilla does not leave this to chance: every comparable weapon and mask it ships has an explicit
+    entry, `Steel Vinereaper` and `Gas Mask` among them. Charter rule 2 asks whether scarcity is
+    Freehold's decision, and here it demonstrably is not.
+
+    Scoped to blueprints carrying `TinkerItem`, because those are the ones `check_reachability`
+    waves through. Anything with neither a table entry nor a tag nor `TinkerItem` is already an
+    `unreachable` finding, and reporting it twice would say nothing new.
+    """
+    if not POPULATION_TABLES.is_file():
+        return  # check_layout reports a missing file
+    try:
+        placed = {
+            obj.get("Blueprint")
+            for obj in parse(POPULATION_TABLES).iter("object")
+            if obj.get("Blueprint")
+        }
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    for path, root in blueprint_sources(all_roots).items():
+        for obj in root.iter("object"):
+            name = obj.get("Name")
+            if (
+                not name
+                or not name.startswith(MOD_PREFIXES)
+                or obj.get("Load") == "Merge"
+                or any(m in name for m in ABSTRACT_MARKERS)
+                or name in placed
+            ):
+                continue
+            if not any(p.get("Name") == "TinkerItem" for p in obj.iter("part")):
+                continue  # check_reachability owns this one
+            if any(
+                (tag.get("Name") or "").startswith(DYNAMIC_TABLE_PREFIX)
+                and not (tag.get("Name") or "").endswith(
+                    (":Weight", ":Number", ":Builder")
+                )
+                and tag.get("Value") not in ("*delete", "{{{remove}}}")
+                for tag in obj.iter("tag")
+            ):
+                continue
+            f.add(
+                "tinker-only",
+                f"{path}: {name} is in no population table and carries no "
+                f"{DYNAMIC_TABLE_PREFIX} tag, so tinkering is its only route and its drop rate "
+                "was never chosen",
+            )
+
+
 def check_aggregate_sweep(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """An `AggregateWith` merged onto a vanilla parent must not sweep in vanilla's descendants.
 
@@ -2930,6 +2988,7 @@ def run() -> Findings:
     check_weight_curve(f, roots)
     check_tag_form(f, roots)
     check_role_form(f, roots)
+    check_tinker_only(f, roots)
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
     check_scatter_share(f, roots)

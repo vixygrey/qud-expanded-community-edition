@@ -1014,6 +1014,7 @@
       <object Weight="10" Number="1" Blueprint="Vixy_Vibro Glaive" />
       <object Weight="10" Number="1" Blueprint="Vixy_Vibro Quarterstaff" />
       <object Weight="10" Number="1" Blueprint="Vixy_Vibro Spear" />
+      <object Weight="10" Number="1" Blueprint="Raven_Bio Scanner Mask" />
     </group>
   </population>
 

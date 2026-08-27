@@ -139,9 +139,10 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
-- **17 melee weapons now have a drop rate somebody chose** (#482, #527).
+- **18 items now have a drop rate somebody chose** (#482, #527).
 
-  The six extended vinereapers and the eleven vibro weapons had no entry in any population table.
+  The six extended vinereapers, the eleven vibro weapons and the bio-scanner mask had no entry in
+  any population table.
   They reached a player only through the generic dynamic pools, which means their rarity was whatever
   fell out of being one blueprint among hundreds in a tier slice. Vanilla places every one of its own
   weapons in these families explicitly, and this fork agreed with that exactly once —
@@ -166,9 +167,20 @@ recorded because contributors need them, not because subscribers do.
   Putting the vibro line in `Artifact 5R` also makes it village tinker stock rather than a generic
   pool roll (`docs/DESIGN_balance.md` §5.3).
 
+  `Raven_Bio Scanner Mask` joins them in `Artifact 5R` at Weight 10. It wears on the Face but is
+  `AV="0" DV="0"` — a gadget rather than armour — and `VISAGE` is vanilla's precedent for a face
+  artifact living in the Artifact tables. `Armor 5R` was the other candidate and is the wrong one
+  twice over: the item is not armour, and at Weight 20 that table would have gone to 52.9%, past the
+  ceiling.
+
   `Raven_Bronze Vinereaper` stays at Weight 13, matching the bronze block it sits in rather than
   vanilla's ratio — it is shipped and internally consistent, and only the newly priced six follow
   Freehold's number.
+
+  The new `tinker-only` check keeps it that way. `check_reachability` accepts three routes and all
+  eighteen passed on the third: they carry `TinkerItem`, so they were obtainable and the check was
+  satisfied. But tinkering is a thing a player *does*, not a rate at which a thing *appears*, and
+  nothing was asking the difference.
 
 - **(internal)** The pool report follows `<mixin>`, which is a second inheritance mechanism (#526).
 
