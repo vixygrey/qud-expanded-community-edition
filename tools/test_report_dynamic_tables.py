@@ -14,6 +14,7 @@ import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -23,13 +24,18 @@ import report_dynamic_tables
 from check_vanilla_drift import BlueprintIndex
 from report_dynamic_tables import (
     collect,
-    consumed_inherits_pools,
     declarer,
     describe_drift,
+    describe_inherits_drift,
     eligible,
     inherits_cells,
-    inherits_violations,
+    inherits_members,
+    inherits_snapshot_of,
     merged_objects,
+    over_ceiling,
+    requested_inherits_slices,
+    slice_label,
+    slice_weight,
     snapshot_of,
 )
 
@@ -300,94 +306,266 @@ class InheritsPools(unittest.TestCase):
         "</objects>"
     )
 
-    def cells(self, xml: str | None = None, new: set[str] | None = None):
-        i = BlueprintIndex(roots(xml or self.BASE))
+    def cells(self, xml: str | None = None, new: set[str] | None = None, window=(3, 3)):
+        index = BlueprintIndex(roots(xml or self.BASE))
+        members = inherits_members(index, {"BaseSword"})
         return inherits_cells(
-            i, {"BaseSword"}, new if new is not None else {"Vixy_Sword"}
+            members, {"BaseSword": {window}}, new if new is not None else {"Vixy_Sword"}
         )
 
     def test_a_descendant_is_counted_on_the_side_it_belongs_to(self) -> None:
-        self.assertEqual(self.cells(), {("BaseSword", "3"): [1, 1]})
+        cell = self.cells()[("BaseSword", "Tier3")]
+        self.assertEqual(cell[2:], (1, 1))
+        self.assertEqual(cell[0], cell[1])
 
     def test_the_base_itself_is_not_counted(self) -> None:
         """It is not eligible, and counting it would inflate vanilla's side by one everywhere."""
-        self.assertEqual(sum(sum(v) for v in self.cells().values()), 2)
+        _, _, mine, vanilla = self.cells()[("BaseSword", "Tier3")]
+        self.assertEqual(mine + vanilla, 2)
 
     def test_tier_is_inherited_from_the_nearest_declaration(self) -> None:
-        """The pools are only ever consumed as :Tier{n} slices, so an unresolvable tier reaches
-        nothing and must not be counted into some default bucket."""
-        cells = self.cells(
-            "<objects>"
-            '<object Name="BaseSword"><part Name="Render" />'
-            '<tag Name="BaseObject" Value="*noinherit" /></object>'
-            '<object Name="Vixy_Sword" Inherits="BaseSword" />'
-            "</objects>"
+        """A blueprint the game cannot place on the tier ladder reaches no slice, so it must not
+        be counted into some default bucket."""
+        self.assertEqual(
+            self.cells(
+                "<objects>"
+                '<object Name="BaseSword"><part Name="Render" />'
+                '<tag Name="BaseObject" Value="*noinherit" /></object>'
+                '<object Name="Vixy_Sword" Inherits="BaseSword" />'
+                "</objects>"
+            ),
+            {},
         )
-        self.assertEqual(cells, {})
 
     def test_an_excluded_blueprint_leaves_the_pool(self) -> None:
         """The one lever there is - and the reason the chip fix in #483 worked."""
-        cells = self.cells(
+        cell = self.cells(
             self.BASE.replace(
                 '<object Name="Vixy_Sword" Inherits="BaseSword" />',
                 '<object Name="Vixy_Sword" Inherits="BaseSword">'
                 '<tag Name="ExcludeFromDynamicEncounters" /></object>',
             )
+        )[("BaseSword", "Tier3")]
+        self.assertEqual(cell[0], 0)
+        self.assertEqual(cell[2:], (0, 1))
+
+    def test_every_requested_slice_gets_a_cell_from_the_same_members(self) -> None:
+        """#494: a slice holds every member of the pool, not only those at its own tier. Building
+        cells from the tiers blueprints happen to carry hid forty slices that were over half."""
+        index = BlueprintIndex(roots(self.BASE))
+        members = inherits_members(index, {"BaseSword"})
+        cells = inherits_cells(
+            members, {"BaseSword": {(0, 0), (3, 3), (8, 8), None}}, {"Vixy_Sword"}
         )
-        self.assertEqual(cells, {("BaseSword", "3"): [0, 1]})
+        self.assertEqual(
+            set(cells),
+            {
+                ("BaseSword", "Tier0"),
+                ("BaseSword", "Tier3"),
+                ("BaseSword", "Tier8"),
+                ("BaseSword", "untiered"),
+            },
+        )
+        for cell in cells.values():
+            self.assertEqual(cell[2:], (1, 1))
+
+
+class SliceWeight(unittest.TestCase):
+    """#494: the game weights a slice's members by tier distance, and a flat count is a different
+    question. At a factor of ten per step the nearest tier dominates completely."""
+
+    def test_the_requested_tier_weighs_most(self) -> None:
+        self.assertEqual(slice_weight(3, (3, 3), None), 10**8)
+
+    def test_each_step_away_divides_by_ten(self) -> None:
+        self.assertEqual(slice_weight(4, (3, 3), None), 10**7)
+        self.assertEqual(slice_weight(1, (3, 3), None), 10**6)
+
+    def test_distance_is_symmetric(self) -> None:
+        self.assertEqual(slice_weight(1, (3, 3), None), slice_weight(5, (3, 3), None))
+
+    def test_beyond_the_table_falls_back_to_one(self) -> None:
+        """TierDeltaWeights stops at seven steps; the game's own default is 1u, not zero, so a
+        distant blueprint stays in the pool instead of dropping out of it."""
+        self.assertEqual(slice_weight(1, (8, 8), None), 10)
+        self.assertEqual(slice_weight(0, (8, 8), None), 1)
+
+    def test_anything_inside_a_range_is_at_full_weight(self) -> None:
+        for tier in (4, 5, 6, 7):
+            self.assertEqual(slice_weight(tier, (4, 7), None), 10**8)
+
+    def test_outside_a_range_the_distance_is_measured_from_the_low_end(self) -> None:
+        """Vanilla writes Math.Min(Math.Abs(minTier - t), Math.Abs(minTier - t)) - the same
+        expression twice, so maxTier never reaches the comparison. Reproducing that bug is the only
+        way this report agrees with what a player rolls: tier 8 against Tier4-7 is four steps from
+        the low end, not one from the high end."""
+        self.assertEqual(slice_weight(8, (4, 7), None), 10**4)
+
+    def test_the_untiered_table_weighs_every_member_alike(self) -> None:
+        self.assertEqual(slice_weight(0, None, None), slice_weight(8, None, None))
+
+    def test_role_multiplies_the_tier_weight(self) -> None:
+        """Reachable, unlike the tier delta on the untiered path - which is the correction in
+        #492. Common and Minion quadruple; the rest divide."""
+        self.assertEqual(slice_weight(3, (3, 3), "Minion"), 4 * 10**8)
+        self.assertEqual(slice_weight(3, (3, 3), "Rare"), 10**6)
+
+    def test_an_unknown_role_is_left_alone(self) -> None:
+        """Controller, Lurker, NPC, Summoner and Breeder are used on 63 vanilla blueprints and are
+        in no multiplier table, so they must take the plain tier weight."""
+        self.assertEqual(slice_weight(3, (3, 3), "Lurker"), 10**8)
+        self.assertEqual(slice_weight(3, (3, 3), None), 10**8)
 
 
 class InheritsCeiling(unittest.TestCase):
-    """docs/STYLEGUIDE.md 3.2.1 - half, but only where vanilla has a presence to protect."""
+    """docs/STYLEGUIDE.md 3.2.1 - reported, not enforced, since #494."""
 
-    def test_over_half_with_a_real_vanilla_presence_is_reported(self) -> None:
-        new, known = inherits_violations({("Pool", "3"): [11, 9]})
-        self.assertEqual(known, [])
-        self.assertEqual(len(new), 1)
-        self.assertIn("55% this fork's", new[0])
-        self.assertIn("11 against vanilla's 9", new[0])
+    def test_over_half_by_weight_is_reported(self) -> None:
+        self.assertEqual(
+            over_ceiling({("Pool", "Tier3"): (11, 9, 11, 9)}), [("Pool", "Tier3")]
+        )
 
     def test_at_half_exactly_is_not_reported(self) -> None:
-        self.assertEqual(inherits_violations({("Pool", "3"): [9, 9]}), ([], []))
+        self.assertEqual(over_ceiling({("Pool", "Tier3"): (9, 9, 9, 9)}), [])
 
     def test_a_thin_vanilla_presence_is_exempt(self) -> None:
-        """1 of 1 does not mean this fork dominates the tier - it means vanilla ships none, and a
+        """1 of 1 does not mean this fork dominates the slice - it means vanilla ships none, and a
         percentage there reports only that vanilla left a gap."""
-        self.assertEqual(inherits_violations({("Pool", "0"): [1, 0]}), ([], []))
-        self.assertEqual(inherits_violations({("Pool", "0"): [3, 3]}), ([], []))
+        self.assertEqual(over_ceiling({("Pool", "Tier0"): (1, 0, 1, 0)}), [])
+        self.assertEqual(over_ceiling({("Pool", "Tier0"): (3, 3, 3, 3)}), [])
 
-    def test_the_floor_is_on_vanillas_count_not_the_total(self) -> None:
-        """A cell of 40 that is 36 mine and 4 vanilla is exempt; one of 14 that is 9 mine and 5
-        vanilla is not. Sorting on the total would get both backwards."""
-        self.assertEqual(inherits_violations({("Pool", "3"): [36, 4]}), ([], []))
-        new, _ = inherits_violations({("Pool", "3"): [9, 5]})
-        self.assertEqual(len(new), 1)
+    def test_the_floor_is_on_vanillas_member_count_not_its_weight(self) -> None:
+        """Weight and count answer different questions: five vanilla members can carry very little
+        weight in a distant slice, and that slice is still worth measuring."""
+        self.assertEqual(
+            over_ceiling({("Pool", "Tier3"): (10**8, 10, 1, 5)}), [("Pool", "Tier3")]
+        )
+        self.assertEqual(over_ceiling({("Pool", "Tier3"): (10**8, 10, 1, 4)}), [])
 
-    def test_a_tracked_cell_does_not_fail_the_run(self) -> None:
-        """The ledger's whole purpose, and the same bargain validation-baseline.json makes."""
-        pool, tier = next(iter(report_dynamic_tables.KNOWN_OVER))
-        new, known = inherits_violations({(pool, tier): [11, 9]})
-        self.assertEqual(new, [])
-        self.assertEqual(len(known), 1)
-        self.assertIn("#", known[0])
-
-    def test_an_untracked_cell_still_fails(self) -> None:
-        """Without this the ledger could swallow everything and the check would read as passing."""
-        new, known = inherits_violations({("NotInTheLedger", "3"): [11, 9]})
-        self.assertEqual(known, [])
-        self.assertEqual(len(new), 1)
+    def test_the_ranking_puts_the_most_dominated_slice_first(self) -> None:
+        self.assertEqual(
+            over_ceiling(
+                {
+                    ("Pool", "Tier1"): (60, 40, 6, 40),
+                    ("Pool", "Tier2"): (90, 10, 9, 10),
+                }
+            ),
+            [("Pool", "Tier2"), ("Pool", "Tier1")],
+        )
 
 
-class ConsumedInheritsPools(unittest.TestCase):
+class InheritsSnapshot(unittest.TestCase):
+    """#494 swapped a ceiling that fails for a snapshot that fails, so this is now the only thing
+    guarding the inherited route. Membership and share drift separately and must be told apart."""
+
+    MEMBERS: ClassVar = {"Pool": [("Vixy_Sword", 3, None), ("VanillaSword", 3, None)]}
+
+    def snapshot(self, cells):
+        return inherits_snapshot_of(cells, self.MEMBERS, {"Vixy_Sword"})
+
+    def test_it_pins_membership_once_and_a_share_per_slice(self) -> None:
+        snap = self.snapshot(
+            {("Pool", "Tier3"): (75, 25, 1, 1), ("Pool", "Tier8"): (10, 90, 1, 1)}
+        )
+        self.assertEqual(snap["Pool"]["mine"], ["Vixy_Sword"])
+        self.assertEqual(snap["Pool"]["shares"], {"Tier3": 75, "Tier8": 10})
+
+    def test_a_pool_this_fork_is_not_in_is_omitted(self) -> None:
+        """Pinning a share of zero for every pool would bury the ones that matter."""
+        snap = inherits_snapshot_of(
+            {("Pool", "Tier3"): (0, 100, 0, 2)}, self.MEMBERS, set()
+        )
+        self.assertEqual(snap, {})
+
+    def test_identical_snapshots_report_no_drift(self) -> None:
+        snap = self.snapshot({("Pool", "Tier3"): (75, 25, 1, 1)})
+        self.assertEqual(describe_inherits_drift(snap, snap), [])
+
+    def test_a_blueprint_joining_a_pool_is_caught(self) -> None:
+        old = {"Pool": {"mine": [], "shares": {"Tier3": 50}}}
+        new = {"Pool": {"mine": ["Vixy_Sword"], "shares": {"Tier3": 50}}}
+        self.assertEqual(
+            describe_inherits_drift(old, new),
+            ["Pool: Vixy_Sword now descends into this pool"],
+        )
+
+    def test_a_share_moving_on_its_own_is_caught(self) -> None:
+        """The case no diff shows: a Qud update adds tier-8 weapons and this fork's share of that
+        slice falls without a line of mine changing."""
+        old = {"Pool": {"mine": ["Vixy_Sword"], "shares": {"Tier8": 91}}}
+        new = {"Pool": {"mine": ["Vixy_Sword"], "shares": {"Tier8": 74}}}
+        self.assertEqual(
+            describe_inherits_drift(old, new),
+            ["Pool:Tier8: this fork's share moved 91% -> 74%"],
+        )
+
+    def test_a_newly_requested_slice_is_caught(self) -> None:
+        old = {"Pool": {"mine": ["Vixy_Sword"], "shares": {}}}
+        new = {"Pool": {"mine": ["Vixy_Sword"], "shares": {"Tier2": 60}}}
+        self.assertIn("newly requested", describe_inherits_drift(old, new)[0])
+
+    def test_a_pool_this_fork_stops_reaching_is_caught(self) -> None:
+        old = {"Pool": {"mine": ["Vixy_Sword"], "shares": {"Tier3": 50}}}
+        self.assertEqual(
+            describe_inherits_drift(old, {}),
+            ["Pool: this fork no longer reaches this inherited pool"],
+        )
+
+
+class RequestedInheritsSlices(unittest.TestCase):
+    def slices(self, body: str):
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "PopulationTables.xml").write_text(
+            f"<populations>{body}</populations>", encoding="utf-8"
+        )
+        return requested_inherits_slices(tmp)
+
     def test_a_commented_out_reference_does_not_count(self) -> None:
         """Vanilla keeps a commented-out DynamicInheritsTable:BaseAnimal:Tier2. Counting it would
         measure this fork's share of a pool nothing rolls."""
-        tmp = Path(tempfile.mkdtemp())
-        (tmp / "PopulationTables.xml").write_text(
-            "<populations>"
+        got = self.slices(
             '<table Name="DynamicInheritsTable:Live:Tier1" />'
             '<!-- <table Name="DynamicInheritsTable:Dead:Tier2" /> -->'
-            "</populations>",
-            encoding="utf-8",
         )
-        self.assertEqual(consumed_inherits_pools(tmp), {"Live"})
+        self.assertEqual(set(got), {"Live"})
+
+    def test_a_plain_tier_is_a_single_slice(self) -> None:
+        self.assertEqual(
+            self.slices('<table Name="DynamicInheritsTable:P:Tier4" />')["P"], {(4, 4)}
+        )
+
+    def test_a_range_is_kept_as_a_range(self) -> None:
+        """Tier4-7 is not Tier4: everything inside the window is at full weight."""
+        self.assertEqual(
+            self.slices('<table Name="DynamicInheritsTable:P:Tier4-7" />')["P"],
+            {(4, 7)},
+        )
+
+    def test_a_substituted_spec_contributes_every_tier(self) -> None:
+        """{zonetier} is resolved at runtime and can land anywhere, so all nine are reachable and
+        pinning only the ones blueprints happen to carry is what #494 fixed."""
+        self.assertEqual(
+            self.slices('<table Name="DynamicInheritsTable:P:Tier{zonetier}" />')["P"],
+            {(n, n) for n in range(9)},
+        )
+
+    def test_a_request_with_no_tier_is_the_untiered_table(self) -> None:
+        self.assertEqual(
+            self.slices('<table Name="DynamicInheritsTable:P" />')["P"], {None}
+        )
+
+    def test_slices_from_several_requests_accumulate(self) -> None:
+        got = self.slices(
+            '<table Name="DynamicInheritsTable:P:Tier1" />'
+            '<table Name="DynamicInheritsTable:P:Tier4-7" />'
+            '<table Name="DynamicInheritsTable:P" />'
+        )
+        self.assertEqual(got["P"], {(1, 1), (4, 7), None})
+
+
+class SliceLabel(unittest.TestCase):
+    def test_labels_are_stable_across_the_three_shapes(self) -> None:
+        """These are snapshot keys, so a change of spelling reads as drift on every slice."""
+        self.assertEqual(slice_label((3, 3)), "Tier3")
+        self.assertEqual(slice_label((4, 7)), "Tier4-7")
+        self.assertEqual(slice_label(None), "untiered")
