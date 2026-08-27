@@ -36,6 +36,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** `<stag>` is not a typo for `<tag>`, and the document that said so was wrong (#478).
+
+  `XRL.World.GameObjectFactory` reads both, into the same dictionary — but it renames one:
+  `<stag Name="Floating" />` produces the tag **`SemanticFloating`**, not `Floating`. They are two
+  different keys, and whatever reads the tag looks for exactly one of them. Getting it wrong leaves
+  the tag on a key nothing reads, which is the quietest failure in this codebase: the object loads,
+  the tag exists, nothing happens.
+
+  `docs/FEATURES.md` §10 row 6 stated the opposite — that `<stag>` is not an element Qud reads —
+  and #50 changed two of them to `<tag>` on that reading. Vanilla writes `Floating` and `Trinket`
+  **only** as `<stag>`, so that change made the advanced hoversled and the sphere of negative weight
+  the only objects in the game carrying the unprefixed names. Both are recorded in #478 rather than
+  reverted here: undoing them also needs `curve_exempt` to learn both forms, and #50 was a credited
+  contribution.
+
+  A new `tag-form` check compares every tag this mod writes against vanilla's usage of that name,
+  from a new `tag_forms` citation in the snapshot. It cannot judge a name vanilla never writes, or
+  one vanilla writes both ways — `Fiber`, `Furniture`, `LightSource` and `Scrap` — and says so.
+  `docs/STYLEGUIDE.md` §4.0b carries the mechanism.
+
 - **(internal)** Three rows of `docs/FEATURES.md` §6.1 were wrong, and the total was right only
   because two of the errors cancelled (#473).
 
@@ -51,7 +71,6 @@ recorded because contributors need them, not because subscribers do.
   with no row. Commented-out objects are counted too, which caught a fourth stale figure — the
   parenthetical on the `Ammo.xml` row said 20 dormant where the file holds 22, a number §10 already
   states correctly two thousand lines further down.
-
 - **(internal)** The Workshop description length check measured characters, not bytes (#171).
 
   Steam rejected the 2.7.0 upload with `k_EResultInvalidParam`. The description was 7,963

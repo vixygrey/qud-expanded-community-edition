@@ -60,7 +60,7 @@ Every change carries a stated reason, and that reason goes in the commit message
 player-facing changelog rather than staying in my head. Two different bars:
 
 - **Defect fixes** need only "this contradicts the mod's own stated convention" — the
-  tier-3 `Flawless Crysteel Boots`, the value-5 `Raven_Carbideweave Cloak`, the `<stag>` typos.
+  tier-3 `Flawless Crysteel Boots`, the value-5 `Raven_Carbideweave Cloak`, the `<stag>` mix-ups.
   The convention tables in `docs/STYLEGUIDE.md` *are* the justification.
 - **Design changes** need a reason grounded in Qud — its fiction, its existing systems, or an
   asymmetry the game already created. "It felt weak" is not a reason. The test I use: does the

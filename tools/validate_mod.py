@@ -1512,6 +1512,13 @@ def snapshot_records() -> tuple[dict, dict]:
     return data.get("merged_records", {}), data.get("table_weights", {})
 
 
+def snapshot_tag_forms() -> dict[str, str]:
+    """Which element vanilla writes each tag name with, from tools/qud-api.json."""
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("tag_forms", {})
+
+
 def snapshot_skill_powers() -> dict[str, dict]:
     """Vanilla's Cost, Minimum and Attribute for each skill power this mod merges into.
 
@@ -1658,6 +1665,56 @@ def check_weight_curve(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     "weight-curve",
                     f"{path}: {name} weighs {now_w:g} lb against vanilla's {was_w:g} - every "
                     f"per-slot factor is below 1, so nothing may get heavier",
+                )
+
+
+def check_tag_form(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A tag written with the element vanilla does not use for that name.
+
+    `<tag>` and `<stag>` are not two spellings of one thing. `XRL.World.GameObjectFactory` loads
+    both into the same dictionary and **renames one of them**:
+
+        if (item8.Value.NodeName == "stag") { text = "Semantic" + text; ... }
+        gameObjectBlueprint.Tags.Add(text, value);
+
+    So `<stag Name="Floating" />` produces the tag `SemanticFloating`, and anything asking for
+    `Floating` does not find it. The reverse is equally true: `<tag Name="Plank" Value="thatch" />`
+    produces `Plank`, where every vanilla plant produces `SemanticPlank` and the semantic tables
+    read that one.
+
+    Neither mistake shows up anywhere. The object loads, the tag exists, and it sits on a key
+    nothing looks at - the same silence as an unread declaration, which this repo has now been
+    caught by three times (#171, #474, and the two rows below).
+
+    So the rule is vanilla's own usage, and it can only be vanilla's: the correct form depends on
+    what reads the tag, which lives in the assembly rather than the data. A name vanilla writes
+    both ways carries no opinion and is skipped - there are four, `Fiber` among them.
+
+    This does not catch a tag name vanilla never uses. `Vixy_CreatureVariant` is only read by this
+    mod's own C#, so nothing outside it can say which form is right.
+    """
+    forms = snapshot_tag_forms()
+    if not forms:
+        return
+
+    for path, root in all_roots.items():
+        if path.parent.name != "ObjectBlueprints":
+            continue
+        for obj in root.iter("object"):
+            for child in obj:
+                if child.tag not in ("tag", "stag"):
+                    continue
+                name = child.get("Name")
+                expected = forms.get(name)
+                if not expected or expected == child.tag:
+                    continue
+                produces = f"Semantic{name}" if child.tag == "stag" else name
+                wants = f"Semantic{name}" if expected == "stag" else name
+                f.add(
+                    "tag-form",
+                    f'{path}: {obj.get("Name")} writes <{child.tag} Name="{name}"> where '
+                    f"vanilla writes <{expected}> - this produces the tag {produces!r} and "
+                    f"vanilla's own objects carry {wants!r}",
                 )
 
 
@@ -2411,6 +2468,7 @@ def run() -> Findings:
     check_finesse_visible(f, roots)
     check_damage_ceiling(f, roots)
     check_weight_curve(f, roots)
+    check_tag_form(f, roots)
     check_table_share(f, roots)
     check_implant_table_cost(f, roots)
     check_skill_option_coverage(f)

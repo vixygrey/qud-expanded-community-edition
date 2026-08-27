@@ -1,4 +1,13 @@
 {
-  "_comment": "Known defects inherited from upstream 2.2. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure. It is currently EMPTY, for the first time since it was written: the 22 item-curve rows were cleared by #373 and the 47 merge-value rows by #334, and nothing has replaced them. An empty ledger means every violation the validator can report is a new one, which is the state it was always meant to reach.",
-  "known": {}
+  "_comment": "Known defects inherited from upstream 2.2 and from this fork's own earlier work, with the issue that tracks each one. Reported but not failing, so new violations are visible. This ledger only shrinks - remove entries as the referenced issues are fixed. Regenerate deliberately, never to silence a new failure. It reached EMPTY once, after #373 cleared the 22 item-curve rows and #334 the 47 merge-value rows; #478 put two back, both found by the tag-form check the moment it existed.",
+  "known": {
+    "tag-form": {
+      "issue": 478,
+      "why": "#50 changed two <stag> elements to <tag> on the reading that <stag> is not read. It is: the loader prefixes it, so <stag Name=\"Floating\"> produces SemanticFloating. Vanilla writes both of these names only as <stag>, so the fix moved them off the key every vanilla equivalent uses. Reverting also needs curve_exempt to read both forms, and undoes a credited contribution, so it is a decision rather than a typo.",
+      "items": [
+        "mod/ObjectBlueprints/OtherEquipment.xml: Raven_Advanced Hoversled writes <tag Name=\"Floating\"> where vanilla writes <stag> - this produces the tag 'Floating' and vanilla's own objects carry 'SemanticFloating'",
+        "mod/ObjectBlueprints/OtherEquipment.xml: Raven_Large Sphere of Negative Weight writes <tag Name=\"Trinket\"> where vanilla writes <stag> - this produces the tag 'Trinket' and vanilla's own objects carry 'SemanticTrinket'"
+      ]
+    }
+  }
 }
