@@ -1661,3 +1661,25 @@ suffixes I had reported as absent.
 The reliable answer is to decompile and grep the source: `ilspycmd -o <dir> -p Assembly-CSharp.dll`
 writes 5,435 `.cs` files in a couple of minutes, and a grep over those finds the call site with its
 containing method, which is what actually answers the question.
+
+## A palette copied from another plant is not a palette chosen for this one
+
+Cragwort took noisegrass's sprite and, without my thinking about it, noisegrass's colours: `&K` on a
+`&K` tile, the darkest grey in the game. That is fine for noisegrass, which grows in fungal and
+underground zones. Cragwort grows on open mountain surface, beside dogthorn at `&G` and witchwood at
+`&W`, and it was invisible.
+
+The playtest is what said so, and it said so indirectly: several parasangs of mountains produced **no
+cragwort and several witchwood**, which roll from the same table at `Chance=40` and `Chance=25`. The
+rarer plant turning up and the commoner one never is not a distribution result, it is a contrast
+result.
+
+> **A tile is legible against a background, not against the plant you borrowed it from.** Reusing
+> vanilla art is cheap and right; reusing the colours it was given for a different biome is not.
+> Check the palette against what the player will actually be looking at.
+
+There is a second half. **Vanilla signals ripeness with a change of hue** — witchwood `&W` → `&r`,
+starapple `&g` → `&R`, noisegrass `&K` → `&M` — and cragwort's ripe state changed one detail pixel
+and left the tile black. Even a ripe one was indistinguishable at a glance, which defeats the point
+of `StartRipeChance` entirely: the number decides how often a plant is worth harvesting, and the
+colour is how a player finds out.

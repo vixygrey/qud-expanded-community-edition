@@ -2889,6 +2889,28 @@ So each price is anchored to a named vanilla neighbour instead:
 | sweetfrond heart | 8 | the banana, 8 — from the same grove |
 | candied sweetfrond | 8 | sun-dried banana, 8 — likewise |
 
+### 18.4b A plant you cannot see is a plant that is not there
+
+Cragwort shipped in `&K` — the darkest grey Qud has — on a `&K` tile, both taken from noisegrass
+along with its sprite. Noisegrass lives in fungal and underground zones where near-black reads
+fine. On an open mountain surface it was the least visible thing on screen, next to dogthorn at
+`&G` and witchwood at `&W`.
+
+A playtest crossed several parasangs of mountains and found **no cragwort at all, while finding
+witchwood** — which rolls from the same table at `Chance=25` against cragwort's `40`. A thing that
+should be commoner turning up never, beside a thing that is rarer and white, is what a contrast
+failure looks like from the player's side.
+
+It is now brown-olive, `&w` on `&w` with a `y` detail, which keeps the ochre-on-rock intent inside
+the visible half of the palette.
+
+**Ripeness is a hue change, not a brightness bump.** Vanilla always signals it that way — witchwood
+`&W` → `&r`, starapple `&g` → `&R`, noisegrass `&K` → `&M`. Cragwort's old values left the tile
+`&K` in both states and moved a single detail pixel, so even a ripe one looked the same from a
+distance. Ripe now lifts the whole tile.
+
+Brinereed (`&g`) and sweetfrond (`&G`) were already in the visible range and are unchanged.
+
 ### 18.5 Three tags that came with the base, and had to be corrected
 
 Inheriting from vanilla's `Plant` carries `Fiber="strip"`, `FiberMaterial="bark"` and

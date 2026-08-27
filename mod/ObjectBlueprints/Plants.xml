@@ -38,14 +38,25 @@
 
        Nothing checks these. -->
 
-  <!-- Mountains: scrub clinging to rock, ochre against grey. -->
+  <!-- Mountains: scrub clinging to rock, ochre against grey.
+
+       The palette is brown-olive rather than grey, and that is a correction. It was &K - the
+       darkest grey Qud has - copied wholesale from noisegrass, which lives in fungal and
+       underground zones where near-black reads fine. On an open mountain surface it was the least
+       visible thing on screen, beside dogthorn at &G and witchwood at &W, and a playtest crossing
+       several parasangs found none of it while finding witchwood at a *lower* chance.
+
+       Ripeness is a hue change, not a brightness bump. Vanilla always signals it that way -
+       witchwood &W to &r, starapple &g to &R - and the old values left the tile &K either way,
+       so only one detail pixel moved. -->
   <object Name="Vixy_Cragwort" Inherits="Plant">
     <part
       Name="Render"
       DisplayName="cragwort"
       RenderString="157"
-      ColorString="&amp;K"
-      DetailColor="w"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="y"
       Occluding="false"
       Tile="Terrain/sw_noise_grass_1.bmp"
     />
@@ -58,11 +69,11 @@
       OnSuccess="Vixy_Cragwort Sprig"
       StartRipeChance="1:10"
       RipeColor="&amp;W"
-      RipeTileColor="&amp;K"
+      RipeTileColor="&amp;w"
       RipeDetailColor="W"
-      UnripeColor="&amp;K"
-      UnripeTileColor="&amp;K"
-      UnripeDetailColor="y"
+      UnripeColor="&amp;w"
+      UnripeTileColor="&amp;w"
+      UnripeDetailColor="K"
     />
     <part
       Name="Description"
