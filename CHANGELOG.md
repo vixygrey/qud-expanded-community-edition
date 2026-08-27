@@ -36,47 +36,28 @@ recorded because contributors need them, not because subscribers do.
   missing from those bullets, and they are prose rather than IDs, so no honest pattern reaches them.
   The count is what makes me reread the list — which is exactly how I found the six.
 
-- **32 creature colour variants**, on by default and toggleable in the mod options (#171).
+- **(internal)** The creature-variant work is reverted, and `docs/LESSONS.md` records why (#171).
 
-  Thirteen common creatures pick up regional coats: brindle, rangy, pied, ash-coated and marsh dogs,
-  dun and cragged and black goats, bristleback and russet and pale boars, mangy and silverback and
-  rust-furred baboons, silt and pale crocs, copper and ember and glass dragonflies, verdigris and
-  pale glowfish, marbled and ashen salamanders, mottled and sand horned chameleons, mossbacked and
-  scarred tortoises, a banded honey skunk, an ashwing glowmoth, and midden, rust and salt beetles.
-  Each appears in the one biome its name argues for.
+  Thirty-two cosmetic creature variants were built on `DynamicObjectsTable:<Biome>_Creatures`, on
+  the reading that a creature self-registers into a spawn table with a tag. **Nothing consumes
+  those tables.** `Hills_Creatures` appears in exactly one file in the whole game — the one where
+  creatures declare membership — and no population table references it, no zone builder requires
+  it. Biome creatures come from ordinary hand-written populations: `HillsZoneGlobals-Reachable`
+  lists `Goat`, `Dog`, `Boar` and `Salamander` as explicit entries.
 
-  **Purely cosmetic.** A variant differs in name, colour and description and in nothing else, so a
-  pied dog fights exactly as a feral dog does. Two identical glyphs that behave differently, with
-  only colour to warn you, reads as a bug when it kills you.
+  So the blueprints, their `*delete` tags, the `AggregateWith` merges and the option that gated
+  them all governed a pool the game never rolls. None of it reached a release, and none of it is in
+  this changelog as a player-facing change, because from a player's side nothing ever happened.
 
-  **The spawn tables do not grow.** Each variant shares its vanilla parent's slot through
-  `AggregateWith` rather than taking one of its own, so creatures turn up exactly as often as they
-  do in vanilla — you meet the same number of dogs, and some of them are brindle. Twenty-nine of the
-  32 add nothing at all to any table; the marsh dog, rust beetle and salt beetle each keep a biome
-  their parent does not, so those three cost one slot apiece.
+  Two lessons survive it, and both are recorded. `:Weight` on those tables is a multiplier wrapped
+  in `(uint)Math.Ceiling`, so every fraction below one is inert — vanilla's own `Astral Tabby` at
+  0.2 does nothing either. And `AggregateWith` inherits, so merging it onto a vanilla parent folds
+  every vanilla descendant into one slot. Both are true, both were carefully verified, and neither
+  mattered, which is the third and largest lesson: **count the consumers before you count anything
+  else.**
 
-  Five carry their own descriptions, because the inherited text names a colour they do not have: the
-  salamanders inherit "ovoid spots, crimson and coral and citrine" and the beetles inherit "shining
-  black elytra". The ashwing glowmoth is detailed in cyan rather than gold for the same reason —
-  vanilla's `interdictor` is the precedent for an ash-coloured thing that still reads as luminous.
-
-  The option costs no C#: `ExcludeFromDynamicEncountersOption` lets a blueprint name an option ID
-  that the game resolves itself. It governs zones generated after you change it rather than ones you
-  have already visited, which the helptext says. `docs/FEATURES.md` §17 is the full reference.
-
-- **(internal)** `docs/LESSONS.md` records that a knob which rounds your value away is worse than no
-  knob (#171).
-
-  `DynamicObjectsTable:<Table>:Weight` reads as a rarity dial and is not one. Creature tables are
-  never requested in the `:Tier` form, so they are built by `FabricateDynamicObjectsTable`, where the
-  tier-delta bonus is unreachable and the base weight is exactly 1 — and `:Weight` is a multiplier
-  wrapped in `(uint)Math.Ceiling`, so `ceil(1 × 0.08)` is 1 and every fraction below one is inert.
-  Vanilla's own `Astral Tabby` at 0.2 and `Ixlthyxl` at 0.1 do nothing either.
-
-  I had built a documented 0.5 / 0.25 / 0.08 rarity curve on the assumption it worked, and counted
-  vanilla's ten weighted blueprints as evidence without ever asking whether their fractions did
-  anything. Nothing errors: the tag parses, the table builds, the creature spawns. Only the number is
-  a fiction.
+  The blueprints are kept in history rather than in `mod/`, to be reintroduced through explicit
+  `mod/PopulationTables.xml` entries once one variant is proven to spawn in a running game.
 
 - **(internal)** Recorded that adding genders widened what the world generates, not just the chargen list (#435).
 
@@ -427,26 +408,6 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
-- **Baboons, boars, beetles and crocs stopped getting rarer** (#171).
-
-  The creature variants shipped with a defect that made parts of the world quieter rather than more
-  varied. `AggregateWith`, the tag that lets a variant share its parent's spawn slot instead of
-  taking a new one, **inherits** — so merging it onto `Baboon` also reached `Hulking Baboon`,
-  `Shrewd Baboon` and `Baboon Hero 1`, and folded four separate spawn slots into one. Baboons in
-  the hills became roughly four times rarer. `ClockworkBeetle` — a machine — competed for the giant
-  beetle's slot, and `Sultan Croc` for the ordinary croc's. Hills lost five slots, the desert canyon
-  and the jungle four each, the ruins three.
-
-  Ten vanilla creatures now carry `*delete` on that tag, which is vanilla's own idiom for dropping
-  an inherited one, and each keeps the slot it always had. Every table is back to its vanilla slot
-  count, and the only three additions are the ones the design always intended: the marsh dog, rust
-  beetle and salt beetle each keep a biome their parent does not.
-
-  A side effect of the fix is that the variants are now easier to meet, which is what surfaced the
-  bug — a run through a dozen zones turned up one named variant where the design predicted many.
-  Within a family it is an even split now: half the dogs in the hills are brindle, half the goats on
-  the mountains are black or cragged.
-
 - **The Pronoun Set row never appeared, because character creation switched it back off** (#435).
 
   Both chargen options defaulted on and both set their flag, but only the Gender row showed up.
@@ -499,7 +460,7 @@ recorded because contributors need them, not because subscribers do.
   `validate_mod.py` fails until each is deliberately exempted. Because the list comes from the
   snapshot, a Qud patch adding a descendant to one of those families makes `snapshot-check` report
   stale, and regenerating turns the new name into a red run rather than a slow change in what the
-  world spawns. `docs/LESSONS.md` records the reasoning; `docs/FEATURES.md` §17.4b has the table.
+  world spawns. `docs/LESSONS.md` records the reasoning.
 
 - **(internal)** `tools/validate_mod.py` learned the two routes it was blind to (#171).
 
