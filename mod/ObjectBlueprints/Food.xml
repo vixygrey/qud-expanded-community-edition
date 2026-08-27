@@ -56,6 +56,20 @@
     <part Name="PreparedCookingIngredient" type="regenLowtier" charges="1" />
     <part Name="Description" Short="Hung in bunches until the bitterness turns to something closer to pepper." />
     <tag Name="Plant" />
+    <!--
+      A village's signature dish is built from its biome's ingredient pool - VillageBase.cs:2586
+      takes 80% of a dish's one to three ingredients from it - and 24 of vanilla's 40 preserved
+      cooking ingredients are tagged into one.
+
+      Not all 40, and the split is the reason this is the right pool. Every regional plant preserve
+      carries one: Starapple Preserves, Fermented Yondercane, Dried Lah Petals, Vinewafer Sheaf,
+      Fermented Yuckwheat Stem. What lacks one is mostly manufactured or placeless - Food Cube,
+      Canned Have-It-All, Crusty Loaf, Mirror Dust. These three are the first kind.
+
+      Raw snacks stay out. Starapple, Yondercane and Vinewafer carry no such tag - only what has
+      been put up for keeping is a village's stock. See docs/FEATURES.md 18.7.
+    -->
+    <tag Name="DynamicObjectsTable:Mountains_Ingredients" />
   </object>
 
   <!-- Saltmarsh. 2 beside pickles and dried lah petals, both 2. -->
@@ -98,6 +112,20 @@
     <part Name="PreparedCookingIngredient" type="plantMinor" charges="1" />
     <part Name="Description" Short="Packed in its own salt, which the marsh provided and nobody had to carry in." />
     <tag Name="Plant" />
+    <!--
+      A village's signature dish is built from its biome's ingredient pool - VillageBase.cs:2586
+      takes 80% of a dish's one to three ingredients from it - and 24 of vanilla's 40 preserved
+      cooking ingredients are tagged into one.
+
+      Not all 40, and the split is the reason this is the right pool. Every regional plant preserve
+      carries one: Starapple Preserves, Fermented Yondercane, Dried Lah Petals, Vinewafer Sheaf,
+      Fermented Yuckwheat Stem. What lacks one is mostly manufactured or placeless - Food Cube,
+      Canned Have-It-All, Crusty Loaf, Mirror Dust. These three are the first kind.
+
+      Raw snacks stay out. Starapple, Yondercane and Vinewafer carry no such tag - only what has
+      been put up for keeping is a village's stock. See docs/FEATURES.md 18.7.
+    -->
+    <tag Name="DynamicObjectsTable:Saltmarsh_Ingredients" />
   </object>
 
   <!-- BananaGrove. 8 beside the banana, also 8, and from the same grove. -->
@@ -137,5 +165,19 @@
     <part Name="PreparedCookingIngredient" type="starch" charges="1" />
     <part Name="Description" Short="Boiled down with whatever sugar the grove gave up, until it keeps." />
     <tag Name="Plant" />
+    <!--
+      A village's signature dish is built from its biome's ingredient pool - VillageBase.cs:2586
+      takes 80% of a dish's one to three ingredients from it - and 24 of vanilla's 40 preserved
+      cooking ingredients are tagged into one.
+
+      Not all 40, and the split is the reason this is the right pool. Every regional plant preserve
+      carries one: Starapple Preserves, Fermented Yondercane, Dried Lah Petals, Vinewafer Sheaf,
+      Fermented Yuckwheat Stem. What lacks one is mostly manufactured or placeless - Food Cube,
+      Canned Have-It-All, Crusty Loaf, Mirror Dust. These three are the first kind.
+
+      Raw snacks stay out. Starapple, Yondercane and Vinewafer carry no such tag - only what has
+      been put up for keeping is a village's stock. See docs/FEATURES.md 18.7.
+    -->
+    <tag Name="DynamicObjectsTable:BananaGrove_Ingredients" />
   </object>
 </objects>

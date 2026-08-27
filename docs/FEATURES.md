@@ -2975,10 +2975,39 @@ table references one**. The only dynamic pools `PopulationTables.xml` ever names
 biome-keyed family has an equivalent line. The names are built by string concatenation at runtime, so
 no amount of grepping the data will find them — which is exactly why the data grep looked conclusive.
 
-The conclusion for this feature is unchanged: a preserved ingredient placed only in that pool would
-turn up in villages rather than in the wild, which is not what these plants are for. But the reason
-is "wrong consumer", not "no consumer", and the difference matters the moment someone *does* want
-village content. `docs/LESSONS.md` carries both the correction and the reason the original search
+That sentence did more work than it should have. **A preserved ingredient placed *only* in that pool
+would turn up in villages rather than in the wild, which is not what the plants are for** — and that
+is still true, which is why the plants themselves reach the world through explicit population
+entries. What it does not settle is whether the *preserves* should also be there, and I read it as
+though it did.
+
+They should, and now are (#489). The distinction is that the plants and their preserves are
+different objects with different lives: a plant is found, a preserve is made. The three preserves
+have **no explicit population entry at all** and were never going to have one — you get them by
+harvesting and preserving. So the tag adds a route rather than replacing one, and the route it adds
+is the one vanilla uses for exactly this kind of object.
+
+| preserve | pool | pool held |
+|---|---|---|
+| `Vixy_Dried Cragwort` | `Mountains_Ingredients` | 3, all jerky |
+| `Vixy_Salted Brinereed` | `Saltmarsh_Ingredients` | 3 |
+| `Vixy_Candied Sweetfrond` | `BananaGrove_Ingredients` | **1** |
+
+**24 of vanilla's 40 preserved cooking ingredients carry one of these tags, and the split is the
+argument.** Every regional plant preserve is in — Starapple Preserves, Fermented Yondercane, Dried
+Lah Petals, Vinewafer Sheaf, Fermented Yuckwheat Stem. What is out is mostly manufactured or
+placeless: Food Cube, Canned Have-It-All, Crusty Loaf, Mirror Dust. These three are the first kind.
+Raw snacks are out too, on both sides — Starapple and Yondercane carry no tag, only what has been put
+up for keeping does.
+
+`BananaGrove_Ingredients` deserves its own note, because this fork becomes **half** of it. That is
+over the line §3.2.1 draws for the routes where a share is chosen, and it is the right call anyway:
+a signature dish asks for one to three *distinct* ingredients and retries 25 times to avoid a
+repeat, so a pool holding one member cannot serve a dish that wants two. Adding the second is closer
+to repairing the mechanic than to crowding it.
+
+The rest of the original correction stands: the reason those pools looked empty was "wrong
+consumer", not "no consumer". `docs/LESSONS.md` carries it and the reason the original search
 failed.
 
 **The six new food objects do sit in `DynamicObjectsTable:Items`**, which *is* consumed. That comes
