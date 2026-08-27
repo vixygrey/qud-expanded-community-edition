@@ -409,6 +409,26 @@ chip lands **9.09%** of the time. Under the pre-#34 replacement it was a flat 10
 Within a chip table, single chips are weight 3 and chipsets weight 1 — so a chipset is a 1-in-4
 result among that family, and each family is equally likely.
 
+**That is the only route, and it was not until #481.** `Raven_Base Psionic Chip` inherits
+`BaseArmor`, so all 144 chips descended from it and every pool the game fabricates from that base
+picked them up — `DynamicInheritsTable:BaseArmor` ran **80% to 96% this fork's at tiers 4 and
+above**, and it was chips the whole way down rather than armour.
+`DynamicObjectsTable:Items` took them too, because `FabricateDynamicObjectsTable` filters on the
+same `EncountersAPI.IsEligibleForDynamicEncounters` predicate that the inherits fabricator does.
+
+Neither was a decision anyone made. Membership follows from `Inherits=`, so there was no line in
+any diff to notice, and it quietly worked against §3.2's rule that **rarity is the access dial** for
+chips rather than price. One `<tag Name="ExcludeFromDynamicEncounters" />` on the base fixes both,
+because tags inherit — `BaseArmor:Tier8` goes 96% → 0%, and `Armor` tiers 4, 6 and 8 fall from
+61–69% to 16–19%.
+
+Nothing became harder to find: every chip is placed by hand, 48 apiece in `Raven_Chips Tier 1`–`3`
+and three apiece across the eighteen `StartingGear_` tables. What changed is that the hand-written
+rates above are now the whole story.
+
+`tools/dynamic-pools.json` pins the result, so a chip re-entering `DynamicObjectsTable:Items` fails
+a commit rather than waiting to be noticed.
+
 ---
 
 ### 3.5 A follower can wear one, and it works

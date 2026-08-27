@@ -36,6 +36,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Psionic chips could turn up as ordinary loot, which was never the intention** (#481).
+
+  `Raven_Base Psionic Chip` inherits `BaseArmor`, so all 144 chips descended from it — and the
+  game builds loot pools from a base's descendants automatically. That put every chip in
+  `DynamicInheritsTable:BaseArmor`, where this fork ran **80% to 96% of the pool at tiers 4 and
+  above**, and in `DynamicObjectsTable:Items` alongside it.
+
+  Nobody chose that. Membership follows from what a blueprint inherits, so it never appeared in a
+  diff — and it worked against the chip design, which sets rarity through the Artifact tables on
+  purpose and prices a chip only for what an unwanted one sells for.
+
+  Chips now come from where the documentation always said they come from: `Raven_Chips Tier 1`–`3`
+  through `Artifact 3`–`8`, at the hand-written rates in FEATURES §3.4, plus the starting kits.
+  **No chip became harder to find** — all 144 are placed by hand and always were. What went away is
+  a second, unchosen route around the rates.
+
 - **The chalk centipede, hoary bat and black bear lived in a table Caves of Qud has switched off**,
   and now live somewhere you will actually meet them (#476).
 
