@@ -216,6 +216,23 @@ recorded because contributors need them, not because subscribers do.
   of their own. `check_reachability` has skipped `:Weight`, `:Number` and `:Builder` since #171 —
   the knowledge existed in one tool and not in the other.
 
+- **(internal)** `no-commit-to-main` runs at commit time only, so a release tag can be pushed (#469).
+
+  The hook tests the branch you are standing on. At `pre-commit` that is the right question — it is
+  the one check CI cannot run, because it refuses the commit before it exists. But
+  `default_install_hook_types` installs `pre-push` as well and the hook set no `stages:`, so it ran
+  there too, where the same question is wrong: it refused `git push origin refs/tags/v2.7.0` from
+  `main`, which is exactly where a release tag belongs.
+
+  Tagging 2.7.0 needed `--no-verify` to get through, and that is the real cost — the workaround for a
+  guard that is wrong once is the same keystroke as the workaround for a guard that is right.
+
+  Pushes are the server's business. The `main protection` ruleset requires a pull request, forbids
+  deletion and non-fast-forward, demands linear history and passing checks, and lists **no bypass
+  actors**. Worth knowing while checking that: it is a *ruleset*, so
+  `GET /branches/main/protection` answers `404 Branch not protected` and the repo looks unguarded if
+  you ask the classic way.
+
 - **(internal)** A zone is never tier 0, so `{zonetier}` cannot ask for a Tier0 slice (#537).
 
   #533 fixed the offset forms and deliberately kept a bare `{zonetier}` at tiers 0–8, on the grounds
