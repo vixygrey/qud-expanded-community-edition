@@ -938,6 +938,36 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                     )
 
 
+def check_role_form(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """`Role` declared as a `<property>` rather than a `<tag>`.
+
+    Both work. Every consumer in the assembly reads whichever store the value is in - the
+    population weighting asks `Tags.TryGetValue("Role", ...) || Props.TryGetValue("Role", ...)`,
+    `GetPropertyOrTag` tries properties first and `GetTagOrStringProperty` tries tags first - so
+    this is a convention, not a defect in the mod.
+
+    It is checked because it made a *tool* wrong. `report_dynamic_tables.py` read Role from tags,
+    the way vanilla declares it 349 times and never otherwise, and this fork's thirteen properties
+    were invisible to it - weighting a Rare item at x1 instead of x0.01 and putting `BaseShield`
+    Tier8 at 97% when it is 69% (#520). The report now reads both, so nothing depends on this
+    check; it exists so the divergence cannot come back and quietly disagree with something else.
+
+    Vanilla's own tier-8 weapons are the precedent, and they are the closest thing in the game to
+    what this fork's Zetachrome items are: `Long Sword8` is `<tag Name="Tier" Value="8" />` and
+    `<tag Name="Role" Value="Rare" />`, both tags.
+    """
+    for path, root in blueprint_sources(all_roots).items():
+        for obj in root.iter("object"):
+            for el in obj.findall("property"):
+                if el.get("Name") != "Role":
+                    continue
+                f.add(
+                    "role-form",
+                    f'{path}: <object Name="{obj.get("Name")}"> declares Role as a <property>; '
+                    "vanilla declares it as a <tag> 349 times and as a property never",
+                )
+
+
 def _naming_roots(all_roots: dict[Path, ET.Element]) -> dict[Path, ET.Element]:
     """Qud resolves modded XML by root element, not filename — so this is `<naming>`, not
     `Naming.xml`. STYLEGUIDE.md section 1."""
@@ -2899,6 +2929,7 @@ def run() -> Findings:
     check_damage_ceiling(f, roots)
     check_weight_curve(f, roots)
     check_tag_form(f, roots)
+    check_role_form(f, roots)
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
     check_scatter_share(f, roots)

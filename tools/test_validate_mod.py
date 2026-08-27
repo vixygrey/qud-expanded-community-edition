@@ -2004,6 +2004,42 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    # ---------------------------------------------------------------------- role-form
+
+    def _role_form(self, blueprints: str):
+        return findings_for(validate_mod.check_role_form, self._mod(blueprints))
+
+    def test_role_as_a_property_is_reported(self) -> None:
+        """#520: both stores work, and reading only one of them made the pool report wrong."""
+        items = self._role_form(
+            '  <object Name="Raven_Zetachrome Shield">\n'
+            '    <property Name="Role" Value="Rare" />\n  </object>'
+        )
+        self.assertTrue(items, "Role declared as a property was not reported")
+        self.assertEqual(items[0][0], "role-form")
+        self.assertIn("Raven_Zetachrome Shield", items[0][1])
+
+    def test_role_as_a_tag_is_quiet(self) -> None:
+        """Vanilla's own form - `Long Sword8` is `<tag Name="Role" Value="Rare" />`."""
+        self.assertEqual(
+            self._role_form(
+                '  <object Name="Raven_Zetachrome Shield">\n'
+                '    <tag Name="Role" Value="Rare" />\n  </object>'
+            ),
+            [],
+        )
+
+    def test_another_property_is_left_alone(self) -> None:
+        """Scoped to Role. Properties are a legitimate declaration and most of them have no
+        tag-shaped twin to be inconsistent with."""
+        self.assertEqual(
+            self._role_form(
+                '  <object Name="Vixy_Thing">\n'
+                '    <property Name="Ammo" Value="Arrow" />\n  </object>'
+            ),
+            [],
+        )
+
     def test_a_name_vanilla_never_writes_carries_no_opinion(self) -> None:
         """Vixy_CreatureVariant is read only by this mod's own C#, so nothing can judge it."""
         self.assertEqual(
