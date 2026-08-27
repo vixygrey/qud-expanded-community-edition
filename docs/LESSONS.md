@@ -1519,9 +1519,10 @@ before writing the curve, and check what the value is multiplied *by* rather tha
 entire weight design.
 
 **The postscript is worse than the lesson.** All of the above is true, and none of it mattered:
-`DynamicObjectsTable:<Biome>_Creatures` has no consumer at all, so the weights I was so carefully
-computing governed a pool the game never rolls. I audited the arithmetic of a mechanism twice
-without once asking whether anything called it. See the entry below.
+`DynamicObjectsTable:<Biome>_Creatures` is not rolled by anything that populates a zone, so the
+weights I was so carefully computing governed a pool no hillside consults. I audited the arithmetic
+of a mechanism twice without once asking what called it. (It *is* called — by village generation.
+See the entries below, including the correction.)
 
 **The mechanism that did work was three lines further down the same method.** `AggregateWith` bundles
 a family into one slot weighted by its max member, which is how vanilla stops the eight snapjaws from
@@ -1569,10 +1570,16 @@ change in what the world spawns.
 ## Count the consumers before you count anything else
 
 Everything above about creature spawn weights is accurate and was worth nothing, because
-`DynamicObjectsTable:<Biome>_Creatures` **has no consumer**. 191 vanilla creature blueprints tag
-themselves into those tables. Nothing draws from them. `Hills_Creatures` appears in exactly one file
-in the entire game — `ObjectBlueprints/Creatures.xml`, where creatures declare membership — and no
-population table references it, no zone builder requires it.
+`DynamicObjectsTable:<Biome>_Creatures` **does not put a creature in a zone**. 191 vanilla creature
+blueprints tag themselves into those tables. No population table references one, and no zone builder
+requires one.
+
+> **Corrected later, and the correction is the more useful fact.** I originally wrote that these
+> pools have *no consumer at all*, on the strength of finding nothing in `Assembly-CSharp.dll`. That
+> search was wrong — see *"strings cannot see a .NET string literal"* below — and every biome-keyed
+> pool does have a consumer: **procedural village generation**, in `VillageBase.cs:167`,
+> `Village.cs:734` and `VillageCoda.cs:1369`. So the tag was not inert. It was for villagers, and I
+> was expecting wilderness.
 
 Biome creatures come from ordinary hand-written populations. `HillsZoneGlobals-Reachable` lists
 `Goat`, `Dog`, `Boar` and `Salamander` as explicit `<object Blueprint=>` entries, which is exactly
@@ -1599,18 +1606,58 @@ design predicted half variants, and reported it. Every static check passed throu
 odds of that blueprint appearing in each — it is the fastest way to answer "does my thing actually
 spawn", and one run of it would have settled in seconds what I spent hours inferring.
 
-**The rule generalises, and #177 is where I found out how far.** Adding harvestable plants, the
-obvious way to distribute a preserved cooking ingredient was `DynamicObjectsTable:<Biome>_Ingredients`
-— 73 vanilla blueprints tag themselves into twelve of those pools. None of the twelve has a consumer
-either. `_Ingredients` does not appear in `Assembly-CSharp.dll` at all, and no population table names
-one.
+**The rule generalises, and #177 is where I found out how far — then how far it does not.** Adding
+harvestable plants, the obvious way to distribute a preserved cooking ingredient was
+`DynamicObjectsTable:<Biome>_Ingredients`. No population table names one, so I wrote that the whole
+biome-keyed family was decoration and that only flat pools — `Ammo`, `Chests`, `Corpses`,
+`EnergyCells`, `Guns`, `Items` and the rest — are ever rolled.
 
-Checking the whole family rather than the one pool I needed turned a coincidence into a rule. Every
-dynamic pool `PopulationTables.xml` actually rolls is **flat** — `Ammo`, `Chests`, `Corpses`,
-`EnergyCells`, `Guns`, `Headwear`, `Items`, `Snapjaws`, `Trinkets` and eight more. Every
-**biome-keyed** pool — `<Biome>_Creatures`, `<Biome>_Ingredients`, `<Biome>_Plants` — is declared and
-never read.
+**That was wrong, and it stayed wrong in three documents until a playtest question sent me back.**
+Every biome-keyed pool is rolled, from C# rather than from data:
 
-> **The consumed set is the short one, so enumerate it once instead of asking per pool.**
-> `grep -oh 'DynamicObjectsTable:[A-Za-z_]*' PopulationTables.xml | sort -u` is the whole list, and
-> it takes a second. Anything not in it is decoration, however many vanilla blueprints carry it.
+| pool | rolled by |
+|---|---|
+| `<Biome>_Creatures` | `VillageBase.cs:167`, `Village.cs:734`, `VillageCoda.cs:1369` |
+| `<Biome>_Ingredients` | `VillageBase.cs:2586`, `VillageCodaBase.cs:2866` |
+| `<Biome>_Plants` | `VillageBase.cs:1430`, `VillageCodaBase.cs:1705` |
+| `<Biome>_FarmablePlants` | `VillageBase.cs:1412` |
+
+They are all **procedural village generation** — who lives there, what they farm, what the walls are
+made of. Not zone spawns. So the #171 tags were never inert; they were pointed at villages while I
+was watching hillsides.
+
+> **Two consumers, and only one of them was mine.** "Does anything read this?" is the wrong
+> question. The right one is **"does the thing that reads it run where I need my content to
+> appear?"** A pool with a real consumer can still be the wrong pool.
+
+The grep shortcut I wrote here — enumerate `DynamicObjectsTable:` out of `PopulationTables.xml` and
+treat anything absent as decoration — is **necessary but not sufficient**, and stating it as
+sufficient is what produced the error. Pool names are built at runtime by string concatenation, so
+they cannot be found by grepping data at all.
+
+## `strings` cannot see a .NET string literal
+
+Three of my findings rested on `strings Assembly-CSharp.dll | grep …` coming back empty, and all
+three were wrong. .NET stores string literals in the metadata `#US` heap as **UTF-16**, and `strings`
+reads ASCII by default — so it finds *identifiers* (method and type names, which are UTF-8) and
+silently misses every literal. macOS `strings` has no `-e` flag to fix it either.
+
+Recovering them takes four lines:
+
+```python
+import re
+b = open(dll, 'rb').read()
+literals = {m.decode('utf-16-le') for m in re.findall(rb'(?:[\x20-\x7e]\x00){3,}', b)}
+```
+
+That turns up 28,872 literals in this build, including the `_Ingredients`, `_Creatures` and `_Plants`
+suffixes I had reported as absent.
+
+> **An empty grep is only evidence if the grep could have found the thing.** The failure mode is
+> especially nasty here because a *partial* result looks like a working method: identifier searches
+> returned plausible hits all along, so nothing signalled that literal searches were returning
+> nothing on principle.
+
+The reliable answer is to decompile and grep the source: `ilspycmd -o <dir> -p Assembly-CSharp.dll`
+writes 5,435 `.cs` files in a couple of minutes, and a grep over those finds the call site with its
+containing method, which is what actually answers the question.

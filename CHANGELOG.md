@@ -36,6 +36,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** I documented, in five places, that Qud's biome-keyed dynamic pools have no consumer.
+  They all do (#177, #171).
+
+  `DynamicObjectsTable:<Biome>_Creatures`, `_Ingredients`, `_Plants` and `_FarmablePlants` are every
+  one of them rolled — by **procedural village generation**, which decides who lives in a village,
+  what they farm, and what the walls are made of. `VillageBase.cs` alone rolls all four.
+
+  The original finding still holds where it matters: those pools do not put anything in a *zone*, so
+  the 32 creature variants distributed by tag in #171 really never spawned. But "no consumer" and
+  "a consumer that runs somewhere else" are different facts, and only the second one is true.
+
+  **Why the search failed is worth more than the correction.** I checked the assembly with `strings`,
+  which reads ASCII — and .NET keeps string literals in the metadata `#US` heap as UTF-16. So it
+  found method and type names all along while silently finding no literals at all, which looks
+  exactly like a working search. `docs/LESSONS.md` now carries both the corrected rule and the four
+  lines of Python that read the literals properly.
+
 - **Psionic chips could turn up as ordinary loot, which was never the intention** (#481).
 
   `Raven_Base Psionic Chip` inherits `BaseArmor`, so all 144 chips descended from it — and the

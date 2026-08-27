@@ -24,9 +24,10 @@
        and in nothing else: no <stat>, no part beyond Render.
 
        The first attempt at this shipped 32 of them and none ever spawned, because they were
-       distributed with a DynamicObjectsTable:<Biome>_Creatures tag and **nothing in the game reads
-       those tables**. Hills_Creatures is named in exactly one file - the one where creatures
-       declare membership - and no population table references it. See docs/LESSONS.md.
+       distributed with a DynamicObjectsTable:<Biome>_Creatures tag, and **that tag does not put a
+       creature in a zone**. No population table references one. It is rolled by procedural village
+       generation instead (VillageBase.cs:167), so it decides who lives in a village - which is not
+       nothing, but is not a hillside. See docs/LESSONS.md.
 
        Biome creatures come from ordinary populations, so this one is distributed the way every
        other piece of this fork's content is: an explicit entry in mod/PopulationTables.xml, merged
@@ -57,9 +58,10 @@
 
        Distribution is by explicit entry in mod/PopulationTables.xml, which is how everything else
        in this fork reaches the world. The first attempt used DynamicObjectsTable:<Biome>_Creatures
-       tags and none of the 32 ever spawned, because nothing in the game reads those tables - see
-       docs/LESSONS.md. Every target table here was checked for a consumer before a line was
-       written, and the dun goat was shipped alone and walked in a running game first. -->
+       tags and none of the 32 ever spawned, because those tables populate villages rather than
+       zones - see docs/LESSONS.md. Every target table here was checked for the *right* consumer
+       before a line was written, and the dun goat was shipped alone and walked in a running game
+       first. -->
   <object Name="Vixy_BrindleDog" Inherits="Dog">
     <part Name="Render" DisplayName="{{w|brindle dog}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="K" />
     <tag Name="Vixy_CreatureVariant" />
