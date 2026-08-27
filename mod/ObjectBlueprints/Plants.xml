@@ -23,7 +23,20 @@
 
        Tiles are vanilla's, recoloured. That is the same route the creature variants took in #171,
        and it is why these cost no art: new sprites are parked, and the reasons are in the
-       design notes rather than cheap to revisit. -->
+       design notes rather than cheap to revisit.
+
+       The Fiber, FiberMaterial and Plank stags are overrides, not additions. Inheriting from Plant
+       carries its defaults - strip, bark, plank - and a playtest showed all three in the semantic
+       tables reading as bark off a reed and planks off scrub. Vanilla does not accept those
+       defaults either: 17 of its plants override at least one. Each of these takes a named
+       neighbour rather than a guess, and only where the default is wrong:
+
+         cragwort   twine / thatch / thatch  - slime grass's set, the same grass idiom
+         brinereed  rope / fibre / bundle    - brinestalk's set, its own biome's own reed
+         sweetfrond      / fibre / frond     - frond is Yempuris's word; Fiber stays the
+                                               inherited 'strip', which is right for a broad leaf
+
+       Nothing checks these. -->
 
   <!-- Mountains: scrub clinging to rock, ochre against grey. -->
   <object Name="Vixy_Cragwort" Inherits="Plant">
@@ -55,6 +68,9 @@
       Name="Description"
       Short="It takes the mountain at its word and grows anyway, prising a living out of a seam too narrow to name. The sprigs come away bitter and smelling of cold stone."
     />
+    <stag Name="Fiber" Value="twine" />
+    <stag Name="FiberMaterial" Value="thatch" />
+    <stag Name="Plank" Value="thatch" />
   </object>
 
   <!-- Saltmarsh: brackish reed, green stem going salt-white at the tip. -->
@@ -87,6 +103,9 @@
       Name="Description"
       Short="Salt creeps up the stem and stops, a tidemark drawn each night and redrawn each morning. The shoots below it stay sweet; the ones above crust over and snap."
     />
+    <stag Name="Fiber" Value="rope" />
+    <stag Name="FiberMaterial" Value="fibre" />
+    <stag Name="Plank" Value="bundle" />
   </object>
 
   <!-- BananaGrove: broad understory leaf, bright green going yellow. -->
@@ -120,5 +139,7 @@
       Name="Description"
       Short="It grows in the shade the banana trees cast and asks nothing else of them. Split a frond lengthwise and the heart is pale, dense and faintly sweet, like something kept back for later."
     />
+    <stag Name="FiberMaterial" Value="fibre" />
+    <stag Name="Plank" Value="frond" />
   </object>
 </objects>

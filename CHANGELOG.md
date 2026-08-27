@@ -24,6 +24,11 @@ recorded because contributors need them, not because subscribers do.
   plants, most reach one or two, and the starapple tree is in nearly all of them. These three go to
   the biomes whose cooking-ingredient pools are emptiest — the banana grove had exactly one.
 
+  Their fiber, thatch and plank yields are set rather than inherited. Every plant inherits
+  vanilla's `Plant` defaults — strip, bark, plank — and left alone that means bark off a reed and
+  planks off mountain scrub. Vanilla overrides them on 17 of its own plants, so these three take a
+  named neighbour each: the brinereed takes brinestalk's, its own marsh's own reed.
+
   They introduce no new cooking effects. `regenLowtier`, `plantMinor` and `starch` are all effects
   vanilla plants already carry, so what the kitchen gains is ingredients rather than behaviour. How
   often a plant is ripe is derived from vanilla's own band rather than picked: all three sit between

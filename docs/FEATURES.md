@@ -2827,7 +2827,29 @@ So each price is anchored to a named vanilla neighbour instead:
 | sweetfrond heart | 8 | the banana, 8 — from the same grove |
 | candied sweetfrond | 8 | sun-dried banana, 8 — likewise |
 
-### 18.5 The catalogue
+### 18.5 Three tags that came with the base, and had to be corrected
+
+Inheriting from vanilla's `Plant` carries `Fiber="strip"`, `FiberMaterial="bark"` and
+`Plank="plank"`. Nothing in this fork wrote them, and a playtest found all three in the semantic
+tables — a reed yielding **bark**, mountain scrub yielding **planks**.
+
+Vanilla does not accept its own defaults either: **17 of its plants override at least one**. So each
+of these takes a named neighbour rather than a guess, and only where the default is wrong:
+
+| plant | Fiber | FiberMaterial | Plank | taken from |
+|---|---|---|---|---|
+| cragwort | twine | thatch | thatch | slime grass — the same grass idiom |
+| brinereed | rope | fibre | bundle | brinestalk, the saltmarsh's own reed |
+| sweetfrond | *(inherited `strip`)* | fibre | frond | `frond` is Yempuris's word |
+
+`stag` rather than `tag`, which is what vanilla uses for all three: 26 of 26 for `Plank`, 14 of 14
+for `FiberMaterial`.
+
+This is the charter's "know the blast radius" in miniature. The blast radius of `Inherits="Plant"`
+is three tags nobody wrote, and **only the game showed them** — every static check passed. Nothing
+checks these values.
+
+### 18.6 The catalogue
 
 | plant | biome | yield | preserved into | cooking effect |
 |---|---|---|---|---|
@@ -2835,7 +2857,7 @@ So each price is anchored to a named vanilla neighbour instead:
 | brinereed | Saltmarsh | brinereed shoot | salted brinereed | `plantMinor` |
 | sweetfrond | BananaGrove | sweetfrond heart | candied sweetfrond | `starch` |
 
-### 18.6 The ingredient pools have no consumer either
+### 18.7 The ingredient pools have no consumer either
 
 `DynamicObjectsTable:<Biome>_Ingredients` looks like the obvious way to distribute a preserved
 ingredient — 73 vanilla blueprints tag themselves into twelve of these pools. **Nothing rolls any of
