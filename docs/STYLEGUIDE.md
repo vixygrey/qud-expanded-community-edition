@@ -360,7 +360,18 @@ exempt (#373) — a rule nothing has ever followed is not a rule being broken.
 Exemptions are decided by **part composition** rather than a word in the name, since a name match is
 the failure #354 removed from tier detection. A `MissileWeapon`, an `EnergyCell`, a `Backpack` or a
 `Trinket` tag exempts; so does an `Armor` part granting **no AV**, which is a slot occupier rather
-than armour. Anything else with a price is held to the curve.
+than armour. A `Food` or `PreparedCookingIngredient` part exempts too. Anything else with a price is
+held to the curve.
+
+**Food is the one exemption I declared before the category existed**, and it is worth saying why.
+Every other one was written after measuring what this fork already shipped — 0 of 5 ranged weapons,
+0 of 4 cells. This fork ships no priced food at all, so that test reads 0 of 0 and settles nothing.
+Vanilla settles it instead: of its **32** edibles carrying both a `Tier` tag and a price, **none**
+sits on the curve, at ratios from 0.006 (mopango corpse, 2 against a curve of 320) to 6.25 (black
+puma haunch, 250 against 40). A thousandfold spread is the absence of a curve, not drift from one —
+a saltwurm corpse and a crystal of Eve share tier 8 and nothing else. Food is priced by what eating
+it does. Declaring the exemption up front is what stops the first edible this fork adds from being
+silently priced against a rule that has never described anything here (#177).
 
 **A merge keeps vanilla's value, unless it also changes the item's tier.** The curve describes this
 fork's own items; imposing it on a vanilla blueprint is the same shape as the `MeleeWeapon.Stat`

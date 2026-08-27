@@ -271,6 +271,9 @@ def curve_exempt(obj: ET.Element, name: str) -> str | None:
     A category the convention has never once described is not 22 defects; it is a category the
     convention does not cover. #373.
 
+    Food is the one exemption declared ahead of the content rather than after it, because vanilla
+    settles the question on its own: **0 of its 32** tiered, priced edibles sit on the curve (#177).
+
     Checked by part composition rather than by a word in the name, because a name match is the
     failure #354 removed from tier detection and there is no reason to reintroduce it here.
     """
@@ -290,6 +293,16 @@ def curve_exempt(obj: ET.Element, name: str) -> str | None:
         return "containers are priced by what they carry"
     if any(e.get("Name") == "Trinket" for e in obj.findall("tag")):
         return "a trinket is priced against its vanilla sibling, not the curve"
+    if parts & {"Food", "PreparedCookingIngredient"}:
+        # Food is priced by what eating it does, and the curve prices tier. Vanilla is emphatic
+        # about this: of its 32 edibles carrying both a Tier tag and a price, **0 sit on the
+        # curve**, at ratios from 0.006 (mopango corpse, 2 against 320) to 6.25 (black puma
+        # haunch, 250 against 40). A thousandfold spread is not drift from a curve, it is the
+        # absence of one - a saltwurm corpse and a crystal of Eve share tier 8 and nothing else.
+        # This fork ships no priced food yet, so the #373 test reads 0 of 0 rather than 0 of N;
+        # the exemption is declared before the category exists precisely so the first item added
+        # is not silently priced against a rule that has never described anything here (#177).
+        return "food is priced by effect, not by tier"
 
     armor = next((e for e in obj.findall("part") if e.get("Name") == "Armor"), None)
     if armor is not None and not (armor.get("AV") or "").strip("0 "):

@@ -7,4 +7,135 @@
   <object Name="Witchwood Bark" Load="Merge">
     <part Name="Physics" Weight="0" />
   </object>
+
+  <!-- Harvest yields and their preserved forms (#177).
+
+       Each plant in mod/ObjectBlueprints/Plants.xml yields a Snack, and each Snack preserves into
+       an ingredient carrying a cooking effect vanilla already defines. No new effect type is
+       introduced: regenLowtier, plantMinor and starch are all in use on vanilla plants today, so
+       the cooking system gains ingredients rather than behaviour.
+
+       Prices are anchored to a named vanilla neighbour rather than to the value curve, which does
+       not describe food - of vanilla's 32 tiered, priced edibles, none sits on it. The curve
+       exempts food for that reason; see docs/STYLEGUIDE.md 3.2. -->
+
+  <!-- Mountains. 4 beside witchwood bark, also 4, also a mountain harvest. -->
+  <object Name="Vixy_Cragwort Sprig" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{w|cragwort sprig}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;w"
+      DetailColor="W"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="0"
+      Healing="0"
+      Message="It is bitter, and grit crunches between your teeth."
+    />
+    <part Name="PreservableItem" Result="Vixy_Dried Cragwort" Number="3" />
+    <part Name="Description" Short="Woody and grey-green, cut close to the root where the stem is still soft." />
+  </object>
+
+  <object Name="Vixy_Dried Cragwort" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="dried {{w|cragwort}}"
+      Tile="Items/sw_grass_bundle.bmp"
+      RenderString="%"
+      ColorString="&amp;w"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part Name="PreparedCookingIngredient" type="regenLowtier" charges="1" />
+    <part Name="Description" Short="Hung in bunches until the bitterness turns to something closer to pepper." />
+    <tag Name="Plant" />
+  </object>
+
+  <!-- Saltmarsh. 2 beside pickles and dried lah petals, both 2. -->
+  <object Name="Vixy_Brinereed Shoot" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{g|brinereed shoot}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;g"
+      DetailColor="W"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="2" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="0"
+      Healing="0"
+      Message="It is crisp, and salt prickles at the back of your tongue."
+    />
+    <part Name="PreservableItem" Result="Vixy_Salted Brinereed" Number="3" />
+    <part
+      Name="Description"
+      Short="A hand's length of pale stem, taken from below the tidemark where the salt has not reached."
+    />
+  </object>
+
+  <object Name="Vixy_Salted Brinereed" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="salted {{g|brinereed}}"
+      Tile="Items/sw_vinewafer_sheaf.bmp"
+      RenderString="%"
+      ColorString="&amp;g"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="2" />
+    <part Name="PreparedCookingIngredient" type="plantMinor" charges="1" />
+    <part Name="Description" Short="Packed in its own salt, which the marsh provided and nobody had to carry in." />
+    <tag Name="Plant" />
+  </object>
+
+  <!-- BananaGrove. 8 beside the banana, also 8, and from the same grove. -->
+  <object Name="Vixy_Sweetfrond Heart" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{G|sweetfrond heart}}"
+      Tile="Items/sw_urberry.bmp"
+      ColorString="&amp;G"
+      DetailColor="W"
+      RenderString="%"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="8" />
+    <part
+      Name="Food"
+      Satiation="Snack"
+      Thirst="0"
+      Healing="0"
+      Message="It is dense and faintly sweet, and takes a while to chew."
+    />
+    <part Name="PreservableItem" Result="Vixy_Candied Sweetfrond" Number="3" />
+    <part Name="Description" Short="The pale core of a split frond, cool to the touch and heavier than it looks." />
+  </object>
+
+  <object Name="Vixy_Candied Sweetfrond" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="candied {{G|sweetfrond}}"
+      Tile="Items/sw_urberry.bmp"
+      RenderString="%"
+      ColorString="&amp;G"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="8" />
+    <part Name="PreparedCookingIngredient" type="starch" charges="1" />
+    <part Name="Description" Short="Boiled down with whatever sugar the grove gave up, until it keeps." />
+    <tag Name="Plant" />
+  </object>
 </objects>

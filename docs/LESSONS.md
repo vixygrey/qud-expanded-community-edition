@@ -1598,3 +1598,19 @@ design predicted half variants, and reported it. Every static check passed throu
 `population:findblueprint <name>` enumerates every table in `PopulationManager.Populations` with the
 odds of that blueprint appearing in each — it is the fastest way to answer "does my thing actually
 spawn", and one run of it would have settled in seconds what I spent hours inferring.
+
+**The rule generalises, and #177 is where I found out how far.** Adding harvestable plants, the
+obvious way to distribute a preserved cooking ingredient was `DynamicObjectsTable:<Biome>_Ingredients`
+— 73 vanilla blueprints tag themselves into twelve of those pools. None of the twelve has a consumer
+either. `_Ingredients` does not appear in `Assembly-CSharp.dll` at all, and no population table names
+one.
+
+Checking the whole family rather than the one pool I needed turned a coincidence into a rule. Every
+dynamic pool `PopulationTables.xml` actually rolls is **flat** — `Ammo`, `Chests`, `Corpses`,
+`EnergyCells`, `Guns`, `Headwear`, `Items`, `Snapjaws`, `Trinkets` and eight more. Every
+**biome-keyed** pool — `<Biome>_Creatures`, `<Biome>_Ingredients`, `<Biome>_Plants` — is declared and
+never read.
+
+> **The consumed set is the short one, so enumerate it once instead of asking per pool.**
+> `grep -oh 'DynamicObjectsTable:[A-Za-z_]*' PopulationTables.xml | sort -u` is the whole list, and
+> it takes a second. Anything not in it is decoration, however many vanilla blueprints carry it.

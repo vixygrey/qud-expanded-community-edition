@@ -1871,6 +1871,17 @@ class CurveExemptions(unittest.TestCase):
     def test_containers_are_exempt(self) -> None:
         self.assertEqual(self._curve(self._obj('    <part Name="Backpack" />\n')), [])
 
+    def test_food_is_exempt(self) -> None:
+        """0 of vanilla's 32 tiered, priced edibles sit on the curve (#177)."""
+        self.assertEqual(self._curve(self._obj('    <part Name="Food" />\n')), [])
+
+    def test_prepared_cooking_ingredients_are_exempt(self) -> None:
+        """A preserved ingredient carries no Food part, only the cooking one."""
+        self.assertEqual(
+            self._curve(self._obj('    <part Name="PreparedCookingIngredient" />\n')),
+            [],
+        )
+
     def test_trinkets_are_exempt(self) -> None:
         self.assertEqual(
             self._curve(
