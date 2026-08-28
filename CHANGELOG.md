@@ -237,6 +237,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** The wiki reads a parasang's X from the wrong side, and `WIKI.md` now says so
+  (#550).
+
+  [Intro - Zones and Worlds](https://wiki.cavesofqud.com/wiki/Modding:Intro_-_Zones_and_Worlds) puts
+  the top-left parasang at (0, 0) and the bottom-right at (79, 24), then two sentences later reads
+  `JoppaWorld.53.3.1.1.10` as "the 53rd tile from the right". `WorldFactory.BuildZoneNameMap` walks
+  parasang X from 0 to 79 in map order, so it is counted from the left and the example is off by
+  `79 - 53 = 26` parasangs on a map eighty wide.
+
+  Found while investigating #470, which leaned on that page for everything else it says — the
+  parasang definition, the `World.wX.wY.X.Y.Z` format, zone coordinates running 0–2, `Z = 10` as the
+  surface. All of that is correct.
+
+  Unlike the three rows already in that section, this is the page contradicting itself rather than
+  the game moving on, so the section's opening line now allows for both. It also means the
+  correction needs no version note and is a one-word fix upstream.
+
 - **(internal)** Two documents still described the Joppa removal system that #498 deleted (#549).
 
   `docs/DESIGN_options.md` recorded the removal correctly and the other two did not follow.

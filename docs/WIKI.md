@@ -112,8 +112,9 @@ type to go and read.
 ## Where the wiki and the assembly disagree
 
 The wiki is written by people, some of it years ago, and I have found places where the game has
-moved on. These are the ones I have checked against the decompiled assembly myself. The assembly
-wins; the wiki entry is noted so nobody re-derives the same correction.
+moved on — and one where a page contradicts itself. These are the ones I have checked against the
+decompiled assembly myself. The assembly wins; the wiki entry is noted so nobody re-derives the same
+correction.
 
 **`<tag Value="*delete">` is not broken, in either of the two ways the wiki says it is.**
 [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) says it "appears to currently be broken
@@ -147,6 +148,28 @@ twenty-four, and none matches the runtime shapes either.
 `DynamicInheritsTable` and `DynamicSemanticTable`. `PopulationManager.RequireTable` also dispatches
 `StaticObjectsTable:`, `DynamicArtifactsTable:` and `DynamicHasPartTable:`, the last of which takes a
 `:Tier` slice the same way the documented ones do.
+
+**A parasang's X is counted from the left, and the coordinate example says right.**
+[Intro - Zones and Worlds](https://wiki.cavesofqud.com/wiki/Modding:Intro_-_Zones_and_Worlds) sets
+the frame correctly — the top-left parasang of the world map is (0, 0), the bottom-right is
+(79, 24) — and then, two sentences later, reads `JoppaWorld.53.3.1.1.10` as being in "the 53rd tile
+from the *right*". Only one of those can be true.
+
+The assembly says left. `WorldFactory.BuildZoneNameMap` walks parasang X from 0 to 79 and Y from 0
+to 24, assembling zone IDs in that order, and `Zone` converts back with
+`Location2D.Get(ParasangX * 3 + ZoneX, ParasangY * 3 + ZoneY)` — so parasang X grows with map X, and
+map X grows rightward from the origin the page itself puts at top left. Nothing anywhere counts from
+the other side.
+
+The size of it is `79 - 53 = 26`. A `goto:` wish or a landing zone derived from that example lands
+twenty-six parasangs from where its reader meant, on a map eighty wide, and the page gives no reason
+to suspect it. Everything else there is sound and I leaned on all of it while investigating #470 —
+the parasang definition, the `World.wX.wY.X.Y.Z` format, zone coordinates running 0–2, `Z = 10` as
+the surface stratum.
+
+**This one is the page against itself, not the game moving on**, which changes what to do about it.
+There is no version of Qud where it was right, so the correction needs no version note, and it is a
+one-word fix worth offering upstream.
 
 ## Refreshing this index
 
