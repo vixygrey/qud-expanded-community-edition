@@ -1287,7 +1287,7 @@
   </population>
 
   <population Name="DesertCanyonZoneGlobals" Load="Merge">
-    <object Chance="35" Number="12-24" Blueprint="Vixy_Shadetooth" />
+    <object Chance="35" Number="12-24" Blueprint="Vixy_Shadetooth" Hint="Any" />
     <group Name="Creatures" Load="Merge">
       <!-- GiantDragonfly 25/2d6 -->
       <object Chance="25" Number="1d6" Blueprint="Vixy_EmberDragonfly" />
@@ -1323,7 +1323,10 @@
   </population>
 
   <population Name="JungleZoneGlobals" Load="Merge">
-    <object Chance="55" Number="30-50" Blueprint="Vixy_Broadglove" />
+    <!-- Hint="Any" for the reason in the harvestable-plants block below (#542). The jungle
+         template supplies no default hint, so without one this entry loses same-blueprint
+         deduplication and two broadgloves can share a cell. -->
+    <object Chance="55" Number="30-50" Blueprint="Vixy_Broadglove" Hint="Any" />
     <group Name="Creatures" Load="Merge">
       <!-- Boar 5/1-2 -->
       <object Chance="5" Number="1" Blueprint="Vixy_RussetBoar" />
@@ -1401,23 +1404,45 @@
        zone holds; the derivation and the resulting figures are in mod/ObjectBlueprints/Plants.xml.
        Do not change a Number here without recomputing it there.
 
+       Every entry carries Hint="Any", and that is load-bearing rather than decorative (#542).
+       Whether a scatter placement deduplicates is decided per biome in ZoneTemplates.xml, which
+       passes a default hint down to PlacePopulationInRegion. A hinted placement runs
+
+           Points.RemoveAll(l => !Z.GetCell(l).IsEmpty() || Z.GetCell(l).HasObject(Blueprint));
+
+       and that second clause is the only thing stopping two of the same plant landing in one cell.
+       Hills, Mountains and DesertCanyon pass Hint="Any" already; Jungle, SaltMarsh and BananaGrove
+       pass nothing, and there placement falls through to a path that filters on IsEmpty() alone -
+       which returns false only above RenderLayer 5, so it cannot see a plant that is already there.
+       The visible symptom is "You pass by a brinereed and a brinereed", since Grammar.MakeAndList
+       neither deduplicates nor counts. A per-entry hint overrides the template, and "Any" proposes
+       every location, so it constrains nothing and only selects the checked code path.
+
+       It does drop the fallback's IsReachable() filter, so a plant may land in a sealed pocket.
+       Vanilla accepts that in the three biomes that pass "Any", harvestable starapple trees
+       included, and a Solid="false" plant cannot wall anything in.
+
+       Only three of the six need it. It is written on all six anyway: the entry is where the
+       invariant is readable, and stating it here means these placements stop depending on a vanilla
+       file this mod does not control.
+
        Share stays small on purpose: one entry against vanilla's 4 in Mountains, 9 in Saltmarsh and
        6 in BananaGrove. -->
 
   <population Name="MountainsZoneGlobals" Load="Merge">
-    <object Chance="40" Number="12-24" Blueprint="Vixy_Cragwort" />
+    <object Chance="40" Number="12-24" Blueprint="Vixy_Cragwort" Hint="Any" />
   </population>
 
   <population Name="HillsZoneGlobals" Load="Merge">
-    <object Chance="40" Number="16-28" Blueprint="Vixy_Rimeburr" />
+    <object Chance="40" Number="16-28" Blueprint="Vixy_Rimeburr" Hint="Any" />
   </population>
 
   <population Name="SaltMarshZoneGlobals" Load="Merge">
-    <object Chance="60" Number="40-60" Blueprint="Vixy_Brinereed" />
+    <object Chance="60" Number="40-60" Blueprint="Vixy_Brinereed" Hint="Any" />
   </population>
 
   <population Name="BananaGroveZoneGlobals" Load="Merge">
-    <object Chance="50" Number="10-18" Blueprint="Vixy_Sweetfrond" />
+    <object Chance="50" Number="10-18" Blueprint="Vixy_Sweetfrond" Hint="Any" />
   </population>
 
   <!-- The Trembling Dunes three, rehomed (#476).

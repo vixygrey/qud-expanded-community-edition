@@ -1980,3 +1980,49 @@ starapple `&g` → `&R`, noisegrass `&K` → `&M` — and cragwort's ripe state 
 and left the tile black. Even a ripe one was indistinguishable at a glance, which defeats the point
 of `StartRipeChance` entirely: the number decides how often a plant is worth harvesting, and the
 colour is how a player finds out.
+
+## Whether the game deduplicates a placement is a property of the biome, not of the entry
+
+Six harvestable plants, written to one pattern, merged the same way into six biomes. Three of them
+could put two of the same plant in one cell and three could not, and nothing in my XML said which
+was which.
+
+The switch is in `ZoneTemplates.xml`, a file this mod never touches:
+
+```xml
+<population Table="HillsZoneGlobals" Hint="Any"></population>   <!-- Hills, Mountains, DesertCanyon -->
+<population Table="JungleZoneGlobals"></population>             <!-- Jungle, SaltMarsh, BananaGrove -->
+```
+
+`PlacePopulationInRegion` passes that value down as a default hint, and a hinted placement runs
+
+```csharp
+Points.RemoveAll(l => !Z.GetCell(l).IsEmpty() || Z.GetCell(l).HasObject(gameObject.Blueprint));
+```
+
+where the second clause is the only same-blueprint check in the path. With no hint, `Points` is never
+built at all and placement falls through to a fallback filtered on `IsReachable() && IsEmpty()`.
+
+**And `IsEmpty()` does not mean empty.** It returns false only for an object rendering above
+`RenderLayer` 5. `Plant` ships at 3, every vanilla plant inherits it, so the fallback cannot see a
+plant that is already standing there. The guard runs, passes, and places a second one.
+
+> **A predicate named for the general case may be measuring something much narrower.** `IsEmpty()`
+> is really `HasSomethingDrawnAboveLayer5()`, and it is used as an occupancy test in dozens of
+> places. Read what a guard measures before trusting what it is called.
+
+Two things made this hard to see from the mod side. The symptom is a **grammar** bug —
+`You pass by a brinereed and a brinereed`, because `Physics.EnterCell` lists every object in the cell
+and `Grammar.MakeAndList` neither deduplicates nor counts — so it reads as a text problem rather than
+a placement one. And it is invisible in three of six biomes, which is exactly the pattern that makes
+a bug look like something else. I first assumed the mod I saw it in was doing something exotic; it
+was not, it was calling `IsEmpty()` in a loop on a `RenderLayer=1` object.
+
+**What to do instead.** Write the hint on the entry even where the template already supplies it. Six
+identical lines are cheaper than one invariant that holds in half the file for a reason living in
+someone else's XML. The same goes for anything else the caller can default: if correctness depends on
+it, say it locally.
+
+Creatures never had this problem, and the reason is worth knowing — `PlaceObjectInArea` carries a
+separate `workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`. So the sweep for "what else
+does this affect" is narrower than it looks, but only after checking, not before.
