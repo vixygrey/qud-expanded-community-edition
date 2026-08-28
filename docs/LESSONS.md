@@ -2130,3 +2130,75 @@ structure before closing it — here, everything that iterates `population` and 
 `Load == "Merge"`. And test the *negative*: a check that passes on correct content proves nothing
 until it has been seen to fail on incorrect content. Stripping the attribute and re-running took ten
 seconds and is the only reason this was found before release rather than after.
+
+## A recipe's cost is not the string I wrote, and its tier is not the field that names it
+
+Two numbers govern a tinkering recipe, they are only loosely coupled, and both of them lie about
+where they come from. Found while pricing the effect shells in #145, written down properly in #558
+after #202 turned out to have the mechanism half right and the interesting half missing.
+
+**Tier derives from the bits. `BuildTier` is only an override.** `TinkerItem.LoadBlueprint`:
+
+```csharp
+tinkerData.Cost = GetBitCostFor(Blueprint.Name);
+int num = 0;
+for (int i = 0; i < tinkerData.Cost.Length; i++)
+    if (BitType.BitMap[tinkerData.Cost[i]].Level > num)
+        num = BitType.BitMap[tinkerData.Cost[i]].Level;
+tinkerData.Tier = part.GetParameter("BuildTier", num);
+```
+
+That tier is the whole skill gate, in `DataDisk.GetRequiredSkill` — `Tinker1` at 3 or below,
+`Tinker2` at 6 or below, `Tinker3` above — and it weights disk placement through
+`DataDisk.GetDataScore`. `BuildTier` is a real public field (`public int BuildTier = 1;`) that
+**vanilla writes nowhere: zero occurrences against 332 `TinkerItem` records.** It is the lever for
+decoupling what a recipe costs from when it unlocks, and this fork's effect shells use it —
+`Bits="001" BuildTier="4"` puts them behind Tinker 2 on materials that alone would score tier 1.
+
+**The digits are not bits, and they are redrawn every world.** A digit is a *level*, and
+`BitType.ToRealBits` resolves it against `Stat.GetSeededRandomGenerator(Blueprint)`, which seeds on
+`GetWorldSeed() + Blueprint`. So `0` becomes one of the four level-0 scraps, differently per
+playthrough and stably within one. There is also a ~1% chance per digit to trade one level for an
+extra bit, looping with a 10% continuation:
+
+```csharp
+while ((num > 0) & flag) { num--; num2++; if (random.Next(0, 101) <= 90) flag = false; }
+```
+
+**That path only ever splits downward** — one level-2 bit becomes two level-1s, then three level-0s.
+Nothing anywhere combines upward into a higher tier, whatever the Steam threads say. The official
+wiki's *Bits* page has this exactly right ("replace one or more of their advanced bits with two bits
+of previous tiers... remain the same for the entire game"); it was secondhand advice that had it
+backwards.
+
+**`Bits` is a property, not the attribute.** Its getter returns the *resolved* cost out of
+`BitCostMap`; the setter files what XML wrote into `BitSpecMap`. So the field never holds the string
+in the blueprint, and `TinkerItem.Initialize`'s unrecognised-bit warning never fires on a digit — by
+the time it reads `Bits`, the digits are already letters.
+
+**The letters in XML are not the letters the game shows you.** This is the one that will bite
+somebody. `BitType.TranslateBit` remaps every scrap character on the way to the screen:
+
+| XML character | What it is | Displayed as | Wiki calls it |
+|---|---|---|---|
+| `R` | scrap power systems | A | `<A>` |
+| `G` | scrap crystal | B | `<B>` |
+| `B` | **scrap metal** | C | `<C>` |
+| `C` | **scrap electronics** | D | `<D>` |
+
+`B` and `C` are valid in both alphabets and mean different things in each. Write `Bits="B"` after
+reading the wiki's `<B>` and you have asked for scrap metal while intending scrap crystal — and
+nothing warns, because `B` *is* a real bit. The ten `Bits="BC"` records in
+`mod/ObjectBlueprints/Ammo.xml` are Mura's, and they are safely inside the commented-out block from
+#146, but they are what this trap looks like in the wild. Use digits unless there is a reason not to.
+
+**The wiki's modding page is stale on precisely this field.** `Modding:Adding Code at Startup`, last
+edited July 2024, still shows an instance `LoadBlueprint()` doing `tinkerData.Cost = this.Bits;
+tinkerData.Tier = this.BuildTier;`. Both assignments are now wrong, and the second one inverts the
+design: on that version tier came straight from `BuildTier`, which defaults to 1, so a modder
+following the page concludes `BuildTier` is the only way to set a tier. It is the exception, not the
+rule. Read `LoadBlueprint` in the assembly before trusting any account of it, this one included.
+
+One last distinction, because the wiki prints both in the same infobox and they routinely disagree:
+**an item's `Tier` is not its recipe's tier.** A nuclear cell is item tier 7 with `<006>`, which is
+recipe tier 6, which is Tinker II — not the Tinker III its item tier would suggest.
