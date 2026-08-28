@@ -1783,6 +1783,19 @@ def snapshot_scatter_quantities() -> dict[str, float]:
     return json.loads(QUD_API_PATH.read_text()).get("scatter_quantities", {})
 
 
+def snapshot_template_hints() -> dict[str, list[str]]:
+    """The default placement hint each zone template supplies, from tools/qud-api.json.
+
+    The value is a sorted list because one table may be named by several templates that disagree,
+    and `""` stands for a reference carrying no hint at all. Empty when the snapshot predates the
+    key, in which case `check_placement_hint` returns early - the same bargain the other
+    snapshot-backed checks make.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("template_hints", {})
+
+
 def snapshot_skill_powers() -> dict[str, dict]:
     """Vanilla's Cost, Minimum and Attribute for each skill power this mod merges into.
 
@@ -2104,6 +2117,97 @@ def scatter_quantity(pop: ET.Element) -> float:
             float(obj.get("Chance") or 100) / 100 * number_midpoint(obj.get("Number"))
         )
     return total
+
+
+PLANT_ROOTS = frozenset(
+    {"Plant", "BasePlant", "Tree", "Fungus", "SolidPlant", "SolidTree", "SolidFungus"}
+)
+
+
+def declares_plant(name: str, all_roots: dict[Path, ET.Element]) -> bool:
+    """True when this fork declares `name` and its `Inherits` chain reaches a vanilla plant root.
+
+    Walks only what the mod ships, like `inherited_skill`: the chain leaves this fork at its first
+    vanilla parent, and that parent's name is the answer. All six harvestable plants state
+    `Inherits="Plant"` outright, so the walk is usually one step.
+    """
+    seen: set[str] = set()
+    roots = blueprint_sources(all_roots)
+    while name and name not in seen:
+        seen.add(name)
+        obj = None
+        for root in roots.values():
+            for candidate in root.iter("object"):
+                if candidate.get("Name") == name:
+                    obj = candidate
+                    break
+            if obj is not None:
+                break
+        if obj is None:
+            return False
+        parent = obj.get("Inherits")
+        if parent in PLANT_ROOTS:
+            return True
+        name = parent
+    return False
+
+
+def check_placement_hint(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A scattered plant needs its own `Hint`, or two of them can land in one cell.
+
+    Whether a placement deduplicates by blueprint is decided per biome in `ZoneTemplates.xml`,
+    which this mod never edits. `ZTPopulatonNode` hands that attribute to
+    `PlacePopulationInRegion` as its `DefaultHint`, and only a hinted placement runs
+
+        Points.RemoveAll(l => !Z.GetCell(l).IsEmpty() || Z.GetCell(l).HasObject(Blueprint));
+
+    Without one, placement falls through to a path filtered on `Cell.IsEmpty()`, which returns
+    false only for objects rendering above `RenderLayer` 5. `Plant` ships at 3, so that guard
+    cannot see a plant already standing in the cell and places a second one. The symptom reads as
+    a grammar bug - "You pass by a brinereed and a brinereed" - because `Physics.EnterCell` lists
+    every object in the cell and `Grammar.MakeAndList` neither deduplicates nor counts (#542).
+
+    Hills, Mountains and DesertCanyon supply `Any`; Jungle, SaltMarsh and BananaGrove supply
+    nothing. So an entry written to the same pattern is protected in three biomes and not in three
+    others, and nothing in this mod's own XML says which.
+
+    **Plants only, and deliberately.** Creatures are already safe - `PlaceObjectInArea` carries a
+    separate `HasCombatObject()` filter - and `Hint="Any"` would actively harm them, because it
+    drops the fallback's `IsReachable()` test and a walled-off creature is worse than a walled-off
+    plant. Anything that is neither plant nor creature is not covered here; extend `PLANT_ROOTS`
+    or widen this check when such a thing is added, rather than assuming it is included.
+    """
+    hints = snapshot_template_hints()
+    if not hints:
+        return
+
+    pops = POPULATION_TABLES
+    if not pops.is_file():
+        return
+    try:
+        root = ET.fromstring(pops.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    for pop in root.iter("population"):
+        name = pop.get("Name")
+        if not name or pop.get("Load") != "Merge":
+            continue
+        supplied = hints.get(name)
+        if not supplied or "" not in supplied:
+            continue
+        for obj in pop.iter("object"):
+            blueprint = obj.get("Blueprint")
+            if not blueprint or obj.get("Weight") is not None or obj.get("Hint"):
+                continue
+            if not declares_plant(blueprint, all_roots):
+                continue
+            f.add(
+                "placement-hint",
+                f"{pops}: {blueprint} is scattered into {name}, whose zone template supplies "
+                f"no default Hint - so nothing stops two of them sharing a cell. Give the "
+                f'entry Hint="Any".',
+            )
 
 
 def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -2991,6 +3095,7 @@ def run() -> Findings:
     check_tinker_only(f, roots)
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
+    check_placement_hint(f, roots)
     check_scatter_share(f, roots)
     check_implant_table_cost(f, roots)
     check_skill_option_coverage(f)

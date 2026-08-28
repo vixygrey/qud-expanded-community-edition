@@ -849,6 +849,41 @@ def collect_absent_tables(game: Path) -> list[str]:
     return sorted(m for m in merged if m not in seen)
 
 
+def collect_template_hints(game: Path) -> dict[str, list[str]]:
+    """The default placement hint each zone template supplies for the tables this mod merges into.
+
+    `ZoneTemplates.xml` names a population table and may carry a `Hint`:
+
+        <population Table="HillsZoneGlobals" Hint="Any"></population>
+        <population Table="JungleZoneGlobals"></population>
+
+    `ZTPopulatonNode.Execute` hands that value to `PlacePopulationInRegion` as its `DefaultHint`,
+    and `PlaceObjectInArea` only runs its same-blueprint check on a placement that has a hint at
+    all. So this attribute decides whether two of the same object can land in one cell, and it is
+    set in a file this mod never edits - a citation if anything is (#542).
+
+    `ZoneTemplateManager` reads `Hint` from each node's own element and nothing inherits it from a
+    parent, so the attribute on the `<population>` element is the whole story. `iter` is used
+    deliberately: `-Reachable` tables sit inside a `<cellfilterout>` wrapper and are placed by the
+    same call.
+
+    One table may be named by several templates, which need not agree - so the value is the sorted
+    set of what they supply, with the empty string standing for a reference that carries no hint.
+    A table whose list contains "" is unprotected on at least one route into it.
+    """
+    _, wanted = merged_record_names()
+    found: dict[str, set[str]] = {}
+    templates = game / "ZoneTemplates.xml"
+    if not templates.is_file():
+        return {}
+    for node in parse(templates, lenient=True).iter("population"):
+        name = node.get("Table")
+        if name not in wanted:
+            continue
+        found.setdefault(name, set()).add(node.get("Hint") or "")
+    return {k: sorted(v) for k, v in sorted(found.items())}
+
+
 def collect_table_weights(game: Path) -> dict[str, int]:
     """Vanilla's total drop weight for each population table this mod adds entries to.
 
@@ -1085,6 +1120,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     tag_forms_absent = collect_tag_forms_absent(game)
     scatter_quantities = collect_scatter_quantities(game)
     absent_tables = collect_absent_tables(game)
+    template_hints = collect_template_hints(game)
     skill_powers = collect_skill_powers(game)
 
     problems = verify(game, set(parts), set(blueprints), members, set(part_builders))
@@ -1136,6 +1172,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + json.dumps(absent_tables, sort_keys=True)
             + "\0"
+            + json.dumps(template_hints, sort_keys=True)
+            + "\0"
             + json.dumps(skill_powers, sort_keys=True)
             + "\0"
             + json.dumps(aggregate_descendants, sort_keys=True)
@@ -1147,8 +1185,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "of entry, and the distinction is the rule this file is kept to. Most of it is "
             "IDENTIFIERS - part, blueprint, member and builder names, the same ones this mod's "
             'own XML already writes in every Load="Merge". The rest is CITATIONS: figures, '
-            "merged_records, table_weights and scatter_quantities hold values read out of "
-            "Freehold's data, and each "
+            "merged_records, table_weights, scatter_quantities and template_hints hold "
+            "values read out of Freehold's data, and each "
             "exists because something here depends on it - a document quotes it, or a check "
             "compares against a vanilla record this fork edits. No descriptions, text or art, and "
             "no value without a dependant: a list of citations, not a dump of the game. "
@@ -1176,6 +1214,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "tag_forms_absent": len(tag_forms_absent),
             "scatter_quantities": len(scatter_quantities),
             "absent_tables": len(absent_tables),
+            "template_hints": len(template_hints),
             "skill_powers": len(skill_powers),
             "aggregate_descendants": len(aggregate_descendants),
         },
@@ -1192,6 +1231,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "tag_forms_absent": tag_forms_absent,
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
         "absent_tables": absent_tables,
+        "template_hints": template_hints,
         "skill_powers": dict(sorted(skill_powers.items())),
         "aggregate_descendants": dict(sorted(aggregate_descendants.items())),
     }
