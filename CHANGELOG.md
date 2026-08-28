@@ -269,6 +269,33 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Saves written by unreleased builds shed objects out of thawed zones** (#554).
+
+  Found while playtesting #470, and not caused by it. The game reported two errors loading a zone;
+  the previous session's log had 48, on `Desert Rifle`, `Musket`, `Humanoid` and `Hypertractor`, all
+  of them `Recovered from game object deserialization error` — vanilla catching a misaligned read
+  and dropping the object.
+
+  #497 moved three classes onto the `IScribed` bases, which changed what they write: a class with no
+  serialisable fields wrote nothing before and writes a field count of zero now. `Vixy_SaveFormat`
+  told the two apart by comparing the mod version in the save against the last version that wrote the
+  old format — and could not, because `v2.7.0` was tagged eight hours before #497 landed. A save
+  recording `2.7.0` was written either by the release, which wrote nothing, or by an unreleased build,
+  which wrote a block. So the reader left a byte unconsumed, and an under-read is not contained:
+  `IPart.Load` repositions to the end of the block only from inside its `catch`, so reading too little
+  throws nothing and desynchronises every object after it.
+
+  **Fixed by deleting the question rather than answering it.** All three classes hold no serialisable
+  state, so both halves are now suppressed — `Write` writes nothing, `Read` reads nothing — giving one
+  on-disk shape in every version. A boundary that does not exist cannot be got wrong, and
+  `Vixy_SaveFormat` goes with it. #497 is not undone: the classes stay on the `IScribed` bases, which
+  is the part that is expensive to do later, and when one gains a field both overrides come out.
+
+  **Subscribers were never affected.** Released 2.7.0 predates #497 and its saves genuinely wrote
+  nothing. Saves already written by unreleased builds cannot be repaired — the stray byte is
+  indistinguishable from the next component's data, which is the same reason the guard could not
+  work.
+
 - **(internal)** The wiki reads a parasang's X from the wrong side, and `WIKI.md` now says so
   (#550).
 
