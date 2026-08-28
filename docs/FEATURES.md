@@ -2107,7 +2107,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Subtypes.xml            # 18 affinities in 2 categories
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
-│   ├── Options.xml             # 18 options (§13)
+│   ├── Options.xml             # 19 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2129,9 +2129,9 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
-│                               # the chip-slot mutator, burden, the save-format
-│                               # guard, and four Finesse powers
+├── Scripting/                  # 51 classes: 36 mutation stubs, plus options,
+│                               # the chip-slot mutator, burden, bearings, the
+│                               # save-format guard, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2169,7 +2169,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Eighteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Nineteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2208,6 +2208,7 @@ rather than anything the mod already was.
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
+| Mind's Compass reports your bearings | Checkbox | **Yes** | Which of a parasang's nine zones you are standing in, on arrival. §20. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
 | wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
@@ -2256,7 +2257,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Live** — applies immediately | graded burden, bearings, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -2315,7 +2316,7 @@ stores nothing, so the option takes hold on the next tick and adds nothing to th
 > open: the band appears by name at each threshold, DV and Quickness move, running is refused in the
 > heavy band, the option takes hold on the next turn in both directions, and — the case with no
 > compile-time proof — **an existing save picks the part up on load**, not just a fresh character.
-> That last one is the whole reason `Vixy_BurdenAttach` carries two hooks rather than one.
+> That last one is the whole reason `Vixy_PlayerParts` carries two hooks rather than one.
 
 ### 14.1 Two spec items that could not be built
 
@@ -3167,6 +3168,121 @@ invisible against the floor, which is §18.4b's mistake exactly.
 `pickone` over-count is allowed for. And pallvine's description is built-environment language — *a
 room curtained from the edges, a century of dust* — so it stays in the ruins rather than being
 argued underground.
+
+## 20. Parasang bearings (`Vixy_Bearing`)
+
+**On by default.** It grants no power — it surfaces a number the zone ID has carried the whole
+time, to a character who has already paid 100 points for the skill that reads it. Charter rule 6
+reserves "off by default" for a change that grants power with no content attached, and this is the
+opposite of that.
+
+### 20.1 What the game already knew and never said
+
+A parasang is a 3×3 block of zones. Every zone ID carries its position inside that block —
+`JoppaWorld.53.3.`**`1.1`**`.10`, where the two middle numbers each run 0–2 — and `Zone.X` and
+`Zone.Y` are public ints holding exactly those, parsed the moment the zone is built. Nothing
+surfaced them, so the way to find out where you stood was to walk to an edge and watch which way
+the world map scrolled.
+
+**Vanilla does the same lookup itself.** `GameObject.GetDirectionFromCellXY` maps the nine to
+`NW`/`N`/`NE`, `W`/`C`/`E`, `SW`/`S`/`SE`, and `PullDown` uses it to suffix the choices in the
+descend-from-the-world-map menu — `Current location (NE)`, `Center (C)`. It is `private`, so this
+re-derives the table rather than calling it; the point is that the vocabulary here is Freehold's
+rather than invented.
+
+The gap is real but narrower than it first looks, in a way that shapes the feature.
+`ZoneManager.GetLandingLocation` returns `(1, 1, 10)` unless a cell blueprint says otherwise, so an
+ordinary descent puts you in the **centre** and the pull-down menu only appears when there is more
+than one candidate destination. So you usually start knowing. Two things then take it away: walking,
+and `TerrainTravel`, which on getting lost drops you at `Stat.Random(0, 2)` on both axes and reports
+nothing.
+
+### 20.2 Where it shows, and the two routes that were closed
+
+A line in the message log on arrival, directly under the game's own: *The northeast of this
+parasang.* Vanilla announces the zone and the time itself, so that line carries the context and this
+one only has to add what it does not say.
+
+The two nicer-sounding surfaces are both unavailable, and it is worth writing down why so nobody
+re-derives it.
+
+| Route | Why not |
+|---|---|
+| Append to the zone's display name | `Zone.DisplayName`'s setter writes `ZoneName_<ZoneID>` into **game state**, once per zone visited, permanently — which collides with rule 5's idempotent-and-reversible obligation. It also overwrites the *base* name, so the marker lands mid-string ahead of the stratum, and the getter returns the *composed* name, so a read-modify-write compounds: `salt marsh, 3 strata deep (NE), 3 strata deep`. |
+| A status-line element | `Qud.UI.PlayerStatusBar` reads `ParentZone.DisplayName` straight into a Unity `MonoBehaviour`. No event, no virtual, no extension point. Reaching it needs Harmony, which rule 5 refuses. |
+
+**modo_lv's [ParasangRegion](https://github.com/modo-lv/caves-of-qud-mods/tree/main/ParasangRegion)
+does the display-name version, and does it well**, with a Harmony postfix on the *getter* so nothing
+is written to game state. Its second patch is the instructive part: `XRLGame` assigns
+`Quest.QuestGiverLocationName = The.Player.CurrentZone?.DisplayName` and `Quest` serialises that
+field, so without a fix every quest accepted would freeze `…, 3 strata deep (NE)` into the save. That
+is the bill for patching a getter — finding every place the game persists a string it read from one.
+This mod cannot take that route, and the always-visible marker is genuinely the better feature; what
+is here is the version that fits inside rule 5.
+
+### 20.3 Three exclusions, each for its own reason
+
+- **Silent while `Lost`.** That is the one state in which you should not know where you are, and it
+  is the state vanilla puts you in when it drops you somewhere random. Taken from ParasangRegion,
+  which had the idea first.
+- **Silent where there is no overland grid.** The world map itself, where `ZoneID.Parse` leaves every
+  coordinate at `-1`; and any world whose `Worlds.xml` entry declares no `Map`. Read off the
+  blueprint rather than matched against a list of world names, so a world a later patch adds is
+  covered without this being edited. Of the five worlds shipped, `JoppaWorld` and `NorthSheva`
+  qualify and Tzimtzlum, the Thin World and `Interior` do not.
+- **Interiors specifically**, which is why the check above cannot be skipped: an interior zone
+  inherits its parent object's parasang coordinates, so a vehicle cabin would otherwise report where
+  the vehicle is parked.
+
+### 20.4 Only when it changes, and said one beat late
+
+The line is suppressed when the zone being left had the same bearing as the zone being entered.
+Walking east across a parasang gives three lines and a staircase gives none, since descending keeps
+X and Y and changes only Z. Deciding that needed no stored field: `EnteringZoneEvent` carries
+`Origin`, the cell being left, so both bearings are in hand at once.
+
+**Saying it does need one, and the reason is ordering.** The game announces the zone and the time
+from `ZoneManager.SetActiveZone`, and that call is the *last* thing a move does — nothing fires after
+it, not `AfterMoved`, not `ZoneActivatedEvent`, which `SetActiveZone` sends four lines before its own
+message. Reporting from `EnteringZoneEvent` therefore lands the bearing above the line it belongs
+under. So the bearing is worked out there and said at the player's next `BeginTakeActionEvent`, the
+first hook after the move completes. The cost is that in a busy zone another actor's message can come
+between the two; the alternative was being adjacent and always in the wrong order.
+
+**The fields holding it are `static`.** An instance field on a `[Serializable]` part becomes part of
+every save's layout, frozen in the sense of §1, and `validate_mod.py`'s `serializable-shape` asks for
+that to be a considered decision rather than a side effect of a message ordering — the check exempts
+statics for exactly this reason. Nothing is written to the save, and the part keeps the shape
+`Vixy_Burdened` has.
+
+A static outlives a game, which is the one thing it costs. So the pending *zone* is remembered beside
+the pending bearing and checked before anything is said: a note left by a character who has since
+been abandoned names a zone the current one is not standing in, and is discarded rather than
+spoken.
+
+### 20.5 The skill gate, and why the description names the option
+
+The check is `Survival_Trailblazer`, the `Class` of the Mind's Compass power. That power costs 0, so
+it arrives free with **Wayfaring** (100) rather than being bought separately — worth being exact
+about, since a player hunting for something to spend points on will not find Mind's Compass in the
+list.
+
+`mod/Core/Skills.xml` merges Wayfaring for that one power's `Description`. Per
+`docs/STYLEGUIDE.md` §1.0c the loader merges per power keyed by `Name` and keeps every attribute not
+restated, so `Class`, `Cost`, `Attribute`, `Minimum`, `Snippet` and `Tile` all stay vanilla's.
+Restating `Class` would replace `Survival_Trailblazer` and take vanilla's behaviour with it.
+
+**The added sentence names the option**, which is unusual here and is forced: XML loads once, long
+before any option is read, so the text is present whether the option is on or off and has to be true
+either way. The alternative was moving the merge into `mod/Optional/` behind the `manifest.json`
+directory gate (§13, and #498), which would make the *text* restart-scoped while the *message* stayed
+live — a split that costs more than the sentence does.
+
+**A new power would not have worked.** It reads as the tidier design — a second zero-cost power under
+Wayfaring, with its own class — and it would never reach a character who already has the skill.
+`BeforeAddSkillEvent.FromSkill` collects `Cost == 0` powers only at the moment the parent skill is
+added, and nothing re-syncs on load. That is why the behaviour lives on a part attached to the
+player by `Vixy_PlayerParts` instead.
 
 ## Appendix A — every merged vanilla melee weapon
 

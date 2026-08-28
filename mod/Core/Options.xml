@@ -180,6 +180,27 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCEBearings"
+    DisplayText="{{C|Qud Expanded}}: Mind's Compass reports your bearings"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded wayfaring minds compass parasang bearings zone navigation"
+  >
+    <helptext>
+            Lets Mind's Compass tell you which of a parasang's nine zones you are standing in.
+
+            A parasang is a 3x3 block of zones and the game never says which one you are in, so you work it out by walking to an edge and watching which way the world map scrolls. With this on, you are told when you arrive, under the line where the game already gives you the zone and the time: {{G|The northeast of this parasang.}} And so on through the nine.
+
+            You need {{Y|Mind's Compass}}, which comes free with the {{Y|Wayfaring}} skill rather than being bought separately.
+
+            Nothing is said while you are {{y|lost}} - that is the one time you should not know - or on the world map, or anywhere without one. Going down stairs is silent too, since a staircase does not move you within the parasang.
+
+            Applies immediately.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEChipDrops"
     DisplayText="{{C|Qud Expanded}}: psionic chips in loot"
     Category="Mods"

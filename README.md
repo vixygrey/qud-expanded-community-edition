@@ -62,7 +62,7 @@ rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Eighteen options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+Nineteen options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
 the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
 have that — nobody should need to swallow the whole mod to get one part of it.
 
