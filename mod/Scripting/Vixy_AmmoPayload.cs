@@ -206,21 +206,39 @@ namespace XRL.World.Parts
         }
 
         /// <summary>
-        /// Reads nothing from a save written before 2.8.0, which wrote no field block at all.
-        ///
-        /// This class has no serialisable state, so "read nothing" is exactly what the old format
-        /// meant. Once every save in circulation postdates the change this override can go, and
-        /// removing it is the only maintenance it will ever need. See
-        /// <c>QudExpandedCE.Vixy_SaveFormat</c> for why one byte is worth an override (#497).
+        /// Writes and reads nothing, symmetrically, so this part occupies no bytes in a save.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <c>IScribedPart</c> does exactly one thing in each direction — <c>WriteNamedFields</c> and
+        /// <c>ReadNamedFields</c> — and this class has no serialisable state, so what it writes is a
+        /// field count of zero and nothing else. Suppressing both halves gives the same on-disk
+        /// shape the class had before #497 and the same shape it has now, in every version, which is
+        /// the point: there is no boundary between two formats, so nothing has to know where the
+        /// boundary is.
+        /// </para>
+        /// <para>
+        /// <b>That knowledge was the bug (#554).</b> This used to read nothing while still writing a
+        /// block, gated on a version comparison — and a version cannot separate a save written by
+        /// the released 2.7.0, which wrote nothing, from one written by an unreleased build after
+        /// #497, which wrote a block. Both record 2.7.0. The reader then left a byte unconsumed, and
+        /// an under-read is not contained: <c>IPart.Load</c> repositions to the end of the block only
+        /// from inside its <c>catch</c>, so reading too little throws nothing and desynchronises
+        /// every object after it in the zone.
+        /// </para>
+        /// <para>
+        /// <b>#497 is not undone.</b> The class stays on the <c>IScribed</c> base, which is the part
+        /// that is expensive to do later. When it gains a field, delete both overrides — and by then
+        /// the version really will have moved, so nothing has to be inferred from one.
+        /// </para>
+        /// </remarks>
+        public override void Write(GameObject Basis, SerializationWriter Writer)
+        {
+        }
+
+        /// <summary>The other half of the pair above. Symmetry is the whole mechanism.</summary>
         public override void Read(GameObject Basis, SerializationReader Reader)
         {
-            if (QudExpandedCE.Vixy_SaveFormat.PredatesNamedFields(Reader))
-            {
-                return;
-            }
-
-            base.Read(Basis, Reader);
         }
     }
 }

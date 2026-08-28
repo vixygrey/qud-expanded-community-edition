@@ -1918,6 +1918,45 @@ The reliable answer is to decompile and grep the source: `ilspycmd -o <dir> -p A
 writes 5,435 `.cs` files in a couple of minutes, and a grep over those finds the call site with its
 containing method, which is what actually answers the question.
 
+## A version number cannot express a boundary inside a version
+
+#497 converted three classes to the `IScribed` bases, which changed what they write: `IComponent`
+writes each public instance field unnamed, so a class with none writes **nothing**, while
+`WriteNamedFields` writes a count first, so the same class writes a zero. One byte, and a real format
+change. `Vixy_SaveFormat` existed to tell one format from the other, by comparing the mod version
+recorded in the save against the last version that wrote the old one.
+
+**It could not work, and the reason is worth keeping.** `v2.7.0` was tagged at 04:23 and #497 landed
+at 12:20 the same day, so a save recording `2.7.0` was written either by the release, which wrote
+nothing, or by an unreleased build, which wrote a block. The version is identical in both cases.
+`manifest.json` cannot move ahead to break the tie either — `check_version_matches_changelog` binds
+it to the newest *released* changelog heading, so bumping it means cutting a release.
+
+> **A version identifies a release, not a commit.** Any question of the form "did the code that wrote
+> this have change X" is unanswerable by version whenever X landed between a tag and the next one —
+> which is where every change spends most of its life.
+
+**The failure was silent and unbounded, which is the other half.** `IPart.Load` reads a length
+prefix, keeps `Position` and `Length` as locals, and repositions to the end of the block **only from
+inside its `catch`**. So reading *too much* throws, gets caught, and `SkipBlock` puts the stream back
+— the component is dropped from that object and nothing else suffers. Reading *too little* throws
+nothing at all, and every object after it in the zone deserialises from bytes that are not its own.
+The log said `Recovered from game object deserialization error` 48 times in one session, on
+`Desert Rifle`, `Musket`, `Humanoid`, `Hypertractor` — none of which is the component that
+under-read. The blast lands downstream of the fault.
+
+> **Over-read is contained; under-read is not.** When a format guess can go either way, guess long.
+
+**The fix was to delete the question.** All three classes hold no serialisable state, so the block
+they wrote was a count of zero and nothing else. Suppressing both halves — `Write` writing nothing,
+`Read` reading nothing — gives one shape in every version, and a boundary that does not exist cannot
+be got wrong. The classes stay on the `IScribed` bases, which is the part that is expensive to do
+later; when one gains a field, both overrides come out, and by then the version really will have
+moved.
+
+Nothing repairs the saves already written. The stray byte is indistinguishable from the next
+component's data, which is the same reason the guard could not work. #554.
+
 ## A field declaration is three lines long, and I keep reading one of them
 
 Converting three classes to `IScribedPart` (#497) turned on one question: do they hold any state
