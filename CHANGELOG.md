@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Ruins and baroque ruins have something growing in them** (#173).
+
+  Two new plants, and neither gives you anything: **slabmoss**, a blue-green crust that takes the
+  damp out of a floor slab and stops at the rain line where a roof has gone, and **pallvine**, which
+  roots where a wall meets its floor and hangs from there in long dry ropes. No yield, no
+  ingredient, no stat — a ruin should simply look like a thousand years have passed in it.
+
+  They arrive in clumps rather than scattered evenly, because that is how the game already does
+  this. Vanilla's brightshroom and grave moss patches are built from a common arm and a rare dense
+  one, and every entry grows outward from wherever its first tile landed; these follow the same
+  shape, so about one ruin in twenty has gone properly under.
+
+  Slabmoss is teal on purpose. Everything already growing in a ruin is green — swarmshade, ziv
+  bough, star palm, starapple — and a fourth green would have read as more canopy instead of
+  something on the floor.
+
+  No new art: slabmoss borrows grave moss's tiles and pallvine borrows yuckwheat's. The atlas holds
+  better vines and roots than either, but they belong to North Sheva's sacred plants and are set by
+  hand in the Star Orchid Temple, so using them would have made a named thing into wallpaper.
+
 - **Three more harvestable plants — rimeburr, shadetooth and broadglove** (#177, #540).
 
   Counting distinct species rather than blueprints, `Hills`, `DesertCanyon` and `Jungle` each offered
@@ -109,6 +129,13 @@ recorded because contributors need them, not because subscribers do.
   0.7 and 1.5 ripe plants a zone, beside dreadroot at 0.8 and urberry at 1.0.
 
 ### Changed
+
+- **(internal)** `placement-hint` now sees tables reached through a `<table>` reference (#173).
+
+  The check shipped in #544 read only the tables a zone template names directly, so the ruins
+  vegetation this fork merges into — one level below the table the template names — was skipped in
+  silence. The game passes a placement hint down through nesting; the citation now does too, and
+  covers 69 tables where it covered 10.
 
 - **(internal)** Two checks added ahead of the overgrowth work in #173 (#544).
 

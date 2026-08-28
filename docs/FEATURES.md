@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **462** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **464** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **75** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **77** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -586,9 +586,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 46 | 1 |
 | `Food.xml` | 12 | 2 |
-| `Plants.xml` | 6 | 0 |
+| `Plants.xml` | 8 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **462 active** | **211** |
+| **Total** | **464 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1823,7 +1823,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-97 table definitions: **75 merged** into vanilla, **22 declared fresh**. The 48/28 split this
+101 table definitions: **77 merged** into vanilla, **24 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2111,7 +2111,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
-│   └── PopulationTables.xml    # 97 tables (75 merge / 22 new)
+│   └── PopulationTables.xml    # 101 tables (77 merge / 24 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -3034,6 +3034,95 @@ from vanilla's `Item` base by inheritance, and every vanilla food is in it on th
 `Bundle of Noisegrass`, `Vinewafer Sheaf` and `Urberry` included. It is recorded in
 `tools/dynamic-pools.json` rather than stripped with `*delete`, because matching vanilla is the
 correct behaviour here rather than something to tidy away.
+
+## 19. Ruins overgrowth (`ObjectBlueprints/Plants.xml`)
+
+**Two decorative plants for Ruins and BaroqueRuins** (#173): **slabmoss** on the floor and
+**pallvine** against the walls. They are the first blueprints in this fork that give a player
+nothing — no yield, no ingredient, no stat. That is the whole scope: a ruin should look like
+something has been growing in it for a thousand years, and nothing a player can act on should move.
+
+### 19.1 Vanilla's own patch idiom, which is better than a zone builder
+
+The design this came from assumed a C# zone builder registered through `ZoneManager.AddZoneBuilder`,
+with hand-written noise for patch shapes and a hand-written reachability guard. None of that is
+needed. `BrightshroomPatches` and `GraveMossPatches` are the same table twice, and they are a
+complete overgrowth system in data:
+
+```xml
+<group Name="Types" Style="pickone">
+  <group Name="Small" Style="pickeach" Weight="95">   <!-- the usual zone -->
+    <object Chance="100" Blueprint="Grave Moss" Number="12-20" Hint="Adjacent:90" />
+  <group Name="Large" Style="pickeach" Weight="5">    <!-- the one that has gone under -->
+```
+
+Each line is one clump: the first object lands anywhere, and `Adjacent:N` grows the rest of that
+line's `Number` outward from it. A `pickone` between a common Small arm and a rare Large one gives
+the occasional zone that is properly overgrown. Vanilla pulls the whole thing in with one
+low-chance reference — eight cave tiers at 30, the crypts at 60, the Moon Stair at 10.
+
+So the mod spends **no rule 5 budget** here and ships no C# at all.
+
+### 19.2 The hint is load-bearing twice
+
+Every line carries one, and each does two jobs:
+
+| plant | hint | places it | and |
+|---|---|---|---|
+| slabmoss | `Adjacent:90` | grows each clump outward from its first tile | runs the same-blueprint check |
+| pallvine | `AlongWall` | in floor cells that touch masonry | runs the same-blueprint check |
+
+**`LivesOnWalls` was the obvious hint for the vine and is not used.** It puts an object *in* the
+wall cell, which is the stronger image — but it is one of four hints that set `flag3` in
+`PlaceObjectInArea` and skip `Points.RemoveAll(… || l.HasObject(Blueprint))`. That is the check
+whose absence produced `You pass by a brinereed and a brinereed` in #542, and taking it off again
+for a nicer silhouette is not a trade worth making. `OnWall`, `Aquatic` and every `StackWith*` skip
+it too, and in all four cases that is deliberate: co-locating is what those hints are *for*.
+
+### 19.3 Why teal, and why not brighter
+
+Every plant already growing in a ruin is green — swarmshade `&g`, ziv bough `&g`, star palm `&G`,
+starapple `&g`. A fourth green reads as more canopy rather than as something on the floor, so
+slabmoss is `&c` with a `C` detail: verdigris on old fulcrete, and the only value in the scene that
+separates from the tree line. Pallvine stays `&g`, because a ruin's vegetation *is* green and the
+shape carries the difference — vertical strands against the moss mat's speckle.
+
+`RenderIfDark` is deliberately absent, though Grave Moss carries it. Seeing terrain in an unlit room
+is information, and vanilla's own ruins vegetation does without it.
+
+### 19.4 No new art, and two tilesets that were not taken
+
+| plant | tile | variants | vanilla owner |
+|---|---|---:|---|
+| slabmoss | `Creatures/sw_moss_*.bmp` | 5 | Grave Moss |
+| pallvine | `Terrain/sw_wheat_*.bmp` | 3 | Yuckwheat |
+
+The atlas holds better art for this than either — `extrasolar-vine`, `finger-root`, `ring-moss` and
+`star-orchid-lily` are literal vines, roots, moss rings and creepers, and **no population table
+places any of them**. They belong to North Sheva's sacred plants, set by hand in the Star Orchid
+Temple and the Starfarers' Quay. Reusing those silhouettes for common ground cover would turn a
+named thing into wallpaper.
+
+The same objection retired a third species. A root break splitting a ruin floor is the obvious
+third, and the only real root-tendril tile is `sw_arsplice_hyphae_*` — **arsplice** being a
+meaningful and dangerous thing in Qud, whose silhouette in a ruin would read as an infection rather
+than as decoration. The near misses all belong to something too: `sw_tree_circle` is the sunflower,
+`sw_tree_curly` the nachash tree, `sw_mushroom_terrain` the Rainbow Wood. Two species with honest
+tiles beat three with one borrowed wrong.
+
+### 19.5 Share
+
+| table | vanilla | this fork | share |
+|---|---:|---:|---:|
+| `RuinsZoneGlobals-Vegetation` | 213.6 | 41.4 | 16.2% |
+| `BaroqueRuinsZoneGlobals-Vegetation` | 707.0 | 41.4 | 5.5% |
+
+Both measured through the `<table>` reference, which `scatter-share` could not previously see
+(#544). The measure over-counts a `pickone` group — one arm fires and both are summed — so the true
+share is lower than either figure, in the direction that fails loud.
+
+`RuinsZoneGlobals-Vegetation` is drawn by both the surface and the underground templates, so one
+merge reaches either.
 
 ## Appendix A — every merged vanilla melee weapon
 

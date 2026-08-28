@@ -690,7 +690,10 @@ never edits:
 ```
 
 `ZTPopulatonNode` hands that attribute to `PlacePopulationInRegion` as its `DefaultHint`, and only a
-hinted placement runs `Points.RemoveAll(l => … || l.HasObject(Blueprint))`. Without one, placement
+hinted placement runs `Points.RemoveAll(l => … || l.HasObject(Blueprint))`. **The hint follows a
+`<table>` reference down** — `Population.Generate(Result, Vars, Hint ?? DefaultHint)` — so a nested
+table inherits from whatever named it, and a table reached by two routes is only safe if both carry
+one. Without one, placement
 falls back to a path filtered on `Cell.IsEmpty()` — which returns false only above `RenderLayer` 5,
 and `Plant` ships at 3. The guard cannot see the plant already standing there.
 

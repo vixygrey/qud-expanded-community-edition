@@ -2026,3 +2026,39 @@ it, say it locally.
 Creatures never had this problem, and the reason is worth knowing — `PlaceObjectInArea` carries a
 separate `workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`. So the sweep for "what else
 does this affect" is narrower than it looks, but only after checking, not before.
+
+## A check that skips is louder than a check that fails, and quieter than both is one that skips silently
+
+`check_placement_hint` shipped in #542 and could not see the first content that needed it. It looks
+a merge target up in `template_hints`, and `collect_template_hints` recorded only tables a zone
+template *names*. The ruins vegetation this fork merges into sits one level below the table the
+template names, so the lookup missed, the check returned early, and validation passed.
+
+The propagation is one line of the game's own code:
+
+```csharp
+Population.Generate(Result, Vars, Hint ?? DefaultHint);   // PopulationTable.Generate
+```
+
+A `<table>` reference hands its own hint down, or the one it was given. Nesting was never a barrier
+to the hint — only to my model of it.
+
+> **When a check keys on a name, ask what else can wear that name's clothes.** I had verified the
+> hint reached six biome tables and generalised to "the table the template names". The thing being
+> modelled was "the table a placement ends up in", and those differ the moment anything nests.
+
+The tell was there and I nearly walked past it. Running the finished content, `template_hints` came
+back `None` for both of my targets. My first reading was "these aren't template-referenced tables,
+so the check correctly has no opinion" — which is exactly what a silent skip looks like from the
+inside. What made me look again was that it *should* have had an opinion: the ruins templates
+obviously place vegetation, so a vegetation table having no placement route was a contradiction, not
+an exemption.
+
+**What to do instead.** A check that returns early needs a case in its own tests where the early
+return is wrong, not only cases where it is right. Every skip branch here has a test asserting the
+skip; none of them asserted that the *set of things skipped* was correct. Widening the citation from
+10 tables to 69 changed nothing about the check's logic and everything about what it sees.
+
+There is a second, cheaper lesson. **The fix landed because content was written against it within
+the hour.** Tooling merged with no consumer is tooling nobody has proven. If a check is built ahead
+of the content it guards — which is the right order — the content is still the test.

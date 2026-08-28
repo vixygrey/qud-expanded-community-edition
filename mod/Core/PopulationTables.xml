@@ -1445,6 +1445,69 @@
     <object Chance="50" Number="10-18" Blueprint="Vixy_Sweetfrond" Hint="Any" />
   </population>
 
+  <!-- Ruins overgrowth (#173). Two decorative plants, in vanilla's own patch idiom rather than as
+       plain entries, because the idiom is what makes overgrowth read as growth instead of scatter.
+
+       BrightshroomPatches and GraveMossPatches are the model, and they are the same table twice: a
+       pickone between a common Small arm and a rare Large one, each arm a handful of independent
+       rolls, every roll carrying Adjacent so the objects after the first grow outward from it.
+       Each line is therefore one clump, and the 5% Large arm is the occasional zone that has gone
+       properly under. Vanilla pulls these in with a single low-chance reference - eight cave tiers
+       at 30, the crypts at 60 - and so does this.
+
+       The hint is on every line and is load-bearing twice over. Adjacent and AlongWall both run
+       PlaceObjectInArea's same-blueprint check, so two of one plant cannot share a cell (#542);
+       LivesOnWalls would have been the obvious hint for the vine and is one of the four that skip
+       that check, so it is not used.
+
+       Number is smaller for the vine than the moss because it wants a wall to sit against and
+       there are fewer of those than there are floor cells. -->
+
+  <population Name="Vixy_SlabmossPatches">
+    <group Name="Types" Style="pickone">
+      <group Name="Small" Style="pickeach" Weight="95">
+        <object Chance="100" Number="10-16" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+        <object Chance="75" Number="10-16" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+        <object Chance="50" Number="10-16" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+      </group>
+      <group Name="Large" Style="pickeach" Weight="5">
+        <object Chance="100" Number="20-32" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+        <object Chance="100" Number="20-32" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+        <object Chance="75" Number="20-32" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+        <object Chance="50" Number="20-32" Blueprint="Vixy_Slabmoss" Hint="Adjacent:90" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Vixy_PallvinePatches">
+    <group Name="Types" Style="pickone">
+      <group Name="Small" Style="pickeach" Weight="95">
+        <object Chance="100" Number="8-14" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+        <object Chance="75" Number="8-14" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+        <object Chance="50" Number="8-14" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+      </group>
+      <group Name="Large" Style="pickeach" Weight="5">
+        <object Chance="100" Number="16-26" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+        <object Chance="100" Number="16-26" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+        <object Chance="75" Number="16-26" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+        <object Chance="50" Number="16-26" Blueprint="Vixy_Pallvine" Hint="AlongWall" />
+      </group>
+    </group>
+  </population>
+
+  <!-- One reference per ruins flavour. RuinsZoneGlobals-Vegetation is drawn by both the surface
+       and the underground variants of the template, so a single merge reaches either. -->
+
+  <population Name="RuinsZoneGlobals-Vegetation" Load="Merge">
+    <table Name="Vixy_SlabmossPatches" Chance="20" />
+    <table Name="Vixy_PallvinePatches" Chance="20" />
+  </population>
+
+  <population Name="BaroqueRuinsZoneGlobals-Vegetation" Load="Merge">
+    <table Name="Vixy_SlabmossPatches" Chance="20" />
+    <table Name="Vixy_PallvinePatches" Chance="20" />
+  </population>
+
   <!-- The Trembling Dunes three, rehomed (#476).
 
        These were merged into LowerTremblingDunesZoneGlobals, whose contents Freehold had commented

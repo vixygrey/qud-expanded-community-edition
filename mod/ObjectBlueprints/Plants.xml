@@ -292,4 +292,70 @@
     <tag Name="DynamicObjectsTable:Jungle_Plants" />
     <stag Name="Plank" Value="mass" />
   </object>
+  <!-- Ruins overgrowth (#173). Decoration only: no Harvestable, nothing to gather, nothing to
+       spend. These are the first two blueprints in this file that give a player nothing at all,
+       and that is the point - the whole issue is scoped so that no number a player can act on
+       moves.
+
+       Passable, because Plant is Solid="false" and neither of these overrides it. The design doc
+       allowed overgrowth to block movement as unavoidable for a physical object; it turns out to
+       be entirely avoidable, so it is avoided.
+
+       RenderLayer stays at Plant's 3, deliberately. Anything above 5 makes Cell.IsEmpty() false,
+       which would stop two ever sharing a cell - and would also change where a player may pitch a
+       camp or lay a mine, how gas spreads, and a dozen mutations' targeting. Placement hints do
+       that job instead, at no cost (#542).
+
+       No RenderIfDark either, though Grave Moss carries it. Seeing terrain in an unlit room is
+       information, and vanilla's own ruins vegetation does without it. -->
+
+  <!-- Verdigris on old fulcrete. Teal because everything already growing in a ruin is &g or &G
+       green - swarmshade, ziv bough, star palm, starapple - and a fourth green would read as more
+       canopy rather than as something on the floor. The tile is Grave Moss's five-tile mat. -->
+  <object Name="Vixy_Slabmoss" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="slabmoss"
+      RenderString="231"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="C"
+      Occluding="false"
+      Tile="Creatures/sw_moss_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Creatures/sw_moss_1.bmp,Creatures/sw_moss_2.bmp,Creatures/sw_moss_3.bmp,Creatures/sw_moss_4.bmp,Creatures/sw_moss_5.bmp"
+    />
+    <part
+      Name="Description"
+      Short="It takes the damp out of a slab and gives back a blue-green crust that squeaks underfoot. Where a roof has gone it stops at the rain line, so the old rooms map themselves out in it."
+    />
+    <stag Name="Plank" Value="mass" />
+  </object>
+
+  <!-- Hanging growth banked against masonry. Green, and green is right here: a ruin's vegetation
+       is green, and the shape carries the difference - vertical strands against the moss mat's
+       speckle. The tile is yuckwheat's. Placed AlongWall rather than LivesOnWalls, because
+       LivesOnWalls sets flag3 in PlaceObjectInArea and skips the same-blueprint check, which is
+       exactly the defect #542 removed. -->
+  <object Name="Vixy_Pallvine" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="pallvine"
+      RenderString="245"
+      ColorString="&amp;g"
+      TileColor="&amp;g"
+      DetailColor="G"
+      Occluding="false"
+      Tile="Terrain/sw_wheat_2.bmp"
+    />
+    <builder Name="RandomTile" Tiles="Terrain/sw_wheat_2.bmp,Terrain/sw_wheat_3.bmp,Terrain/sw_wheat_4.bmp" />
+    <part
+      Name="Description"
+      Short="It roots in the seam where a wall meets its floor and hangs from there in long dry ropes, so a room comes to be curtained from the edges inward. Pulling a handful down brings a century of dust with it."
+    />
+    <stag Name="Fiber" Value="twine" />
+    <stag Name="FiberMaterial" Value="thatch" />
+  </object>
 </objects>
