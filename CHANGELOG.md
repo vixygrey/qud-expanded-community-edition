@@ -177,6 +177,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Two of the same plant could grow in one tile in three biomes** (#542).
+
+  Brinereed in the saltmarsh, broadglove in the jungle and sweetfrond in the banana grove could each
+  be placed twice in the same cell. The event log said so out loud — *"You pass by a brinereed and a
+  brinereed"* — which reads as a wording bug and is really a placement one.
+
+  Whether the game refuses to stack a scattered object is decided **per biome**, in a vanilla file
+  this fork does not edit. `ZoneTemplates.xml` may carry a placement hint alongside the table it
+  names, and only a hinted placement runs the check that a cell does not already hold that
+  blueprint. Hills, Mountains and DesertCanyon carry one; Jungle, SaltMarsh and BananaGrove do not.
+  So three of the six harvestable plants were protected and three were not, and nothing in this
+  fork's own files said which.
+
+  All six entries now carry the hint themselves. Three needed it; on the other three it changes
+  nothing, and it puts the reason where the entry is instead of in someone else's file. A new
+  `placement-hint` check fails the build if a scattered plant is ever written without one again.
+
 - **18 items now have a drop rate somebody chose** (#482, #527).
 
   The six extended vinereapers, the eleven vibro weapons and the bio-scanner mask had no entry in
