@@ -3182,6 +3182,12 @@ opposite of that.
 > the one thing the playtest sent back: it arrived above the line it belongs under, which is why it is
 > said a beat late (§20.4).
 >
+> **The stale-static case was played too**, and it is the one worth naming, because it is the only
+> thing the deferral costs and no compiler can reach it: quitting mid-walk and loading a *different*
+> character produces no stray line. That is the pending-zone check in §20.4 doing its job — the note
+> the abandoned character left names a zone the new one is not standing in, and is discarded rather
+> than spoken.
+>
 > ⚠️ **Two exclusions are still code readings.** Nothing has been seen in a world without a world map
 > — the NorthSheva pair in that session's log is worldgen building both world maps, not travel — and
 > no vehicle interior has been entered. Neither is likely to be wrong; neither has been watched.
