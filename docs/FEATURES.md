@@ -2487,12 +2487,44 @@ Typing a name in bypasses all of this, which is always the surest way to get the
 - **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
   blueprint and never call the generator.
 - **Non-human creatures.** Snapjaws, robots, animals, plants, reptiles, Templars and Mechanimists all
-  have their own syllable pools, reached by their own scopes.
+  have their own syllable pools. Having a pool is not the same as being reached by it, though —
+  §15.6 is a people whose register existed and whose scope did not, which is worth checking before
+  concluding that a creature drawing Qudish has no register of its own.
 - **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
   scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
   a site call.
 - **The player's own random name**, by any of the gender scoping above — see §15.4, which reaches
   it a different way.
+
+### 15.6 Woodsprogs outside the tribe, and a register that already existed
+
+Everything above widens or adds pools. This one adds **no syllables at all**, and it is the more
+interesting shape for it.
+
+A woodsprog in the Naphtaali tribe was always named correctly. A woodsprog anywhere else — a
+Kyakukya villager, a jungle forager — drew `Qudish` at 100%. That looks like a missing register and
+is not: vanilla's `Naphtaali` namestyle is already there, and **the Naphtaali are woodsprogs**, since
+`BaseNaphtaali` inherits `BaseWoodsprog`. What vanilla never wrote is the scope that reaches a
+woodsprog outside the faction.
+
+Vanilla's own shape for a people with a faction is three scopes, and Naphtaali stops at two:
+
+| namestyle | Faction | Species | Culture |
+| --- | --- | --- | --- |
+| `Snapjaw` | 100, exclusive | **50, combining** | 50, combining |
+| `Naphtaali` (vanilla) | 100, exclusive | — | 50, combining |
+| `Naphtaali` (here) | 100, exclusive | **50, combining** | 50, combining |
+
+So the change is one scope. `Priority="50"` is what keeps it surgical: exclusion is
+`item.Priority > scope.Priority`, so the faction scope at 100 still clears the field for tribe
+members, who are named exactly as they were. Only the woodsprogs who were getting Qudish move.
+
+`Erah` is why one register is right rather than two. She is the only hand-named woodsprog outside
+the tribe, and her name already sits inside these pools — a `re`/`ne` opening, a `ra` infix, an `h`
+postfix. Qud holds no separate secular woodsprog register for this to override.
+
+There is no option on it. Charter rule 6 gates a change that grants *power* with no content
+attached; this grants names, and a player who installs the mod is asking for the mod.
 
 ## 16. Gender and pronouns (`Genders.xml`)
 

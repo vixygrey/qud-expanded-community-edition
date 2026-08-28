@@ -16,6 +16,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- Woodsprogs outside the Naphtaali tribe are named like woodsprogs (#454).
+
+  A woodsprog in the tribe was always named correctly. A woodsprog anywhere else — a Kyakukya
+  villager, a jungle forager — drew a Qudish human name instead. The register was never missing:
+  vanilla's `Naphtaali` namestyle already holds it, and the Naphtaali *are* woodsprogs. What was
+  missing is the scope that reaches a woodsprog outside the faction, which is the third scope
+  vanilla's own snapjaws carry and its Naphtaali do not.
+
+  So this adds one scope and no syllables of mine. Tribe members are named exactly as they were —
+  the faction scope still wins outright for them — and nothing else in the game moves.
+
 - **(internal)** `bit-letters` reports a letter in a `TinkerItem Bits` cost (#560).
 
   A digit names a *level* and the game draws which bit of that level per world; a letter pins one
