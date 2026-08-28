@@ -2092,7 +2092,9 @@ def number_midpoint(raw: str | None) -> float:
     return 1.0
 
 
-def scatter_quantity(pop: ET.Element) -> float:
+def scatter_quantity(
+    pop: ET.Element, own_tables: dict[str, list[ET.Element]] | None = None
+) -> float:
     """Expected number of objects one roll of this table scatters.
 
     A population entry is written one of two ways and vanilla never mixes them: a `pickone` group
@@ -2107,7 +2109,21 @@ def scatter_quantity(pop: ET.Element) -> float:
     styles come out wrong, and why this counts scatter entries **only** and leaves weighted ones
     to `check_table_share` (#474).
 
-    `<table>` references are not followed: a shared sub-table belongs to whoever wrote it.
+    **A `<table>` reference is followed only into `own_tables`, and never by default.** A shared
+    sub-table belongs to whoever wrote it, which is the right rule for vanilla's - but it is not
+    the right rule for one this fork writes itself. Vanilla's own overgrowth idiom is a sub-table
+    (`BrightshroomPatches`, pulled into eight cave tiers by a single line), and a `Vixy_` copy of
+    that shape would otherwise score its whole footprint at zero however dense the patch (#544).
+
+    Resolution is opt-in because `snapshot_qud_api.collect_scatter_quantities` runs this over
+    vanilla's tables to build the other side of the ratio. Called without `own_tables` the result
+    is byte-identical to before, so vanilla's figures - and the snapshot digest, and every share
+    number quoted in the documents - do not move.
+
+    **A `Style="pickone"` group is over-counted, deliberately.** One child fires, and this sums
+    every unweighted `<object>` regardless of the group holding it. `BrightshroomPatches` therefore
+    measures its Small and Large arms together rather than 95/5 between them. Over-counting pushes
+    a share toward the ceiling rather than under it, which is the direction that fails loud.
     """
     total = 0.0
     for obj in pop.iter("object"):
@@ -2116,6 +2132,43 @@ def scatter_quantity(pop: ET.Element) -> float:
         total += (
             float(obj.get("Chance") or 100) / 100 * number_midpoint(obj.get("Number"))
         )
+    if own_tables:
+        total += _referenced_quantity(pop, own_tables, {pop.get("Name")})
+    return total
+
+
+def _referenced_quantity(
+    pop: ET.Element, own_tables: dict[str, list[ET.Element]], seen: set[str | None]
+) -> float:
+    """What this table's `<table>` references contribute, following only into `own_tables`.
+
+    `seen` carries the names already on the stack, so a table referencing itself - or a pair
+    referencing each other - terminates instead of recursing forever. A name is counted once per
+    path rather than once overall: two separate lines naming the same sub-table are two rolls of
+    it, and both are real.
+    """
+    total = 0.0
+    for ref in pop.iter("table"):
+        name = ref.get("Name")
+        if name is None or name in seen or name not in own_tables:
+            continue
+        if ref.get("Weight") is not None:
+            continue
+        share = (
+            float(ref.get("Chance") or 100) / 100 * number_midpoint(ref.get("Number"))
+        )
+        for target in own_tables[name]:
+            inner = 0.0
+            for obj in target.iter("object"):
+                if not obj.get("Blueprint") or obj.get("Weight") is not None:
+                    continue
+                inner += (
+                    float(obj.get("Chance") or 100)
+                    / 100
+                    * number_midpoint(obj.get("Number"))
+                )
+            inner += _referenced_quantity(target, own_tables, seen | {name})
+            total += share * inner
     return total
 
 
@@ -2210,6 +2263,97 @@ def check_placement_hint(f: Findings, all_roots: dict[Path, ET.Element]) -> None
             )
 
 
+MARKUP = re.compile(r"\{\{[^|{}]*\|")
+
+
+def plain_name(raw: str) -> str:
+    """A display name with Qud's colour markup taken off, lowercased.
+
+    `{{g|ivy}}` and `{{y|ivy}}` are different strings and the same word. A player reading the
+    message sees two greens or a green and a yellow, but the sentence still says "an ivy and an
+    ivy" - so the comparison has to be on what is read, not on what is written (#544).
+    """
+    return MARKUP.sub("", raw).replace("}}", "").replace("&", "").strip().lower()
+
+
+def display_name(name: str, all_roots: dict[Path, ET.Element]) -> str | None:
+    """A blueprint's `Render.DisplayName`, walked up `Inherits` through this fork's own files.
+
+    Every variant this fork ships names itself outright, so the walk is usually one step - but a
+    future one that leans on its parent for the name would be exactly the collision this check is
+    for, and reading only the declaration would miss it. A chain leaving this fork's files ends
+    here rather than guessing at vanilla's name.
+    """
+    seen: set[str] = set()
+    roots = blueprint_sources(all_roots)
+    while name and name not in seen:
+        seen.add(name)
+        obj = None
+        for root in roots.values():
+            for candidate in root.iter("object"):
+                if candidate.get("Name") == name and candidate.get("Load") != "Merge":
+                    obj = candidate
+                    break
+            if obj is not None:
+                break
+        if obj is None:
+            return None
+        for part in obj.findall("part"):
+            if part.get("Name") == "Render" and part.get("DisplayName"):
+                return part.get("DisplayName")
+        name = obj.get("Inherits")
+    return None
+
+
+def check_name_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """No two blueprints this fork scatters may read as the same thing.
+
+    `Physics.EnterCell` adds every object in the cell to one list and `Grammar.MakeAndList` neither
+    deduplicates nor counts, so two objects sharing a name print as
+    "You pass by a wild overgrowth and a wild overgrowth". #542 stopped that for two of the *same*
+    blueprint; this stops it for two different ones that read alike, which the engine is right to
+    treat as distinct and `placement-hint` therefore cannot see.
+
+    It is the live defect in the Workshop mod that prompted #173 - `WallDecorRnd` and
+    `WallDecorRndDes`, both displaying "wild overgrowth" - and a themed set of overgrowth variants
+    is precisely where this fork would repeat it.
+
+    **Scattered blueprints only.** 17 display names are shared across this fork today and every one
+    is legitimate: projectiles, which exist in flight and never lie in a cell; the three grades of
+    each psionic chip, whose grade is deliberately hidden; and each arrow beside its own projectile.
+    None is placed on the ground, and a check that reported them would be ignored.
+    """
+    pops = POPULATION_TABLES
+    if not pops.is_file():
+        return
+    try:
+        root = ET.fromstring(pops.read_text(encoding="utf-8-sig"))
+    except ET.ParseError:
+        return  # check_wellformed owns this
+
+    scattered: set[str] = {
+        obj.get("Blueprint")
+        for pop in root.iter("population")
+        for obj in pop.iter("object")
+        if obj.get("Blueprint") and obj.get("Weight") is None
+    }
+
+    seen: dict[str, list[str]] = {}
+    for blueprint in sorted(scattered):
+        raw = display_name(blueprint, all_roots)
+        if not raw:
+            continue  # vanilla's to name, or named nowhere this fork can read
+        seen.setdefault(plain_name(raw), []).append(blueprint)
+
+    for reads_as, blueprints in sorted(seen.items()):
+        if len(blueprints) > 1:
+            f.add(
+                "name-collision",
+                f"{pops}: {', '.join(blueprints)} all read as '{reads_as}' and are all "
+                f"scattered - two in one cell print as one thing twice",
+            )
+
+
 def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """This fork's share of a vanilla table's *scattered* content stops at half.
 
@@ -2243,11 +2387,21 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     except ET.ParseError:
         return  # check_wellformed owns this
 
+    # Tables this fork defines outright, as opposed to merges into. A merge block joins vanilla's
+    # table and its contents are already counted where they land; a new table is only reached
+    # through a <table> reference, and until #544 that reference carried its contents past the
+    # measure entirely.
+    own_tables: dict[str, list[ET.Element]] = {}
+    for pop in root.iter("population"):
+        name = pop.get("Name")
+        if name and pop.get("Load") != "Merge":
+            own_tables.setdefault(name, []).append(pop)
+
     mine: dict[str, float] = {}
     for pop in root.iter("population"):
         name = pop.get("Name")
         if name and pop.get("Load") == "Merge":
-            mine[name] = mine.get(name, 0.0) + scatter_quantity(pop)
+            mine[name] = mine.get(name, 0.0) + scatter_quantity(pop, own_tables)
 
     for name, ours in sorted(mine.items()):
         if ours <= 0:
@@ -3096,6 +3250,7 @@ def run() -> Findings:
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
     check_placement_hint(f, roots)
+    check_name_collision(f, roots)
     check_scatter_share(f, roots)
     check_implant_table_cost(f, roots)
     check_skill_option_coverage(f)

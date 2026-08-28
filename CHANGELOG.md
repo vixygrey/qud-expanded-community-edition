@@ -110,6 +110,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **(internal)** Two checks added ahead of the overgrowth work in #173 (#544).
+
+  `scatter-share` now follows a `<table>` reference into a table this fork defines, so a sub-table
+  written in vanilla's own patch idiom is measured rather than scoring zero. It still refuses to
+  follow one into vanilla's tables, and resolution is opt-in so the other side of every ratio is
+  unchanged.
+
+  `name-collision` reports two scattered blueprints that read as the same thing. Colour markup is
+  stripped before comparing, so `{{g|ivy}}` and `{{y|ivy}}` count as the collision they are.
+
 - **Creature variants are a fifth of two generic creature pools instead of two thirds** (#524).
 
   The 26 animal and reptile variants each reach the world by an explicit entry I placed in the biome

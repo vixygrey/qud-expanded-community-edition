@@ -2338,6 +2338,179 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    # --------------------------------------------------- scatter through an own sub-table
+
+    PATCHES = (
+        '  <population Name="Vixy_IvyPatches">\n'
+        '    <group Name="Types" Style="pickone">\n'
+        '      <group Name="Small" Style="pickeach" Weight="95">\n'
+        '        <object Chance="100" Blueprint="Vixy_Ivy" Number="12-20" />\n'
+        '        <object Chance="50" Blueprint="Vixy_Ivy" Number="12-20" />\n'
+        "      </group>\n"
+        "    </group>\n"
+        "  </population>"
+    )
+
+    @staticmethod
+    def _quantities(tables: str, target: str = "Merged"):
+        root = ET.fromstring(f"<populations>\n{tables}\n</populations>")
+        own = {
+            p.get("Name"): [p]
+            for p in root.iter("population")
+            if p.get("Load") != "Merge"
+        }
+        pop = next(p for p in root.iter("population") if p.get("Name") == target)
+        return validate_mod.scatter_quantity(pop), validate_mod.scatter_quantity(
+            pop, own
+        )
+
+    def test_an_own_sub_table_is_counted_once_resolution_is_asked_for(self) -> None:
+        """#544. Vanilla's overgrowth idiom is a sub-table pulled in by one line, so a Vixy_ copy
+        of that shape carried its whole footprint past the measure."""
+        plain, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <table Name="Vixy_IvyPatches" Chance="30" />\n'
+            "  </population>\n" + self.PATCHES
+        )
+        self.assertEqual(
+            plain, 0.0, "the unresolved reading is what the hole looked like"
+        )
+        # 0.30 * (1.00 * 16 + 0.50 * 16)
+        self.assertAlmostEqual(resolved, 7.2)
+
+    def test_vanillas_sub_table_is_still_not_followed(self) -> None:
+        """The rule the original docstring states, and it has to survive the exception."""
+        _, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <table Name="BrightshroomPatches" Chance="100" />\n'
+            "  </population>"
+        )
+        self.assertEqual(resolved, 0.0)
+
+    def test_a_reference_cycle_terminates(self) -> None:
+        """A table naming itself, which nothing forbids."""
+        _, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <table Name="Vixy_Loop" Chance="100" />\n'
+            "  </population>\n"
+            '  <population Name="Vixy_Loop">\n'
+            '    <object Blueprint="Vixy_Thing" Chance="100" Number="2" />\n'
+            '    <table Name="Vixy_Loop" Chance="100" />\n'
+            "  </population>"
+        )
+        self.assertEqual(resolved, 2.0, "the objects count once and the cycle stops")
+
+    def test_omitting_own_tables_is_byte_identical_to_before(self) -> None:
+        """`snapshot_qud_api` runs this over vanilla to build the other side of the ratio. If the
+        default behaviour moved, every share figure in the documents would move with it."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <object Blueprint="Vixy_Thing" Chance="50" Number="10" />\n'
+            '    <table Name="Vixy_IvyPatches" Chance="30" />\n'
+            "  </population>\n" + self.PATCHES
+        )
+        self.assertEqual(plain, 5.0, "only the direct entry counts without resolution")
+
+    # -------------------------------------------------------------------- name-collision
+
+    def _collision(self, blueprints: str, entries: str):
+        tmp = self._mod(
+            blueprints,
+            tables=f'  <population Name="SaltMarshZoneGlobals" Load="Merge">\n{entries}  </population>',
+        )
+        return findings_for(validate_mod.check_name_collision, tmp)
+
+    def test_two_scattered_blueprints_reading_alike_are_reported(self) -> None:
+        """The live defect in the mod that prompted #173: WallDecorRnd and WallDecorRndDes, both
+        displaying "wild overgrowth". placement-hint cannot see it - the engine is right that they
+        are different objects."""
+        items = self._collision(
+            '  <object Name="Vixy_IvyA">\n'
+            '    <part Name="Render" DisplayName="ivy" />\n'
+            "  </object>\n"
+            '  <object Name="Vixy_IvyB">\n'
+            '    <part Name="Render" DisplayName="ivy" />\n'
+            "  </object>",
+            '    <object Blueprint="Vixy_IvyA" Chance="50" Number="10" />\n'
+            '    <object Blueprint="Vixy_IvyB" Chance="50" Number="10" />\n',
+        )
+        self.assertEqual([c for c, _ in items], ["name-collision"])
+        self.assertIn("Vixy_IvyA", items[0][1])
+        self.assertIn("Vixy_IvyB", items[0][1])
+
+    def test_colour_markup_does_not_make_two_names_distinct(self) -> None:
+        """The case a themed set actually produces. Two greens or a green and a yellow, and the
+        sentence still says "an ivy and an ivy"."""
+        items = self._collision(
+            '  <object Name="Vixy_IvyA">\n'
+            '    <part Name="Render" DisplayName="{{g|ivy}}" />\n'
+            "  </object>\n"
+            '  <object Name="Vixy_IvyB">\n'
+            '    <part Name="Render" DisplayName="{{y|ivy}}" />\n'
+            "  </object>",
+            '    <object Blueprint="Vixy_IvyA" Chance="50" Number="10" />\n'
+            '    <object Blueprint="Vixy_IvyB" Chance="50" Number="10" />\n',
+        )
+        self.assertEqual([c for c, _ in items], ["name-collision"])
+
+    def test_distinct_names_pass(self) -> None:
+        self.assertEqual(
+            self._collision(
+                '  <object Name="Vixy_IvyA">\n'
+                '    <part Name="Render" DisplayName="{{g|ivy}}" />\n'
+                "  </object>\n"
+                '  <object Name="Vixy_IvyB">\n'
+                '    <part Name="Render" DisplayName="{{y|creeper}}" />\n'
+                "  </object>",
+                '    <object Blueprint="Vixy_IvyA" Chance="50" Number="10" />\n'
+                '    <object Blueprint="Vixy_IvyB" Chance="50" Number="10" />\n',
+            ),
+            [],
+        )
+
+    def test_a_shared_name_that_is_never_scattered_is_not_the_defect(self) -> None:
+        """17 of these exist today and all are legitimate - projectiles, chip grades, and each
+        arrow beside its own projectile. A check that reported them would be ignored."""
+        self.assertEqual(
+            self._collision(
+                '  <object Name="Vixy_ProjectileA">\n'
+                '    <part Name="Render" DisplayName="{{o|pulse}}" />\n'
+                "  </object>\n"
+                '  <object Name="Vixy_ProjectileB">\n'
+                '    <part Name="Render" DisplayName="{{o|pulse}}" />\n'
+                "  </object>",
+                '    <object Blueprint="Vixy_ProjectileA" Weight="10" />\n',
+            ),
+            [],
+        )
+
+    def test_a_name_this_fork_cannot_read_is_left_alone(self) -> None:
+        """A blueprint vanilla names is vanilla's to name, and the chain ends rather than guessing."""
+        self.assertEqual(
+            self._collision(
+                "",
+                '    <object Blueprint="Watervine" Chance="50" Number="10" />\n'
+                '    <object Blueprint="Brinestalk" Chance="50" Number="10" />\n',
+            ),
+            [],
+        )
+
+    def test_a_variant_leaning_on_its_parent_for_a_name_is_caught(self) -> None:
+        """Every variant this fork ships names itself, so the walk is usually one step - but one
+        that did not would be exactly this collision, and reading only the declaration misses it."""
+        items = self._collision(
+            '  <object Name="Vixy_Base">\n'
+            '    <part Name="Render" DisplayName="{{g|ivy}}" />\n'
+            "  </object>\n"
+            '  <object Name="Vixy_Child" Inherits="Vixy_Base" />\n'
+            '  <object Name="Vixy_Other">\n'
+            '    <part Name="Render" DisplayName="ivy" />\n'
+            "  </object>",
+            '    <object Blueprint="Vixy_Child" Chance="50" Number="10" />\n'
+            '    <object Blueprint="Vixy_Other" Chance="50" Number="10" />\n',
+        )
+        self.assertEqual([c for c, _ in items], ["name-collision"])
+
     def test_number_midpoint_reads_every_form_vanilla_writes(self) -> None:
         for raw, expected in {
             None: 1.0,
