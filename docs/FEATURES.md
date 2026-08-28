@@ -2487,7 +2487,9 @@ Typing a name in bypasses all of this, which is always the surest way to get the
 - **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
   blueprint and never call the generator.
 - **Non-human creatures.** Snapjaws, robots, animals, plants, reptiles, Templars and Mechanimists all
-  have their own syllable pools, reached by their own scopes.
+  have their own syllable pools. Having a pool is not the same as being reached by it, though —
+  §15.6 is a people whose register existed and whose scope did not, which is worth checking before
+  concluding that a creature drawing Qudish has no register of its own.
 - **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
   scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
   a site call.
