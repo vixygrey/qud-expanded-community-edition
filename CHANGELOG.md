@@ -237,6 +237,28 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** Two documents still described the Joppa removal system that #498 deleted (#549).
+
+  `docs/DESIGN_options.md` recorded the removal correctly and the other two did not follow.
+  `docs/FEATURES.md` §13 still routed the Joppa option through `Raven_JoppaBuildingSystem`, giving
+  as the reason the very thing #498 disproved — that a map patch cannot be gated on an option. And
+  `docs/CHARTER.md` rule 5 still listed a `[Serializable]` `IGameSystem` among the things this mod's
+  C# does, in the paragraph where the rule states its own ceiling. That one mattered more: a ceiling
+  is meant to be an exact description of what the C# may do, and one naming a capability the mod no
+  longer has is a ceiling nobody can check a diff against.
+
+  Three further spots had drifted the same way and are fixed with them. Both documents still
+  carried the **old, lopsided contract** — the Joppa building "cannot be rebuilt once removed" —
+  which #498 replaced with a symmetrical one; `mod/Core/Options.xml`'s helptext had already been
+  updated and the prose had not. Rule 5's example of an irreversible edit is now the Chip Interface
+  slot, which a body built without one never gains. And rule 6 flatly asserted that **reading an
+  option requires C#**, which is the claim #498 disproved; it now says *acting on* one usually does,
+  and names the directory gate as the exception.
+
+  Rule 5 also now records that the ceiling **came down**, which had not happened before and is worth
+  a sentence: the replacement for that system was not a smaller version of it but the discovery that
+  `manifest.json` already gated directories on an option, which is what "prefer XML to C#" is for.
+
 - **Two of the same plant could grow in one tile in three biomes** (#542).
 
   Brinereed in the saltmarsh, broadglove in the jungle and sweetfrond in the banana grove could each

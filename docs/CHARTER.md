@@ -119,8 +119,6 @@ also:
 - reads its own options and writes public fields on records the game has already loaded
   (`GenotypeEntry.MutationPoints`, `.Skills`, `.Reputations`, `NameElement.Weight`,
   `NameScope.Chance`, `Gender.EnableSelection`)
-- registers a `[Serializable]` `IGameSystem` that handles a zone event and creates and destroys
-  objects within one zone
 - **registers a character-creation module** — an `AbstractEmbarkBuilderModule` subclass, declared
   by class name in `mod/Core/EmbarkModules.xml`, which handles one boot event and replaces the string
   the game generated for the player's name
@@ -142,6 +140,14 @@ state would put this mod's shape into other people's saved characters.
 The alternative was Harmony, which rule 5 refuses and which breaks on arm64 macOS anyway. The
 question was never "patch or module", it was whether the feature was worth a new kind of C# at all.
 
+**It has come down once, too.** A third bullet stood here until #498: a `[Serializable]`
+`IGameSystem` that handled a zone event and created and destroyed objects within one zone, which is
+how the Joppa building used to be removed when its option was off. `manifest.json` gates the whole
+directory on that option instead, so the system went and the ceiling went back down with it. Worth
+recording, because a ceiling that only ever rises is one nobody is reading — and because the
+replacement was not a smaller version of the same idea but the discovery that the game already did
+it, which is the outcome rule 5's "prefer XML to C#" is pointing at.
+
 **Both limits above are checked now, not just written down.** `tools/validate_mod.py` runs
 `scripting-policy` (every banned API in rule 5's list, with the clause each pattern enforces) and
 `serializable-shape` (any instance field on a `[Serializable]` type, which is what makes a class's
@@ -162,11 +168,12 @@ directly.
 
 - **Anything `[Serializable]` is written into player saves.** Its field layout is an identifier in
   the sense of `docs/STYLEGUIDE.md` §1 — renaming or removing a field can break saves that already
-  exist. Treat a shipped system's shape as frozen unless you mean to break it.
+  exist. Treat a shipped part's or effect's shape as frozen unless you mean to break it — nearly
+  every script here carries the attribute, and `serializable-shape` checks all of them.
 - **Anything that mutates loaded game data must be idempotent and reversible.** Option handlers run
   repeatedly and in any order, so make the data *match* the option's value rather than performing a
-  one-way edit. Where that's impossible — the Joppa building, which cannot be rebuilt once
-  removed — say so in the option's `<helptext>` rather than letting the player discover it.
+  one-way edit. Where that's impossible — the Chip Interface slot, which a body built without one
+  never gains — say so in the option's `<helptext>` rather than letting the player discover it.
 
 ### 6. Configurable — players choose what they take
 
@@ -195,8 +202,10 @@ content/333640/`):
   `<option ID= DisplayText= Category="Mods" Type="Checkbox|Slider|Combo|BigCombo|Button"
   Default= SearchKeywords=>` each, with a `<helptext>` child. `Category="Mods"` is what files it
   into the in-game menu. No code needed to make an option *appear*.
-- **Reading an option requires C#.** Of the 12 installed mods shipping an `Options.xml`, **all 12
-  also ship at least one `.cs`**. The working pattern is `[HasOptionFlagUpdate]` on the class,
+- **Acting on an option usually requires C#.** Of the 12 installed mods shipping an `Options.xml`,
+  **all 12 also ship at least one `.cs`**. The exception is gating a whole directory, which
+  `manifest.json` does on its own (#498) — see rule 5, where that discovery took a system out of
+  this mod's C# entirely. The working pattern is `[HasOptionFlagUpdate]` on the class,
   `[OptionFlagUpdate]` on a `static void` method, and `XRL.UI.Options.GetOption(ID, default)`
   inside it — **every option value is a string**, sliders included, so numbers need parsing.
   `[OptionFlag]` field binding also exists and is sometimes recommended over `GetOption`, but
