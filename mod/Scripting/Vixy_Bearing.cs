@@ -35,6 +35,25 @@ namespace XRL.World.Parts
     /// therefore stay silent — descending keeps X and Y and changes only Z.
     /// </para>
     /// <para>
+    /// <b>Said one beat late, on purpose.</b> The game announces the zone and the time itself, from
+    /// <c>ZoneManager.SetActiveZone</c>, and that call is the last thing a move does — nothing at
+    /// all fires after it. Reporting from <c>EnteringZoneEvent</c> therefore lands the bearing
+    /// <em>above</em> the line it belongs under. So the bearing is noted there and said at the
+    /// player's next <c>BeginTakeActionEvent</c>, which is the first hook after the move completes.
+    /// In a busy zone another actor's message can occasionally come between the two; the
+    /// alternative was being adjacent but always in the wrong order.
+    /// </para>
+    /// <para>
+    /// The two fields holding it are <c>static</c> deliberately. An instance field on a
+    /// <c>[Serializable]</c> part becomes part of every save's layout, frozen in the sense of
+    /// <c>docs/STYLEGUIDE.md</c> §1, and <c>validate_mod.py</c>'s <c>serializable-shape</c> asks for
+    /// that to be a considered decision rather than a side effect of a message ordering. A static
+    /// is not written to the save at all. It costs one thing — a static outlives a game — which is
+    /// why the pending zone is remembered beside the pending bearing and checked before anything is
+    /// said. A note left by a character who has since been abandoned names a zone the current one is
+    /// not standing in, and is discarded rather than spoken.
+    /// </para>
+    /// <para>
     /// Charter rule 5: two public ints off a zone the game has already built, one string, one
     /// message. No I/O, no reflection, no Harmony, no state.
     /// </para>
@@ -50,21 +69,34 @@ namespace XRL.World.Parts
             new[] { "southwest", "south", "southeast" },
         };
 
+        /// <summary>The bearing waiting to be said, and the zone it was worked out in.</summary>
+        private static string PendingBearing;
+        private static string PendingZoneID;
+
         public override bool WantEvent(int ID, int cascade)
         {
-            return base.WantEvent(ID, cascade) || ID == EnteringZoneEvent.ID;
+            return base.WantEvent(ID, cascade)
+                || ID == EnteringZoneEvent.ID
+                || ID == BeginTakeActionEvent.ID;
         }
 
         public override bool HandleEvent(EnteringZoneEvent E)
         {
-            Announce(E.Origin?.ParentZone, E.Cell?.ParentZone);
+            Note(E.Origin?.ParentZone, E.Cell?.ParentZone);
+            return base.HandleEvent(E);
+        }
+
+        public override bool HandleEvent(BeginTakeActionEvent E)
+        {
+            Say();
             return base.HandleEvent(E);
         }
 
         /// <summary>
-        /// Reports the arrival zone's bearing, unless the departure zone had the same one.
+        /// Works out the arrival zone's bearing, unless the departure zone had the same one, and
+        /// holds it until the game has finished announcing where and when we are.
         /// </summary>
-        private void Announce(Zone from, Zone to)
+        private void Note(Zone from, Zone to)
         {
             GameObject who = ParentObject;
             if (who == null || !who.IsPlayerControlled())
@@ -85,7 +117,29 @@ namespace XRL.World.Parts
                 return;
             }
 
-            AddPlayerMessage("You get your bearings: the " + arriving + " of this parasang.");
+            PendingBearing = arriving;
+            PendingZoneID = to.ZoneID;
+        }
+
+        /// <summary>
+        /// Says the noted bearing, if we are still standing where it was worked out.
+        /// </summary>
+        private void Say()
+        {
+            if (PendingBearing == null)
+            {
+                return;
+            }
+
+            string bearing = PendingBearing;
+            string zoneID = PendingZoneID;
+            PendingBearing = null;
+            PendingZoneID = null;
+
+            if (ParentObject?.CurrentZone?.ZoneID == zoneID)
+            {
+                AddPlayerMessage("The " + bearing + " of this parasang.");
+            }
         }
 
         /// <summary>

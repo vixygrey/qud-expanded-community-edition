@@ -190,7 +190,7 @@
     <helptext>
             Lets Mind's Compass tell you which of a parasang's nine zones you are standing in.
 
-            A parasang is a 3x3 block of zones and the game never says which one you are in, so you work it out by walking to an edge and watching which way the world map scrolls. With this on, you are told when you arrive: {{G|the northeast of this parasang}}, and so on through the nine.
+            A parasang is a 3x3 block of zones and the game never says which one you are in, so you work it out by walking to an edge and watching which way the world map scrolls. With this on, you are told when you arrive, under the line where the game already gives you the zone and the time: {{G|The northeast of this parasang.}} And so on through the nine.
 
             You need {{Y|Mind's Compass}}, which comes free with the {{Y|Wayfaring}} skill rather than being bought separately.
 

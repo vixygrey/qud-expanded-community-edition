@@ -20,8 +20,8 @@ recorded because contributors need them, not because subscribers do.
 
   A parasang is a 3×3 block of zones and the game never says which of the nine you are in. You work
   it out by walking to an edge and watching which way the world map scrolls, which is navigation by
-  trial and error rather than by skill. Now, on arriving: *You get your bearings: the northeast of
-  this parasang.*
+  trial and error rather than by skill. Now it is said on arrival, under the line where the game
+  already tells you the zone and the time: *The northeast of this parasang.*
 
   It comes with **Mind's Compass**, which is free with **Wayfaring** rather than bought separately —
   the same idea as regaining your bearings when lost, one scale down, and it costs nothing a

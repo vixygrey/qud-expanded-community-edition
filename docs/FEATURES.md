@@ -3199,7 +3199,9 @@ nothing.
 
 ### 20.2 Where it shows, and the two routes that were closed
 
-A line in the message log on arrival: *You get your bearings: the northeast of this parasang.*
+A line in the message log on arrival, directly under the game's own: *The northeast of this
+parasang.* Vanilla announces the zone and the time itself, so that line carries the context and this
+one only has to add what it does not say.
 
 The two nicer-sounding surfaces are both unavailable, and it is worth writing down why so nobody
 re-derives it.
@@ -3232,16 +3234,31 @@ is here is the version that fits inside rule 5.
   inherits its parent object's parasang coordinates, so a vehicle cabin would otherwise report where
   the vehicle is parked.
 
-### 20.4 Only when it changes, without remembering anything
+### 20.4 Only when it changes, and said one beat late
 
 The line is suppressed when the zone being left had the same bearing as the zone being entered.
 Walking east across a parasang gives three lines and a staircase gives none, since descending keeps
-X and Y and changes only Z.
+X and Y and changes only Z. Deciding that needed no stored field: `EnteringZoneEvent` carries
+`Origin`, the cell being left, so both bearings are in hand at once.
 
-That needed no stored field. `EnteringZoneEvent` carries `Origin`, the cell being left, so both
-bearings are in hand at once — which matters because the part is `[Serializable]` and any instance
-field on it would become part of every save's layout, frozen in the sense of §1. Same shape as
-`Vixy_Burdened`, which derives its band rather than storing it.
+**Saying it does need one, and the reason is ordering.** The game announces the zone and the time
+from `ZoneManager.SetActiveZone`, and that call is the *last* thing a move does — nothing fires after
+it, not `AfterMoved`, not `ZoneActivatedEvent`, which `SetActiveZone` sends four lines before its own
+message. Reporting from `EnteringZoneEvent` therefore lands the bearing above the line it belongs
+under. So the bearing is worked out there and said at the player's next `BeginTakeActionEvent`, the
+first hook after the move completes. The cost is that in a busy zone another actor's message can come
+between the two; the alternative was being adjacent and always in the wrong order.
+
+**The fields holding it are `static`.** An instance field on a `[Serializable]` part becomes part of
+every save's layout, frozen in the sense of §1, and `validate_mod.py`'s `serializable-shape` asks for
+that to be a considered decision rather than a side effect of a message ordering — the check exempts
+statics for exactly this reason. Nothing is written to the save, and the part keeps the shape
+`Vixy_Burdened` has.
+
+A static outlives a game, which is the one thing it costs. So the pending *zone* is remembered beside
+the pending bearing and checked before anything is said: a note left by a character who has since
+been abandoned names a zone the current one is not standing in, and is discarded rather than
+spoken.
 
 ### 20.5 The skill gate, and why the description names the option
 
