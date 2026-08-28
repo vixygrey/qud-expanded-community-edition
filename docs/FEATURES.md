@@ -2170,9 +2170,16 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 ## 13. Options (`Options.xml`)
 
 Eighteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
-reading one requires C# — `mod/Scripting/Raven_Options.cs` holds all of them except the Joppa
-building, which `Raven_JoppaBuildingSystem` reads because the building is map data rather than a
-field on a loaded record.
+reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
+
+**The Joppa building is the exception, and it is read by no code at all** (#498).
+`mod/manifest.json` gates the directory holding the map on
+`OptionQudExpandedCEJoppaBuilding==Yes`, so the option decides whether the file is ever loaded
+rather than what any code then does about it. Its ID still sits in `Raven_Options.cs` as a `const`
+nothing reads, with a comment saying so — every option ID in this mod is declared in one place, and
+a reader looking for the missing one should find that note rather than nothing. It is also what
+`validate_mod.py`'s `option-wiring` check finds, since that check detects a read by looking for the
+ID as a string literal and cannot see the manifest route.
 
 Per charter rule 6, **defaults reproduce the mod's established behaviour**. Two exceptions: the
 starting reputation bonus, which grants power with no content attached and so must be asked for
@@ -2251,7 +2258,7 @@ about moving features up this table.
 |---|---|---|
 | **Live** — applies immediately | graded burden, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
-| **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building additionally **cannot be rebuilt** once removed from a save. |
+| **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
 ### 13.3 Two constraints worth knowing before adding another option
 
