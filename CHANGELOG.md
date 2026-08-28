@@ -26,7 +26,9 @@ recorded because contributors need them, not because subscribers do.
   They arrive in clumps rather than scattered evenly, because that is how the game already does
   this. Vanilla's brightshroom and grave moss patches are built from a common arm and a rare dense
   one, and every entry grows outward from wherever its first tile landed; these follow the same
-  shape, so about one ruin in twenty has gone properly under.
+  shape. Five ruins in six now carry one plant or the other, and about one in thirty has gone
+  properly under — the frequency is taken from the crypts, where grave moss is that common because
+  being mossy is part of what a crypt is.
 
   Slabmoss is teal on purpose. Everything already growing in a ruin is green — swarmshade, ziv
   bough, star palm, starapple — and a fourth green would have read as more canopy instead of

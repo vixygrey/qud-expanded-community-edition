@@ -3114,8 +3114,15 @@ tiles beat three with one borrowed wrong.
 
 | table | vanilla | this fork | share |
 |---|---:|---:|---:|
-| `RuinsZoneGlobals-Vegetation` | 213.6 | 41.4 | 16.2% |
-| `BaroqueRuinsZoneGlobals-Vegetation` | 707.0 | 41.4 | 5.5% |
+| `RuinsZoneGlobals-Vegetation` | 213.6 | 124.0 | 36.7% |
+| `BaroqueRuinsZoneGlobals-Vegetation` | 707.0 | 124.0 | 14.9% |
+
+Each reference is `Chance="60"`, so **84% of ruins zones carry one plant or the other** and about one
+in thirty rolls the Large arm and has gone properly under. That figure is taken from the crypts,
+which pull `GraveMossPatches` at 60-70, rather than from the caves at 30 or the Moon Stair at 10 —
+grave moss is that frequent because being mossy is part of what a crypt is, and "overgrown" is the
+same kind of claim about a ruin. This first shipped at 20, where five ruins in nine had neither
+plant, which states the opposite of what the issue is for.
 
 Both measured through the `<table>` reference, which `scatter-share` could not previously see
 (#544). The measure over-counts a `pickone` group — one arm fires and both are summed — so the true

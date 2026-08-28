@@ -1461,7 +1461,13 @@
        that check, so it is not used.
 
        Number is smaller for the vine than the moss because it wants a wall to sit against and
-       there are fewer of those than there are floor cells. -->
+       there are fewer of those than there are floor cells.
+
+       Chance="60" on each reference is taken from the crypts, which pull GraveMossPatches at 60-70,
+       and not from the caves at 30 or the Moon Stair at 10. The crypts are the right analogue: grave
+       moss is that frequent because being mossy is part of what a crypt is, and "overgrown" is the
+       same kind of claim about a ruin. At the 20 this shipped with, five ruins in nine had neither
+       plant, which states the opposite. -->
 
   <population Name="Vixy_SlabmossPatches">
     <group Name="Types" Style="pickone">
@@ -1499,13 +1505,13 @@
        and the underground variants of the template, so a single merge reaches either. -->
 
   <population Name="RuinsZoneGlobals-Vegetation" Load="Merge">
-    <table Name="Vixy_SlabmossPatches" Chance="20" />
-    <table Name="Vixy_PallvinePatches" Chance="20" />
+    <table Name="Vixy_SlabmossPatches" Chance="60" />
+    <table Name="Vixy_PallvinePatches" Chance="60" />
   </population>
 
   <population Name="BaroqueRuinsZoneGlobals-Vegetation" Load="Merge">
-    <table Name="Vixy_SlabmossPatches" Chance="20" />
-    <table Name="Vixy_PallvinePatches" Chance="20" />
+    <table Name="Vixy_SlabmossPatches" Chance="60" />
+    <table Name="Vixy_PallvinePatches" Chance="60" />
   </population>
 
   <!-- The Trembling Dunes three, rehomed (#476).
