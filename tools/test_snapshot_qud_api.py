@@ -364,6 +364,49 @@ class NonLevelingMutations(unittest.TestCase):
         self.assertEqual(unlevellable, ["Albino", "Kindle"], "returned unsorted")
 
 
+class TemplateHints(unittest.TestCase):
+    """#542. The citation that says which biomes deduplicate a scatter placement and which do not.
+
+    `ZoneTemplates.xml` supplies a default `Hint` per population reference, and only a hinted
+    placement runs `PlaceObjectInArea`'s same-blueprint check. The split is not something this fork
+    can infer from its own XML, so `check_placement_hint` is only as good as this key.
+    """
+
+    SNAPSHOT = Path(__file__).resolve().parent / "qud-api.json"
+
+    # The three that protect a scatter entry and the three that do not, verified by hand against
+    # ZoneTemplates.xml. If a Qud update moves one of these, the check silently changes meaning.
+    HINTED = ("HillsZoneGlobals", "MountainsZoneGlobals", "DesertCanyonZoneGlobals")
+    UNHINTED = ("JungleZoneGlobals", "SaltMarshZoneGlobals", "BananaGroveZoneGlobals")
+
+    def test_the_committed_snapshot_carries_it(self) -> None:
+        api = json.loads(self.SNAPSHOT.read_text())
+        hints = api["template_hints"]
+        self.assertEqual(api["counts"]["template_hints"], len(hints))
+        for table, supplied in hints.items():
+            self.assertEqual(
+                supplied,
+                sorted(set(supplied)),
+                f"{table} must be a sorted set for a stable digest",
+            )
+
+    def test_the_three_protected_biomes_supply_any(self) -> None:
+        hints = json.loads(self.SNAPSHOT.read_text())["template_hints"]
+        for table in self.HINTED:
+            self.assertEqual(hints.get(table), ["Any"], table)
+
+    def test_the_three_unprotected_biomes_supply_nothing(self) -> None:
+        """The empty string is the citation. Omitting the table instead would be
+        indistinguishable from a table no template names, which wants the opposite response."""
+        hints = json.loads(self.SNAPSHOT.read_text())["template_hints"]
+        for table in self.UNHINTED:
+            self.assertEqual(hints.get(table), [""], table)
+
+    def test_a_game_without_the_file_yields_nothing_rather_than_raising(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(snapshot_qud_api.collect_template_hints(Path(tmp)), {})
+
+
 class MissingDependencies(unittest.TestCase):
     """The hook must be harmless on a machine without the game."""
 

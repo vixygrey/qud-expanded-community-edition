@@ -660,6 +660,29 @@ merged entry as a scatter entry reported `Melee Weapons 5C` at 75.2% where the t
 and did the same to twelve more. Splitting by "does this entry carry a `Weight`" needs no resolution
 at all, because vanilla's disjointness above makes that question equivalent.
 
+#### Every scattered plant carries its own `Hint`
+
+Share is not the only thing a scatter entry has to get right. **Whether the game refuses to put two
+of the same object in one cell is decided per biome, in `ZoneTemplates.xml`** — a file this fork
+never edits:
+
+```xml
+<population Table="HillsZoneGlobals" Hint="Any"></population>   <!-- deduplicates -->
+<population Table="JungleZoneGlobals"></population>             <!-- does not -->
+```
+
+`ZTPopulatonNode` hands that attribute to `PlacePopulationInRegion` as its `DefaultHint`, and only a
+hinted placement runs `Points.RemoveAll(l => … || l.HasObject(Blueprint))`. Without one, placement
+falls back to a path filtered on `Cell.IsEmpty()` — which returns false only above `RenderLayer` 5,
+and `Plant` ships at 3. The guard cannot see the plant already standing there.
+
+> **Write `Hint="Any"` on every scattered plant, including in the biomes whose template already
+> supplies it.** Three of the six harvestables were exposed and three were not, and nothing in this
+> fork's own XML said which. `placement-hint` enforces it; `docs/LESSONS.md` has the full trace.
+
+Creatures are exempt and must stay exempt: `PlaceObjectInArea` already refuses to co-locate combat
+objects, and `Any` would *harm* them by dropping the fallback's `IsReachable()` test.
+
 #### A third route, which nobody writes
 
 `table-share` and `scatter-share` both govern entries **someone typed**. There is a third way
@@ -1211,6 +1234,7 @@ seconds rather than after a round trip.
 | A chip grading a mutation that cannot level | `dead-chip-grade`, against the snapshot's `non_leveling_mutations` |
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
 | This fork's share of a vanilla table's *scattered* content | `scatter-share`, against the snapshot's `scatter_quantities` |
+| A scattered plant carrying its own placement `Hint` | `placement-hint`, against the snapshot's `template_hints` |
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
 | Every claim pattern matching something, so a reworded sentence cannot silence its check | `claim-coverage` |
@@ -1324,6 +1348,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `tinker-only` | `validate_mod.py` | a blueprint whose only route to a player is tinkering, so its drop rate was never chosen |
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `scatter-share` | `validate_mod.py` | this fork's share of a vanilla table's scattered content |
+| `placement-hint` | `validate_mod.py` | a scattered plant carrying its own `Hint`, so two cannot share a cell |
 | `inherits-share` | `report_dynamic_tables.py` | this fork's share of an inherited pool, per tier (needs the game) |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |

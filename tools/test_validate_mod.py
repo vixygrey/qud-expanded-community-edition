@@ -2241,6 +2241,103 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    # ----------------------------------------------------------------- placement-hint
+
+    PLANT = '  <object Name="Vixy_Reed" Inherits="Plant" />'
+    HINTS: ClassVar[dict] = {
+        "template_hints": {
+            "SaltMarshZoneGlobals": [""],
+            "HillsZoneGlobals": ["Any"],
+        }
+    }
+
+    def _placement(self, entries: str, name: str = "SaltMarshZoneGlobals", **kw):
+        tmp = self._mod(
+            kw.pop("blueprints", self.PLANT),
+            tables=f'  <population Name="{name}" Load="Merge">\n{entries}  </population>',
+            snapshot=kw.pop("snapshot", self.HINTS),
+        )
+        return findings_for(validate_mod.check_placement_hint, tmp)
+
+    def test_an_unhinted_plant_in_an_unhinted_biome_is_reported(self) -> None:
+        """#542. Three of six plants shipped this way and the XML did not say which."""
+        items = self._placement(
+            '    <object Blueprint="Vixy_Reed" Chance="60" Number="40-60" />\n'
+        )
+        self.assertEqual([c for c, _ in items], ["placement-hint"])
+        self.assertIn("Vixy_Reed", items[0][1])
+        self.assertIn("SaltMarshZoneGlobals", items[0][1])
+
+    def test_an_explicit_hint_satisfies_it(self) -> None:
+        self.assertEqual(
+            self._placement(
+                '    <object Blueprint="Vixy_Reed" Chance="60" Number="40" Hint="Any" />\n'
+            ),
+            [],
+        )
+
+    def test_a_biome_whose_template_supplies_a_hint_is_quiet(self) -> None:
+        """The distinction the check exists to make.
+
+        The same entry, written the same way, is a defect in one biome and correct in another.
+        A check that merely flagged a missing Hint would report both and teach me to ignore it.
+        """
+        self.assertEqual(
+            self._placement(
+                '    <object Blueprint="Vixy_Reed" Chance="40" Number="20" />\n',
+                name="HillsZoneGlobals",
+            ),
+            [],
+        )
+
+    def test_a_creature_is_left_to_the_engine(self) -> None:
+        """`PlaceObjectInArea` carries its own HasCombatObject() filter, so creatures cannot
+        share a cell - and Hint="Any" would harm them, dropping the fallback's IsReachable()
+        test. Twenty-odd variant entries sit in these tables and none of them is this defect."""
+        self.assertEqual(
+            self._placement(
+                '    <object Blueprint="Vixy_Dog" Chance="25" Number="1d2" />\n',
+                blueprints='  <object Name="Vixy_Dog" Inherits="Dog" />',
+            ),
+            [],
+        )
+
+    def test_a_weighted_entry_is_not_a_scatter(self) -> None:
+        """A pickone draw places one object, so stacking is not the question there."""
+        self.assertEqual(
+            self._placement('    <object Blueprint="Vixy_Reed" Weight="10" />\n'), []
+        )
+
+    def test_a_table_no_template_names_checks_nothing(self) -> None:
+        """Loot tables are not scattered into a zone, so the hint has no meaning for them."""
+        self.assertEqual(
+            self._placement(
+                '    <object Blueprint="Vixy_Reed" Chance="60" Number="40" />\n',
+                name="Melee Weapons 3C",
+            ),
+            [],
+        )
+
+    def test_one_unhinted_route_in_is_enough_to_report(self) -> None:
+        """Ruins-shaped case: two templates name one table and need not agree. The table is only
+        safe if every route into it carries a hint, so the check reads the whole list."""
+        items = self._placement(
+            '    <object Blueprint="Vixy_Reed" Chance="60" Number="40" />\n',
+            name="RuinsZoneGlobals-Vegetation",
+            snapshot={"template_hints": {"RuinsZoneGlobals-Vegetation": ["", "Any"]}},
+        )
+        self.assertEqual([c for c, _ in items], ["placement-hint"])
+
+    def test_a_snapshot_without_template_hints_checks_nothing(self) -> None:
+        """The vacuous case. Silence must mean "no opinion", not "nothing looked"."""
+        self.assertEqual(
+            self._placement(
+                '    <object Blueprint="Vixy_Reed" Chance="60" Number="40" />\n',
+                snapshot={"template_hints": {}},
+            ),
+            [],
+        )
+
     def test_number_midpoint_reads_every_form_vanilla_writes(self) -> None:
         for raw, expected in {
             None: 1.0,
