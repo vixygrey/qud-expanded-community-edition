@@ -512,13 +512,15 @@
        is the artifact skill, and a cartridge serves a firearm, which is recovered technology. Vanilla
        agrees - Shotgun Shell and Lead Slug both have recipes while no arrow in the game does.
 
-       Where the RECIPE sits is a separate decision from what it costs, and both are set here.
-       TinkerItem.LoadBlueprint reads Tier from the BuildTier parameter, defaulting to the highest bit
-       level in the cost, and DataDisk.GetRequiredSkill needs Tinker 2 past tier 3. Plain shot is one
-       scrap electronics for five at tier 0 - the same slot as every grenade mk I - and a payload has
-       no business being learnable there.
+       Where the RECIPE sits is a separate decision from what it costs, and both are set here. How a
+       recipe's tier derives from its bits, and what BuildTier overrides, is in docs/LESSONS.md; the
+       part that matters here is that Tinker 2 starts past tier 3. Plain shot is one scrap electronics
+       for five at tier 0 - the same slot as every grenade mk I - and a payload has no business being
+       learnable there.
 
-       All four cost 001: two scrap metal and one phasic power systems, for three shells. That is
+       All four cost 001: two scrap bits and one phasic power systems, for three shells. WHICH two
+       scraps varies by world seed, because a digit names a level rather than a bit - docs/LESSONS.md
+       again - while level 1 holds only phasic power systems, so that half is fixed. That is
        exactly what vanilla charges for a gas, flashbang, thermal, freeze or high explosive grenade
        mk III - the same payloads these shells carry, dialled down - so the material bracket matches
        the thing being imitated rather than sitting above it.
@@ -533,9 +535,9 @@
        Tinker 2; the less-lethal round is the one anybody who can build the gun can also load, and
        burning, freezing and defeating armour wait for the second skill.
 
-       BuildTier is a real public field on TinkerItem that vanilla never writes, so it is worth saying
-       why it is safe: it is read as a blueprint parameter by LoadBlueprint, and it is in the API
-       snapshot the part-attributes check validates against. Its only effect is the recipe's tier, and
+       BuildTier is safe to write, and docs/LESSONS.md carries the reasoning: vanilla writes it on
+       none of its 332 TinkerItem records, but LoadBlueprint reads it as a blueprint parameter and the
+       part-attribute check validates it against the API snapshot. Its only effect is the tier, and
        decoupling that from the cost is the entire point here - the alternative, 004, would have
        charged pristine electronics for a paper cartridge. It matters more since #146 dropped the
        cost to 001, because the bits no longer reach tier 3 on their own at all.
