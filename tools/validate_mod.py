@@ -1786,8 +1786,9 @@ def snapshot_scatter_quantities() -> dict[str, float]:
 def snapshot_template_hints() -> dict[str, list[str]]:
     """The default placement hint each zone template supplies, from tools/qud-api.json.
 
-    The value is a sorted list because one table may be named by several templates that disagree,
-    and `""` stands for a reference carrying no hint at all. Empty when the snapshot predates the
+    The value is a sorted list because one table may be reached by several routes that disagree -
+    a hint follows a `<table>` reference down, so a table nested under two roots inherits from
+    both - and `""` stands for a route carrying no hint at all. Empty when the snapshot predates the
     key, in which case `check_placement_hint` returns early - the same bargain the other
     snapshot-backed checks make.
     """

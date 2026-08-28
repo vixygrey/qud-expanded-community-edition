@@ -406,6 +406,89 @@ class TemplateHints(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(snapshot_qud_api.collect_template_hints(Path(tmp)), {})
 
+    def test_a_hint_reaches_a_table_nested_under_the_one_named(self) -> None:
+        """The regression this key was rewritten for (#173).
+
+        The four ruins templates name `RuinsZoneGlobals-Surface` with `Hint="Any"`, and the
+        vegetation this fork merges into sits one level below that. Reading only what a template
+        names directly recorded nothing for it, so `check_placement_hint` skipped the merge in
+        silence - a check that cannot fire, found by the first content to rely on it.
+
+        `PopulationTable.Generate` ends `Population.Generate(Result, Vars, Hint ?? DefaultHint)`,
+        so the hint follows the reference down.
+        """
+        self.assertEqual(
+            self._hints(
+                templates='<population Table="Root" Hint="Any"></population>',
+                tables=(
+                    '<population Name="Root"><table Name="Nested" /></population>'
+                    '<population Name="Nested"><object Blueprint="X" /></population>'
+                ),
+                wanted={"Nested"},
+            ),
+            {"Nested": ["Any"]},
+        )
+
+    def test_a_reference_carrying_its_own_hint_overrides_the_one_above(self) -> None:
+        self.assertEqual(
+            self._hints(
+                templates='<population Table="Root" Hint="Any"></population>',
+                tables=(
+                    '<population Name="Root"><table Name="Nested" Hint="AlongWall" /></population>'
+                    '<population Name="Nested"><object Blueprint="X" /></population>'
+                ),
+                wanted={"Nested"},
+            ),
+            {"Nested": ["AlongWall"]},
+        )
+
+    def test_two_routes_that_disagree_are_both_recorded(self) -> None:
+        """A table is only safe if every way in carries a hint, so the unhinted route has to
+        survive into the citation rather than being masked by the hinted one."""
+        self.assertEqual(
+            self._hints(
+                templates=(
+                    '<population Table="RootA" Hint="Any"></population>'
+                    '<population Table="RootB"></population>'
+                ),
+                tables=(
+                    '<population Name="RootA"><table Name="Nested" /></population>'
+                    '<population Name="RootB"><table Name="Nested" /></population>'
+                    '<population Name="Nested"><object Blueprint="X" /></population>'
+                ),
+                wanted={"Nested"},
+            ),
+            {"Nested": ["", "Any"]},
+        )
+
+    def test_a_reference_cycle_terminates(self) -> None:
+        self.assertEqual(
+            self._hints(
+                templates='<population Table="Root" Hint="Any"></population>',
+                tables=(
+                    '<population Name="Root"><table Name="Nested" /></population>'
+                    '<population Name="Nested"><table Name="Root" /></population>'
+                ),
+                wanted={"Nested"},
+            ),
+            {"Nested": ["Any"]},
+        )
+
+    @staticmethod
+    def _hints(templates: str, tables: str, wanted: set[str]) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            game = Path(tmp)
+            (game / "ZoneTemplates.xml").write_text(
+                f"<zonetemplates><zonetemplate Name='T'>{templates}</zonetemplate></zonetemplates>"
+            )
+            (game / "PopulationTables.xml").write_text(
+                f"<populations>{tables}</populations>"
+            )
+            with mock.patch.object(
+                snapshot_qud_api, "merged_record_names", return_value=([], wanted)
+            ):
+                return snapshot_qud_api.collect_template_hints(game)
+
 
 class MissingDependencies(unittest.TestCase):
     """The hook must be harmless on a machine without the game."""

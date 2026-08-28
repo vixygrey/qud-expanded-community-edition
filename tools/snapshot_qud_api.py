@@ -850,37 +850,61 @@ def collect_absent_tables(game: Path) -> list[str]:
 
 
 def collect_template_hints(game: Path) -> dict[str, list[str]]:
-    """The default placement hint each zone template supplies for the tables this mod merges into.
+    """The default placement hint that actually reaches each table this mod merges into.
 
     `ZoneTemplates.xml` names a population table and may carry a `Hint`:
 
-        <population Table="HillsZoneGlobals" Hint="Any"></population>
-        <population Table="JungleZoneGlobals"></population>
+        <population Table="RuinsZoneGlobals-Surface" Hint="Any"></population>
 
-    `ZTPopulatonNode.Execute` hands that value to `PlacePopulationInRegion` as its `DefaultHint`,
-    and `PlaceObjectInArea` only runs its same-blueprint check on a placement that has a hint at
-    all. So this attribute decides whether two of the same object can land in one cell, and it is
-    set in a file this mod never edits - a citation if anything is (#542).
+    `ZTPopulatonNode.Execute` hands that to `PlacePopulationInRegion` as its `DefaultHint`, and only
+    a hinted placement runs `PlaceObjectInArea`'s same-blueprint check. So this attribute decides
+    whether two of the same object can land in one cell, and it is set in a file this mod never
+    edits - a citation if anything is (#542).
+
+    **The hint propagates through `<table>` nesting, so the template's own list is not enough.**
+    `PopulationTable.Generate` ends `Population.Generate(Result, Vars, Hint ?? DefaultHint)`: a
+    reference passes its own hint down, or the one it was given. The four ruins templates name
+    `RuinsZoneGlobals-Surface` and `-Underground` with `Hint="Any"`, and the vegetation this fork
+    merges into sits one level below that - so reading only what a template names directly recorded
+    nothing for it, and `check_placement_hint` skipped the merge in silence. That is the failure
+    mode this repository cares about most, and it was found by the first content to rely on the
+    check rather than by the check itself (#173).
 
     `ZoneTemplateManager` reads `Hint` from each node's own element and nothing inherits it from a
-    parent, so the attribute on the `<population>` element is the whole story. `iter` is used
-    deliberately: `-Reachable` tables sit inside a `<cellfilterout>` wrapper and are placed by the
-    same call.
+    parent node, so within the template the attribute on the `<population>` element is the whole
+    story. `iter` is used deliberately: `-Reachable` tables sit inside a `<cellfilterout>` wrapper
+    and are placed by the same call.
 
-    One table may be named by several templates, which need not agree - so the value is the sorted
-    set of what they supply, with the empty string standing for a reference that carries no hint.
-    A table whose list contains "" is unprotected on at least one route into it.
+    One table may be reached by several routes, which need not agree - so the value is the sorted
+    set of what arrives, with the empty string standing for a route carrying no hint. A table whose
+    list contains "" is unprotected on at least one way in.
     """
     _, wanted = merged_record_names()
-    found: dict[str, set[str]] = {}
     templates = game / "ZoneTemplates.xml"
     if not templates.is_file():
         return {}
+
+    # Vanilla's population tables, so a reference can be followed to what it names.
+    tables: dict[str, list[ET.Element]] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            if pop.get("Name"):
+                tables.setdefault(pop.get("Name"), []).append(pop)
+
+    found: dict[str, set[str]] = {}
+
+    def walk(name: str | None, hint: str, seen: frozenset[str]) -> None:
+        if not name or name in seen:
+            return
+        if name in wanted:
+            found.setdefault(name, set()).add(hint)
+        seen = seen | {name}
+        for pop in tables.get(name, []):
+            for ref in pop.iter("table"):
+                walk(ref.get("Name"), ref.get("Hint") or hint, seen)
+
     for node in parse(templates, lenient=True).iter("population"):
-        name = node.get("Table")
-        if name not in wanted:
-            continue
-        found.setdefault(name, set()).add(node.get("Hint") or "")
+        walk(node.get("Table"), node.get("Hint") or "", frozenset())
     return {k: sorted(v) for k, v in sorted(found.items())}
 
 
