@@ -2202,3 +2202,67 @@ rule. Read `LoadBlueprint` in the assembly before trusting any account of it, th
 One last distinction, because the wiki prints both in the same infobox and they routinely disagree:
 **an item's `Tier` is not its recipe's tier.** A nuclear cell is item tier 7 with `<006>`, which is
 recipe tier 6, which is Tinker II — not the Tinker III its item tier would suggest.
+
+## Before writing a name register, find out who would ever call for a name
+
+#454 asked me to write naming registers for five peoples that draw Qudish. I nearly wrote five
+phonologies. The measurement said write nothing for four of them, and that the fifth already
+existed.
+
+**Two things get a creature named, and both are gates.**
+
+`EncountersAPI.GetALegendaryEligibleCreatureBlueprint` is one: `Creature` tag, `Render`, `Body` and
+`Combat` parts, no `GivesRep`, no `Uplift`, not `ExcludeFromDynamicEncounters`, name without `Hero`,
+and its **own** `BaseObject` tag absent. `VillageBase.getBaseVillager` is the other, feeding
+`NameMaker.MakeName`; its first and third tiers both require
+`DynamicObjectsTable:<region>_Creatures`, so a species with no region table is reachable only
+through the rare middle fallback.
+
+Applied to the five, counting blueprints that *resolve* to a species through `Inherits=` rather than
+those that declare it:
+
+| species | legendary draws | region table | verdict |
+|---|---:|---|---|
+| woodsprog | 6–7 | `Jungle_Creatures` | the only one in both paths |
+| cragmensch | 6 | none | no dialogue anywhere to derive from |
+| urshiib | 2 | none | 18 of 20 are hand-named Barathrumites |
+| slynth | 1 | none | the best anchor in the set, and almost nobody to use it |
+| baetyl | 0 | none | `InorganicObject` — a stone idol, not a people |
+
+**Slynth is the one to remember.** It has 235 conversation lines, a named leader, and a speech
+register nobody would have to invent. Exactly one blueprint would ever draw from it. That is
+`docs/LESSONS.md`'s own *"a pool with no members can be live"* arriving from the other direction: not
+a pool that draws nothing, but a pool nothing draws from.
+
+**Then check whether the register already exists under a scope that does not reach.** Vanilla has a
+`Naphtaali` namestyle — 22 prefixes, 21 infixes, 15 postfixes of Semitic register. The Naphtaali
+*are* woodsprogs; `BaseNaphtaali` inherits `BaseWoodsprog`. What vanilla never wrote is a `Species`
+scope, so a woodsprog outside the tribe fell through to Qudish while one inside it was named
+correctly. Vanilla's own shape for a people with a faction is all three scopes — Snapjaw carries
+Faction 100, Species 50, Culture 50 — and Naphtaali stops at two.
+
+So the fix was **one scope, and no syllables at all**:
+
+```xml
+<namestyle Name="Naphtaali">
+  <scopes>
+    <scope Name="Vixy_Woodsprog" Species="woodsprog" Priority="50" Combine="true" />
+  </scopes>
+</namestyle>
+```
+
+> **A gap in generated names is more often a scope that does not reach than a register that does not
+> exist.** Read the namestyle list for the *people* before deciding nobody wrote them one. I had
+> already measured that woodsprogs draw Qudish and concluded the register was missing; both halves
+> were true and the conclusion still did not follow.
+
+Two things that made the difference, both cheap:
+
+- **`Base="…"` looks like the clean answer and cannot be proven here.** A `Vixy_Woodsprog` style with
+  `Base="Naphtaali"` delegates through `NameStyle.Generate` and avoids merging onto a vanilla record
+  entirely, which is charter rule 1's preference. But `tools/naming_harness.py` records `style.base`
+  and never follows it, so the fragment generated empty strings. That is a limitation of the harness,
+  not of the game — and an unprovable change is not a shippable one, so the scope merge won.
+- **Byte-identical output is the rule 1 proof.** `Faction=Naphtaali` at a fixed seed generates the
+  same names before and after, which says the pools were added to and not replaced. Cheaper and more
+  convincing than reading the loader again.

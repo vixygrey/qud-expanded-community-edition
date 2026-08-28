@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <naming Load="Merge">
   <!-- Load="Merge" sits here once and cascades: LoadNamingNode reads it and every level below
        inherits it via `Reader.GetAttribute("Load") ?? LoadMode`. Do not remove it, and do not
@@ -341,6 +341,38 @@
         <postfix Name="mir" />
         <postfix Name="mut" />
       </postfixes>
+    </namestyle>
+
+    <!-- Woodsprogs outside the Naphtaali tribe drew Qudish, and no syllable here is mine.
+
+         Qud already wrote what a woodsprog sounds like: vanilla's Naphtaali namestyle, 22 prefixes,
+         21 infixes and 15 postfixes of Semitic register - apshu, nammele, hushta, dramme. The
+         Naphtaali ARE woodsprogs; BaseNaphtaali inherits BaseWoodsprog. What vanilla never wrote is
+         the Species scope that would reach a woodsprog who is not in the tribe, so a Kyakukya
+         villager or a jungle woodsprog fell through to Qudish at 100%.
+
+         Vanilla's own shape for a people with a faction is all three scopes. Snapjaw carries
+         Faction at 100, Species at 50 and Culture at 50; Naphtaali carries Faction and Culture and
+         stops. This adds the missing one, and nothing else.
+
+         Erah is the evidence that one register is right rather than two. She is the only hand-named
+         woodsprog outside the tribe, and her name sits inside these pools already - a `re`/`ne`
+         opening, a `ra` infix, an `h` postfix. Qud does not hold a separate secular woodsprog
+         register that this would be overriding.
+
+         Priority 50 with Combine="true" copies Snapjaw's species scope exactly, and 50 is what keeps
+         this surgical: the exclusion test is `item.Priority > scope.Priority`, so the Faction scope
+         at 100 still wins outright for actual tribe members. Measured with
+         the naming harness in fragment mode: Faction=Naphtaali generates byte-identical names to
+         vanilla at the same seed, so the tribe is untouched, and only the woodsprogs who were
+         getting Qudish change.
+
+         The scope Name is Vixy_-prefixed because scopes are matched by Name on merge - an unprefixed
+         one would rewrite a vanilla scope in place instead of adding this one. -->
+    <namestyle Name="Naphtaali">
+      <scopes>
+        <scope Name="Vixy_Woodsprog" Species="woodsprog" Priority="50" Combine="true" />
+      </scopes>
     </namestyle>
   </namestyles>
 </naming>
