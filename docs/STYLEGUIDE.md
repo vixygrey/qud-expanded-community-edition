@@ -660,6 +660,24 @@ merged entry as a scatter entry reported `Melee Weapons 5C` at 75.2% where the t
 and did the same to twelve more. Splitting by "does this entry carry a `Weight`" needs no resolution
 at all, because vanilla's disjointness above makes that question equivalent.
 
+**A sub-table this fork writes is measured; one vanilla wrote is not** (#544). `<table>` references
+are normally not followed — a shared sub-table belongs to whoever wrote it. But vanilla's own
+overgrowth idiom *is* a sub-table (`BrightshroomPatches`, pulled into eight cave tiers by one line),
+so a `Vixy_` copy of that shape would carry its entire footprint past the measure. Resolution
+follows a reference only into a table this fork defines, and is opt-in so that vanilla's side of
+every ratio — and the snapshot digest with it — does not move. A `Style="pickone"` group is
+over-counted, since one child fires and all are summed; that pushes a share toward the ceiling
+rather than under it.
+
+#### Every scattered blueprint reads as its own thing
+
+Two *different* blueprints sharing a display name print as one thing twice —
+`You pass by a wild overgrowth and a wild overgrowth` — and `placement-hint` cannot see it, because
+the engine is right that they are distinct objects. `name-collision` compares the name with colour
+markup taken off, so `{{g|ivy}}` and `{{y|ivy}}` count as the collision they are. It covers
+**scattered** blueprints only: projectiles, chip grades and each arrow beside its projectile share
+names legitimately and are never in a cell you walk into.
+
 #### Every scattered plant carries its own `Hint`
 
 Share is not the only thing a scatter entry has to get right. **Whether the game refuses to put two
@@ -1235,6 +1253,7 @@ seconds rather than after a round trip.
 | This fork's share of a vanilla loot table | `table-share`, against the snapshot's `table_weights` |
 | This fork's share of a vanilla table's *scattered* content | `scatter-share`, against the snapshot's `scatter_quantities` |
 | A scattered plant carrying its own placement `Hint` | `placement-hint`, against the snapshot's `template_hints` |
+| No two scattered blueprints reading as the same thing | `name-collision` |
 | An implant's loot table matching the licence points it costs | `implant-table-cost` |
 | A skill value this fork changes being one its options restore | `skill-option-coverage`, against the snapshot's `skill_powers` |
 | Every claim pattern matching something, so a reworded sentence cannot silence its check | `claim-coverage` |
@@ -1349,6 +1368,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `table-share` | `validate_mod.py` | this fork's share of a vanilla loot table |
 | `scatter-share` | `validate_mod.py` | this fork's share of a vanilla table's scattered content |
 | `placement-hint` | `validate_mod.py` | a scattered plant carrying its own `Hint`, so two cannot share a cell |
+| `name-collision` | `validate_mod.py` | two scattered blueprints that read as the same thing |
 | `inherits-share` | `report_dynamic_tables.py` | this fork's share of an inherited pool, per tier (needs the game) |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |
