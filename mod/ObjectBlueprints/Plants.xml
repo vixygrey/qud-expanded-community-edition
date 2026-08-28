@@ -163,4 +163,133 @@
     <stag Name="FiberMaterial" Value="fibre" />
     <stag Name="Plank" Value="frond" />
   </object>
+
+  <!-- Hills: a burr on dry grassland, frosted grey-green going gold.
+
+       &c against dogthorn's &G, witchwood's &W and starapple's &R - none of the three, and none of
+       them close. Ripeness is &c to &Y, a hue change rather than a brightness bump, for the reason
+       the cragwort note above records.
+
+       Primal Grass's stag set, which is the grass idiom and a named neighbour: blade / grass /
+       thatch. -->
+  <object Name="Vixy_Rimeburr" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="rimeburr"
+      RenderString="034"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="w"
+      Occluding="false"
+      Tile="Terrain/sw_grass1.bmp"
+    />
+    <builder Name="RandomTile" Tiles="Terrain/sw_grass1.bmp,Terrain/sw_grass2.bmp,Terrain/sw_grass3.bmp" />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Rimeburr Head"
+      StartRipeChance="1:12"
+      RipeColor="&amp;Y"
+      RipeTileColor="&amp;Y"
+      RipeDetailColor="W"
+      UnripeColor="&amp;c"
+      UnripeTileColor="&amp;c"
+      UnripeDetailColor="w"
+    />
+    <part
+      Name="Description"
+      Short="A low burr that holds the night's frost longer than the grass around it, so a hillside wears it in patches until the sun is well up. The heads come away dry and catch on everything."
+    />
+    <tag Name="DynamicObjectsTable:Hills_Plants" />
+    <stag Name="Fiber" Value="blade" />
+    <stag Name="FiberMaterial" Value="grass" />
+    <stag Name="Plank" Value="thatch" />
+  </object>
+
+  <!-- DesertCanyon: a water-holding succulent in rock shade, ochre going cyan when full.
+
+       The ripe colour is the ingredient's own argument - these pads are what the preserve carries
+       `thirst` for - so &y to &C reads as the plant filling rather than merely ripening.
+
+       Fracti's stag set, the nearest desert succulent: strip / fibre / strip. Fiber is left
+       inherited because 'strip' is already the default and the note above says to override only
+       where the default is wrong. -->
+  <object Name="Vixy_Shadetooth" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="shadetooth"
+      RenderString="252"
+      ColorString="&amp;y"
+      TileColor="&amp;y"
+      DetailColor="K"
+      Occluding="false"
+      Tile="Terrain/sw_flowers_crystal_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_flowers_crystal_1.bmp,Terrain/sw_flowers_crystal_2.bmp,Terrain/sw_flowers_crystal_3.bmp,Terrain/sw_flowers_crystal_4.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Shadetooth Pad"
+      StartRipeChance="1:10"
+      RipeColor="&amp;C"
+      RipeTileColor="&amp;C"
+      RipeDetailColor="W"
+      UnripeColor="&amp;y"
+      UnripeTileColor="&amp;y"
+      UnripeDetailColor="K"
+    />
+    <part
+      Name="Description"
+      Short="It grows only where the canyon wall keeps the sun off it for half the day, in a row of flat pads like a jaw set into the scree. A full one gives under the thumb; an empty one does not."
+    />
+    <tag Name="DynamicObjectsTable:DesertCanyon_Plants" />
+    <stag Name="FiberMaterial" Value="fibre" />
+    <stag Name="Plank" Value="strip" />
+  </object>
+
+  <!-- Jungle: a shelf fungus on the forest floor, dark magenta going red.
+
+       Fungal rather than the broadleaf first drafted, because the tile is Brightshroom's and a
+       plant should match the tile it borrows rather than the other way round (#540).
+
+       &m against a canopy that is almost entirely &g - swarmshade and ziv bough both - and ripe &R
+       is the largest hue jump of the three, which a jungle floor needs. Brightshroom shares the
+       tile at &Y and is not mistakable for it.
+
+       Fungus's Plank value, `mass`, is the only stag vanilla gives a fungus; Fiber and
+       FiberMaterial stay inherited. -->
+  <object Name="Vixy_Broadglove" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="broadglove"
+      RenderString="005"
+      ColorString="&amp;m"
+      TileColor="&amp;m"
+      DetailColor="w"
+      Occluding="false"
+      Tile="Terrain/sw_shroom_caps_spotted_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_shroom_caps_spotted_1.bmp,Terrain/sw_shroom_caps_spotted_2.bmp,Terrain/sw_shroom_caps_spotted_3.bmp,Terrain/sw_shroom_caps_spotted_4.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Broadglove Cap"
+      StartRipeChance="1:24"
+      RipeColor="&amp;R"
+      RipeTileColor="&amp;R"
+      RipeDetailColor="W"
+      UnripeColor="&amp;m"
+      UnripeTileColor="&amp;m"
+      UnripeDetailColor="w"
+    />
+    <part
+      Name="Description"
+      Short="It shelves out from anything that has stopped growing, in caps wide enough to turn rain off a hand held under them. The flesh is bitter raw and keeps that bitterness through drying, which is the point of it."
+    />
+    <tag Name="DynamicObjectsTable:Jungle_Plants" />
+    <stag Name="Plank" Value="mass" />
+  </object>
 </objects>

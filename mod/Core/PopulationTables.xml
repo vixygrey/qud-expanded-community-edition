@@ -1287,6 +1287,7 @@
   </population>
 
   <population Name="DesertCanyonZoneGlobals" Load="Merge">
+    <object Chance="35" Number="12-24" Blueprint="Vixy_Shadetooth" />
     <group Name="Creatures" Load="Merge">
       <!-- GiantDragonfly 25/2d6 -->
       <object Chance="25" Number="1d6" Blueprint="Vixy_EmberDragonfly" />
@@ -1322,6 +1323,7 @@
   </population>
 
   <population Name="JungleZoneGlobals" Load="Merge">
+    <object Chance="55" Number="30-50" Blueprint="Vixy_Broadglove" />
     <group Name="Creatures" Load="Merge">
       <!-- Boar 5/1-2 -->
       <object Chance="5" Number="1" Blueprint="Vixy_RussetBoar" />
@@ -1404,6 +1406,10 @@
 
   <population Name="MountainsZoneGlobals" Load="Merge">
     <object Chance="40" Number="12-24" Blueprint="Vixy_Cragwort" />
+  </population>
+
+  <population Name="HillsZoneGlobals" Load="Merge">
+    <object Chance="40" Number="16-28" Blueprint="Vixy_Rimeburr" />
   </population>
 
   <population Name="SaltMarshZoneGlobals" Load="Merge">
