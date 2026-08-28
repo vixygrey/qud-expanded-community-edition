@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Caves grow bruisemoss** (#547).
+
+  It never sees light and has no use for the green that would gather it, so it comes up the colour
+  of a week-old bruise. Press a thumb into a patch and the damp stands in the print for a while
+  afterward.
+
+  It appears in caves under any parasang that is not a named biome, at every depth from 11 down to
+  49 — which is most of the caves you will ever dig into. Like the ruins pair it gives you nothing
+  and is only there to be looked at.
+
+  It shares the ruins moss's tile at a different colour, which is what the game does with its own
+  plants: one tile carries witchwood, the n-Ary tree, glitchwood and the icosahedar, and another
+  carries four aloes. Magenta because a cave already grows dreadroot, young ivory and brightshroom,
+  and the moss had to be none of them.
+
 - **Ruins and baroque ruins have something growing in them** (#173).
 
   Two new plants, and neither gives you anything: **slabmoss**, a blue-green crust that takes the
@@ -131,6 +146,12 @@ recorded because contributors need them, not because subscribers do.
   0.7 and 1.5 ripe plants a zone, beside dreadroot at 0.8 and urberry at 1.0.
 
 ### Changed
+
+- **(internal)** `placement-hint` now sees entries inside a patch table this fork writes (#547).
+
+  It read a merge block's direct children only, and a block that pulls a patch table has none — so
+  all three of this fork's patch tables were unguarded at once. The same gap `scatter-share` had
+  before #544, in a second check that did not inherit the fix.
 
 - **(internal)** `placement-hint` now sees tables reached through a `<table>` reference (#173).
 

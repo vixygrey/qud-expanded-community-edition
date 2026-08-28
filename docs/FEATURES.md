@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **464** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **465** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **77** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **78** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -586,9 +586,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Furniture.xml` | 4 | 0 |
 | `Creatures.xml` | 46 | 1 |
 | `Food.xml` | 12 | 2 |
-| `Plants.xml` | 8 | 0 |
+| `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **464 active** | **211** |
+| **Total** | **465 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -1823,7 +1823,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-101 table definitions: **77 merged** into vanilla, **24 declared fresh**. The 48/28 split this
+103 table definitions: **78 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2111,7 +2111,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
-│   └── PopulationTables.xml    # 101 tables (77 merge / 24 new)
+│   └── PopulationTables.xml    # 103 tables (78 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -3130,6 +3130,36 @@ share is lower than either figure, in the direction that fails loud.
 
 `RuinsZoneGlobals-Vegetation` is drawn by both the surface and the underground templates, so one
 merge reaches either.
+
+### 19.6 Caves, and one species rather than two
+
+**bruisemoss** (#547) grows in caves, on `CaveGlobals`. That table is pulled by all eight
+`Tier{N}CaveGlobals`, which serve `ZoneTemplate:Caves` — applied by `Worlds.xml` to
+`DefaultJoppaCell` at levels **11-20, 21-30, 31-40 and 41-49**. Every parasang that is not a named
+biome, at every depth. The per-biome cave templates each cover a single layer, 11-15, under one
+biome, and are a later decision.
+
+| | | |
+|---|---|---|
+| share of `CaveGlobals` | 23.5 against vanilla's 45.8 | **33.9%** |
+| reference | `Chance="60"` | the ruins rate, from the crypts |
+| patch | 2 rolls common, 2 rare | smaller than the ruins pair's |
+
+**It shares slabmoss's tile, and that is vanilla's habit rather than a shortcut.**
+`Terrain/sw_talltree1.bmp` carries witchwood, the n-Ary tree, glitchwood and the icosahedar;
+`Creatures/sw_aloe_solo.bmp` carries four aloes; `sw_fuzzy_circle_4` gives the nimbus beam and the
+nachash tree *identical* rendering. 137 tiles in the game are shared this way, and colour is what
+separates the species. So bruisemoss is to slabmoss what glitchwood is to witchwood.
+
+`&m` because it has to separate from everything a cave already grows — dreadroot `&K`, young ivory
+`&Y` over a `&y` tile, brightshroom the same — and from slabmoss's `&c`. Magenta is the game's own
+register for lightless growth: noisegrass ripens `&K` to `&M`. `&K` was tried first and is nearly
+invisible against the floor, which is §18.4b's mistake exactly.
+
+**One species, not two.** A second would have put the pair at 46% of `CaveGlobals` before the
+`pickone` over-count is allowed for. And pallvine's description is built-environment language — *a
+room curtained from the edges, a century of dust* — so it stays in the ruins rather than being
+argued underground.
 
 ## Appendix A — every merged vanilla melee weapon
 

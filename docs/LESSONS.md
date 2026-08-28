@@ -2062,3 +2062,32 @@ skip; none of them asserted that the *set of things skipped* was correct. Wideni
 There is a second, cheaper lesson. **The fix landed because content was written against it within
 the hour.** Tooling merged with no consumer is tooling nobody has proven. If a check is built ahead
 of the content it guards — which is the right order — the content is still the test.
+
+## The same blind spot, in a second check that did not inherit the fix
+
+#544 taught `scatter_quantity` to follow a `<table>` reference into a table this fork writes,
+because vanilla's overgrowth idiom is a sub-table and a `Vixy_` copy of it would otherwise measure
+as nothing. I wrote that resolution, tested it, documented it — and did not apply it to
+`check_placement_hint`, which keys on the same merge blocks and had the same hole.
+
+The result: **all three of this fork's patch tables were unguarded at once.** Stripping the hint from
+every one of them produced zero findings. The hints were correct in the content, because I had put
+them there deliberately; nothing was enforcing them.
+
+> **A fix to one check is a question asked of every check that shares its shape.** Both of these
+> read `Load="Merge"` blocks and stop at their direct children. The moment one of them learned that
+> content can live one reference away, the other was already wrong.
+
+This is the third instance of one pattern in two days, and the pattern is worth naming: a check keyed
+on **where I write something** rather than on **where it ends up**.
+
+- `check_placement_hint` looked up the table a template *names*, and missed everything nested under
+  it (#173).
+- `scatter_quantity` summed the merge block, and missed everything behind a reference (#544).
+- `check_placement_hint` again, same reference, different check (#547).
+
+**What to do instead.** After fixing a resolution bug, grep for the other readers of the same
+structure before closing it — here, everything that iterates `population` and filters
+`Load == "Merge"`. And test the *negative*: a check that passes on correct content proves nothing
+until it has been seen to fail on incorrect content. Stripping the attribute and re-running took ten
+seconds and is the only reason this was found before release rather than after.

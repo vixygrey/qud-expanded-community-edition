@@ -2411,6 +2411,90 @@ class SnapshotBackedChecks(unittest.TestCase):
         )
         self.assertEqual(plain, 5.0, "only the direct entry counts without resolution")
 
+    PATCH_TABLE = (
+        '  <population Name="Vixy_MossPatches">\n'
+        '    <group Name="Types" Style="pickone">\n'
+        '      <group Name="Small" Style="pickeach" Weight="95">\n'
+        "{entry}"
+        "      </group>\n"
+        "    </group>\n"
+        "  </population>"
+    )
+
+    def _placement_patch(
+        self, entry: str, ref: str = "", name: str = "SaltMarshZoneGlobals"
+    ):
+        tmp = self._mod(
+            self.PLANT,
+            tables=(
+                f'  <population Name="{name}" Load="Merge">\n'
+                f'    <table Name="Vixy_MossPatches" Chance="60"{ref} />\n'
+                "  </population>\n" + self.PATCH_TABLE.format(entry=entry)
+            ),
+            snapshot=self.HINTS,
+        )
+        return findings_for(validate_mod.check_placement_hint, tmp)
+
+    def test_an_unhinted_entry_inside_an_own_patch_table_is_reported(self) -> None:
+        """#547. A merge block that pulls a patch table holds no <object> of its own, so reading
+        only its direct children found nothing — and all three of this fork's patch tables were
+        unguarded at once. The same blind spot scatter_quantity had before #544, in a second check
+        that did not inherit the fix."""
+        items = self._placement_patch(
+            '        <object Chance="100" Number="6-12" Blueprint="Vixy_Reed" />\n'
+        )
+        self.assertEqual([c for c, _ in items], ["placement-hint"])
+        self.assertIn("Vixy_Reed", items[0][1])
+
+    def test_a_hint_on_the_entry_inside_the_patch_table_satisfies_it(self) -> None:
+        self.assertEqual(
+            self._placement_patch(
+                '        <object Chance="100" Number="6-12" Blueprint="Vixy_Reed" Hint="Adjacent:90" />\n'
+            ),
+            [],
+        )
+
+    def test_a_hint_on_the_reference_propagates_into_the_table(self) -> None:
+        """PopulationTable.Generate ends `Hint ?? DefaultHint`, so a reference hands its own hint
+        down to everything it names."""
+        self.assertEqual(
+            self._placement_patch(
+                '        <object Chance="100" Number="6-12" Blueprint="Vixy_Reed" />\n',
+                ref=' Hint="Any"',
+            ),
+            [],
+        )
+
+    def test_a_reference_into_a_vanilla_table_is_not_followed(self) -> None:
+        """A vanilla sub-table's entries are vanilla's business, the same rule scatter_quantity
+        keeps."""
+        tmp = self._mod(
+            self.PLANT,
+            tables=(
+                '  <population Name="SaltMarshZoneGlobals" Load="Merge">\n'
+                '    <table Name="BrightshroomPatches" Chance="60" />\n'
+                "  </population>"
+            ),
+            snapshot=self.HINTS,
+        )
+        self.assertEqual(findings_for(validate_mod.check_placement_hint, tmp), [])
+
+    def test_a_patch_table_cycle_terminates(self) -> None:
+        tmp = self._mod(
+            self.PLANT,
+            tables=(
+                '  <population Name="SaltMarshZoneGlobals" Load="Merge">\n'
+                '    <table Name="Vixy_Loop" Chance="60" />\n'
+                "  </population>\n"
+                '  <population Name="Vixy_Loop">\n'
+                '    <object Chance="100" Blueprint="Vixy_Reed" Hint="Any" />\n'
+                '    <table Name="Vixy_Loop" Chance="100" />\n'
+                "  </population>"
+            ),
+            snapshot=self.HINTS,
+        )
+        self.assertEqual(findings_for(validate_mod.check_placement_hint, tmp), [])
+
     # -------------------------------------------------------------------- name-collision
 
     def _collision(self, blueprints: str, entries: str):

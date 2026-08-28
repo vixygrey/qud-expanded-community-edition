@@ -1514,6 +1514,44 @@
     <table Name="Vixy_PallvinePatches" Chance="60" />
   </population>
 
+  <!-- Cave overgrowth (#547). One species, and one merge.
+
+       CaveGlobals is the target because of what reaches it: all eight Tier{N}CaveGlobals pull it,
+       and those serve ZoneTemplate:Caves, which Worlds.xml applies to DefaultJoppaCell at levels
+       11-20, 21-30, 31-40 and 41-49 - every parasang that is not a named biome, at every depth. The
+       per-biome cave templates (HillCaves, MountainCaves and the rest) each cover a single layer,
+       11-15, under one biome, and are a later decision.
+
+       The patch is smaller than the ruins pair's: two rolls in the common arm against three, and
+       lower counts in both. A cave is tighter and darker than a ruin, and CaveGlobals carries only
+       45.8 expected objects of vanilla to be half of - most of it water puddles rather than
+       vegetation, which is a strange denominator but the one the ceiling actually uses.
+
+       One species rather than two. At this shape a second would put the pair at 46% before the
+       pickone over-count is allowed for, and pallvine's description is built-environment language
+       anyway - a room curtained from the edges, a century of dust. It stays in the ruins. -->
+
+  <population Name="Vixy_BruisemossPatches">
+    <group Name="Types" Style="pickone">
+      <group Name="Small" Style="pickeach" Weight="95">
+        <object Chance="100" Number="6-12" Blueprint="Vixy_Bruisemoss" Hint="Adjacent:90" />
+        <object Chance="50" Number="6-12" Blueprint="Vixy_Bruisemoss" Hint="Adjacent:90" />
+      </group>
+      <group Name="Large" Style="pickeach" Weight="5">
+        <object Chance="100" Number="12-20" Blueprint="Vixy_Bruisemoss" Hint="Adjacent:90" />
+        <object Chance="60" Number="12-20" Blueprint="Vixy_Bruisemoss" Hint="Adjacent:90" />
+      </group>
+    </group>
+  </population>
+
+  <!-- Chance="60" matches the ruins references and the crypts they were taken from. No cave
+       template supplies a default Hint, so the Adjacent:90 above is doing the same-blueprint work
+       on its own here rather than doubling a template's. -->
+
+  <population Name="CaveGlobals" Load="Merge">
+    <table Name="Vixy_BruisemossPatches" Chance="60" />
+  </population>
+
   <!-- The Trembling Dunes three, rehomed (#476).
 
        These were merged into LowerTremblingDunesZoneGlobals, whose contents Freehold had commented
