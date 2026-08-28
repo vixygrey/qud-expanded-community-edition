@@ -36,6 +36,9 @@ recorded because contributors need them, not because subscribers do.
 
   On by default. It grants no power, only a number the game had already written down.
 
+  Played and confirmed on 2026-08-28, and the message's placement was what the playtest sent back —
+  see below.
+
 - **(internal)** Three figures in `docs/STYLEGUIDE.md` §1.0c recounted (#470).
 
   The section says `Skills.xml` touches **six** vanilla skills and quotes two counts as evidence for

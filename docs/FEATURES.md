@@ -2187,7 +2187,7 @@ rather than opted out of; and graded burden, which is a genuinely new opinion th
 rather than anything the mod already was.
 
 > ✅ **Verified in game by the maintainer: eleven options on 2026-08-16, graded burden on
-> 2026-08-23.** ⚠️ **The Chip Interface option is due a re-check**: #353 narrowed it to True Kin
+> 2026-08-23, bearings on 2026-08-28.** ⚠️ **The Chip Interface option is due a re-check**: #353 narrowed it to True Kin
 > only, so the 2026-08-16 pass no longer covers what it does. Still the only evidence
 > that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
 > locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
@@ -3175,6 +3175,22 @@ argued underground.
 time, to a character who has already paid 100 points for the skill that reads it. Charter rule 6
 reserves "off by default" for a change that grants power with no content attached, and this is the
 opposite of that.
+
+> ✅ **Played and confirmed on 2026-08-28** (maintainer). The bearing is right, it changes as you
+> cross a parasang, and stairs are silent — a walk around the eight surface zones of one parasang and
+> down into the cave under it, checked against the zone IDs in the log. The message's *placement* was
+> the one thing the playtest sent back: it arrived above the line it belongs under, which is why it is
+> said a beat late (§20.4).
+>
+> **The stale-static case was played too**, and it is the one worth naming, because it is the only
+> thing the deferral costs and no compiler can reach it: quitting mid-walk and loading a *different*
+> character produces no stray line. That is the pending-zone check in §20.4 doing its job — the note
+> the abandoned character left names a zone the new one is not standing in, and is discarded rather
+> than spoken.
+>
+> ⚠️ **Two exclusions are still code readings.** Nothing has been seen in a world without a world map
+> — the NorthSheva pair in that session's log is worldgen building both world maps, not travel — and
+> no vehicle interior has been entered. Neither is likely to be wrong; neither has been watched.
 
 ### 20.1 What the game already knew and never said
 
