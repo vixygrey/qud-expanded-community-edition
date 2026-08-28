@@ -219,6 +219,62 @@ class HarnessTest(unittest.TestCase):
         )
         self.assertEqual(winner, "Vixy_Fem")
 
+    # -- #454: a Species scope added to a Faction-only namestyle ---------------------------------
+    # The woodsprog shape. Vanilla's Naphtaali namestyle carries Faction and Culture scopes and no
+    # Species one, so a woodsprog inside the tribe was named from it and one outside fell through to
+    # Qudish. The fixture's Snapjaw style has the same shape - Faction 100, Combine="false", nothing
+    # else - so it stands in for Naphtaali here.
+
+    SPECIES_SCOPE = """
+    <naming Load="Merge"><namestyles><namestyle Name="Snapjaw">
+      <scopes><scope Name="Vixy_Species" Species="snapjaw" Priority="50" Combine="true" /></scopes>
+    </namestyle></namestyles></naming>"""
+
+    def test_species_scope_reaches_a_creature_outside_the_faction(self):
+        """The bug being fixed: species matches, faction does not, and before the scope existed
+        this fell through to the General-scope style."""
+        styles, order = self.load(self.SPECIES_SCOPE)
+        chosen, _, _ = nh.select(
+            styles, order, self.ctx(Species="snapjaw", Faction="Grazing Hedonists")
+        )
+        self.assertEqual(nh.shares(chosen), {"Snapjaw": 1.0})
+
+    def test_without_the_species_scope_it_falls_through(self):
+        """The positive control. Without this the test above would pass on a harness that matched
+        everything, and the whole point is that vanilla does not reach here."""
+        styles, order = self.load()
+        chosen, _, _ = nh.select(
+            styles, order, self.ctx(Species="snapjaw", Faction="Grazing Hedonists")
+        )
+        self.assertNotIn("Snapjaw", nh.shares(chosen))
+
+    def test_the_faction_scope_still_wins_for_faction_members(self):
+        """Priority 50 is what keeps the change surgical. Exclusion is
+        `other.priority > scope.priority`, so Faction at 100 with Combine="false" still clears the
+        field for a creature actually in the tribe - it is named exactly as it was before."""
+        styles, order = self.load(self.SPECIES_SCOPE)
+        _, winner, _ = nh.select(
+            styles, order, self.ctx(Species="snapjaw", Faction="Snapjaws")
+        )
+        self.assertEqual(winner, "Snapjaw")
+
+    def test_the_added_scope_does_not_replace_the_vanilla_scopes(self):
+        """Charter rule 1. Scopes are matched by Name, so the Vixy_ prefix is load-bearing: an
+        unprefixed `Faction` would rewrite vanilla's in place instead of adding one."""
+        styles, _ = self.load(self.SPECIES_SCOPE)
+        names = [sc.name for sc in styles["Snapjaw"].scopes]
+        self.assertIn(
+            "Faction", names, "vanilla's faction scope must survive the merge"
+        )
+        self.assertIn("Vixy_Species", names)
+
+    def test_the_pools_survive_a_scope_only_merge(self):
+        """The other half of rule 1, and the thing the byte-identical sample proves in the game: a
+        merge that states only scopes must not touch the syllables."""
+        styles, _ = self.load(self.SPECIES_SCOPE)
+        self.assertEqual([p[0] for p in styles["Snapjaw"].prefixes], ["gn"])
+        self.assertEqual([p[0] for p in styles["Snapjaw"].postfixes], ["ak"])
+
     def test_priority_zero_is_skipped_in_a_weighted_draw(self):
         """Qudish at General/0 loses every share to any positive-priority combining style."""
         styles, order = self.load("""
