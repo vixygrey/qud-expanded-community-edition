@@ -2891,6 +2891,110 @@ def check_part_attributes(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                     )
 
 
+# XML character -> (level, what it is, what the game displays it as). From BitType.Init and
+# BitType.TranslateBit in Assembly-CSharp.dll. The display column is why this check exists: the
+# scrap characters are remapped on the way to the screen, so the alphabet in a blueprint and the
+# alphabet in the wiki are not the same alphabet.
+BIT_CHARS = {
+    "R": (0, "scrap power systems", "A"),
+    "G": (0, "scrap crystal", "B"),
+    "B": (0, "scrap metal", "C"),
+    "C": (0, "scrap electronics", "D"),
+    "r": (1, "phasic power systems", "1"),
+    "g": (2, "flawless crystal", "2"),
+    "b": (3, "pure alloy", "3"),
+    "c": (4, "pristine electronics", "4"),
+    "K": (5, "nanomaterials", "5"),
+    "W": (6, "photonics", "6"),
+    "Y": (7, "AI microcontrollers", "7"),
+    "M": (8, "metacrystal", "8"),
+}
+
+# Blueprints allowed to pin a specific bit, each with the reason. Empty on purpose: nothing this
+# fork ships today needs a letter, and an exemption is a claim about intent that should be written
+# down by whoever makes it. Add an entry only when a digit genuinely cannot say the thing - a digit
+# names a LEVEL and the game draws which bit of that level per world, so "any scrap" and "scrap
+# electronics specifically" are different requirements. Vanilla's Shotgun Shell is the second.
+BIT_LETTER_EXEMPT: dict[str, str] = {}
+
+
+def check_bit_letters(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A `TinkerItem Bits` letter, which is almost never what the author meant.
+
+    A bit cost is written as characters. **A digit names a level**; `BitType.ToRealBits` resolves it
+    against `Stat.GetSeededRandomGenerator`, which seeds on `GetWorldSeed() + Blueprint`, so `0`
+    becomes one of the four level-0 scraps differently per playthrough. **A letter names one
+    specific bit** and is not resolved at all. Both are legal, and they mean different things.
+
+    Two ways a letter goes wrong, and neither announces itself:
+
+    **The alphabet in XML is not the alphabet on screen.** `BitType.TranslateBit` remaps every
+    scrap character, and `B` and `C` are members of both alphabets with different meanings:
+
+        XML R -> displays A (scrap power systems)   XML B -> displays C (scrap metal)
+        XML G -> displays B (scrap crystal)         XML C -> displays D (scrap electronics)
+
+    So a blueprint written from the wiki's `<B>` asks for scrap metal while intending scrap
+    crystal. Nothing warns, because `B` *is* a real bit.
+
+    **Case is three levels of cost.** `b` is pure alloy at level 3; `B` is scrap metal at level 0.
+    Same for `g`/`G`, `c`/`C` and `r`/`R`. One keystroke, and since recipe tier is the highest level
+    in the cost, it moves the skill gate as well as the price.
+
+    Digits avoid both, which is why every live record in this mod uses them. A letter is still
+    correct when the requirement really is one particular bit - vanilla's Shotgun Shell is
+    `Bits="C"` on purpose - so this does not forbid them, it asks for the intent in
+    `BIT_LETTER_EXEMPT` alongside the reason.
+
+    An unrecognised character is reported too. `TinkerItem.Initialize` logs a warning and carries on
+    without it, which is the usual silent-drop shape.
+
+    **This cannot see a commented-out blueprint.** `ElementTree` discards comments, so the ten
+    `Bits="BC"` records inside the cut block in `mod/ObjectBlueprints/Ammo.xml` are invisible here,
+    exactly as docs/LESSONS.md describes for every other check. A clean run means the live content
+    is clean, not that the file contains no letter bits.
+    """
+    for path, root in all_roots.items():
+        if path.parent.name != "ObjectBlueprints":
+            continue
+        for obj in root.iter("object"):
+            name = obj.get("Name") or "?"
+            for part in obj.findall("part"):
+                if part.get("Name") != "TinkerItem":
+                    continue
+                bits = part.get("Bits")
+                if not bits:
+                    continue
+                why = BIT_LETTER_EXEMPT.get(name)
+                for char in bits:
+                    if char.isdigit():
+                        continue
+                    entry = BIT_CHARS.get(char)
+                    if entry is None:
+                        f.add(
+                            "bit-letters",
+                            f"{path}: {name} has Bits={bits!r} containing {char!r}, which is not a "
+                            f"bit - TinkerItem.Initialize logs a warning and drops it",
+                        )
+                        continue
+                    if why:
+                        continue
+                    level, what, shown = entry
+                    detail = (
+                        f"{path}: {name} has Bits={bits!r} pinning {char!r} - {what} at level "
+                        f"{level}, displayed to the player as <{shown}>"
+                    )
+                    twin = char.swapcase()
+                    if twin in BIT_CHARS:
+                        t_level, t_what, _ = BIT_CHARS[twin]
+                        detail += f"; {twin!r} is {t_what} at level {t_level}"
+                    detail += (
+                        f". Write a digit to ask for any bit of a level, or add {name!r} to "
+                        "BIT_LETTER_EXEMPT with the reason this bit specifically is required"
+                    )
+                    f.add("bit-letters", detail)
+
+
 def check_part_builders(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """A `<part Builder="…">` must name a class that exists in XRL.World.PartBuilders.
 
@@ -3294,6 +3398,7 @@ def run() -> Findings:
     check_part_names(f, roots)
     check_blueprint_refs(f, roots)
     check_part_attributes(f, roots)
+    check_bit_letters(f, roots)
     check_part_builders(f, roots)
     check_mutation_type_arguments(f)
     check_graded_unlevellable_chips(f, roots)

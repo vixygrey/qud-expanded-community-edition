@@ -1321,6 +1321,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 |---|---|---|
 | `appendix-b` | `check_docs.py` | every row of FEATURES' chip appendix, against the blueprint it describes |
 | `armor-curve` | `validate_mod.py` | AV against §3.2.1's ceiling, per slot and for shields |
+| `bit-letters` | `validate_mod.py` | a `TinkerItem Bits` letter, which pins one bit where a digit names a level |
 | `built` | `check_build_log.py` | the game's own build log says the C# compiled |
 | `changelog-sections` | `check_docs.py` | no duplicate `### Added` / `### Changed` heading inside one release |
 | `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |

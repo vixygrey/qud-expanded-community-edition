@@ -14,6 +14,22 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** `bit-letters` reports a letter in a `TinkerItem Bits` cost (#560).
+
+  A digit names a *level* and the game draws which bit of that level per world; a letter pins one
+  specific bit. Both are legal and they mean different things, and a letter goes wrong two ways that
+  nothing announces. `BitType.TranslateBit` remaps the scrap characters on the way to the screen, so
+  XML `B` is scrap metal but displays as `<C>` while the wiki's `<B>` is scrap crystal — a blueprint
+  written from the wiki's alphabet asks for the wrong material in silence. And case is three levels
+  of cost: `b` is pure alloy, `B` is scrap metal.
+
+  Letters are not forbidden, because pinning one bit is a real requirement that vanilla has of its
+  own — `Shotgun Shell` is `Bits="C"` deliberately. It costs an entry in `BIT_LETTER_EXEMPT` with
+  the reason. That map ships empty; every live record here already uses digits. An unrecognised
+  character is reported separately, and an exemption does not silence that one.
+
 ## [2.8.0] - 2026-08-28
 
 ### Added

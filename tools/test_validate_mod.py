@@ -21,6 +21,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import unittest.mock
 import xml.etree.ElementTree as ET
 from contextlib import contextmanager
 from pathlib import Path
@@ -2839,3 +2840,118 @@ class CurveExemptions(unittest.TestCase):
             self._curve(self._obj('    <part Name="Armor" AV="2" WornOn="Face" />\n')),
             "real armour was swept up by the no-AV exemption",
         )
+
+
+class BitLetters(unittest.TestCase):
+    """`Bits` letters, both directions.
+
+    The check exists because a wrong letter is indistinguishable from a right one in the file, so
+    these assert the quiet direction as hard as the loud one. A rule that flagged every `Bits`
+    attribute would pass every "fires" test below and be useless.
+    """
+
+    @staticmethod
+    def _obj(bits: str, name: str = "Vixy_Test Shell") -> str:
+        return (
+            f'  <object Name="{name}" Inherits="Grenade">\n'
+            f'    <part Name="TinkerItem" Bits="{bits}" CanBuild="true" />\n'
+            "  </object>"
+        )
+
+    def _findings(self, blueprints: str) -> list[tuple[str, str]]:
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            write_mod(tmp, blueprints)
+            return findings_for(validate_mod.check_bit_letters, tmp)
+
+    def test_digits_are_quiet(self) -> None:
+        """The shape every live record in this mod uses. If this fires the check is unusable."""
+        self.assertEqual(self._findings(self._obj("001")), [])
+
+    def test_no_bits_attribute_is_quiet(self) -> None:
+        """A TinkerItem inheriting its cost states nothing, and nothing is not a letter."""
+        self.assertEqual(
+            self._findings(
+                '  <object Name="Vixy_Test Shell" Inherits="Grenade">\n'
+                '    <part Name="TinkerItem" CanBuild="true" />\n'
+                "  </object>"
+            ),
+            [],
+        )
+
+    def test_uppercase_scrap_letter_fires(self) -> None:
+        """The alphabet collision: XML B is scrap metal, the wiki's <B> is scrap crystal."""
+        found = self._findings(self._obj("B"))
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0][0], "bit-letters")
+        self.assertIn("scrap metal", found[0][1])
+        self.assertIn("<C>", found[0][1])
+
+    def test_lowercase_letter_names_its_uppercase_twin(self) -> None:
+        """The case collision. The message has to carry both halves or it cannot be acted on:
+        seeing only "b is pure alloy" does not tell you that B is three levels cheaper."""
+        found = self._findings(self._obj("b"))
+        self.assertEqual(len(found), 1)
+        self.assertIn("pure alloy", found[0][1])
+        self.assertIn("scrap metal", found[0][1])
+
+    def test_every_letter_in_the_string_is_reported(self) -> None:
+        """One finding per letter, not one per attribute — fixing Bits="BC" is two decisions."""
+        self.assertEqual(len(self._findings(self._obj("BC"))), 2)
+
+    def test_digits_alongside_letters_do_not_mask_them(self) -> None:
+        self.assertEqual(len(self._findings(self._obj("00b"))), 1)
+
+    def test_unrecognised_character_fires(self) -> None:
+        """Not a bit at all. TinkerItem.Initialize warns and drops it, so nothing else would say."""
+        found = self._findings(self._obj("00Z"))
+        self.assertEqual(len(found), 1)
+        self.assertIn("not a bit", found[0][1])
+
+    def test_exemption_silences_a_letter(self) -> None:
+        name = "Vixy_Deliberate Shell"
+        with unittest.mock.patch.dict(
+            validate_mod.BIT_LETTER_EXEMPT,
+            {name: "pins scrap electronics on purpose"},
+            clear=True,
+        ):
+            self.assertEqual(self._findings(self._obj("C", name)), [])
+
+    def test_exemption_does_not_silence_an_unrecognised_character(self) -> None:
+        """An exemption is a claim that a *bit* was chosen deliberately. It says nothing about a
+        character that is not a bit, and must not launder one."""
+        name = "Vixy_Deliberate Shell"
+        with unittest.mock.patch.dict(
+            validate_mod.BIT_LETTER_EXEMPT,
+            {name: "pins scrap electronics on purpose"},
+            clear=True,
+        ):
+            self.assertEqual(len(self._findings(self._obj("Z", name))), 1)
+
+    def test_exemption_is_scoped_to_its_blueprint(self) -> None:
+        """The other half of the exemption: it must not cover the blueprint next to it."""
+        with unittest.mock.patch.dict(
+            validate_mod.BIT_LETTER_EXEMPT, {"Vixy_Exempt": "deliberate"}, clear=True
+        ):
+            found = self._findings(
+                self._obj("C", "Vixy_Exempt") + "\n" + self._obj("C", "Vixy_NotExempt")
+            )
+        self.assertEqual(len(found), 1)
+        self.assertIn("Vixy_NotExempt", found[0][1])
+
+    def test_case_twins_differ_in_level(self) -> None:
+        """The property every "case collision" message asserts. If a twin pair ever shared a level
+        the warning would be telling the reader about a difference that is not there."""
+        for char, (level, _, _) in validate_mod.BIT_CHARS.items():
+            twin = char.swapcase()
+            if twin not in validate_mod.BIT_CHARS:
+                continue
+            with self.subTest(pair=f"{char}/{twin}"):
+                self.assertNotEqual(level, validate_mod.BIT_CHARS[twin][0])
+
+    def test_bit_chars_covers_every_level(self) -> None:
+        """Levels 0-8, twelve characters, four of them at level 0. Written out rather than derived,
+        so shrinking BIT_CHARS fails here instead of silently narrowing what the check can see."""
+        self.assertEqual(len(validate_mod.BIT_CHARS), 12)
+        levels = sorted(level for level, _, _ in validate_mod.BIT_CHARS.values())
+        self.assertEqual(levels, [0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8])
