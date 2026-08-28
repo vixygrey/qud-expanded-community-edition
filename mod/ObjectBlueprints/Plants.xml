@@ -358,4 +358,36 @@
     <stag Name="Fiber" Value="twine" />
     <stag Name="FiberMaterial" Value="thatch" />
   </object>
+  <!-- Cave overgrowth (#547), the same scope as the ruins pair: decoration, nothing to gather.
+
+       It shares slabmoss's tile deliberately. Vanilla does this constantly - sw_talltree1 carries
+       witchwood, the n-ary tree, glitchwood and the icosahedar, and sw_aloe_solo carries four aloes
+       - and colour is what separates them. So this is not slabmoss stretched underground; it is the
+       relationship witchwood and glitchwood already have.
+
+       &m because it has to separate from everything a cave already grows: dreadroot at &K, young
+       ivory at &Y over a &y tile, brightshroom the same, and slabmoss at &c. Magenta is also the
+       game's register for lightless growth - noisegrass ripens &K to &M. &K was tried first and is
+       nearly invisible against the floor, which is the cragwort mistake from #540 exactly. -->
+  <object Name="Vixy_Bruisemoss" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="bruisemoss"
+      RenderString="231"
+      ColorString="&amp;m"
+      TileColor="&amp;m"
+      DetailColor="M"
+      Occluding="false"
+      Tile="Creatures/sw_moss_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Creatures/sw_moss_1.bmp,Creatures/sw_moss_2.bmp,Creatures/sw_moss_3.bmp,Creatures/sw_moss_4.bmp,Creatures/sw_moss_5.bmp"
+    />
+    <part
+      Name="Description"
+      Short="It never sees light and has no use for the green that would gather it, so it comes up the colour of a week-old bruise. Press a thumb into a patch and the damp stands in the print for a while afterward."
+    />
+    <stag Name="Plank" Value="mass" />
+  </object>
 </objects>

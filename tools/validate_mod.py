@@ -2206,6 +2206,36 @@ def declares_plant(name: str, all_roots: dict[Path, ET.Element]) -> bool:
     return False
 
 
+def scatter_entries(
+    pop: ET.Element,
+    own_tables: dict[str, list[ET.Element]],
+    hint: str,
+    seen: frozenset[str],
+):
+    """Every scatter entry reachable from `pop`, with the hint that actually reaches it.
+
+    A merge block that pulls a patch table holds no `<object>` of its own, so reading only its
+    direct children finds nothing - which is how `check_placement_hint` came to be blind to all
+    three of this fork's patch tables at once (#547). The same blind spot `scatter_quantity` had
+    before #544, in a second check that did not inherit the fix.
+
+    Hints propagate the way `PopulationTable.Generate` propagates them: a reference passes its own
+    `Hint` down, or the one it was handed. References are followed only into `own_tables`, because
+    a vanilla sub-table's entries are vanilla's business. `seen` terminates a cycle.
+    """
+    for obj in pop.iter("object"):
+        if obj.get("Blueprint") and obj.get("Weight") is None:
+            yield obj.get("Blueprint"), obj.get("Hint") or hint
+    for ref in pop.iter("table"):
+        name = ref.get("Name")
+        if not name or name in seen or name not in own_tables:
+            continue
+        for target in own_tables[name]:
+            yield from scatter_entries(
+                target, own_tables, ref.get("Hint") or hint, seen | {name}
+            )
+
+
 def check_placement_hint(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """A scattered plant needs its own `Hint`, or two of them can land in one cell.
 
@@ -2243,6 +2273,11 @@ def check_placement_hint(f: Findings, all_roots: dict[Path, ET.Element]) -> None
     except ET.ParseError:
         return  # check_wellformed owns this
 
+    own_tables: dict[str, list[ET.Element]] = {}
+    for pop in root.iter("population"):
+        if pop.get("Name") and pop.get("Load") != "Merge":
+            own_tables.setdefault(pop.get("Name"), []).append(pop)
+
     for pop in root.iter("population"):
         name = pop.get("Name")
         if not name or pop.get("Load") != "Merge":
@@ -2250,11 +2285,8 @@ def check_placement_hint(f: Findings, all_roots: dict[Path, ET.Element]) -> None
         supplied = hints.get(name)
         if not supplied or "" not in supplied:
             continue
-        for obj in pop.iter("object"):
-            blueprint = obj.get("Blueprint")
-            if not blueprint or obj.get("Weight") is not None or obj.get("Hint"):
-                continue
-            if not declares_plant(blueprint, all_roots):
+        for blueprint, hint in scatter_entries(pop, own_tables, "", frozenset({name})):
+            if hint or not declares_plant(blueprint, all_roots):
                 continue
             f.add(
                 "placement-hint",
