@@ -206,4 +206,29 @@
     <power Name="Tinker II" Cost="200" Tile="Abilities/sw_skill_tinker_2.png" Foreground="y" Detail="c" />
     <power Name="Tinker III" Cost="300" Tile="Abilities/sw_skill_tinker_3.png" Foreground="y" Detail="c" />
   </skill>
+
+  <!--
+        Wayfaring is merged for one power's description only. Per docs/STYLEGUIDE.md 1.0c the
+        loader merges at the level of the individual power keyed by Name, keeping every attribute
+        not restated - so Class, Cost, Attribute, Minimum, Snippet and Tile all stay vanilla's and
+        only the text changes. Restating Class here would replace Survival_Trailblazer and take
+        the vanilla behaviour with it.
+
+        The three sentences above the new one are vanilla's own, restated because Description is
+        one attribute and cannot be appended to. They must stay in step if Freehold edits them;
+        check_vanilla_drift is what would notice.
+
+        The added sentence names the option because it cannot be gated on it. XML loads once, long
+        before any option is read, so this text is present either way and has to stay true either
+        way. See issue #470.
+    -->
+  <skill Name="Wayfaring" Load="Merge">
+    <power
+      Name="Mind's Compass"
+      Description="Doubles the chance of regaining your bearings when you are lost.
+Reduces chance of getting lost by about 15%.
+You travel on the world map twice as quickly.
+While the Qud Expanded bearings option is on, you know which of a parasang's nine zones you are standing in."
+    />
+  </skill>
 </skills>

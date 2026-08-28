@@ -39,6 +39,7 @@ namespace QudExpandedCE
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
+        public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -612,6 +613,21 @@ namespace QudExpandedCE
         /// shipped.
         /// </summary>
         public static bool BurdenGradient => Enabled(BurdenGradientID, "No");
+
+        /// <summary>
+        /// Whether a wayfarer is told which of a parasang's nine zones they have entered.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_Bearing</c> reads this on each
+        /// zone change and derives everything else from the zone in front of it, so there is no
+        /// loaded record to restore and flipping this mid-run takes effect on the next zone you
+        /// walk into.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached, and this grants no power at all — it surfaces a number the zone ID
+        /// has carried the whole time, to a character who has already paid 100 points for the
+        /// skill that reads it.
+        /// </summary>
+        public static bool Bearings => Enabled(BearingsID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);

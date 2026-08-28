@@ -56,9 +56,9 @@ not showing up often enough, they are underweighted — the vanilla cascade is n
 
 ### 1.0c Skills merge per power, by name
 
-`mod/Core/Skills.xml` touches six vanilla skills — Axe, Cooking and Gathering, Cudgel, Long Blade,
-Multiweapon Fighting, Tinkering — and edits individual powers inside them without restating the
-rest.
+`mod/Core/Skills.xml` touches eight vanilla skills — Axe, Cooking and Gathering, Cudgel, Long
+Blade, Multiweapon Fighting, Short Blade, Tinkering, Wayfaring — and edits individual powers inside
+them without restating the rest.
 
 **The loader merges at the level of the individual power, keyed by its `Name`, and keeps every
 attribute the mod does not restate.** That is why an entry like
@@ -71,11 +71,21 @@ works despite carrying no `Class=` and no `Cost=`: it is editing vanilla's entry
 Here that single change is the whole point — the mod's contribution to that tree is a requirement
 cut, `23|23` down to `21|21`.
 
-The evidence is the mod itself. All **23** powers it declares omit `Class=`. If redeclaring a skill
-replaced it, all 23 would be left with no implementation — Cleave, Berserk!, Tinker I/II/III,
+The evidence is the mod itself. **24** of the powers it declares omit `Class=`. If redeclaring a
+skill replaced it, all 24 would be left with no implementation — Cleave, Berserk!, Tinker I/II/III,
 Disassemble and the rest — and the mod would be obviously broken rather than subtly wrong. It has
-played correctly for years. Replacement would also have silently deleted **18** vanilla powers,
+played correctly for years. Replacement would also have silently deleted **34** vanilla powers,
 including Tinkering's Repair and Scavenger and Long Blade's Lunge and Swipe.
+
+The four exceptions declare `Class=` because they are new powers rather than edits to vanilla ones:
+the Finesse power on each of the four melee trees.
+
+> 🗒️ Both figures were exact when this section was written against six skills (#87), and one of
+> them stopped being so without anyone noticing. Adding Short Blade for its Finesse power (#146)
+> left `23` correct by coincidence — a power carrying `Class=` does not count toward it — while
+> quietly taking the deletion count from 18 to 25, because the mod names only one of Short Blade's
+> seven. Wayfaring (#470) then moved both. `check_docs.py` does not recount either one, which is
+> why they drifted where the option and blueprint counts beside them could not.
 
 **Write `Load="Merge"` on the skill anyway** (#87). The mod did not, for years, and was saved by the
 loader's default rather than by intent — which is precisely the arrangement charter rule 1 exists to

@@ -16,6 +16,38 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Mind's Compass tells you where in the parasang you are standing** (#470).
+
+  A parasang is a 3×3 block of zones and the game never says which of the nine you are in. You work
+  it out by walking to an edge and watching which way the world map scrolls, which is navigation by
+  trial and error rather than by skill. Now, on arriving: *You get your bearings: the northeast of
+  this parasang.*
+
+  It comes with **Mind's Compass**, which is free with **Wayfaring** rather than bought separately —
+  the same idea as regaining your bearings when lost, one scale down, and it costs nothing a
+  wayfarer has not already paid for. The information was always there: every zone ID carries its own
+  position inside its parasang, and vanilla does the identical lookup itself to label the choices
+  when you descend from the world map. Nothing surfaced it while you were standing in the zone.
+
+  **Nothing is said while you are lost**, which is the one time you should not know — and the time
+  vanilla drops you at a random one of the nine. Nothing on the world map, or in a world that has
+  none, or inside a vehicle. Stairs are silent too: a staircase does not move you within the
+  parasang, so it has nothing new to say.
+
+  On by default. It grants no power, only a number the game had already written down.
+
+- **(internal)** Three figures in `docs/STYLEGUIDE.md` §1.0c recounted (#470).
+
+  The section says `Skills.xml` touches **six** vanilla skills and quotes two counts as evidence for
+  how the loader merges. All three were exact when written against six skills (#87). Adding Short
+  Blade for its Finesse power (#146) made it seven and left `23 powers omit Class=` correct only by
+  coincidence — a power carrying `Class=` does not count toward it — while quietly taking the
+  deletion count from 18 to 25, since the mod names one of Short Blade's seven.
+
+  Wayfaring makes it eight and moves both again: **24** and **34**, each recounted against vanilla's
+  own `Skills.xml`. `check_docs.py` recounts neither, which is why these drifted where the option
+  and blueprint counts beside them could not.
+
 - **Caves grow bruisemoss** (#547).
 
   It never sees light and has no use for the green that would gather it, so it comes up the colour
