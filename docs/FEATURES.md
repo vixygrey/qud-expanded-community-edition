@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **465** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **466** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -576,7 +576,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 
 | File | New objects | Merged vanilla objects |
 |---|---|---|
-| `MeleeWeapons.xml` | 101 (4 dormant) | 77 |
+| `MeleeWeapons.xml` | 102 (4 dormant) | 77 |
 | `Armor.xml` | 61 | 38 |
 | `RangedWeapons.xml` | 49 | 11 |
 | `PsionicChips.xml` | 145 | 0 |
@@ -588,7 +588,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **465 active** | **211** |
+| **Total** | **466 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -2107,7 +2107,8 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Subtypes.xml            # 18 affinities in 2 categories
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
-│   ├── Options.xml             # 19 options (§13)
+│   ├── Mutations.xml           # Fangs (§21)
+│   ├── Options.xml             # 20 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2118,7 +2119,7 @@ mod/                            # the only directory uploaded to the Workshop
 │       └── Joppa.rpm           # 76-cell amenity building
 │
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 101 new / 77 merged
+│   ├── MeleeWeapons.xml        # 102 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
@@ -2129,7 +2130,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 50 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 51 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2169,7 +2170,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Nineteen options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -3331,6 +3332,152 @@ Wayfaring, with its own class — and it would never reach a character who alrea
 `BeforeAddSkillEvent.FromSkill` collects `Cost == 0` powers only at the moment the parent skill is
 added, and nothing re-syncs on load. That is why the behaviour lives on a part attached to the
 player by `Vixy_PlayerParts` instead.
+
+## 21. Fangs (`Mutations.xml`, `Vixy_Fangs`)
+
+**A 3-point physical mutation: long teeth on the Face that bite alongside whatever you are
+wielding, and draw blood when they land.** The first mutation this fork declares (#589), and the
+first of the anthro set (#471) — animal traits, as against Qud's usual stranger-than-human physical
+list.
+
+**On by default**, under `OptionQudExpandedCEAnthroMutations`. Rule 6 reserves "off by default" for
+a change that grants power with no content attached, and a new mutation is content: the player
+spends points on it or does not, every time they make a character. Read at character creation, so
+the option applies to a **new** character and the helptext says so.
+
+> ✅ **Played and confirmed on 2026-08-28** (maintainer). Fangs appear in the physical list at 3
+> points and grow on the Face; the bite fires alongside a wielded weapon rather than instead of it;
+> a gas mask goes on and the bite survives, which is §21.3's whole claim checked by eye rather than
+> by decompiler; and the exclusions behave — Beak is refused alongside fangs, horns are not.
+>
+> ⚠️ **Two things have not been watched, and they are different in kind.**
+>
+> **The bleed's rank scaling is a correctness question** (§21.5). `HornsProperties.GetHornLevel()`
+> falls back to its `HornLevel` field because it cannot find a mutation named `Horns`, and
+> `Vixy_Fangs` writes that field on equip and on every `ChangeLevel`. If the sync is wrong the bleed
+> sits at rank 1 forever and nothing announces it — the mutation keeps working, it just stops
+> improving. It needs a character above level 1, since `GetMutationCapForLevel` is `level / 2 + 1`.
+> The cheap version of the check is the fangs' own short description, which prints the save
+> difficulty: expect `20 + 2 × rank`.
+>
+> **The three-source bleed stack is a balance question** (§21.5). Short blade, Bloodletter and fangs
+> together. All three fire; whether that is too much at rank 8 with high Agility wants play, and the
+> dial is `HornsProperties`' presence rather than the cost.
+
+### 21.1 Every mutation needs a class, and it may not be a vanilla one
+
+`<mutation>` needs a `Class`, and `MutationEntry.MutationType` resolves it as
+`"XRL.World.Parts.Mutation." + Class` — so a mutation cannot be added in XML alone. This issue was
+filed on the theory that it could be, by pointing `Class` at vanilla's `Horns` and supplying a
+different `Variant`, the way vanilla's three Stingers share `Class="Stinger"`.
+
+**That breaks vanilla.** `MutationFactory.Init` sorts each category's entries by display name and
+*then* builds `_MutationsByClass` from that order. `BaseMutation.GetMutationEntry` separates entries
+sharing a class by exact `Variant` match **or** `HasVariants && GetVariants().Contains(variant)` —
+and the second test resolves through `Mutations.GetVariants(IPart.Name)`, which is keyed on the
+*type* name and therefore class-wide. It is true for every entry of the class, so index 0 always
+wins. "Fangs" sorts before "Horns", so every horned creature in the game would resolve to the Fangs
+entry: wrong name, tile, cost, and `BearerDescription` feeding village lore. That is #11's Akimbo
+failure aimed at vanilla.
+
+`Reputation.Get` compounds it — `PartReputation` is keyed on the part name, and Antelopes and
+Goatfolk each carry `<partreputation About="Horns" Value="100" />`, so fangs borrowing the class
+would quietly collect +200 standing.
+
+`mutation-class` in `tools/validate_mod.py` now refuses a non-mod-prefixed `Class`, so this cannot
+be reintroduced.
+
+### 21.2 Modelled on `Beak`, because `Horns` cannot be extended
+
+`Horns` looked like the parent: `RegrowHorns` is variant-general, reading the blueprint's
+`MeleeWeapon Slot` and growing the thing on that part. But `RegrowHorns`, `GetAV` and
+`GetBaseDamage` are all **non-virtual**, while the three methods that call `RegrowHorns` are
+virtual — so a subclass overriding `ChangeLevel` still runs the parent's regrow through
+`base.ChangeLevel`, which force-equips at `MaxStrengthBonus = 100`, `2d3` and `AV = 1`. All four of
+the values a fangs subclass would exist to change, and C# has no `base.base`. `docs/LESSONS.md`
+records the general shape.
+
+`Beak` does its work in the virtual `OnRegenerateDefaultEquipment` and already implements the
+pattern: Face slot, `Part.DefaultBehavior`, its own damage.
+
+### 21.3 Default behaviour, so the face stays free
+
+`BodyPart.GetFirstValidWeapon` checks the part's `DefaultBehavior` for a `MeleeWeapon` **first**, and
+only returns `Equipped` when that also has one. A gas mask has none — so setting default behaviour
+leaves the player their Face slot *and* the bite. Force-equipping, which is what `Horns` does to the
+Head, would instead block all **34** `WornOn="Face"` items in the game: gas mask, night-vision
+goggles, telemetric visor, telescopic monocle, mirrorshades, spectacles, VISAGE, the Issachari sun
+veil and all six sultan Faces. Almost every one is AV 0 — the Face is a utility slot, not an armour
+slot, so occupying it would cost the player more than Horns' helmet restriction and return nothing.
+
+### 21.4 The bite rides along, which is why damage is flat
+
+`Combat.MeleeAttackWithWeapon` collects **every** body part holding a valid weapon, attacks with the
+primary at 100%, and rolls the rest through `GetMeleeAttackChanceEvent` with `Intrinsic` set. The
+engine default is `RuleSettings.BASE_SECONDARY_ATTACK_CHANCE = 15`; `HornsProperties` raises it to
+**20**, or 100 while Charging. So fangs never compete with a better weapon — they are an extra
+attack, not a replacement, which is what keeps them worth having at level 30.
+
+That means the damage does not have to scale, and it does not. **`1d6` flat** is vanilla's own
+figure for fangs: `BaseFangs` and both its variants, `Incandescent Fangs` and `Zigzag Fangs`, are
+all `1d6 ShortBlades Slot="Face"`. `MaxStrengthBonus` is **5** for the same reason — `RegrowHorns`
+would have set 100, and Strength is added once per penetration, so it is the largest number here.
+
+**No AV.** AV is the half of Horns that pays for the Head slot; fangs cost no slot, so they grant no
+armour.
+
+### 21.5 The bleed is what scales, and it is borrowed whole
+
+`HornsProperties` stays on the blueprint. It supplies the 20% attack chance, a to-hit bonus of
+`rank / 2 + 1` on the bite, and bleeding on **every penetration** — save difficulty `20 + 2 × rank`,
+damage `1` rising to `1d2` and beyond past rank 4. All already balanced by Freehold, and its
+`GetShortDescriptionEvent` text is generic, so nothing horn-specific leaks into the item.
+
+Its `GetHornLevel()` asks the wearer for a mutation named `Horns` and will not find one, so it falls
+back to its `HornLevel` field — which `Vixy_Fangs` writes on equip and on every rank change. Without
+that the bleed would sit at rank 1 forever.
+
+**Bleeding is not a new capability.** `ShortBlades.WeaponMadeCriticalHit` applies
+`Bleeding("1d2-1", 20 + Agility mod, Stack: false)` on any short-blade critical hit, and
+`Combat.cs:1470` reaches it through `Skills.GetGenericSkill(...)` — a *generic* instance, so it
+fires for anyone holding a short blade, purchased skill or not. What is expensive is bleed
+**volume**, which costs a hand and 150 skill points (`ShortBlades_Bloodletter`, Agility 17 minimum).
+Fangs grant a smaller share of that without spending either.
+
+> ⚠️ **Three bleed sources can run at once** on a short-blade Bloodletter character with fangs: the
+> class crit bleed, `HornsProperties`' penetration bleed, and Bloodletter's own 75%-on-penetration —
+> because `ShortBlades_Bloodletter` gates on `Weapon.GetPart<MeleeWeapon>().Skill == "ShortBlades"`,
+> which the fangs satisfy, so it fires on the bite too. All three demonstrably fire; whether that is
+> obnoxious at rank 8 with high Agility is a play question. **If it needs a dial, the dial is
+> `HornsProperties`' presence, not the cost.**
+
+### 21.6 Cost, derived
+
+| | slot cost | damage | extras |
+|---|---|---|---|
+| `Beak` — 1 | none | flat `1`, no scaling | +1 Ego |
+| **Fangs — 3** | none | `1d6` flat | 20% extra attack, bleed on penetration, to-hit `+rank/2+1` |
+| `Horns` — 4 | blocks the Head slot | `2d3`→`2d6` | the same three, plus AV `1`→`4` |
+
+Fangs are Horns minus AV, minus damage growth, minus the slot cost — one step below, at `Quills`,
+`Carapace` and `Burrowing Claws`' price, which is this category's "solid, no downside" tier. Well
+above `Beak`, which does not scale and never fights.
+
+`docs/DESIGN_balance.md` §10 has the working, because #590, #593 and #594 each need it.
+
+### 21.7 Exclusions, the pool, and the tile
+
+**`Exclusions="Beak"`, not Horns.** Beak also claims the Face part's `DefaultBehavior`, so two of
+them would silently overwrite each other. Horns is on the Head and does not conflict — fangs and
+horns stack, which reads fine and is mechanically clean.
+
+**In the NPC pool.** `ExcludeFromPool` is unset, so fangs appear on randomly generated creatures and
+in village history. That is deliberate — a fanged snapjaw is the flavour the set exists for — and it
+is why `BearerDescription` is written as lore (*"the fanged"*) rather than as a chargen tooltip.
+
+**The tile is vanilla's.** `Items/girshling_fangs.bmp`, which is what `BaseFangs` renders with. A
+mutation tile of this fork's own is still outstanding; pointing at the game's own fangs art is
+honest and correct in the meantime, where inventing a bad 16×24 would not be.
 
 ## Appendix A — every merged vanilla melee weapon
 

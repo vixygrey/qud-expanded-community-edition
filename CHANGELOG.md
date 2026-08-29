@@ -16,6 +16,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Fangs**, a new 3-point physical mutation, on by default (#589).
+
+  Long teeth on your face that bite alongside whatever you are wielding — about one round in five,
+  which means they never compete with a better weapon — and draw blood when they land. They do not
+  take your face slot, so a gas mask or night-vision goggles still fit. Damage is a flat `1d6`,
+  which is vanilla's own figure for fangs; what grows with rank is the bleeding.
+
+  Bleeding is normally bought. Bloodletter costs 150 skill points and needs Agility 17, and short
+  blades otherwise only bleed on a critical hit. Fangs give a smaller share of that for a mutation
+  point instead, and the two stack if you have both.
+
+  Fangs or a beak, not both — they would grow on the same place. Fangs and horns is fine. They turn
+  up on randomly generated creatures too, so expect the occasional fanged snapjaw.
+
+  This is the first mutation this fork has ever declared, and the first of an animal-traits set
+  (#471). Turning the new **anthro mutations** option off hides it at character creation and keeps
+  it off creatures; mutations are read while a character is being made, so that applies to a **new**
+  character.
+
 - Woodsprogs outside the Naphtaali tribe are named like woodsprogs (#454).
 
   A woodsprog in the tribe was always named correctly. A woodsprog anywhere else — a Kyakukya

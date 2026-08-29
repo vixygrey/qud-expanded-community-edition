@@ -1213,6 +1213,22 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     stub, so Mod* covered them all — but a part named Vixy_AmmoPayload would have fallen between
     this check and check_part_names, which skips mod-prefixed names on the grounds that this one
     covers them. A part naming a class that does not exist loads as nothing at all.
+
+    `<mutation Class=>` was added in #589, which is where the gap showed. A mutation entry names a
+    C# type exactly as a blueprint's part does — MutationEntry.MutationType resolves
+    "XRL.World.Parts.Mutation." + Class — but this check only ever walked `<part Name=>`, so a
+    typo'd mutation class produced a MetricsManager error at load and nothing else.
+
+    The second finding is the more expensive one and has its own name. **A mutation may not name a
+    vanilla class.** Two entries sharing one class collide: MutationFactory.Init sorts each
+    category's entries by display name and then builds _MutationsByClass from that order, and
+    BaseMutation.GetMutationEntry separates entries sharing a class by exact Variant match *or*
+    "this entry has variants and the pool contains this one" — and that second test resolves
+    through Mutations.GetVariants(IPart.Name), which is class-wide. So it is true for every entry
+    of the class and index 0 always wins, whichever entry that is. Point Class at Horns and every
+    horned creature in the game may resolve to your entry instead: wrong name, tile, cost and
+    BearerDescription, for every player. That is #11's Akimbo failure aimed at vanilla, and
+    docs/LESSONS.md records the mechanism.
     """
     roots = blueprint_sources(all_roots)
     defined = set()
@@ -1235,6 +1251,28 @@ def check_scripting_parts(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
                 f.add(
                     "missing-script",
                     f"{path}: part {name} has no class in mod/Scripting/",
+                )
+
+    for path, root in all_roots.items():
+        if root.tag != "mutations":
+            continue
+        for mutation in root.iter("mutation"):
+            cls = mutation.get("Class", "")
+            name = mutation.get("Name") or "<unnamed>"
+            if not cls:
+                continue
+            if not cls.startswith(MOD_PREFIXES):
+                f.add(
+                    "mutation-class",
+                    f"{path}: mutation {name!r} declares Class={cls!r}, which is not a "
+                    "mod-prefixed class - two entries sharing one class collide and the one "
+                    "sorting first by display name swallows the other, vanilla's included",
+                )
+            elif cls not in defined:
+                f.add(
+                    "missing-script",
+                    f"{path}: mutation {name!r} names class {cls} with no class in "
+                    "mod/Scripting/",
                 )
 
 

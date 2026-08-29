@@ -379,6 +379,72 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class MutationClasses(unittest.TestCase):
+    """#589. A `<mutation Class=>` names a C# type exactly as a blueprint's part does, and until
+    now nothing checked it — check_scripting_parts only ever walked `<part Name=>`.
+
+    The second finding is the expensive one. Two mutation entries sharing one class collide:
+    MutationFactory.Init sorts each category by display name before building _MutationsByClass, and
+    GetMutationEntry's variant tie-break resolves through a class-wide pool, so index 0 always wins
+    whichever entry that is. Naming a vanilla class therefore breaks vanilla's own entry for every
+    player, which is #11's Akimbo failure pointed the other way.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _mod_with(self, cls: str, cs: str | None) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        mod = write_mod(tmp)
+        core = mod / "Core"
+        core.mkdir(exist_ok=True)
+        (core / "Mutations.xml").write_text(
+            '<?xml version="1.0" encoding="utf-8" ?>\n'
+            "<mutations>\n"
+            '  <category Name="Physical">\n'
+            f'    <mutation Name="Fangs" Cost="3" Class="{cls}" />\n'
+            "  </category>\n"
+            "</mutations>\n",
+            encoding="utf-8",
+        )
+        scripting = mod / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        if cs:
+            (scripting / f"{cs}.cs").write_text(
+                f"namespace XRL.World.Parts.Mutation {{ public class {cs} {{ }} }}",
+                encoding="utf-8",
+            )
+        return tmp
+
+    def test_vanilla_class_is_reported(self) -> None:
+        """The whole reason the check exists: Class="Horns" silently breaks vanilla's Horns."""
+        items = findings_for(
+            validate_mod.check_scripting_parts, self._mod_with("Horns", None)
+        )
+        self.assertTrue(
+            any(check == "mutation-class" for check, _ in items),
+            "a vanilla mutation class was not reported",
+        )
+
+    def test_mod_class_without_a_file_is_reported(self) -> None:
+        items = findings_for(
+            validate_mod.check_scripting_parts, self._mod_with("Vixy_Fangs", None)
+        )
+        self.assertTrue(
+            any(check == "missing-script" for check, _ in items),
+            "a mutation class with no C# file was not reported",
+        )
+
+    def test_mod_class_with_a_file_is_clean(self) -> None:
+        items = findings_for(
+            validate_mod.check_scripting_parts,
+            self._mod_with("Vixy_Fangs", "Vixy_Fangs"),
+        )
+        self.assertEqual(items, [])
+
+
 class MutationTypeArguments(unittest.TestCase):
     """#256. Compiling proves the class exists; it does not prove the game will grant it.
 

@@ -2604,4 +2604,62 @@
     <tag Name="Tier" Value="6" />
   </object>
 -->
+
+  <!--
+        Natural equipment for the Fangs mutation (#589). Not loot: it carries no Tier and no
+        Commerce value above zero, is excluded from dynamic encounters, and reaches a character
+        only through mod/Scripting/Vixy_Fangs.cs.
+
+        MutationEquipment names the mutation's CLASS, not its display name - Mutations.GetVariants
+        keys on IPart.Name, which is ModManager.ResolveTypeName(GetType()). Vanilla's own tags
+        prove it: the Flaming Ray equipment is tagged "FlamingRay", not "Flaming Ray".
+
+        1d6 ShortBlades on the Face is vanilla's own figure for fangs - BaseFangs, and its
+        Incandescent and Zigzag variants, are all exactly this. MaxStrengthBonus is 5 for the same
+        reason; Horns would have set 100, and Strength is added once per penetration, so that is
+        the largest number here.
+
+        HornsProperties supplies the 20% intrinsic attack chance, the to-hit bonus and the bleed
+        on penetration. Its GetHornLevel() looks up GetMutation("Horns") by part name and will not
+        find this mutation, so it falls back to the HornLevel field - which Vixy_Fangs writes on
+        equip and on every rank change.
+
+        NoDefaultBehavior is deliberately absent. Vanilla's Horns blueprint carries it because
+        Horns force-equips; this mutation sets the part's DefaultBehavior instead, so that the
+        player keeps the Face slot for a mask or goggles.
+    -->
+
+  <object Name="Vixy_Fangs" Inherits="MeleeWeapon">
+    <part
+      Name="Render"
+      DisplayName="fangs"
+      RenderString="*"
+      Tile="Items/girshling_fangs.bmp"
+      ColorString="&amp;Y"
+      TileColor="&amp;y"
+      DetailColor="Y"
+    />
+    <part Name="MeleeWeapon" Slot="Face" BaseDamage="1d6" Stat="Strength" Skill="ShortBlades" MaxStrengthBonus="5" />
+    <part Name="Armor" AV="0" DV="0" WornOn="Face" />
+    <part Name="Commerce" Value="0" />
+    <part
+      Name="Description"
+      Short="Four teeth have grown long and keen, and they meet with the precision of a closing trap."
+    />
+    <part Name="HornsProperties" />
+    <part Name="NaturalEquipment" />
+    <part Name="NoDamage" />
+    <part Name="NoBreak" />
+    <part Name="Physics" Category="Natural Weapons" IsReal="false" Weight="0" />
+    <removepart Name="TinkerItem" />
+    <intproperty Name="Natural" Value="1" />
+    <tag Name="MutationEquipment" Value="Vixy_Fangs" />
+    <tag Name="ExcludeFromDynamicEncounters" />
+    <tag Name="NoSparkingQuest" />
+    <tag Name="Gender" Value="plural" />
+    <tag Name="NaturalGear" />
+    <tag Name="ShowMeleeWeaponStats" />
+    <tag Name="VisibleAsDefaultBehavior" />
+    <tag Name="ShowAsPhysicalFeature" />
+  </object>
 </objects>

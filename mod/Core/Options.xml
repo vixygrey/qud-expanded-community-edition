@@ -14,6 +14,38 @@
     -->
 
   <option
+    ID="OptionQudExpandedCEAnthroMutations"
+    DisplayText="{{C|Qud Expanded}}: anthro mutations"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded anthro animal mutation fangs bite teeth beast"
+  >
+    <helptext>
+            Adds this fork's animal-trait mutations to the physical mutation list.
+
+            Qud's physical mutations are full of things that make you stranger - a carapace,
+            quills, a beak, an extra pair of legs. What it has almost none of is the ordinary
+            animal end of that: the traits a wolf or a cat has and a person does not.
+
+            Currently one mutation:
+
+            Fangs, 3 points. Long teeth on your face that bite alongside whatever you are
+            wielding, roughly one round in five, and draw blood when they land. They do not
+            occupy your face slot, so a mask or goggles still fit.
+
+            Bleeding is normally bought - Bloodletter costs 150 skill points and needs Agility
+            17. Fangs give you a smaller share of it for a mutation point instead, and the two
+            stack if you have both.
+
+            Turning this off hides the mutations at character creation and keeps them off
+            randomly generated creatures. Mutations are read while a character is being made,
+            so this applies to a NEW character - an existing one keeps whatever it was born
+            with.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEBurdenGradient"
     DisplayText="{{C|Qud Expanded}}: graded burden"
     Category="Mods"

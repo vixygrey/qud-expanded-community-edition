@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mutations>
+  <!--
+        The first mutation this fork declares. Every <mutation> needs a Class, and a Class is a
+        C# type the game resolves as "XRL.World.Parts.Mutation." + Class - so a mutation cannot
+        be added in XML alone. See mod/Scripting/Vixy_Fangs.cs and issue #589.
+
+        Class must NOT be a vanilla mutation's class. Two entries sharing one class collide:
+        MutationFactory.Init sorts each category's entries by display name and then builds
+        _MutationsByClass from that order, and BaseMutation.GetMutationEntry separates entries
+        sharing a class by exact Variant match OR "this entry has variants and the pool contains
+        this one" - and that second test is class-wide, so it is true for every entry and index 0
+        always wins. Whichever entry sorts first swallows the other, vanilla's included. This is
+        the same failure as Akimbo in #11, and docs/LESSONS.md records it.
+
+        Variant names the natural weapon blueprint. RegrowHorns-style code reads it as a blueprint
+        name, so it must match an <object Name=> in ObjectBlueprints - here Vixy_Fangs, in
+        MeleeWeapons.xml, which carries the MutationEquipment tag naming this class back.
+
+        Category Name="Physical" merges into vanilla's category rather than declaring a new one:
+        HandleCategoryNode looks the name up and reuses the existing MutationCategory when it
+        finds it. Filing under Physical also inherits the Chimera and Esper exclusions for free -
+        a new category is excluded by neither, so an Esper could take this. See #471.
+    -->
+
+  <category Name="Physical">
+    <mutation
+      Name="Fangs"
+      Cost="3"
+      MaxSelected="1"
+      Class="Vixy_Fangs"
+      Variant="Vixy_Fangs"
+      Exclusions="Beak"
+      BearerDescription="the fanged"
+      Tile="Items/girshling_fangs.bmp"
+    />
+  </category>
+</mutations>
