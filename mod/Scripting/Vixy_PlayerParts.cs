@@ -63,6 +63,7 @@ namespace QudExpandedCE
             {
                 player.RequirePart<Vixy_Burden>();
                 player.RequirePart<Vixy_Bearing>();
+                player.RequirePart<Vixy_TrashMemory>();
             }
         }
     }

@@ -2108,7 +2108,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 20 options (§13)
+│   ├── Options.xml             # 21 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2130,7 +2130,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 52 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 53 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2170,7 +2170,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -3799,6 +3799,120 @@ merchant's shelf is already the most expensive thing there, before markup.
 
 Whether that is *enough* is a play question rather than a reading one, and the lever would be code.
 Nothing here touches it.
+
+## 25. Trash Divining thins out as a zone is picked over (`Vixy_TrashMemory`)
+
+**The 5% is untouched and the first pile in any zone still pays it in full.** What changes is the
+twentieth pile, and the fiftieth. A catacombs zone paid roughly four or five secrets and now pays
+about two; a rustwell pays what it always did (#605).
+
+### 25.1 The rate reads as a trickle and delivered a salary
+
+`Customs_TrashDivining` costs 150 points, wants Intelligence 21, and promises *"a 5% chance you
+piece together clues and learn a random secret"* per pile rifled. `Garbage.AttemptRifle` honours
+that exactly — `GetSkillEffectChanceEvent.GetFor(Actor, gameObject, part2, 5).in100()`, flat, with
+no depth or Intelligence scaling.
+
+Pile density is what turns it into an income. Vanilla's own tables:
+
+| table | piles per zone | secrets at 5% |
+| --- | --- | --- |
+| `CatacombsGlobals` | 80–100 | ~4.5 |
+| `CrematoryGlobals` | 60–80 | ~3.5 |
+| `Rusty3` | 40–48 | ~2.2 |
+| `FactionEncounterZoneObjects_Mechanimists` | 30–45 | ~1.9 |
+| `Rustwells 1/2/3` | 20–33 | ~1.3 each |
+
+Secrets are also currency: `WaterRitualSellSecret` pays 50 reputation each, so this was a reputation
+faucet as much as a knowledge one.
+
+**This was never an exploit**, which is what shapes the fix. A player who spent 150 points and
+reached Intelligence 21 bought the skill, and nerfing a purchase is a different and worse act than
+closing an accidental hole. So the headline number does not move.
+
+### 25.2 Vanilla wrote the hook and never wired it up
+
+`TrashOracle` is a vanilla part whose entire job is adjusting this skill's chance — it guards on
+`E.Skill is Customs_TrashDivining` and rewrites `E.Chance` through `Bonus` and `Magnitude`. **No
+blueprint in the game carries it**, and nothing in the assembly constructs one. Another entry in
+`docs/LESSONS.md`'s *"vanilla builds mechanisms it never wires up"*.
+
+It could not be used as it stands — `Bonus` and `Magnitude` are flat, with nowhere to keep a
+per-zone count, and `IActivePart` brings charge, power and breakage semantics that mean nothing on a
+player. Its guard clause is copied verbatim, because it is the intended idiom for this event.
+
+That the hook exists at all is what keeps this inside charter rule 5: the rate is adjustable through
+an event vanilla dispatches on both the actor and the object, with no patching of `Garbage`.
+
+### 25.3 Piles are counted, not secrets
+
+`GetSkillEffectChanceEvent` fires **before** the roll and never learns its outcome, so successes are
+not observable from the handler. Piles are — it is called once per rifle, which makes the count
+exact rather than inferred.
+
+It is also the better fiction. A room that has been gone through has run out of things to tell you
+whether or not you understood the ones it already offered.
+
+### 25.4 Integer bands, not halving
+
+The obvious curve is to halve the chance each time. It cannot be said: `GetFor` runs with
+`ConstrainToPercentage`, so the chance is a whole percent, and halving 5 by integer division gives
+**5, 2, 1, 0** — much steeper than intended, and it switches a bought skill off outright in a dense
+zone.
+
+So the bands are stated directly, and the last one is a floor that never runs out:
+
+| piles rifled in this zone | chance |
+| --- | --- |
+| 1–20 | 5% |
+| 21–40 | 3% |
+| 41–60 | 2% |
+| 61+ | 1% |
+
+### 25.5 What each zone pays now
+
+| zone | piles | before | after |
+| --- | --- | --- | --- |
+| Catacombs | 80–100 | ~4.5 | ~2.3 |
+| Crematory | 60–80 | ~3.5 | ~2.1 |
+| Rusty3 | 40–48 | ~2.2 | ~1.7 |
+| Mechanimists | 30–45 | ~1.9 | ~1.5 |
+| Rustwells | 20–33 | ~1.3 | ~1.2 |
+
+**Thin zones are left alone on purpose.** A rustwell has too few piles to reach the second band, so
+it pays what it always paid. Density was the fault, and density is the only thing corrected.
+
+### 25.6 The count lives on the zone, so nothing is added to the save
+
+`Zone.SetZoneProperty` is vanilla's own per-zone store, and there is a use of it on the trash
+blueprint already: `BurnGenerateObjectInCell` with `PerZone="true"` remembers its rolled result
+under a namespaced key exactly this way. It is string-typed, hence the parse.
+
+An instance field would instead be frozen into every save's layout in the sense of
+`docs/STYLEGUIDE.md` §1 — what `validate_mod.py`'s `serializable-shape` asks be a decision rather
+than an accident. `Vixy_TrashMemory` has none.
+
+The count accrues **whether or not the option is on**, and only the adjustment is conditional.
+Otherwise switching off in a rich zone and on again afterwards would hand back a fresh 5%, which
+makes the off-switch a lever rather than a preference.
+
+### 25.7 What this does not change
+
+**The pool is still global.** `JournalAPI.GetRandomUnrevealedNote()` draws from everything
+unrevealed anywhere in the world, so a catacombs pile can still tell you about a ruin four hundred
+parasangs away you have never seen. That is a wider problem with four callers, tracked separately in
+#635, and it is a content project rather than a rider on this one.
+
+**Followers keep vanilla's rate.** The event fires on whoever is rifling and this part is on the
+player, so a follower's rifling neither decays this counter nor is decayed by it. Vanilla gates the
+secret branch on the rifler holding Trash Divining *itself*, with `IsPlayerLed()` and the player's
+own skill checked on top, so a qualifying follower is rare.
+
+### 25.8 Off-switch
+
+`OptionQudExpandedCETrashDiviningDensity`, on by default, read live on every rifle. Off restores
+vanilla exactly. Rule 6 reserves "off by default" for a change that grants power; this takes a
+little away, but only the part vanilla gave away by accident, and never the headline 5%.
 
 ## Appendix A — every merged vanilla melee weapon
 

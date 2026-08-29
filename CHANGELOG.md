@@ -138,6 +138,39 @@ recorded because contributors need them, not because subscribers do.
   the reason. That map ships empty; every live record here already uses digits. An unrecognised
   character is reported separately, and an exemption does not silence that one.
 
+### Changed
+
+- **Trash Divining thins out as a zone is picked over** (#605).
+
+  The skill says a 5% chance per pile and that reads as a trickle. Pile density made it a salary:
+  the catacombs lay down 80 to 100 piles in one zone, so rifling a single catacombs zone handed you
+  **four or five secrets** — and a secret sells for 50 reputation at a water ritual, so it was a
+  reputation faucet as much as a knowledge one.
+
+  **The 5% is untouched and the first twenty piles in a zone still pay it in full.** After that the
+  same zone drops to 3%, then 2%, then 1%, and never lower. A catacombs zone now pays around two
+  secrets instead of four or five. Thin zones are left alone — a rustwell has too few piles to reach
+  the second band and pays exactly what it always did.
+
+  This was never an exploit and is not treated as one. A player who spent 150 points and reached
+  Intelligence 21 bought this skill, so the headline number does not move and the skill never stops
+  working; what falls away is the fiftieth pile in a room that has already told you everything.
+
+  The count is kept on the zone, so walking out and back does not reset it, and it keeps counting
+  while the option is off — turning the option off in a rich zone and on again will not hand back a
+  fresh 5%.
+
+  Rifling still tells you about anywhere in the world rather than about where you are standing.
+  That is a wider problem with four separate sources and is tracked in #635.
+
+- **(internal)** `check_docs.py` understands hyphenated word numbers (#605).
+
+  The mod crossed twenty options, and three claims are written out in prose — "Twenty-one options,
+  in Qud's own options menu". The table stopped at twenty and the capture groups stopped at `\w`, so
+  "Twenty-one" resolved to `one` and the check failed pointing at the wrong thing. The compounds are
+  generated from tens and units rather than listed; the bare units stay out deliberately, because a
+  group that resolved "one" would turn ordinary prose into a claim.
+
 ## [2.8.0] - 2026-08-28
 
 ### Added
