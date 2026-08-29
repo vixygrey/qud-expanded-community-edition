@@ -2359,7 +2359,7 @@ at the first guard in a method that has two. **Reading one guard tells you what 
 
 Before designing a system, check whether Freehold already shipped one and left the data end
 unconnected. It is not an occasional windfall — it is a habit, and looking first is cheap enough to be
-a first move rather than a lucky one. Three verified cases, each failing in a different place:
+a first move rather than a lucky one. Four verified cases, each failing in a different place:
 
 **Data written that nothing parses.** `MerchantPersonalItem` appears on two `<inventoryobject>` nodes
 in vanilla's `Creatures.xml`. The string appears **nowhere in the assembly**, and
@@ -2376,6 +2376,14 @@ declares **48 complete mutations** — real classes, real art, real costs — un
 `<mutations Hidden="true" ExcludeFromPool="true">`. None reaches character creation or the random
 mutation pool. `Heightened Smell` among them is a finished mutation with terrain-attenuated detection
 that this fork wanted and was about to write from scratch (#593).
+
+**A part finished down to its player-facing text, on no blueprint.** `TrashOracle` exists to adjust
+Trash Divining's chance — it guards on `E.Skill is Customs_TrashDivining`, carries `Bonus` and
+`Magnitude`, and handles `GetShortDescriptionEvent` to write *"Chance to reveal secrets via Trash
+Divining increased by 5%"* onto whatever item bears it. **No blueprint in the game carries it**, and
+nothing constructs one. This is the most finished of the four: somebody wrote the rules text a player
+would read. It settled #605 by proving the rate was adjustable through an event rather than by
+patching `Garbage`, and its guard clause was copied verbatim as the intended idiom.
 
 > **Look for the unwired mechanism before building a new one.** A decade of accretion leaves a lot of
 > complete machinery behind a feature that shipped narrower than planned, and finding it turns a
@@ -2400,3 +2408,29 @@ Both halves of this bit while writing this entry. The `FLAG_VISIBLE` row above c
 readers"*, which a grep appeared to confirm and which was wrong — the constant is unreferenced because
 the code uses the literal `2`, while the flag behind it is read, written and compared. The row is
 stronger once corrected, and it would have shipped false.
+
+## A chance the game constrains to whole percents cannot be halved
+
+`GetSkillEffectChanceEvent.GetFor` takes `ConstrainToPercentage` and it defaults **true**, so the
+number every consumer receives is a whole percent. `Garbage.AttemptRifle` calls it that way, which
+means Trash Divining's chance is an integer from 0 to 100 and there is no fractional value to hand
+back.
+
+That is easy to know and easy to forget one step later, while designing the curve rather than the
+call. "Halve it each time" is the obvious shape for diminishing returns and it is what #605 proposed
+in writing. From a base of 5 it produces **5, 2, 1, 0** — integer division truncating twice and then
+reaching zero, which does not taper a bought skill so much as switch it off in any zone dense enough
+to matter. The intended 5, 2.5, 1.25 cannot be said at all.
+
+The fix is to state the bands as integers instead of deriving them, and to give the last one a floor:
+5, 3, 2, 1, and 1 thereafter. That is more literal than a formula, and honest about the resolution
+the engine actually offers.
+
+> **When a rate is an integer, design the curve in integers.** A ratio written as a formula will be
+> truncated somewhere you did not choose, and the place it lands on zero is rarely the place you
+> would have picked.
+
+The general shape is worth carrying past this instance: a curve is a claim about resolution as well
+as about shape, and the resolution belongs to the engine rather than to the design. Check what the
+consumer can represent *before* choosing how the value falls off — `ConstrainToPermillage` exists on
+the same call for exactly this reason, and a caller that used it would have had ten times the room.

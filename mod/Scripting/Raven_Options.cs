@@ -47,6 +47,7 @@ namespace QudExpandedCE
         private const int KeenSmellCost = 3;
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string BearingsID = "OptionQudExpandedCEBearings";
+        public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -641,6 +642,20 @@ namespace QudExpandedCE
         /// skill that reads it.
         /// </summary>
         public static bool Bearings => Enabled(BearingsID, "Yes");
+
+        /// <summary>
+        /// Whether a zone's trash runs out of things to say as it is picked over.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_TrashMemory</c> reads this on
+        /// each rifle and keeps counting either way, so flipping it takes effect on the very next
+        /// pile and switching it off partway through a zone does not hand back a fresh 5%.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power, and this
+        /// takes some away — but only the part vanilla gave away by accident. The headline 5% is
+        /// untouched and the first pile in any zone still pays it in full, so the 150 points and
+        /// Intelligence 21 buy exactly what they always bought. See #605.
+        /// </summary>
+        public static bool TrashDiviningDensity => Enabled(TrashDiviningDensityID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);

@@ -228,6 +228,27 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCETrashDiviningDensity"
+    DisplayText="{{C|Qud Expanded}}: Trash Divining runs dry as a zone is picked over"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded trash divining secrets rifle garbage scavenging density diminishing"
+  >
+    <helptext>
+            Makes a zone's trash run out of things to tell you, instead of paying the same rate for all hundred piles.
+
+            {{Y|Trash Divining}} rolls a 5% chance per pile, which sounds like a trickle and is not. The catacombs lay down 80 to 100 piles in a single zone, so rifling one of them hands you four or five secrets - and secrets are worth 50 reputation each at a water ritual.
+
+            With this on, the {{Y|5%}} is untouched and the first twenty piles in a zone still pay it in full. After that the same zone drops to {{Y|3%}}, then {{Y|2%}}, then {{Y|1%}}, and never lower. A catacombs zone pays around two secrets rather than four or five. Thin zones are left alone - a rustwell has too few piles to reach the second band, and pays what it always did.
+
+            The count is kept per zone, so walking out and back does not reset it, and the piles you already went through are gone regardless.
+
+            Applies immediately, and keeps counting while it is off - turning it off in a rich zone and on again will not hand you a fresh 5%.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEBearings"
     DisplayText="{{C|Qud Expanded}}: Mind's Compass reports your bearings"
     Category="Mods"

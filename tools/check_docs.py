@@ -81,6 +81,40 @@ WORD_NUMBERS = {
     # like a typo where "none" reads like a decision.
     "none": 0,
 }
+# The mod crossed twenty options in #605, and these claims are written out in prose - "Twenty-one
+# options, in Qud's own options menu". The compounds are generated rather than listed because they
+# are unambiguous in a way the bare units are not, which is why "one" through "seven" are still
+# deliberately absent above: a capture group that resolved "one" would turn ordinary prose into a
+# claim. A hyphenated compound can only ever be a number.
+_TENS = {
+    "twenty": 20,
+    "thirty": 30,
+    "forty": 40,
+    "fifty": 50,
+    "sixty": 60,
+    "seventy": 70,
+    "eighty": 80,
+    "ninety": 90,
+}
+_UNITS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+}
+WORD_NUMBERS.update(_TENS)
+WORD_NUMBERS.update(
+    {
+        f"{tens}-{unit}": tv + uv
+        for tens, tv in _TENS.items()
+        for unit, uv in _UNITS.items()
+    }
+)
 DOCS = [
     Path(p)
     for p in (
@@ -425,7 +459,7 @@ IDLE_PHRASINGS: dict[str, str] = {
 # and no honest pattern matches them. The count is what prompts a human to reread the list, which is
 # exactly how the six missing ones were found.
 WORKSHOP_CLAIMS: list[tuple[str, list[str]]] = [
-    (r"\[b\](\w+) settings in Qud's own options menu", ["options"]),
+    (r"\[b\]([\w-]+) settings in Qud's own options menu", ["options"]),
     (r"(\d+) subtypes, casters and martial guardians", ["subtypes"]),
     (r"\[b\](\d+) psionic chips\[/b\]", ["chips"]),
     (r"(\d+) psionic subtype sprites", ["subtype-sprites"]),
@@ -508,9 +542,9 @@ CLAIMS: list[tuple[str, list[str]]] = [
     (r"All (\d+) psionic subtype sprites", ["subtype-sprites"]),
     (r"the (\d+) subtype sprites", ["subtype-sprites"]),
     (r"Textures/Subtypes/\s+# (\d+) sprites", ["subtype-sprites"]),
-    (r"(\w+) options, all under", ["options"]),
+    (r"([\w-]+) options, all under", ["options"]),
     (r"The (\w+) retuned attribute requirements", ["optioned-requirements"]),
-    (r"(\w+) options, in Qud's own options menu", ["options"]),
+    (r"([\w-]+) options, in Qud's own options menu", ["options"]),
     (r"Options\.xml\s+# (\d+) options", ["options"]),
     (r"Scripting/\s+# (\d+) classes", ["scripting-files"]),
     (r"(\d+) referenced, (\d+) defined", ["mutation-stubs", "mutation-stubs"]),
