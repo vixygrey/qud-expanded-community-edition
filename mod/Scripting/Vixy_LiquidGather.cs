@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using QudExpandedCE;
 using XRL.UI;
 
 namespace XRL.World.Parts
@@ -60,6 +59,14 @@ namespace XRL.World.Parts
     /// <c>RequestInterfaceExit</c> stops the loop rather than running it through an explosion.
     /// </para>
     /// <para>
+    /// <b>No off-switch.</b> Charter rule 6 asks whether anybody would actually turn a thing off
+    /// before it gets a switch. This changes no number, no loot table and no character creation, it
+    /// takes nothing away — <c>fill</c> is untouched and still does everything it did — and it
+    /// reaches nothing <c>fill</c> could not reach. There is nothing here to refuse but a menu entry
+    /// that does the same job with fewer keystrokes, so an option would have spent a line in the
+    /// menu, a <c>helptext</c> to keep true and a branch to carry forever, and bought nothing.
+    /// </para>
+    /// <para>
     /// Charter rule 5: no instance state, so nothing is added to the save. One event handler, one
     /// pass over an inventory, and no I/O, reflection or Harmony.
     /// </para>
@@ -93,10 +100,10 @@ namespace XRL.World.Parts
         public override bool HandleEvent(OwnerGetInventoryActionsEvent E)
         {
             // Ordered by cost. This fires for every item the actor looks at, and almost none of
-            // them are liquid containers — so the field read comes first, the option read second,
-            // and the pass over the inventory only for something that could actually take a dram.
+            // them are liquid containers — so the field read comes first, and the pass over the
+            // inventory happens only for something that could actually take a dram.
             LiquidVolume into = E.Object?.LiquidVolume;
-            if (into != null && Raven_Options.LiquidGather && CanGatherInto(E.Actor, E.Object, into))
+            if (into != null && CanGatherInto(E.Actor, E.Object, into))
             {
                 E.AddAction(
                     "Vixy_Gather",

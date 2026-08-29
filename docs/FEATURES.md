@@ -2109,7 +2109,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 25 options (§13)
+│   ├── Options.xml             # 24 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2173,7 +2173,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2220,7 +2220,6 @@ rather than anything the mod already was.
 | how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.4. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
-| gather liquid into one container | Checkbox | **Yes** | The `gather liquid` action on a container holding a liquid. §31. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2262,7 +2261,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, bearings, gather liquid, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. Gather is read inside the handler that offers the action, so it stops being offered on the next container looked at. |
+| **Live** — applies immediately | graded burden, bearings, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -4580,14 +4579,20 @@ Gathering *into* an empty container would have to ask which liquid, and that que
 already is. So the action appears only on a container that holds something, and the container you press
 it on is the one you are keeping.
 
-### 31.8 Off-switch
+### 31.8 No off-switch
 
-`OptionQudExpandedCELiquidGather`, on by default, read live inside the action handler — so switching it
-off removes the action from the next container looked at, with no restart. Nothing is stored either
-way: the action moves drams that were already there and leaves no trace of having run.
+Charter rule 6 asks whether anybody would actually turn a thing off before it gets a switch, and the
+answer here is no. This changes no number, no loot table and no part of character creation. It takes
+nothing away: `fill` is untouched and still does everything it did, including pouring into a container
+holding something else if that is what you want. And it reaches nothing `fill` could not — same
+inventory, same seal, stasis and ownership guards, same `MixWith`.
 
-Rule 6 reserves "off by default" for a change that grants power with no content attached, and this
-grants none — `fill` performs the same transfer, and this reaches nothing `fill` could not.
+Rule 6 names the two cases where a small change still earns an option: it takes something away that a
+player might want back, or somebody has said they want it off. Neither applies. What an option would
+have bought is a line in a menu somebody has to read past, a `<helptext>` to keep true, an entry in
+the wiring check and a branch to carry forever.
+
+This shipped with one and it came out before merge, the same call #664 made on §29's gate.
 
 ## Appendix A — every merged vanilla melee weapon
 

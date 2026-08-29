@@ -48,8 +48,9 @@ recorded because contributors need them, not because subscribers do.
   container and neutron flux still detonates, exactly as they do on an ordinary fill, and either one
   ends the sweep rather than being carried through.
 
-  New option, **on by default**, read live: turning it off removes the action from the next container
-  you look at, with no restart. It grants no power `fill` did not already give.
+  **No option**, deliberately. It changes no number and no loot table, it takes nothing away — `fill`
+  still does everything it did — and it reaches nothing `fill` could not. There is nothing to refuse
+  but a menu entry that does the same job with fewer keystrokes.
 
 
 ## [2.9.0] - 2026-08-29
