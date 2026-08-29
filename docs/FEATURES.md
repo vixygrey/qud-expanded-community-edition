@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **78** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **105** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -1823,7 +1823,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-103 table definitions: **78 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+130 table definitions: **105 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2112,7 +2112,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
-│   └── PopulationTables.xml    # 103 tables (78 merge / 25 new)
+│   └── PopulationTables.xml    # 130 tables (105 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes

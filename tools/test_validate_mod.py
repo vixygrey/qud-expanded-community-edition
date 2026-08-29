@@ -379,6 +379,67 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class TableWeight(unittest.TestCase):
+    """#582. Both sides of the table-share ratio counted only `<object Weight=>`, so neither saw a
+    weighted `<group>` - and a mod adding a whole group to a vanilla pickone measured as **zero**.
+
+    The formula now lives in one place and the snapshot imports it, which is the rule
+    `collect_scatter_quantities` already states: two copies of a formula is a defect waiting for one
+    copy to be edited. This is that defect, found.
+    """
+
+    def pop(self, body: str):
+        return ET.fromstring(f"<population Name='T'>{body}</population>")
+
+    def test_a_weighted_group_counts_once_not_by_its_children(self):
+        """A pickone's children split the group's share; they never compete with its siblings."""
+        pop = self.pop(
+            '<group Name="Items">'
+            '  <object Weight="10" Blueprint="Vanilla" />'
+            '  <group Name="Mine" Style="pickone" Weight="5">'
+            '    <object Weight="50" Blueprint="A" /><object Weight="50" Blueprint="B" />'
+            "  </group>"
+            "</group>"
+        )
+        self.assertEqual(validate_mod.table_weight(pop), 15)
+
+    def test_a_lone_wrapper_group_does_not_collapse_the_table(self):
+        """Vanilla wraps several tables in a lone <group Weight="1">. Counting that would report the
+        whole table as weight 1 and every mod entry as most of it."""
+        pop = self.pop(
+            '<group Name="Items" Style="pickone" Weight="1">'
+            '  <object Weight="10" Blueprint="A" /><object Weight="10" Blueprint="B" />'
+            "</group>"
+        )
+        self.assertEqual(validate_mod.table_weight(pop), 20)
+
+    def test_a_fragment_counts_a_weighted_group_with_no_sibling_present(self):
+        """The mod side of the ratio: the siblings a merge competes with live in vanilla's file and
+        are not in the fragment to be counted, but the group is competing with them by construction."""
+        pop = self.pop(
+            '<group Name="Items">'
+            '  <object Blueprint="Old" Load="Remove" />'
+            '  <group Name="Mine" Style="pickone" Weight="5">'
+            '    <object Weight="50" Blueprint="A" /><object Weight="50" Blueprint="B" />'
+            "  </group>"
+            "</group>"
+        )
+        self.assertEqual(validate_mod.table_weight(pop, fragment=True), 5)
+        self.assertEqual(
+            validate_mod.table_weight(pop),
+            100,
+            "without fragment the sibling test applies",
+        )
+
+    def test_a_removal_is_not_scattered_content(self):
+        """`Load="Remove"` takes an entry OUT. Counting it as placed reported a merge that removes a
+        disk entry as adding one - the same reasoning `check_reachability` gives for `*delete`."""
+        pop = self.pop(
+            '<group Name="Items"><object Blueprint="Old" Load="Remove" /></group>'
+        )
+        self.assertEqual(validate_mod.scatter_quantity(pop), 0.0)
+
+
 class MutationEquipmentReachability(unittest.TestCase):
     """#590. A blueprint tagged MutationEquipment is reached through the chargen variant picker,
     which no table, tag or attribute reference names.

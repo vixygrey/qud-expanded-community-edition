@@ -1622,4 +1622,453 @@
     <object Chance="15" Blueprint="Giant Centipede" />
     <object Chance="17" Number="1-2" Blueprint="Vixy_ChalkCentipede" />
   </population>
+
+  <!--
+        Data disks drawn on a curve instead of uniformly at random (#582).
+
+        Vanilla's plain `DataDisk` sets no targeting constraints, so `GetMaximumDataScore` returns 1,
+        the first recipe drawn scores at least 1, and the loop exits immediately. A tier-8 recipe is
+        exactly as likely from the first merchant in Joppa as from anything in the deep ruins.
+
+        The curve is not invented here. Items.xml declares 33 targeted disk blueprints -
+        TinkerTier1DataDisk through TinkerTier8DataDisk plus Build, Mod and category variants - and
+        **none of them is referenced by any table, any tag, or anywhere in the assembly**. Vanilla
+        built the whole matrix and never wired it up. This spends it.
+
+        Targeting is reliable, which is what makes weighting safe: DataDisk.cs falls back to walking
+        the entire shuffled recipe list and breaks on the first exact tier match, so a targeted disk
+        always finds its tier when a recipe exists - and one does at every tier (8, 9, 12, 32, 16,
+        22, 15 and 8 buildable recipes for tiers 1-8).
+
+        Each table keeps vanilla's own Weight and Number, so a disk's share of its table does not
+        move; only which disk it is. The shape is 50 at the table's tier, 30 one below, 15 one
+        above, and 1 everywhere else - so a tier-8 recipe off an early merchant stays possible at
+        roughly one disk in seventy, which is a story rather than a coin flip.
+
+        Every merge REMOVES vanilla's entry before adding its own. An additive merge here would
+        double the disks, which is the defect #613 was filed for on the creature variants.
+    -->
+
+  <population Name="Artifact 0R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact0R" Style="pickone" Weight="20" Number="1">
+        <object Weight="50" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 1R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact1R" Style="pickone" Weight="20" Number="1">
+        <object Weight="50" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 2R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact2R" Style="pickone" Weight="20" Number="1">
+        <object Weight="30" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 3R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact3R" Style="pickone" Weight="20" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 4R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact4R" Style="pickone" Weight="20" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 5R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact5R" Style="pickone" Weight="100" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 6R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact6R" Style="pickone" Weight="200" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 7C" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact7C" Style="pickone" Weight="5" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 7R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact7R" Style="pickone" Weight="200" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Artifact 8R" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksArtifact8R" Style="pickone" Weight="200" Number="1">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 1" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker1" Style="pickone" Number="4-6">
+        <object Weight="50" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 2" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker2" Style="pickone" Number="4-6">
+        <object Weight="30" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 3" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker3" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 4" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker4" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 5" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker5" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 6" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker6" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 7" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker7" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="Village Tinker 8" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksTinker8" Style="pickone" Number="4-6">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier0_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="50" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier1_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="50" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier2_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="30" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier3_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier4_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier5_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier6_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier7_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <population Name="VillageTier8_QuestReward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="30" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="50" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
 </populations>

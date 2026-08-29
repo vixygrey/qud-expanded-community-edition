@@ -1009,6 +1009,8 @@ def collect_table_weights(game: Path) -> dict[str, int]:
     docs/STYLEGUIDE.md 3.2.1 caps this fork's share of a vanilla table at half. Share is a ratio,
     so the check cannot compute it without vanilla's side, and CI has no game.
     """
+    from validate_mod import table_weight
+
     _, wanted = merged_record_names()
     totals: dict[str, int] = {}
     for f in sorted(game.glob("PopulationTables*.xml")):
@@ -1016,14 +1018,7 @@ def collect_table_weights(game: Path) -> dict[str, int]:
             name = pop.get("Name")
             if name not in wanted:
                 continue
-            total = 0
-            for obj in pop.iter("object"):
-                if obj.get("Blueprint"):
-                    try:
-                        total += int(obj.get("Weight") or 0)
-                    except ValueError:
-                        pass
-            totals[name] = totals.get(name, 0) + total
+            totals[name] = totals.get(name, 0) + table_weight(pop)
     return totals
 
 
