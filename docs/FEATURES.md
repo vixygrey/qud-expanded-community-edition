@@ -2108,7 +2108,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 22 options (§13)
+│   ├── Options.xml             # 23 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2131,7 +2131,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 54 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 55 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2171,7 +2171,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -4158,6 +4158,92 @@ wherever a conversation is assembled at runtime.
 `OptionQudExpandedCEAskName`, on by default, read live on every offering. Off hides the question from
 the next conversation onward; names already given are kept, since they are stored on the creature like
 any other proper name.
+
+## 27. A marked artifact is not offered to Argyve (`Conversations.xml`, `Vixy_GiveArtifact`)
+
+**Marking something important is supposed to mean *don't let me lose this*.** When Argyve asks for a
+knickknack, vanilla offers every artifact you are carrying, with no warning of any kind (#570).
+
+### 27.1 There is no importance check, not even a weak one
+
+`GiveArtifact` lists `The.Player.Inventory.GetObjects(IsArtifact)`, and `IsArtifact` matches anything
+with a `TinkerItem` and `Examiner.Complexity > 0` — an entire category rather than a named quest
+item. So a marked, one-of-a-kind relic sits in that picker beside a bit of scrap.
+
+The obvious hope is that a confirmation waits downstream. It does not. Following the chain:
+`CommandRemoveObject` fires `BeginDrop`, then `BeginBeingDropped`, then `PerformDrop`, and **no link
+in it tests importance**. One keystroke and the item is gone.
+
+Both call sites are Argyve's knickknack quest — `StartHasFetch1` and `StartHasFetch2`.
+
+### 27.2 Vanilla already wrote the fix, in one place
+
+`LibrarianGiveBook` is the only consumer that does this properly, and it does all three parts:
+
+```csharp
+if (@object.IsMarkedImportantByPlayer()) { flag = true; continue; }
+...
+return The.Player.ShowFailure(flag
+    ? "You only have books you've marked important. Unmark any you wish to donate."
+    : "You have no books to give.");
+```
+
+Player-marked items are **excluded from the list**; the exclusion is **said out loud** with a way
+back; and everything remaining still gets `ConfirmUseImportant`, catching what the *game* marked
+rather than what I did.
+
+That is the rule this fork wants: **a mark I made means don't offer it; a mark the game made means
+ask.** Qud's `Important` property is three-valued and `IsMarkedImportantByPlayer()` exists precisely
+to tell those apart — almost nothing uses it.
+
+### 27.3 Why the part is replaced rather than subclassed
+
+`GiveArtifact.HandleEvent(EnterElementEvent)` is virtual, so a subclass looks possible. It is not.
+The method ends with `base.HandleEvent(E)` reaching `IConversationPart`, which is what advances the
+conversation — and from a subclass, `base.` reaches `GiveArtifact` and re-runs the entire picker. C#
+has no `base.base`.
+
+So this derives from `IConversationPart` directly and reuses `GiveArtifact.IsArtifact`, which is
+`public static`. The definition of *artifact* still comes from vanilla and cannot drift, even though
+none of vanilla's code is inherited. `docs/LESSONS.md` records the trap, with `Garbage` from §25 as
+the counter-example where the identical shape was safe because the grandparent was a no-op.
+
+The XML is a remove-then-add on each of the two choices. Their IDs are derived rather than written:
+a `<choice>` with no `ID` takes its `Target` plus the element name, so `Target="GiveKnickknack"` is
+addressable as `GiveKnickknackChoice`. Remove-then-add rather than `Load="Replace"`, because Replace
+matches on the ID and a replacement node's ID depends on whether the reader saw `ID` or `Name` first
+— attribute order, and not a thing to depend on.
+
+### 27.4 The confirm is an addition, and it is what keeps a quest unblockable
+
+Vanilla has no confirmation here, so `ConfirmUseImportant` is not a port. It is the half of the rule
+that protects a `QuestItem` or a `Storied` thing I never marked myself — and it is why excluding
+things cannot silently block Argyve's quest, which gates the main line. A system-important artifact
+is still offered, and still asks first. Only my own marks are withheld, and the failure message says
+so and says how to undo it.
+
+### 27.5 What this does not do
+
+**Selling is untouched, and cannot be touched.** `TradeScreen` is
+`SingletonWindowBase<TradeScreen>` and the legacy `TradeUI` is `IWantsTextConsoleInit`; neither is
+named in any file under `Base/`, so there is no substitution point and no way in but reflection,
+which charter rule 5 refuses. That is the widest gap in #570 and it is the one that stays open —
+recorded in `docs/LESSONS.md` as the entry about a mod's reach ending where nothing in XML names the
+object.
+
+The baetyl is left alone deliberately. `RandomAltarBaetyl` skips important items when scanning my
+inventory but not when scanning adjacent cells — and its ground loop runs *first*, before it ever
+reaches my pack, so what it takes from the ground is what I laid at the altar. Dropping counts as
+consent.
+
+`ReceiveItem` and `WaterRitualBuyItem` hand items *to* me and `HaveItem` never touches my inventory,
+so none of the three is a gap despite naming no importance check.
+
+### 27.6 Off-switch
+
+`OptionQudExpandedCEImportantArtifacts`, on by default, read live on every asking. Off restores
+vanilla's unfiltered list. The confirm on system-important items stays either way, since that half
+was never vanilla's to restore.
 
 ## Appendix A — every merged vanilla melee weapon
 

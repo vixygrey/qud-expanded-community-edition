@@ -33,4 +33,30 @@
       <part Name="Vixy_AskName" />
     </choice>
   </conversation>
+
+  <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
+       artifact I am carrying with no importance check of any kind, so this swaps it for one that
+       leaves out the ones I marked. See #570.
+
+       The choice IDs are derived rather than written: a <choice> with no ID takes its Target plus
+       the element name, so Target="GiveKnickknack" is addressable as GiveKnickknackChoice and
+       Target="Impressive" as ImpressiveChoice. The part node's ID is its Name.
+
+       Remove-then-add rather than Load="Replace": Replace matches on the ID, and a replacement
+       node's ID depends on whether the reader saw ID or Name first, which is attribute order and
+       not something to depend on. Two unambiguous operations instead of one subtle one. -->
+  <conversation ID="Argyve">
+    <start ID="StartHasFetch1">
+      <choice ID="GiveKnickknackChoice">
+        <part ID="GiveArtifact" Load="Remove" />
+        <part Load="Add" Name="Vixy_GiveArtifact" />
+      </choice>
+    </start>
+    <start ID="StartHasFetch2">
+      <choice ID="ImpressiveChoice">
+        <part ID="GiveArtifact" Load="Remove" />
+        <part Load="Add" Name="Vixy_GiveArtifact" />
+      </choice>
+    </start>
+  </conversation>
 </conversations>

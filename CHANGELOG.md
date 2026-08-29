@@ -75,6 +75,23 @@ recorded because contributors need them, not because subscribers do.
   the same reason: a fragment that cleared those pools rather than adding to them would have shown
   nothing at all.
 
+- **An artifact you marked important is not offered to Argyve** (#570).
+
+  Marking something important is supposed to mean *don't let me lose this*. When Argyve asks for a
+  knickknack, Caves of Qud offers you every artifact you are carrying - your marked, one-of-a-kind
+  relic sitting in the picker next to a bit of scrap - and there is no warning at all. Not a weak
+  confirmation: none. I followed the whole chain to be sure.
+
+  Now the ones you marked are simply not listed. If they are all you have, you are told why and told
+  how to undo it, rather than handed an empty menu.
+
+  Things the **game** marked important - quest items, storied relics - are still offered, and now ask
+  you to confirm first, which Caves of Qud does not do here at all. That is what keeps the quest
+  unblockable: nothing of yours is ever withheld without saying so.
+
+  Selling is untouched and cannot be reached - the trade screens are UI singletons that no XML names,
+  so no mod can change what they list. That is the wider half of the problem and it stays open.
+
 - **You can ask a creature its name** (#572).
 
   Most of the people in Qud already have names. There was never a way to ask. Now conversations with
