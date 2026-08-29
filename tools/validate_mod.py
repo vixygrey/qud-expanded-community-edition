@@ -2131,6 +2131,51 @@ def number_midpoint(raw: str | None) -> float:
     return 1.0
 
 
+def table_weight(pop: ET.Element, fragment: bool = False) -> int:
+    """Total drop weight one roll of this table competes over.
+
+    The companion to `scatter_quantity`, for entries that carry `Weight` - and like it, this lives
+    here so that `snapshot_qud_api.collect_table_weights` can import it rather than keep a second
+    copy. Two sides of a ratio computed by two copies of a formula is a defect waiting for one copy
+    to be edited, which is exactly what happened: both sides counted only `<object Weight=>` and
+    neither counted a weighted `<group>`, so a mod adding a whole group measured as **zero** (#582).
+
+    **A weighted group competes as one entry, but only where it has a weighted sibling.** Its
+    children split the group's share among themselves and never compete with the group's siblings,
+    so the group's own `Weight` is the footprint and its children's weights are internal - summing
+    the children reports a `pickone` of eight tier variants at eight times its real size. Where a
+    group has no weighted sibling its weight decides nothing, and several vanilla tables wrap
+    everything in a lone `<group Weight="1">`, so counting that would report the table as weight 1.
+
+    **`fragment` is the mod side of the ratio, where that sibling test cannot be run.** A merge
+    fragment contains only what this fork adds; the siblings a weighted group competes against live
+    in vanilla's file and are not present to be counted. But a weighted group in a `Load="Merge"`
+    block is competing with vanilla's entries by construction, which is the whole reason it carries
+    a weight - so on that side a weighted group is always atomic.
+    """
+    total = 0
+    counted: set[ET.Element] = set()
+    for container in [pop, *pop.iter("group")]:
+        kids = [
+            c for c in container if c.tag in ("object", "group") and c.get("Weight")
+        ]
+        if len(kids) < 2 and not (fragment and kids):
+            # Nothing competes at this level, so a weight here decides nothing. Vanilla wraps
+            # several tables in a lone `<group Name="Items" Weight="1">` whose weight is vestigial;
+            # counting it would report the whole table as weight 1 and every mod entry as most of
+            # it. Descend instead - the loop reaches the inner level on its own.
+            continue
+        for kid in kids:
+            if kid in counted:
+                continue
+            try:
+                total += int(kid.get("Weight"))
+            except ValueError:
+                continue
+            counted.update(kid.iter())
+    return total
+
+
 def scatter_quantity(
     pop: ET.Element, own_tables: dict[str, list[ET.Element]] | None = None
 ) -> float:
@@ -2167,6 +2212,11 @@ def scatter_quantity(
     total = 0.0
     for obj in pop.iter("object"):
         if not obj.get("Blueprint") or obj.get("Weight") is not None:
+            continue
+        if obj.get("Load") in ("Remove", "Replace"):
+            # A removal is the opposite of a placement, the same way a `*delete` tag is the
+            # opposite of a route - `check_reachability` already says so about tags. Counting one
+            # as scattered content reports a merge that takes an entry OUT as adding one (#582).
             continue
         total += (
             float(obj.get("Chance") or 100) / 100 * number_midpoint(obj.get("Number"))
@@ -2675,13 +2725,7 @@ def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
         vanilla = vanilla_totals.get(name)
         if not name or not vanilla:
             continue
-        mine = 0
-        for obj in pop.iter("object"):
-            if obj.get("Blueprint"):
-                try:
-                    mine += int(obj.get("Weight") or 0)
-                except ValueError:
-                    pass
+        mine = table_weight(pop, fragment=True)
         if mine > vanilla:
             share = mine / (mine + vanilla) * 100
             f.add(

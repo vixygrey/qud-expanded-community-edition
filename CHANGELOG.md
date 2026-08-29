@@ -47,6 +47,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Data disks now come on a curve instead of at random** (#582).
+
+  Every data disk in Caves of Qud is a uniform draw from the whole recipe list — a tier-8 blueprint is
+  exactly as likely from the first merchant in Joppa as from anything in the deep ruins. Now an early
+  table leans early-tier and a late one leans late.
+
+  **A powerful disk early is still possible, and now it is a story.** Roughly one disk in seventy from
+  an early table is top-tier, rather than one in eight.
+
+  **The curve is Freehold's, not mine.** Caves of Qud already contains 33 targeted disk blueprints —
+  one per tinker tier, plus build, mod and category variants — and not one of them is used by
+  anything in the game. This spends what was already built. Disks already in a save keep whatever
+  recipe they rolled.
+
 - **Tail**, a 1-point physical mutation, on by default (#590).
 
   A tail. It gives you 1 DV, and when something would knock you down — a shield slam, a rocket jump,
