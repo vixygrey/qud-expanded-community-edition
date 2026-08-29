@@ -14,6 +14,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-08-29
+
 ### Fixed
 
 - **Creature variants doubled how many animals a zone had** (#613).
