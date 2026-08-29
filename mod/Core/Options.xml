@@ -28,7 +28,7 @@
             quills, a beak, an extra pair of legs. What it has almost none of is the ordinary
             animal end of that: the traits a wolf or a cat has and a person does not.
 
-            Currently one mutation:
+            Currently two mutations:
 
             Fangs, 3 points. Long teeth on your face that bite alongside whatever you are
             wielding, roughly one round in five, and draw blood when they land. They do not
@@ -37,6 +37,14 @@
             Bleeding is normally bought - Bloodletter costs 150 skill points and needs Agility
             17. Fangs give you a smaller share of it for a mutation point instead, and the two
             stack if you have both.
+
+            Keen Smell, 3 points. You detect creatures around you by scent, at roughly twice the
+            range of Heightened Hearing - but walls stop a smell dead, and a closed door, deep
+            water or anything blocking your view cuts it down. Better in open country than in a
+            ruin, which is the opposite of hearing.
+
+            Keen Smell is Caves of Qud's own Heightened Smell. Freehold built it, gave it to a
+            few animals, and never put it in the list you pick from. This puts it there.
 
             Turning this off hides the mutations at character creation and keeps them off
             randomly generated creatures. Mutations are read while a character is being made,

@@ -3528,6 +3528,81 @@ Fangs escapes that because `girshling_fangs.bmp` is an **item** tile rather than
 Nothing in the mutation list draws with it, so there is no neighbour to be mistaken for. That was
 luck, not a pattern, and the other three should expect to need art of their own.
 
+## 22. Keen Smell (`Raven_Options.ApplyKeenSmell`)
+
+**A 3-point physical mutation that detects creatures by scent — and this fork wrote none of it.**
+Vanilla built `HeightenedSmell` complete, with art and a cost, put it in `HiddenMutations.xml` under
+`Hidden="true" ExcludeFromPool="true"`, and never surfaced it. This makes it selectable and sets a
+price (#593).
+
+**On by default**, under the same `OptionQudExpandedCEAnthroMutations` as Fangs (§21). Read at
+character creation, so the option applies to a **new** character.
+
+> ⚠️ **Not yet played.** The mutation is Freehold's and has presumably been exercised on their
+> creatures; what is untested is a *player* holding it, which is the one case its own code is written
+> for.
+
+### 22.1 What exposing it costs: three field writes
+
+No class, no blueprint, no tile, no `<mutation>` node. `MutationEntry.Hidden` and `IPartEntry.Cost`
+are public fields on a record the game has already loaded, which is the capability charter rule 5
+sanctioned in #46 and this fork already uses for `GenotypeEntry.MutationPoints`.
+
+**A mod cannot unhide it in XML.** `Hidden` is not among the attributes
+`MutationEntry.HandleXMLNode` parses, so a merged `<mutation>` node updates everything else — name,
+tile, exclusions, cost — and leaves it hidden. That asymmetry is why this is C# at all.
+
+### 22.2 It is not Heightened Hearing with different prose
+
+Which was #593's original worry, and Freehold had already answered it:
+
+| | Heightened Hearing | Keen Smell |
+|---|---|---|
+| Radius | `3 + 2L`, special-cased to 40 at rank 10 | `5 + 4L`, uncapped |
+| Rank 1 / 5 / 9 | 5 / 13 / 21 | **9 / 25 / 41** |
+| Terrain | none | solid walls block entirely; a locked door, any sight-occluder, or >1,000 drams of water cuts it to `r/2 − 1` |
+| Targets | all hostiles | `IsSmellable()` — some creatures cannot be smelled |
+| Identification | chance to identify | `(100 + 20L) / (Distance + 9)² × 100%` |
+
+Roughly double the range, bought with real terrain attenuation. Much better in open country,
+plausibly worse in a ruin.
+
+### 22.3 Why 3 rather than vanilla's 2
+
+`docs/STYLEGUIDE.md` §3.2 says vanilla controls what a mutation is worth, and gives as its reason that
+Freehold already balanced it. **Nothing has ever paid this 2** — the mutation is `Hidden`,
+`ExcludeFromPool`, and `npconly` on the wiki — so there is no balancing here to defer to, and the
+figure is plausibly inherited from hearing rather than derived. That is the distinction §3.2 now draws
+between a cost vanilla **weighed** and one it merely **wrote**.
+
+Double the radius of a 2-point mutation, for the same 2 points, at every rank below 10. **3.**
+
+### 22.4 `ExcludeFromPool` is deliberately left alone
+
+Where this differs from Fangs, and the reason is worth recording because it looks like an
+inconsistency.
+
+**Both** of `HeightenedSmell`'s handlers are gated on `ParentObject.IsPlayer()` — the
+`ExtraHostilePerceptionEvent` handler and the `EndTurn` handler. **The mutation does nothing at all
+for an NPC.** Vanilla hand-places it anyway: the croc carries it at rank 3, inert.
+
+So clearing `ExcludeFromPool` would feed a no-op into `GetMutationsOfCategory`, and through it random
+creature mutations, `HeroMaker`, and the water ritual's reward — spending mutation slots on nothing
+and offering the player a worthless ritual prize. Vanilla's exclusion is correct and stays.
+
+`Hidden` and `ExcludeFromPool` gate cleanly separate things, which is what makes moving one and not
+the other possible: `Hidden` is read by `QudMutationsModuleWindow` and nowhere else.
+
+### 22.5 The oddity worth knowing
+
+Vanilla ships a mutation that **only functions for the player**, gives it to creatures where it is
+inert, and hides it from the player. The wiki's `npconly` means "only NPCs have it", not "only NPCs
+can use it" — and the code says the second is impossible.
+
+That is `docs/LESSONS.md`'s *"vanilla builds mechanisms it never wires up"* in its purest form, and it
+is the case that entry cites for the counterweight: `Hidden="true"` is typed out, so this was a
+decision rather than an oversight. Which is why exposing it took the §10.4 test rather than a shrug.
+
 ## Appendix A — every merged vanilla melee weapon
 
 Full listing of the 79 `Load="Merge"` edits in `MeleeWeapons.xml`. Blank cells mean the mod did

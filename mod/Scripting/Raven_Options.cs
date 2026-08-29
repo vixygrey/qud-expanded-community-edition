@@ -39,6 +39,12 @@ namespace QudExpandedCE
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
         public const string AnthroMutationsID = "OptionQudExpandedCEAnthroMutations";
+
+        /// <summary>
+        /// What this fork charges for vanilla's Heightened Smell, which vanilla never priced
+        /// against a player. Derived on #593; see ApplyKeenSmell.
+        /// </summary>
+        private const int KeenSmellCost = 3;
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
@@ -853,6 +859,54 @@ namespace QudExpandedCE
                 fangs.Hidden = !on;
                 fangs.ExcludeFromPool = !on;
             }
+
+            ApplyKeenSmell(on);
+        }
+
+        /// <summary>
+        /// Show or hide vanilla's own Heightened Smell, which it built and never surfaced.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The mutation is complete in the game and lives in <c>HiddenMutations.xml</c> under
+        /// <c>Hidden="true" ExcludeFromPool="true"</c>, so nothing has ever been able to select it.
+        /// Exposing it passes the two-part test in <c>docs/DESIGN_balance.md</c> §10.4 — it reads as
+        /// player content rather than creature flavour, and it serves the anthro set (#471).
+        /// </para>
+        /// <para>
+        /// <b>Hidden and ExcludeFromPool gate different things and only one of them moves.</b>
+        /// <c>Hidden</c> is read by <c>QudMutationsModuleWindow</c> and nothing else, so it is exactly
+        /// "appears at character creation". <c>ExcludeFromPool</c> feeds
+        /// <c>GetMutationsOfCategory</c>, and through it random creature mutations, <c>HeroMaker</c>
+        /// and the water ritual's reward.
+        /// </para>
+        /// <para>
+        /// <b>ExcludeFromPool is deliberately left alone</b>, which is where this differs from Fangs.
+        /// Both of <c>HeightenedSmell</c>'s handlers are gated on <c>ParentObject.IsPlayer()</c>, so
+        /// the mutation does nothing at all for an NPC — vanilla hand-places it on creatures like the
+        /// croc where it sits inert. Putting it in the pool would spend random mutants' mutation
+        /// slots on a no-op and offer it as a worthless water ritual reward. Vanilla's exclusion is
+        /// right and stays.
+        /// </para>
+        /// <para>
+        /// <b>The cost is this fork's, and that is new.</b> Vanilla says 2. Nothing has ever paid it,
+        /// because nothing could select the mutation — so it is a starting figure rather than a
+        /// judgement, which is the distinction <c>docs/STYLEGUIDE.md</c> §3.2 now draws. Its radius is
+        /// <c>5 + 4L</c> against <c>Heightened Hearing</c>'s <c>3 + 2L</c> at the same 2 points, so it
+        /// ships at 3. Set unconditionally rather than toggled: it is a value, not a switch, and
+        /// writing the same number twice is a no-op.
+        /// </para>
+        /// </remarks>
+        private static void ApplyKeenSmell(bool on)
+        {
+            MutationEntry smell = MutationFactory.GetMutationEntryByName("Heightened Smell");
+            if (smell == null)
+            {
+                return;
+            }
+
+            smell.Hidden = !on;
+            smell.Cost = KeenSmellCost;
         }
 
         /// <summary>

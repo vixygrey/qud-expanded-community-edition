@@ -47,6 +47,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Keen Smell**, a 3-point physical mutation, on by default (#593).
+
+  You detect creatures around you by scent, at roughly twice the range of Heightened Hearing — but a
+  wall stops a smell dead, and a closed door, deep water or anything blocking your view cuts it down.
+  Better in open country than in a ruin, which is the opposite of how hearing behaves.
+
+  **This is Caves of Qud's own mutation, not mine.** Freehold built Heightened Smell completely — the
+  effect, the art, the terrain rules — gave it to a few animals, and never added it to the list you
+  pick from. This adds it. What is mine is the price: vanilla's own figure is 2, but nothing in the
+  game has ever been able to select it, so that number was never tested against a player. Twice the
+  range of a 2-point mutation is worth 3.
+
+  It stays out of the pool of mutations that random creatures roll, exactly as vanilla has it — the
+  mutation only does anything for the player, so a creature holding one gains nothing.
+
 - **Fangs**, a new 3-point physical mutation, on by default (#589).
 
   Long teeth on your face that bite alongside whatever you are wielding — about one round in five,
