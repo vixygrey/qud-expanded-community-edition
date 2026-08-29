@@ -75,6 +75,28 @@ recorded because contributors need them, not because subscribers do.
   the same reason: a fragment that cleared those pools rather than adding to them would have shown
   nothing at all.
 
+- **Everyday objects vary in colour** (#608).
+
+  Clay pots, baskets, benches, bedrolls, robes, sandals, spectacles and ten other ordinary things
+  each get a colour of their own, instead of every one being identical to every other.
+
+  Caves of Qud already does this and simply stops early - it ships the machinery and uses it on
+  vases, pitchers, jugs and 23 pieces of furniture, so a vase is never quite the same vase twice.
+
+  Each palette is read from the object's own description rather than chosen freehand. A clay pot is
+  *Svy mud fired in a marsh oven*, so it comes out in fired reds and ochres; a bedroll is *goat wool
+  fastened with canvas ties*, so it stays in undyed naturals. Only the chiliad basket gets the full
+  range, because its description is the only one that says *dyed*.
+
+  **Nothing whose colour tells you something is touched.** Weapons and armour keep their material
+  colours, because that is how you read a tier at a glance. Neither does anything whose colour comes
+  from the liquid inside it - a gourd's body varies, and the part of it that shows what it holds
+  does not.
+
+  Idea prompted by [Colors of Qud [Fork]](https://steamcommunity.com/sharedfiles/filedetails/?id=3287770072)
+  on the Steam Workshop, which fills exactly this gap. Every palette here is my own, written from
+  the descriptions; none of that mod's files were read.
+
 - **Gates swing shut behind you** (#631).
 
   Caves of Qud never closes anything behind you, so a village gate you walk through stays swinging

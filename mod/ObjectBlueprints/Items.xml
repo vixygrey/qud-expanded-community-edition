@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <!-- Random colours on mundane made objects, #608. The reasoning, the two rules and the
+       descendant audit are all in ObjectBlueprints/Furniture.xml, where the rest of these live.
+       Each palette below quotes the description line it was read from. -->
+
+  <!-- "An earthen pot of Svy mud fired in a marsh oven." Unpainted earthenware, so fired reds and
+       ochres rather than vanilla's `all` - a clay pot has no reason to come out blue. Vanilla's
+       painted pottery (Vase, Pitcher, Ewer, Jug) uses `all` precisely because it is painted. -->
+  <object Name="Clay Pot" Load="Merge">
+    <part Name="RandomColors" DetailColor="r,R,w,y,W" />
+  </object>
+
+  <!-- "Collagen was molded into a liquid vessel." Not a botanical gourd, so no greens.
+
+       MainColor only, and that is the important part: Gourd is one of nine blueprints in the game
+       carrying <tag Name="DetailColorByLiquid">, and LiquidVolume rewrites that field from the
+       contents on every render. A DetailColor palette here would be silently overwritten by
+       whatever it is holding. The liquid owns the detail; the collagen body is ours. -->
+  <object Name="Gourd" Load="Merge">
+    <part Name="RandomColors" MainColor="w,W,y" />
+  </object>
+
+  <!-- "Brinestalk was scythed from its marsh home and dried in the high salt sun." Brinestalk
+       green through sun-bleached, staying inside the colour family the fences and gates use. -->
+  <object Name="Walking Stick" Load="Merge">
+    <part Name="RandomColors" DetailColor="g,G,w,y" />
+  </object>
+
+  <!-- "Two almonds of glass sit in wireframe cups." Brass, steel and copper frames.
+       PairDetailWithForeground draws both fields at the same index, so the glint always matches
+       the frame rather than contradicting it. -->
+  <object Name="Spectacles" Load="Merge">
+    <part Name="RandomColors" MainColor="y,w,W" DetailColor="Y,y,w" PairDetailWithForeground="true" />
+  </object>
+
+  <!-- "Particulate from the eons-sheared shale sticks in the fibers." Dust-greyed wool. -->
+  <object Name="Cloth Robe" Load="Merge">
+    <part Name="RandomColors" MainColor="y,w,W" DetailColor="y,w,K" />
+  </object>
+
+  <!-- "Rough tight-spun yarn balloons at the calf." Homespun, undyed. -->
+  <object Name="Cloth Overalls" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W" />
+  </object>
+
+  <!-- "The crown is crushed by wear into a hundred papery creases." Straw. -->
+  <object Name="Wide-brimmed Hat" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W" />
+  </object>
+
+  <!-- "A pair of strapped shoes are cracked on the soles." Leather. -->
+  <object Name="Sandals" Load="Merge">
+    <part Name="RandomColors" DetailColor="w,y,r" />
+  </object>
+</objects>
