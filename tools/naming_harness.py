@@ -22,9 +22,8 @@ It reimplements the three pieces of `XRL.Names` that decide what a creature is c
    creature's name. Vanilla survives this only because Qudish is the sole `General`-scope
    namestyle in the file, which takes a different branch.
 
-What it does not do: templates, honorifics, epithets, hyphenation, two-name rolls, or `Base=`
-delegation beyond noting it. Those do not affect which pool a name is drawn from, which is the
-question this tool exists to answer.
+What it does not do: templates, honorifics, epithets, hyphenation, or two-name rolls. Those do
+not affect which pool a name is drawn from, which is the question this tool exists to answer.
 
 Usage:
     python3 tools/naming_harness.py                        # vanilla baseline
@@ -291,8 +290,14 @@ def select(
     order: list[str],
     ctx: dict[str, str | None],
     rng: random.Random | None = None,
+    skip: set[str] | None = None,
 ):
     """Mirror of NameStyles.Generate's style selection. Returns (candidates, winner, chancy).
+
+    `skip` is the game's `Skip` / `SkipList`, which it consults here and nowhere else:
+    `if (nameStyle == Skip || SkipList.Contains(nameStyle)) continue`. It matters only for
+    `Base="*"` delegation, where a style hands selection back and must not pick itself or anything
+    already in the chain.
 
     A winner of NAMEGENFAIL means every combining candidate sat at Priority <= 0, so the
     weighted draw had nothing to pick and the game falls through to "NameGenFail<n>".
@@ -305,6 +310,8 @@ def select(
     chancy: list[tuple[str, Scope]] = []
     flag = True
     for name in order:
+        if skip and name in skip:
+            continue
         style = styles[name]
         chancy += [(name, sc) for sc in style.chancy(ctx)]
         scope = style.check_apply(ctx, rng)
@@ -355,7 +362,60 @@ def roll(amount: str, rng: random.Random) -> int:
     return int(amount)
 
 
-def draw(style: Style, rng: random.Random) -> str:
+class BaseCycle(Exception):
+    """A `Base=` chain that returns to a style already in it.
+
+    Raised rather than returned because it is a defect in the fragment, not a name - every caller
+    wants to stop and say so rather than print it beside eight samples.
+    """
+
+
+def draw(
+    style: Style,
+    rng: random.Random,
+    styles: dict[str, Style] | None = None,
+    order: list[str] | None = None,
+    ctx: dict[str, str | None] | None = None,
+    _seen: tuple[str, ...] = (),
+) -> str:
+    """Mirror of NameStyle.Generate, including `Base=` delegation.
+
+    A style with a `Base` generates nothing of its own: it hands the whole job to another style and
+    returns what that produces. `styles`, `order` and `ctx` are only needed to follow one, so a call
+    without them still works for the flat case and every existing caller is unchanged.
+
+    **Delegation is resolved three ways, matching the assembly:**
+
+    - `Base="Name"` looks the style up and generates from it. A miss returns the literal
+      `"InvalidBase:" + Base`, which is what the game puts in the name, so a fragment author sees
+      the failure in the output rather than in a log.
+    - `Base="*"` re-enters selection for a fresh style, excluding everything already in the chain -
+      the game's `Skip` / `SkipList`, which this models as `_seen`.
+    - A repeat raises `BaseCycle`.
+
+    **The cycle refusal is a deliberate divergence and the only one here.** The game accumulates
+    `Skip` and `SkipList` on both paths but reads them in exactly one place, `NameStyles.Generate`'s
+    selection loop - which a *named* base never reaches, because it calls `value.Generate` directly.
+    So vanilla guards `Base="*"` cycles and recurses without bound on named ones until the stack
+    overflows (#625). Reproducing that faithfully would mean a tool that hangs, which is worth less
+    than a tool that reports; a game at least crashes visibly.
+    """
+    if style.base:
+        if style.name in _seen:
+            raise BaseCycle(" -> ".join(_seen + (style.name,)))
+        _seen = _seen + (style.name,)
+        if style.base == "*":
+            if styles is None or order is None or ctx is None:
+                return ""
+            _, winner, _ = select(styles, order, ctx, rng, skip=set(_seen))
+            if winner in (None, "NAMEGENFAIL") or winner not in styles:
+                return ""
+            return draw(styles[winner], rng, styles, order, ctx, _seen)
+        target = (styles or {}).get(style.base)
+        if target is None:
+            return "InvalidBase:" + style.base
+        return draw(target, rng, styles, order, ctx, _seen)
+
     def pick(pool):
         live = [e for e in pool if e[1] > 0]
         if not live:
@@ -491,7 +551,18 @@ def report_pools(styles, base_pools, fragment: bool) -> list[str]:
     for name in watch:
         if name not in styles:
             continue
-        now = pools_of(styles[name])
+        style = styles[name]
+        if style.base:
+            # A delegating style owns no pools, and three zeros here read exactly like the broken
+            # fragment this tool exists to catch. Say what it delegates to instead (#566).
+            lines.append(f"  {name:28} " + f"delegates to {style.base}".rjust(16))
+            if style.base != "*" and style.base not in styles:
+                problems.append(
+                    f'{name}: Base="{style.base}" names no namestyle — the game would generate '
+                    f'the literal "InvalidBase:{style.base}" as the creature\'s name'
+                )
+            continue
+        now = pools_of(style)
         was = base_pools.get(name)
         cells = []
         for i in range(3):
@@ -754,7 +825,13 @@ def main() -> int:
         if not chosen:
             print("  (no style matches this context)")
         for name, share in sorted(split.items(), key=lambda kv: -kv[1]):
-            names = ", ".join(draw(styles[name], rng) for _ in range(8))
+            try:
+                names = ", ".join(
+                    draw(styles[name], rng, styles, order, ctx) for _ in range(8)
+                )
+            except BaseCycle as cycle:
+                names = f"BASE CYCLE: {cycle}"
+                failures.append(f"{name}: Base= cycle, {cycle}")
             print(f"  {name:28} {share:>5.0%}  {names}")
 
     if failures:
