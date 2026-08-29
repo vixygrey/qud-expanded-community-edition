@@ -228,6 +228,27 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCESilentTradeOffers"
+    DisplayText="{{C|Qud Expanded}}: don't offer trade to creatures with nothing to trade"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded trade barter offer empty inventory animal dragonfly conversation"
+  >
+    <helptext>
+            Hides {{G|[begin trade]}} when the creature you are talking to has nothing you could trade for.
+
+            Asking a giant dragonfly to trade is a valid choice right up until you make it, at which point the game tells you it has nothing to trade. The information existed before you asked.
+
+            A creature's natural equipment - a bite, a claw, a sting - is not tradeable, so an animal's side of the screen is empty even though it technically carries something. The check here is the game's own: if nothing in their inventory would appear on the trade screen, the option is not offered.
+
+            {{y|Companions are unaffected.}} Trading with someone who follows you is free and opens even when they carry nothing, because that is how you hand them things.
+
+            Applies immediately.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEImportantArtifacts"
     DisplayText="{{C|Qud Expanded}}: don't offer artifacts you marked important"
     Category="Mods"
