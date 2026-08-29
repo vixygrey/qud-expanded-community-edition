@@ -3913,11 +3913,11 @@ about two; a rustwell pays what it always did (#605).
 
 > ✅ **Played and confirmed on 2026-08-29** (maintainer).
 >
-> ⚠️ One question was flagged as unanswerable from the assembly and is **not** recorded as settled
-> here: whether a zone property survives the zone being unloaded and re-entered. Vanilla relies on
-> it for `BurnGenerateObjectInCell`'s per-zone result, which strongly implies it holds, but that is
-> inference. If it does not, leaving a half-rifled zone and returning resets the curve. Left open
-> until someone has deliberately walked out and back.
+> ✅ **And the zone-property question is answered**, in a later session: walking out of a
+> part-rifled zone and back, the count held and the curve picked up where it left off. That was the
+> one claim the assembly could not settle — vanilla relying on the same mechanism for
+> `BurnGenerateObjectInCell` was only ever inference — so it is recorded here as observed rather
+> than deduced.
 
 ### 25.1 The rate reads as a trickle and delivered a salary
 
@@ -4166,6 +4166,8 @@ any other proper name.
 **Marking something important is supposed to mean *don't let me lose this*.** When Argyve asks for a
 knickknack, vanilla offers every artifact you are carrying, with no warning of any kind (#570).
 
+> ✅ **Played and confirmed on 2026-08-29** (maintainer).
+
 ### 27.1 There is no importance check, not even a weak one
 
 `GiveArtifact` lists `The.Player.Inventory.GetObjects(IsArtifact)`, and `IsArtifact` matches anything
@@ -4252,6 +4254,9 @@ was never vanilla's to restore.
 **Asking a giant dragonfly to trade is a valid choice right up until you make it**, at which point
 the game tells you it has nothing to trade. The information existed before the question (#571).
 
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), animals and merchants both, and a
+> companion with an empty pack still opens.
+
 ### 28.1 The obvious predicate is useless
 
 `TradeUI.ShowTradeScreen` refuses on `!Trader.HasPart<Inventory>()` with *"cannot carry things"* —
@@ -4308,6 +4313,9 @@ refusal that follows it.
 **Qud closes nothing behind you.** There is no auto-close anywhere in the game — no field for it, and
 nothing sets a door closed except a deliberate action — so a village gate you walk through stays
 swinging for the rest of the run (#631).
+
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), including standing in a gateway without
+> the repeated refusal message §29.5 warns about.
 
 ### 29.1 The fiction was already written
 
@@ -4392,6 +4400,8 @@ This shipped with one in #631 and it came out in #663, alongside the rule that s
 
 **Seventeen mundane things stop being identical to each other.** Clay pots, baskets, benches,
 bedrolls, robes and the rest each get a colour of their own (#608).
+
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), with weapons and armour untouched.
 
 Prompted by [Colors of Qud [Fork]](https://steamcommunity.com/sharedfiles/filedetails/?id=3287770072)
 on the Steam Workshop, which fills this gap. Every palette here is chosen from the blueprint's own
