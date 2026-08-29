@@ -62,7 +62,7 @@ rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Twenty-four options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+Twenty-five options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
 the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
 have that — nobody should need to swallow the whole mod to get one part of it.
 
@@ -78,7 +78,7 @@ have that — nobody should need to swallow the whole mod to get one part of it.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
 document is also the complete reference for the mod itself: every system, all 472 new blueprints and
-211 vanilla merges.
+212 vanilla merges.
 
 ## Requires a new character
 

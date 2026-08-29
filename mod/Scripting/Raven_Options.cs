@@ -51,6 +51,7 @@ namespace QudExpandedCE
         public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
         public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
+        public const string GatesSwingShutID = "OptionQudExpandedCEGatesSwingShut";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -743,6 +744,20 @@ namespace QudExpandedCE
         /// that follows it.
         /// </summary>
         public static bool SilentTradeOffers => Enabled(SilentTradeOffersID, "Yes");
+
+        /// <summary>
+        /// Whether a gate swings shut once nothing is standing in it.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_SelfClosingGate</c> reads this at
+        /// the end of every turn, so turning it off leaves gates as they are from that turn on. A
+        /// gate already shut stays shut - closing is not stored anywhere, it is just the door's
+        /// state.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power, and this
+        /// grants none: a closed gate stops nothing, since any combat object opens a door by walking
+        /// into it. What it changes is whether a village looks lived in.
+        /// </summary>
+        public static bool GatesSwingShut => Enabled(GatesSwingShutID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
