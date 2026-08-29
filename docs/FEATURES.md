@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **105** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **112** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -1823,7 +1823,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-130 table definitions: **105 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+137 table definitions: **112 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2112,7 +2112,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
-│   └── PopulationTables.xml    # 130 tables (105 merge / 25 new)
+│   └── PopulationTables.xml    # 137 tables (112 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -3710,6 +3710,95 @@ hold, and "not prehensile" needs no rule to enforce it.
 for limbs granted by wearing something, and it also suppresses the severed-limb object and
 disqualifies the part as a Chimera growth site. It would buy the implant lock by removing
 dismemberability — making the mutation stronger, not more limited.
+
+## 24. Data disks on a tier curve (`Core/PopulationTables.xml`)
+
+**A data disk's recipe now follows the table it came from.** An early merchant leans early-tier, the
+deep ruins lean late, and a top-tier blueprint from a Joppa stall is roughly one disk in seventy
+rather than one in eight (#582).
+
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), at an early-game merchant — which is the
+> case the issue said to check before anything else, because it is the one that decides whether the
+> price ladder is doing the gating on its own.
+>
+> That answers §24.5: **the value ladder is left alone, and now on evidence rather than on caution.**
+> A high-tier disk can appear on an early shelf, and its price is what stops it walking off with an
+> early purse. No code changed, and none needs to.
+>
+> ⚠️ The seven untiered tables in §24.3 are a separate change and are **not** covered by that
+> session — a disk merchant's shelf and a Barathrumite leader's pack have not been looked at.
+
+### 24.1 Vanilla draws uniformly, and built the fix it never used
+
+`DataDisk.HandleEvent` picks a recipe by scoring random draws against the disk's targeting
+constraints. A plain `DataDisk` sets **none**, so `GetMaximumDataScore()` returns 1, the first recipe
+drawn scores at least 1, and the loop exits on its first iteration. Nothing about the zone, the
+merchant or the world tier enters into it.
+
+But `Items.xml` declares **33 targeted disk blueprints** — `TinkerTier1DataDisk` through
+`TinkerTier8DataDisk`, each with `Build` and `Mod` siblings, plus nine category variants. **Not one is
+referenced by any population table, any tag, or anywhere in the assembly.** The whole matrix is built
+and unwired, which is `docs/LESSONS.md`'s *"vanilla builds mechanisms it never wires up"* at its
+largest scale so far.
+
+That was verified by enumerating the routes rather than by an empty grep: no table entry, no
+`DynamicObjectsTable:` tag, **no inherited tag anywhere in the `Item → DataDisk → variants` chain**,
+and no code reference. The inherited-tag route is the one that matters — it is what the tail tiles
+tripped over in §23.
+
+### 24.2 Targeting is reliable, which is what makes weighting safe
+
+The worry was that a sparse tier would fall through to a random fallback. The opposite is true:
+`DataDisk.cs:374` falls back to walking the **entire shuffled recipe list**, breaking on the first
+exact match. So a targeted disk always finds its tier when a recipe exists — and one does at every
+tier: **8 · 9 · 12 · 32 · 16 · 22 · 15 · 8** buildable recipes for tiers 1–8, plus the item-mod
+recipes on top.
+
+Tier scoring is binary: `+8` only for an exact match, so there is no partial credit muddying it.
+
+### 24.3 The curve
+
+For a table whose name states a tier **N** — `Artifact NR`, `Village Tinker N`,
+`VillageTierN_QuestReward`, which is **45 of the 54 entries**:
+
+| | N−1 | **N** | N+1 | every other tier |
+|---|---:|---:|---:|---:|
+| weight | 30 | **50** | 15 | 1 each |
+
+Mid-tier tables total exactly 100, so the weights read as percentages. A tier-8 recipe from a tier-1
+table lands at **1.4%** — rare and real, which was the whole ask: a story rather than a coin flip.
+
+The seven tables with no tier in their name take one of four named shapes, each with its odds written
+into the file beside it:
+
+| shape | used by | reading |
+|---|---|---|
+| **flat**, 12.5% each | `DataDiskWares`, `DiskMerchantInventory` | breadth *is* a disk specialist's identity |
+| **high**, t8 33% → t1 0.7% | `DiskMerchantInventory_Legendary`, the Barathrumite leader | what makes them worth finding is the top of the ladder |
+| **middle**, t4/t5 24% | `DaughterofExileInventory`, `YlaHajDisks` | no tier signal either way, so the curve claims none |
+| **low**, t2/t3 27% | `VillageZero_Reward` | a tier-zero village's prize, leaning below the middle |
+
+### 24.4 Every merge removes before it adds
+
+**All 34 tables `Load="Remove"` vanilla's entry first**, or `Load="Replace"` the group holding it.
+An additive merge would leave vanilla's uniform disk in place *beside* the curve and double the
+disks — which is exactly the defect §17.7 was filed for on the creature variants, arriving in a new
+place a month later.
+
+Asserted rather than assumed: **54 entries removed against the 54 vanilla declares, 34 groups added,
+and no group without a matching removal.**
+
+Each merge also keeps vanilla's own `Weight` and `Number`, so a disk's **share** of its table never
+moves — only which disk it is.
+
+### 24.5 Price is left alone, deliberately
+
+`DataDisk` already sets `Commerce.Value` from the highest bit colour in the resolved recipe cost — a
+**9× spread** from 50 to 450 that already tracks recipe power. So a tier-8 disk on an early
+merchant's shelf is already the most expensive thing there, before markup.
+
+Whether that is *enough* is a play question rather than a reading one, and the lever would be code.
+Nothing here touches it.
 
 ## Appendix A — every merged vanilla melee weapon
 

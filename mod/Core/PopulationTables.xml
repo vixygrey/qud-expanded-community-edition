@@ -2071,4 +2071,139 @@
       </group>
     </group>
   </population>
+
+  <!--
+        The seven data-disk tables whose names carry no tier, so the rule that drives the rest
+        (#582, part one) has nothing to read. Each is a judgement, and each says which one it is.
+
+        Shapes, with their intended odds written down rather than left to be inferred:
+
+          flat    t1 12%, t2 12%, t3 12%, t4 12%, t5 12%, t6 12%, t7 12%, t8 12%
+
+          high    t1 1%, t2 1%, t3 3%, t4 6%, t5 11%, t6 19%, t7 26%, t8 33%
+
+          middle  t1 3%, t2 7%, t3 15%, t4 24%, t5 24%, t6 15%, t7 7%, t8 3%
+
+          low     t1 17%, t2 27%, t3 27%, t4 17%, t5 8%, t6 3%, t7 1%, t8 1%
+
+    -->
+
+  <!-- A disk stall. Breadth IS the identity - the reason to walk to one is that anything might be on it. -->
+  <population Name="DataDiskWares" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksDataDiskWares" Style="pickone" Number="5-7">
+        <object Weight="10" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- Same reasoning as the wares above: a disk specialist who only stocked their own tier would not be one. -->
+  <population Name="DiskMerchantInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksDiskMerchantInventory" Style="pickone" Number="5-7">
+        <object Weight="10" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="10" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- The legendary version of that merchant. What makes them worth finding is the top of the ladder. -->
+  <population Name="DiskMerchantInventory_Legendary" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksDiskMerchantInventoryLegendary" Style="pickone" Number="5-8">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="2" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="4" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="8" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="35" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="45" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- Barathrumites are the tinkers. Their leader carrying low-tier recipes would read as odd. -->
+  <population Name="FactionEncounterLeaderInventory_Barathrumites" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksFactionEncounterLeaderInventoryBarathrumites" Style="pickone" Number="5-9">
+        <object Weight="1" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="2" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="4" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="8" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="15" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="35" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="45" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- No tier signal either way, and only one or two disks - a centred spread says nothing false. -->
+  <population Name="DaughterofExileInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksDaughterofExileInventory" Style="pickone" Number="1-2">
+        <object Weight="5" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="12" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="12" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="5" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- As above: nothing about Yla Haj argues high or low, so the curve should not claim one. -->
+  <population Name="YlaHajDisks" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Load="Remove" />
+      <group Name="Vixy_DisksYlaHajDisks" Style="pickone" Number="2-3">
+        <object Weight="5" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="12" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="12" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="5" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
+
+  <!-- A tier-zero village's reward, so it leans below the middle without being an early-table
+       curve outright - the reward is a prize, not a shop shelf. -->
+  <population Name="VillageZero_Reward" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <group Name="DataDisks" Load="Replace" Style="pickone" Number="3">
+        <object Weight="25" Blueprint="TinkerTier1DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier2DataDisk" />
+        <object Weight="40" Blueprint="TinkerTier3DataDisk" />
+        <object Weight="25" Blueprint="TinkerTier4DataDisk" />
+        <object Weight="12" Blueprint="TinkerTier5DataDisk" />
+        <object Weight="5" Blueprint="TinkerTier6DataDisk" />
+        <object Weight="2" Blueprint="TinkerTier7DataDisk" />
+        <object Weight="1" Blueprint="TinkerTier8DataDisk" />
+      </group>
+    </group>
+  </population>
 </populations>
