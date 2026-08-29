@@ -2865,7 +2865,7 @@ but that tag is read only by the dynamic table fabricators, so on this route it 
 
 **Six harvestable plants, one each for Mountains, Saltmarsh, BananaGrove, Hills, DesertCanyon and
 Jungle** (#177, #540), with a yield and a preserved cooking ingredient apiece. Everything here is
-data — no scripting, so no charter rule 5 budget spent.
+data — vanilla's own population machinery does all of it, so there is no C# here to keep working.
 
 ### 18.1 How thin vanilla actually is
 
@@ -3102,7 +3102,7 @@ line's `Number` outward from it. A `pickone` between a common Small arm and a ra
 the occasional zone that is properly overgrown. Vanilla pulls the whole thing in with one
 low-chance reference — eight cave tiers at 30, the crypts at 60, the Moon Stair at 10.
 
-So the mod spends **no rule 5 budget** here and ships no C# at all.
+So this ships **no C# at all** — not to spend less of something, but because `BrightshroomPatches` is Freehold's to maintain and a zone builder of mine would have been mine.
 
 ### 19.2 The hint is load-bearing twice
 
