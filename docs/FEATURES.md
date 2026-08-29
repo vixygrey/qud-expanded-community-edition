@@ -2579,11 +2579,34 @@ Almost nothing drew from this pool until recently. `Village.cs` gives a proper n
 and the village pet and to nobody else, so an ordinary raider stayed `Issachari raider`, and the
 only route to an Issachari name was `HeroMaker` making a legendary one.
 
-**§26 changed that.** With the question available, every Issachari is nameable — and
+**§26 changed that**, but less than I first wrote, and the correction is worth keeping.
+
+With the question available, an Issachari is nameable — and there are plenty of them.
 `SaltDesertZoneGlobals` rolls an `IssachariParty` of **2d4 raiders plus 1–2 riflers** at 10% per salt
 desert zone, `VillageOneBaseFaction_Saltdunes` gives them a weight of 50 as a whole settlement's
-faction, and `LairOwners_Saltdunes` puts them in lairs. Ask four people in one war party and two are
-likely to open on the same verb.
+faction, and `LairOwners_Saltdunes` puts them in lairs.
+
+**They will not talk to you.** `Factions.xml` gives the Issachari
+`InitialPlayerReputation="-475"`. `REPUTATION_DISLIKED` is `-250`, so `Reputation.GetFeeling` returns
+`-50`, and `Brain.GetFeelingLevel` calls anything below `-10` **Hostile**. They attack rather than
+converse, and a question inside a conversation is no use where there is no conversation. Even the
+**Nomad** caste, which starts at `+200` with them, lands on `-275` — still past the line, and 26
+points short of neutral.
+
+So the honest reach of this change:
+
+- **A legendary Issachari** is named by `HeroMaker` with no conversation at all, so its name shows on
+  sight. That is how most players will meet one of these, one at a time.
+- **A player in good standing** — the Nomad caste plus a little more reputation, or the faction's own
+  `<waterritual Skill="Endurance_Weathered" />` route — sees the full effect. Ordinary raiders are
+  not the door to that, since `BaseIssachari` carries no `GivesRep`.
+
+The pool was genuinely thin either way, and every route that surfaces one of these names is better
+for the widening. But an earlier draft of this section said *"ask four people in one war party"*,
+which assumed a conversation the faction's reputation does not allow. That assumption was load-
+bearing in the argument for building this, and it went unchecked — the same failure as the entry in
+`docs/LESSONS.md` about a premise nobody verified, this time inside my own case for the work rather
+than inside a bug report.
 
 #### Off-switch
 
