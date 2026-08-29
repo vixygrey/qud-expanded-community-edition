@@ -3511,9 +3511,22 @@ horns stack, which reads fine and is mechanically clean.
 in village history. That is deliberate — a fanged snapjaw is the flavour the set exists for — and it
 is why `BearerDescription` is written as lore (*"the fanged"*) rather than as a chargen tooltip.
 
-**The tile is vanilla's.** `Items/girshling_fangs.bmp`, which is what `BaseFangs` renders with. A
-mutation tile of this fork's own is still outstanding; pointing at the game's own fangs art is
-honest and correct in the meantime, where inventing a bad 16×24 would not be.
+**The tile is vanilla's, and that is settled rather than pending.** `Items/girshling_fangs.bmp`, what
+`BaseFangs` renders with — the game's own drawing of the exact thing this mutation grows.
+
+**It works here for a reason that does not generalise to the rest of the set.** Vanilla ships one
+tile per mutation and every one is specific, so reusing art means borrowing from a *neighbour in the
+same chargen list*:
+
+| Wants a tile | Nearest vanilla art | Why borrowing it fails |
+|---|---|---|
+| Tail (#590) | `Mutations/stinger.bmp` | Stinger is **three** selectable mutations in this same list; a tail wearing their tile is indistinguishable from them in the picker |
+| Keen Smell (#593) | `Mutations/heightened_hearing.bmp` | Heightened Hearing is selectable, and the tile is an ear |
+| Preternatural Senses (#594) | `Mutations/sense_psychic.bmp` | Sense Psychic is selectable, and #471 names it as this mutation's closest parallel — so the collision lands exactly where the confusion would |
+
+Fangs escapes that because `girshling_fangs.bmp` is an **item** tile rather than a mutation tile.
+Nothing in the mutation list draws with it, so there is no neighbour to be mistaken for. That was
+luck, not a pattern, and the other three should expect to need art of their own.
 
 ## Appendix A — every merged vanilla melee weapon
 
