@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **472** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -583,12 +583,12 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Cybernetics.xml` | 9 | 14 |
 | `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
-| `Furniture.xml` | 4 | 0 |
+| `Furniture.xml` | 4 | 1 |
 | `Creatures.xml` | 46 | 1 |
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **472 active** | **211** |
+| **Total** | **472 active** | **212** |
 
 ### 6.2 Melee weapons
 
@@ -2108,7 +2108,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 24 options (§13)
+│   ├── Options.xml             # 25 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2128,10 +2128,10 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
-│   ├── Furniture.xml           # 4 new
+│   ├── Furniture.xml           # 4 new, 1 merged (§29)
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 56 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 57 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2171,7 +2171,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -4300,6 +4300,88 @@ rest of §26–§28, and it is the reason this section says so out loud.
 
 `OptionQudExpandedCESilentTradeOffers`, on by default, read live. Off restores the offer, and the
 refusal that follows it.
+
+## 29. Gates swing shut (`ObjectBlueprints/Furniture.xml`, `Vixy_SelfClosingGate`)
+
+**Qud closes nothing behind you.** There is no auto-close anywhere in the game — no field for it, and
+nothing sets a door closed except a deliberate action — so a village gate you walk through stays
+swinging for the rest of the run (#631).
+
+### 29.1 The fiction was already written
+
+A **brinestalk gate** is *"shaved into pickets and set across an iron-latched rail."* An **iron
+gate** is *"set across a latched rail."* A latch is a thing that catches, and a latched gate swings
+shut into it.
+
+Nothing here needed inventing. Charter rule 2 is satisfied by reading the two blueprints the part
+goes on.
+
+### 29.2 Gates only, which is the whole scope line
+
+`Gate` is already a clean subtype that vanilla overrides into something recognisably different:
+
+```xml
+<object Name="Gate" Inherits="Door">
+  <part Name="Door" OccludingWhileClosed="false" … />
+  <tag Name="Flyover" />
+  <intproperty Name="AllowMissiles" Value="1" />
+```
+
+You can **see through it, shoot through it, and fly over it.** So a closed gate costs no tactical
+option — it is still a firing line and still a sightline. Auto-closing *interior* doors would fight
+tactical play, where leaving a door open to shoot through is a real decision. That asymmetry is why
+the scope line sits exactly here, and it is vanilla's own line rather than one this fork drew.
+
+The merge goes on `Gate`, so `Brinestalk Gate` and `Iron Gate` inherit it.
+
+### 29.3 It does not contain anything, and is not pretending to
+
+`Door.HandleEvent(EnteredCellEvent)` has **any combat object** open a closed door by walking into its
+cell:
+
+```csharp
+if (gameObject.IsCombatObject())
+{
+    AttemptOpen(gameObject, …, FromMove: true, …);
+```
+
+So a shut gate stops nothing that can walk. Livestock still wander out, and *"shut the gate so the
+animals don't escape"* is not what this does — the original framing in #631 died on this line and
+the feature was rebuilt around what survived.
+
+That same mechanism is what makes it safe: **followers are never stranded behind a gate**, because
+they open it themselves. What the feature buys is that a village looks like somebody lives in it.
+
+### 29.4 Every open gate, not only the one you used
+
+Broader than the issue's title, deliberately. Closing precisely *behind me* means remembering which
+gate a creature passed through — an instance field on a `[Serializable]` part, and so a permanent
+addition to every save's layout, which `docs/STYLEGUIDE.md` §1 and `validate_mod.py`'s
+`serializable-shape` ask be a considered decision rather than a side effect.
+
+The two behaviours almost never differ. **Gates generate closed**, so an open one is nearly always
+one somebody just walked through. Paying a save field forever to distinguish them was the worse
+trade, and this section is where that decision is recorded rather than hidden.
+
+### 29.5 Two things the implementation had to get right
+
+**It closes at end of turn, because it has to.** `AttemptClose` refuses while anything in the cell
+`BlocksClosing`, and every leaving-cell event fires *before* the move completes — so closing there
+would always be closing on top of the person leaving.
+
+**`Silent: true` is load-bearing.** `AttemptClose`'s refusal messages fire on
+`gameObject.IsPlayer()` regardless of who asked, so a player standing in a gateway would otherwise
+be told the gate cannot be closed with them in the way — once per turn, forever.
+
+It also reads `Door.Open` rather than `Door.bOpen`. The latter compiles and carries
+`[Obsolete("mod compat, will be removed after Q2 2024")]`, so it is a warning today and a broken
+build later; `compile_scripting.py` reporting warnings is what caught it.
+
+### 29.6 Off-switch
+
+`OptionQudExpandedCEGatesSwingShut`, on by default, read live at the end of every turn. Off leaves
+gates as they are from that turn onward — nothing is stored, so a gate already shut simply stays
+shut.
 
 ## Appendix A — every merged vanilla melee weapon
 

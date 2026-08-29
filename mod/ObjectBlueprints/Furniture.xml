@@ -35,4 +35,13 @@
       Short="Sheet metal is locked in diamond pattern and welded into the shape of a door. The surface is scorched and scratched in sections."
     />
   </object>
+
+  <!-- A latched gate swings shut. Vanilla's own descriptions say so - a brinestalk gate is "set
+       across an iron-latched rail", an iron gate across a "latched rail" - and nothing in the game
+       ever closes anything behind you. Merged onto Gate rather than Door: gates are see-through,
+       shoot-through and fly-over, so closing one costs no tactical option, where auto-closing an
+       interior door would. Brinestalk Gate and Iron Gate inherit it. See #631. -->
+  <object Name="Gate" Load="Merge">
+    <part Name="Vixy_SelfClosingGate" />
+  </object>
 </objects>

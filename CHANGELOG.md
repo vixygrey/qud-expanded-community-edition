@@ -75,6 +75,20 @@ recorded because contributors need them, not because subscribers do.
   the same reason: a fragment that cleared those pools rather than adding to them would have shown
   nothing at all.
 
+- **Gates swing shut behind you** (#631).
+
+  Caves of Qud never closes anything behind you, so a village gate you walk through stays swinging
+  for the rest of the run. A brinestalk gate is described as set across an *iron-latched rail*, and a
+  latch is a thing that catches - so now it does.
+
+  **Gates only.** Interior doors are left alone, because leaving one open to shoot through is a real
+  tactical choice. A gate costs you nothing when shut: you can already see through it, shoot through
+  it and fly over it, which is exactly why it is the right place to draw the line.
+
+  This keeps nothing in and nothing out. Anything that can walk opens a door by walking into it,
+  livestock included - and that is also why your followers can never be stranded behind one. What
+  changes is that a village looks like somebody lives in it.
+
 - **Creatures with nothing to trade no longer offer to trade** (#571).
 
   Asking a giant dragonfly to trade was a valid choice right up until you made it, at which point the
