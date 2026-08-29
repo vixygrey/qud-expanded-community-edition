@@ -2662,4 +2662,65 @@
     <tag Name="VisibleAsDefaultBehavior" />
     <tag Name="ShowAsPhysicalFeature" />
   </object>
+
+  <!--
+        Cosmetic tails for the Tail mutation (#590). **Not weapons** - none carries a MeleeWeapon
+        part, so BodyPart.GetFirstValidWeapon finds nothing and the tail never attacks. That is the
+        whole design: the mutation grants DV and footing, not an attack.
+
+        These exist to be variants. Mutations.GetVariants collects blueprints tagged
+        MutationEquipment with the mutation's CLASS name, and BaseMutation.SelectVariant renders each
+        one's own name and tile in the chargen picker via GetIcon - so a player choosing Tail picks
+        which tail. Purely a roleplaying choice; every one behaves identically.
+
+        All recolours of vanilla's own Creatures/natural-weapon-tail.bmp, which three vanilla tails
+        already render with. It is a natural-weapon tile rather than a mutation tile, so it collides
+        with nothing in the mutation picker - the same escape Fangs used with girshling_fangs.
+    -->
+
+  <object Name="Vixy_BaseAnthroTail" Inherits="Item">
+    <part Name="Render" DisplayName="tail" RenderString="~" Tile="Creatures/natural-weapon-tail.bmp" />
+    <part Name="Commerce" Value="0" />
+    <part Name="NaturalEquipment" />
+    <part Name="NoDamage" />
+    <part Name="NoBreak" />
+    <part Name="Physics" Category="Natural Weapons" IsReal="false" Weight="0" />
+    <removepart Name="TinkerItem" />
+    <intproperty Name="Natural" Value="1" />
+    <tag Name="MutationEquipment" Value="Vixy_Tail" />
+    <tag Name="ExcludeFromDynamicEncounters" />
+    <tag Name="NoSparkingQuest" />
+    <tag Name="NaturalGear" />
+    <tag Name="VisibleAsDefaultBehavior" />
+    <tag Name="ShowAsPhysicalFeature" />
+    <tag Name="BaseObject" Value="*noinherit" />
+  </object>
+
+  <object Name="Vixy_FoxTail" Inherits="Vixy_BaseAnthroTail">
+    <part Name="Render" DisplayName="{{r|fox tail}}" ColorString="&amp;r" TileColor="&amp;r" DetailColor="W" />
+    <part Name="Description" Short="A long brush of russet fur, tipped in white, that keeps its own counsel." />
+  </object>
+
+  <object Name="Vixy_WolfTail" Inherits="Vixy_BaseAnthroTail">
+    <part Name="Render" DisplayName="{{K|wolf tail}}" ColorString="&amp;K" TileColor="&amp;K" DetailColor="y" />
+    <part
+      Name="Description"
+      Short="Heavy and grey and carried low, the way a thing carries a tail it does not need to advertise."
+    />
+  </object>
+
+  <object Name="Vixy_CatTail" Inherits="Vixy_BaseAnthroTail">
+    <part Name="Render" DisplayName="{{y|cat tail}}" ColorString="&amp;y" TileColor="&amp;y" DetailColor="K" />
+    <part Name="Description" Short="Slender, and never quite still. It answers questions you did not ask aloud." />
+  </object>
+
+  <object Name="Vixy_RatTail" Inherits="Vixy_BaseAnthroTail">
+    <part Name="Render" DisplayName="{{w|rat tail}}" ColorString="&amp;w" TileColor="&amp;w" DetailColor="r" />
+    <part Name="Description" Short="Bare, ringed and prehensile-looking, though it is nothing of the sort." />
+  </object>
+
+  <object Name="Vixy_LizardTail" Inherits="Vixy_BaseAnthroTail">
+    <part Name="Render" DisplayName="{{g|lizard tail}}" ColorString="&amp;g" TileColor="&amp;g" DetailColor="G" />
+    <part Name="Description" Short="Banded scales taper to a whip end. It looks like it has been lost before." />
+  </object>
 </objects>

@@ -47,6 +47,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Tail**, a 1-point physical mutation, on by default (#590).
+
+  A tail. It gives you 1 DV, and when something would knock you down — a shield slam, a rocket jump,
+  slipping on slime — you get an Agility save to keep your feet. So it helps more the nimbler you
+  are, which is the only way a one-point mutation can grow, since none of them gain ranks.
+
+  **It does not attack and it holds nothing.** There is no tail weapon and no tail slot to fill; it
+  is a defensive mutation and a cosmetic one. An axe can cut it off, and losing it takes the dodge
+  with it until it grows back.
+
+  **Choose which tail at character creation** — fox, wolf, cat, rat or lizard. That is pure
+  flavour: they behave identically, and the choice is there because deciding what you are is worth
+  something on its own.
+
 - **Keen Smell**, a 3-point physical mutation, on by default (#593).
 
   You detect creatures around you by scent, at roughly twice the range of Heightened Hearing — but a

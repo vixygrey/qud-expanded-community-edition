@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **466** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **472** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **211** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -576,7 +576,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 
 | File | New objects | Merged vanilla objects |
 |---|---|---|
-| `MeleeWeapons.xml` | 102 (4 dormant) | 77 |
+| `MeleeWeapons.xml` | 108 (4 dormant) | 77 |
 | `Armor.xml` | 61 | 38 |
 | `RangedWeapons.xml` | 49 | 11 |
 | `PsionicChips.xml` | 145 | 0 |
@@ -588,7 +588,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **466 active** | **211** |
+| **Total** | **472 active** | **211** |
 
 ### 6.2 Melee weapons
 
@@ -2107,7 +2107,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Subtypes.xml            # 18 affinities in 2 categories
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
-│   ├── Mutations.xml           # Fangs (§21)
+│   ├── Mutations.xml           # Fangs (§21), Tail (§23)
 │   ├── Options.xml             # 20 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
@@ -2119,7 +2119,7 @@ mod/                            # the only directory uploaded to the Workshop
 │       └── Joppa.rpm           # 76-cell amenity building
 │
 ├── ObjectBlueprints/
-│   ├── MeleeWeapons.xml        # 102 new / 77 merged
+│   ├── MeleeWeapons.xml        # 108 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
@@ -2130,7 +2130,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 51 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 52 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -3602,6 +3602,110 @@ can use it" — and the code says the second is impossible.
 That is `docs/LESSONS.md`'s *"vanilla builds mechanisms it never wires up"* in its purest form, and it
 is the case that entry cites for the counterweight: `Hidden="true"` is typed out, so this was a
 decision rather than an oversight. Which is why exposing it took the §10.4 test rather than a shrug.
+
+## 23. Tail (`Mutations.xml`, `Vixy_Tail`)
+
+**A 1-point physical mutation: a tail that grants 1 DV and an Agility save to stay on your feet. It
+does not attack and it holds nothing** (#590). The third and last of the anthro set (#471).
+
+**On by default**, under the same `OptionQudExpandedCEAnthroMutations` as §21 and §22. Read at
+character creation, so the option applies to a **new** character.
+
+> ⚠️ **Not yet played.**
+
+### 23.1 One point means no ranks, and that decided the rest
+
+Every 1-point physical mutation vanilla ships returns `false` from `CanLevel()` and `""` from
+`GetLevelText()`:
+
+| | What a point buys |
+|---|---|
+| `ThickFur` | +5 Heat Resistance, +5 Cold Resistance |
+| `Beak` | +1 Ego, a flat `1`-damage bite, +200 bird reputation |
+| `DarkVision` | radius-5 dimvision |
+| `SlimeGlands` | an activated slime spit |
+
+So a point buys one or two flat effects, permanently. This follows that rather than inventing a curve
+for a price that has never had one.
+
+**Which is why footing is a save and not a percentage.** A flat chance on a mutation that never ranks
+is the same number at level 1 and level 30 — dead weight by mid-game. An **Agility** save lets the
+mutation grow with the *character*, which is the only growth available at this price, and it is the
+right stat: how well you catch your balance should depend on how nimble you are.
+
+### 23.2 The numbers are vanilla's
+
+`KnockdownSaveDifficulty` is **16** — Qud's own Agility save for being knocked over, used by
+`RocketSkates` for its rocket-jump landing and by `EelSpawn`. (`Tactics_DeathFromAbove` uses 20 and
+`ThiefBot`'s disarm uses 10, so 16 is the figure for *being knocked over* specifically.)
+
+The roll is `d20 + floor((Agility − 16) / 2)` against 16, with a natural 20 always succeeding:
+
+| Agility | 10 | 14 | 16 | 18 | 20 | 24 |
+|---|---|---|---|---|---|---|
+| Stays upright | 10% | 20% | 25% | 30% | 35% | 45% |
+
+Modest everywhere, never nothing, never reliable.
+
+**Why two effects is not over-priced at one point:** the tail is `Appendage="true"` and can be **cut
+off** — Axe's `Dismember` takes it, and the DV goes with it until it regrows. `ThickFur`'s +5/+5
+cannot be severed. That downside is what pays for DV mattering every turn where resistances do not.
+
+### 23.3 The gate is `CanChangeBodyPosition`, not the obvious event
+
+`ObjectGoingProneEvent` looks correct and is a **notification** — `Prone.Apply` sends it after the
+"knocked prone" message, too late to refuse. `ApplyProne` is a real gate but carries no parameters,
+so a handler on it would also stop the player lying down to sleep.
+
+`Prone.Apply` calls `CanChangeBodyPosition("Prone", ShowMessage: false, !Voluntary)`, which fires an
+event carrying `To` and an **`Involuntary`** flag. Returning `false` refuses the knockdown, and the
+flag is what keeps voluntary prone working. `Burrowed` reads the same flag for the opposite purpose.
+
+### 23.4 The part is added at runtime and marked as ours
+
+`Stinger.RequireTail` is the model, and it solves the case `Wings` does not have — a creature that
+already has a tail. It claims an unmanaged `Tail` if one exists, and otherwise adds a part carrying
+this mutation's `ManagerID`. **That marking is what lets removal tell "the tail I grew" from "the
+tail a snake was born with."**
+
+**Merging a `Tail` into the `Humanoid` anatomy would give one to every humanoid in the game**, and is
+baked into save state besides. That route is not available and the runtime one is already proven.
+
+Because the tail claims the part through a manager id rather than owning it, **`Stinger` and this can
+coexist** — which is why the mutation declares no `Exclusions`.
+
+### 23.5 Choosing which tail
+
+Fox, wolf, cat, rat or lizard, picked at character creation. **Purely a roleplaying choice** — every
+variant behaves identically.
+
+This is vanilla's `Variant` machinery and it cost nothing: `QudMutationsModuleWindow` shows a variant
+control whenever an entry `HasVariants && CanSelectVariant`, and `BaseMutation.SelectVariant` renders
+each blueprint's own name and tile through `GetIcon`. The five are recolours of
+`Creatures/natural-weapon-tail.bmp`, which three vanilla tails already use — a natural-weapon tile
+rather than a mutation tile, so it collides with nothing in the picker, the same escape Fangs used.
+
+**None of them carries a `MeleeWeapon` part**, so `GetFirstValidWeapon` passes them over and the tail
+never attacks. They hang on the part as its `DefaultBehavior`, which is what makes them visible as a
+physical feature without being equipment.
+
+### 23.6 What a tail can hold: nothing
+
+Worth recording, because it bears on the price. Equipping matches `Armor.WornOn` against a part's type
+name, and vanilla has exactly **one** `WornOn="Tail"` blueprint — the `Bilge Sphincter`, itself a
+natural weapon. Weapons wield from `Type == "Hand"` parts. So there is no wearable and nothing to
+hold, and "not prehensile" needs no rule to enforce it.
+
+> ⚠️ The part **would** accept a cybernetic — `CanReceiveCyberneticImplant()` is `!Extrinsic &&
+> Category == 1`, and `Tail` declares no `Category`. **Zero of vanilla's 72 cybernetics target a
+> Tail**, so the slot is worth nothing today. **If a tail-slot implant is ever added — by Freehold or
+> by this fork, which has a live chip system — this mutation silently gains a free implant slot and
+> its cost needs revisiting.**
+
+`Extrinsic="true"` would close that door and is the wrong tool: its canonical use is `ArmsOnEquip`,
+for limbs granted by wearing something, and it also suppresses the severed-limb object and
+disqualifies the part as a Chimera growth site. It would buy the implant lock by removing
+dismemberability — making the mutation stronger, not more limited.
 
 ## Appendix A — every merged vanilla melee weapon
 

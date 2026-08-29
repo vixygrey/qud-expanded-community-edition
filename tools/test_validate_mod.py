@@ -379,6 +379,54 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class MutationEquipmentReachability(unittest.TestCase):
+    """#590. A blueprint tagged MutationEquipment is reached through the chargen variant picker,
+    which no table, tag or attribute reference names.
+
+    Vanilla inherits the tag rather than repeating it - `Stinger Confusion` gets it from `Stinger` -
+    so the walk up Inherits is the point, not decoration. Fangs passed this check by accident before
+    #590, because `Vixy_Fangs` happens to be named as a `Variant=` on its own mutation node; the
+    first blueprint that was mutation equipment and *not* also a default variant tripped it.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _findings(self, blueprints: str):
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, blueprints)
+        return [
+            detail
+            for check, detail in findings_for(validate_mod.check_reachability, tmp)
+            if check == "unreachable"
+        ]
+
+    def test_an_unreferenced_blueprint_is_still_reported(self) -> None:
+        """Proves the check fires inside the fixture, so the exemptions below mean something."""
+        found = self._findings('  <object Name="Vixy_Orphan" Inherits="MeleeWeapon" />')
+        self.assertTrue(any("Vixy_Orphan" in d for d in found))
+
+    def test_mutation_equipment_is_reachable(self) -> None:
+        found = self._findings(
+            '  <object Name="Vixy_Coat" Inherits="MeleeWeapon">\n'
+            '    <tag Name="MutationEquipment" Value="Vixy_Thing" />\n'
+            "  </object>"
+        )
+        self.assertEqual(found, [])
+
+    def test_the_tag_is_followed_up_the_inherits_chain(self) -> None:
+        """Vanilla's own idiom, and the case four of the five tails hit."""
+        found = self._findings(
+            '  <object Name="Vixy_BaseCoat" Inherits="MeleeWeapon">\n'
+            '    <tag Name="MutationEquipment" Value="Vixy_Thing" />\n'
+            "  </object>\n"
+            '  <object Name="Vixy_RedCoat" Inherits="Vixy_BaseCoat" />'
+        )
+        self.assertEqual(found, [])
+
+
 class MutationNames(unittest.TestCase):
     """#593. This fork reaches vanilla mutation entries by name from C#, and a name that does not
     resolve returns null - the caller then does nothing, with no exception and no log line.
