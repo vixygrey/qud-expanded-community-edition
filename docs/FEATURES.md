@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **472** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **212** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **228** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -583,12 +583,13 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Cybernetics.xml` | 9 | 14 |
 | `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
-| `Furniture.xml` | 4 | 1 |
+| `Furniture.xml` | 4 | 9 |
 | `Creatures.xml` | 46 | 1 |
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
-| **Total** | **472 active** | **212** |
+| `Items.xml` | 0 | 8 |
+| **Total** | **472 active** | **228** |
 
 ### 6.2 Melee weapons
 
@@ -2127,8 +2128,9 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
+│   ├── Items.xml               # 8 merged (§30)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
-│   ├── Furniture.xml           # 4 new, 1 merged (§29)
+│   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
 ├── Scripting/                  # 57 classes: 36 mutation stubs, plus options,
@@ -4382,6 +4384,94 @@ build later; `compile_scripting.py` reporting warnings is what caught it.
 `OptionQudExpandedCEGatesSwingShut`, on by default, read live at the end of every turn. Off leaves
 gates as they are from that turn onward — nothing is stored, so a gate already shut simply stays
 shut.
+
+## 30. Everyday objects vary in colour (`Items.xml`, `Furniture.xml`, `OtherEquipment.xml`)
+
+**Seventeen mundane things stop being identical to each other.** Clay pots, baskets, benches,
+bedrolls, robes and the rest each get a colour of their own (#608).
+
+Prompted by [Colors of Qud [Fork]](https://steamcommunity.com/sharedfiles/filedetails/?id=3287770072)
+on the Steam Workshop, which fills this gap. Every palette here is chosen from the blueprint's own
+description; none of that mod's files were read while writing this.
+
+### 30.1 Vanilla ships the machinery and stops early
+
+`RandomColors` is fully data-driven: a comma-separated palette on the XML, one value drawn per
+instance on `ObjectCreatedEvent`, and then **the part removes itself**, so it costs nothing in a
+save. Vanilla uses it on 23 furniture blueprints and 5 items — a vase is never quite the same vase
+twice — and then simply stops.
+
+Its idioms, worth knowing before writing a palette:
+
+| form | meaning |
+|---|---|
+| `MainColor="w" DetailColor="all"` | vanilla's painted pottery — Vase, Pitcher, Ewer, Jug |
+| `MainColor="y,y,y,Y"` on bones | **a repeated value is a weighted draw** — 3-in-4 dull |
+| `PairDetailWithForeground="true"` | both fields take the *same index*, so they cannot contradict |
+
+### 30.2 Two rules decide what gets one
+
+**The colour must carry no information.** That excludes every material ladder in this mod outright —
+bronze through zetachrome is how a player reads a weapon's tier at a glance, and randomising it
+would be actively harmful. It is the same rule vanilla follows when it writes
+`<removepart Name="RandomColors" />` **fourteen times**, on `Cider Vase`, `Honey Vase`, `Wine Vase`
+and `Oil Vase`, where the colour *is* the liquid.
+
+**The palette comes from the description, not from taste.** Each entry in the XML quotes the line it
+was read from. A clay pot is *"Svy mud fired in a marsh oven"*, so it comes out in fired reds and
+ochres rather than vanilla's `all` — an unpainted pot has no reason to come out blue. A bedroll is
+*"goat wool fastened with canvas ties"*, so it stays in undyed naturals, while a bed is *"fabrics…
+laid across wooden slats"* and may carry a dye. Only the **chiliad basket** gets the full range,
+because its description is the only one that says *dyed*.
+
+### 30.3 The liquid owns some colours, and only nine blueprints say so
+
+`LiquidVolume` repaints its container from `DetailColorByLiquid` and `ColorStringByLiquid` on **every
+render**, so any field named by those tags would silently overwrite whatever `RandomColors` set.
+
+Across the entire game, **9 blueprints declare `DetailColorByLiquid` and 2 declare
+`ColorStringByLiquid`** — and `Gourd` is one of them. Its description also turns out not to describe a
+gourd: *"Collagen was molded into a liquid vessel."* So it takes a `MainColor` palette of creams and
+ambers for the collagen body, **no `DetailColor` at all**, and no greens.
+
+`Waterskin`, `Clay Pot` and `Canteen` hold liquid and declare neither tag, so the liquid owns nothing
+on them. Vanilla's own pottery is consistent with the rule rather than an exception to it.
+
+### 30.4 Descendants were checked, because that is where vanilla had to fix it
+
+A part on a base propagates. `Waterskin` has **25 descendants** — the full, empty, honey and random
+skins — and not one of them sets a colour, so they all take the variation cleanly. `GritGateBed` and
+`GritGateChair` set ownership and a tag only; `Preserved Food Basket` sets an inventory table. None
+loses a colour it had chosen.
+
+`Waterskin`'s merge lives in `OtherEquipment.xml` rather than beside the others, because this fork
+already merged it there to give it a coloured display name. One blueprint gets one merge block; the
+two touch different fields, and the name is untouched.
+
+`Chiliad Basket` inherits `Woven Basket` and overrides it, so both fields are restated there — a
+child's part merges over the parent's attribute by attribute, and stating only `DetailColor` would
+have left it carrying the parent's `MainColor` by accident rather than by decision.
+
+### 30.5 Four left alone
+
+| item | why |
+|---|---|
+| **Torch** | its detail colour is the flame |
+| **Canteen** | the description specifies *olive green cloth* |
+| **Bandage** | detail `R` reads as blood |
+| **Table** | detail `C` on *"branches of the living tree resorbed and reformed"* looks deliberate, and I don't understand it well enough to randomise it |
+
+That last one is the honest entry. The rule is that colour carrying information stays fixed, and
+*"I cannot tell whether this means something"* resolves the same way as *"it does"*.
+
+### 30.6 No off-switch
+
+Charter rule 6 asks whether anybody would actually turn a thing off before it gets a switch. This
+changes no mechanic, no number and no interaction; there is nothing to opt out of but the variation
+itself, and a clay pot being brown rather than grey is not a part anybody needs to refuse.
+
+The rule was rewritten in #663 to say so, after this feature and §29 were each given an option nobody
+would use. §29's came out with it.
 
 ## Appendix A — every merged vanilla melee weapon
 

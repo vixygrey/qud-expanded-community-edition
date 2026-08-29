@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
   <object Name="Raven_Empty Weapon Rack" Inherits="Chest">
     <part Name="Render" DisplayName="weapon rack" Tile="Items/sw_weapons_rack.bmp" ColorString="&amp;c" />
@@ -43,5 +43,67 @@
        interior door would. Brinestalk Gate and Iron Gate inherit it. See #631. -->
   <object Name="Gate" Load="Merge">
     <part Name="Vixy_SelfClosingGate" />
+  </object>
+
+  <!-- Random colours on mundane made objects, #608. RandomColors is vanilla machinery: it reads a
+       comma-separated palette off the XML, picks one per instance on ObjectCreatedEvent, and then
+       removes itself - so this costs nothing in a save.
+
+       Two rules govern which blueprints get one and what goes in it.
+
+       The colour must carry no information. That rules out every material ladder in this mod -
+       bronze through zetachrome is how a player reads a weapon's tier at a glance - and it is why
+       vanilla writes <removepart Name="RandomColors" /> fourteen times, on things like Cider Vase
+       and Honey Vase where the colour is the liquid. Every descendant of these was checked: the
+       Grit Gate bed and chair set ownership only, and Preserved Food Basket sets an inventory
+       table, so none of them loses a colour it had chosen.
+
+       The palette comes from the blueprint's own description rather than from taste. Each entry
+       below quotes the line it was read from. Naturals stay narrow; only the Chiliad Basket gets
+       the full range, because its description is the only one that says "dyed". -->
+
+  <!-- "Planks of wood are nailed together simply to form the austere seat" - and the chair the
+       same, at right angles. Pale through dark timber. -->
+  <object Name="Bench" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W,r" />
+  </object>
+  <object Name="Chair" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W,r" />
+  </object>
+  <object Name="Stool" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W,r" />
+  </object>
+
+  <!-- "Fabrics were stuffed with watervine chaff and laid across wooden slats." Fabrics are dyed,
+       so this one may carry a colour a bedroll may not. -->
+  <object Name="Bed" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W,r,g" />
+  </object>
+
+  <!-- "A goat wool bed fastened with canvas ties." Undyed wool and canvas, so naturals only -
+       the distinction from the bed above is the whole reason these are two entries. -->
+  <object Name="Bedroll" Load="Merge">
+    <part Name="RandomColors" DetailColor="y,w,W" />
+  </object>
+
+  <!-- "Kneaded under the salt sun by a leatherworker and stuffed with glo[wing moss]." Tanned
+       leather. -->
+  <object Name="Armchair" Load="Merge">
+    <part Name="RandomColors" DetailColor="w,y,r,W" />
+  </object>
+
+  <!-- "Marsh reed was handcrossed by warp and weft into a vessel." Undyed reed. Chiliad Basket
+       inherits this one and overrides it below, which is why both fields are stated there. -->
+  <object Name="Woven Basket" Load="Merge">
+    <part Name="RandomColors" MainColor="w" DetailColor="w,y,W" />
+  </object>
+
+  <!-- "Dyed rush and palm fronds were pulled to a westwise weave." The only one of these whose
+       description says dyed, so the only one that earns the full range. Declared in vanilla's
+       HiddenObjects.xml rather than Furniture.xml; merges match on the object name, so it sits
+       here beside the basket it inherits from. Both fields are restated because the parent above
+       sets MainColor and a child's part merges over it attribute by attribute. -->
+  <object Name="Chiliad Basket" Load="Merge">
+    <part Name="RandomColors" MainColor="w" DetailColor="all" />
   </object>
 </objects>

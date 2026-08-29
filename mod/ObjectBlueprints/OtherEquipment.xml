@@ -292,6 +292,14 @@
 
   <object Name="Waterskin" Load="Merge">
     <part Name="Render" DisplayName="&amp;Bwater&amp;wskin" />
+    <!-- "A goat's bladder is knotted at the bottom and suspended by a strap." Hide varies, so the
+         glyph does; the coloured display name above is a separate field and is untouched. Twenty-
+         five blueprints inherit this one - the full, empty, honey and random skins - and not one
+         sets a colour, so they all take the variation cleanly. Waterskin carries no
+         DetailColorByLiquid tag, unlike the gourd in Items.xml, so both fields are ours. Kept in
+         this block rather than beside the other colour merges so one blueprint has one merge.
+         See #608. -->
+    <part Name="RandomColors" MainColor="w,y,W" DetailColor="w,y,W" />
   </object>
 
   <object Name="Oilskin" Load="Merge">
