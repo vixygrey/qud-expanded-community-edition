@@ -3345,9 +3345,24 @@ a change that grants power with no content attached, and a new mutation is conte
 spends points on it or does not, every time they make a character. Read at character creation, so
 the option applies to a **new** character and the helptext says so.
 
-> ⚠️ **Not yet played.** Every claim below is read out of `Assembly-CSharp.dll` and compiles, but
-> nothing here has been in a running game. The bleed interaction in §21.5 is the part most likely to
-> want a number changed.
+> ✅ **Played and confirmed on 2026-08-28** (maintainer). Fangs appear in the physical list at 3
+> points and grow on the Face; the bite fires alongside a wielded weapon rather than instead of it;
+> a gas mask goes on and the bite survives, which is §21.3's whole claim checked by eye rather than
+> by decompiler; and the exclusions behave — Beak is refused alongside fangs, horns are not.
+>
+> ⚠️ **Two things have not been watched, and they are different in kind.**
+>
+> **The bleed's rank scaling is a correctness question** (§21.5). `HornsProperties.GetHornLevel()`
+> falls back to its `HornLevel` field because it cannot find a mutation named `Horns`, and
+> `Vixy_Fangs` writes that field on equip and on every `ChangeLevel`. If the sync is wrong the bleed
+> sits at rank 1 forever and nothing announces it — the mutation keeps working, it just stops
+> improving. It needs a character above level 1, since `GetMutationCapForLevel` is `level / 2 + 1`.
+> The cheap version of the check is the fangs' own short description, which prints the save
+> difficulty: expect `20 + 2 × rank`.
+>
+> **The three-source bleed stack is a balance question** (§21.5). Short blade, Bloodletter and fangs
+> together. All three fire; whether that is too much at rank 8 with high Agility wants play, and the
+> dial is `HornsProperties`' presence rather than the cost.
 
 ### 21.1 Every mutation needs a class, and it may not be a vanilla one
 
