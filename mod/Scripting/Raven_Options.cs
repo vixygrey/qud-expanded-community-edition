@@ -50,6 +50,7 @@ namespace QudExpandedCE
         public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
         public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
+        public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -728,6 +729,20 @@ namespace QudExpandedCE
         /// an addition vanilla never had here.
         /// </summary>
         public static bool ImportantArtifacts => Enabled(ImportantArtifactsID, "Yes");
+
+        /// <summary>
+        /// Whether trade is offered by creatures who have nothing to trade.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_TradeOffer</c> reads this each
+        /// time a conversation asks whether trade is possible, so flipping it takes effect on the
+        /// next creature you talk to.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power, and this
+        /// grants none at all - the trade was never possible, and the only thing that changes is
+        /// whether the game offers it before saying so. Off restores the option, and the refusal
+        /// that follows it.
+        /// </summary>
+        public static bool SilentTradeOffers => Enabled(SilentTradeOffersID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);

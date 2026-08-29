@@ -75,6 +75,19 @@ recorded because contributors need them, not because subscribers do.
   the same reason: a fragment that cleared those pools rather than adding to them would have shown
   nothing at all.
 
+- **Creatures with nothing to trade no longer offer to trade** (#571).
+
+  Asking a giant dragonfly to trade was a valid choice right up until you made it, at which point the
+  game told you it had nothing to trade. The information existed before you asked.
+
+  An animal's bite is natural equipment and cannot be traded, so its side of the screen is empty even
+  though it technically carries something - which is why "does it have an inventory" was never the
+  right question. The check is Caves of Qud's own: if nothing they carry would appear on the trade
+  screen, the option is not offered.
+
+  **Companions are unaffected.** Trading with someone who follows you is free and opens even when
+  they carry nothing, because that is how you hand them things.
+
 - **An artifact you marked important is not offered to Argyve** (#570).
 
   Marking something important is supposed to mean *don't let me lose this*. When Argyve asks for a

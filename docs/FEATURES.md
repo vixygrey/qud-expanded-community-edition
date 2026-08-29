@@ -2108,7 +2108,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 23 options (§13)
+│   ├── Options.xml             # 24 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2131,7 +2131,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 55 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 56 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2171,7 +2171,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -4244,6 +4244,62 @@ so none of the three is a gap despite naming no importance check.
 `OptionQudExpandedCEImportantArtifacts`, on by default, read live on every asking. Off restores
 vanilla's unfiltered list. The confirm on system-important items stays either way, since that half
 was never vanilla's to restore.
+
+## 28. Trade is not offered by creatures who have nothing (`Vixy_TradeOffer`)
+
+**Asking a giant dragonfly to trade is a valid choice right up until you make it**, at which point
+the game tells you it has nothing to trade. The information existed before the question (#571).
+
+### 28.1 The obvious predicate is useless
+
+`TradeUI.ShowTradeScreen` refuses on `!Trader.HasPart<Inventory>()` with *"cannot carry things"* —
+and that catches nothing here. The root `Creature` blueprint carries `<part Name="Inventory" />`, so
+**every creature in the game has one**, dragonflies included. That branch is for non-creature
+objects.
+
+What actually empties an animal's side of the screen is that its bite is *equipped natural
+equipment*, and `TradeUI.ValidForTrade` rejects `Object.IsNatural()`. So the inventory is not empty;
+the tradeable part of it is.
+
+### 28.2 So the test is vanilla's own, composed the way vanilla composes it
+
+`GetObjects` lists what passes `ValidForTrade`, and `ShowTradeScreen` refuses when that list is
+empty, `costMultiple > 0`, and `AllowTradeWithNoInventoryEvent` does not override it. All three are
+reproduced, and two are **called rather than reimplemented** — `ValidForTrade` and
+`AllowTradeWithNoInventoryEvent` are both `public static`, so the definition of a tradeable object
+still comes from the game.
+
+**Companions are exempt, deliberately.** `ShowTradeScreen` zeroes `costMultiple` for anything
+`IsPlayerLed`, and the refusal is gated on `costMultiple > 0` — so an empty companion still opens,
+which is how you give them things. Hiding that would break a working interaction to fix a cosmetic
+one.
+
+### 28.3 No conversation merge, unlike §26 and §27
+
+`CanTradeEvent.Check` fires a legacy `"CanTrade"` string event on the actor and the speaker
+**before** its pooled dispatch, and clearing the `CanTrade` flag turns the choice off — `Trade.
+CheckVisible` derives `Visible` from `Enabled`, which is what `CanTradeEvent` returns. So this is one
+part on the player and no XML at all.
+
+Three features in a row reached a conversation choice three different ways: §26 added one, §27
+replaced a part on one, and this one never touches the conversation and changes the answer to a
+question asked upstream of it. Worth knowing before assuming the merge is the tool.
+
+### 28.4 The maintenance liability, stated rather than buried
+
+This **mirrors a composition that lives inside `TradeUI`**. If Freehold changes when the refusal
+fires, this drifts out of step — hiding a choice that would have worked, or offering one that will
+not.
+
+It was taken on deliberately, with the exposure limited two ways: the item test is called rather than
+copied, so what can rot is the three-way combination and not the definition of a tradeable object;
+and a wrong answer costs a menu entry rather than an item. That is a different risk class from the
+rest of §26–§28, and it is the reason this section says so out loud.
+
+### 28.5 Off-switch
+
+`OptionQudExpandedCESilentTradeOffers`, on by default, read live. Off restores the offer, and the
+refusal that follows it.
 
 ## Appendix A — every merged vanilla melee weapon
 
