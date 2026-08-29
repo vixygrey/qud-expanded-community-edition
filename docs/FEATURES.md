@@ -2109,7 +2109,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 25 options (§13)
+│   ├── Options.xml             # 24 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2173,7 +2173,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -4379,11 +4379,14 @@ It also reads `Door.Open` rather than `Door.bOpen`. The latter compiles and carr
 `[Obsolete("mod compat, will be removed after Q2 2024")]`, so it is a warning today and a broken
 build later; `compile_scripting.py` reporting warnings is what caught it.
 
-### 29.6 Off-switch
+### 29.6 No off-switch
 
-`OptionQudExpandedCEGatesSwingShut`, on by default, read live at the end of every turn. Off leaves
-gates as they are from that turn onward — nothing is stored, so a gate already shut simply stays
-shut.
+Under charter rule 6, an option earns its place where a reasonable player could want the mod without
+that part. A gate that shuts itself changes no number, no mechanic and no interaction — §29.3 is the
+whole argument, since it cannot even keep anything in — so nobody would turn it off, and a switch
+nobody uses costs a line in a menu, a `<helptext>` to keep true, and a branch to carry forever.
+
+This shipped with one in #631 and it came out in #663, alongside the rule that says why.
 
 ## 30. Everyday objects vary in colour (`Items.xml`, `Furniture.xml`, `OtherEquipment.xml`)
 

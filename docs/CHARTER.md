@@ -215,6 +215,29 @@ Nobody should have to swallow the whole mod to get one part of it.
 > "Off by default" applies to genuinely *new* opinions this fork introduces — not to what the mod
 > already is.
 
+**And an option has to earn its place.** The rule above says what a default should be; it never
+asked whether the option should exist, and reading it as *"everything gets one"* is how the menu got
+to twenty-five entries. The question comes first:
+
+> **Would anybody actually turn this off?**
+
+An option earns its place where a reasonable player could want the mod *without that part* — changes
+to numbers, difficulty, loot, character creation, or an opinionated system somebody might disagree
+with. Flavour and immersion that changes no mechanic does not need one. A clay pot being brown
+rather than grey is not a part anybody needs to refuse, and neither is a gate that shuts itself.
+
+The cost of getting this wrong is not neutral. Every option is a line in a menu a player has to read
+past to find the one they want, a `<helptext>` to keep true, an entry in the wiring check, and a
+branch to carry in the code forever. Adding one to a change nobody would disable spends all of that
+and buys nothing.
+
+Two cases where the answer is yes despite the change being small: it takes something *away* that a
+player might want back, or it turns off cleanly and somebody has said they want it off. The
+give-artifact filter is the first — the mark it respects is the player's, and a player who would
+rather hand over a marked item should be able to.
+
+Settled in #663, after two flavour features in one day were each given an option nobody would use.
+
 This fork **continues** an existing mod rather than starting one. Someone subscribing to Qud
 Expanded Community Edition is asking for Caves of Qud Expanded, so shipping it inert would be a
 surprising reading of "players choose" — a mod that fails to arrive is not a configurable mod.

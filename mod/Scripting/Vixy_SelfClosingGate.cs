@@ -1,5 +1,4 @@
 using System;
-using QudExpandedCE;
 
 namespace XRL.World.Parts
 {
@@ -60,6 +59,13 @@ namespace XRL.World.Parts
     /// was caught.
     /// </para>
     /// <para>
+    /// <b>No option, under charter rule 6.</b> An option earns its place where a reasonable
+    /// player could want the mod without that part. A gate that shuts itself changes no number,
+    /// no mechanic and no interaction - it cannot even keep anything in - so nobody would turn
+    /// it off, and a switch nobody uses costs a line in the menu, a helptext to keep true and a
+    /// branch to carry forever. It shipped with one in #631 and it was removed in #663.
+    /// </para>
+    /// <para>
     /// Charter rule 5: one end-of-turn check calling a public method on a vanilla part. No I/O, no
     /// reflection, no Harmony, no state.
     /// </para>
@@ -76,7 +82,7 @@ namespace XRL.World.Parts
         {
             Door door = ParentObject.GetPart<Door>();
 
-            if (Raven_Options.GatesSwingShut && door != null && door.Open)
+            if (door != null && door.Open)
             {
                 door.AttemptClose(
                     null,

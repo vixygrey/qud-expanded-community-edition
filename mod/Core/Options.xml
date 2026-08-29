@@ -228,27 +228,6 @@
   </option>
 
   <option
-    ID="OptionQudExpandedCEGatesSwingShut"
-    DisplayText="{{C|Qud Expanded}}: gates swing shut behind you"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded gate door close shut latch village fence corral"
-  >
-    <helptext>
-            Lets a gate close itself once nothing is standing in it.
-
-            Caves of Qud never closes anything behind you, so a village gate you walk through stays swinging for the rest of the run. A {{Y|brinestalk gate}} is described as set across an {{y|iron-latched rail}}, and a latch is a thing that catches - so now it does.
-
-            {{y|Gates only.}} Interior doors are left alone: leaving one open to shoot through is a real tactical choice. A gate costs you nothing when shut, because you can already see through it, shoot through it and fly over it.
-
-            This does not keep anything in or out. Anything that can walk opens a door by walking into it, livestock included. What changes is that a village looks like somebody lives in it.
-
-            Applies immediately.
-        </helptext>
-  </option>
-
-  <option
     ID="OptionQudExpandedCESilentTradeOffers"
     DisplayText="{{C|Qud Expanded}}: don't offer trade to creatures with nothing to trade"
     Category="Mods"
