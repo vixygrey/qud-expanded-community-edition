@@ -379,6 +379,77 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class VariantDensity(unittest.TestCase):
+    """#613. A coat must split its parent's share of a table rather than add a second roll.
+
+    Reported in play as a croc and a silt croc on one tile. The arithmetic is the point: vanilla
+    puts one croc in a salt marsh at Chance 50, and a variant merged in beside it at Chance 50 is a
+    second independent roll, so the pair expects two half-crocs instead of one.
+
+    Both directions are tested. A check that cannot fail is worth nothing, and this one passed the
+    whole time the bug was shipping - because `scatter-share`, the check that *did* look at these
+    tables, measures a share rather than a density.
+    """
+
+    CROC = "SaltMarshZoneGlobals|Croc"
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _mod(self, entries: str) -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            '  <object Name="Vixy_SiltCroc" Inherits="Croc" />',
+            f'  <population Name="SaltMarshZoneGlobals" Load="Merge">\n{entries}\n  </population>',
+        )
+        return tmp
+
+    def _has_snapshot_figure(self, tmp: Path) -> bool:
+        data = json.loads((tmp / "tools" / "qud-api.json").read_text(encoding="utf-8"))
+        return self.CROC in data.get("variant_parent_quantities", {})
+
+    def test_a_variant_added_beside_its_parent_is_reported(self) -> None:
+        tmp = self._mod(
+            '    <object Chance="50" Number="1" Blueprint="Vixy_SiltCroc" />'
+        )
+        self.assertTrue(
+            self._has_snapshot_figure(tmp), "snapshot has no figure; check cannot run"
+        )
+        items = findings_for(validate_mod.check_variant_density, tmp)
+        self.assertTrue(
+            any(check == "variant-density" for check, _ in items),
+            "a variant doubling its parent's density was not reported",
+        )
+
+    def test_splitting_the_parent_s_chance_is_clean(self) -> None:
+        tmp = self._mod(
+            '    <object Chance="25" Blueprint="Croc" />\n'
+            '    <object Chance="25" Number="1" Blueprint="Vixy_SiltCroc" />'
+        )
+        items = findings_for(validate_mod.check_variant_density, tmp)
+        self.assertEqual(
+            [i for i in items if i[0] == "variant-density"],
+            [],
+            "a correctly split pair was reported",
+        )
+
+    def test_a_table_the_snapshot_does_not_cover_is_not_guessed_at(self) -> None:
+        """The boundary: no vanilla figure means no ratio, and silence beats a number made up."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            '  <object Name="Vixy_SiltCroc" Inherits="Croc" />',
+            '  <population Name="Vixy_OwnTable">\n'
+            '    <object Chance="50" Number="1" Blueprint="Vixy_SiltCroc" />\n'
+            "  </population>",
+        )
+        items = findings_for(validate_mod.check_variant_density, tmp)
+        self.assertEqual([i for i in items if i[0] == "variant-density"], [])
+
+
 class MutationClasses(unittest.TestCase):
     """#589. A `<mutation Class=>` names a C# type exactly as a blueprint's part does, and until
     now nothing checked it — check_scripting_parts only ever walked `<part Name=>`.

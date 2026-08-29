@@ -14,6 +14,37 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Creature variants doubled how many animals a zone had** (#613).
+
+  Reported in play: a croc and a silt croc standing on the same tile in a salt marsh. Every coat was
+  rolling *beside* the ordinary animal instead of taking part of its chance, so a salt marsh expected
+  two crocs where Caves of Qud expects one, and a quarter of them got both. **30 animals were
+  affected** — dogs, goats, boars, baboons, beetles, dragonflies and the rest — at a middling 1.6x
+  and a worst of 2.11x.
+
+  Every coat now splits its parent's share. A salt marsh gets one croc's worth of croc and a coin
+  decides which croc it is, which is what these were always meant to be: a change of colour, not more
+  animals. Twenty-seven of the thirty land on vanilla's figure exactly; the other three are within
+  4.4%, because a chance has to be a whole number.
+
+  **Turning creature variants off now leaves the ordinary animal in place** rather than removing the
+  entry, so the world holds the same number of animals either way. Before this, switching them off
+  would have taken those animals out of the world instead of repainting them.
+
+  The stacking itself is Caves of Qud's, not this mod's — a guard against placing two creatures in
+  one cell hands back the cell it was avoiding. It is recorded in `docs/LESSONS.md` and left alone;
+  what this mod controls is how often placement reaches it.
+
+- **(internal)** `variant-density` checks that a coat splits its parent's share of a table rather
+  than adding a second roll (#613).
+
+  `scatter-share` could not have caught this and never could: it measures this fork's share of a
+  whole table against a ceiling of half, and the salt marsh is about a tenth mine while holding twice
+  vanilla's crocs, because 260 watervine and brinestalk drown one reptile. Share is a property of a
+  table; density is a property of a blueprint, and they want different checks.
+
 ### Added
 
 - **Fangs**, a new 3-point physical mutation, on by default (#589).

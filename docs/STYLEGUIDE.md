@@ -1286,6 +1286,7 @@ seconds rather than after a round trip.
 | A `.rpm` map patch whose identity is its file path | `map-id` |
 | A subtype's starting gear table not resolving | `subtype-gear` |
 | A tag name or merged table the snapshot has never seen | `snapshot-coverage`, against `tag_forms` + `tag_forms_absent` and the table sections |
+| A creature variant splitting its parent's share of a table, not adding to it | `variant-density`, against the snapshot's `variant_parent_quantities` |
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
 | Filenames without spaces | `filename-space` |
@@ -1362,6 +1363,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
 | `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
 | `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
+| `variant-density` | `validate_mod.py` | a creature variant splitting its parent's share of a table rather than adding a second roll |
 | `mutation-class` | `validate_mod.py` | a `<mutation Class=>` naming a vanilla class, which collides with vanilla's own entry |
 | `naming-amounts` | `validate_mod.py` | a new namestyle stating `Format` and every pool `Amount`, which default to silence |
 | `naming-ascii` | `validate_mod.py` | syllables staying ASCII, as all 3,074 of vanilla's are |

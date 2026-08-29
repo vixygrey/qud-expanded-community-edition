@@ -2848,17 +2848,53 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 | sorrel equimax | `Equimax` | `DesertCanyonZoneGlobals-Reachable` | Chance=10 Number=1d6 |
 | verdigris glowfish | `Glowfish` | `SaltMarshZoneGlobals` | Chance=75 Number=1d4 |
 
-### 17.7 The option
+### 17.7 A coat splits its parent's share, and never adds to it
+
+**Every variant entry takes part of the chance vanilla gave the ordinary animal, rather than
+rolling beside it.** A salt marsh gets one croc's worth of croc, and a coin decides which croc it
+is:
+
+```xml
+<!-- Croc was 50 in vanilla; now 25 for it and 25 for the variant -->
+<object Chance="25" Blueprint="Croc" />
+<object Chance="25" Number="1" Blueprint="Vixy_SiltCroc" />
+```
+
+**This was wrong until #613**, and a player found it: a croc and a silt croc standing on the same
+tile in a salt marsh. `SaltMarshZoneGlobals` is a flat list of independent `Chance` rolls, so a
+variant merged in beside its parent was a *second* roll — the marsh expected 1.0 crocs where vanilla
+expected 0.5, and a quarter of marshes got both. **30 vanilla creatures had drifted the same way, at
+a median of 1.6x and a worst of 2.11x.** The fix lowers vanilla's chance by merging onto its own
+entry and gives the difference to the coat, so each group sums back to vanilla's figure; 27 of the
+30 land exactly, and the other three are within 4.4% because chances are integers.
+
+`variant-density` in `tools/validate_mod.py` holds the line now, against the snapshot's
+`variant_parent_quantities`. **`scatter-share` could not have caught this and never could** — it
+measures a share of a whole table against a 50% ceiling, and this table is about a tenth this fork's
+content while holding twice vanilla's crocs, because 260 watervine and brinestalk drown one reptile.
+Share is a property of a table; density is a property of a blueprint.
+
+**Where vanilla wrote a weighted group we were right all along.** `WaterCreatures` is
+`Style="pickone"`, so `Vixy_PaleCroc` takes a share of one draw rather than adding a second. The bug
+only ever existed where vanilla wrote a flat `Chance` list.
+
+### 17.8 The option
 
 `OptionQudExpandedCECreatureVariants`, default on, read by `Raven_Options.ApplyCreatureVariants`. It
-walks `PopulationManager.Populations` and detaches every entry whose blueprint carries the
-`Vixy_CreatureVariant` tag, remembering where each came from so the toggle is reversible — the same
-shape as the psionic chip option in §13.
+walks `PopulationManager.Populations` and, for every entry whose blueprint carries the
+`Vixy_CreatureVariant` tag, **switches that entry to the blueprint it inherits from** — remembering
+the original so the toggle is reversible.
+
+**Off means ordinary, not absent**, and since #613 it has to. A brindle dog and a dog are one dog's
+worth of chance between them, so deleting the brindle half would take that dog out of the world
+rather than repainting it. Switching the blueprint keeps the entry's own `Chance` and `Number`,
+which were sized so the group sums to vanilla's expectation — so animal density is identical whether
+the coats are on or off, with no arithmetic anywhere.
 
 The tag matters: a `Vixy_` prefix match would also catch 32 glaives, spears and quarterstaves and
 quietly empty three weapon families out of the loot tables.
 
-The first attempt gated this with `ExcludeFromDynamicEncountersOption`, which costs no C# at all —
+The first attempt gated this with `ExcludeFromDynamicEncountersOption`, which needed no C# at all —
 but that tag is read only by the dynamic table fabricators, so on this route it gated nothing.
 
 ## 18. Harvestable plants (`ObjectBlueprints/Plants.xml`)

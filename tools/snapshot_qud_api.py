@@ -825,6 +825,80 @@ def collect_scatter_quantities(game: Path) -> dict[str, float]:
     return totals
 
 
+def variant_parents() -> dict[str, set[str]]:
+    """Which vanilla creature each of this fork's variants is a coat of, per table it appears in.
+
+    Keys come from this mod, values from the game, which is this file's rule for every mod-scoped
+    section. A variant is identified by `Inherits=` pointing at a blueprint this fork does not own -
+    that inheritance is what makes it a coat rather than a creature, so a variant added later is
+    covered by existing rather than by being listed here.
+    """
+    prefixes = ("Vixy_", "Raven_")
+    parents: dict[str, str] = {}
+    creatures = MOD / "ObjectBlueprints" / "Creatures.xml"
+    if creatures.is_file():
+        for obj in parse(creatures, lenient=True).iter("object"):
+            name, inherits = obj.get("Name") or "", obj.get("Inherits") or ""
+            if (
+                name.startswith(prefixes)
+                and inherits
+                and not inherits.startswith(prefixes)
+            ):
+                parents[name] = inherits
+
+    wanted: dict[str, set[str]] = {}
+    tables = MOD / "Core" / "PopulationTables.xml"
+    if tables.is_file():
+        for pop in parse(tables, lenient=True).iter("population"):
+            name = pop.get("Name")
+            if not name:
+                continue
+            for obj in pop.iter("object"):
+                if obj.get("Weight") is not None:
+                    continue
+                parent = parents.get(obj.get("Blueprint") or "")
+                if parent:
+                    wanted.setdefault(name, set()).add(parent)
+    return wanted
+
+
+def collect_variant_parent_quantities(game: Path) -> dict[str, list[float]]:
+    """Vanilla's expected count of each creature this fork adds a coat of, in each table.
+
+    `scatter_quantities` measures a whole table, which is the right shape for a share and the wrong
+    one for a density: `SaltMarshZoneGlobals` is about a tenth this fork's content and still had
+    twice vanilla's crocs in it, because 260 watervine drown one reptile (#613). This is the
+    per-blueprint figure `check_variant_density` needs, and it cannot be derived from the table
+    total.
+    """
+    from validate_mod import number_midpoint
+
+    wanted = variant_parents()
+    totals: dict[str, tuple[float, float]] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            name = pop.get("Name")
+            if name not in wanted:
+                continue
+            for obj in pop.iter("object"):
+                blueprint = obj.get("Blueprint")
+                if blueprint not in wanted[name] or obj.get("Weight") is not None:
+                    continue
+                key = f"{name}|{blueprint}"
+                midpoint = number_midpoint(obj.get("Number"))
+                expected, _ = totals.get(key, (0.0, midpoint))
+                # Both halves are needed. The expectation is what the density is checked against;
+                # the midpoint is what a merge onto this entry inherits when it states no Number of
+                # its own, and without it the mod's side of the ratio cannot be computed at all.
+                totals[key] = (
+                    round(
+                        expected + float(obj.get("Chance") or 100) / 100 * midpoint, 4
+                    ),
+                    midpoint,
+                )
+    return {k: list(v) for k, v in totals.items()}
+
+
 def collect_absent_tables(game: Path) -> list[str]:
     """Population tables this mod merges into that vanilla does not define.
 
@@ -1143,6 +1217,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     tag_forms = collect_tag_forms(game)
     tag_forms_absent = collect_tag_forms_absent(game)
     scatter_quantities = collect_scatter_quantities(game)
+    variant_parent_quantities = collect_variant_parent_quantities(game)
     absent_tables = collect_absent_tables(game)
     template_hints = collect_template_hints(game)
     skill_powers = collect_skill_powers(game)
@@ -1193,6 +1268,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + json.dumps(tag_forms_absent, sort_keys=True)
             + "\0"
             + json.dumps(scatter_quantities, sort_keys=True)
+            + json.dumps(variant_parent_quantities, sort_keys=True)
             + "\0"
             + json.dumps(absent_tables, sort_keys=True)
             + "\0"
@@ -1237,6 +1313,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "tag_forms": len(tag_forms),
             "tag_forms_absent": len(tag_forms_absent),
             "scatter_quantities": len(scatter_quantities),
+            "variant_parent_quantities": len(variant_parent_quantities),
             "absent_tables": len(absent_tables),
             "template_hints": len(template_hints),
             "skill_powers": len(skill_powers),
@@ -1254,6 +1331,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "tag_forms": tag_forms,
         "tag_forms_absent": tag_forms_absent,
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
+        "variant_parent_quantities": dict(sorted(variant_parent_quantities.items())),
         "absent_tables": absent_tables,
         "template_hints": template_hints,
         "skill_powers": dict(sorted(skill_powers.items())),
