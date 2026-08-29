@@ -1,4 +1,4 @@
-using XRL;
+﻿using XRL;
 using XRL.World;
 using XRL.World.Parts;
 
@@ -65,6 +65,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Bearing>();
                 player.RequirePart<Vixy_TrashMemory>();
                 player.RequirePart<Vixy_TradeOffer>();
+                player.RequirePart<Vixy_LiquidGather>();
             }
         }
     }

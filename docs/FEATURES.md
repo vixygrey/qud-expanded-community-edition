@@ -2133,9 +2133,9 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 57 classes: 36 mutation stubs, plus options,
-│                               # the chip-slot mutator, burden, bearings, the
-│                               # ammo payload, and four Finesse powers
+├── Scripting/                  # 58 classes: 36 mutation stubs, plus options,
+│                               # the chip-slot mutator, burden, bearings, liquid
+│                               # gather, the ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -4485,6 +4485,114 @@ itself, and a clay pot being brown rather than grey is not a part anybody needs 
 
 The rule was rewritten in #663 to say so, after this feature and §29 were each given an option nobody
 would use. §29's came out with it.
+
+## 31. Gather a liquid into one container (`Vixy_LiquidGather`)
+
+**Two waterskins each holding a few drams of honey become one skin of honey and one skin free for
+something else.** A `gather liquid` action on a container pulls every dram of exactly that liquid out
+of the rest of the inventory and into it, in one press (#561).
+
+### 31.1 Vanilla already does the transfer — this is a safer form of it
+
+`fill` pours one container into another and always could. Saying otherwise would be inventing a gap.
+What it does not do is check:
+
+| | vanilla `fill` | `gather liquid` |
+|---|---|---|
+| targets offered | every unsealed container, compatible or not | only ones holding exactly the same liquid |
+| incompatible target | offers *"empty it first?"*, then mixes | never offered |
+| prompts | pick a target, then type a dram count | none |
+| containers per press | one | every match, least full first |
+| energy | free | 1000 (one turn) |
+
+### 31.2 What it buys, since the obvious answer is wrong
+
+**Not money.** The water economy is already pooled: `GetFreeDramsEvent` sums `Volume` across every
+unsealed container holding the pure liquid, and `UseDramsEvent` drains them in sequence.
+`TradeScreen`, `PlayerStatusBar` and `WaterRitualBegin` all read `GetFreeDrams()`, so 12 + 40 + 3 + 61
++ 8 drams already spends exactly like 124.
+
+**Not item count either.** `LiquidVolume.SameAs(IPart)` is unconditionally `false`, so no two liquid
+containers ever stack — two identical *empty* waterskins included. Five skins stay five skins.
+
+What it buys is **an empty container**. `GetStorableDramsEvent`, `GetAutoCollectDramsEvent` and
+`GiveDrams` all gate on `IsPureLiquid(Liquid) || IsEmpty()`, so a skin with three drams of water in it
+cannot accept honey, cider or convalessence at all. Emptying it is what unlocks it, and *which liquids
+I can carry* is a decision where tidiness is not.
+
+### 31.3 Exact match is safe by arithmetic, not by guard
+
+Water is money, so merging 50 drams of fresh into 2 of salty would be a catastrophic loss dressed as a
+convenience. That path does not exist here, and not because something checks for it:
+
+- `LiquidSameAs` compares the `ComponentLiquids` proportion maps for equality and **ignores volume**,
+  so `{water:1000}` at 12 drams and at 61 drams are the same liquid and fresh and salty never are.
+- `MixWith` on two identical maps computes `floor((p·v₁ + p·v₂) / (v₁ + v₂))` per component, which is
+  `p`.
+
+An exact-match merge is arithmetically incapable of changing a mixture. There is no downgrade to guard
+against rather than a guard that has to stay correct — which is why the feature is exact-match only
+and offers no compatible-mixture merging.
+
+### 31.4 On the player, not on the containers
+
+`GetInventoryActionsEvent` and `GetInventoryActionsAlwaysEvent` are sent to the **object** only, which
+makes a part merged onto `WaterContainer`, `Vessel` and the six `Item`-direct containers look like the
+only route. It is the wrong one: blueprint parts are baked in at creation, so **every container already
+in a save would silently never get the action** — the same trap §14 carries two hooks to avoid.
+
+`OwnerGetInventoryActionsEvent` is fired on the **actor** by `EquipmentAPI`, alongside the other two,
+and is how `Telekinesis` and `Psychometry` hang an action on somebody else's object. Paired with
+`AddAction(..., FireOnActor: true)`, one part on the player handles both halves. No merges, and
+existing saves get it on load through `Vixy_PlayerParts`.
+
+### 31.5 Guards, and the three liquids that bite
+
+Sources come from `Actor.GetInventoryAndEquipment`, exactly as `PerformFill` does, so **followers stay
+out**. Skipped as sources: sealed, in stasis, open volumes, and anything answering
+`ProducesLiquidEvent` — a self-refilling jug is a tap, not a stash, and draining one on every press
+would be a pump rather than a tidy-up. The destination must also pass `AllowLiquidCollection`, so a
+container set to auto-collect something else is left alone.
+
+**Ownership asks once for the whole run**, following `CleanWithLiquid` rather than `PerformFill`'s
+per-container prompt — four containers are one decision — and then broadcasts for help per owned
+container as vanilla does, because that half is the owner noticing.
+
+The transfer itself goes through `MixWith`, so the three liquids with per-fill side effects behave
+exactly as they always have: `LiquidAcid` applies `ContainedAcidEating`, `LiquidWarmStatic` applies
+`ContainedStaticGlitching`, and `LiquidNeutronFlux` **detonates by default** unless a
+`NeutronFluxContainment` handler says otherwise. Vanilla fires these once per fill and a sweep fires
+them once per pair, so `RequestInterfaceExit` ends the run rather than carrying it through an
+explosion.
+
+### 31.6 Why it costs a turn when `fill` is free
+
+`LiquidVolume` calls `UseEnergy` in five places — Drink, Collect, Clean, Seal, Unseal — all 1000.
+`Fill`, `Pour` and `Drain` cost nothing at all, so charging here is **deliberately stricter than the
+action it replaces**. Draining four containers in one press is doing more than one fill, `CleanAll` is
+the closer analogue in shape and charges 1000, and a turn is the cheapest price the game has. Said out
+loud because it is a departure, not a match.
+
+### 31.7 Not offered on an empty container
+
+Gathering *into* an empty container would have to ask which liquid, and that question is what `fill`
+already is. So the action appears only on a container that holds something, and the container you press
+it on is the one you are keeping.
+
+### 31.8 No off-switch
+
+Charter rule 6 asks whether anybody would actually turn a thing off before it gets a switch, and the
+answer here is no. This changes no number, no loot table and no part of character creation. It takes
+nothing away: `fill` is untouched and still does everything it did, including pouring into a container
+holding something else if that is what you want. And it reaches nothing `fill` could not — same
+inventory, same seal, stasis and ownership guards, same `MixWith`.
+
+Rule 6 names the two cases where a small change still earns an option: it takes something away that a
+player might want back, or somebody has said they want it off. Neither applies. What an option would
+have bought is a line in a menu somebody has to read past, a `<helptext>` to keep true, an entry in
+the wiring check and a branch to carry forever.
+
+This shipped with one and it came out before merge, the same call #664 made on §29's gate.
 
 ## Appendix A — every merged vanilla melee weapon
 

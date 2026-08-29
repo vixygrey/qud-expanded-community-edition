@@ -14,6 +14,45 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Gather a liquid into one container** (#561).
+
+  A `gather liquid` action on any container holding a liquid, which pulls every dram of exactly that
+  liquid out of the rest of your inventory and into that one, least full first. Two waterskins with a
+  few drams of honey each become one skin of honey and one skin free for something else.
+
+  **It only ever pours a liquid into a container already holding the same liquid**, so it cannot turn
+  fresh water into salty. That is not a safeguard bolted on: the test compares the mixtures and
+  ignores how much is in each, and merging two identical mixtures is arithmetically incapable of
+  changing either. Nothing else is offered, and no compatible-mixture merging is either.
+
+  **What it buys you is an empty container, and I want to be honest that it is not more than that.**
+  It does not make you richer — Caves of Qud already adds up every dram of water you carry when you
+  pay for something, whichever skin it is in — and it does not shorten your inventory, because liquid
+  containers have never stacked. What a partly full skin does cost you is the skin: three drams of
+  water in it and it cannot pick up honey, cider or convalessence at all. Emptying it is what unlocks
+  it.
+
+  **`fill` could already do the transfer.** What it will not do is check. It offers every container
+  you own, and picking one holding something else asks whether to empty it first and then mixes the
+  two. This offers only exact matches, never asks for a dram count, and does all of them in one press.
+
+  Costs **one turn**, however many containers it drains — deliberately stricter than `fill`, `pour`
+  and `drain`, which are all free. Draining four containers at once is doing more than one fill, and a
+  turn is the cheapest price the game has.
+
+  Containers belonging to somebody else ask once for the whole sweep rather than once each. Sealed
+  containers, containers in stasis, anything set to auto-collect something else and anything that
+  refills itself are all left alone — a self-filling jug is a tap, not a stash. Acid still eats its
+  container and neutron flux still detonates, exactly as they do on an ordinary fill, and either one
+  ends the sweep rather than being carried through.
+
+  **No option**, deliberately. It changes no number and no loot table, it takes nothing away — `fill`
+  still does everything it did — and it reaches nothing `fill` could not. There is nothing to refuse
+  but a menu entry that does the same job with fewer keystrokes.
+
+
 ## [2.9.0] - 2026-08-29
 
 ### Fixed
