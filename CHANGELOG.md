@@ -61,6 +61,10 @@ recorded because contributors need them, not because subscribers do.
   anything in the game. This spends what was already built. Disks already in a save keep whatever
   recipe they rolled.
 
+  **Disk specialists are the exception, and stay broad.** A disk merchant stocks every tier, because
+  that is the reason to walk to one; the legendary version leans to the top of the ladder, as do the
+  Barathrumites, who are the tinkers. All 34 tables are covered.
+
 - **Tail**, a 1-point physical mutation, on by default (#590).
 
   A tail. It gives you 1 DV, and when something would knock you down — a shield slam, a rocket jump,
