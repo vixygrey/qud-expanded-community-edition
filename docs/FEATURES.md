@@ -3717,9 +3717,16 @@ dismemberability — making the mutation stronger, not more limited.
 deep ruins lean late, and a top-tier blueprint from a Joppa stall is roughly one disk in seventy
 rather than one in eight (#582).
 
-> ⚠️ **Not yet played.** No code and no price change: per the issue's own sequencing, the existing
-> value ladder does the gating until someone has stood in front of an early merchant with an early
-> purse.
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), at an early-game merchant — which is the
+> case the issue said to check before anything else, because it is the one that decides whether the
+> price ladder is doing the gating on its own.
+>
+> That answers §24.5: **the value ladder is left alone, and now on evidence rather than on caution.**
+> A high-tier disk can appear on an early shelf, and its price is what stops it walking off with an
+> early purse. No code changed, and none needs to.
+>
+> ⚠️ The seven untiered tables in §24.3 are a separate change and are **not** covered by that
+> session — a disk merchant's shelf and a Barathrumite leader's pack have not been looked at.
 
 ### 24.1 Vanilla draws uniformly, and built the fix it never used
 
