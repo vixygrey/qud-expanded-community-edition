@@ -1294,6 +1294,7 @@ seconds rather than after a round trip.
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
 | A mutation's `Class` existing, and never being a vanilla one | `mutation-class`, `missing-script` |
 | A mutation reached by name from C# existing at all | `mutation-name`, against the snapshot's `mutation_names` |
+| Mutation equipment counting as reachable, since the variant picker is its route | `unreachable`, following `MutationEquipment` up `Inherits` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
 | A file under `mod/` no declared path loads | `directory-coverage`, against `manifest.json`'s `Directories` |

@@ -2887,6 +2887,36 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                     continue
                 tagged.add(name)
 
+    # A fourth route, and the one that is invisible from the XML: mutation equipment. A blueprint
+    # tagged `MutationEquipment` is collected by `Mutations.GetVariants` and offered in the chargen
+    # variant picker, so it reaches a player without any table, tag or reference naming it. The tag
+    # is inherited in vanilla's own idiom - `Stinger Confusion` gets it from `Stinger` - so the
+    # walk up `Inherits` is required rather than tidy.
+    #
+    # Until #590 this fork had exactly one piece of mutation equipment and it passed by accident,
+    # because `Vixy_Fangs` happens to be named as a `Variant=` on its own mutation node. A second
+    # variant of anything would have tripped it, and four of five tails duly did.
+    mutation_equipment: set[str] = set()
+    declared: dict[str, ET.Element] = {}
+    for root in roots.values():
+        for obj in root.iter("object"):
+            if obj.get("Name"):
+                declared[obj.get("Name")] = obj
+    for name, obj in declared.items():
+        seen: set[str] = set()
+        node: ET.Element | None = obj
+        while node is not None:
+            if any(
+                tag.get("Name") == "MutationEquipment" for tag in node.findall("tag")
+            ):
+                mutation_equipment.add(name)
+                break
+            parent = node.get("Inherits")
+            if not parent or parent in seen:
+                break
+            seen.add(parent)
+            node = declared.get(parent)
+
     # An object is reachable if ANYTHING references it: a population table (Blueprint=), a map
     # file placing it into a cell, or another object pointing at it (e.g. a cybernetic's
     # FistObject=). Checking only Blueprint= reported Joppa's furniture and the cybernetic fist
@@ -2904,7 +2934,12 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     in_tables = referenced
 
     for name, path in sorted(defined.items()):
-        if name not in in_tables and name not in tinkerable and name not in tagged:
+        if (
+            name not in in_tables
+            and name not in tinkerable
+            and name not in tagged
+            and name not in mutation_equipment
+        ):
             f.add(
                 "unreachable",
                 f"{name} ({path.name}) is in no population table, carries no "

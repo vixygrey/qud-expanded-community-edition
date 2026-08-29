@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <mutations>
   <!--
         The first mutation this fork declares. Every <mutation> needs a Class, and a Class is a
@@ -33,6 +33,33 @@
       Exclusions="Beak"
       BearerDescription="the fanged"
       Tile="Items/girshling_fangs.bmp"
+    />
+
+    <!--
+        Cost 1, and that is why it does not level. Every 1-point physical mutation vanilla ships
+        returns false from CanLevel and an empty string from GetLevelText - Beak, Thick Fur, Night
+        Vision, Slime Glands - so a point buys flat effects, permanently. The footing save scales off
+        the character's Agility instead, which is the only growth a mutation at this price can have.
+
+        Variant names the default tail; the other four are picked at chargen. Every variant behaves
+        identically - they exist so a player can say which animal they are, which is a roleplaying
+        choice rather than a mechanical one. BaseMutation.SelectVariant renders each blueprint's own
+        name and tile in the picker.
+
+        No Exclusions. The tail occupies the Tail part, which nothing else in this fork touches, and
+        vanilla's own Stinger claims the same part through a manager id rather than by owning it - so
+        a character may take both and Stinger will find its own.
+    -->
+
+    <mutation
+      Name="Tail"
+      Cost="1"
+      MaxSelected="1"
+      Class="Vixy_Tail"
+      Variant="Vixy_FoxTail"
+      Exclusions=""
+      BearerDescription="the tailed"
+      Tile="Creatures/natural-weapon-tail.bmp"
     />
   </category>
 </mutations>
