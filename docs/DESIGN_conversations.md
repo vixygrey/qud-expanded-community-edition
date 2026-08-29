@@ -103,7 +103,8 @@ The part that actually needs code: **"have you heard anything?"** producing answ
 from the live world rather than a fixed pool.
 
 Sources already available:
-- The player's kill and faction reputation data (see `API_VERIFICATION.md`)
+- The player's kill and faction reputation data (hooks confirmed in my API verification notes,
+  reproduced on #180)
 - The historic record — `HistoricEntity`, and the player's own entity via
   `QudHistoryFactory.RequirePlayerEntity()`
 - Zone and settlement state near the speaker
@@ -126,8 +127,8 @@ the player to ignore NPC dialogue, which is the opposite of the goal. Every gene
 should reference something real: a faction you have actually angered, a settlement that
 actually exists, a creature you actually killed nearby.
 
-That is the same **derive, don't sample** rule as `lore-expansion`'s ground rule G1, and it
-applies here for the same reason.
+That is the same **derive, don't sample** rule as ground rule G1 of `lore-expansion` — a private
+sibling project of mine, not readable from this repository — and it applies here for the same reason.
 
 Good sources, in rough order of how grounded they are:
 
