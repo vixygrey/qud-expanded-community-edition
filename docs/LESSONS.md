@@ -2127,6 +2127,26 @@ on **where I write something** rather than on **where it ends up**.
 - `scatter_quantity` summed the merge block, and missed everything behind a reference (#544).
 - `check_placement_hint` again, same reference, different check (#547).
 
+**A second variant of the same disease, twice in one week.** Both of these checks named one
+instance in a string literal and silently stopped covering the file when a second arrived.
+
+- `check_docs.py`'s `WORD_NUMBERS` stopped at `twenty`, and the capture groups stopped at `\w`. The
+  mod reached its twenty-first option, three documents spelled it *"Twenty-one"*, and the check
+  failed pointing at `one` — the wrong figure, with a message about an unknown number rather than a
+  stale count (#605).
+- `naming-option-coverage` compared each namestyle against the literal `"Qudish"` and skipped
+  everything else. It had been correct for as long as Qudish was the only namestyle this fork
+  merged into; the moment the Issachari pools arrived it covered nothing while still passing, which
+  is exactly the failure it was written to prevent (#632).
+
+> **A check that names one instance is a check with an expiry date.** It passes hardest at the
+> moment it stops being true, because nothing about a check that silently narrows its scope looks
+> different from a check that found nothing wrong.
+
+The tell is the same in both: a literal naming *the thing there is currently one of*. Keying on a
+map, and reporting an entry the map has that the data does not, costs a few lines and removes the
+expiry.
+
 **What to do instead.** After fixing a resolution bug, grep for the other readers of the same
 structure before closing it — here, everything that iterates `population` and filters
 `Load == "Merge"`. And test the *negative*: a check that passes on correct content proves nothing
@@ -2553,3 +2573,47 @@ Worth separating from a related and healthier case: an issue can be *filed* from
 observation deliberately and usefully — #613's croc stacking arrived as a bug report and was real. The
 failure here is not the source, it is the source going unrecorded until the premise had already been
 spent on.
+
+## Two manifest features can be mutually exclusive, and the failure is silence
+
+`GeneralAskName` gates a complete conversation feature, appears nowhere in the game's data, and
+`GetBoolSetting` returns false for a key it cannot find — so a mod is the only thing that could ever
+switch it on. `LoadGlobalConfig` ends with the call that would let one:
+
+```csharp
+ModManager.ForEachFile("GlobalConfig.json", delegate(string fileName) { ... });
+```
+
+That call takes `Recursive`, defaulted to **false**, which matches on `ModFile.RelativeName` — the
+path relative to the mod root. So the file has to sit at the mod root to be found.
+
+**And this mod has no reachable root.** `ModInfo.InitializeFiles` walks the whole mod only when
+`manifest.json` declares no `Directories`; otherwise it enumerates the declared paths and nothing
+else, so a root file is never registered at all. Declaring the root as a path does not rescue it,
+because the rack de-duplicates by containment — the root contains every other entry, so adding it
+removes them all and enumerates everything underneath, including the directory gated behind
+`"Options": "OptionQudExpandedCEJoppaBuilding==Yes"`. Reaching the setting would have cost a shipped
+option its meaning.
+
+Both features are documented. Neither mentions the other. The interaction is visible only by reading
+`ModInfo`, and #651 asks upstream for the one-argument fix.
+
+> **A mod's own manifest can put a game feature out of reach, and nothing reports it.** Before
+> designing against a mechanism that reads from a mod, check that this mod's file layout is one the
+> mechanism can see.
+
+**What actually caught it was a check written for something else.** I had already designed the
+feature, written `mod/GlobalConfig.json`, and was on my way to the docs when `validate_mod.py`'s
+`directory-coverage` refused the commit: *"under mod/ but no declared path reaches it — it ships to
+subscribers and is never loaded."* That check exists to stop dead weight shipping to subscribers, not
+to catch this; it happened to state the exact fact that mattered.
+
+Which is the counterweight to the two entries above about checks with blind spots. **A check aimed
+at one thing will occasionally catch another**, and the reason it can is that it asserts something
+true about the world rather than something true about the change. `directory-coverage` does not know
+what `GlobalConfig.json` is for. It knows which files the game will read, and that was enough.
+
+The workaround, recorded because the shape recurs: when the switch is unreachable, look at whether
+the thing behind it can be declared directly. `AskName`'s choice, response node and part are all
+public and mergeable, so #572 shipped its own choice targeting vanilla's own `TellName` node — more
+code than setting a flag, and it left the Joppa option alone.
