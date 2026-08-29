@@ -228,6 +228,27 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCEImportantArtifacts"
+    DisplayText="{{C|Qud Expanded}}: don't offer artifacts you marked important"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded important marked artifact give argyve knickknack picker protect"
+  >
+    <helptext>
+            Keeps artifacts you marked {{Y|important}} out of the list when Argyve asks for a knickknack.
+
+            Marking something important is supposed to mean {{y|don't let me lose this}}. When Argyve asks for a knickknack, the game offers you {{y|every artifact you are carrying}} - your marked, one-of-a-kind relic sits in that picker next to a bit of scrap, and there is no warning at all before it is gone.
+
+            With this on, the ones you marked simply are not listed. If they are the only artifacts you have, you are told so and told how to undo it, rather than handed an empty menu: {{G|You only have artifacts you've marked important. Unmark any you wish to give.}}
+
+            Things the {{y|game}} marked important - quest items, storied relics - are still offered, but now ask you to confirm first. Caves of Qud does not ask at all here.
+
+            Applies immediately. This changes what a list shows, never what you own.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCEAskName"
     DisplayText="{{C|Qud Expanded}}: ask a creature its name"
     Category="Mods"

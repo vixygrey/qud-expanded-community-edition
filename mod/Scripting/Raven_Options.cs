@@ -49,6 +49,7 @@ namespace QudExpandedCE
         public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
         public const string AskNameID = "OptionQudExpandedCEAskName";
+        public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -711,6 +712,22 @@ namespace QudExpandedCE
         /// question every time they talk to one.
         /// </summary>
         public static bool AskName => Enabled(AskNameID, "Yes");
+
+        /// <summary>
+        /// Whether an artifact I marked important is kept out of Argyve's picker.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_GiveArtifact</c> reads this each
+        /// time the choice is entered, so turning it off puts the marked artifacts back in the list
+        /// on the next asking. Nothing is stored either way - the mark is the player's and this
+        /// only decides what a picker lists.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power, and this
+        /// grants none: the mark already existed and already meant this. What it takes away is the
+        /// ability to hand over a marked artifact without unmarking it first, which is the whole
+        /// point - and the confirm on system-important items stays either way, since that half is
+        /// an addition vanilla never had here.
+        /// </summary>
+        public static bool ImportantArtifacts => Enabled(ImportantArtifactsID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
