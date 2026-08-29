@@ -4466,10 +4466,12 @@ That last one is the honest entry. The rule is that colour carrying information 
 
 ### 30.6 No off-switch
 
-Deliberate, and a departure from the rest of §25–§29. This changes no mechanic, no number and no
-interaction; there is nothing to opt out of but the variation itself, and an option to make pots
-identical again is a setting nobody wants. Rule 6 exists so nobody has to swallow the whole mod to
-get one part of it — a clay pot being brown rather than grey is not a part anybody needs to refuse.
+Charter rule 6 asks whether anybody would actually turn a thing off before it gets a switch. This
+changes no mechanic, no number and no interaction; there is nothing to opt out of but the variation
+itself, and a clay pot being brown rather than grey is not a part anybody needs to refuse.
+
+The rule was rewritten in #663 to say so, after this feature and §29 were each given an option nobody
+would use. §29's came out with it.
 
 ## Appendix A — every merged vanilla melee weapon
 
