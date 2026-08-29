@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<conversations>
+  <!-- No Load attribute, deliberately. ConversationLoader merges into an existing blueprint only
+       when Load == 0, which is what an absent attribute means - vanilla's own Conversations.xml
+       declares BaseConversation three separate times and relies on exactly that. "Replace" would
+       discard every choice the base carries, the water ritual and [begin trade] included. -->
+  <conversation ID="BaseConversation">
+    <!-- A <choice> whose parent is <conversation> gets Distribute="Start" assigned automatically
+         (ConversationXMLBlueprint, on reading the node), which is how it reaches the start node of
+         every conversation in the game. The same mechanism carries vanilla's water ritual at
+         Ordinal 980 and [begin trade] at 990.
+
+         Target="TellName" is vanilla's own node, declared in BaseConversation and inherited
+         everywhere, so the reply is Freehold's text rather than mine.
+
+         The question pool is one <text> with ~ separators: IConversationElement.Prepare calls
+         GetRandomSubstring('~'), so one is drawn per asking. The first six are vanilla's, kept
+         verbatim; the rest are this fork's. -->
+    <choice ID="Vixy_AskName" Target="TellName" Ordinal="10000">
+      <text>
+        What is your name?~
+        What is your name, =pronouns.formalAddressTerm=?~
+        What may I call you, =pronouns.formalAddressTerm=?~
+        What are you called, =pronouns.formalAddressTerm=?~
+        I am =name=, =pronouns.formalAddressTerm=. What is your name?~
+        I am =name=, =pronouns.formalAddressTerm=. What may I call you?~
+        How may I address you, =pronouns.formalAddressTerm=?~
+        By what name are you known?~
+        What name do you carry?~
+        What do your people call you?~
+        I am =name=. What are you called?
+      </text>
+      <part Name="Vixy_AskName" />
+    </choice>
+  </conversation>
+</conversations>

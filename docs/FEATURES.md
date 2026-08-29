@@ -2108,10 +2108,11 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 21 options (§13)
+│   ├── Options.xml             # 22 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
+│   ├── Conversations.xml       # the ask-a-name choice (§26)
 │   └── PopulationTables.xml    # 137 tables (112 merge / 25 new)
 │
 ├── Optional/
@@ -2130,7 +2131,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new
 │   ├── Creatures.xml           # 2 new bodies + 1 merge
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 53 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 54 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, the
 │                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
@@ -2170,7 +2171,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -3913,6 +3914,138 @@ own skill checked on top, so a qualifying follower is rare.
 `OptionQudExpandedCETrashDiviningDensity`, on by default, read live on every rifle. Off restores
 vanilla exactly. Rule 6 reserves "off by default" for a change that grants power; this takes a
 little away, but only the part vanilla gave away by accident, and never the headline 5%.
+
+## 26. Ask a creature its name (`Conversations.xml`, `Vixy_AskName`)
+
+**Most of the people in Qud already have names. You just had no way to ask.** Now conversations with
+a nameless creature carry a question, and they answer (#572).
+
+### 26.1 Vanilla wrote the whole thing and switched it off
+
+`XRL.World.Conversations.Parts.AskName` is finished: six question variants, a four-variant `TellName`
+node, `GiveProperName()`, the `TitleIfNamed` handling, and a `NoAskName` property as an author's
+opt-out. Its visibility handler opens with
+
+```csharp
+if (!GlobalConfig.GetBoolSetting("GeneralAskName")) return false;
+```
+
+`GeneralAskName` appears **nowhere** under `Base/`, and `GetBoolSetting` returns `false` for a key it
+cannot find. So the choice never renders. `docs/LESSONS.md` records this as the most complete instance
+of *"vanilla builds mechanisms it never wires up"* found so far — the others were data nothing parses,
+a flag nothing displays, hidden mutations, and a part on no blueprint. This one is a whole
+player-facing feature, text and all, behind a single absent key.
+
+### 26.2 Why the flag could not be used, and an option was the cost
+
+A mod is the only possible source of that key — `LoadGlobalConfig` ends with
+`ModManager.ForEachFile("GlobalConfig.json", …)`, merging mod-supplied settings over the base bag.
+
+That call passes **`Recursive: false`**, so it matches `ModFile.RelativeName` and the file must sit at
+the mod root. Root files are never registered here: `ModInfo.InitializeFiles` walks only the paths
+named in `manifest.json`'s `Directories` when that array is non-empty, and this mod names `Core`,
+`ObjectBlueprints`, `Scripting`, `Textures`, and the gated `Optional/JoppaBuilding`.
+
+Declaring the root to fix that does not work either. The resolver drops any racked directory nested
+inside a newly added one, so root swallows `Optional/JoppaBuilding`, the Joppa map patch loads
+unconditionally, and `OptionQudExpandedCEJoppaBuilding` stops meaning anything.
+
+**Manifest directory-gating and root-level config files are mutually exclusive**, and this mod already
+uses the former. So reaching vanilla's flag would have cost an existing, shipped opt-out on a visible
+change to a vanilla town — which is a bad trade for a dialogue choice. This declares its own choice
+instead and leaves `GeneralAskName` alone.
+
+### 26.3 What is new is the question; the answer is Freehold's
+
+The choice targets `TellName`, vanilla's own node, declared in `BaseConversation` and inherited by
+every conversation. So what a creature says back — *You may call me …*, *My name is …*, *I am called
+…*, *They call me …* — is Caves of Qud's text, not this fork's.
+
+It reaches every conversation for free: a `<choice>` whose parent is `<conversation>` is assigned
+`Distribute="Start"` automatically, which is the same mechanism carrying vanilla's water ritual at
+Ordinal 980 and `[begin trade]` at 990.
+
+**The question is asked a different way each time.** `IConversationElement.Prepare` calls
+`GetRandomSubstring('~')`, so the pool is one `<text>` with `~` separators and one is drawn per
+asking. Vanilla's six are kept verbatim and five more are this fork's:
+
+| | |
+| --- | --- |
+| vanilla | What is your name? |
+| vanilla | What is your name, =pronouns.formalAddressTerm=? |
+| vanilla | What may I call you, =pronouns.formalAddressTerm=? |
+| vanilla | What are you called, =pronouns.formalAddressTerm=? |
+| vanilla | I am =name=, =pronouns.formalAddressTerm=. What is your name? |
+| vanilla | I am =name=, =pronouns.formalAddressTerm=. What may I call you? |
+| new | How may I address you, =pronouns.formalAddressTerm=? |
+| new | By what name are you known? |
+| new | What name do you carry? |
+| new | What do your people call you? |
+| new | I am =name=. What are you called? |
+
+The name they give is drawn from their own culture, faction, region, genotype and gender, because
+`GiveProperName` already resolves all of that — so a snapjaw answers with a snapjaw name and an
+Issachari raider with an Issachari one.
+
+### 26.4 Asking means you can no longer rename them
+
+`GameObject.HandleRename` refuses when `HasProperName && GetIntProperty("Renamed") != 1`, with
+*"doesn't want a new name."* Nothing here sets `Renamed`, so a creature that has told you its name
+cannot afterwards be given one by you.
+
+**That is deliberate and it is the interesting part of the feature.** Asking who someone is and
+deciding who they are are different acts, and this makes them exclusive rather than letting the first
+be a strictly better version of the second. The companion rename flow frames itself as bestowing a
+name on a creature that had none; once it has told you otherwise, that framing is simply untrue.
+
+It is also the reason this ships with an option rather than unconditionally: a player who names their
+companions should not have to meet the question every time they talk to one.
+
+### 26.5 The gates, and the one vanilla is missing
+
+Vanilla's, minus the config check: a creature, without a proper name already, not carrying
+`NoAskName`, in a conversation the player is free to leave.
+
+**And one more, because `IsCreature` is not the test this needs.** A giant dragonfly is a creature.
+`BaseAnimal` carries `ConversationScript ConversationID="Animals"`, inherited by insects, birds and
+reptiles, so you can chat with one — and it answers `{{emote|*soft growling*}}`. A question offering
+to be told a name, sitting under that and answered in words, would be worse than no feature at all.
+This is very likely why `GeneralAskName` ships off.
+
+So the choice also asks whether anything is being *said*: strip every `{{emote|…}}` span from the
+conversation's start node, and if nothing but whitespace is left, hide the question.
+
+**Asked of the conversation, not the creature**, which is what keeps it from rotting. It needs no
+blueprint data, a future Qud patch that adds a chittering thing gets the right answer without this
+fork noticing, and so does another mod's creature. The alternative was tagging 29 blueprints with
+`NoAskName` and clearing it again on the six `Sapient*` plants that inherit from tagged bases —
+correct today, wrong at the next patch.
+
+**The measurement is what found the right rule.** 25 of vanilla's 164 conversations with a start
+node say nothing but emotes, and the ones that matter are not the animals: **Sparafucile** has 23
+emote lines, and **Oboroqoru**, **Warden 1-FF**, the **apple farmer's daughter** and a **psychic
+thrall** have their own. Those are people who deliberately do not speak, and a hand-written list of
+animal blueprints would have missed every one of them while looking thorough.
+
+It also caught a bug in the first version of the test. Testing that a line *starts* with an emote is
+not enough: **Tillifergaewicz** opens `{{emote|*aloud, in a high-pitched buzzing voice*}}` and then
+talks, **Vivira** beeps and then greets you by name, and **Geeub** croaks before speaking. All three
+would have been silenced. Only what remains after the emotes are removed decides it, and the
+removal counts brace depth rather than matching a pattern, because an emote can carry colour markup
+whose closing braces are not the emote's.
+
+Birds come out as speaking, which is the right answer on the evidence: `Birds` and `WaterBirds`
+caw and then emit `=MARKOVCORVIDSENTENCE=`. Qud gives them sentences, so they can be asked.
+
+A start node with no text at all reads as *not* silent, deliberately — emptiness means the text is
+built somewhere this cannot see, and hiding the question on a vacuous truth would suppress it
+wherever a conversation is assembled at runtime.
+
+### 26.6 Off-switch
+
+`OptionQudExpandedCEAskName`, on by default, read live on every offering. Off hides the question from
+the next conversation onward; names already given are kept, since they are stored on the creature like
+any other proper name.
 
 ## Appendix A — every merged vanilla melee weapon
 

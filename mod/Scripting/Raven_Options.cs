@@ -48,6 +48,7 @@ namespace QudExpandedCE
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
+        public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -656,6 +657,23 @@ namespace QudExpandedCE
         /// Intelligence 21 buy exactly what they always bought. See #605.
         /// </summary>
         public static bool TrashDiviningDensity => Enabled(TrashDiviningDensityID, "Yes");
+
+        /// <summary>
+        /// Whether a nameless creature can be asked what it is called.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_AskName</c> reads this each time
+        /// the choice is offered, so turning it off hides the question from the next conversation
+        /// onward. Names already given are kept - they are stored on the creature like any other
+        /// proper name, and a creature that has told me who it is does not become nameless again.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached; this grants a question, and the thing it gives back is a name the
+        /// creature already had. It also takes something away, which is the reason this option
+        /// exists at all rather than shipping unconditionally: asking forecloses renaming, and a
+        /// player who names their companions should be able to keep doing that without meeting the
+        /// question every time they talk to one.
+        /// </summary>
+        public static bool AskName => Enabled(AskNameID, "Yes");
         private static void ApplyChipSlots()
         {
             SetChipSlots(TrueKinAnatomy, PlayerChipSlots);
