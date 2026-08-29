@@ -2320,6 +2320,55 @@ I extend"* produced a better design than *"which of these is nearest"*, and it i
 that order. The 36 `ModImprovedMutationBase<T>` stubs in this fork work precisely because that base
 was written to be extended; a vanilla gameplay class carries no such promise.
 
+## A virtual method that ends in `base` is not an extension point either
+
+The entry above settles the easy half: a member that is not virtual cannot be overridden, and reading
+the modifiers answers it in one command. #570 hit the half that survives that check.
+
+`GiveArtifact.HandleEvent(EnterElementEvent)` **is** virtual. It is also unusable as a parent, and for
+a reason the modifiers do not show — its last line:
+
+```csharp
+public override bool HandleEvent(EnterElementEvent E)
+{
+    // ... pick an artifact from the player's inventory, remove it ...
+    return base.HandleEvent(E);   // IConversationPart's, which advances the conversation
+}
+```
+
+A subclass wanting to filter that picker must override the method and do its own picking. Then it
+needs the conversation advanced, which is what vanilla's final line does — but from the subclass,
+`base.HandleEvent(E)` reaches `GiveArtifact`, not `IConversationPart`, and re-runs the entire picker a
+second time. C# has no `base.base`, so the tail call vanilla makes is the one call the subclass cannot
+make.
+
+**The counter-example is what makes this a rule rather than a refusal.** #605 needed the same shape
+from `Garbage`, whose two rifle entry points are also virtual and also end in `base`. That subclass
+was safe, because the grandparent those calls reach is a default in `IGameSystem`:
+
+```csharp
+public virtual bool HandleEvent(InventoryActionEvent E)
+{
+    return true;
+}
+```
+
+A no-op. The subclass can override, do its own work, `return true`, and lose nothing — it has
+replicated the grandparent exactly.
+
+> **After confirming a method is virtual, read what its own `base` call reaches.** If the grandparent
+> does real work, the subclass cannot get to it and the class is closed in practice. If the
+> grandparent is a no-op returning a constant, overriding without calling base is complete and the
+> subclass is safe.
+
+So the test is not *"is this virtual"* but *"can I replicate what this method's tail call does"*. Two
+classes with identical modifiers answered oppositely, one issue apart.
+
+The fallback when the answer is no: derive from the grandparent instead and reuse the parent's static
+helpers. `Vixy_GiveArtifact` would extend `IConversationPart` directly while calling
+`GiveArtifact.IsArtifact`, which is `public static` — so the definition of *artifact* still comes from
+vanilla and cannot drift, even though none of vanilla's code is inherited.
+
 ## A guard that hands back the cell it was avoiding
 
 `PlaceObjectInArea` will not put a creature on top of another one. It filters the candidate set with
@@ -2434,3 +2483,73 @@ The general shape is worth carrying past this instance: a curve is a claim about
 as about shape, and the resolution belongs to the engine rather than to the design. Check what the
 consumer can represent *before* choosing how the value falls off — `ConstrainToPermillage` exists on
 the same call for exactly this reason, and a caller that used it would have had ten times the room.
+
+## A mod's reach ends where nothing in XML names the object
+
+Charter rule 5 rules out Harmony and reflection, which makes *"can a mod reach this at all"* a real
+question with a mechanical answer: **something in `Base/` has to name the type.** A blueprint part, a
+mutation `Class`, a conversation part, a zone builder — all substitutable, because XML names them and
+the game resolves that name. Nothing else is.
+
+Two issues hit the wall from opposite directions.
+
+**#585** wanted to dim older log messages. The markup work was done, the crux was settled, and the
+approach worked — on the classic sidebar and on the Modern full-log screen. The Modern UI's *live*
+log converts each message to RTF once on arrival and keeps it in `protected List<T> _scrollListData`
+on a Unity component, behind a singleton. No XML anywhere names it. The only way in is reflection.
+
+**#570** wanted the player's *important* mark to exclude an item from what a merchant will buy.
+`TradeScreen` is `SingletonWindowBase<TradeScreen>` and the legacy `TradeUI` is
+`IWantsTextConsoleInit`. Neither appears in any `Base/` XML file.
+
+In both cases the unreachable thing was the *widest* part of the issue — selling is where a marked
+item is most at risk, and the live log is the log most players read.
+
+> **Ask whether the call site is named in XML before designing anything that has to reach it.** The
+> answer is one grep, and it decides whether the issue is buildable before any of the interesting
+> work starts.
+
+The order is the whole lesson. In #570 the question came first and cost nothing; in #585 the design
+was nearly complete when the wall turned up. Both issues were worth filing and the findings were worth
+keeping — but one of them spent its budget before learning the thing that decided it.
+
+**A useful corollary: reachability is not all-or-nothing, and the split is the finding.** #570 came
+back with `GiveArtifact` and `RandomAltarBaetyl` reachable and both trade paths not, which turned a
+systemic proposal into a small one rather than into nothing. Reporting *which half is reachable* is
+more useful than reporting that the issue is blocked.
+
+## An issue written from another mod's feature list is a claim about that mod's target version
+
+#609 opened: *"Walk through a village with a container set to auto-collect and you fill up from their
+cistern without a prompt, a message, or a consequence."* First person, present tense, and it reads as
+something I watched happen.
+
+It is not. It came from an anti-exploit mod's feature list I read weeks earlier and thought was a good
+idea. By the time it reached the tracker it had become a description of my own game.
+
+Vanilla already handles it. `LiquidVolume.HandleEvent(AutoexploreObjectEvent)` refuses on
+`!ParentObject.IsOwned()`, so an owned container never receives the `CollectLiquid` command.
+`Village.cs` sets `Physics.Owner` to the village faction on every object tagged `Furniture` or
+`Vessel` — and the next three lines fill those same vessels with the village's signature liquids, so
+the pass is aimed at exactly the object the issue was about. Preset settlements carry ownership
+hand-authored; Joppa's map has 28 objects owned by Joppa and its one vase among them.
+
+The issue also had the mechanism backwards, which is the second cost. It named
+`AllowLiquidCollectionEvent` as *"vanilla's 'you may not take this liquid' veto"*. It is asked of the
+container **being filled**, and every implementer answers *is this liquid compatible with what I am*.
+A destination filter, which never sees the source and could not have expressed *this belongs to the
+village* however it was extended.
+
+> **When an issue's premise comes from somewhere other than play, say so in the issue.** A feature
+> another mod advertises is evidence about the version *it* targeted, and a fix Freehold has since
+> shipped leaves the advertisement standing.
+
+**The tell was in the issue from the start.** A behaviour described in the first person that nobody
+has actually seen reads exactly like one that was, and nothing in the text marks the difference. This
+one survived to the point of an assembly investigation before *"wait, when did this happen to me"*
+got asked — and the answer, once asked, took one sentence.
+
+Worth separating from a related and healthier case: an issue can be *filed* from a third-party
+observation deliberately and usefully — #613's croc stacking arrived as a bug report and was real. The
+failure here is not the source, it is the source going unrecorded until the premise had already been
+spent on.
