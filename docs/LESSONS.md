@@ -2538,7 +2538,7 @@ back with `GiveArtifact` and `RandomAltarBaetyl` reachable and both trade paths 
 systemic proposal into a small one rather than into nothing. Reporting *which half is reachable* is
 more useful than reporting that the issue is blocked.
 
-## An issue written from another mod's feature list is a claim about that mod's target version
+## A claim about what a player experiences needs a source, and I am not one
 
 #609 opened: *"Walk through a village with a container set to auto-collect and you fill up from their
 cistern without a prompt, a message, or a consequence."* First person, present tense, and it reads as
@@ -2573,6 +2573,39 @@ Worth separating from a related and healthier case: an issue can be *filed* from
 observation deliberately and usefully — #613's croc stacking arrived as a bug report and was real. The
 failure here is not the source, it is the source going unrecorded until the premise had already been
 spent on.
+
+### The same failure with no third party involved, hours later
+
+This entry was written scoped to issues taken from somebody else's mod. That scope was too narrow,
+and #632 proved it the same day.
+
+The argument for widening the Issachari name pools ran: an `IssachariParty` is 2d4 raiders plus
+riflers, #572 made every creature askable, so **ask four people in one war party and two will open on
+the same verb**. It went into the issue, into the pull request, and into `docs/FEATURES.md` §15.7.
+
+The Issachari will not talk to you. `Factions.xml` gives them `InitialPlayerReputation="-475"`,
+`REPUTATION_DISLIKED` is `-250`, so `Reputation.GetFeeling` returns `-50`, and
+`Brain.GetFeelingLevel` calls anything below `-10` hostile. They attack instead. A question that
+lives inside a conversation is worth nothing where there is no conversation.
+
+Nobody handed me that premise. I generated it while arguing for work I wanted to do, and it was wrong
+in the direction that made the case look stronger — which is the direction a premise of one's own
+invention tends to fail in.
+
+**What makes it worth adding rather than filing under the same heading.** The surrounding
+investigation was careful: spawn tables measured, `Village.cs` read closely enough to correct an
+earlier overreach about villages naming their inhabitants, `GivesRep` checked and found absent. Every
+one of those was a question I thought to ask. *"Will they talk to me"* was not, and it was upstream of
+all of them. One line in `Factions.xml`, in a file opened that same day for something else.
+
+> **A statement about what a player will see is a claim, whoever made it.** It needs a source — a
+> play session, or a line of data read for that purpose — and "it follows from the other things I
+> just verified" is not one. Being the author of a premise is not evidence for it.
+
+The practical form: when an argument for building something rests on a player doing X, find the thing
+in the data that permits X before the argument is used. Reputation, hostility, gating flags and
+prerequisites are all cheap to read and all sit upstream of the interesting mechanics — which is
+exactly why they get skipped.
 
 ## Two manifest features can be mutually exclusive, and the failure is silence
 
