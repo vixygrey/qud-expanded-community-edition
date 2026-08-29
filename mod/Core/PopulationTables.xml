@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <populations>
   <!-- Starting Equipment -->
 
@@ -1229,8 +1229,9 @@
 
   <population Name="HillsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Goat 50/2d6 -->
-      <object Chance="50" Number="1d3" Blueprint="Vixy_DunGoat" />
+      <!-- Goat was 50 in vanilla; now 39 for it and 39 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="39" Blueprint="Goat" />
+      <object Chance="39" Number="1d3" Blueprint="Vixy_DunGoat" />
     </group>
   </population>
 
@@ -1252,73 +1253,93 @@
        saltmarsh or a beetle on the dunes. -->
   <population Name="HillsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Dog 25/1d4 -->
-      <object Chance="25" Number="1d2" Blueprint="Vixy_BrindleDog" />
-      <!-- Boar 25/1d4 -->
-      <object Chance="25" Number="1d2" Blueprint="Vixy_BristleBoar" />
-      <!-- IrritableTortoise 25/1d3 -->
-      <object Chance="25" Number="1d2" Blueprint="Vixy_ScarredTortoise" />
-      <!-- Honey Skunk 50/1d2 -->
-      <object Chance="50" Number="1" Blueprint="Vixy_BandedHoneySkunk" />
+      <!-- Dog was 25 in vanilla; now 15 for it and 17 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="15" Blueprint="Dog" />
+      <object Chance="17" Number="1d2" Blueprint="Vixy_BrindleDog" />
+      <!-- Boar was 25 in vanilla; now 15 for it and 17 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="15" Blueprint="Boar" />
+      <object Chance="17" Number="1d2" Blueprint="Vixy_BristleBoar" />
+      <!-- IrritableTortoise was 25 in vanilla; now 14 for it and 15 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="14" Blueprint="IrritableTortoise" />
+      <object Chance="15" Number="1d2" Blueprint="Vixy_ScarredTortoise" />
+      <!-- Honey Skunk was 50 in vanilla; now 30 for it and 30 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="30" Blueprint="Honey Skunk" />
+      <object Chance="30" Number="1" Blueprint="Vixy_BandedHoneySkunk" />
     </group>
   </population>
 
   <population Name="DesertCanyonZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Dog 10/1d4 -->
-      <object Chance="10" Number="1d2" Blueprint="Vixy_RangyDog" />
-      <!-- Boar 10/1d2 -->
-      <object Chance="10" Number="1" Blueprint="Vixy_PaleBoar" />
-      <!-- Salamander 10/2d4 -->
-      <object Chance="10" Number="1d4" Blueprint="Vixy_AshenSalamander" />
-      <!-- Horned Chameleon 10/1d1 -->
-      <object Chance="10" Number="1" Blueprint="Vixy_SandHornedChameleon" />
+      <!-- Dog was 10 in vanilla; now 6 for it and 7 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="6" Blueprint="Dog" />
+      <object Chance="7" Number="1d2" Blueprint="Vixy_RangyDog" />
+      <!-- Boar was 10 in vanilla; now 6 for it and 6 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="6" Blueprint="Boar" />
+      <object Chance="6" Number="1" Blueprint="Vixy_PaleBoar" />
+      <!-- Salamander was 10 in vanilla; now 7 for it and 6 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Salamander" />
+      <object Chance="6" Number="1d4" Blueprint="Vixy_AshenSalamander" />
+      <!-- Horned Chameleon was 10 in vanilla; now 5 for it and 5 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="5" Blueprint="Horned Chameleon" />
+      <object Chance="5" Number="1" Blueprint="Vixy_SandHornedChameleon" />
       <!-- RESTORES vanilla intent; matches Dog 10/1d4 -->
       <object Chance="10" Number="1d4" Blueprint="Baboon" />
       <!-- the Baboon entry added above, 10/1d4 -->
       <object Chance="10" Number="1d2" Blueprint="Vixy_MangyBaboon" />
-      <!-- Equimax 10/2d6 -->
-      <object Chance="10" Number="1d6" Blueprint="Vixy_SorrelEquimax" />
-      <!-- Glowcrow 10/2d6 -->
-      <object Chance="10" Number="1d6" Blueprint="Vixy_CinderGlowcrow" />
-      <!-- Salthopper 10/1d1 - Number is already 1, so the chance halves instead -->
-      <object Chance="5" Number="1" Blueprint="Vixy_OchreSalthopper" />
+      <!-- Equimax was 10 in vanilla; now 7 for it and 6 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Equimax" />
+      <object Chance="6" Number="1d6" Blueprint="Vixy_SorrelEquimax" />
+      <!-- Glowcrow was 10 in vanilla; now 7 for it and 6 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Glowcrow" />
+      <object Chance="6" Number="1d6" Blueprint="Vixy_CinderGlowcrow" />
+      <!-- Salthopper was 10 in vanilla; now 7 for it and 3 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Salthopper" />
+      <object Chance="3" Number="1" Blueprint="Vixy_OchreSalthopper" />
     </group>
   </population>
 
   <population Name="DesertCanyonZoneGlobals" Load="Merge">
     <object Chance="35" Number="12-24" Blueprint="Vixy_Shadetooth" Hint="Any" />
     <group Name="Creatures" Load="Merge">
-      <!-- GiantDragonfly 25/2d6 -->
-      <object Chance="25" Number="1d6" Blueprint="Vixy_EmberDragonfly" />
+      <!-- GiantDragonfly was 25 in vanilla; now 17 for it and 16 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="17" Blueprint="GiantDragonfly" />
+      <object Chance="16" Number="1d6" Blueprint="Vixy_EmberDragonfly" />
     </group>
   </population>
 
   <population Name="MountainsZoneGlobals-Reachable" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Dog 25/1d4 -->
-      <object Chance="25" Number="1d2" Blueprint="Vixy_AshcoatDog" />
-      <!-- Goat 50/3d6 -->
-      <object Chance="50" Number="1d6" Blueprint="Vixy_CraggedGoat" />
-      <!-- Goat 50/3d6, held one step down on purpose - the rare coat -->
-      <object Chance="25" Number="1d3" Blueprint="Vixy_BlackGoat" />
+      <!-- Dog was 25 in vanilla; now 15 for it and 17 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="15" Blueprint="Dog" />
+      <object Chance="17" Number="1d2" Blueprint="Vixy_AshcoatDog" />
+      <!-- Goat was 50 in vanilla; now 35 for it and 35 and 18 for the variants, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="35" Blueprint="Goat" />
+      <object Chance="35" Number="1d6" Blueprint="Vixy_CraggedGoat" />
+      <!-- held below its sibling on purpose - the rare coat -->
+      <object Chance="18" Number="1d3" Blueprint="Vixy_BlackGoat" />
     </group>
   </population>
 
   <population Name="FlowerFieldsPopulation" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Dog 10/1d4 -->
-      <object Chance="10" Number="1d2" Blueprint="Vixy_PiedDog" />
-      <!-- GiantDragonfly 25/2d6 -->
-      <object Chance="25" Number="1d6" Blueprint="Vixy_CopperDragonfly" />
-      <!-- IrritableTortoise 10/1d3 -->
-      <object Chance="10" Number="1d2" Blueprint="Vixy_MossbackTortoise" />
-      <!-- Equimax 30/2d6 -->
-      <object Chance="30" Number="1d6" Blueprint="Vixy_PiebaldEquimax" />
-      <!-- Glowcrow 10/2d6 -->
-      <object Chance="10" Number="1d6" Blueprint="Vixy_LanternGlowcrow" />
-      <!-- Salthopper 10/1d1 - Number is already 1, so the chance halves instead -->
-      <object Chance="5" Number="1" Blueprint="Vixy_MeadowSalthopper" />
+      <!-- Dog was 10 in vanilla; now 6 for it and 7 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="6" Blueprint="Dog" />
+      <object Chance="7" Number="1d2" Blueprint="Vixy_PiedDog" />
+      <!-- GiantDragonfly was 25 in vanilla; now 17 for it and 16 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="17" Blueprint="GiantDragonfly" />
+      <object Chance="16" Number="1d6" Blueprint="Vixy_CopperDragonfly" />
+      <!-- IrritableTortoise was 10 in vanilla; now 6 for it and 5 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="6" Blueprint="IrritableTortoise" />
+      <object Chance="5" Number="1d2" Blueprint="Vixy_MossbackTortoise" />
+      <!-- Equimax was 30 in vanilla; now 20 for it and 20 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="20" Blueprint="Equimax" />
+      <object Chance="20" Number="1d6" Blueprint="Vixy_PiebaldEquimax" />
+      <!-- Glowcrow was 10 in vanilla; now 7 for it and 6 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Glowcrow" />
+      <object Chance="6" Number="1d6" Blueprint="Vixy_LanternGlowcrow" />
+      <!-- Salthopper was 10 in vanilla; now 7 for it and 3 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="7" Blueprint="Salthopper" />
+      <object Chance="3" Number="1" Blueprint="Vixy_MeadowSalthopper" />
     </group>
   </population>
 
@@ -1328,20 +1349,25 @@
          deduplication and two broadgloves can share a cell. -->
     <object Chance="55" Number="30-50" Blueprint="Vixy_Broadglove" Hint="Any" />
     <group Name="Creatures" Load="Merge">
-      <!-- Boar 5/1-2 -->
-      <object Chance="5" Number="1" Blueprint="Vixy_RussetBoar" />
-      <!-- Salamander 5/1-4 -->
-      <object Chance="5" Number="1-2" Blueprint="Vixy_MarbledSalamander" />
-      <!-- Horned Chameleon 5/1 -->
-      <object Chance="5" Number="1" Blueprint="Vixy_MottledHornedChameleon" />
+      <!-- Boar was 5 in vanilla; now 3 for it and 3 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="3" Blueprint="Boar" />
+      <object Chance="3" Number="1" Blueprint="Vixy_RussetBoar" />
+      <!-- Salamander was 5 in vanilla; now 3 for it and 3 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="3" Blueprint="Salamander" />
+      <object Chance="3" Number="1-2" Blueprint="Vixy_MarbledSalamander" />
+      <!-- Horned Chameleon was 5 in vanilla; now 3 for it and 2 for the variant, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="3" Blueprint="Horned Chameleon" />
+      <object Chance="2" Number="1" Blueprint="Vixy_MottledHornedChameleon" />
     </group>
   </population>
 
   <population Name="SaltMarshZoneGlobals" Load="Merge">
-    <!-- Croc 50/1 -->
-    <object Chance="50" Number="1" Blueprint="Vixy_SiltCroc" />
-    <!-- Glowfish 75/2d4 -->
-    <object Chance="75" Number="1d4" Blueprint="Vixy_VerdigrisGlowfish" Hint="Aquatic" />
+    <!-- Croc was 50 in vanilla; now 25 for it and 25 for the variant, so the group still expects what vanilla alone did (#613) -->
+    <object Chance="25" Blueprint="Croc" />
+    <object Chance="25" Number="1" Blueprint="Vixy_SiltCroc" />
+    <!-- Glowfish was 75 in vanilla; now 50 for it and 50 for the variant, so the group still expects what vanilla alone did (#613) -->
+    <object Chance="50" Blueprint="Glowfish" />
+    <object Chance="50" Number="1d4" Blueprint="Vixy_VerdigrisGlowfish" Hint="Aquatic" />
     <!-- NEW CONTENT - no parent here; pitched between the marsh's own animals -->
     <object Chance="25" Number="1d2" Blueprint="Vixy_MarshDog" />
   </population>
@@ -1358,20 +1384,23 @@
   </population>
 
   <population Name="RuinsZoneGlobals-Creatures" Load="Merge">
-    <!-- Giant Beetle 5/3-6 -->
-    <object Chance="5" Number="2-3" Blueprint="Vixy_MiddenBeetle" />
-    <!-- Giant Beetle 5/3-6 -->
-    <object Chance="5" Number="2-3" Blueprint="Vixy_RustBeetle" />
-    <!-- Glowmoth 5/1 -->
-    <object Chance="5" Number="1" Blueprint="Vixy_AshwingGlowmoth" />
+    <!-- Giant Beetle was 5 in vanilla; now 3 for it and 2 and 2 for the variants, so the group still expects what vanilla alone did (#613) -->
+    <object Chance="3" Blueprint="Giant Beetle" />
+    <object Chance="2" Number="2-3" Blueprint="Vixy_MiddenBeetle" />
+    <!-- the second Giant Beetle coat, on the same split -->
+    <object Chance="2" Number="2-3" Blueprint="Vixy_RustBeetle" />
+    <!-- Glowmoth was 5 in vanilla; now 3 for it and 2 for the variant, so the group still expects what vanilla alone did (#613) -->
+    <object Chance="3" Blueprint="Glowmoth" />
+    <object Chance="2" Number="1" Blueprint="Vixy_AshwingGlowmoth" />
   </population>
 
   <population Name="BaboonParty" Load="Merge">
     <group Name="Creatures" Load="Merge">
-      <!-- Baboon 90/3-4 -->
-      <object Chance="90" Number="1-2" Blueprint="Vixy_SilverBaboon" />
-      <!-- Baboon 90/3-4, held down - the rarer coat -->
-      <object Chance="50" Number="1" Blueprint="Vixy_RustBaboon" />
+      <!-- Baboon was 90 in vanilla; now 56 for it and 58 and 32 for the variants, so the group still expects what vanilla alone did (#613) -->
+      <object Chance="56" Blueprint="Baboon" />
+      <object Chance="58" Number="1-2" Blueprint="Vixy_SilverBaboon" />
+      <!-- held below its sibling on purpose - the rarer coat -->
+      <object Chance="32" Number="1" Blueprint="Vixy_RustBaboon" />
     </group>
   </population>
 
@@ -1589,6 +1618,8 @@
   </population>
 
   <population Name="Shale Cave Critters 2" Load="Merge">
-    <object Chance="25" Number="1-2" Blueprint="Vixy_ChalkCentipede" />
+    <!-- Giant Centipede was 25 in vanilla; now 15 for it and 17 for the variant, so the group still expects what vanilla alone did (#613) -->
+    <object Chance="15" Blueprint="Giant Centipede" />
+    <object Chance="17" Number="1-2" Blueprint="Vixy_ChalkCentipede" />
   </population>
 </populations>

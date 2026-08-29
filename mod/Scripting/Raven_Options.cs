@@ -111,8 +111,13 @@ namespace QudExpandedCE
         /// keeps this genuinely reversible: weight, number and hint all return as declared, with
         /// nothing rebuilt from assumptions.
         /// </summary>
-        private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedVariantEntries =
-            new List<KeyValuePair<PopulationList, PopulationItem>>();
+        /// <summary>
+        /// Variant population entries currently showing their ordinary form, against the blueprint
+        /// each should go back to. Runtime only - populations are rebuilt from XML on every load,
+        /// so nothing here reaches a save.
+        /// </summary>
+        private static readonly Dictionary<PopulationObject, string> PlainedVariantEntries =
+            new Dictionary<PopulationObject, string>();
 
         private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedChipEntries =
             new List<KeyValuePair<PopulationList, PopulationItem>>();
@@ -850,16 +855,38 @@ namespace QudExpandedCE
             }
         }
 
+        /// <summary>
+        /// Show or hide the cosmetic creature coats, without moving how many animals exist.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>Off does not mean absent, it means ordinary.</b> A variant entry is switched to the
+        /// blueprint it inherits from rather than removed. That is what keeps the world's animal
+        /// density identical in both states: since #613 each variant's chance is a *split* of its
+        /// parent's rather than an addition to it, so deleting the entry would leave the pair
+        /// expecting less than vanilla alone did - a brindle dog and a dog are one dog's worth of
+        /// chance between them, and dropping the brindle half would take that dog away.
+        /// </para>
+        /// <para>
+        /// Switching the blueprint rather than recomputing a chance keeps this exact with no
+        /// arithmetic: the entry keeps its own Chance and Number, and those were sized so the whole
+        /// group sums to vanilla's original expectation.
+        /// </para>
+        /// <para>
+        /// Reversible and idempotent, like every apply here: the original blueprint is remembered so
+        /// the coat comes back, and setting a blueprint that is already set is a no-op.
+        /// </para>
+        /// </remarks>
         private static void ApplyCreatureVariants()
         {
             if (Enabled(CreatureVariantsID, "Yes"))
             {
-                foreach (KeyValuePair<PopulationList, PopulationItem> entry in DetachedVariantEntries)
+                foreach (KeyValuePair<PopulationObject, string> entry in PlainedVariantEntries)
                 {
-                    entry.Key.AddItem(entry.Value);
+                    entry.Key.Blueprint = entry.Value;
                 }
 
-                DetachedVariantEntries.Clear();
+                PlainedVariantEntries.Clear();
                 return;
             }
 
@@ -887,11 +914,11 @@ namespace QudExpandedCE
                 PopulationObject entry = item as PopulationObject;
                 if (entry != null)
                 {
-                    if (IsCreatureVariant(entry.Blueprint))
+                    string plain = OrdinaryFormOf(entry.Blueprint);
+                    if (plain != null)
                     {
-                        DetachedVariantEntries.Add(
-                            new KeyValuePair<PopulationList, PopulationItem>(list, entry));
-                        list.RemoveItem(entry);
+                        PlainedVariantEntries[entry] = entry.Blueprint;
+                        entry.Blueprint = plain;
                     }
 
                     continue;
@@ -909,18 +936,29 @@ namespace QudExpandedCE
         }
 
         /// <summary>
-        /// Whether a blueprint name belongs to a cosmetic creature variant, asked of the blueprint
-        /// rather than of the name, so a future variant is covered by carrying the tag.
+        /// The blueprint a cosmetic creature variant is a coat of, or null when this is not one.
         /// </summary>
-        private static bool IsCreatureVariant(string blueprint)
+        /// <remarks>
+        /// Asked of the blueprint rather than of the name, so a future variant is covered by
+        /// carrying the tag. Returns the parent rather than a bool because every caller needs it:
+        /// the variant's whole relationship to vanilla is that it inherits one animal's stats and
+        /// splits one animal's share of the table.
+        /// </remarks>
+        private static string OrdinaryFormOf(string blueprint)
         {
             if (blueprint.IsNullOrEmpty())
             {
-                return false;
+                return null;
             }
 
-            return GameObjectFactory.Factory.Blueprints.TryGetValue(blueprint, out GameObjectBlueprint found)
-                && found.HasTag(CreatureVariantTag);
+            if (!GameObjectFactory.Factory.Blueprints.TryGetValue(blueprint, out GameObjectBlueprint found)
+                || !found.HasTag(CreatureVariantTag)
+                || found.Inherits.IsNullOrEmpty())
+            {
+                return null;
+            }
+
+            return found.Inherits;
         }
 
         private static void ApplyChipDrops()

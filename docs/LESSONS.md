@@ -2062,9 +2062,11 @@ identical lines are cheaper than one invariant that holds in half the file for a
 someone else's XML. The same goes for anything else the caller can default: if correctness depends on
 it, say it locally.
 
-Creatures never had this problem, and the reason is worth knowing — `PlaceObjectInArea` carries a
-separate `workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`. So the sweep for "what else
-does this affect" is narrower than it looks, but only after checking, not before.
+Creatures looked exempt, and the reason looked good — `PlaceObjectInArea` carries a separate
+`workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`, which is not blueprint-keyed and so is
+stronger than the plant guard rather than weaker. **That sentence stood here until #613 and it was
+wrong.** The entry below has what actually happens; the sweep for "what else does this affect" was
+narrower than the truth, and I had checked, which is the part worth sitting with.
 
 ## A check that skips is louder than a check that fails, and quieter than both is one that skips silently
 
@@ -2317,3 +2319,38 @@ pattern #589 wanted in the first place, arrived at from the other direction. So 
 I extend"* produced a better design than *"which of these is nearest"*, and it is worth asking in
 that order. The 36 `ModImprovedMutationBase<T>` stubs in this fork work precisely because that base
 was written to be extended; a vanilla gameplay class carries no such promise.
+
+## A guard that hands back the cell it was avoiding
+
+`PlaceObjectInArea` will not put a creature on top of another one. It filters the candidate set with
+`workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`, and then, in case the fallback path
+picked an occupied cell anyway, it checks again on the way out:
+
+```csharp
+else if (gameObject.IsCombatObject() && Z.GetCell(location2D).HasCombatObject())
+    Z.GetCell(location2D).getClosestPassableCell().AddObject(gameObject);
+```
+
+**The second guard does nothing at all.** `getClosestPassableCell()` collects every `IsPassable()`
+cell in the zone and sorts them by distance *from the cell it was called on* — and a cell is at
+distance 0 from itself. So it returns that same cell, unless the cell is impassable. Creatures are
+`Physics Solid="false"`, so an occupied cell is passable, so the object is added exactly where the
+branch exists to prevent. Two crocs, one tile, which is how #613 was reported.
+
+> **A fallback that searches "the closest X" will find the thing it started from, whenever the thing
+> it started from is an X.** The guard reads as *move it somewhere else*; it is written as *find the
+> nearest passable cell*, and the current cell qualifies. This is the same failure as `IsEmpty()` in
+> the entry above — a helper whose name describes the intent while its body describes something
+> broader — and it is worth noting that the two are in the same method, forty lines apart.
+
+**None of it is this fork's to fix.** Reaching that line means Harmony or a replacement zone
+builder, and charter rule 5 refuses the first while the second is a large new capability for
+somebody else's defect. What this fork controls is *how often placement gets there*, and that turned
+out to be the whole of our half: 30 creature variants were adding a second independent `Chance` roll
+beside the animal they were a coat of, so a salt marsh expected twice vanilla's crocs and the
+contested aquatic cells ran out twice as fast. `variant-density` checks that now.
+
+**The reason I believed creatures were exempt is the part to carry.** I had read the first guard,
+found it stronger than the plant one, and wrote the exemption into the entry above as a finding. It
+was a true fact about a real line of code, and the conclusion still did not hold, because I stopped
+at the first guard in a method that has two. **Reading one guard tells you what one guard does.**

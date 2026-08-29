@@ -2504,6 +2504,104 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
 
 
+def check_variant_density(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A creature variant must split its parent's share of a table, never add to it.
+
+    #613, reported in play as a croc and a silt croc standing on the same tile. A variant merged
+    into a scatter table beside the animal it inherits from is an *independent* `Chance` roll, so
+    the pair expects twice what vanilla expected alone - and 30 creatures had drifted that way, at a
+    median of 1.6x and a worst of 2.11x, before a player noticed one of them.
+
+    `scatter-share` cannot see this and never could. It measures a whole table against a 50%
+    ceiling, and `SaltMarshZoneGlobals` is about a tenth this fork's content while still holding
+    twice vanilla's crocs, because 260 watervine and brinestalk drown one reptile. **Share is a
+    property of a table; density is a property of a blueprint**, and the two want different checks.
+
+    So this asks, per vanilla creature: does that creature plus every coat of it in the same table
+    still expect what vanilla expected on its own? A variant's parent is read from `Inherits=`,
+    which is what makes it a coat rather than a creature, so a variant added later is covered by
+    existing rather than by being listed.
+
+    Vanilla's side comes from the snapshot, which stores the expectation **and** the entry's
+    `Number` midpoint. Both are needed: a merge that lowers vanilla's `Chance` states no `Number`,
+    because `PopulationObject.MergeFrom` overwrites `Number` only when the incoming entry has one -
+    so without vanilla's midpoint this fork's own side of the sum cannot be computed.
+
+    The tolerance is 10%. Chances are integers and an exact split is not always available:
+    `Glowmoth` at 5 divides into 3 and 2 and lands exactly, three coats of one beetle cannot, and a
+    check demanding exactness would fail on arithmetic rather than on drift.
+    """
+    try:
+        vanilla = json.loads(QUD_API_PATH.read_text(encoding="utf-8")).get(
+            "variant_parent_quantities", {}
+        )
+    except (OSError, json.JSONDecodeError):
+        return
+    if not vanilla:
+        return
+
+    parents: dict[str, str] = {}
+    for root in all_roots.values():
+        for obj in root.iter("object"):
+            name, inherits = obj.get("Name") or "", obj.get("Inherits") or ""
+            if (
+                name.startswith(MOD_PREFIXES)
+                and inherits
+                and not inherits.startswith(MOD_PREFIXES)
+            ):
+                parents[name] = inherits
+
+    # Vanilla's entry stands until this fork merges over it, so the sum starts from vanilla's own
+    # figure and the merge replaces that term rather than adding to it. Reading only this fork's
+    # entries would report a doubled creature as *under* vanilla, which is the opposite of true.
+    ours: dict[str, float] = {k: v[0] for k, v in vanilla.items()}
+    replaced: set[str] = set()
+    for root in all_roots.values():
+        for pop in root.iter("population"):
+            table = pop.get("Name")
+            if not table:
+                continue
+            for obj in pop.iter("object"):
+                blueprint = obj.get("Blueprint")
+                if not blueprint or obj.get("Weight") is not None:
+                    continue
+                parent = parents.get(blueprint, blueprint)
+                key = f"{table}|{parent}"
+                if key not in vanilla:
+                    continue
+                number = obj.get("Number")
+                midpoint = (
+                    number_midpoint(number)
+                    if number is not None
+                    # A merge onto vanilla's own entry inherits vanilla's Number.
+                    else (
+                        vanilla[key][1]
+                        if blueprint == parent
+                        else number_midpoint(None)
+                    )
+                )
+                quantity = float(obj.get("Chance") or 100) / 100 * midpoint
+                # A merge onto vanilla's own entry overwrites its Chance rather than adding a
+                # second entry, so vanilla's term drops out. Assumes vanilla declares the blueprint
+                # once per table, which holds for all 30 of these today.
+                if blueprint == parent and key not in replaced:
+                    replaced.add(key)
+                    ours[key] = ours.get(key, 0.0) - vanilla[key][0]
+                ours[key] = ours.get(key, 0.0) + quantity
+
+    for key, (expected, _) in sorted(vanilla.items()):
+        got = ours.get(key)
+        if got is None or expected <= 0:
+            continue
+        if abs(got - expected) / expected > 0.10:
+            table, blueprint = key.split("|", 1)
+            f.add(
+                "variant-density",
+                f"{POPULATION_TABLES}: {blueprint} in {table} expects {got:.2f} against vanilla's "
+                f"{expected:.2f} - a coat splits its parent's share of a table, never adds to it",
+            )
+
+
 def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """This fork's share of a vanilla loot table stops at half.
 
@@ -3424,6 +3522,7 @@ def run() -> Findings:
     check_tinker_only(f, roots)
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
+    check_variant_density(f, roots)
     check_placement_hint(f, roots)
     check_name_collision(f, roots)
     check_scatter_share(f, roots)
