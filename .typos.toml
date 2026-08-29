@@ -12,6 +12,12 @@
 # Qud-vocabulary false positives are expected to be rare. When one appears, add it here with a
 # comment saying what it is.
 
+[default.extend-identifiers]
+# "PNGs" - typos splits it into PN + Gs and reads PN as a misspelling of ON. Plural of a file
+# format, in docs/TILES_AND_ATLAS.md. extend-words does not work here because it matches the
+# split subword, not the whole token. #645.
+PNGs = "PNGs"
+
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables
 TOU = "TOU"
