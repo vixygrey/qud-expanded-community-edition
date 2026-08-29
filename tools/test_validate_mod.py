@@ -379,6 +379,69 @@ class ScriptingParts(unittest.TestCase):
         self.assertEqual(items, [])
 
 
+class MutationNames(unittest.TestCase):
+    """#593. This fork reaches vanilla mutation entries by name from C#, and a name that does not
+    resolve returns null - the caller then does nothing, with no exception and no log line.
+
+    The snapshot side reads HiddenMutations.xml as well as Mutations.xml, which is the whole point:
+    "Heightened Smell" is declared only in the hidden file, and a check that knew about the visible
+    one would report a correct name as broken.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _mod(self, call: str, mutations: str = "") -> Path:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        mod = write_mod(tmp)
+        if mutations:
+            core = mod / "Core"
+            core.mkdir(exist_ok=True)
+            (core / "Mutations.xml").write_text(
+                '<?xml version="1.0" encoding="utf-8" ?>\n<mutations>\n'
+                '  <category Name="Physical">\n'
+                + mutations
+                + "\n  </category>\n</mutations>\n",
+                encoding="utf-8",
+            )
+        scripting = mod / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        (scripting / "Vixy_Thing.cs").write_text(
+            "public class Vixy_Thing { void M() { " + call + " } }", encoding="utf-8"
+        )
+        return tmp
+
+    def test_a_name_nothing_declares_is_reported(self) -> None:
+        items = findings_for(
+            validate_mod.check_mutation_name,
+            self._mod('GetMutationEntryByName("Heightened Smel");'),
+        )
+        self.assertTrue(
+            any(check == "mutation-name" for check, _ in items),
+            "a misspelled mutation name was not reported",
+        )
+
+    def test_a_hidden_vanilla_name_is_accepted(self) -> None:
+        """The case the check exists for: declared only in HiddenMutations.xml."""
+        items = findings_for(
+            validate_mod.check_mutation_name,
+            self._mod('GetMutationEntryByName("Heightened Smell");'),
+        )
+        self.assertEqual([i for i in items if i[0] == "mutation-name"], [])
+
+    def test_a_name_this_fork_declares_is_accepted(self) -> None:
+        items = findings_for(
+            validate_mod.check_mutation_name,
+            self._mod(
+                'GetMutationEntryByName("Fangs");',
+                '    <mutation Name="Fangs" Cost="3" Class="Vixy_Fangs" />',
+            ),
+        )
+        self.assertEqual([i for i in items if i[0] == "mutation-name"], [])
+
+
 class VariantDensity(unittest.TestCase):
     """#613. A coat must split its parent's share of a table rather than add a second roll.
 

@@ -2504,6 +2504,53 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
 
 
+def check_mutation_name(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A mutation this fork reaches by name from C# must actually exist.
+
+    `MutationFactory.GetMutationEntryByName` returns null for a name that does not resolve, and every
+    caller here then does nothing - `Raven_Options` would set no field, the option would appear in the
+    menu and change nothing, and no exception or log line would say so. That is the same silence as an
+    unread tag or a scope that matches nothing, and #593 introduced two more of these strings.
+
+    A name is valid if this fork declares it in its own `<mutations>` XML, or if vanilla declares it.
+    Vanilla's side comes from the snapshot's `mutation_names`, which reads `HiddenMutations.xml` as
+    well as `Mutations.xml` - the hidden file is exactly where #593's name lives, and a check that
+    only knew the visible one would report a correct name as broken.
+
+    Without the snapshot section the check returns rather than guessing, the way the share checks do.
+    """
+    try:
+        vanilla = set(
+            json.loads(QUD_API_PATH.read_text(encoding="utf-8")).get(
+                "mutation_names", []
+            )
+        )
+    except (OSError, json.JSONDecodeError):
+        return
+    if not vanilla:
+        return
+
+    ours = {
+        mutation.get("Name")
+        for root in all_roots.values()
+        if root.tag == "mutations"
+        for mutation in root.iter("mutation")
+        if mutation.get("Name")
+    }
+    known = vanilla | ours
+
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        text = cs.read_text(encoding="utf-8-sig")
+        for m in re.finditer(r'GetMutationEntryByName\(\s*"([^"]*)"\s*\)', text):
+            if m.group(1) not in known:
+                line = text.count("\n", 0, m.start()) + 1
+                f.add(
+                    "mutation-name",
+                    f"{cs}:{line}: GetMutationEntryByName({m.group(1)!r}) names no mutation this "
+                    "fork or vanilla declares - it resolves to null and the caller does nothing",
+                )
+
+
 def check_variant_density(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """A creature variant must split its parent's share of a table, never add to it.
 
@@ -3523,6 +3570,7 @@ def run() -> Findings:
     check_snapshot_coverage(f, roots)
     check_table_share(f, roots)
     check_variant_density(f, roots)
+    check_mutation_name(f, roots)
     check_placement_hint(f, roots)
     check_name_collision(f, roots)
     check_scatter_share(f, roots)

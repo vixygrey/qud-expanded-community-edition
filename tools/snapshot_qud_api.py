@@ -899,6 +899,27 @@ def collect_variant_parent_quantities(game: Path) -> dict[str, list[float]]:
     return {k: list(v) for k, v in totals.items()}
 
 
+def collect_mutation_names(game: Path) -> list[str]:
+    """Every mutation name vanilla declares, visible or hidden.
+
+    This fork reaches mutation entries by name from C# — `GetMutationEntryByName("Heightened
+    Smell")` — and a name that does not resolve returns null and does nothing at all. No exception,
+    no log line, just an option that silently stops working. `check_mutation_name` needs the real
+    list to compare against, and CI has no game.
+
+    **`HiddenMutations.xml` is read as well as `Mutations.xml`**, and it has to be: the whole point
+    of #593 is reaching an entry that only the hidden file declares. Reading one and calling it the
+    set is the mistake that hid that file for as long as it did.
+    """
+    names: set[str] = set()
+    for f in sorted(game.glob("*Mutations*.xml")):
+        for mutation in parse(f, lenient=True).iter("mutation"):
+            name = mutation.get("Name")
+            if name:
+                names.add(name)
+    return sorted(names)
+
+
 def collect_absent_tables(game: Path) -> list[str]:
     """Population tables this mod merges into that vanilla does not define.
 
@@ -1218,6 +1239,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     tag_forms_absent = collect_tag_forms_absent(game)
     scatter_quantities = collect_scatter_quantities(game)
     variant_parent_quantities = collect_variant_parent_quantities(game)
+    mutation_names = collect_mutation_names(game)
     absent_tables = collect_absent_tables(game)
     template_hints = collect_template_hints(game)
     skill_powers = collect_skill_powers(game)
@@ -1269,6 +1291,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + "\0"
             + json.dumps(scatter_quantities, sort_keys=True)
             + json.dumps(variant_parent_quantities, sort_keys=True)
+            + json.dumps(mutation_names, sort_keys=True)
             + "\0"
             + json.dumps(absent_tables, sort_keys=True)
             + "\0"
@@ -1314,6 +1337,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "tag_forms_absent": len(tag_forms_absent),
             "scatter_quantities": len(scatter_quantities),
             "variant_parent_quantities": len(variant_parent_quantities),
+            "mutation_names": len(mutation_names),
             "absent_tables": len(absent_tables),
             "template_hints": len(template_hints),
             "skill_powers": len(skill_powers),
@@ -1332,6 +1356,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "tag_forms_absent": tag_forms_absent,
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
         "variant_parent_quantities": dict(sorted(variant_parent_quantities.items())),
+        "mutation_names": mutation_names,
         "absent_tables": absent_tables,
         "template_hints": template_hints,
         "skill_powers": dict(sorted(skill_powers.items())),
