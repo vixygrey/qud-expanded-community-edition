@@ -47,6 +47,34 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Issachari names stop running out** (#632).
+
+  An Issachari is one hyphenated phrase - {{Flays-upon-the-Sun}}, {{Chokes-in-Quicksalt}} - drawn
+  from 7 verbs, 5 prepositions and 8 nouns. That is 280 names: the whole name repeats at around
+  twenty people, and every individual slot at three or four. All three pools now widen together, to
+  10, 10 and 12, which is 1,200 names and a repeat at about forty.
+
+  Three of the four new nouns come from the Issachari themselves rather than from me. **Brine** and
+  **the-Red-and-White** are things they say - *"the brine air will cure your lungs to jerky"* and
+  *"Be respectful of the red-and-white and we will get along"* - and **Mirage** is from their banner,
+  platinum stitch on a field of salt white, read by mirage-trained eyes.
+
+  This is the opposite conclusion to the one the Qudish pools got, from the same arithmetic. Qudish
+  has ~93,500 names, so exact repeats are not what you notice and the middle pool was deliberately
+  left alone; Issachari has 280, so the whole name repeats and every slot with it. Both files say so.
+
+  Covered by the same **wider name pools** option that governs Qudish.
+
+- **(internal)** `naming-option-coverage` is keyed by namestyle, and the naming harness watches
+  Issachari (#632).
+
+  The check compared the namestyle's name against the literal `"Qudish"`, so the moment a second
+  namestyle arrived it would have stopped covering the file while still passing - which is the exact
+  failure it exists to prevent, aimed at itself. It now holds every namestyle in both directions, and
+  reports an array that has entries no namestyle adds. The harness's watch list gained Issachari for
+  the same reason: a fragment that cleared those pools rather than adding to them would have shown
+  nothing at all.
+
 - **You can ask a creature its name** (#572).
 
   Most of the people in Qud already have names. There was never a way to ask. Now conversations with

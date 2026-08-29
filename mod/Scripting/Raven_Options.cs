@@ -70,6 +70,7 @@ namespace QudExpandedCE
 
         /// <summary>The vanilla namestyle mod/Naming.xml merges its new syllables into.</summary>
         private const string QudishStyle = "Qudish";
+        private const string IssachariStyle = "Issachari";
 
         /// <summary>
         /// The namestyles that carry the gendered ending pools. Switching the option off sets
@@ -89,6 +90,13 @@ namespace QudExpandedCE
         private static readonly string[] AddedPrefixes = Vixy_NameSyllables.AddedPrefixes;
         private static readonly string[] AddedInfixes = Vixy_NameSyllables.AddedInfixes;
         private static readonly string[] AddedPostfixes = Vixy_NameSyllables.AddedPostfixes;
+
+        private static readonly string[] AddedIssachariPrefixes =
+            Vixy_NameSyllables.AddedIssachariPrefixes;
+        private static readonly string[] AddedIssachariInfixes =
+            Vixy_NameSyllables.AddedIssachariInfixes;
+        private static readonly string[] AddedIssachariPostfixes =
+            Vixy_NameSyllables.AddedIssachariPostfixes;
 
         private const string ChipSlot = "Chip Interface";
 
@@ -450,13 +458,42 @@ namespace QudExpandedCE
         private static void ApplyWiderNames()
         {
             int weight = Enabled(WiderNamesID, "Yes") ? 1 : 0;
-            if (!NameStyles.NameStyleTable.TryGetValue(QudishStyle, out NameStyle style))
+            Widen(QudishStyle, AddedPrefixes, AddedInfixes, AddedPostfixes, weight);
+            Widen(
+                IssachariStyle,
+                AddedIssachariPrefixes,
+                AddedIssachariInfixes,
+                AddedIssachariPostfixes,
+                weight
+            );
+        }
+
+        /// <summary>
+        /// Zero the weight on one namestyle's added entries, or restore it.
+        /// </summary>
+        /// <remarks>
+        /// One option covers both namestyles because it is one idea - names that stop sounding
+        /// alike - and charter rule 6's warning about a constellation of switches bites harder than
+        /// the difference between a Qudish syllable and an Issachari word. The Qudish pools are
+        /// widened for repeated *syllables* across ~93,500 names; the Issachari pools are widened
+        /// because 280 whole names repeat outright. Same option, opposite reasoning, and
+        /// mod/Core/Naming.xml records why.
+        /// </remarks>
+        private static void Widen(
+            string styleName,
+            string[] prefixes,
+            string[] infixes,
+            string[] postfixes,
+            int weight
+        )
+        {
+            if (!NameStyles.NameStyleTable.TryGetValue(styleName, out NameStyle style))
             {
                 return;
             }
-            SetWeights(style.Prefixes, AddedPrefixes, weight);
-            SetWeights(style.Infixes, AddedInfixes, weight);
-            SetWeights(style.Postfixes, AddedPostfixes, weight);
+            SetWeights(style.Prefixes, prefixes, weight);
+            SetWeights(style.Infixes, infixes, weight);
+            SetWeights(style.Postfixes, postfixes, weight);
         }
 
         private static void SetWeights<T>(List<T> pool, string[] added, int weight)

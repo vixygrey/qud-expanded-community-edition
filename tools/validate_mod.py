@@ -1125,42 +1125,71 @@ def check_naming_option_coverage(
       a syllable in the C# but not the XML  -> the option zeroes a weight on something else,
                                                which for a vanilla syllable means silencing it
     """
-    arrays = {
-        "prefixes": "AddedPrefixes",
-        "infixes": "AddedInfixes",
-        "postfixes": "AddedPostfixes",
+    # Widened in #632. Qudish was the only namestyle this mod touched until the Issachari pools
+    # came in, and a check that names one style silently stops covering the file the moment a
+    # second arrives - which is the exact failure it exists to prevent, aimed at itself.
+    styles = {
+        "Qudish": {
+            "prefixes": "AddedPrefixes",
+            "infixes": "AddedInfixes",
+            "postfixes": "AddedPostfixes",
+        },
+        "Issachari": {
+            "prefixes": "AddedIssachariPrefixes",
+            "infixes": "AddedIssachariInfixes",
+            "postfixes": "AddedIssachariPostfixes",
+        },
     }
     source = MOD / "Scripting" / "Vixy_NameSyllables.cs"
     if not source.is_file():
         return
     text = source.read_text(encoding="utf-8-sig")
 
-    declared: dict[str, set[str]] = {}
-    for pool, array in arrays.items():
-        match = re.search(rf"string\[\]\s+{array}\s*=\s*\{{(.*?)\}};", text, re.DOTALL)
-        declared[pool] = (
-            set(re.findall(r'"([^"]+)"', match.group(1))) if match else set()
-        )
+    declared: dict[str, dict[str, set[str]]] = {}
+    for style_name, arrays in styles.items():
+        declared[style_name] = {}
+        for pool, array in arrays.items():
+            match = re.search(
+                rf"string\[\]\s+{array}\s*=\s*\{{(.*?)\}};", text, re.DOTALL
+            )
+            declared[style_name][pool] = (
+                set(re.findall(r'"([^"]+)"', match.group(1))) if match else set()
+            )
 
+    seen: set[str] = set()
     for path, root in _naming_roots(all_roots).items():
         for style in root.iter("namestyle"):
-            if style.get("Name") != "Qudish":
+            style_name = style.get("Name")
+            if style_name not in styles:
                 continue
-            for pool, array in arrays.items():
+            seen.add(style_name)
+            for pool, array in styles[style_name].items():
                 node = style.find(pool)
                 in_xml = {el.get("Name") for el in node} if node is not None else set()
-                for missing in sorted(in_xml - declared[pool]):
+                for missing in sorted(in_xml - declared[style_name][pool]):
                     f.add(
                         "naming-option-coverage",
-                        f"{path}: {pool[:-2]} {missing!r} is added to Qudish but absent from "
-                        f"{array} — the option cannot switch it off",
+                        f"{path}: {pool[:-2]} {missing!r} is added to {style_name} but absent "
+                        f"from {array} — the option cannot switch it off",
                     )
-                for extra in sorted(declared[pool] - in_xml):
+                for extra in sorted(declared[style_name][pool] - in_xml):
                     f.add(
                         "naming-option-coverage",
-                        f"{source}: {array} names {extra!r}, which Qudish does not add — "
+                        f"{source}: {array} names {extra!r}, which {style_name} does not add — "
                         f"the option would zero the weight on something it does not own",
                     )
+
+    # An array with entries and no namestyle merging them is the same defect wearing a different
+    # hat: the option would zero a weight on a vanilla entry, or on nothing at all.
+    for style_name, arrays in styles.items():
+        if style_name in seen:
+            continue
+        for pool, array in arrays.items():
+            if declared[style_name][pool]:
+                f.add(
+                    "naming-option-coverage",
+                    f"{source}: {array} has entries but no {style_name} namestyle adds them",
+                )
 
 
 def check_duplicate_children(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
