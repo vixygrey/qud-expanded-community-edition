@@ -1075,9 +1075,15 @@ conventions apply, plus two constraints from the charter:
 - **Charter rule 5 (safety) is a hard boundary.** No file I/O outside the mod directory, no
   network, no reflection into game internals, no Harmony, no loading external assemblies. Qud mods
   run with full process privileges and `Scripting/` triggers an approval prompt for every
-  subscriber — that is a trust relationship, and the current 36 inert classes are the ceiling.
-- **Prefer XML.** Anything achievable in data should be data: less code is both safer and more
-  durable across game patches.
+  subscriber — that is a trust relationship, and those limits do not move.
+- **What the C# is allowed to *do* is a separate question, and it is not fixed.** The 36 inert
+  `ModImprovedMutationBase<T>` subclasses used to be the ceiling; option handling, a
+  character-creation module and a mutation class have each raised it since, and #498 lowered it
+  again. Read rule 5 rather than assuming a limit — this line has been out of date before.
+- **Where the game already does a thing in data, use the data** — a blueprint or a tag is
+  Freehold's mechanism to maintain across patches, where equivalent C# is ours. **This is not a
+  budget.** Where a feature needs C#, write the C#; going looking for a worse XML route to avoid it
+  is not what the rule asks.
 
 ---
 

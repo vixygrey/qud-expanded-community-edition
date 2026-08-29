@@ -99,8 +99,22 @@ Credit is the one condition attached to the fork permission, so it isn't negotia
 Qud mods run with **full process privileges**, and any `mod/Scripting/` directory triggers a
 mod-approval prompt for every subscriber. That's a trust relationship, and I treat it as one.
 
-- **Prefer XML to C#.** Every feature achievable in data should be data. Less code is both safer
-  and more patch-durable.
+**Two different things live in this rule, and they are not the same weight.** The list below is a
+hard boundary. What follows it is a preference with a reason, and the reason is not restraint.
+
+**Where the game already does a thing in data, use the data.** Not because C# is suspect — it is a
+normal way to build a feature here, and three of this mod's have needed it — but because a
+blueprint, a tag or a population table is *Freehold's* mechanism, maintained by them across
+patches, where equivalent C# is mine to keep working. #498 is the case: a whole `IGameSystem` went
+away because `manifest.json` already gated a directory, and the result was less to break, not less
+code for its own sake.
+
+**The corollary matters as much and is easier to lose.** Where a feature genuinely needs C#, write
+the C#. Looking for a worse XML route to stay under a budget is not what this rule asks for, and
+there is no budget — the constraints are the list below, and they are about privilege, not volume.
+#589 is why this is spelled out: "it needs no new C#" got written into an issue as the reason to
+build that feature *first*, which is this preference deciding a roadmap it has no business
+deciding, on a claim that turned out to be false.
 
 **Never — these do not move:**
 
@@ -122,8 +136,10 @@ also:
 - **registers a character-creation module** — an `AbstractEmbarkBuilderModule` subclass, declared
   by class name in `mod/Core/EmbarkModules.xml`, which handles one boot event and replaces the string
   the game generated for the player's name
+- **declares a mutation** — a `BaseDefaultEquipmentMutation` subclass, named by `Class` in
+  `mod/Core/Mutations.xml`, which grows a natural weapon onto a body part and keeps its rank in step
 
-**I raised that ceiling twice, deliberately, and neither time was drift** — drift is the failure
+**I raised that ceiling three times, deliberately, and none of them was drift** — drift is the failure
 this rule exists to prevent. #46 was the first: C# may hold state and adjust already-loaded data in
 response to a player's choice. The second is the embark module, and it is worth saying why it
 needed asking for rather than just doing.
@@ -140,13 +156,29 @@ state would put this mod's shape into other people's saved characters.
 The alternative was Harmony, which rule 5 refuses and which breaks on arm64 macOS anyway. The
 question was never "patch or module", it was whether the feature was worth a new kind of C# at all.
 
+**The third is the mutation class (#589), and it is the one this rule's own phrasing nearly
+prevented.** Every `<mutation>` node names a `Class` the game resolves as
+`"XRL.World.Parts.Mutation." + Class`, so a mutation cannot be declared in data — and the issue was
+filed on the theory that it could be, by pointing `Class` at vanilla's `Horns`. That would have
+broken vanilla's own entry for every player, because two entries sharing a class collide and the one
+sorting first by display name wins. So the choice was never "XML or C#": it was a new mutation
+class, or no mutation. The 36 existing subclasses only *improve* vanilla mutations; none of them is
+one.
+
+What kept it inside the limits above is the same test the embark module passed. The game
+instantiates it from a class name in XML exactly as it instantiates a part from a blueprint, so the
+reflection is the game's; it declares no instance fields, so the mod still adds nothing to save
+shape; and it inherits a base Freehold wrote to be extended rather than reaching into one that was
+not — which is a distinction `docs/LESSONS.md` now records, because `Horns` turned out to be
+unextendable and reading its access modifiers is what said so.
+
 **It has come down once, too.** A third bullet stood here until #498: a `[Serializable]`
 `IGameSystem` that handled a zone event and created and destroyed objects within one zone, which is
 how the Joppa building used to be removed when its option was off. `manifest.json` gates the whole
 directory on that option instead, so the system went and the ceiling went back down with it. Worth
 recording, because a ceiling that only ever rises is one nobody is reading — and because the
 replacement was not a smaller version of the same idea but the discovery that the game already did
-it, which is the outcome rule 5's "prefer XML to C#" is pointing at.
+it, which is the outcome this rule's preference is pointing at.
 
 **Both limits above are checked now, not just written down.** `tools/validate_mod.py` runs
 `scripting-policy` (every banned API in rule 5's list, with the clause each pattern enforces) and
@@ -263,10 +295,11 @@ Not "options later". Retrofitting a toggle onto a shipped feature means deciding
 players already have expectations, and it's the exact debt this fork spent its first release
 paying down.
 
-This rule spends a little of rule 5's budget: gating content means more C#, not less. The mod
-already ships `mod/Scripting/`, so the subscriber approval prompt is **already paid for**, and
-option-reading plus table adjustment stays well inside rule 5's limits — no I/O, no network, no
-reflection. It licenses nothing beyond that.
+This rule pulls against rule 5's preference rather than against its limits: gating content means
+more C#, not less. That is fine, and worth being explicit about, because the two rules would
+otherwise look as though they disagree. The mod already ships `mod/Scripting/`, so the subscriber
+approval prompt is **already paid for**, and option-reading plus table adjustment stays well inside
+rule 5's hard boundary — no I/O, no network, no reflection. It licenses nothing beyond that.
 
 ---
 
