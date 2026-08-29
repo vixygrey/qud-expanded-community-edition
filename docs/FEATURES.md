@@ -3796,8 +3796,13 @@ rather than one in eight (#582).
 > A high-tier disk can appear on an early shelf, and its price is what stops it walking off with an
 > early purse. No code changed, and none needs to.
 >
-> ⚠️ The seven untiered tables in §24.3 are a separate change and are **not** covered by that
-> session — a disk merchant's shelf and a Barathrumite leader's pack have not been looked at.
+> ✅ **The seven untiered tables in §24.3 are confirmed too**, in a later session the same day. Those
+> were the ones where each curve was a judgement rather than a rule — a disk specialist's shelf
+> reading flat, a Barathrumite leader and a legendary merchant reading high, the Daughter of Exile
+> and Yla Haj sitting mid, and a tier-zero village's reward leaning low. Played, and each reads the
+> way the table beside it says it should.
+>
+> So §24 is settled in full: both halves of the curve are in play and neither wants changing.
 
 ### 24.1 Vanilla draws uniformly, and built the fix it never used
 
