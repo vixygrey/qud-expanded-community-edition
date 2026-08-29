@@ -47,6 +47,34 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **You can ask a creature its name** (#572).
+
+  Most of the people in Qud already have names. There was never a way to ask. Now conversations with
+  a creature that has no name yet carry the question, and they answer — a snapjaw with a snapjaw
+  name, an Issachari raider with an Issachari one, drawn from their own culture, faction and region
+  the way a village elder's is.
+
+  The question comes out differently each time, from a pool of eleven. Six are Caves of Qud's own
+  wording and five are mine. What they say back is entirely the game's.
+
+  **Caves of Qud wrote this and left it switched off.** The choice, the reply, the naming, and an
+  opt-out for authors who want a particular creature to stay silent are all finished and shipped;
+  one line hides the lot, and it tests a setting that appears nowhere in the game's data. This adds
+  its own question rather than flipping that setting, because reaching it would have cost the Joppa
+  home base its option — the two mechanisms turn out to be mutually exclusive, and `docs/FEATURES.md`
+  §26.2 records why.
+
+  **You cannot ask a dragonfly.** The question only appears where somebody is actually speaking -
+  worked out from the conversation itself rather than from a list, by checking whether anything is
+  left once the emotes are taken out. So animals, insects and plants are silent, and so are the
+  people who deliberately do not speak: Sparafucile, Oboroqoru, Warden 1-FF, the apple farmer's
+  daughter. Birds can be asked, because Caves of Qud gives them sentences.
+
+  **Asking means you can no longer rename them.** The game refuses to rename anyone who already has
+  a name, so a creature that has told you who it is cannot be given one by you afterwards. That is
+  deliberate: asking who someone is and deciding who they are are different acts, and now you choose
+  which one you are doing. Turn the option off if you would rather keep naming your companions.
+
 - **Data disks now come on a curve instead of at random** (#582).
 
   Every data disk in Caves of Qud is a uniform draw from the whole recipe list — a tier-8 blueprint is

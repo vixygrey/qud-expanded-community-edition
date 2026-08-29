@@ -228,6 +228,27 @@
   </option>
 
   <option
+    ID="OptionQudExpandedCEAskName"
+    DisplayText="{{C|Qud Expanded}}: ask a creature its name"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded ask name conversation npc creature introduce naming"
+  >
+    <helptext>
+            Adds {{G|What is your name?}} to conversations with creatures that have no name yet, and they answer.
+
+            Most of the people in Qud already have names - the game just never gave you a way to ask. A snapjaw answers with a snapjaw name, an Issachari raider with an Issachari one, because the name is drawn from their own culture, faction and region the same way a village elder's is.
+
+            The question is asked a different way each time, and what they say back is Caves of Qud's own wording.
+
+            {{y|Asking means you can no longer rename them.}} The game refuses to rename anyone who already has a name - {{y|"doesn't want a new name."}} - so a creature that has told you who it is cannot be given a name by you afterwards. Asking who someone is and deciding who they are are different things, and this makes you choose. Turn this off if you would rather name your companions yourself.
+
+            Applies immediately. Names already given are kept.
+        </helptext>
+  </option>
+
+  <option
     ID="OptionQudExpandedCETrashDiviningDensity"
     DisplayText="{{C|Qud Expanded}}: Trash Divining runs dry as a zone is picked over"
     Category="Mods"
