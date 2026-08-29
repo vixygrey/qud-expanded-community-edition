@@ -38,6 +38,7 @@ namespace QudExpandedCE
         public const string CreatureVariantsID = "OptionQudExpandedCECreatureVariants";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
+        public const string AnthroMutationsID = "OptionQudExpandedCEAnthroMutations";
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
@@ -581,6 +582,7 @@ namespace QudExpandedCE
             ApplyChargenInfo();
             ApplyChipDrops();
             ApplyCreatureVariants();
+            ApplyAnthroMutations();
             ApplySkillRequirements();
             ApplySkillCosts();
             ApplyWiderNames();
@@ -814,6 +816,40 @@ namespace QudExpandedCE
         /// population entries. It gated nothing. This does the same job the chip option does, on the
         /// same live dictionary.
         /// </summary>
+        /// <summary>
+        /// Show or hide this fork's animal-trait mutations.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Writes two public fields on a MutationEntry the game has already loaded, which is the
+        /// same shape as this class's genotype edits and needs no new capability under charter
+        /// rule 5. <c>Hidden</c> takes it out of the character-creation list; <c>ExcludeFromPool</c>
+        /// keeps it off randomly generated creatures. Both are set from the option's current value
+        /// rather than toggled, so running this repeatedly and in any order is safe.
+        /// </para>
+        /// <para>
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached; a new mutation is content, and the player chooses whether to spend
+        /// points on it every time they make a character.
+        /// </para>
+        /// <para>
+        /// The entry is looked up by name because that is what MutationFactory indexes, and a null
+        /// result is not an error worth reporting - it means the XML did not load, which the
+        /// validator catches long before a player would.
+        /// </para>
+        /// </remarks>
+        private static void ApplyAnthroMutations()
+        {
+            bool on = Enabled(AnthroMutationsID, "Yes");
+
+            MutationEntry fangs = MutationFactory.GetMutationEntryByName("Fangs");
+            if (fangs != null)
+            {
+                fangs.Hidden = !on;
+                fangs.ExcludeFromPool = !on;
+            }
+        }
+
         private static void ApplyCreatureVariants()
         {
             if (Enabled(CreatureVariantsID, "Yes"))

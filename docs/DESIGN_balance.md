@@ -1305,6 +1305,71 @@ misses: `Armor 8C` at **71.7%**. `Armor 2R` at 57.7% and `Armor 8R` at 55.8% are
 
 ---
 
+## 10. What is a mutation point worth?
+
+#589 needed a cost for a mutation this fork invented, and there was no method here for that — every
+curve above prices *items*. So this derives one, because #590, #593 and #594 each need it and
+picking a number three more times is how a set drifts.
+
+### 10.1 Vanilla's physical costs are a four-band ladder, not a curve
+
+The 32 entries in `Mutations.xml`'s `Physical` category run 1 to 5, and they cluster:
+
+| Cost | n | Mutations | What they have in common |
+|---:|---:|---|---|
+| 1 | 4 | Beak, Night Vision, Slime Glands, Thick Fur | one small effect, and no scaling or none anybody feels |
+| 2 | 3 | Electromagnetic Pulse, Heightened Hearing, Photosynthetic Skin | one useful thing, no drawback |
+| 3 | 12 | Burrowing Claws, Carapace, Corrosive Gas Generation, Double-muscled, Heightened Quickness, Quills, Sleep Gas Generation, Spinnerets, Stinger (Confusing Venom), Triple-jointed, Two-headed, Two-hearted | solid, scaling, and it costs you nothing to have |
+| 4 | 11 | Adrenal Control, Electrical Generation, Flaming Ray, Horns, Metamorphosis, Multiple Arms, Phasing, Regeneration, Stinger (Paralyzing Venom), Stinger (Poisoning Venom), Wings | strong; most cost a slot, a resource, or a drawback |
+| 5 | 2 | Freezing Ray, Multiple Legs | strong with no attached cost at all |
+
+**The three Stingers are the cleanest datum in the table**, and they are the only case of vanilla
+pricing one design at two costs. Identical mechanics, identical slot, identical everything except
+the venom: confusing is 3, paralyzing and poisoning are 4. So **the strength of a natural weapon's
+rider moves its cost by a band**, which is exactly the axis fangs are priced on.
+
+**There is no arithmetic here, and inventing one would be worse than reading the ladder.** Unlike a
+weapon's tier, a mutation has no single dimension to price against — `Night Vision` and `Thick Fur`
+are both 1 and share nothing. What the bands *are* is a consistent ranking of **how much a
+character's build changes**, and that is what a new mutation gets placed against.
+
+### 10.2 The method: two neighbours and the differences between them
+
+Price a new mutation by naming the vanilla mutation immediately above it and the one immediately
+below, then stating every difference. If the differences do not resolve to a band, the design is
+underspecified rather than the cost being hard.
+
+Fangs, worked:
+
+- **Below: `Beak`, 1.** Flat `1` damage, no rank scaling at all (`CanLevel()` returns false), a
+  Face-slot natural weapon, +1 Ego.
+- **Above: `Horns`, 4.** `2d3`→`2d6`, AV `1`→`4`, to-hit `+rank/2+1`, bleeding on penetration, a 20%
+  intrinsic attack — and it **occupies the Head slot**, so no helmets.
+
+Fangs keep Horns' attack chance, to-hit and bleed; drop its AV and its damage growth; and cost no
+slot, because they set the part's default behaviour rather than equipping. So: **strictly below
+Horns on two of its four extras, strictly above Beak on all of them, and free to have.** Band 3, the
+"solid, scaling, costs you nothing" tier, next to `Quills` and `Carapace`.
+
+**The slot question is the one that moved the number twice.** I costed fangs at 2 while I believed
+they would trade the Face slot away, and again at 2 when I believed the bleed was novel. Neither was
+true: `BodyPart.GetFirstValidWeapon` prefers a part's default behaviour over non-weapon equipment,
+so a mask and the bite coexist, and `ShortBlades.WeaponMadeCriticalHit` already gives every short
+blade a free crit bleed. **A mutation that costs the player nothing to carry belongs a band higher
+than one that costs them a slot**, and both corrections pushed the same way.
+
+### 10.3 Two rules that fall out of the ladder
+
+**Price what the mutation does to a build, not what it does per turn.** `Slime Glands` fires more
+often than `Wings` and costs a quarter as much. The question is how much of a character is decided
+by having it.
+
+**A mutation granting access to something otherwise bought is priced against the purchase, not
+against the effect.** Fangs' bleed is not new — `ShortBlades_Bloodletter` sells the same effect for
+150 skill points behind an Agility 17 minimum, and the weapon class gives a weaker version away. So
+fangs are priced on giving a *fraction* of that access without spending a hand or a skill point,
+which is a band-3 convenience rather than a band-4 power.
+
 ## Sources
 
 | What | Where |

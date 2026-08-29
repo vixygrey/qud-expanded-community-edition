@@ -1273,6 +1273,7 @@ seconds rather than after a round trip.
 | Figures quoted by the wiki, which has no version selector | `wiki-figure`, under `--wiki` only |
 | Subtype tiles existing and named for their affinity | `subtype-tile` |
 | C# parts referenced by XML having a class | `missing-script`, `class-filename` |
+| A mutation's `Class` existing, and never being a vanilla one | `mutation-class`, `missing-script` |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
 | A file under `mod/` no declared path loads | `directory-coverage`, against `manifest.json`'s `Directories` |
@@ -1355,6 +1356,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
 | `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
 | `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
+| `mutation-class` | `validate_mod.py` | a `<mutation Class=>` naming a vanilla class, which collides with vanilla's own entry |
 | `naming-amounts` | `validate_mod.py` | a new namestyle stating `Format` and every pool `Amount`, which default to silence |
 | `naming-ascii` | `validate_mod.py` | syllables staying ASCII, as all 3,074 of vanilla's are |
 | `naming-merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla namestyles, and mod-prefixed names on scopes added to them |
