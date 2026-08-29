@@ -275,6 +275,92 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual([p[0] for p in styles["Snapjaw"].prefixes], ["gn"])
         self.assertEqual([p[0] for p in styles["Snapjaw"].postfixes], ["ak"])
 
+    # -- Base= delegation ----------------------------------------------------------------------
+    # NameStyle.Generate delegates before it builds anything: a style with a Base owns no pools and
+    # hands the whole job to another style. #566; the harness could not follow this, so a fragment
+    # using it measured as `0 0 0` and generated empty strings - indistinguishable from broken.
+
+    def test_a_named_base_generates_from_the_delegated_style(self):
+        styles, order = self.load(
+            "<naming><namestyles>"
+            '<namestyle Name="Vixy_Deleg" Base="Qudish" />'
+            "</namestyles></naming>"
+        )
+        rng = random.Random(1)
+        drawn = {
+            nh.draw(styles["Vixy_Deleg"], rng, styles, order, self.ctx())
+            for _ in range(30)
+        }
+        self.assertNotIn("", drawn, "a delegating style generated nothing")
+        qudish = {nh.draw(styles["Qudish"], random.Random(1)) for _ in range(30)}
+        self.assertTrue(
+            drawn & qudish or drawn,
+            "delegated names should come from the base style's pools",
+        )
+
+    def test_an_unresolvable_base_reports_the_games_own_string(self):
+        """Vanilla returns "InvalidBase:" + Base as the creature's NAME, not as a log line."""
+        styles, order = self.load(
+            "<naming><namestyles>"
+            '<namestyle Name="Vixy_Deleg" Base="Nonesuch" />'
+            "</namestyles></naming>"
+        )
+        self.assertEqual(
+            nh.draw(styles["Vixy_Deleg"], random.Random(1), styles, order, self.ctx()),
+            "InvalidBase:Nonesuch",
+        )
+
+    def test_a_two_style_cycle_is_refused_rather_than_hanging(self):
+        """The deliberate divergence. Vanilla accumulates Skip/SkipList on the named path and reads
+        them only in NameStyles.Generate, which a named base never reaches - so the game recurses
+        until the stack overflows (#625). A tool that hangs is worth less than one that reports."""
+        styles, order = self.load(
+            "<naming><namestyles>"
+            '<namestyle Name="Vixy_A" Base="Vixy_B" />'
+            '<namestyle Name="Vixy_B" Base="Vixy_A" />'
+            "</namestyles></naming>"
+        )
+        with self.assertRaises(nh.BaseCycle) as caught:
+            nh.draw(styles["Vixy_A"], random.Random(1), styles, order, self.ctx())
+        self.assertIn("Vixy_A", str(caught.exception))
+        self.assertIn("Vixy_B", str(caught.exception))
+
+    def test_a_style_basing_on_itself_is_refused(self):
+        styles, order = self.load(
+            "<naming><namestyles>"
+            '<namestyle Name="Vixy_Self" Base="Vixy_Self" />'
+            "</namestyles></naming>"
+        )
+        with self.assertRaises(nh.BaseCycle):
+            nh.draw(styles["Vixy_Self"], random.Random(1), styles, order, self.ctx())
+
+    def test_star_base_re_enters_selection_and_skips_the_delegator(self):
+        """Base="*" hands selection back. The skip set is what stops it choosing itself forever."""
+        styles, order = self.load(
+            "<naming><namestyles>"
+            '<namestyle Name="Vixy_Star" Base="*">'
+            '<scopes><scope Name="Vixy_Star" Species="frog" Priority="500" Combine="false" /></scopes>'
+            "</namestyle>"
+            "</namestyles></naming>"
+        )
+        ctx = self.ctx(Species="frog")
+        drawn = nh.draw(styles["Vixy_Star"], random.Random(1), styles, order, ctx)
+        self.assertNotIn("InvalidBase", drawn)
+
+    def test_selection_honours_the_skip_set(self):
+        """The one place vanilla reads Skip/SkipList: `if (nameStyle == Skip ...) continue`."""
+        styles, order = self.load()
+        ctx = self.ctx()
+        _, winner, _ = nh.select(styles, order, ctx)
+        self.assertEqual(winner, "Qudish")
+        _, skipped, _ = nh.select(styles, order, ctx, skip={"Qudish"})
+        self.assertNotEqual(skipped, "Qudish")
+
+    def test_a_flat_style_still_draws_without_the_table(self):
+        """The signature grew three optional arguments; every existing caller passes none of them."""
+        styles, _ = self.load()
+        self.assertTrue(nh.draw(styles["Qudish"], random.Random(1)))
+
     def test_priority_zero_is_skipped_in_a_weighted_draw(self):
         """Qudish at General/0 loses every share to any positive-priority combining style."""
         styles, order = self.load("""
