@@ -2533,6 +2533,10 @@ attached; this grants names, and a player who installs the mod is asking for the
 §15.1 measured Qudish, found that the whole name never repeats and only *syllables* do, and
 deliberately left the middle pool alone. **Issachari inverts every part of that conclusion** (#632).
 
+> ✅ **Played and confirmed on 2026-08-29** (maintainer). Reaching the names at all takes deliberate
+> effort, for the reason set out below — the tribe is hostile from the first turn, so a player either
+> meets them as legendary raiders named on sight, or earns standing with them first.
+
 Vanilla's namestyle is 7 verbs, 5 prepositions and 8 nouns, drawn one of each with
 `HyphenationChance="100"` and `TwoNameChance="0"` — so every Issachari is one hyphenated phrase from
 **280 combinations**. Measured the same way as the Qudish note:
@@ -3905,6 +3909,14 @@ Nothing here touches it.
 twentieth pile, and the fiftieth. A catacombs zone paid roughly four or five secrets and now pays
 about two; a rustwell pays what it always did (#605).
 
+> ✅ **Played and confirmed on 2026-08-29** (maintainer).
+>
+> ⚠️ One question was flagged as unanswerable from the assembly and is **not** recorded as settled
+> here: whether a zone property survives the zone being unloaded and re-entered. Vanilla relies on
+> it for `BurnGenerateObjectInCell`'s per-zone result, which strongly implies it holds, but that is
+> inference. If it does not, leaving a half-rifled zone and returning resets the curve. Left open
+> until someone has deliberately walked out and back.
+
 ### 25.1 The rate reads as a trickle and delivered a salary
 
 `Customs_TrashDivining` costs 150 points, wants Intelligence 21, and promises *"a 5% chance you
@@ -4017,6 +4029,8 @@ little away, but only the part vanilla gave away by accident, and never the head
 
 **Most of the people in Qud already have names. You just had no way to ask.** Now conversations with
 a nameless creature carry a question, and they answer (#572).
+
+> ✅ **Played and confirmed on 2026-08-29** (maintainer).
 
 ### 26.1 Vanilla wrote the whole thing and switched it off
 
