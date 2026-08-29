@@ -30,6 +30,25 @@ For any proposed system:
 
 "Enemies have 2× HP" fails both. Every option below is here because it passes both.
 
+### Notoriety must sometimes be an opportunity
+
+Part A is entirely opposition. A1 makes factions hate you, A2 sends scavengers and
+purges, A3 sends champions, A4 raises hunter frequency. Every one of the four produces
+something that comes to fight you.
+
+If becoming known only ever arrives as a threat, Part A is a difficulty tax with a
+story attached — which is exactly what the second question exists to prevent. "The
+player fights a harder thing" is not a decision; it is the same fight with larger
+numbers.
+
+> **Every system that generates notoriety must sometimes produce an opportunity rather
+> than a threat.**
+
+A trader who sought you out because of your reputation is the same system, the same
+trigger, and the opposite valence. So is someone who wants to hire you, to warn you, or
+to ask for help. Without that, notoriety reads as the game punishing you rather than as
+the world noticing you.
+
 ### Why dynamic beats static
 
 Qud is easy because it is *known*. Static difficulty is memorised once and then gone
@@ -124,10 +143,8 @@ homesteads; this gives them a purpose beyond tidiness.
 
 **Implementation.** Inventory-scan on a timer, spawn on zone entry. No Harmony.
 
-**Risk.** Can feel like punishment for playing well. Mitigate by making some
-encounters **non-combat** — a trader who found you because of your reputation is the
-same system producing an opportunity instead of a threat. Do this or the system reads
-as pure tax.
+**Risk.** Can feel like punishment for playing well — the sharpest case of the
+opportunity rule in §0, since a hoard is the most visible thing a player earns.
 
 ---
 
