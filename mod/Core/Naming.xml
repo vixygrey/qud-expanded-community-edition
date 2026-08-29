@@ -374,5 +374,49 @@
         <scope Name="Vixy_Woodsprog" Species="woodsprog" Priority="50" Combine="true" />
       </scopes>
     </namestyle>
+
+    <!-- Issachari. The Qudish note above widens openings and endings and deliberately leaves the
+         middle alone, and this does the opposite on purpose - same method, different pool size,
+         opposite answer.
+
+         Vanilla is 7 verbs x 5 prepositions x 8 nouns = 280 names, drawn one of each with
+         HyphenationChance="100" and TwoNameChance="0". Qudish is ~93,500, where the whole name
+         never repeats and only syllables show. Here the whole name repeats at ~20 draws and every
+         individual slot repeats at three or four - so all three pools widen together, kept roughly
+         balanced so no one slot becomes the visible repeater. 10 x 10 x 12 = 1,200, and a repeat
+         at ~41.
+
+         Why this matters now: before names could be asked for, almost nothing drew from this pool -
+         Village.cs names only the merchant and the pet, and an ordinary raider stayed
+         "Issachari raider". #572 made every one of them askable, and SaltDesertZoneGlobals rolls
+         2d4 raiders plus riflers at once. See #632.
+
+         The register is the constraint: a bodily or violent act, sited against the desert's
+         materials, its elements, or its myth. Brine and the-Red-and-White are not invented - the
+         Issachari say both themselves, in "the brine air will cure your lungs to jerky" and "Be
+         respectful of the red-and-white and we will get along" - and Mirage is from the Issachari
+         Banner, read by "mirage-trained eyes".
+
+         No Amount attributes, so vanilla's one-of-each draw is untouched. -->
+    <namestyle Name="Issachari">
+      <prefixes>
+        <prefix Name="Bleeds" />
+        <prefix Name="Burns" />
+        <prefix Name="Spits" />
+      </prefixes>
+      <infixes>
+        <infix Name="beneath" />
+        <infix Name="across" />
+        <infix Name="against" />
+        <infix Name="beyond" />
+        <infix Name="through" />
+      </infixes>
+      <postfixes>
+        <postfix Name="Brine" />
+        <postfix Name="the-Red-and-White" />
+        <postfix Name="Mirage" />
+        <postfix Name="Rust" />
+      </postfixes>
+    </namestyle>
   </namestyles>
 </naming>

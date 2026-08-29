@@ -533,7 +533,11 @@ SCENARIOS = [
     ("player chose Random", "Subtype=Greybeard,Tag=Vixy_Random", None),
 ]
 
-VANILLA_POOLS = {"Qudish": (29, 20, 24)}
+# Every vanilla namestyle this mod merges into, with the sizes it ships at. A style absent
+# here is not watched, so a fragment could quietly clear its pools and this would report
+# nothing at all - which is the failure the "!!" marker exists to catch. Issachari came in
+# with #632.
+VANILLA_POOLS = {"Qudish": (29, 20, 24), "Issachari": (7, 5, 8)}
 
 
 def pools_of(style: Style) -> tuple[int, int, int]:

@@ -2528,6 +2528,76 @@ postfix. Qud holds no separate secular woodsprog register for this to override.
 There is no option on it. Charter rule 6 gates a change that grants *power* with no content
 attached; this grants names, and a player who installs the mod is asking for the mod.
 
+### 15.7 Issachari, where the same method gives the opposite answer
+
+§15.1 measured Qudish, found that the whole name never repeats and only *syllables* do, and
+deliberately left the middle pool alone. **Issachari inverts every part of that conclusion** (#632).
+
+Vanilla's namestyle is 7 verbs, 5 prepositions and 8 nouns, drawn one of each with
+`HyphenationChance="100"` and `TwoNameChance="0"` — so every Issachari is one hyphenated phrase from
+**280 combinations**. Measured the same way as the Qudish note:
+
+| slot | pool | 50% chance of a repeat after |
+| --- | --- | --- |
+| preposition | 5 | **2.6 draws** |
+| verb | 7 | 3.1 |
+| noun | 8 | 3.3 |
+| whole name | 280 | ~20 |
+
+Every slot repeats inside four names and the whole name inside twenty. Against Qudish's ~93,500,
+where exact repeats run about 0.2% across twenty rolls, that is a different problem wearing the same
+shape — which is why the two entries in `Naming.xml` reach opposite conclusions from the same
+arithmetic, and why both say so.
+
+**So all three pools widen together**, to 10 × 10 × 12 = **1,200**, a repeat at about 41. Widening
+only the prepositions — the worst slot — would have moved the problem rather than fixing it: at 15
+infixes the preposition would repeat at 4.6 draws while the verb still repeated at 3.1.
+
+#### The register is the constraint
+
+The existing pools decompose cleanly: a **bodily or violent act**, sited against the desert's
+**materials**, its **elements**, or its **myth**. Verbs are present tense and visceral — ingestion
+(Chews, Chugs, Drinks), violence (Flays, Chokes), immersion (Bathes), grief (Cries). Prepositions
+are spatial and short, `upon` the only elevated one. Nouns are Asphalt, Oil, Salt and Quicksalt;
+Fire and the-Sun; Serpents and the-Feathered-Serpent, where `the-` marks the singular mythic things.
+
+| slot | added |
+| --- | --- |
+| verbs | Bleeds, Burns, Spits |
+| prepositions | beneath, across, against, beyond, through |
+| nouns | Brine, the-Red-and-White, Mirage, Rust |
+
+**Three of the four nouns are derived rather than invented**, which is charter rule 2 doing real work
+rather than being cited. The Issachari say two of them themselves, in their own barks: *"the brine
+air will cure your lungs to jerky"*, and *"Be respectful of the red-and-white and we will get
+along."* The third is from the Issachari Banner — *platinum stitch on a field of salt white*, read by
+*"mirage-trained eyes"*, and sewn into a scarlet collar, which corroborates the second.
+
+#### Why this was worth doing now and not before
+
+Almost nothing drew from this pool until recently. `Village.cs` gives a proper name to the merchant
+and the village pet and to nobody else, so an ordinary raider stayed `Issachari raider`, and the
+only route to an Issachari name was `HeroMaker` making a legendary one.
+
+**§26 changed that.** With the question available, every Issachari is nameable — and
+`SaltDesertZoneGlobals` rolls an `IssachariParty` of **2d4 raiders plus 1–2 riflers** at 10% per salt
+desert zone, `VillageOneBaseFaction_Saltdunes` gives them a weight of 50 as a whole settlement's
+faction, and `LairOwners_Saltdunes` puts them in lairs. Ask four people in one war party and two are
+likely to open on the same verb.
+
+#### Off-switch
+
+The same `OptionQudExpandedCEWiderNames` that governs the Qudish pools, which is one idea — names
+that stop sounding alike — rather than two. Off zeroes the weight on the added entries, exactly as it
+does for Qudish, so vanilla's 280 come back live.
+
+Two checks hold it together. `validate_mod.py`'s `naming-option-coverage` was written for Qudish and
+named it in a string comparison, so a second namestyle would have gone unchecked — the precise
+failure that check exists to prevent, aimed at itself. It is now keyed by namestyle, in both
+directions, and reports an array with entries that no namestyle merges. And `naming_harness.py`'s
+`VANILLA_POOLS` gained Issachari, so a fragment that cleared these pools instead of adding to them
+would show the `!!` marker rather than nothing at all.
+
 ## 16. Gender and pronouns (`Genders.xml`)
 
 Qud has a complete gender and pronoun system and ships every part of it switched off. This turns it
