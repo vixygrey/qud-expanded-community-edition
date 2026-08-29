@@ -285,6 +285,19 @@ possible in practice. Match them when adding anything.
   not. Every mutation behind a chip is a vanilla mutation Freehold already balanced, so re-tuning
   one through the chip ladder is second-guessing Qud's own mutation design by proxy.
   `docs/DESIGN_balance.md` §5.2.
+- **But a cost vanilla wrote is not always a cost vanilla weighed**, and the two want opposite
+  treatment. The rule above protects Freehold's *balancing*; where there is none to protect it has
+  nothing to say. `HiddenMutations.xml` ships 48 mutations that are `Hidden` and `ExcludeFromPool`,
+  and **nothing has ever paid one of their costs** — not a player, not a random mutant — so those
+  numbers are starting figures rather than judgements. Thirty of the forty-two physical entries are
+  `Cost="1"`, which is the tell.
+
+  **The test is whether anything has ever paid it.** `Hidden`, `ExcludeFromPool` or the wiki's
+  `npconly` all mean no, and a mutation this fork exposes is then costed by §10.2's two-neighbours
+  method like any new content. `Heightened Smell` is the worked case: vanilla says 2, its radius is
+  `5 + 4L` against `Heightened Hearing`'s `3 + 2L` at the same price, and it ships at 3 (#593).
+  Whether a hidden mutation may be exposed at all is a separate two-part test in
+  `docs/DESIGN_balance.md` §10.4.
 - **A subtype starts with its own affinity, whatever that affinity contains** — never a *generic*
   chipset carrying someone else's steep passive. A Light Psionic opening with `PhotosyntheticSkin`
   is its affinity expressing itself and stays; a shared chipset that hands every Guardian

@@ -1370,6 +1370,43 @@ against the effect.** Fangs' bleed is not new — `ShortBlades_Bloodletter` sell
 fangs are priced on giving a *fraction* of that access without spending a hand or a skill point,
 which is a band-3 convenience rather than a band-4 power.
 
+### 10.4 Vanilla's hidden mutations — the test, and what exposing one obliges
+
+`HiddenMutations.xml` sits beside `Mutations.xml` and ships **48 complete mutations** with
+`Hidden="true" ExcludeFromPool="true"` — real classes, real art, real costs, none of them reaching
+character creation or the random mutation pool. Forty-two `Physical`, six `Mental`. I did not know
+the file existed until #593, which is its own lesson about enumerating one file and calling it the
+set.
+
+**This fork may expose one, and the test is two-part. Both halves must hold.**
+
+1. **It reads as player content rather than creature flavour.** `Heightened Smell` passes; `Bilge
+   Sphincter` and `Urchin Belching` do not, and neither would a Breath variant that exists so one
+   monster can have it.
+2. **It serves a feature this fork is already building.** Exposure is never a feature in its own
+   right — it is a way of building something else. `Heightened Smell` qualifies because the anthro
+   set (#471) is a real feature that wants exactly it.
+
+The second half is the load-bearing one. Without it the honest description of this fork becomes *"we
+unhid forty-eight things"*, which is a different mod from the one described in `README.md` — and a
+large silent workload besides, since **30 of the 42 physical entries carry `Cost="1"`** and every one
+would need costing before it could ship.
+
+**Exposing a mutation obliges deriving its cost.** The number in `HiddenMutations.xml` was never paid
+by anything — not a player, not a random mutant — so it is a starting figure rather than a judgement,
+and §10.2's two-neighbours method applies as it would to new content. `Heightened Smell` is the
+worked case: vanilla says 2, its radius is `5 + 4L` against `Heightened Hearing`'s `3 + 2L` at the
+same 2 points, and it ships at **3** (#593).
+
+This is the distinction `docs/STYLEGUIDE.md` §3.2 now draws between a mutation vanilla **balanced**
+and one it merely **costed**. The sharpest way to tell them apart is to ask **whether anything has
+ever paid the cost**: `Hidden`, `ExcludeFromPool` or the wiki's `npconly` all mean no.
+
+**None of this licenses re-tuning a visible mutation.** §3.2's original rule is untouched and still
+exactly right where it was aimed — every mutation behind a psionic chip is selectable, obtainable and
+genuinely balanced by Freehold, and re-pricing one through the chip ladder would be second-guessing
+their design by proxy.
+
 ## Sources
 
 | What | Where |
