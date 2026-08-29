@@ -2850,6 +2850,11 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 
 ### 17.7 A coat splits its parent's share, and never adds to it
 
+> ✅ **Played and confirmed on 2026-08-29** (maintainer). Animal density reads correctly after the
+> fix — which is the check that mattered, because the arithmetic below was verified three ways on
+> paper and none of those would have caught a merge that failed to apply. The reported symptom, a
+> croc and a silt croc on one tile, was the only evidence the density was ever wrong.
+
 **Every variant entry takes part of the chance vanilla gave the ordinary animal, rather than
 rolling beside it.** A salt marsh gets one croc's worth of croc, and a coin decides which croc it
 is:
@@ -3386,19 +3391,16 @@ the option applies to a **new** character and the helptext says so.
 > a gas mask goes on and the bite survives, which is §21.3's whole claim checked by eye rather than
 > by decompiler; and the exclusions behave — Beak is refused alongside fangs, horns are not.
 >
-> ⚠️ **Two things have not been watched, and they are different in kind.**
+> ✅ **And the bleed's rank scaling is confirmed too, 2026-08-29** — the correctness item, and the
+> only one here whose failure would have been silent. `HornsProperties.GetHornLevel()` falls back to
+> its `HornLevel` field because it cannot find a mutation named `Horns`, and `Vixy_Fangs` writes that
+> field on equip and on every `ChangeLevel`. Had the sync been wrong the bleed would have sat at rank
+> 1 forever with nothing announcing it — the mutation still working, just never improving.
 >
-> **The bleed's rank scaling is a correctness question** (§21.5). `HornsProperties.GetHornLevel()`
-> falls back to its `HornLevel` field because it cannot find a mutation named `Horns`, and
-> `Vixy_Fangs` writes that field on equip and on every `ChangeLevel`. If the sync is wrong the bleed
-> sits at rank 1 forever and nothing announces it — the mutation keeps working, it just stops
-> improving. It needs a character above level 1, since `GetMutationCapForLevel` is `level / 2 + 1`.
-> The cheap version of the check is the fangs' own short description, which prints the save
-> difficulty: expect `20 + 2 × rank`.
->
-> **The three-source bleed stack is a balance question** (§21.5). Short blade, Bloodletter and fangs
-> together. All three fire; whether that is too much at rank 8 with high Agility wants play, and the
-> dial is `HornsProperties`' presence rather than the cost.
+> ⚠️ **The three-source bleed stack is still unwatched, and it is a balance question rather than a
+> correctness one** (§21.5). Short blade, Bloodletter and fangs together. All three demonstrably
+> fire; whether that is too much at rank 8 with high Agility wants a character built for it. The dial
+> is `HornsProperties`' presence rather than the cost.
 
 ### 21.1 Every mutation needs a class, and it may not be a vanilla one
 
@@ -3538,9 +3540,9 @@ price (#593).
 **On by default**, under the same `OptionQudExpandedCEAnthroMutations` as Fangs (§21). Read at
 character creation, so the option applies to a **new** character.
 
-> ⚠️ **Not yet played.** The mutation is Freehold's and has presumably been exercised on their
-> creatures; what is untested is a *player* holding it, which is the one case its own code is written
-> for.
+> ✅ **Played and confirmed on 2026-08-29** (maintainer). Which matters more here than usual: the
+> mutation is Freehold's, but both of its handlers are gated on `IsPlayer()`, so a player holding it
+> is the one case its code is written for and the one case nothing had ever exercised.
 
 ### 22.1 What exposing it costs: three field writes
 
@@ -3611,7 +3613,9 @@ does not attack and it holds nothing** (#590). The third and last of the anthro 
 **On by default**, under the same `OptionQudExpandedCEAnthroMutations` as §21 and §22. Read at
 character creation, so the option applies to a **new** character.
 
-> ⚠️ **Not yet played.**
+> ✅ **Played and confirmed on 2026-08-29** (maintainer), including the two things that were only
+> ever reasoning: the Agility save actually refusing a knockdown, and the tail-type picker rendering
+> its five variants with their own names and tiles.
 
 ### 23.1 One point means no ranks, and that decided the rest
 
