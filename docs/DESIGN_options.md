@@ -178,8 +178,8 @@ are public fields and public static methods, so charter rule 5's "documented ext
 only" is satisfied in substance: no private state is being reached into.
 
 The lesson is worth keeping: `Assembly-CSharp.xml` documents *some* members. For "does this exist
-at all", the DLL metadata is the authority. The tool is
-`../lore-expansion/tools/metadata/` — point `cli_meta.py`'s `DLL` at the installed game.
+at all", the DLL metadata is the authority. The tool is my own `cli_meta.py`, in `lore-expansion`
+— a private sibling project, not readable from this repository — pointed at the installed game.
 
 The remaining unknown is **the Joppa map patch (§4.5)**, which has no identified hook.
 

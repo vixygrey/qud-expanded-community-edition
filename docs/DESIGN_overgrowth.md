@@ -239,13 +239,15 @@ reach the stairs, everything after that is content.
 - Whether `EnsureCellReachable` operates on the whole zone or a supplied cell pair.
 
 All three are answerable by reading `Watervine.BuildZone` and one `ZoneManager.AddZoneBuilder`
-overload in ILSpy — the same decompile pass that's already outstanding for lore-expansion.
+overload in ILSpy — the same decompile pass that's already outstanding for `lore-expansion`, a
+private sibling project of mine.
 
 ---
 
 ## Sources
 
-- `Assembly-CSharp.dll` metadata (`lore-expansion/tools/metadata/`)
+- `Assembly-CSharp.dll` metadata, read with my own tooling in `lore-expansion` (a private sibling
+  project, not in this repository)
 - `StreamingAssets/Base/Worlds.xml`, `ZoneTemplates.xml`
 - [Overgrowth on the Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3596464527)
   — referenced for scope contrast only; nothing derived from it
