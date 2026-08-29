@@ -2354,3 +2354,49 @@ contested aquatic cells ran out twice as fast. `variant-density` checks that now
 found it stronger than the plant one, and wrote the exemption into the entry above as a finding. It
 was a true fact about a real line of code, and the conclusion still did not hold, because I stopped
 at the first guard in a method that has two. **Reading one guard tells you what one guard does.**
+
+## Vanilla builds mechanisms it never wires up, and the unused half is usually complete
+
+Before designing a system, check whether Freehold already shipped one and left the data end
+unconnected. It is not an occasional windfall — it is a habit, and looking first is cheap enough to be
+a first move rather than a lucky one. Three verified cases, each failing in a different place:
+
+**Data written that nothing parses.** `MerchantPersonalItem` appears on two `<inventoryobject>` nodes
+in vanilla's `Creatures.xml`. The string appears **nowhere in the assembly**, and
+`ParseInventoryObjectNode` reads a closed list of ten attributes that does not include it — so the
+attribute is set, saved in the file, and dropped on load.
+
+**A flag set at one end and read at neither.** `ActivatedAbilityEntry.Visible` is a public property
+over `Flags` bit 2. It is serialised, compared in `SameAs`, and `Phasing` actively sets it — and
+nothing displays it. `Sidebar`, `AbilityManager`, `AbilityNode` and `ActivatedAbilities` contain no
+reference. The mutation is wired to a switch connected to nothing.
+
+**A whole feature built and hidden.** `HiddenMutations.xml`, a file sitting beside `Mutations.xml`,
+declares **48 complete mutations** — real classes, real art, real costs — under
+`<mutations Hidden="true" ExcludeFromPool="true">`. None reaches character creation or the random
+mutation pool. `Heightened Smell` among them is a finished mutation with terrain-attenuated detection
+that this fork wanted and was about to write from scratch (#593).
+
+> **Look for the unwired mechanism before building a new one.** A decade of accretion leaves a lot of
+> complete machinery behind a feature that shipped narrower than planned, and finding it turns a
+> design problem into a wiring problem.
+
+**The counterweight matters more than the instruction, and the third case demonstrates it.**
+`HiddenMutations.xml` is not an oversight — `Hidden="true"` is *typed out*. Somebody decided those
+mutations should not be selectable. **Unused is evidence that something was considered, not that it
+was forgotten**, and the audit-first caution in #172 and #154 applies before assuming otherwise.
+Finding the mechanism tells you the thing is *possible*; it says nothing about whether it is *wanted*.
+That is why exposing one now takes a two-part test rather than a shrug — `docs/DESIGN_balance.md`
+§10.4.
+
+**An empty grep is the weakest evidence in this file, and it is the evidence this pattern invites.**
+Name-string lookup and `ComponentReflection` both reach code that no call site names, `strings` cannot
+see a .NET literal at all (see the entry above), and `AITonicUse` reads as unused on creatures only
+because it lives on the tonics. Prefer a *positive* finding: `MerchantPersonalItem` is settled not by
+its absence from the assembly but by `ParseInventoryObjectNode`'s attribute list being **closed and
+enumerable**. Checking who reads a thing beats failing to find who reads it.
+
+Both halves of this bit while writing this entry. The `FLAG_VISIBLE` row above came in as *"0
+readers"*, which a grep appeared to confirm and which was wrong — the constant is unreferenced because
+the code uses the literal `2`, while the flag behind it is read, written and compared. The row is
+stronger once corrected, and it would have shipped false.
