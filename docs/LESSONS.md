@@ -2266,3 +2266,54 @@ Two things that made the difference, both cheap:
 - **Byte-identical output is the rule 1 proof.** `Faction=Naphtaali` at a fixed seed generates the
   same names before and after, which says the pools were added to and not replaced. Cheaper and more
   convincing than reading the loader again.
+
+## `public` is an access modifier, not an extension point
+
+#589 was planned as `Vixy_Fangs : Horns`, and the reasoning was sound. `Horns.RegrowHorns` is
+variant-general — it reads the variant blueprint's `MeleeWeapon Slot`, finds that body part, creates
+the object and equips it — so a fangs mutation could inherit the whole anatomy and regrowth machinery
+and override only the four values that differ. Ten lines instead of sixty.
+
+`Horns` declares all four in members that cannot be overridden:
+
+```csharp
+public int GetAV(int Level)                                          // not virtual
+public string GetBaseDamage(int Level)                               // not virtual
+public void RegrowHorns(bool Force = false)                          // not virtual
+public override bool ChangeLevel(int NewLevel)                       // virtual - calls RegrowHorns()
+public override void SetVariant(string Variant)                      // virtual - calls RegrowHorns()
+public override bool HandleEvent(RegenerateDefaultEquipmentEvent E)  // virtual - calls RegrowHorns()
+```
+
+The three virtual methods are all reachable, and every one of them calls the non-virtual
+`RegrowHorns`, which sets `MaxStrengthBonus = 100`, `BaseDamage = GetBaseDamage(Level)`,
+`AV = GetAV(Level)` and force-equips the result — which is every one of the four things the subclass
+existed to change. A subclass can override `ChangeLevel`, but `base.ChangeLevel(...)` runs the
+parent's version, and C# has no `base.base`. No arrangement of overrides gets past it.
+
+> **Before planning a subclass of a game type, read the modifiers on the members you intend to
+> change — and on the ones that call them.** A class is extensible where it is virtual, not where it
+> is public, and the second list is usually much shorter than the first.
+
+One command answers it:
+
+```bash
+ilspycmd -t XRL.World.Parts.Mutation.Horns "$QUD/Managed/Assembly-CSharp.dll" \
+  | grep -n 'public\|virtual\|override'
+```
+
+Two things worth carrying past the specific class.
+
+**The member that blocked it was the one I had no intention of touching.** I read `GetAV` and
+`GetBaseDamage` closely, because those were the numbers I wanted to change, and skimmed `RegrowHorns`
+because I wanted to *keep* it. `RegrowHorns` is the one that decides the question: a non-virtual
+method called from every virtual entry point seals a class as effectively as `sealed` would. **Check
+the modifier on what you plan to inherit, not only on what you plan to replace.**
+
+**The same read named the right parent.** `Beak` derives from `BaseDefaultEquipmentMutation` and does
+all its work in `OnRegenerateDefaultEquipment`, which is virtual and is the only place it writes
+anything — Face slot, `Part.DefaultBehavior` instead of force-equip, its own damage. That is the
+pattern #589 wanted in the first place, arrived at from the other direction. So *"which of these can
+I extend"* produced a better design than *"which of these is nearest"*, and it is worth asking in
+that order. The 36 `ModImprovedMutationBase<T>` stubs in this fork work precisely because that base
+was written to be extended; a vanilla gameplay class carries no such promise.
