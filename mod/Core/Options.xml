@@ -525,4 +525,38 @@
             whatever they were built with.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCELiquidGather"
+    DisplayText="{{C|Qud Expanded}}: gather liquid into one container"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded liquid gather consolidate container waterskin water honey dram fill"
+  >
+    <helptext>
+            Adds a "gather liquid" action to a container, pulling every dram of the same liquid out
+            of the rest of your inventory and into that one.
+
+            Vanilla can already do the transfer - fill pours one container into another. What it
+            will not do is check: it offers every container you own, and picking one holding
+            something else asks whether to empty it first and then mixes the two. This offers only
+            containers holding exactly the same liquid, never asks for a dram count, and does all of
+            them in one press.
+
+            It only ever moves a liquid into a container already holding that same liquid, so it
+            cannot turn fresh water into salty. That restriction is the whole feature, not a
+            safeguard on top of it.
+
+            What it buys you is an empty container. Two skins with a few drams of honey each become
+            one skin of honey and one skin free for something else - a skin with three drams still
+            in it cannot pick up anything at all. It does not make you richer: the game already adds
+            up every dram of water you carry when you pay for something, whichever skin it is in.
+
+            Costs one turn, however many containers it drains. Containers you do not own ask first,
+            once.
+
+            Turning it off removes the action from the next container you look at. Nothing is
+            stored, so it can be switched either way mid-run.
+        </helptext>
+  </option>
 </options>

@@ -51,6 +51,7 @@ namespace QudExpandedCE
         public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
         public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
+        public const string LiquidGatherID = "OptionQudExpandedCELiquidGather";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -743,6 +744,22 @@ namespace QudExpandedCE
         /// that follows it.
         /// </summary>
         public static bool SilentTradeOffers => Enabled(SilentTradeOffersID, "Yes");
+
+        /// <summary>
+        /// Whether a container offers to gather the same liquid out of every other container.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_LiquidGather</c> reads this each
+        /// time the game asks an item for its actions, so turning it off removes the action from the
+        /// next container looked at. Nothing is stored either way — the action moves drams that were
+        /// already there and leaves no trace of having run.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached, and this grants none: <c>fill</c> already performs the same transfer,
+        /// one container at a time and with a prompt. What changes is that the target list is
+        /// checked and the prompts are gone. It also cannot reach anything <c>fill</c> could not —
+        /// same inventory, same seal, stasis and ownership guards, same <c>MixWith</c>.
+        /// </summary>
+        public static bool LiquidGather => Enabled(LiquidGatherID, "Yes");
 
         private static void ApplyChipSlots()
         {
