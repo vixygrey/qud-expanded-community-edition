@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **472** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **228** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **229** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -584,12 +584,12 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `OtherEquipment.xml` | 7 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
-| `Creatures.xml` | 46 | 1 |
+| `Creatures.xml` | 46 | 2 |
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 1 |
 | `Items.xml` | 0 | 8 |
-| **Total** | **472 active** | **228** |
+| **Total** | **472 active** | **229** |
 
 ### 6.2 Melee weapons
 
@@ -2132,7 +2132,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Items.xml               # 8 merged (§30)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
-│   ├── Creatures.xml           # 2 new bodies + 1 merge
+│   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
 ├── Scripting/                  # 58 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
@@ -4714,6 +4714,129 @@ away. The nearest thing to a cost is 24 more entries in a picker that already ho
 
 `CookingRecipe` holds `DisplayName` and `ChefName` and no colour field, and there is no player-chosen
 recipe name until #576. That half stays blocked.
+
+## 33. Caravan guards carry a bow (`ObjectBlueprints/Creatures.xml`)
+
+**A flying player could strip a dromad caravan at no risk**, and the reason was narrower than the
+community version of the claim. Caravans are guarded — 2–4 `Caravan Guard`s at level 30 with 165 HP —
+but nothing in one could reach the air (#591).
+
+### 33.1 The equipment builders have no missile weapon at any tier
+
+`Tier1HumanoidEquipment` and `Tier5HumanoidEquipment` draw from the same three pools:
+
+```csharp
+GO.ReceiveObjectFromPopulation("Melee Weapons 5", …);
+if (75.in100()) GO.ReceiveObjectFromPopulation("Armor 5", …);
+if (5.in100())  GO.ReceiveObjectFromPopulation("Junk 5", …);
+```
+
+So a level-30 guard cannot be armed against a flyer under any roll. The blast radius is small:
+`Caravan Guard` is the only blueprint declaring `Tier5HumanoidEquipment`, and it appears exactly
+twice in the whole game — its own blueprint and `DromadCaravan.cs:66`. No population table, no quest,
+no conversation.
+
+### 33.2 It is not a flee, it is a ping-pong
+
+`Kill.TakeAction`'s flee branch sits **inside** `if (num == 1)`, where `num` is the distance to the
+target, so it only runs when the flyer is adjacent. The ranged branch above it has **no flight check
+anywhere** — `TryMissileWeapon` and `TryThrownWeapon` gate on line of fire, friendlies, range and
+occlusion, never on whether the target is airborne — and `Brain.MaxMissileRange` is 80, the whole
+zone.
+
+So the guard walks under the flyer, becomes adjacent, runs for two turns (`Flee(Target, 2)` is a
+duration, not a distance) and comes back. **That argues for arming it rather than against**: a guard
+with a bow reaches the `missile` case in the ranged branch, and nothing between there and the shot
+cares that the target is in the air.
+
+### 33.3 Compound Bow, because an arrow's penetration is a cap
+
+This is the part that is not obvious, and getting it wrong would have shipped a guard that visibly
+shoots and still cannot hurt anyone.
+
+`MissileWeapon` builds two numbers and `Stat.RollDamagePenetrations` takes `Math.Min` of them:
+
+| | value | |
+|---|---|---|
+| `num3` — the bonus | `BasePenetration` + wielder's `StatMod` | **only if the weapon declares `ProjectilePenetrationStat`** |
+| `num4` — the cap | `BasePenetration` + the arrow's `StrengthPenetration` | |
+
+`BaseArrowProjectile` sets `BasePenetration="0"`, so an arrow contributes nothing on its own. There
+are exactly two bows in the game, and only one of them makes a wielder's Strength count:
+
+| bow | tier | `ProjectilePenetrationStat` |
+|---|---|---|
+| `Short Bow` | 0 | **absent** |
+| `Compound Bow` | 3 | `Strength` |
+
+**A Short Bow fires every arrow in the game at penetration 0** — Wooden and Zetachrome alike. So the
+`HindrenScout` kit, which is the vanilla armed-escort precedent, is the wrong kit to copy even though
+it is the right *pattern*.
+
+### 33.4 Steel Arrow, because the cap should meet the modifier
+
+`Caravan Guard` inherits `Strength sValue="14,1d3,(t)d1"` from `BaseHumanoid`, and `(t)` resolves as
+`Level / 5 + 1` = **7** at level 30. So Strength is **22–24**, and `GetScoreModifier` —
+`floor((score − 16) × 0.5)` — gives a modifier of **3 or 4**.
+
+| kit | penetration used |
+|---|---|
+| Short Bow + any arrow | 0 |
+| Compound Bow + Wooden (cap 2) | 2 — wastes the modifier |
+| **Compound Bow + Steel (cap 3)** | **3** |
+| Compound Bow + Carbide (cap 4) | 3–4 — the modifier becomes the limit |
+
+The arrow ladder is a cap ladder: Wooden 2, Steel 3, Carbide 4, Folded Carbide 5, Fullerite 6,
+Crysteel 7, Flawless Crysteel 8, Zetachrome 9.
+
+### 33.5 What ships
+
+```xml
+<object Name="Caravan Guard" Load="Merge">
+  <inventoryobject Blueprint="Compound Bow" Number="1" />
+  <inventoryobject Blueprint="Steel Arrow" Number="15-25" />
+</object>
+```
+
+`Humanoid` declares exactly two `Missile Weapon` parts and both bows carry
+`Physics UsesTwoSlots="true"`, so one bow fills the pair and the tier-5 melee weapon keeps the hands.
+`PerformReequip` fills the slots via `IsNewMissileWeaponBetter` and then calls
+`CommandReloadEvent.Execute`, so the bow is loaded at spawn; if it runs dry,
+`MissileWeapon.cs:2476` sets `Brain.NeedToReload` and `TryMissileWeapon` reloads next turn.
+
+**Merge appends rather than replaces.** `<inventoryobject>` is an *Unnamed* node in
+`ObjectBlueprintLoader`, and unnamed merging is `Unnamed.AddRange(other.Unnamed)` — so anything
+Freehold later gives this guard survives alongside these two rows. Charter rule 1.
+
+**The guards, not the trader.** The trader keeps its `AISelfPreservation Threshold="40"` and stays out
+of the fight; a merchant that fights back is a different design.
+
+### 33.6 The loot consequence, stated rather than discovered
+
+A caravan carries 2–4 guards, so killing one now drops **up to four Compound Bows** (value 50 each)
+and their arrows. That is new income from an encounter this change is trying to make *less* rewarding
+to farm.
+
+It is accepted rather than engineered around, because vanilla's own armed escorts drop what they
+carry — `HindrenScout` and `Snapjaw Hunter` both do — and a no-drop tag would break that convention
+to solve a problem worth 200 drams against a caravan's own cargo.
+
+### 33.7 Not retroactive, and no off-switch
+
+`DromadCaravan.Created` persists, so **a caravan already materialised in a save keeps its unarmed
+guards**. New caravans get the bow. No migration is needed and none is possible.
+
+No option, per rule 6: this closes a no-risk exploit, and an option to reopen it is not a preference
+anybody is owed. It also leaves flight itself completely untouched, which was the point — the problem
+was never that flying works.
+
+### 33.8 Two things left open
+
+- **Nothing here has been watched in play.** Every figure above is from the assembly and the
+  blueprints. That a guard actually equips the bow, closes to range and shoots at a hovering player is
+  the thing a static read cannot prove.
+- **Whether the escort still loses to a determined ground attacker.** Penetration 3 against a melee
+  build's AV says yes, but that wants the same play session.
 
 ## Appendix A — every merged vanilla melee weapon
 
