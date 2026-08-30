@@ -8,10 +8,16 @@
 
 ## 1. The design problem, stated honestly
 
-Qud has both hunger and thirst attrition, and both are lethal. Thirst is the faster:
-`Stomach` spends `Speed / 5` water per action, so from its starting 30,000 a character
-who drinks nothing is Thirsty at ~500 actions and dead at ~1,500 — *"You are dying of
-thirst!"*, `DeathCategory = "thirst"`, 2 hit points of penalty every action. Hunger is
+Qud has both hunger and thirst attrition. Thirst is the faster and the only one that can
+kill: `Stomach` spends `Speed / 5` water per action, so from its starting 30,000 —
+`WATER_QUENCHED`, against a ceiling of 50,000 — a character who drinks nothing is Thirsty
+at ~500 actions and **empty at ~1,500**, which is where the attrition begins rather than
+where the run ends. Reaching zero locks out natural healing outright and then rolls
+`1d(Toughness)` against 2 on each heal tick that comes due, taking 2 hit points only on a
+natural 1 — on the order of 2 HP per hundred actions at Toughness 20, not per action.
+The lockout is the real teeth. (`docs/DESIGN_difficulty_systems.md` §B3 has the code and
+the arithmetic; this paragraph and that section were both wrong the same way, from the
+same source, and were corrected together in #705.) Hunger is
 slower and non-fatal but real: `COOKING_INCREMENT` is 1,200, so Hungry at 1,200 actions
 and **Famished at 2,400**, and `Famished` is −10 Quickness until you eat.
 

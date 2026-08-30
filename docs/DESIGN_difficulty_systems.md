@@ -217,6 +217,13 @@ if (RegenCounter > 100)
 The counter is reset by `%= 100` **before** the water check, so at zero water the accrued
 heal is discarded outright rather than banked. Resting to full already costs drams.
 
+**And that `return false` is the whole of dehydration's teeth**, which this section quoted
+without following. Its one caller is `Stomach`'s own action tick, where it gates the
+thirst damage — so at zero water a character is locked out of natural healing entirely,
+and *separately* takes 2 hit points on a natural 1 of `1d(Toughness)` per heal tick that
+comes due. §B3 has the arithmetic. The two sections were describing the same six lines to
+different conclusions until #705; they agree now.
+
 > **So a wound system would be a *second* time-tax stacked on an existing one**, and this
 > fork has its own positions on water in `docs/DESIGN_water_and_legacy.md`. B1's own risk
 > note calls this the most likely of the eight to feel bad; stacking it on the water
@@ -297,28 +304,71 @@ factions and higher-tier creatures only** so it bites in the back half of the cu
 ritual is the central social mechanic *because* water is precious — and mechanically it
 stops being precious quite early.
 
-**Mechanic.** Water consumption applies **only in specific hostile biomes** — salt
-desert, salt marsh. Entering them without provisioning is a real expedition problem.
+**Mechanic.** **Refuse the crossing, do not tax it.** A character who reaches the world
+map without enough water for the terrain ahead is told so and stopped, the way
+`Stomach` already stops a famished one. Consumption is untouched.
 
 **Why this shape.** A global thirst clock is not missing from Qud — it is present and
 lethal, and **capacity swamps it**. `Stomach` starts `Water` at 30,000 and spends
-`Speed / 5` per action, so 20 a turn at Speed 100: 1,500 actions from the starting
-value to *"You are dying of thirst!"*, `DeathCategory = "thirst"` and 2 hit points of
-penalty per action. `RuleSettings.WATER_MINIMUM` is 0, so nothing clamps it out of
-reach. But one dram restores 10,000 — 500 actions — and a waterskin holds 64 of them,
-which is **32,000 actions** in a single container. `Options.AutoSip` drinks at the
-Thirsty line, so the gauge never visibly moves.
+`Speed / 5` per action, so 20 a turn at Speed 100: **1,500 actions to empty**, not to
+dead. `RuleSettings.WATER_MINIMUM` is 0, so nothing clamps it out of reach, and 30,000
+is the *starting* value — `WATER_QUENCHED` — against a ceiling of
+`WATER_MAXIMUM` **50,000**, with `WATER_TUMESCENT` at 40,000 between them. But one dram
+restores 10,000 — 500 actions — and a waterskin holds 64 of them, which is **32,000
+actions** in a single container. `Options.AutoSip` drinks at the Thirsty line, so the
+gauge never visibly moves.
+
+**What reaching zero actually does, because this document had it wrong by about
+ninetyfold.** It is not two hit points per action. The damage is gated twice:
+
+```csharp
+bool flag3 = ProcessNaturalHealing();
+if (!flag3 && Stat.RollPenetratingSuccesses("1d" + ParentObject.Stat("Toughness"), 2) <= 0)
+{ … Popup.Show("You are dying of thirst!"); … Penalty += 2; }
+```
+
+`ProcessNaturalHealing` returns `false` only when `Water <= 0` *and* an accrued heal has
+just come due — roughly every fifth action at baseline, since it banks
+`20 + 2·ToughnessMod + 2·WillpowerMod` against a threshold of 100. And
+`RollPenetratingSuccesses("1d" + Toughness, 2)` returns 0 **only on a natural 1**: any
+face of 2 or more clears the target and breaks out as a success.
+
+> So dehydration is **a natural-healing lockout plus a 1-in-Toughness chance of 2 HP per
+> heal tick** — on the order of 2 HP per hundred actions at Toughness 20. **The lockout
+> is the real teeth and the damage is the rounding.** §B1 quotes this same method ninety
+> lines earlier and stops at its `return false`; the two sections now agree.
 
 So the design position to argue with is not *"Qud rejects survival attrition"*. It is
-*"Qud runs survival attrition at a rate that almost never fires."* **Regional** scarcity
-gets the tension without the busywork, and it makes a specific region feel like what the
-lore says it is — and it does so by changing the term that actually decides the outcome,
-which is provisioning rather than the tick.
+*"Qud runs survival attrition at a rate that almost never fires."*
+
+**And regional scarcity is not a mechanic to add — most of it already ships.**
+`TerrainTravel.HandleLeavingCell` fires a full action tick every tenth travel segment,
+and terrain blueprints override `Segments` from 1,000 to 4,000, so water is already
+priced per distance *and* already terrain-aware:
+
+| terrain | `Segments` | thirst ticks | water | drams |
+|---|---:|---:|---:|---:|
+| `TerrainSaltdunes2` | 3,000 | 900 | 18,000 | 1.80 |
+| **`TerrainSaltdunes`** | **2,500** | **750** | **15,000** | **1.50** |
+| `TerrainSaltmarsh` | 1,250 | 375 | 7,500 | 0.75 |
+| road / asphalt | 1,000 | 300 | 6,000 | 0.60 |
+
+**Vanilla already charges 2.5× to cross salt rather than a road.** The question is not
+whether to build per-region cost but whether to scale one that exists — and against
+64 drams in a one-pound skin, no plausible multiplier bites. That is why the mechanic
+above is a refusal rather than a tick.
 
 **Decision created.** Provisioning before crossing the salt. Actual expedition
 planning.
 
-**Implementation.** Zone-type check plus a consumption tick. Small.
+**Implementation.** `CanTravelEvent`, which `Stomach` already uses for exactly this
+shape — *"You're too famished to travel long distances."* It dispatches to the player
+**and** to `The.Game`, the only `Can*Event` that does, so it can be vetoed centrally.
+No Harmony, no vanilla record, no save state.
+
+**Its real limit, stated so nobody scopes past it:** `CanTravelEvent` gates *entering*
+the world map, not each parasang crossed. It can refuse an unprovisioned departure; it
+cannot turn someone back halfway. A per-parasang check needs a different seam.
 
 ---
 
@@ -359,7 +409,7 @@ entirely. Keep it that way — never destroy an item.
 | Proposal | Why not |
 |---|---|
 | Flat enemy HP/damage multipliers | Fails both tests. No world explanation, no decision change. |
-| Global hunger/thirst clock | Fights the game's deliberate design. Busywork. Use B3 instead. |
+| Global hunger/thirst clock | **Not** because Qud rejects one — it runs two. Because a global clock is busywork whatever its rate, and because capacity already swamps the one that ships. Use B3 instead. |
 | Making the early game harder | The early game is already the hard part. Worsens the inverted curve. |
 | Permanent item destruction | Loss-aversion misery. Use B4's jamming instead. |
 | Reducing XP gain | Slower is not harder. Just extends time-to-power. |
@@ -373,7 +423,7 @@ entirely. Keep it that way — never destroy an item.
 |---|---|---|---|---|
 | **A1 Faction rivalry** | High | Low | No | **Build first** |
 | **B1 Wound system** | High | Medium | Probably not | **Build second** |
-| B3 Regional scarcity | Medium | Low | No | Good third — the lever is capacity and AutoSip, not the tick |
+| B3 Provisioning refusal | Medium | Low | No | Good third — a `CanTravelEvent` refusal. Not the tick, and not AutoSip either: that is a bare global read with no dispatch, so suppressing it needs Harmony |
 | A4 Cybernetic attention | Medium | Low | No | Cheap, closes an asymmetry |
 | A2 Hoard notoriety | Medium | Medium | No | Needs the non-combat valve |
 | B4 Artifact instability | Medium | **Low** | No | Only as jamming. `ChargeUsedEvent` is the hook; `Broken` already exists |
