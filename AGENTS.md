@@ -37,6 +37,12 @@ in them applies to a contribution you're helping someone else write.
   PATH="$HOME/.dotnet/tools:$PATH"` first, then decide whether a tool is absent — see
   [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full reason. Concluding "not installed" here has
   already sent one investigation down the wrong road.
+- **`rg` recurses by default, so `-r` is a replacement string, not `--recursive`.** `rg -rn` and
+  `rg -rln` are what a `grep` habit types, and both are valid invocations that exit 0 and rewrite
+  every match in the output to `n` or `ln`. Counts and file lists stay correct while the identifiers
+  beside them are wrong, so nothing looks broken — and in decompiled sources the result reads exactly
+  like a decompiler that failed to recover a name. Drop the `-r`; `docs/LESSONS.md` has the full
+  account.
 - **Verify claims about Qud against the game's own files** rather than from memory — the installed
   mods under `steamapps/workshop/content/333640/` and the vanilla data under
   `StreamingAssets/Base`. `docs/LESSONS.md` explains where both are and which vanilla files aren't
