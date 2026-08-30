@@ -30,6 +30,10 @@ Closes #
       nothing for subscribers
 - [ ] The PR title is a conventional commit (`fix(tables): …`) — it becomes the squash commit
 - [ ] Nothing new was added under `mod/` that shouldn't ship to subscribers
+- [ ] **If this touches a screen, a lifecycle, or an event order** — `python3 tools/sync_mod.py --dev`,
+      then played. `docs/LESSONS.md` says before merge, not after: content and value changes can lean
+      on the checks, behaviour cannot. Use `--dev` rather than copying `mod/` by hand — it strips
+      `WorkshopId`, so a branch build cannot overwrite the live Workshop item
 - [ ] **If this changes what a player sees or does** — the wiki has been grepped for what it
       describes. It's a separate repository and not one of these checks reaches it
 
