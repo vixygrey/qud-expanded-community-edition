@@ -35,7 +35,6 @@ namespace QudExpandedCE
         public const string SkillRequirementsID = "OptionQudExpandedCESkillRequirements";
         public const string SkillCostsID = "OptionQudExpandedCESkillCosts";
         public const string ChipDropsID = "OptionQudExpandedCEChipDrops";
-        public const string CreatureVariantsID = "OptionQudExpandedCECreatureVariants";
         public const string ChipSlotsPlayerID = "OptionQudExpandedCEChipSlotsPlayer";
         public const string ChipSlotsNPCsID = "OptionQudExpandedCEChipSlotsNPCs";
         public const string AnthroMutationsID = "OptionQudExpandedCEAnthroMutations";
@@ -46,15 +45,11 @@ namespace QudExpandedCE
         /// </summary>
         private const int KeenSmellCost = 3;
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
-        public const string BearingsID = "OptionQudExpandedCEBearings";
         public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
         public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
-        public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
         public const string CharmedMerchantPricesID = "OptionQudExpandedCECharmedMerchantPrices";
         public const string ArrowRecoveryID = "OptionQudExpandedCEArrowRecovery";
-        public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
-        public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
@@ -70,37 +65,6 @@ namespace QudExpandedCE
         /// docs/DESIGN_options.md 4.5.
         /// </summary>
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
-
-
-        /// <summary>The vanilla namestyle mod/Naming.xml merges its new syllables into.</summary>
-        private const string QudishStyle = "Qudish";
-        private const string IssachariStyle = "Issachari";
-
-        /// <summary>
-        /// The namestyles that carry the gendered ending pools. Switching the option off sets
-        /// every scope on them to Chance 0, which ApplyTo evaluates last - so the scope stops
-        /// matching, the style stops competing, and naming falls back to Qudish exactly as
-        /// vanilla does it.
-        /// </summary>
-        private static readonly string[] GenderedStyles =
-        {
-            "Vixy_Qudish Feminine", "Vixy_Qudish Neutral"
-        };
-
-        /// <summary>
-        /// The syllables mod/Naming.xml adds to Qudish, in their own file so the spell
-        /// checker can skip them. Vixy_NameSyllables says why the list is restated at all.
-        /// </summary>
-        private static readonly string[] AddedPrefixes = Vixy_NameSyllables.AddedPrefixes;
-        private static readonly string[] AddedInfixes = Vixy_NameSyllables.AddedInfixes;
-        private static readonly string[] AddedPostfixes = Vixy_NameSyllables.AddedPostfixes;
-
-        private static readonly string[] AddedIssachariPrefixes =
-            Vixy_NameSyllables.AddedIssachariPrefixes;
-        private static readonly string[] AddedIssachariInfixes =
-            Vixy_NameSyllables.AddedIssachariInfixes;
-        private static readonly string[] AddedIssachariPostfixes =
-            Vixy_NameSyllables.AddedIssachariPostfixes;
 
         private const string ChipSlot = "Chip Interface";
 
@@ -123,21 +87,6 @@ namespace QudExpandedCE
         /// three weapon families out of the loot tables.
         /// </summary>
         private const string CreatureVariantTag = "Vixy_CreatureVariant";
-
-        /// <summary>
-        /// Chip table references removed from loot tables, kept so they can be put back exactly.
-        ///
-        /// Holding the original PopulationTable instances, paired with the list each came out of,
-        /// keeps this genuinely reversible: weight, number and hint all return as declared, with
-        /// nothing rebuilt from assumptions.
-        /// </summary>
-        /// <summary>
-        /// Variant population entries currently showing their ordinary form, against the blueprint
-        /// each should go back to. Runtime only - populations are rebuilt from XML on every load,
-        /// so nothing here reaches a save.
-        /// </summary>
-        private static readonly Dictionary<PopulationObject, string> PlainedVariantEntries =
-            new Dictionary<PopulationObject, string>();
 
         private static readonly List<KeyValuePair<PopulationList, PopulationItem>> DetachedChipEntries =
             new List<KeyValuePair<PopulationList, PopulationItem>>();
@@ -447,91 +396,6 @@ namespace QudExpandedCE
             new PowerCost("Tinkering", "Reverse Engineer", new Tuning<int>(200, 100)),
         };
 
-        /// <summary>Runs whenever any option changes, and once as options are first read.</summary>
-
-        /// <summary>
-        /// Weight 0 excludes a syllable from the draw without removing it: GetRandomNameElement
-        /// sums only weights above 0 and skips the rest. So this is a switch that can be flipped
-        /// back, rather than an edit to undo.
-        ///
-        /// If another mod adds a syllable this one also adds, the loader merges them into a
-        /// single element and switching this off silences it for both. That is unavoidable -
-        /// there is one element and one weight - and it is the additive direction, so nothing
-        /// vanilla is ever affected.
-        /// </summary>
-        private static void ApplyWiderNames()
-        {
-            int weight = Enabled(WiderNamesID, "Yes") ? 1 : 0;
-            Widen(QudishStyle, AddedPrefixes, AddedInfixes, AddedPostfixes, weight);
-            Widen(
-                IssachariStyle,
-                AddedIssachariPrefixes,
-                AddedIssachariInfixes,
-                AddedIssachariPostfixes,
-                weight
-            );
-        }
-
-        /// <summary>
-        /// Zero the weight on one namestyle's added entries, or restore it.
-        /// </summary>
-        /// <remarks>
-        /// One option covers both namestyles because it is one idea - names that stop sounding
-        /// alike - and charter rule 6's warning about a constellation of switches bites harder than
-        /// the difference between a Qudish syllable and an Issachari word. The Qudish pools are
-        /// widened for repeated *syllables* across ~93,500 names; the Issachari pools are widened
-        /// because 280 whole names repeat outright. Same option, opposite reasoning, and
-        /// mod/Core/Naming.xml records why.
-        /// </remarks>
-        private static void Widen(
-            string styleName,
-            string[] prefixes,
-            string[] infixes,
-            string[] postfixes,
-            int weight
-        )
-        {
-            if (!NameStyles.NameStyleTable.TryGetValue(styleName, out NameStyle style))
-            {
-                return;
-            }
-            SetWeights(style.Prefixes, prefixes, weight);
-            SetWeights(style.Infixes, infixes, weight);
-            SetWeights(style.Postfixes, postfixes, weight);
-        }
-
-        private static void SetWeights<T>(List<T> pool, string[] added, int weight)
-            where T : NameElement
-        {
-            foreach (T element in pool)
-            {
-                if (Array.IndexOf(added, element.Name) >= 0)
-                {
-                    element.Weight = weight;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Chance is the last thing NameScope.ApplyTo evaluates - `return Chance.in100()` - so 0
-        /// stops the scope matching at all and the namestyle drops out of the running. Naming
-        /// becomes gender-blind again, which is what vanilla does.
-        /// </summary>
-        private static void ApplyGenderedNames()
-        {
-            int chance = Enabled(GenderedNamesID, "Yes") ? 100 : 0;
-            foreach (string name in GenderedStyles)
-            {
-                if (NameStyles.NameStyleTable.TryGetValue(name, out NameStyle style))
-                {
-                    foreach (NameScope scope in style.Scopes)
-                    {
-                        scope.Chance = chance;
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Qud ships a complete gender and pronoun system switched off. Thirteen genders with full
         /// grammar tables, a separate pronoun-set system, replication between the two, and a
@@ -635,12 +499,9 @@ namespace QudExpandedCE
             ApplyTrueKinEgoDescription();
             ApplyChargenInfo();
             ApplyChipDrops();
-            ApplyCreatureVariants();
             ApplyAnthroMutations();
             ApplySkillRequirements();
             ApplySkillCosts();
-            ApplyWiderNames();
-            ApplyGenderedNames();
             ApplyChargenSelection();
             ApplyPlayerNameFlavour();
         }
@@ -669,21 +530,6 @@ namespace QudExpandedCE
         /// shipped.
         /// </summary>
         public static bool BurdenGradient => Enabled(BurdenGradientID, "No");
-
-        /// <summary>
-        /// Whether a wayfarer is told which of a parasang's nine zones they have entered.
-        ///
-        /// Live, and the off-switch is a runtime decision: <c>Vixy_Bearing</c> reads this on each
-        /// zone change and derives everything else from the zone in front of it, so there is no
-        /// loaded record to restore and flipping this mid-run takes effect on the next zone you
-        /// walk into.
-        ///
-        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
-        /// content attached, and this grants no power at all — it surfaces a number the zone ID
-        /// has carried the whole time, to a character who has already paid 100 points for the
-        /// skill that reads it.
-        /// </summary>
-        public static bool Bearings => Enabled(BearingsID, "Yes");
 
         /// <summary>
         /// Whether a zone's trash runs out of things to say as it is picked over.
@@ -731,20 +577,6 @@ namespace QudExpandedCE
         /// an addition vanilla never had here.
         /// </summary>
         public static bool ImportantArtifacts => Enabled(ImportantArtifactsID, "Yes");
-
-        /// <summary>
-        /// Whether trade is offered by creatures who have nothing to trade.
-        ///
-        /// Live, and the off-switch is a runtime decision: <c>Vixy_TradeOffer</c> reads this each
-        /// time a conversation asks whether trade is possible, so flipping it takes effect on the
-        /// next creature you talk to.
-        ///
-        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power, and this
-        /// grants none at all - the trade was never possible, and the only thing that changes is
-        /// whether the game offers it before saying so. Off restores the option, and the refusal
-        /// that follows it.
-        /// </summary>
-        public static bool SilentTradeOffers => Enabled(SilentTradeOffersID, "Yes");
 
         /// <summary>
         /// Whether a charmed merchant still charges for their goods.
@@ -1044,86 +876,6 @@ namespace QudExpandedCE
 
             smell.Hidden = !on;
             smell.Cost = KeenSmellCost;
-        }
-
-        /// <summary>
-        /// Show or hide the cosmetic creature coats, without moving how many animals exist.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// <b>Off does not mean absent, it means ordinary.</b> A variant entry is switched to the
-        /// blueprint it inherits from rather than removed. That is what keeps the world's animal
-        /// density identical in both states: since #613 each variant's chance is a *split* of its
-        /// parent's rather than an addition to it, so deleting the entry would leave the pair
-        /// expecting less than vanilla alone did - a brindle dog and a dog are one dog's worth of
-        /// chance between them, and dropping the brindle half would take that dog away.
-        /// </para>
-        /// <para>
-        /// Switching the blueprint rather than recomputing a chance keeps this exact with no
-        /// arithmetic: the entry keeps its own Chance and Number, and those were sized so the whole
-        /// group sums to vanilla's original expectation.
-        /// </para>
-        /// <para>
-        /// Reversible and idempotent, like every apply here: the original blueprint is remembered so
-        /// the coat comes back, and setting a blueprint that is already set is a no-op.
-        /// </para>
-        /// </remarks>
-        private static void ApplyCreatureVariants()
-        {
-            if (Enabled(CreatureVariantsID, "Yes"))
-            {
-                foreach (KeyValuePair<PopulationObject, string> entry in PlainedVariantEntries)
-                {
-                    entry.Key.Blueprint = entry.Value;
-                }
-
-                PlainedVariantEntries.Clear();
-                return;
-            }
-
-            foreach (PopulationInfo info in PopulationManager.Populations.Values)
-            {
-                DetachCreatureVariants(info);
-            }
-        }
-
-        /// <summary>
-        /// Recursively strip variant entries out of one population and remember where each came
-        /// from. Removing when already removed is a no-op, so repeated calls are safe.
-        /// </summary>
-        private static void DetachCreatureVariants(PopulationList list)
-        {
-            if (list?.Items == null)
-            {
-                return;
-            }
-
-            for (int i = list.Items.Count - 1; i >= 0; i--)
-            {
-                PopulationItem item = list.Items[i];
-
-                PopulationObject entry = item as PopulationObject;
-                if (entry != null)
-                {
-                    string plain = OrdinaryFormOf(entry.Blueprint);
-                    if (plain != null)
-                    {
-                        PlainedVariantEntries[entry] = entry.Blueprint;
-                        entry.Blueprint = plain;
-                    }
-
-                    continue;
-                }
-
-                // Groups nest - the salt beetle sits in a sub-group of a sub-group - and both
-                // PopulationInfo and PopulationGroup are PopulationList, so one cast covers every
-                // container.
-                PopulationList nested = item as PopulationList;
-                if (nested != null)
-                {
-                    DetachCreatureVariants(nested);
-                }
-            }
         }
 
         /// <summary>

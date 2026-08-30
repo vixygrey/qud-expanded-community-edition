@@ -14,6 +14,28 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Removed
+
+- **Five options taken out of the menu** (#690).
+
+  Bearings, creature colour variants, silent trade offers, wider name pools and gendered name
+  endings. **All five features stay exactly as they are — only the switches are gone**, so if you
+  never touched them nothing about your game changes.
+
+  Every option in this mod is meant to answer one question: would anybody actually turn this off?
+  These five could not. None of them changes a number, a difficulty, a drop or anything you choose at
+  character creation, and none takes anything away that you might want back — they are flavour, and
+  the menu was charging you a line to read past for each of them.
+
+  > **If you had one of the five switched off, it is on again.** There is nowhere left to store that
+  > preference. Coloured animals will reappear, your generated names will use the wider syllable
+  > pools, and creatures with nothing to trade will stop offering. Nothing is broken by this and
+  > nothing needs a new character — but it is a change you did not ask for, and I would rather say so
+  > here than let you find it.
+
+  Twenty-one options remain, and every one of them changes something you would notice.
+
+
 ### Fixed
 
 - **(internal)** `check_docs.py` could not read a hyphenated word number in a wiki claim (#674).

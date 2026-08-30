@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using XRL.World.Effects;
-using QudExpandedCE;
 
 namespace XRL.World.Parts
 {
@@ -104,9 +103,7 @@ namespace XRL.World.Parts
                 return;
             }
 
-            if (!Raven_Options.Bearings
-                || !who.HasSkill("Survival_Trailblazer")
-                || who.HasEffect<Lost>())
+            if (!who.HasSkill("Survival_Trailblazer") || who.HasEffect<Lost>())
             {
                 return;
             }

@@ -1,5 +1,4 @@
-using System;
-using QudExpandedCE;
+﻿using System;
 using XRL.UI;
 
 namespace XRL.World.Parts
@@ -65,7 +64,7 @@ namespace XRL.World.Parts
 
         public override bool FireEvent(Event E)
         {
-            if (E.ID == "CanTrade" && E.HasFlag("CanTrade") && Raven_Options.SilentTradeOffers)
+            if (E.ID == "CanTrade" && E.HasFlag("CanTrade"))
             {
                 GameObject speaker = E.GetGameObjectParameter("SpeakingWith");
                 if (HasNothingToTrade(speaker))

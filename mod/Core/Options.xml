@@ -228,27 +228,6 @@
   </option>
 
   <option
-    ID="OptionQudExpandedCESilentTradeOffers"
-    DisplayText="{{C|Qud Expanded}}: don't offer trade to creatures with nothing to trade"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded trade barter offer empty inventory animal dragonfly conversation"
-  >
-    <helptext>
-            Hides {{G|[begin trade]}} when the creature you are talking to has nothing you could trade for.
-
-            Asking a giant dragonfly to trade is a valid choice right up until you make it, at which point the game tells you it has nothing to trade. The information existed before you asked.
-
-            A creature's natural equipment - a bite, a claw, a sting - is not tradeable, so an animal's side of the screen is empty even though it technically carries something. The check here is the game's own: if nothing in their inventory would appear on the trade screen, the option is not offered.
-
-            {{y|Companions are unaffected.}} Trading with someone who follows you is free and opens even when they carry nothing, because that is how you hand them things.
-
-            Applies immediately.
-        </helptext>
-  </option>
-
-  <option
     ID="OptionQudExpandedCEImportantArtifacts"
     DisplayText="{{C|Qud Expanded}}: don't offer artifacts you marked important"
     Category="Mods"
@@ -312,27 +291,6 @@
   </option>
 
   <option
-    ID="OptionQudExpandedCEBearings"
-    DisplayText="{{C|Qud Expanded}}: Mind's Compass reports your bearings"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded wayfaring minds compass parasang bearings zone navigation"
-  >
-    <helptext>
-            Lets Mind's Compass tell you which of a parasang's nine zones you are standing in.
-
-            A parasang is a 3x3 block of zones and the game never says which one you are in, so you work it out by walking to an edge and watching which way the world map scrolls. With this on, you are told when you arrive, under the line where the game already gives you the zone and the time: {{G|The northeast of this parasang.}} And so on through the nine.
-
-            You need {{Y|Mind's Compass}}, which comes free with the {{Y|Wayfaring}} skill rather than being bought separately.
-
-            Nothing is said while you are {{y|lost}} - that is the one time you should not know - or on the world map, or anywhere without one. Going down stairs is silent too, since a staircase does not move you within the parasang.
-
-            Applies immediately.
-        </helptext>
-  </option>
-
-  <option
     ID="OptionQudExpandedCEChipDrops"
     DisplayText="{{C|Qud Expanded}}: psionic chips in loot"
     Category="Mods"
@@ -376,57 +334,7 @@
             {{y|Set this before creating a character.}} Bodies are built once, when a creature is generated.
         </helptext>
   </option>
-  <option
-    ID="OptionQudExpandedCEWiderNames"
-    DisplayText="{{C|Qud Expanded}}: wider name pools"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded name names naming repeat repetition syllable prefix postfix"
-  >
-    <helptext>
-            Adds syllables to the Qudish name pools, so procedurally generated people stop
-            sounding alike.
 
-            Vanilla draws from 29 openings and 24 endings, which is about 93,500 distinct names -
-            so it is not the whole name you notice repeating, it is the syllable. There is a 50%
-            chance of seeing a repeated opening after fewer than seven names. This takes openings
-            to 68 and endings to 36, which moves that to eleven.
-
-            The middle syllables are deliberately left nearly alone. That is not where the
-            collision is.
-
-            {{y|Issachari names are widened the opposite way, and for the opposite reason.}} An Issachari is one hyphenated phrase - {{G|Flays-upon-the-Sun}}, {{G|Chokes-in-Quicksalt}} - drawn from 7 verbs, 5 prepositions and 8 nouns. That is 280 names, so here it is the whole name that repeats, at around twenty people, and every single slot repeats at three or four. All three pools widen together to 10, 10 and 12, which is 1,200 names and a repeat at about forty.
-
-            Turning this off restores vanilla's pools exactly. Nothing vanilla is removed or
-            reweighted either way.
-        </helptext>
-  </option>
-
-  <option
-    ID="OptionQudExpandedCEGenderedNames"
-    DisplayText="{{C|Qud Expanded}}: gendered name endings"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded name names naming gender feminine soft ending vowel"
-  >
-    <helptext>
-            Lets a generated person's name reflect the gender the game already gave them.
-
-            Qud rolls a gender for almost every human it generates - 117 of the 126 human
-            blueprints are a male-or-female coin flip - and then ignores it when naming them.
-            Vanilla's endings are 23 hard stops out of 24, so everyone ends up sounding the same
-            way regardless.
-
-            With this on, women draw mostly from open, vowel-final endings and the genders that
-            are neither draw from an even mix. It is a lean rather than a rule: about one name in
-            five still takes a hard ending, so a name never states someone's gender outright.
-
-            Turning this off makes naming gender-blind again, as vanilla is. It does not narrow
-            the pools - that is the option above.
-        </helptext>
-  </option>
   <option
     ID="OptionQudExpandedCENameFlavour"
     DisplayText="{{C|Qud Expanded}}: how your own random name sounds"
@@ -500,29 +408,6 @@
 
             Turning it off hides the row. Your pronouns then follow your gender, as vanilla does
             it.
-        </helptext>
-  </option>
-  <option
-    ID="OptionQudExpandedCECreatureVariants"
-    DisplayText="{{C|Qud Expanded}}: creature colour variants"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded creature variants colour color coat spawn regional biome"
-  >
-    <helptext>
-            Adds 44 colour and name variants of nineteen common creatures - brindle and marsh dogs,
-            black goats, rust beetles, sorrel equimaxes, hoary bats - each in the biome its name
-            argues for.
-
-            Cosmetic only. A variant differs in name, colour and description and in nothing else, so
-            a pied dog fights exactly as a feral dog does.
-
-            Each sits below its vanilla parent in the spawn tables, so ordinary animals stay the
-            common ones and a variant is the occasional find rather than the rule.
-
-            Applies immediately, to zones generated from now on. Zones you have already visited keep
-            whatever they were built with.
         </helptext>
   </option>
   <option
