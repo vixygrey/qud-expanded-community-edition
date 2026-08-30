@@ -16,6 +16,36 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Caravan guards carry a bow** (#591).
+
+  A flying character could strip a dromad caravan at no risk. Not because caravans are undefended —
+  they are guarded, by two to four level-30 escorts with 165 hit points each — but because **nothing
+  in one could reach the sky.** Both of the game's equipment builders draw only from melee weapons,
+  armour and junk, at every tier, so a caravan guard could not be armed against a flyer under any
+  roll.
+
+  Guards now carry a compound bow and fifteen to twenty-five steel arrows. **Flight is untouched.**
+  It is a real mutation with real costs and it should stay strong; the problem was never that flying
+  works, it was that a caravan crossing the salt dunes for a living had no answer to something in the
+  air, which the world would not permit. Qud's skies contain things that eat camelfolk.
+
+  A compound bow rather than a short bow, and the reason is worth stating because it is the whole
+  difference between a fix and a gesture: **a short bow fires every arrow in the game at the same
+  penetration, which is none.** Only the compound bow lets an archer's Strength count, and a guard's
+  Strength is where the force actually comes from. Steel arrows because that is exactly as much as a
+  guard of this strength can put behind a shot; a better arrowhead would be weight it cannot use.
+
+  The trader still runs. Only the escort fights, which is what an escort is for.
+
+  **This does not reach caravans that already exist in your save** — a caravan is built once, and the
+  guards it was built with are the guards it keeps. New ones carry bows.
+
+  Killing a caravan now yields the bows and arrows as well, which is a little more income from an
+  encounter this change makes harder rather than easier. That is how Caves of Qud's own armed escorts
+  work — a hindren scout and a snapjaw hunter both drop what they carry — and it seemed wrong to
+  invent an exception here.
+
+
 - **Name an item after a pride flag** (#577).
 
   When you name an item — after a kill, a level, a quest, a water ritual — the colour picker now

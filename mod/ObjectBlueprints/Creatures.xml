@@ -8,6 +8,49 @@
     <part Name="MeleeWeapon" BaseDamage="1d3-1" Skill="Cudgel" Slot="Hand" />
   </object>
 
+  <!-- Caravan guards carry a bow (#591).
+
+       A flying player can strip a dromad caravan at no risk, and the cause is narrower than the
+       forum version of the claim. Caravans are guarded - 2-4 Caravan Guards at level 30 with 165 HP
+       - but both equipment builders in the game draw only from "Melee Weapons N", "Armor N" and
+       "Junk N". There is no missile weapon at any tier, so a guard cannot be armed against a flyer
+       under any roll.
+
+       What a player actually sees is not a rout. Kill.TakeAction's flee branch sits inside
+       `if (num == 1)`, so it only fires when the flyer is adjacent; the ranged branch above it has
+       no flight check anywhere and Brain.MaxMissileRange is 80, the whole zone. So the guard walks
+       under the flyer, becomes adjacent, runs for two turns - Flee(Target, 2) is a duration, not a
+       distance - and comes back. A ping-pong. Give it something that reaches and the ranged branch
+       handles the rest.
+
+       Compound Bow rather than Short Bow, and this is the part that is not obvious. An arrow's
+       StrengthPenetration is a *cap*, not a bonus: MissileWeapon builds `num3 = BasePenetration`
+       and `num4 = BasePenetration + StrengthPenetration`, adds the wielder's stat modifier to num3
+       ONLY when the weapon declares ProjectilePenetrationStat, and Stat.RollDamagePenetrations then
+       uses Math.Min(num3, num4). BaseArrowProjectile sets BasePenetration="0". Short Bow declares no
+       ProjectilePenetrationStat, so a Short Bow fires every arrow in the game at penetration 0 -
+       Wooden and Zetachrome alike. Compound Bow declares Strength, and it is the only other bow.
+
+       Steel Arrow because the cap should meet the modifier and not exceed it. Caravan Guard inherits
+       Strength sValue="14,1d3,(t)d1" from BaseHumanoid and (t) resolves as Level / 5 + 1 = 7 at
+       level 30, so Strength is 22-24 and GetScoreModifier - floor((score - 16) * 0.5) - gives 3 or
+       4. Steel caps at 3. Wooden would waste the modifier at 2; Carbide would let it run to 4.
+
+       Merge appends rather than replaces. <inventoryobject> is an Unnamed node in
+       ObjectBlueprintLoader, and Unnamed merging is `Unnamed.AddRange(other.Unnamed)` - so anything
+       Freehold later gives this guard survives alongside these two rows. Charter rule 1.
+
+       The guards, not the trader. The trader keeps its AISelfPreservation Threshold="40" and stays
+       out of the fight, which is a different design and not this one.
+
+       Not retroactive. DromadCaravan.Created persists, so a caravan already materialised in a save
+       keeps its unarmed guards. No migration is needed and none is possible. -->
+
+  <object Name="Caravan Guard" Load="Merge">
+    <inventoryobject Blueprint="Compound Bow" Number="1" />
+    <inventoryobject Blueprint="Steel Arrow" Number="15-25" />
+  </object>
+
   <!-- Custom Bodies -->
 
   <object Name="TrueKin" Inherits="Humanoid">
