@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 62 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 63 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5338,6 +5338,109 @@ new one would need to earn its line rather than default into it.
 a mod can supply `GlobalConfig.json` only from its root, and per #651 a manifest declaring
 `Directories` has no reachable root. Turning it on would cost the optional Joppa building. So
 *"a merchant recognises **my** mark"* stays unbuildable until that trade-off changes.
+
+## 40. Wary — a skill for spotting what you would otherwise walk into (`Vixy_TacticsWary`)
+
+**A character with Intelligence 14 or below could not find a hidden object. Ever.** Not unlikely —
+impossible (#221).
+
+### 40.1 The arithmetic
+
+`Physics.Search()` runs every player turn over the current cell and its eight neighbours, and
+`Hidden` resolves it:
+
+```csharp
+if (E.GetIntParameter("Bonus") + Stat.Random(1, Searcher.Stat("Intelligence")) >= Difficulty)
+```
+
+`Stat.Random(Low, High)` is `Rnd.Next(Low, High + 1)`, so the roll's ceiling is **exactly** the
+searcher's Intelligence — and `Hidden.Difficulty` defaults to **15**.
+
+| Intelligence | chance per search, difficulty 15 |
+|---:|---|
+| ≤ 14 | **0%** |
+| 15 | 6.7% |
+| 18 | 22% |
+| 20 | 30% |
+
+**Nothing in the whole assembly writes `Bonus`.** The term is read on that line and has never been
+supplied. This is the first thing that supplies it. Filed upstream as #621 and closed
+`NOT_PLANNED`, so a fork-side skill is the only answer this will get.
+
+### 40.2 It covers everything hidden, not only traps
+
+Three parts read the same `Bonus` off the same event, so one bonus improves all of them:
+
+| part | blueprints | difficulty |
+|---|---|---|
+| `Hidden` | Young Ivory, Holographic Ivory, Yonderbrush, Sprouting Orb, Lurking Beth, Holographic Beth, Lagroot, Elder Lagroot | 15–23 |
+| `HiddenRender` | `PondDown` | 2 |
+| `EelSpawn` | `EelSpawn` | 15 (default) |
+
+**Mines are not a separate path.** `Miner.SetMineOrBomb` attaches the same `Hidden` part at runtime
+with `12 + Mark * 3`, so a Mark III mine is difficulty **21** — laid in front of you during a fight,
+and undetectable below Intelligence 21 without this.
+
+`PondDown` at difficulty 2 comes along too. No filter is possible from the searcher's side, and at
+that difficulty it was already found by anyone.
+
+**Young Ivory is the case that matters most.** Difficulty 15 — the default — with an `Impaler`, at
+creature level 3, in ordinary shale. It is what a low-Intelligence character walks into from the
+first hour, and the Mark III mine is the more extreme number but the rarer event.
+
+### 40.3 Why Tactics, and not where the issue looked
+
+#221 proposed **Tinkering** or **Customs and Folklore**. Both are `Attribute="Intelligence"`.
+
+> So either would have filed the fix for low-Intelligence characters **under Intelligence** — the one
+> tree those builds never open — and Customs and Folklore is joint-most-expensive in the game at 150.
+> The skill would have read as a fix and reached nobody.
+
+Tactics is **Agility**, costs **50** to enter, and its existing powers are all about not being caught
+out: `Hurdle`, `Juke`, `Kickback`, `Charge`. Noticing an ambush is the same sentence as the rest of
+that tree, and Agility is a stat a low-Intelligence melee or missile build actually buys.
+
+The roll is against Intelligence while the skill is filed under Agility, which reads oddly for a
+moment. Vanilla files a skill by the attribute the *skill* belongs to rather than the stat its rolls
+use, so nothing forces the pairing — and the fiction is not *you got cleverer*, it is that you have
+learned what a tripwire looks like.
+
+### 40.4 A flat bonus, not the floor the issue asked for
+
+The issue wanted a floor — *roll as though your Intelligence were at least F* — and it cannot be
+built. The roll itself is unreachable, so a floor can only be expressed as `Bonus = F - Intelligence`,
+which raises the **minimum** roll as well as the maximum and compresses the range to
+`[1 + F - INT, F]`.
+
+That inverts the ordering. At `F = 18`, an Intelligence 10 character with the power finds a
+difficulty-15 object **40%** of the time while an Intelligence 20 character without it manages
+**30%** — being worse at noticing traps for having bought Intelligence.
+
+A flat term moves everyone by the same amount and keeps the ordering intact. **+6** is the smallest
+value that takes the whole default tier off zero: at Intelligence 10 a difficulty-15 object needs a 9
+on 1d10, which is 20% per search rather than never. It deliberately does **not** make a Mark III mine
+reachable from Intelligence 10 — the hardest thing on the ladder stays hard.
+
+### 40.5 How the bonus reaches the event, which is the fragile part
+
+`DoSearching` builds the event and fires it at the cell in the same breath, so nothing can hand it a
+bonus from outside. What makes this reachable at all is that `Search()` passes `eSearched` **by
+reference** through all nine calls, so one Event object serves the current cell and its eight
+neighbours — and `Cell.FireEvent` iterates the cell's objects, of which the searcher is one.
+
+So the power fires on the searcher's own cell, sets the term, and the value rides the reused event
+into every neighbour.
+
+**The limitation, stated rather than discovered later:** for a hidden object in the searcher's *own*
+cell, ordering depends on where the searcher sits in `Cell.Objects`, so the bonus may not have been
+set when that object resolves. The eight neighbours are reliable, and they are the ones that matter —
+a hidden thing in your own cell has usually already gone off.
+
+### 40.6 Off-switch
+
+None. It adds one purchasable skill power that costs skill points to acquire, changes no vanilla
+record, and takes nothing away — a player who does not want it does not buy it, which is a better
+off-switch than an option.
 
 ## Appendix A — every merged vanilla melee weapon
 

@@ -231,4 +231,38 @@ You travel on the world map twice as quickly.
 While the Qud Expanded bearings option is on, you know which of a parasang's nine zones you are standing in."
     />
   </skill>
+
+  <!-- Wary, sold by the Tactics tree. #221.
+
+       The gap: `Hidden` resolves a search as `Bonus + Stat.Random(1, Intelligence) >= Difficulty`,
+       `Stat.Random` is inclusive so the roll's ceiling is exactly Intelligence, and
+       `Hidden.Difficulty` defaults to 15. A character at Intelligence 14 or below therefore cannot
+       ever find a default-difficulty hidden object - not unlikely, impossible. Young Ivory is one of
+       them, at difficulty 15, with an Impaler, at creature level 3, in ordinary shale. Filed upstream
+       as #621 and closed NOT_PLANNED.
+
+       Nothing in the whole assembly writes `Bonus`. This is the first thing that does.
+
+       **Why Tactics and not Tinkering.** The issue proposed Tinkering or Customs and Folklore. Both
+       are `Attribute="Intelligence"`, so either would have filed the fix for low-Intelligence
+       characters under Intelligence, where the builds it exists for never look - and Customs and
+       Folklore is joint-most-expensive in the game at 150. Tactics is Agility, costs 50 to enter, and
+       its powers are all about not being caught out: Hurdle, Juke, Kickback.
+
+       Cost 100 and Agility 15: the same shape as the tree's mid powers, and reachable by the melee
+       and missile builds that carry low Intelligence. -->
+  <skill Name="Tactics" Load="Merge">
+    <power
+      Name="Wary"
+      Cost="100"
+      Attribute="Agility"
+      Minimum="15"
+      Class="Vixy_TacticsWary"
+      Snippet="wariness"
+      Description="You have learned what a tripwire looks like. You gain a +6 bonus when searching for hidden things, including traps, mines and concealed creatures."
+      Tile="Abilities/sw_skill_tactics.png"
+      Foreground="y"
+      Detail="B"
+    />
+  </skill>
 </skills>
