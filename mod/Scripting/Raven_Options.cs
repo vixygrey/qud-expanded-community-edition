@@ -52,6 +52,7 @@ namespace QudExpandedCE
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
         public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
         public const string CharmedMerchantPricesID = "OptionQudExpandedCECharmedMerchantPrices";
+        public const string ArrowRecoveryID = "OptionQudExpandedCEArrowRecovery";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -760,6 +761,22 @@ namespace QudExpandedCE
         /// charm itself is untouched — same following, same fighting, same shelf.
         /// </summary>
         public static bool CharmedMerchantPrices => Enabled(CharmedMerchantPricesID, "Yes");
+
+        /// <summary>
+        /// Whether a fired arrow can survive its impact and be picked up again.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_ArrowRecovery</c> reads this when a
+        /// projectile lands, so flipping it applies to the next arrow shot. Nothing is stored either
+        /// way — arrows already on the ground stay there, because they are ordinary items once they
+        /// exist.
+        ///
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached, and this grants a little: some ammunition back. But it grants it against
+        /// a scale the game already wrote, it leaves every effect arrow consumed, and what it fixes is
+        /// a bow becoming dead weight — which is a build stopping working rather than a build being
+        /// weaker than it might be.
+        /// </summary>
+        public static bool ArrowRecovery => Enabled(ArrowRecoveryID, "Yes");
 
         private static void ApplyChipSlots()
         {

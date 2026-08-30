@@ -31,6 +31,31 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Fired arrows can be picked back up** (#643).
+
+  An arrow you shoot sometimes survives and lands where it hit, so you can pick it up again. Archery
+  stops being pure consumption without anyone having to build a crafting system for it.
+
+  Caves of Qud already knows how to leave a projectile on the floor — it does it for anything else
+  that lands. Arrows were the exception, and only because they are built as unreal objects that are
+  deleted the instant they arrive. Nothing about the world says an arrow you shot into a wall stops
+  being an arrow.
+
+  **Not all of them come back**, and how often depends on what the arrow is made of. That is the
+  game's own material ladder rather than a number I picked: a wooden arrow survives about a fifth of
+  the time, a zetachrome one about nine times in ten. So the arrows worth keeping are the ones you
+  keep, and ammunition stays a resource.
+
+  **Arrows that carry something never come back** — explosive, cryo, gas, honey, flare. The payload is
+  spent, and what is left is not an arrow any more. That is decided by what the arrow *is* rather than
+  by a list, so anything added later is covered without anybody remembering it.
+
+  If you have Caves of Qud's own *autoget primitive ammo* switched on, exploring collects them for
+  you. That half already existed; there was simply never anything on the floor to find.
+
+  New option, **on by default**, read live: turning it off makes fired arrows vanish again, from the
+  next shot.
+
 - **Charmed merchants still expect paying** (#563).
 
   Beguile, proselytize or mask a shopkeep and their whole shop became free. Caves of Qud treats

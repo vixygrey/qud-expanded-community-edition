@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **472** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **229** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **230** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -587,9 +587,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 46 | 2 |
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
-| `Ammo.xml` | 22 (22 dormant) | 1 |
+| `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 0 | 8 |
-| **Total** | **472 active** | **229** |
+| **Total** | **472 active** | **230** |
 
 ### 6.2 Melee weapons
 
@@ -2109,7 +2109,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 25 options (§13)
+│   ├── Options.xml             # 26 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2134,10 +2134,10 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 59 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 60 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
-│                               # gather, merchant pricing, the ammo payload, and
-│                               # four Finesse powers
+│                               # gather, merchant pricing, arrow recovery, the
+│                               # ammo payload, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2175,7 +2175,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2229,6 +2229,7 @@ rather than anything the mod already was.
 | marked artifacts stay yours | Checkbox | **Yes** | Whether an artifact you marked important is kept out of Argyve's picker. §27. |
 | silent trade offers | Checkbox | **Yes** | Whether creatures with nothing to trade still offer to. §28. |
 | charmed merchants still expect paying | Checkbox | **Yes** | Whether a charmed merchant's shop is free. §34. |
+| arrows can be picked back up | Checkbox | **Yes** | Whether a fired arrow can survive and land. §35. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2270,7 +2271,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, bearings, charmed merchant prices, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
+| **Live** — applies immediately | graded burden, bearings, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -4934,6 +4935,102 @@ Rule 6 says an option earns its place where it **takes something away that a pla
 and this plainly does. It defaults on for the same reason §25's trash density does: what it takes away
 is the part vanilla gave away by accident. The charm is untouched everywhere else — same following,
 same fighting, same shelf.
+
+## 35. Fired arrows can be picked back up (`Vixy_ArrowRecovery`)
+
+**An arrow you shoot sometimes survives and lands where it hit.** Archery's supply loop stops being
+pure consumption, without a crafting system (#643, split from #154).
+
+### 35.1 Arrows vanish because of one line of data
+
+`MissileWeapon` already knows how to leave a projectile on the floor — it calls
+`ImpactCell.AddObject(Projectile, …)` on both impact paths. What decides an arrow's fate is
+`CleanupProjectile`:
+
+```csharp
+if (Projectile.Physics.IsReal) { … }
+else { Projectile.Obliterate(); }
+```
+
+`TemporaryProjectile` carries `<part Name="Physics" IsReal="false" />`, `BaseArrowProjectile` inherits
+it, and so every fired arrow takes the obliterate branch.
+
+### 35.2 `IsReal` is not touched, and that retires the risk
+
+Making projectiles real would give every arrow **in flight** weight, a cell, a save footprint and a
+stack — presumably why Freehold made them unreal. The issue flagged that as its whole risk.
+
+Instead the part listens for the projectile's own impact and creates a **new, real arrow** at the
+cell, leaving the projectile to be obliterated as normal. So the question *why is
+`TemporaryProjectile` unreal* stops constraining the design, because nothing goes near it.
+
+### 35.3 The seam is `ProjectileHit`, fired on the projectile
+
+| site | path | carries |
+|---|---|---|
+| `MissileWeapon.cs:1806` | failed to penetrate (`Penetrations: 0`) | `ImpactCell`, `Defender`, `Attacker` |
+| `MissileWeapon.cs:2303` | hit | `ImpactCell`, `Defender`, `Penetrations` |
+
+Both fire **on the projectile**, and both run *before* `CleanupProjectile`. So a part on the
+projectile hears its own landing, knows where it landed, and still has time to leave something behind.
+
+### 35.4 One merge reaches every arrow, including in existing saves
+
+All **nine** vanilla arrow projectiles and all **six** of this fork's effect arrows inherit
+`BaseArrowProjectile`, so the part goes on that one blueprint. Unlike a merge onto a container this
+one reaches characters already in a save for free: a projectile is created fresh on every shot.
+
+**The projectile does not know its own arrow.** `AmmoArrow.HandleEvent(GetProjectileObjectEvent)` does
+`GameObject.Create(ProjectileObject)` and stamps no back-reference. Rather than tagging sixteen
+blueprints, the part inverts the relationship the blueprints already state — every `AmmoArrow` names
+its projectile, so the reverse map is derivable from `GameObjectFactory.Factory.Blueprints` and needs
+no data of its own.
+
+### 35.5 The chance is derived from the arrow, not chosen for it
+
+Recovery is the projectile's own `StrengthPenetration` × 10, a ladder Freehold already wrote:
+
+| arrow | `StrengthPenetration` | recovery |
+|---|---|---|
+| Wooden | 2 | 20% |
+| Steel | 3 | 30% |
+| Carbide | 4 | 40% |
+| Folded Carbide | 5 | 50% |
+| Fullerite | 6 | 60% |
+| Crysteel | 7 | 70% |
+| Flawless Crysteel | 8 | 80% |
+| Zetachrome | 9 | 90% |
+
+A wooden arrow usually breaks and a zetachrome one usually does not — the fiction and the existing
+scale agreeing. **The one invented number is the ×10 multiplier**, which is a single constant in one
+place; the shape came from the game.
+
+### 35.6 An arrow that carries anything comes back as nothing
+
+Rather than listing the effect arrows, the part compares the projectile's parts against
+`BaseArrowProjectile`'s own. A plain arrow adds **none**; every effect arrow in the game adds exactly
+**one**:
+
+- vanilla's `ProjectileExplosiveArrow` adds `HEGrenade`
+- this fork's six add `TemperatureOnHit`, `GasGrenade`, `StickyOnHit` or `FlashbangGrenade`
+
+So the rule is *an arrow that is only an arrow comes back*, and a future effect arrow is covered
+without anybody remembering to add it to a list.
+
+### 35.7 The retrieval half already shipped
+
+`Options.AutogetPrimitiveAmmo` exists and `AmmoArrow` handles `AutoexploreObjectEvent` to honour it.
+Autoexplore already collects loose arrows and reloads them — there was simply never anything on the
+floor for it to find.
+
+### 35.8 Off-switch
+
+`OptionQudExpandedCEArrowRecovery`, on by default, read live when a projectile lands.
+
+Rule 6 reserves "off by default" for a change granting power with no content attached, and this grants
+a little. But it grants it against a scale the game already wrote, leaves every effect arrow consumed,
+and what it fixes is a bow becoming **dead weight** — a build stopping working, rather than a build
+being weaker than it might be.
 
 ## Appendix A — every merged vanilla melee weapon
 
