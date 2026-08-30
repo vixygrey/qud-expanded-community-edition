@@ -1,5 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects>
+  <!-- Fired arrows can survive and be picked up (#643).
+
+       Caves of Qud already knows how to leave a projectile on the floor - MissileWeapon calls
+       ImpactCell.AddObject on both impact paths. What deletes arrows is one line of data:
+       TemporaryProjectile carries <part Name="Physics" IsReal="false" />, BaseArrowProjectile
+       inherits it, and CleanupProjectile therefore always takes Projectile.Obliterate().
+
+       This does not touch IsReal. Making projectiles real would give every arrow in flight weight, a
+       cell, a save footprint and a stack, which is presumably why they are unreal. Instead the part
+       hears ProjectileHit - fired ON the projectile at MissileWeapon.cs:1806 and :2303, both carrying
+       ImpactCell, both before CleanupProjectile runs - and creates a new real arrow at the cell.
+
+       One merge covers everything. All nine vanilla arrow projectiles and all six of this fork's
+       effect arrows inherit BaseArrowProjectile. And unlike a merge onto a container it reaches
+       existing saves for free, because a projectile is built fresh on every shot.
+
+       The part decides for itself which arrows come back, by comparing parts against this blueprint's
+       own: a plain arrow adds none, and every effect arrow adds exactly one - HEGrenade on vanilla's
+       explosive arrow, TemperatureOnHit/GasGrenade/StickyOnHit/FlashbangGrenade on ours. So the rule
+       is "an arrow that is only an arrow comes back", and a future effect arrow needs nobody to
+       remember it. -->
+
+  <object Name="BaseArrowProjectile" Load="Merge">
+    <part Name="Vixy_ArrowRecovery" />
+  </object>
   <!-- Effect arrows, revived in #144.
 
        Every figure here is derived from vanilla's own effect arrow, Boomrose Arrow, which is the
