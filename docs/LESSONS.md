@@ -113,6 +113,32 @@ Afterwards, the close event on the issue timeline carries `commit_id: null`. Tha
 linked-reference close from a commit-message close, and it is the fastest way to find out why an
 issue you did not mean to close is shut.
 
+## `closingIssuesReferences` checks the link, not that the work matches the issue
+
+The two entries above are both about a keyword closing an issue nobody meant to close. This is the
+other failure at the same seam, and the check prescribed above does not catch it: **the link was
+correct and the work was not complete.**
+
+#673 asked for three lessons when I read it. It was edited before my pull request merged and asked for
+**four** — a new entry, and a fourth row in an existing table. #675 closed it as completed with three.
+`closingIssuesReferences` came back exactly right: `[667, 672, 673, 674]`. Every one of those was an
+issue the PR meant to close. It has nothing to say about whether what merged still matches what the
+issue says, and a closing keyword written on Monday closes an issue rewritten on Tuesday.
+
+> **Re-read the issue body before merging, not only before starting.** For a bundle it matters more,
+> because one stale reading is invisible among three correct ones — and the closing keyword makes the
+> issue disappear from the backlog either way, so nothing surfaces the gap afterwards.
+
+Cheapest form: `gh issue view <n> --json title,body` immediately before the merge, and compare against
+what the branch actually contains. It costs one command per issue and would have caught this.
+
+**And the link check lags an edit.** Writing this entry, its own pull request body said *"#675 closed
+#673 …"*, so `closingIssuesReferences` returned `[673, 678]` — the *"writing about a closing keyword is
+writing one"* trap, in the pull request about that trap. Rewording the sentence fixed the body
+immediately and **the API kept reporting the stale pair for another minute or so**. Re-check after a
+pause rather than concluding the link is stuck; and do not read a single clean result straight after an
+edit as proof either, for the same reason.
+
 ## The check you drop is the one that was working
 
 `gh pr view <n> --json closingIssuesReferences` is prescribed two sections above, by me, after it
@@ -2700,13 +2726,15 @@ Across `ObjectBlueprints/` there are **957** `*noinherit` and **147** `*delete`.
 
 ## A mechanism existing is not a mechanism working — check the values moving through it
 
-I made this mistake three times in one session, in three disguises:
+I made this mistake four times in one session, in four disguises. The fourth is last because
+it got furthest — it survived into a recommendation, and Grey disproved it herself:
 
 | where | what I confirmed | what I skipped | what it cost |
 |---|---|---|---|
 | #591 | `Quadruped` has no `Hand` or `Body` slot, so a saltback cannot use tier-1 gear | what is actually *in* `Armor 1C` — about 28% of it (caps, moccasins, masks, shawls) equips fine on a quadruped | called a harmless quirk "clearly wrong" and nearly filed an upstream report |
 | #635 | `IBaseJournalEntry.Attributes` exists, all three note kinds populate it, `TryGetAttribute` reads it | what the *values* are — `SecretAttributes` is on 7 blueprints, and the fallback yields 197 near-unique strings | recommended attribute-scoping in a posted comment, then had to withdraw it |
 | #568 | `Temporary.CarryOver` exists, with twelve precedents and exactly the right semantics | the *ordering* in `PerformPreserve` — `go.Obliterate()` runs before the product is created, so there is nothing to carry over from | nearly published "propagation, not refusal" as settled, when propagation is unreachable from a mod |
+| #591 *(again)* | the arrow ladder runs `StrengthPenetration` 2 → 9, Wooden to Zetachrome | that `Stat.RollDamagePenetrations` takes it as **`MaxBonus`**, not a bonus — and the bonus itself exists only when the *bow* declares `ProjectilePenetrationStat`, which `Short Bow` does not | recommended "Short Bow + Steel Arrows", a kit whose penetration is **0** with every arrow in the game |
 
 > **The shape is always the same:** find the mechanism, confirm it is real, and infer from its
 > existence that it does the job. What gets skipped is the data or the ordering flowing through it,
@@ -2716,6 +2744,96 @@ This is a sibling of *"count the consumers before you count anything else"* and 
 only evidence if the grep could have found the thing"*. Those say **check the far end of a
 reference**. This one says **check the values moving through it** — and knowing the first two did not
 stop me doing this, which is why it is written separately.
+
+## Check what this fork already did before investigating what vanilla does
+
+Three separate investigations ended with *the answer is already in the repository*, and in each one I
+went to the decompiled assembly first and found the repo's own answer last:
+
+| where | what I did | where the answer already was |
+|---|---|---|
+| #636 | audited vanilla's shield tiers and derived a −1 offset correcting at fullerite | `docs/STYLEGUIDE.md` §3.2 states the tier→material scale, `mod/ObjectBlueprints/Armor.xml` merges vanilla's steel and carbide armour onto it, and §3.2.1 already describes the same seam as an AV rule. `item-curve` fails CI if it drifts |
+| #605 | recommended the density fix four times, twice in posted comments | `mod/Scripting/Vixy_TrashMemory.cs`, wired in `Vixy_PlayerParts`, documented as `docs/FEATURES.md` §25, in `CHANGELOG.md`, and the issue closed as completed. It shipped in 2.9.0 |
+| #630 | traced turret ammunition through `MagazineAmmoLoader` and got it wrong | the comment at `mod/ObjectBlueprints/Ammo.xml:34` had the answer, ending *"Confirmed in game, not just read."* |
+
+> **The fork has already thought about more of vanilla than its own issues assume.** `AGENTS.md` says
+> to verify claims about Qud against the game's own files. That is right, and it is not the first step.
+> The first step is `docs/STYLEGUIDE.md`, `docs/FEATURES.md`, `CHANGELOG.md` and `mod/` — because a
+> question worth filing an issue about is one I have often already answered, and the answer there is
+> both cheaper to find and more likely to be current than anything re-derived from the assembly.
+
+The sharpest version: **`grep mod/` before `ilspycmd`.** Three of eight investigations in one session
+would have started in the right place, and two public comments would not have recommended work that
+had already shipped.
+
+This is distinct from the entry above. That one is about not trusting a mechanism you have only
+half-read; this one is about not opening it until you have checked whether the question is still live.
+
+## When a measurement says it cannot be done, check it measured the field the feature would use
+
+The near-inverse of the entry above, and it cost a feature that was buildable.
+
+#635 asked whether a secret could be scoped to the region a player is standing in. I measured the
+zone's `SecretAttributes` tag and its fallback, found **197 near-unique identifiers** like
+`lakehinnom c`, and concluded that nothing describes a zone in a vocabulary the notes could share. The
+measurement was correct. The field was wrong.
+
+`Zone.GetRegion()` → `ZoneManager.GetRegionForZone` reads the **`Terrain` tag** on the same blueprint —
+a curated **20-value** vocabulary covering **299 of 318** world-map terrains. Two fields describe the
+same zone; one is an identifier with the serial number filed off, the other is the category. I measured
+the identifier and wrote "Qud's data cannot express this" on the strength of it.
+
+> **A negative result is a claim about the thing you measured, not about the thing you wanted.** Before
+> recording *"the data does not support this"*, name the field the feature would actually read and
+> check you measured that one.
+
+(The conclusion survived on a different objection — two of the three note kinds carry no location at
+all — but the reasoning in the thread was wrong for two rounds before anyone noticed.)
+
+## A destructive-looking branch may be unreachable, and the reason can be an argument three frames up
+
+`IntegratedWeaponHosts.GenerateTurret` reads as a two-way split, with `weapon.Obliterate()` on one
+side. #630 was filed on that reading: *deploying a turret destroys your weapon for seven weapon types.*
+
+It is not a split. The eighth argument to `GameObject.Create` is `ProvideInventory`, and
+`ProcessSpecification` matches a supplied object by blueprint, uses it instead of creating a fresh one,
+and **removes it from the list**. So the list is empty by the time the branch is tested, and the
+`Obliterate` never runs. What guarantees it is `RemoveOne()` in `Tinkering_DeployTurret` — a different
+file, three frames up, making `Count == 1` and therefore making consumption certain.
+
+> **Reading the method was not enough.** The answer was in what the caller passed. A branch that looks
+> destructive is worth tracing from its callers before it is worth filing.
+
+Sibling of the values-versus-mechanism entry rather than a copy: there the trap is not reading far
+enough *into* a mechanism, here it is not reading far enough *out* of one.
+
+## A memoised name that is never invalidated, and is not serialised either
+
+`CookingRecipe.GetDisplayName()` builds its string once and caches it in `CachedDisplayName`. Nothing
+in the class ever resets that field, it is **private**, and `Write`/`Read` do not serialise it — they
+cover `Hidden`, `Favorite`, `DisplayName`, `ChefName`, `Components`, `Effects` and `Tile`.
+
+So changing a recipe's `DisplayName` in place **shows the old name for the rest of the session and then
+silently starts working after a save and reload.** That is close to the worst shape a bug can have: it
+looks fixed the next time you sit down, so the report gets closed as unreproducible.
+
+`DeepCopy()` is the legitimate way around it — `Activator.CreateInstance` plus a field-by-field copy
+that omits the cache, so the copy renders from scratch. Reaching the private field instead would be
+reflection, which charter rule 5 refuses.
+
+> **Before writing to a field that feeds a cached getter, check whether the cache has an invalidator
+> and whether it survives a save.** If it is private and unserialised, the bug you ship is one that
+> disappears when anyone tries to reproduce it.
+
+## `KnowsRecipe` compares by display name, not by identity
+
+```csharp
+knownRecipies.Any(i => newRecipe != null && i != null && newRecipe.GetDisplayName() == i.GetDisplayName())
+```
+
+Two recipes that read alike **are one recipe** as far as the game is concerned. Anything that lets a
+player name or rename a recipe has to refuse a collision, or it silently merges two dishes. Worth
+knowing before designing naming for anything that is identified by its own display string.
 
 ## Qud has a temporariness convention, and two designed escape hatches
 

@@ -17,6 +17,10 @@
 # format, in docs/TILES_AND_ATLAS.md. extend-words does not work here because it matches the
 # split subword, not the whole token. #645.
 PNGs = "PNGs"
+# "knownRecipies" - Freehold's own misspelling of a public field on CookingGameState, quoted verbatim
+# in docs/LESSONS.md because the entry is about what that field's comparison actually does. Correcting
+# the spelling would make the quotation wrong. #678.
+knownRecipies = "knownRecipies"
 
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables
