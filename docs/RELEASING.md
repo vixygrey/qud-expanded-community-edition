@@ -40,12 +40,28 @@ that triangle is checked too (#314).
 
 ## 4. Update `workshop.json`
 
-Replace the **New in X.Y.Z** section with this release's summary, and delete the previous one rather
-than letting them stack.
+**The version lives in two places in the description, and it is easy to update one.**
 
-**Watch the budget.** Steam's limit is 8,000 characters, hard, and the description is already over
-6,000. `validate_mod.py` fails the build past 8,000 so this cannot ship broken — but it can block a
-release at the worst possible moment. Trim as you add.
+1. The **New in X.Y.Z** heading. Replace the section with this release's summary and delete the
+   previous one rather than letting them stack.
+2. The **Version and saves** block, which opens `[b]X.Y.Z.[/b]` and then says which saves load. Both
+   the number and the sentence need this release's answer — 2.10.0 loads on 2.9.x, and which of its
+   features reach a character already running is not the same answer 2.9.0 gave.
+
+`check_docs.py`'s `workshop-version` compares the second one against `manifest.json` and fails the
+commit if they disagree, so this cannot ship wrong. It caught exactly this during the 2.10.0 release,
+which is why it is written down here now: a check is the backstop, not the instruction (#694).
+
+**Watch the budget.** Steam's limit is 8,000 characters, hard. Check the headroom before you start
+rather than after you have written the summary:
+
+```bash
+python3 -c "import json;print(len(json.loads(open('mod/workshop.json',encoding='utf-8-sig').read())['Description']))"
+```
+
+`validate_mod.py` fails the build past 8,000, so this cannot ship broken — but it can block a release
+at the worst possible moment. **Trim as you add.** The description has been within a hundred
+characters of the limit since 2.10.0, so for now that is not advice, it is the step.
 
 `docs/STYLEGUIDE.md` §7.4 has the rules for what belongs there at all.
 
@@ -145,7 +161,8 @@ apart (`not planned` against `completed`).
 - [ ] Version chosen against §7.2.1
 - [ ] `CHANGELOG.md` rolled, fresh `[Unreleased]` opened
 - [ ] `manifest.json` version bumped
-- [ ] `workshop.json` **New in X.Y.Z** replaced, previous one removed, under 8,000 characters
+- [ ] `workshop.json` — **New in X.Y.Z** replaced and the previous one removed, **and** the
+      **Version and saves** block's version and save answer updated. Under 8,000 characters
 - [ ] Player-facing notes written, opening with save compatibility
 - [ ] `python3 tools/validate_mod.py` passes
 - [ ] `python3 tools/sync_mod.py --publish`
