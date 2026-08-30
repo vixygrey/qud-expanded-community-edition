@@ -16,23 +16,33 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
-- **Option help text no longer breaks lines in the wrong places** (#690).
+- **Option help text fits the menu again** (#690).
 
-  If an option's description looked ragged in the menu — sentences stopping short and wrapping early
-  — that is why. Seven of them were written with the line breaks baked in, and Caves of Qud does not
-  re-wrap the text: every break in the file was a break on your screen, wherever the menu happened to
-  end. They now let the menu decide, so they read as paragraphs at whatever width you are playing at.
+  If an option's description showed up squashed into a narrow box with the ends of the lines off the
+  side of the screen, that is because it was written at a scale the menu was never given. Vanilla
+  ships four options with help text, 157 to 352 characters each; eleven of the twenty-one here were
+  longer, the worst of them over a thousand.
 
-  The longest four were also cut down. *Anthro mutations* was around two thousand characters of
-  tooltip; it is about half that now and still says what the option does and what changes if you turn
-  it off, which is all it was ever for. Nothing was removed that is not in the feature reference or
-  the wiki in more detail.
+  They are all inside vanilla's range now, wrapped at 76 columns so no line can run off. What went is
+  the explaining — why the option exists, what vanilla does instead, the reasoning behind a number.
+  Every *"applies to a new character"* and *"takes effect when you restart"* warning survives word for
+  word, because those are the sentences that stop a run being wasted. The rest is in the feature
+  reference and on the wiki, in more room than a tooltip has.
 
-- **(internal)** `helptext-shape` refuses a hard-wrapped or over-long option help text (#690).
+  This is the second time. [#271](https://github.com/vixygrey/qud-expanded-community-edition/issues/271)
+  fixed the same thing when there were eleven options, and it came back as there got to be
+  twenty-six — which is why there is now a check instead of an intention.
 
-  `XmlDataHelper.GetTextNode` strips per-line indentation and surrounding blank lines but preserves
-  internal newlines, and `Qud.UI.OptionsRow` calls `RTF.FormatToRTF` with `blockWrap` defaulting to
-  `-1` — so `BlockWrap` never runs and a source newline is an unconditional break in the menu.
+- **(internal)** `helptext-shape` refuses an option help text that will not fit (#690).
+
+  A source line over 80 characters, or a total over 550. Both numbers are vanilla's: its shortest
+  longest-line is 80, its longest text 352.
+
+  I had this backwards first. `Qud.UI.OptionsRow` calls `RTF.FormatToRTF` with `blockWrap` at `-1`,
+  so `BlockWrap` never runs — from which I concluded the container wrapped instead, and unwrapped
+  every help text onto one line per paragraph. It renders worse, which a `--dev` pass caught before
+  the merge and would have caught before the writing. The assembly says what does *not* wrap; it does
+  not say what does.
 
   The convention was never written down and it drifted: ten of twenty-six were hard-wrapped, six of
   them recent. The length cap is a ratchet set just above the longest survivor, so nothing today fails

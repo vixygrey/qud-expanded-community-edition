@@ -769,7 +769,8 @@ def check_version_matches_changelog(f: Findings, version: str) -> None:
 
 # The longest help text surviving #690's trim, rounded up. A ratchet, not a judgement: nothing today
 # fails and nothing new may be worse. Raise it only with a reason, and prefer trimming the prose.
-HELPTEXT_MAX = 1200
+HELPTEXT_MAX = 550
+HELPTEXT_LINE = 80
 
 
 def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -1584,26 +1585,24 @@ def check_shader_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> No
 
 
 def check_helptext_shape(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """An option's `<helptext>` must be one line per paragraph, and not an essay.
+    """An option's `<helptext>` must fit the box Qud renders it in.
 
-    **Qud never re-wraps it, which is the fact this check exists on.** `XmlDataHelper.GetTextNode`
-    normalises with `TrimSpacePerLine` (`^[ \\t\\r]+|[ \\t\\r]+$`, multiline) and `TrimNewlineRegex`
-    (`^\\n+|\\n+$`), so per-line indentation and surrounding blank lines go — and **internal newlines
-    survive**. `Qud.UI.OptionsRow` then calls `RTF.FormatToRTF(data.HelpText)` with `blockWrap`
-    defaulting to `-1`, so `BlockWrap` never runs and the container does the wrapping.
+    **The options menu does not wrap, and this check exists because I got that backwards once.**
+    I read `Qud.UI.OptionsRow` calling `RTF.FormatToRTF(data.HelpText)` with `blockWrap` defaulting
+    to `-1`, concluded that `BlockWrap` never runs *because the container wraps instead*, and
+    unwrapped all twenty-one help texts onto one line per paragraph. In game that renders squashed
+    into a narrow box with the long lines running off the screen. The assembly told me what does
+    not wrap; it did not tell me what does, and I filled that in with an assumption.
 
-    So a newline in the source is an **unconditional break** in the options menu, at whatever width
-    the menu happens to be. Hard-wrapping the source at 80-odd columns forces those breaks through and
-    the text renders ragged, ending lines mid-sentence. Writing one line per paragraph lets the menu
-    wrap where it actually needs to.
+    So the source line is the rendered line, and the numbers come from vanilla rather than from me.
+    Caves of Qud ships four options with help text: 157 to 352 characters, longest source line 162,
+    shortest 80. `HELPTEXT_LINE` takes that floor. `HELPTEXT_MAX` is a ratchet a little above the
+    longest surviving text here, which is still half again vanilla's longest - rule 6 counts a
+    `<helptext>` as one more thing you have to keep true, and the reasoning belongs in
+    docs/FEATURES.md where nobody reads it through a tooltip.
 
-    This drifted: #690 found ten of twenty-six hard-wrapped, six of them recent and two written the
-    same day. Nothing noticed, because nothing was looking - which is charter rule 4's argument for
-    the check rather than the sentence.
-
-    The length cap is a ratchet rather than a judgement. `HELPTEXT_MAX` sits just above the longest
-    surviving help text, so nothing today fails and nothing new may be worse. Rule 6 counts a
-    `<helptext>` as a thing you have to keep true; the longer it is, the more of it rots unnoticed.
+    This drifted before anything was looking: #690 found ten of twenty-six over 450 characters, one
+    at 2152. That is charter rule 4's argument for a check rather than a sentence.
     """
     for path, root in all_roots.items():
         if "option" not in path.name.lower():
@@ -1613,27 +1612,26 @@ def check_helptext_shape(f: Findings, all_roots: dict[Path, ET.Element]) -> None
             if node is None or not node.text:
                 continue
             ident = option.get("ID", "?")
-            # Reproduce Qud's own normalisation before measuring.
+            # Reproduce Qud's own normalisation before measuring. XmlDataHelper.GetTextNode strips
+            # each line's indentation and the surrounding blank lines, and leaves the rest alone.
             text = "\n".join(line.strip() for line in node.text.splitlines()).strip(
                 "\n"
             )
-            paragraphs = [b for b in re.split(r"\n\s*\n", text) if b.strip()]
-            for paragraph in paragraphs:
-                if "\n" in paragraph:
-                    first = paragraph.split("\n")[0]
+            for line in text.splitlines():
+                if len(line) > HELPTEXT_LINE:
                     f.add(
                         "helptext-shape",
-                        f"{path}: {ident} hard-wraps a paragraph, and Qud does not re-wrap - "
-                        f"every newline is a forced break in the menu. Put each paragraph on one "
-                        f"line: {first[:60]!r}...",
+                        f"{path}: {ident} has a {len(line)}-character line, over the "
+                        f"{HELPTEXT_LINE} cap - the menu renders the source line as written and "
+                        f"anything longer runs off the screen: {line[:60]!r}...",
                     )
                     break
             if len(text) > HELPTEXT_MAX:
                 f.add(
                     "helptext-shape",
                     f"{path}: {ident} has a {len(text)}-character helptext, over the "
-                    f"{HELPTEXT_MAX} cap - it is read in a tooltip, and every sentence in it is one "
-                    f"more thing to keep true",
+                    f"{HELPTEXT_MAX} cap - vanilla's longest is 352, and this is read in a "
+                    f"tooltip rather than in the documentation",
                 )
 
 
