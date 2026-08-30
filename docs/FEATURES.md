@@ -2221,6 +2221,12 @@ rather than anything the mod already was.
 | how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.4. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
+| anthro mutations | Checkbox | **Yes** | Fangs, Keen Smell and Tail in the physical mutation list. §21–§23. |
+| creature colour variants | Checkbox | **Yes** | The 44 coat and name variants, each splitting its parent's share of a table. §17. |
+| Trash Divining thins out | Checkbox | **Yes** | Whether a zone's trash runs out of things to say as it is picked over. §25. |
+| ask a creature its name | Checkbox | **Yes** | The *what are you called* conversation choice. Asking forecloses renaming. §26. |
+| marked artifacts stay yours | Checkbox | **Yes** | Whether an artifact you marked important is kept out of Argyve's picker. §27. |
+| silent trade offers | Checkbox | **Yes** | Whether creatures with nothing to trade still offer to. §28. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no

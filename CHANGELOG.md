@@ -14,6 +14,21 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **(internal)** `check_docs.py` could not read a hyphenated word number in a wiki claim (#674).
+
+  `WORD_NUMBERS` has held `twenty-one` through `ninety-nine` since the options count crossed twenty,
+  but the capture patterns were written `(\w+)` — and `\w` excludes the hyphen. So a page reading
+  *"Twenty-four options live in Qud's own options menu"* captured `twenty`, left `four` dangling, and
+  reported *"'four' is not a number this script knows"*.
+
+  Three patterns were widened to `([\w-]+)` when the repository's own documents crossed twenty. **The
+  wiki patterns did not inherit the fix** — the same shape as the *"second check that did not inherit
+  the fix"* entry in `docs/LESSONS.md`. All sixteen are widened now, and the reasoning sits next to the
+  compound-number table so the next person writing a claim pattern finds it.
+
+
 ### Added
 
 - **Caravan guards carry a bow** (#591).

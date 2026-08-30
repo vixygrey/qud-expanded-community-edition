@@ -42,7 +42,9 @@ in them applies to a contribution you're helping someone else write.
   `StreamingAssets/Base`. `docs/LESSONS.md` explains where both are and which vanilla files aren't
   valid XML. When the claim is that two things are *related* — a scope, a tag, an `Inherits=` —
   count what's on the other end of it. Seven of the 36 cultures `Naming.xml` scopes on match nothing
-  in the game, `Qudish` among them.
+  in the game, `Qudish` among them. And **resolve `Inherits=` before counting anything by part** — a
+  declared-part count is a lower bound, and the tag sentinels `*noinherit` and `*delete` mean a naive
+  resolved tag set is wrong in both directions. `docs/LESSONS.md` has the worked example.
 
 ## Before you commit
 
