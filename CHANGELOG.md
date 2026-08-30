@@ -16,6 +16,45 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Name an item after a pride flag** (#577).
+
+  When you name an item — after a kill, a level, a quest, a water ritual — the colour picker now
+  offers **24 LGBTQIA+ flags** alongside Caves of Qud's own patterns. Fourteen orientation flags and
+  ten gender ones, each drawn as stripes across the name.
+
+  Pure data: one new file, no code. It also means removing the mod is harmless — an item named this
+  way keeps its name and simply loses the colour.
+
+  **Some black stripes do not appear, and that is deliberate rather than an oversight.** Caves of Qud
+  draws on a very dark ground, and its darkest ink is barely lighter than that ground, so a black band
+  has almost nothing to show against. Ten of these flags have one. The alternative was swapping in a
+  visible brown or grey, which makes a *wrong* flag rather than an incomplete one — an asexual flag
+  reading grey-white-purple is still recognisably itself, and one with a brown stripe is not. Every
+  other stripe on every flag renders.
+
+  No plain rainbow, because Caves of Qud already has one and it is already in this picker. Adding
+  mine would have quietly repainted rainboweave, flash of neon and a few passages of writing that use
+  the game's version.
+
+  No transfeminine or transmasculine either. In seventeen colours both come out identical to the
+  transgender flag, and three names for one swatch helps nobody. I would rather leave them out than
+  ship them wrong.
+
+  Recipes cannot be coloured yet — the game gives a recipe no colour to hold, and no name of your own
+  to put one on.
+
+- **(internal)** `shader-collision` refuses a colour name that vanilla already owns, or that this mod
+  declares twice (#577).
+
+  `Colors.xml` has no `Load` attribute and no concept of one — the loader updates a name it knows and
+  registers one it does not, so merge is the only behaviour there is. That makes declaring a vanilla
+  name a silent redefinition of it, reaching every place the game already used it, and
+  `merge-discipline` cannot see it because there is no `Load` to look for. #577 was filed proposing
+  exactly that row for `rainbow`; this check fails on it at commit time.
+
+  `tools/qud-api.json` gains a `shader_names` section so the check runs in CI, which has no game.
+
+
 - **Gather a liquid into one container** (#561).
 
   A `gather liquid` action on any container holding a liquid, which pulls every dram of exactly that

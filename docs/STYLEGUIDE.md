@@ -121,6 +121,7 @@ window, is closed.
 | **Body part type strings** (`Chip Interface`) | Written into save state on every character that has one. Settled in #13: `Chipset Interface` → **`Chip Interface`**. |
 | **Anatomy and body-object names** (`PsionicAdept`) | Settled in #13: `Yttrian` → **`PsionicAdept`**, matching the `TrueKin` convention. |
 | **CoQE-original blueprint names** (`Raven_Iron Maceth`) | Was *"verified free"* before release, on the evidence that no installed mod references a `Raven_` blueprint — true, and no longer the point. Saves reference them now. The `Raven_` prefix itself stays regardless — see §1.1. |
+| **Markup shader names** (`lesbian`, `agender`) | `ItemNaming.NameItem` calls `ColorUtility.ApplyColor`, which stores the literal string `{{lesbian|Whatever}}` as the item's proper name — so the shader name is *inside* the save. Rename one and every item already named with it renders differently, in saves already written. Added in #577; `validate_mod.py`'s `shader-collision` check guards the vanilla half. |
 
 **What breaking this actually does, which is the reason it reads as a rule rather than a
 preference.** Renaming or removing a blueprint that shipped does not crash and does not error where
@@ -1268,6 +1269,7 @@ seconds rather than after a round trip.
 | Figures and the version quoted by the Workshop description, which ships with a release | `workshop-figure`, `workshop-version` |
 | Vanilla creatures swept into an `AggregateWith` slot by inheritance | `aggregate-sweep` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
+| Markup shader names not colliding with vanilla's | `shader-collision` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
@@ -1376,6 +1378,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `loaded` | `check_build_log.py` | the game loading the mod rather than skipping it |
 | `manifest` | `validate_mod.py` | `manifest.json` validity, and its version against the changelog |
 | `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
+| `shader-collision` | `validate_mod.py` | A `<shader>`/`<solidcolor>` name that vanilla already owns, or that this fork declares twice. `Colors.xml` has no `Load` attribute — merge is the only behaviour — so `merge-discipline` cannot see it |
 | `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
 | `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
 | `variant-density` | `validate_mod.py` | a creature variant splitting its parent's share of a table rather than adding a second roll |
