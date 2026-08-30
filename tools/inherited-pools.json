@@ -41,11 +41,12 @@
       "Raven_Steel Vambrace",
       "Raven_Steelweave Cloak",
       "Raven_Zetachrome Vambrace",
-      "Raven_Zetachromeweave Cloak"
+      "Raven_Zetachromeweave Cloak",
+      "Vixy_Arm Satchel"
     ],
     "shares": {
       "Tier0": 56,
-      "Tier1": 12,
+      "Tier1": 14,
       "Tier2": 9,
       "Tier3": 9,
       "Tier4": 19,
@@ -92,13 +93,14 @@
     "mine": [
       "Raven_Bronze Plate Armor",
       "Raven_Folded Carbide Plate Armor",
-      "Raven_Iron Plate Armor"
+      "Raven_Iron Plate Armor",
+      "Vixy_Arm Satchel"
     ],
     "shares": {
-      "Tier1": 7,
-      "Tier2": 2,
+      "Tier1": 13,
+      "Tier2": 3,
       "Tier3": 2,
-      "Tier4": 11,
+      "Tier4": 12,
       "Tier5": 3,
       "Tier6": 0,
       "Tier7": 0,
@@ -666,6 +668,7 @@
       "Raven_Zetachrome Wristblade",
       "Raven_ZetachromeHandBones",
       "Raven_Zetachromeweave Cloak",
+      "Vixy_Arm Satchel",
       "Vixy_Brinereed Shoot",
       "Vixy_Broadglove Cap",
       "Vixy_Bronze Glaive",
@@ -712,6 +715,7 @@
       "Vixy_Salted Brinereed",
       "Vixy_Scour Slug",
       "Vixy_Shadetooth Pad",
+      "Vixy_Shoulder Bag",
       "Vixy_Snow Globe",
       "Vixy_Spectacles",
       "Vixy_Spinning Top",
@@ -730,7 +734,7 @@
     ],
     "shares": {
       "Tier1": 30,
-      "Tier2": 17,
+      "Tier2": 18,
       "Tier3": 28,
       "Tier4": 23,
       "Tier5": 37,
@@ -1094,6 +1098,7 @@
       "Raven_ZetachromeHandBones",
       "Raven_Zetachromeweave Cloak",
       "TrueKin",
+      "Vixy_Arm Satchel",
       "Vixy_AshcoatDog",
       "Vixy_AshenSalamander",
       "Vixy_AshwingGlowmoth",
@@ -1186,6 +1191,7 @@
       "Vixy_Scour Slug",
       "Vixy_Shadetooth",
       "Vixy_Shadetooth Pad",
+      "Vixy_Shoulder Bag",
       "Vixy_SiltCroc",
       "Vixy_SilverBaboon",
       "Vixy_Slabmoss",

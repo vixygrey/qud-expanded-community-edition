@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **490** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **492** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **230** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **120** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **121** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -581,7 +581,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `RangedWeapons.xml` | 49 | 11 |
 | `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 9 | 14 |
-| `OtherEquipment.xml` | 7 | 16 |
+| `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
 | `Creatures.xml` | 46 | 2 |
@@ -590,7 +590,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 0 | 8 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **490 active** | **230** |
+| **Total** | **492 active** | **230** |
 
 ### 6.2 Melee weapons
 
@@ -1825,7 +1825,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-145 table definitions: **120 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+146 table definitions: **121 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2116,7 +2116,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
-│   └── PopulationTables.xml    # 145 tables (120 merge / 25 new)
+│   └── PopulationTables.xml    # 146 tables (121 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2128,7 +2128,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── RangedWeapons.xml       # 49 new / 11 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 9 new / 14 merged
-│   ├── OtherEquipment.xml      # 7 new / 16 merged
+│   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Items.xml               # 8 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
@@ -5193,6 +5193,85 @@ one attribute: `<part Name="TinkerItem" CanDisassemble="false" />`, which is exa
 
 None, on the same reasoning as §36.6. New blueprints in loot tables, no vanilla record modified,
 nothing taken away, and dropping them from the tables is a live change with no save migration.
+
+## 38. Two more ways to carry things (`ObjectBlueprints/OtherEquipment.xml`)
+
+**Qud's whole carry-capacity category was three items** — `Pocketed Vest` (Body, +5%), `Molly
+Netting` (Back, +16%) and `Nylon Bodypack` (Back, +20%) — and two of the three are back-slot, which
+is why it reads as backpacks and nothing else (#584).
+
+### 38.1 It was never a back-slot mechanic
+
+`CarryBonus` is an attribute on the **`Armor`** part, and `Armor` takes any `WornOn`. The Humanoid
+anatomy already provides 2× Arm, and Arm is a live, well-populated slot — 18 vanilla armour items sit
+there. So an arm satchel is one line of XML and needs no anatomy change at all, which is what
+answered #170's first checkbox: **no new slot is needed.**
+
+**`CarryBonus` on `Armor` is a percentage, not a flat amount.** `E.AdjustWeight((100 + n) / 100)`,
+and several worn at once compound multiplicatively — vanilla's three together are **+46%**.
+
+| | capacity at Strength 16 | Encumbered at (75%) |
+|---|---:|---:|
+| nothing | 240 lb | 180 lb |
+| vanilla's three | 351 lb | 263 lb |
+| + two arm satchels at +8% | **409 lb** | **307 lb** |
+
+Base capacity is `Strength × 15`. The burden bands in §14 are percentages of capacity and therefore
+scale on their own — what a capacity item actually changes is how much of play sits below the first
+band, which is why 8% per arm was chosen to stay well under vanilla's bodypack alone.
+
+### 38.2 The shoulder bag needs no new mechanism, and it took a decompile to be sure
+
+`WornOn="Hand"` has **zero** items in the game, because hands are for wielding rather than wearing.
+So the bag is not armour: it is a held object carrying the **standalone** `XRL.World.Parts.CarryBonus`
+part, which is a different thing from the `Armor` attribute of the same name. It offers
+`Style="Flat"` in pounds as well as a percentage, and it gates on `IsEquippedProperly` rather than
+`IsWorn`.
+
+`IsEquippedProperly` compares the object's **equip profile** against the body part's `Type`, and the
+profile resolves in this order:
+
+`Cybernetics.Slots` → **`UsesSlots`** → `Armor.WornOn` → `Shield.WornOn` → `MissileWeapon.SlotType` →
+`MeleeWeapon.Slot`
+
+So a held object needs a profile naming `Hand`, and `UsesSlots` is the route. **Twelve vanilla
+blueprints already use it**, as a `<tag>` with a comma-separated slot list — `Banner of the Holy
+Rhombus` is `Back,Hand`, and `Nanopneumatic Jackhammer` is `Hand,Hand,Back`. It is a property backed
+by `GetTagOrStringProperty`, so it is a tag rather than a `Physics` attribute.
+
+### 38.3 Flat rather than a percentage, deliberately
+
+All three vanilla capacity items are percentages. A percentage scales with Strength, so it is worth
+most to a character who is **already** strong. 25 lb is about 10% to a Strength 16 character and
+about 5% to a Strength 30 one.
+
+> **So this is the first carry item in the game that helps a weak character more than a strong one**,
+> and that asymmetry is the reason to add it rather than a fourth percentage. Charter rule 2 asks for
+> a change that alters a decision rather than a number, and the decision is real: a hand holding a bag
+> is a hand not holding a weapon.
+
+### 38.4 Specialised containers were considered and dropped
+
+The issue also proposed a bag that grants capacity and accepts only one category of thing — an
+ingredient bag modelled on `EnergyCellRack`'s `CanAcceptObjectEvent` filter — on the reasoning that
+*a container can afford a bigger bonus because it carries less variety, and the restriction is the
+price.*
+
+**The restriction is not a price.** `CarryBonus` raises the character's total capacity and has no
+opinion about the bag's contents, so a filtered bag is worth exactly what an unfiltered one is to
+anybody who was not relying on it for storage — which, Qud's inventory being flat, is everybody. The
+item would have been nearly free, which is the *secretly useful* failure the category's register
+warns about, arriving by a side door.
+
+The design that would work is the one the issue lists as an alternative: the bag makes its **contents
+weightless** through `GetExtrinsicWeightEvent`, and accepts only one category. Then the filter really
+is the price — free carriage, bounded to `PreparedCookingIngredient`, which is a clean 81-blueprint
+population. Recorded here rather than built, so the reasoning survives if anyone reopens it.
+
+### 38.5 Off-switch
+
+New blueprints dropped from `Armor 1R` and `Utility 2`, live. No vanilla record modified, nothing to
+migrate. Both are placed beside vanilla's own capacity items rather than in a table of their own.
 
 ## Appendix A — every merged vanilla melee weapon
 

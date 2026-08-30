@@ -305,4 +305,79 @@
   <object Name="Oilskin" Load="Merge">
     <part Name="Render" DisplayName="&amp;Koil&amp;wskin" />
   </object>
+
+  <!-- Carry capacity. #584.
+
+       **Specialised containers were considered and dropped**, so this is the whole of it rather
+       than a first instalment. The idea was a bag that grants capacity and accepts only one
+       category of thing, the restriction paying for the bonus. It does not work: `CarryBonus`
+       raises the *character's* total capacity and does not care what is in the bag, so a filtered
+       bag is worth the same as an unfiltered one to anyone who was not relying on it for storage -
+       which, Qud's inventory being flat, is everyone. The restriction costs nothing, so the item is
+       nearly free, which is the "secretly useful" failure arriving by a side door.
+
+       Vanilla's whole carry-capacity category is three items - Pocketed Vest (Body, +5%), Molly
+       Netting (Back, +16%) and Nylon Bodypack (Back, +20%) - and two of the three are back-slot,
+       which is why it reads as "backpacks and nothing else". The mechanism was never restricted to
+       the back: `CarryBonus` is an attribute on the `Armor` part, and `Armor` takes any `WornOn`.
+       Nobody had used it anywhere else.
+
+       **`CarryBonus` on `Armor` is a percentage, not a flat amount** - `E.AdjustWeight((100 + n)/100)`
+       - and several worn at once compound multiplicatively. Vanilla's three together are +46%.
+       Base capacity is `Strength x 15`, so an average Strength 16 character carries 240 lb.
+
+       Numbers are set against the burden bands in FEATURES 14, which are percentages of capacity
+       and therefore scale automatically. What a capacity item actually changes is how much of play
+       sits below the first band, so 8% per arm was chosen to stay well under vanilla's bodypack
+       alone: two satchels and vanilla's three reach 409 lb, and Encumbered moves from 180 lb to
+       307 lb. -->
+
+  <object Name="Vixy_Arm Satchel" Inherits="BaseArmor">
+    <part Name="Render" DisplayName="arm satchel" ColorString="&amp;w" DetailColor="W" />
+    <part Name="Armor" WornOn="Arm" AV="0" CarryBonus="8" />
+    <part Name="Commerce" Value="30" />
+    <part Name="Physics" Weight="2" Organic="true" />
+    <part
+      Name="Description"
+      Short="A flat pouch on two buckled straps, worn high on the forearm where it will not swing. Village work, and the stitching says so."
+    />
+    <tag Name="Tier" Value="1" />
+  </object>
+
+  <!-- The handbag, and why it needs no new mechanism.
+
+       `WornOn="Hand"` has zero items in the game, because hands are for wielding rather than
+       wearing - so this is not armour. It is a held object carrying the **standalone**
+       `XRL.World.Parts.CarryBonus` part, which is a different thing from the `Armor` attribute of
+       the same name: it offers `Style="Flat"` in pounds as well as a percentage, and it gates on
+       `IsEquippedProperly` rather than `IsWorn`.
+
+       `IsEquippedProperly` compares the object's *equip profile* against the body part's `Type`,
+       and the profile resolves in order: cybernetics slots, then **`UsesSlots`**, then
+       `Armor.WornOn`, `Shield.WornOn`, `MissileWeapon.SlotType`, `MeleeWeapon.Slot`. So a held
+       object needs a profile naming `Hand`, and `UsesSlots` is the route - twelve vanilla
+       blueprints already use it, as a `<tag>` with a comma-separated slot list. `Banner of the Holy
+       Rhombus` is `Back,Hand`; `Nanopneumatic Jackhammer` is `Hand,Hand,Back`.
+
+       **Flat rather than a percentage, deliberately.** All three vanilla capacity items are
+       percentages, which scale with Strength and so are worth most to a character who is already
+       strong. 25 lb is about 10% to a Strength 16 character and about 5% to a Strength 30 one, so
+       this is the first carry item in the game that helps a weak character more than a strong one.
+       That asymmetry is the reason to add it rather than a fourth percentage.
+
+       The cost is the real one the issue wanted: a hand holding a bag is a hand not holding a
+       weapon. -->
+
+  <object Name="Vixy_Shoulder Bag" Inherits="Item">
+    <part Name="Render" DisplayName="shoulder bag" ColorString="&amp;y" DetailColor="w" RenderString="(" />
+    <part Name="CarryBonus" Amount="25" Style="Flat" />
+    <part Name="Commerce" Value="20" />
+    <part Name="Physics" Weight="2" Organic="true" />
+    <part
+      Name="Description"
+      Short="A long strap over one shoulder and a broad bag at the hip, steadied with a hand when you walk. It carries what your back cannot reach."
+    />
+    <tag Name="UsesSlots" Value="Hand" />
+    <tag Name="Tier" Value="2" />
+  </object>
 </objects>

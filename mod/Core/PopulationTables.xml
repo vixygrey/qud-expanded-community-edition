@@ -603,6 +603,7 @@
       <object Weight="10" Number="1" Blueprint="Iron Buckler" />
       <object Weight="10" Number="1" Blueprint="Raven_Iron Shield" />
       <object Weight="10" Number="1" Blueprint="Raven_Iron Greatshield" />
+      <object Weight="10" Number="1" Blueprint="Vixy_Arm Satchel" />
     </group>
   </population>
 
@@ -2406,6 +2407,17 @@
       <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
       <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
       <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
+    </group>
+  </population>
+
+  <!-- Carry capacity, wave one (#584). Placed beside vanilla's own capacity items rather than in a
+       table of their own: `Pocketed Vest` is `Armor 1R` at weight 10, which the arm satchel joins at
+       the same weight, and `Nylon Bodypack` is `Utility 3` at 20, so the shoulder bag sits one tier
+       below it in `Utility 2`. Both merge, so vanilla's entries and any future additions survive. -->
+
+  <population Name="Utility 2" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="10" Number="1" Blueprint="Vixy_Shoulder Bag" />
     </group>
   </population>
 </populations>

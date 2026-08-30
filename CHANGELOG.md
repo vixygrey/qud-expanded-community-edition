@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Two more ways to carry things, and one of them helps weak characters most** (#584).
+
+  An **arm satchel**, worn on either forearm — so you can wear two — and a **shoulder bag**, slung
+  from one shoulder and steadied with a hand.
+
+  Qud's entire carry-capacity category was three items, and two of the three were back-slot, which is
+  why it read as backpacks and nothing else. The mechanism was never restricted to the back; nobody
+  had used it anywhere else.
+
+  The shoulder bag is the interesting one. Every existing capacity item gives a **percentage**, which
+  scales with Strength and so is worth most to someone already strong. The bag gives a flat 25 pounds
+  — about a tenth of an average character's capacity and about a twentieth of a very strong one's, so
+  it is the first carry item in the game that helps a weak character more than a strong one. It costs
+  a hand to carry, which is a hand not holding a weapon.
+
 - **(internal)** A resolved carriers helper, and one documented figure that had drifted (#702).
 
   `BlueprintIndex` gains `carriers` and `carriers_matching`, which answer *which blueprints does this
