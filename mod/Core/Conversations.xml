@@ -32,6 +32,44 @@
       </text>
       <part Name="Vixy_AskName" />
     </choice>
+
+    <!-- Show someone their own work. #595.
+
+         The issue is titled for a gap that is mostly not there: the item's own `MakersMark` part
+         already holds `CrafterName` and already prints *"this dagger bears the mark of Argyve"*,
+         and `GenericInventoryRestocker` already stamps hero-merchant stock and raises its value.
+         What nothing did was **react** - you could carry a blade back to the person who made it and
+         he had nothing to say. That is the only part built here.
+
+         Ordinal 9800 puts it below Vixy_AskName's 10000 and above vanilla's water ritual at 980 and
+         [begin trade] at 990, so it reads before the transactional choices without displacing the
+         question that opens a conversation.
+
+         The reply is one node for every maker, so its text has to be true of any of them - hence a
+         line about the hand rather than about the object. `=subject.refname=` is vanilla's own
+         substitution, the same one `TellName` uses. -->
+    <choice ID="Vixy_ShowMakersMark" Target="Vixy_MakersMarkAcknowledged" Ordinal="9800">
+      <text>
+        You made this.~
+        I am carrying something of yours.~
+        This bears your mark, =pronouns.formalAddressTerm=.~
+        I have a piece of your work here.~
+        Your mark is on something I carry.
+      </text>
+      <part Name="Vixy_ShowMakersMark" />
+    </choice>
+
+    <node ID="Vixy_MakersMarkAcknowledged">
+      <text>So it does. I know my own hand.</text>
+      <text>That is my mark. I remember the work, if not the day.</text>
+      <text>Mine, yes. It has been further than I have.</text>
+      <text>I made that. Keep it in better repair than the last one I saw.</text>
+      <choice Target="Start">
+        <text>It is good work, =pronouns.formalAddressTerm=.</text>
+        <text>It has served me well.</text>
+        <text>I thought you would want to know.</text>
+      </choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
