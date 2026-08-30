@@ -1998,6 +1998,12 @@ def snapshot_skill_powers() -> dict[str, dict]:
 def inherited_skill(obj: ET.Element, all_roots: dict[Path, ET.Element]) -> str | None:
     """A weapon's `Skill`, walked up `Inherits` through this mod's own files.
 
+    **Asks RESOLVED, and mod-scoped on purpose** (#702). What reaches the blueprint is the
+    question, because the game reads the resolved value; the walk stops at the fork boundary
+    because the snapshot answers for vanilla parents. Does not use `BlueprintIndex`, so it does not
+    follow `<mixin>` — latent rather than live, since this fork declares none and inherits from no
+    vanilla base carrying one.
+
     The snapshot answers this for merges, and a merge is the case that motivated it - but a NEW
     blueprint has the same problem from the other direction: `Raven_Iron Mace` states no Skill and
     inherits `BaseCudgel`, which this mod merges with `Skill="Cudgel"`. Without this it resolved to
@@ -2418,6 +2424,10 @@ PLANT_ROOTS = frozenset(
 def declares_plant(name: str, all_roots: dict[Path, ET.Element]) -> bool:
     """True when this fork declares `name` and its `Inherits` chain reaches a vanilla plant root.
 
+    **Asks LINEAGE** (#702) — which pool a blueprint belongs to, not what value reaches it. That is
+    `BlueprintIndex.chain`'s question rather than `lookup_chain`'s, and a `<mixin>` correctly does
+    *not* confer membership here, so the missing mixin support is right rather than merely harmless.
+
     Walks only what the mod ships, like `inherited_skill`: the chain leaves this fork at its first
     vanilla parent, and that parent's name is the answer. All six harvestable plants state
     `Inherits="Plant"` outright, so the walk is usually one step.
@@ -2548,6 +2558,9 @@ def plain_name(raw: str) -> str:
 
 def display_name(name: str, all_roots: dict[Path, ET.Element]) -> str | None:
     """A blueprint's `Render.DisplayName`, walked up `Inherits` through this fork's own files.
+
+    **Asks RESOLVED** (#702): a collision is between the names players see, and a variant leaning on
+    its parent for the name is exactly the case reading only the declaration would miss.
 
     Every variant this fork ships names itself outright, so the walk is usually one step - but a
     future one that leans on its parent for the name would be exactly the collision this check is
@@ -2767,6 +2780,9 @@ def check_variant_density(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     still expect what vanilla expected on its own? A variant's parent is read from `Inherits=`,
     which is what makes it a coat rather than a creature, so a variant added later is covered by
     existing rather than by being listed.
+
+    **Asks LINEAGE** (#702), and `Inherits=` alone is the correct reading: a coat is defined by
+    descending from the creature it recolours, and a `<mixin>` would not make one.
 
     Vanilla's side comes from the snapshot, which stores the expectation **and** the entry's
     `Number` midpoint. Both are needed: a merge that lowers vanilla's `Chance` states no `Number`,
@@ -3085,6 +3101,9 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     # variant picker, so it reaches a player without any table, tag or reference naming it. The tag
     # is inherited in vanilla's own idiom - `Stinger Confusion` gets it from `Stinger` - so the
     # walk up `Inherits` is required rather than tidy.
+    #
+    # Asks RESOLVED (#702), which the sentence above already argues: the tag reaching the blueprint
+    # is the question. Mixin-blind like the others, and latent for the same reason.
     #
     # Until #590 this fork had exactly one piece of mutation equipment and it passed by accident,
     # because `Vixy_Fangs` happens to be named as a `Variant=` on its own mutation node. A second
