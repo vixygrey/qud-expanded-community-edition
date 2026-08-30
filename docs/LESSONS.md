@@ -2844,7 +2844,7 @@ stop me doing this, which is why it is written separately.
 
 ## Check what this fork already did before investigating what vanilla does
 
-Three separate investigations ended with *the answer is already in the repository*, and in each one I
+Four separate investigations ended with *the answer is already in the repository*, and in each one I
 went to the decompiled assembly first and found the repo's own answer last:
 
 | where | what I did | where the answer already was |
@@ -2852,6 +2852,7 @@ went to the decompiled assembly first and found the repo's own answer last:
 | #636 | audited vanilla's shield tiers and derived a −1 offset correcting at fullerite | `docs/STYLEGUIDE.md` §3.2 states the tier→material scale, `mod/ObjectBlueprints/Armor.xml` merges vanilla's steel and carbide armour onto it, and §3.2.1 already describes the same seam as an AV rule. `item-curve` fails CI if it drifts |
 | #605 | recommended the density fix four times, twice in posted comments | `mod/Scripting/Vixy_TrashMemory.cs`, wired in `Vixy_PlayerParts`, documented as `docs/FEATURES.md` §25, in `CHANGELOG.md`, and the issue closed as completed. It shipped in 2.9.0 |
 | #630 | traced turret ammunition through `MagazineAmmoLoader` and got it wrong | the comment at `mod/ObjectBlueprints/Ammo.xml:34` had the answer, ending *"Confirmed in game, not just read."* |
+| #690 | decompiled `RTF.FormatToRTF` to work out why option help text runs off the screen, and drew the wrong conclusion | `CHANGELOG.md` records #271 fixing the identical symptom — *"squashed into a thin box running off the bottom of the screen"* — and already states the number that settles it: vanilla's longest help text is 352 characters |
 
 > **The fork has already thought about more of vanilla than its own issues assume.** `AGENTS.md` says
 > to verify claims about Qud against the game's own files. That is right, and it is not the first step.
@@ -2862,6 +2863,12 @@ went to the decompiled assembly first and found the repo's own answer last:
 The sharpest version: **`grep mod/` before `ilspycmd`.** Three of eight investigations in one session
 would have started in the right place, and two public comments would not have recommended work that
 had already shipped.
+
+The fourth row is the one that should sting, because the repository was not merely *consistent* with
+the answer — it had **fixed this exact bug before**, described the symptom in the words the report
+would later use, and written down the measurement that decides it. A `git log -S` or a `grep -i
+"help text" CHANGELOG.md` costs seconds. I spent an afternoon and shipped a regression instead.
+A bug that recurs has a changelog entry; that entry is the cheapest source there is.
 
 This is distinct from the entry above. That one is about not trusting a mechanism you have only
 half-read; this one is about not opening it until you have checked whether the question is still live.
@@ -3011,3 +3018,40 @@ The workaround, recorded because the shape recurs: when the switch is unreachabl
 the thing behind it can be declared directly. `AskName`'s choice, response node and part are all
 public and mergeable, so #572 shipped its own choice targeting vanilla's own `TellName` node — more
 code than setting a flag, and it left the Joppa option alone.
+
+## A decompiled call site tells you what that frame does not do, never what happens instead
+
+Option help text was rendering squashed into a narrow box with the ends of the lines off the side of
+the screen. I traced it and found what looked like a clean answer:
+
+- `XmlDataHelper.GetTextNode` normalises with `TrimSpacePerLine` and `TrimNewlineRegex`, so per-line
+  indentation and surrounding blank lines go and **internal newlines survive**.
+- `Qud.UI.OptionsRow` calls `RTF.FormatToRTF(data.HelpText)`, and `blockWrap` defaults to `-1`, so
+  **`BlockWrap` never runs**.
+
+Both of those are true, and I checked both. Then I concluded *therefore the container wraps instead*
+and unwrapped all twenty-one help texts onto one line per paragraph — which is the one shape that
+guarantees the symptom, because a 400-character line has nothing left to break it.
+
+Nothing I read said the container wraps. I had established that one specific function declines to
+wrap, and filled the hole where the actual layout lives with the most convenient possibility. The
+evidence was entirely negative and I spent it as though it were positive.
+
+> **Verifying that a function is not responsible is not the same as finding what is.** A call site
+> that hands off to Unity, to a coroutine, to a layout pass, or to anything else outside the assembly
+> ends the trace — it does not continue it. When the next frame is somewhere the decompiler cannot
+> follow, say *"I do not know what wraps this"* and go measure, because the alternative is an
+> assumption wearing a citation's clothes.
+
+**The measurement was one command.** Vanilla ships four options with help text: 157 to 352
+characters, longest source line 162, shortest 80. Parsing its `Options.xml` answers *what fits* in a
+way no amount of reading `OptionsRow` can, because it is the game's own working example rather than a
+derivation from it. `helptext-shape` now enforces those two numbers.
+
+Related: [`Vanilla builds mechanisms it never wires up`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete)
+is the same organ read the other way round — there, code that looks dead is live; here, a conclusion
+that looks derived is guessed. And this is the third mechanism in one session that I read out of the
+assembly and had contradicted by a `tools/sync_mod.py --dev` pass, which is the whole argument of
+[`A claim about what a player experiences needs a source, and I am not one`](#a-claim-about-what-a-player-experiences-needs-a-source-and-i-am-not-one).
+The dev pass is not a formality before merge. It is the only step in the process that can tell me my
+reading was wrong.
