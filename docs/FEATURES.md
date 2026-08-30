@@ -5250,7 +5250,17 @@ about 5% to a Strength 30 one.
 > a change that alters a decision rather than a number, and the decision is real: a hand holding a bag
 > is a hand not holding a weapon.
 
-### 38.4 Specialised containers were considered and dropped
+### 38.4 Tiles
+
+Two 16x24 three-colour PNGs in `mod/Textures/items/`, following §36.5's mapping — black takes
+`ColorString`, white takes `DetailColor`, transparent is the background.
+
+Both were redrawn once, for the same reason the trinkets were: at 16 pixels a shape reads as whatever
+it most resembles, not as what you meant. A rounded rectangle with two full-width bands is a **barrel**,
+not a strapped pouch — so the satchel's straps became a two-tone flap instead. And a strap curling out
+of the top of a bag is a **teapot handle** — so the shoulder bag's runs to the corner of the tile.
+
+### 38.5 Specialised containers were considered and dropped
 
 The issue also proposed a bag that grants capacity and accepts only one category of thing — an
 ingredient bag modelled on `EnergyCellRack`'s `CanAcceptObjectEvent` filter — on the reasoning that
@@ -5268,7 +5278,7 @@ weightless** through `GetExtrinsicWeightEvent`, and accepts only one category. T
 is the price — free carriage, bounded to `PreparedCookingIngredient`, which is a clean 81-blueprint
 population. Recorded here rather than built, so the reasoning survives if anyone reopens it.
 
-### 38.5 Off-switch
+### 38.6 Off-switch
 
 New blueprints dropped from `Armor 1R` and `Utility 2`, live. No vanilla record modified, nothing to
 migrate. Both are placed beside vanilla's own capacity items rather than in a table of their own.

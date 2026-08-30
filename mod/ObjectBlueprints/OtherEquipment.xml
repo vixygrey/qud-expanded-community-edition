@@ -333,7 +333,14 @@
        307 lb. -->
 
   <object Name="Vixy_Arm Satchel" Inherits="BaseArmor">
-    <part Name="Render" DisplayName="arm satchel" ColorString="&amp;w" DetailColor="W" />
+    <part
+      Name="Render"
+      DisplayName="arm satchel"
+      Tile="items/Vixy_ArmSatchel.png"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="W"
+    />
     <part Name="Armor" WornOn="Arm" AV="0" CarryBonus="8" />
     <part Name="Commerce" Value="30" />
     <part Name="Physics" Weight="2" Organic="true" />
@@ -369,7 +376,15 @@
        weapon. -->
 
   <object Name="Vixy_Shoulder Bag" Inherits="Item">
-    <part Name="Render" DisplayName="shoulder bag" ColorString="&amp;y" DetailColor="w" RenderString="(" />
+    <part
+      Name="Render"
+      DisplayName="shoulder bag"
+      Tile="items/Vixy_ShoulderBag.png"
+      RenderString="("
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="W"
+    />
     <part Name="CarryBonus" Amount="25" Style="Flat" />
     <part Name="Commerce" Value="20" />
     <part Name="Physics" Weight="2" Organic="true" />
