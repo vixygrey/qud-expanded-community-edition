@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Know the people who follow you** (#592).
+
+  Companions now have a **Look Over** action, next to *Attack Target* and *Come*. It shows their
+  level, hit points, AV/DV/MA, attributes, mutations and skills — the numbers the game has always
+  had and never showed you. It costs no time, and it works for anyone who follows you, whether they
+  shared water, were beguiled, proselytised or tamed.
+
+  And the water ritual now tells you who you are recruiting **before** you pay: the join line reads
+  `[250 reputation] [level 14]`.
+
+  That second half matters more than it looks. The price is built from their level minus yours — but
+  it bottoms out at 50, so once you are thirteen levels ahead, **every recruit costs the same and
+  the price tells you nothing**. Which is most of the late game.
+
 - **Weapons wear out, the way armour already does** (#195).
 
   Your armour has always worn from use — being hit damages it, and at a quarter of its hitpoints it

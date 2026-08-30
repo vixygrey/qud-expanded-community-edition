@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 64 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 66 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5441,6 +5441,92 @@ A **0–3 slider** — off, light, normal, heavy — scaling the interval ×2 / 
 deliberately: a slider with `Min` above 1 sends Qud's options menu into unbounded recursion and
 crashes the game (#51). Default **normal**, since the economy loop is the point. Read live, so
 turning it off stops wear accruing immediately; wear already spent stays spent, like any other damage.
+
+## 42. Knowing the people who follow me (`Vixy_CompanionSheet`, `Vixy_RecruitLevel`)
+
+**I decide whether to recruit someone, and later whether to keep them, with almost none of the
+information the game already holds.** Two halves close that, and the line between them is the one
+Qud already draws: someone who follows me is someone I know; a stranger is not (#592).
+
+### 42.1 A `look over` action on any follower
+
+The companion menu gains **Look Over** (`l`), which shows their level, hit points, AV/DV/MA, the six
+primary attributes, their active mutations with levels, and their skills.
+
+Equipment is deliberately absent — `Description` already appends an `Equipped:` line to any
+creature's examine text, so it is the one thing here a player can already read.
+
+Like `ShowEffects`, the only other purely read-only companion action, it **costs no time** and does
+not close the menu.
+
+### 42.2 It does not use the game's own character sheet, and that is the finding
+
+#592 proposed `Screens.Show(GameObject)`. It takes any object, honours it in both UI branches, and
+has never once been passed anything but `The.Player`. **It renders a follower correctly, and it is
+still the wrong call.**
+
+`Show` is a **cycler, not a viewer** — the classic path loops `ScreenList` until you exit, the modern
+path builds all eight as tabs. So every entry point reaches `TinkeringScreen`, which mixes the two
+subjects *inside single operations*:
+
+```csharp
+ItemModding.ModificationApplicable(ModRecipes[i].PartName, obj, The.Player)
+new ItemModdingSifrah(ModObject, …, The.Player.Stat("Intelligence"))
+TinkeringHelpers.ProcessTinkeredItem(gameObject2, The.Player)
+```
+
+> Aimed at a follower, that lists **their** items while modding against **my** Intelligence and
+> delivering the result to **me**. No crash, no error — a coherent-looking screen performing a
+> hybrid action.
+
+`ShowPopup` is no escape: its dictionary holds only `"Factions"`, and the modern branch routes it
+back through the same tabbed host. So this renders its own panel — which will not track a future
+vanilla screen, and that is the price of not shipping the hybrid above.
+
+### 42.3 Followers by any route, because vanilla already treats them alike
+
+The gate is `IsPlayerLed()`, which walks the party-leader chain and accepts `LeftBehindByPlayer()`.
+Beguiled, proselytised and tamed creatures qualify. #592 asked whether they should, having never
+shared water.
+
+**They should:** this is the same test that already grants them `Attack Target`, `Come`, `Stay` and
+every other companion action, so excluding them would invent a distinction the game makes nowhere
+else.
+
+### 42.4 The recruit's level, where the price stops saying it
+
+The water ritual's join choice now reads `[250 reputation] [level 14]`.
+
+#592 argued this reveals nothing the transaction does not already encode, since
+`WaterRitualJoinParty` prices recruitment at `Math.Max(50, 200 + (theirLevel − myLevel) × 12)`.
+That is true for a strong recruit and false for every weak one:
+
+> **The price only encodes their level above its floor.** At thirteen levels below me it is a flat
+> **50** and encodes nothing at all — which is most late-game recruiting.
+
+### 42.5 Zero vanilla records for the action, one merge for the level
+
+`OwnerGetInventoryActionsEvent` fires on the **actor** — `GameObject` gates its own handler on
+`E.Actor == this && IsPlayer()` — and carries the companion as `E.Object`; `InventoryActionEvent`
+returns the same way as `E.Item`. Both halves reach **one part on the player**, the same shape that
+made `WieldedWeaponHit` cheap for weapon wear (§41).
+
+The level tag is one `Load="Add"` part merged onto vanilla's `JoinPartyChoice`. Appending is the
+requirement rather than a detail: vanilla assigns `E.Tag` outright and returns `false`, which reads
+as final and is not — `IConversationElement.HandleEvent` discards each part's return value and stops
+only when `E.HandlePartDispatch` says so.
+
+**That part is deliberately not an `IWaterRitualPart`.** That base would have supplied matching
+colours, and its `HandleEvent(IsElementVisibleEvent)` returns a `Visible` field defaulting to
+`false` — inheriting it to borrow two colour properties would have **hidden vanilla's join choice
+outright**. Hence the fixed `{{K|…}}`, the register `Description` already uses for `Weight:`.
+
+### 42.6 Off-switch
+
+**None.** Rule 6 asks whether anybody would actually turn a thing off. This adds one read-only entry
+to a menu you opened deliberately and four characters to a tag, changes no number and no table, and
+#692 had just cut five options to fit the menu. An option would have bought a branch to carry
+forever and nothing else.
 
 ## Appendix A — every merged vanilla melee weapon
 

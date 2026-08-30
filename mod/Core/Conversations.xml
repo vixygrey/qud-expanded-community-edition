@@ -70,6 +70,22 @@
         <text>I thought you would want to know.</text>
       </choice>
     </node>
+
+    <!-- The recruit's level, on the water ritual's join choice. #592.
+
+         `WaterRitualJoinParty` prices recruitment at Math.Max(50, 200 + (theirLevel - myLevel) * 12)
+         and shows only the price, so the number is an encoding of their level *above the floor* and
+         a flat 50 below it - which is most late-game recruiting. This puts the level itself beside
+         it: [250 reputation] [level 14].
+
+         Load="Add" on a part inside an existing choice appends, and appending is the requirement
+         rather than a detail: vanilla's part assigns E.Tag outright, so anything hoping to add to
+         that string has to run after it. -->
+    <node ID="WaterRitual">
+      <choice ID="JoinPartyChoice">
+        <part Load="Add" Name="Vixy_RecruitLevel" />
+      </choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
