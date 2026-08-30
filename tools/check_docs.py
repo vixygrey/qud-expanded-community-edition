@@ -86,6 +86,13 @@ WORD_NUMBERS = {
 # are unambiguous in a way the bare units are not, which is why "one" through "seven" are still
 # deliberately absent above: a capture group that resolved "one" would turn ordinary prose into a
 # claim. A hyphenated compound can only ever be a number.
+#
+# The capture patterns below therefore use `([\w-]+)` and not `(\w+)`: `\w` excludes the hyphen, so
+# a pattern written the obvious way captures "twenty" out of "twenty-four" and then reports
+# "'four' is not a number this script knows". The dictionary held the compound the whole time; the
+# pattern could not reach it. Three of these were widened when the repository's own documents
+# crossed twenty options, and the wiki patterns did not inherit the fix - the same shape as the
+# "second check that did not inherit the fix" entry in docs/LESSONS.md. They are all widened now.
 _TENS = {
     "twenty": 20,
     "thirty": 30,
@@ -407,19 +414,19 @@ VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
 # sentence and will never appear in docs/. That is the cost of checking prose, and #422 already
 # settled that it is cheaper than the alternative.
 WIKI_CLAIMS: list[tuple[str, list[str]]] = [
-    (r"(\w+) options live in Qud's own options menu", ["options"]),
-    (r"(\w+) options sit in Qud's own options menu", ["options"]),
-    (r"which of the (\w+) to set", ["options"]),
-    (r"one of (\w+) affinities", ["subtypes"]),
-    (r"The (\w+) split into two groups", ["subtypes"]),
-    (r"the (\w+) affinities", ["subtypes"]),
-    (r"which of the (\w+) Psionic Adept affinities", ["subtypes"]),
-    (r"(\w+) affinities to pick from", ["subtypes"]),
+    (r"([\w-]+) options live in Qud's own options menu", ["options"]),
+    (r"([\w-]+) options sit in Qud's own options menu", ["options"]),
+    (r"which of the ([\w-]+) to set", ["options"]),
+    (r"one of ([\w-]+) affinities", ["subtypes"]),
+    (r"The ([\w-]+) split into two groups", ["subtypes"]),
+    (r"the ([\w-]+) affinities", ["subtypes"]),
+    (r"which of the ([\w-]+) Psionic Adept affinities", ["subtypes"]),
+    (r"([\w-]+) affinities to pick from", ["subtypes"]),
     # The genotype/slot table on Common-questions.md. Anchored on the row rather than on the number
     # so it cannot match a sentence that happens to say "True Kin" near a 2.
-    (r"\| True Kin \| (\w+) \|", ["chip-slots-truekin"]),
-    (r"\| Psionic Adept \| (\w+) \|", ["chip-slots-psionicadept"]),
-    (r"(\w+) of them — battle axe", ["vibro-weapons"]),
+    (r"\| True Kin \| ([\w-]+) \|", ["chip-slots-truekin"]),
+    (r"\| Psionic Adept \| ([\w-]+) \|", ["chip-slots-psionicadept"]),
+    (r"([\w-]+) of them — battle axe", ["vibro-weapons"]),
 ]
 
 
@@ -502,15 +509,18 @@ CLAIMS: list[tuple[str, list[str]]] = [
     # capture \w+ and WORD_NUMBERS resolves it. This claim was wrong for an unknown length of
     # time - six copies said ten while nine were enforced - which is why it is checked now.
     (
-        r"(\w+) checks run on every pull request and all (\w+) must pass",
+        r"([\w-]+) checks run on every pull request and all ([\w-]+) must pass",
         ["required-checks", "required-checks"],
     ),
     (
-        r"(\w+) checks run here and all (\w+) must pass",
+        r"([\w-]+) checks run here and all ([\w-]+) must pass",
         ["required-checks", "required-checks"],
     ),
-    (r"\*\*(\w+) checks are required on every pull request\*\*", ["required-checks"]),
-    (r"not one of the (\w+) checks", ["required-checks"]),
+    (
+        r"\*\*([\w-]+) checks are required on every pull request\*\*",
+        ["required-checks"],
+    ),
+    (r"not one of the ([\w-]+) checks", ["required-checks"]),
     (
         r"(\d+) new blueprints and (\d+) vanilla merges",
         ["new-blueprints", "vanilla-merges"],
@@ -543,7 +553,7 @@ CLAIMS: list[tuple[str, list[str]]] = [
     (r"the (\d+) subtype sprites", ["subtype-sprites"]),
     (r"Textures/Subtypes/\s+# (\d+) sprites", ["subtype-sprites"]),
     (r"([\w-]+) options, all under", ["options"]),
-    (r"The (\w+) retuned attribute requirements", ["optioned-requirements"]),
+    (r"The ([\w-]+) retuned attribute requirements", ["optioned-requirements"]),
     (r"([\w-]+) options, in Qud's own options menu", ["options"]),
     (r"Options\.xml\s+# (\d+) options", ["options"]),
     (r"Scripting/\s+# (\d+) classes", ["scripting-files"]),
