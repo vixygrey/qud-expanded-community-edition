@@ -31,6 +31,8 @@ recorded because contributors need them, not because subscribers do.
   it is the first carry item in the game that helps a weak character more than a strong one. It costs
   a hand to carry, which is a hand not holding a weapon.
 
+  Both have new tile art.
+
 - **(internal)** A resolved carriers helper, and one documented figure that had drifted (#702).
 
   `BlueprintIndex` gains `carriers` and `carriers_matching`, which answer *which blueprints does this
