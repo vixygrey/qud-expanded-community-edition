@@ -2607,6 +2607,152 @@ in the data that permits X before the argument is used. Reputation, hostility, g
 prerequisites are all cheap to read and all sit upstream of the interesting mechanics — which is
 exactly why they get skipped.
 
+## Two liquid containers never stack, and no blueprint says so
+
+`LiquidVolume.SameAs(IPart)` is `return false;`, unconditionally. `GameObject.SameAs` walks
+`PartsList` and fails on the first part that says no, so **no two objects carrying a `LiquidVolume`
+are ever `SameAs` each other** — two identical *empty* waterskins included. The only bypass is
+`Stacker`'s `AlwaysStack` tag with a matching blueprint, and across the whole of `ObjectBlueprints/`
+exactly five objects carry it: `Lead Slug`, `BaseArrow`, `HE Missile`, `Shotgun Shell`, `Bandage`.
+No container. Belt and braces, `LiquidVolume.Attach()` sets
+`FrameOffset = Stat.RandomCosmetic(0, 60)`, so every instance differs anyway.
+
+I believed the opposite while writing #561, on the evidence that `PerformFill` wraps its work in
+`RemoveOne()` and `CheckStack()`. That wrapper cannot fire on a container at all.
+
+> **Stacking is decided by a `SameAs` override, which is a property of the part and not of the
+> blueprint.** No amount of reading XML finds this. If a design rests on two things stacking, read
+> `SameAs` on every part they carry before believing it.
+
+## Before building something that gathers scattered resources, read the events that spend them
+
+The premise of #561 was that water scattered across five waterskins is worth consolidating. It is
+not, for currency: `GetFreeDramsEvent` sums `Volume` across every unsealed container holding the pure
+liquid, `UseDramsEvent` drains them in sequence, and `TradeScreen`, `PlayerStatusBar` and
+`WaterRitualBegin` all read `GetFreeDrams()`. **12 + 40 + 3 + 61 + 8 drams already spends exactly like
+124.** `GiveDrams` is the same story from the other side — it requires `IsPureLiquid(Liquid) ||
+IsEmpty()` before accepting a dram, so vanilla has never been able to contaminate a container by
+paying you.
+
+What survived was narrower and real: `GetStorableDramsEvent`, `GetAutoCollectDramsEvent` and
+`GiveDrams` all gate on that same predicate, so a skin holding three drams of water cannot accept
+honey at all. The feature is worth building for the container it frees, not the money it saves.
+
+> **The scatter may already be cosmetic.** An aggregation feature is only worth its complexity if
+> something downstream actually reads the pieces separately. Read the consumers first.
+
+## A part on the actor can add an inventory action to somebody else's object
+
+`GetInventoryActionsEvent` and `GetInventoryActionsAlwaysEvent` are both sent to the **object** only.
+That makes a blueprint merge look like the only way to put an action on an item — and blueprint parts
+are baked in at creation, so every object already in a save would silently never get it.
+
+`OwnerGetInventoryActionsEvent` is the way past. `EquipmentAPI` fires it on the **actor**, alongside
+the other two, for every item the actor looks at; `Telekinesis` and `Psychometry` both use it. Paired
+with `AddAction(..., FireOnActor: true)` the same part handles the resulting command.
+
+> **One part on the player, attached through the two `Vixy_PlayerParts` hooks, reaches every item in
+> every existing save and needs no blueprint merges at all.** Reach for this before merging a part
+> onto a family of blueprints.
+
+## A part a blueprint inherits is not a part it declares
+
+#640 was filed because three ways of counting the same thing disagreed: `Category="Meds"` held 3
+blueprints, a `Medication` part filter found 2, and `Category="Tonics"` independently held 13. The
+issue went up with a caveat saying nobody should act on it.
+
+The filter was counting blueprints that write `<part Name="Medication" />` in their own record.
+Tonics do not — they inherit it from a base. Resolving `Inherits=` first:
+
+| Filter | Declared only | Resolved |
+|---|---|---|
+| `part Medication` | 2 | **13** |
+| `part Tonic` | 3 | **13** |
+| `Category="Tonics"` | 13 | **13** |
+
+Category and part agree on all 13, in both directions. **The category was trustworthy the whole time
+and the audit method was what was wrong** — worth separating from #172's `Clothes` false positive,
+which really was a filing artefact.
+
+> **A declared-part count is a lower bound**, and for anything with a `Base*` ancestor it can be off
+> by most of the set. `parse → resolve Inherits → count` is the minimum before a number means
+> anything.
+
+## `*noinherit` and `*delete` are tag sentinels, not tag values
+
+Writing the resolver for the entry above, every concrete item came back as an abstract base and every
+count returned zero.
+
+`PhysicalObject`, `InorganicObject` and `Item` each carry
+`<tag Name="BaseObject" Value="*noinherit" />`. **`*noinherit` means the tag exists on the declaring
+blueprint and does not pass to children** — so inheriting it naively marks all 4,642 concrete objects
+as bases. **`*delete` means remove this inherited tag**; `Bandage` uses it to drop `Breakable`.
+Across `ObjectBlueprints/` there are **957** `*noinherit` and **147** `*delete`.
+
+- *"Is this a base object?"* is answered by whether the blueprint **declares** `BaseObject` in its own
+  record, never by the resolved tag set.
+- A resolved tag set that honours neither sentinel is wrong in both directions: it invents tags that
+  were never inherited and keeps tags that were explicitly deleted.
+
+> The failure is loud if you are lucky — every count is zero — and silent if you are not, as a tag
+> filter quietly over-matches. Together with the two entries above and the `parse(lenient=True)` note,
+> this is one sequence: **parse, resolve `Inherits`, honour the sentinels, then count.**
+
+## A mechanism existing is not a mechanism working — check the values moving through it
+
+I made this mistake three times in one session, in three disguises:
+
+| where | what I confirmed | what I skipped | what it cost |
+|---|---|---|---|
+| #591 | `Quadruped` has no `Hand` or `Body` slot, so a saltback cannot use tier-1 gear | what is actually *in* `Armor 1C` — about 28% of it (caps, moccasins, masks, shawls) equips fine on a quadruped | called a harmless quirk "clearly wrong" and nearly filed an upstream report |
+| #635 | `IBaseJournalEntry.Attributes` exists, all three note kinds populate it, `TryGetAttribute` reads it | what the *values* are — `SecretAttributes` is on 7 blueprints, and the fallback yields 197 near-unique strings | recommended attribute-scoping in a posted comment, then had to withdraw it |
+| #568 | `Temporary.CarryOver` exists, with twelve precedents and exactly the right semantics | the *ordering* in `PerformPreserve` — `go.Obliterate()` runs before the product is created, so there is nothing to carry over from | nearly published "propagation, not refusal" as settled, when propagation is unreachable from a mod |
+
+> **The shape is always the same:** find the mechanism, confirm it is real, and infer from its
+> existence that it does the job. What gets skipped is the data or the ordering flowing through it,
+> which is where the answer actually lives.
+
+This is a sibling of *"count the consumers before you count anything else"* and *"an empty grep is
+only evidence if the grep could have found the thing"*. Those say **check the far end of a
+reference**. This one says **check the values moving through it** — and knowing the first two did not
+stop me doing this, which is why it is written separately.
+
+## Qud has a temporariness convention, and two designed escape hatches
+
+Before claiming a hole where a temporary item might yield permanent value, look for the convention.
+It is applied at fourteen sites and has two opt-outs: `CanCookTemporary` on cooking ingredients and
+`AllowTemporary` on conversation item checks.
+
+The inventory, from the #597 audit: `Nectar_Tonic_Applicator:41`,
+`Campfire.IsValidCookingIngredient:572`, `Campfire` preserve lists (`:232`, `:233`, `:627`, `:659`,
+`:665`), `Butcherable:132`, `Harvestable:277`, `CyberneticsButcherableCybernetic:146`,
+`Disassembly:244`/`:269`/`:580`, `HaveItem`/`TakeItem`, `CyberneticsScreenInstall:59`,
+`ItemNaming:60`, `MapReveal:46`, `FactionDeed:81`, `LiquidCloning.SmearOn:92`, `ModQuantumReverb:98`,
+`Stacker:340`.
+
+Three supporting facts, each of which cost a decompiling pass:
+
+- `MakeTemporaryEvent` is `[GameEvent(Cascade = 271)]` — `CASCADE_ALL` (15) plus
+  `CASCADE_DESIRED_OBJECT` (256) — so a clone's whole pack really is marked.
+- Non-root objects get `Duration = -1` plus `ExistenceSupport.SupportedBy`, so pack items have no
+  clock of their own and expire with their supporter *wherever they have got to*.
+- `Temporary.Duration` is the live counter, decremented in place, so `CarryOver` passes on the
+  remaining time and never a fresh allotment.
+
+There are three distinct refusal wordings, chosen by context, and it is worth not inventing a fourth:
+*"The experience is fleeting."*, *"The parts crumble into dust."*, and *"…behaving as nothing more
+than an ordinary piece of paper."*
+
+## `Load="Merge"` against a DLC blueprint fails for players without the DLC
+
+`ObjectBlueprintLoader.cs:797`: a `Load="Merge"` naming a blueprint that is not loaded calls
+`handleError` and discards the node. **`Load="MergeIfExists"` skips silently instead**, and is the
+correct form for anything under `CoQ_Data/StreamingAssets/DLC/`.
+
+> **But `check_merge_discipline` tests `el.get("Load") != "Merge"` exactly**, so `MergeIfExists` fails
+> this repository's own validator today. Anything touching DLC content has to teach the check about
+> it first. Worth knowing before discovering it mid-pull-request.
+
 ## Two manifest features can be mutually exclusive, and the failure is silence
 
 `GeneralAskName` gates a complete conversation feature, appears nowhere in the game's data, and

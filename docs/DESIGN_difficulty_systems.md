@@ -195,27 +195,72 @@ adds zero enemy HP.**
 
 ### B1. Wound system *(most directly attacks why the late game is easy)*
 
-**The gap.** Natural regeneration is `[20 + 2 × (Willpower mod + Toughness mod)] / 100`
-HP per turn, interrupted for 5 turns by damage. That's roughly 0.2 HP/turn baseline —
-slow, but **turns are free**. HP is therefore a fully renewable resource whose only
-cost is pressing a key. Nothing in the game charges you for time.
+**The gap.** Natural regeneration is `[20 + 2 × (Toughness mod + Willpower mod)] / 100`
+HP per turn, interrupted for **10 turns** by damage (`HandleEvent(TookDamageEvent)` sets
+`HitCounter = 10`). That's roughly 0.2 HP/turn baseline — slow, but repeatable, so HP is
+a renewable resource.
 
-**In-world basis.** Qud is a world of radiation, infection, and rot. It already has a
-Medicine skill, bandages, salve and ubernostrum injectors, witchwood bark, urberries,
-and regeneration tanks. **The entire treatment economy exists and is currently
-optional.**
+**Turns are not free, and this is the correction that changes what B1 is.** The section
+used to say *"nothing in the game charges you for time."* It does. The currency is water:
+
+```csharp
+RegenCounter += value;
+if (RegenCounter > 100)
+{
+    int num = (int)Math.Floor((double)RegenCounter / 100.0);
+    RegenCounter %= 100;
+    if (Water > 0) { ParentObject.GetStat("Hitpoints").Penalty -= num; }
+    else { if (IsPlayer()) return false; ... }
+}
+```
+
+The counter is reset by `%= 100` **before** the water check, so at zero water the accrued
+heal is discarded outright rather than banked. Resting to full already costs drams.
+
+> **So a wound system would be a *second* time-tax stacked on an existing one**, and this
+> fork has its own positions on water in `docs/DESIGN_water_and_legacy.md`. B1's own risk
+> note calls this the most likely of the eight to feel bad; stacking it on the water
+> economy without saying so is exactly how that happens. **That interaction is an open
+> question, not a resolved one** — it needs settling against the water document before B1
+> is costed, and this section deliberately does not settle it.
+
+**In-world basis.** Qud is a world of radiation, infection, and rot. It already has the
+**`Physic`** skill tree (Staunch Wounds, Nostrums, Amputate Limb, Apothecary), bandages,
+salve and ubernostrum injectors, witchwood bark, urberries, and regeneration tanks.
+**The entire treatment economy exists and is currently optional.** #640 confirms the
+inventory: 11 blueprints that restore HP or staunch bleeding, four cooking domains,
+Convalessence, the `Physic` tree and the Regeneration mutation.
 
 **Mechanic.** Damage above a threshold in one blow, or dropping below ~25% HP, applies
 a persistent **Wound** that does not heal by regeneration. Wounds cap maximum HP or
 apply a stat penalty until treated. Treatment requires the existing consumables, the
-Medicine skill, or a regeneration tank.
+`Physic` skill, or a regeneration tank.
 
-**Decision created.** This is the big one. It makes consumables matter, makes Medicine
+**Decision created.** This is the big one. It makes consumables matter, makes `Physic`
 a real skill choice, makes retreating-to-town a genuine cost, and gives damage
 **memory** — you can no longer walk out of every fight as though it never happened.
 
-**Implementation.** An effect plus a handler on damage. Interacts with the Regeneration
-mutation (which should reduce wound severity or duration, not bypass it entirely).
+**Implementation.** An effect plus a handler on damage.
+
+**The Regeneration mutation already bypasses the interrupt**, so the note that it *"should
+reduce wound severity or duration, not bypass it entirely"* is aiming at a lever that
+already exists. It does two separate things today: it multiplies the regen amount on the
+`Regenerating` event by `0.1 + 0.1 × Level`, and it regenerates **through** the damage
+interrupt at half rate —
+
+```csharp
+if ((HitCounter <= 0) | ParentObject.HasPart<Regeneration>()) { ... }
+if (HitCounter > 0) { value /= 2; }
+```
+
+Blunting that existing behaviour is a cleaner lever than adding a wound-specific
+exemption on top of it.
+
+**Treatment items need no C#, so the "probably not" on Harmony can be a firm no.**
+`HealMedication`, `RegenMedication` and `StatBoostMedication` are real classes in
+`XRL.World.Parts` that **no vanilla blueprint declares** — fully XML-drivable, genotype
+splits included. Vanilla built the mechanism and never wired it up, which is a shape
+`docs/LESSONS.md` already records.
 
 **Risk.** The most likely of everything here to feel bad. Wounds must be *treatable
 with what's already in the world*, never permanent, and the thresholds must be
