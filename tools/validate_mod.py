@@ -767,6 +767,11 @@ def check_version_matches_changelog(f: Findings, version: str) -> None:
         )
 
 
+# The longest help text surviving #690's trim, rounded up. A ratchet, not a judgement: nothing today
+# fails and nothing new may be worse. Raise it only with a reason, and prefer trimming the prose.
+HELPTEXT_MAX = 1200
+
+
 def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Guard the slider constraint that crashes Qud.
 
@@ -1576,6 +1581,60 @@ def check_shader_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                         f"attribute in this format, so declaring it redefines vanilla's for every "
                         f"place the game already uses it",
                     )
+
+
+def check_helptext_shape(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """An option's `<helptext>` must be one line per paragraph, and not an essay.
+
+    **Qud never re-wraps it, which is the fact this check exists on.** `XmlDataHelper.GetTextNode`
+    normalises with `TrimSpacePerLine` (`^[ \\t\\r]+|[ \\t\\r]+$`, multiline) and `TrimNewlineRegex`
+    (`^\\n+|\\n+$`), so per-line indentation and surrounding blank lines go — and **internal newlines
+    survive**. `Qud.UI.OptionsRow` then calls `RTF.FormatToRTF(data.HelpText)` with `blockWrap`
+    defaulting to `-1`, so `BlockWrap` never runs and the container does the wrapping.
+
+    So a newline in the source is an **unconditional break** in the options menu, at whatever width
+    the menu happens to be. Hard-wrapping the source at 80-odd columns forces those breaks through and
+    the text renders ragged, ending lines mid-sentence. Writing one line per paragraph lets the menu
+    wrap where it actually needs to.
+
+    This drifted: #690 found ten of twenty-six hard-wrapped, six of them recent and two written the
+    same day. Nothing noticed, because nothing was looking - which is charter rule 4's argument for
+    the check rather than the sentence.
+
+    The length cap is a ratchet rather than a judgement. `HELPTEXT_MAX` sits just above the longest
+    surviving help text, so nothing today fails and nothing new may be worse. Rule 6 counts a
+    `<helptext>` as a thing you have to keep true; the longer it is, the more of it rots unnoticed.
+    """
+    for path, root in all_roots.items():
+        if "option" not in path.name.lower():
+            continue
+        for option in root.iter("option"):
+            node = option.find("helptext")
+            if node is None or not node.text:
+                continue
+            ident = option.get("ID", "?")
+            # Reproduce Qud's own normalisation before measuring.
+            text = "\n".join(line.strip() for line in node.text.splitlines()).strip(
+                "\n"
+            )
+            paragraphs = [b for b in re.split(r"\n\s*\n", text) if b.strip()]
+            for paragraph in paragraphs:
+                if "\n" in paragraph:
+                    first = paragraph.split("\n")[0]
+                    f.add(
+                        "helptext-shape",
+                        f"{path}: {ident} hard-wraps a paragraph, and Qud does not re-wrap - "
+                        f"every newline is a forced break in the menu. Put each paragraph on one "
+                        f"line: {first[:60]!r}...",
+                    )
+                    break
+            if len(text) > HELPTEXT_MAX:
+                f.add(
+                    "helptext-shape",
+                    f"{path}: {ident} has a {len(text)}-character helptext, over the "
+                    f"{HELPTEXT_MAX} cap - it is read in a tooltip, and every sentence in it is one "
+                    f"more thing to keep true",
+                )
 
 
 def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -3718,6 +3777,7 @@ def run() -> Findings:
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
+    check_helptext_shape(f, roots)
     check_option_defaults(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)

@@ -14,6 +14,44 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Option help text no longer breaks lines in the wrong places** (#690).
+
+  If an option's description looked ragged in the menu — sentences stopping short and wrapping early
+  — that is why. Seven of them were written with the line breaks baked in, and Caves of Qud does not
+  re-wrap the text: every break in the file was a break on your screen, wherever the menu happened to
+  end. They now let the menu decide, so they read as paragraphs at whatever width you are playing at.
+
+  The longest four were also cut down. *Anthro mutations* was around two thousand characters of
+  tooltip; it is about half that now and still says what the option does and what changes if you turn
+  it off, which is all it was ever for. Nothing was removed that is not in the feature reference or
+  the wiki in more detail.
+
+- **(internal)** `helptext-shape` refuses a hard-wrapped or over-long option help text (#690).
+
+  `XmlDataHelper.GetTextNode` strips per-line indentation and surrounding blank lines but preserves
+  internal newlines, and `Qud.UI.OptionsRow` calls `RTF.FormatToRTF` with `blockWrap` defaulting to
+  `-1` — so `BlockWrap` never runs and a source newline is an unconditional break in the menu.
+
+  The convention was never written down and it drifted: ten of twenty-six were hard-wrapped, six of
+  them recent. The length cap is a ratchet set just above the longest survivor, so nothing today fails
+  and nothing new may be worse.
+
+
+- **(internal)** `check_docs.py` could not read a hyphenated word number in a wiki claim (#674).
+
+  `WORD_NUMBERS` has held `twenty-one` through `ninety-nine` since the options count crossed twenty,
+  but the capture patterns were written `(\w+)` — and `\w` excludes the hyphen. So a page reading
+  *"Twenty-four options live in Qud's own options menu"* captured `twenty`, left `four` dangling, and
+  reported *"'four' is not a number this script knows"*.
+
+  Three patterns were widened to `([\w-]+)` when the repository's own documents crossed twenty. **The
+  wiki patterns did not inherit the fix** — the same shape as the *"second check that did not inherit
+  the fix"* entry in `docs/LESSONS.md`. All sixteen are widened now, and the reasoning sits next to the
+  compound-number table so the next person writing a claim pattern finds it.
+
+
 ### Removed
 
 - **Five options taken out of the menu** (#690).
@@ -34,21 +72,6 @@ recorded because contributors need them, not because subscribers do.
   > here than let you find it.
 
   Twenty-one options remain, and every one of them changes something you would notice.
-
-
-### Fixed
-
-- **(internal)** `check_docs.py` could not read a hyphenated word number in a wiki claim (#674).
-
-  `WORD_NUMBERS` has held `twenty-one` through `ninety-nine` since the options count crossed twenty,
-  but the capture patterns were written `(\w+)` — and `\w` excludes the hyphen. So a page reading
-  *"Twenty-four options live in Qud's own options menu"* captured `twenty`, left `four` dangling, and
-  reported *"'four' is not a number this script knows"*.
-
-  Three patterns were widened to `([\w-]+)` when the repository's own documents crossed twenty. **The
-  wiki patterns did not inherit the fix** — the same shape as the *"second check that did not inherit
-  the fix"* entry in `docs/LESSONS.md`. All sixteen are widened now, and the reasoning sits next to the
-  compound-number table so the next person writing a claim pattern finds it.
 
 
 ### Added

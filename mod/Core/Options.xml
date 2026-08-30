@@ -22,42 +22,15 @@
     SearchKeywords="qud expanded anthro animal mutation fangs bite teeth beast"
   >
     <helptext>
-            Adds this fork's animal-trait mutations to the physical mutation list.
+            Adds this fork's animal-trait mutations to the physical mutation list. Qud's physical mutations make you stranger - a carapace, quills, a beak. What it has almost none of is the ordinary animal end of that.
 
-            Qud's physical mutations are full of things that make you stranger - a carapace,
-            quills, a beak, an extra pair of legs. What it has almost none of is the ordinary
-            animal end of that: the traits a wolf or a cat has and a person does not.
+            {{Y|Fangs}}, 3 points. Long teeth that bite alongside whatever you are wielding, roughly one round in five, and draw blood. They leave your face slot free, so a mask still fits.
 
-            Currently three mutations:
+            {{Y|Keen Smell}}, 3 points. You detect creatures by scent, at about twice the range of Heightened Hearing - but walls stop a smell dead. Better in open country than in a ruin, which is the opposite of hearing.
 
-            Fangs, 3 points. Long teeth on your face that bite alongside whatever you are
-            wielding, roughly one round in five, and draw blood when they land. They do not
-            occupy your face slot, so a mask or goggles still fit.
+            {{Y|Tail}}, 1 point. 1 DV, and an Agility save to stay on your feet when something would knock you down. It cannot attack or hold anything, and an axe can cut it off. Pick fox, wolf, cat, rat or lizard at character creation - pure flavour.
 
-            Bleeding is normally bought - Bloodletter costs 150 skill points and needs Agility
-            17. Fangs give you a smaller share of it for a mutation point instead, and the two
-            stack if you have both.
-
-            Keen Smell, 3 points. You detect creatures around you by scent, at roughly twice the
-            range of Heightened Hearing - but walls stop a smell dead, and a closed door, deep
-            water or anything blocking your view cuts it down. Better in open country than in a
-            ruin, which is the opposite of hearing.
-
-            Keen Smell is Caves of Qud's own Heightened Smell. Freehold built it, gave it to a
-            few animals, and never put it in the list you pick from. This puts it there.
-
-            Tail, 1 point. A tail. It gives you 1 DV, and when something would knock you down you
-            get an Agility save to keep your feet - so it helps more the nimbler you are. It does
-            not attack and it cannot hold anything, and an axe can cut it off, which takes the
-            dodge with it.
-
-            Pick which tail at character creation - fox, wolf, cat, rat or lizard. That choice is
-            pure flavour; they all behave the same.
-
-            Turning this off hides the mutations at character creation and keeps them off
-            randomly generated creatures. Mutations are read while a character is being made,
-            so this applies to a NEW character - an existing one keeps whatever it was born
-            with.
+            Turning this off hides them at character creation and keeps them off generated creatures. Mutations are read while a character is being made, so this applies to a NEW character - an existing one keeps what it was born with.
         </helptext>
   </option>
 
@@ -72,23 +45,18 @@
     <helptext>
             Makes carrying weight a gradient instead of a cliff.
 
-            Vanilla has one threshold: carry more than 15 pounds per point of Strength and you
-            become Overburdened, which means unable to move at all. Below that, nothing. So the
-            best play is to sit just under the limit forever and never think about it again.
+            Vanilla has one threshold: carry more than 15 pounds per point of Strength and you become Overburdened, which means unable to move at all. Below that, nothing. So the best play is to sit just under the limit forever and never think about it again.
 
             With this on, four bands sit underneath that threshold:
 
-            Lightly burdened, at half capacity - minus 1 DV.
-            Encumbered, at three quarters - minus 2 DV.
-            Heavily burdened, at nine tenths - minus 4 DV, minus 10 Quickness, and you cannot run.
+            Lightly burdened, at half capacity - minus 1 DV. Encumbered, at three quarters - minus 2 DV. Heavily burdened, at nine tenths - minus 4 DV, minus 10 Quickness, and you cannot run.
 
-            Vanilla's Overburdened is untouched and still stops you dead at full capacity. What
-            changes is that you feel the weight coming before it stops you.
+            Vanilla's Overburdened is untouched and still stops you dead at full capacity. What changes is that you feel the weight coming before it stops you.
 
             Player only, as in vanilla, where no NPC is ever overburdened at any load.
 
             Safe to switch on or off mid-run: the band is recalculated every turn.
-    </helptext>
+        </helptext>
   </option>
 
   <option
@@ -280,13 +248,11 @@
     <helptext>
             Makes a zone's trash run out of things to tell you, instead of paying the same rate for all hundred piles.
 
-            {{Y|Trash Divining}} rolls a 5% chance per pile, which sounds like a trickle and is not. The catacombs lay down 80 to 100 piles in a single zone, so rifling one of them hands you four or five secrets - and secrets are worth 50 reputation each at a water ritual.
+            {{Y|Trash Divining}} rolls 5% per pile, and the catacombs lay down 80 to 100 piles in one zone - so rifling a single zone hands you four or five secrets.
 
-            With this on, the {{Y|5%}} is untouched and the first twenty piles in a zone still pay it in full. After that the same zone drops to {{Y|3%}}, then {{Y|2%}}, then {{Y|1%}}, and never lower. A catacombs zone pays around two secrets rather than four or five. Thin zones are left alone - a rustwell has too few piles to reach the second band, and pays what it always did.
+            With this on the {{Y|5%}} is untouched and the first twenty piles still pay it in full. After that the same zone drops to {{Y|3%}}, then {{Y|2%}}, then {{Y|1%}}, and never lower. Thin zones are left alone - a rustwell has too few piles to reach the second band.
 
-            The count is kept per zone, so walking out and back does not reset it, and the piles you already went through are gone regardless.
-
-            Applies immediately, and keeps counting while it is off - turning it off in a rich zone and on again will not hand you a fresh 5%.
+            The count is per zone and keeps running while this is off, so walking out and back, or toggling it, will not hand you a fresh 5%.
         </helptext>
   </option>
 
@@ -345,20 +311,13 @@
     SearchKeywords="qud expanded name random player character masc femme sound rename"
   >
     <helptext>
-            Chooses which pool your character's name is drawn from when the game rolls one for
-            you, rather than you typing one in.
+            Chooses which pool your character's name is drawn from when the game rolls one for you, rather than you typing one in.
 
-            Masc gives the hard-stopped endings vanilla has always used. Femme gives the open,
-            vowel-final ones. Random splits evenly between those two and a mixed pool, which is
-            what you get if you never touch this.
+            Masc gives the hard-stopped endings vanilla has always used. Femme gives the open, vowel-final ones. Random splits evenly between those two and a mixed pool, which is what you get if you never touch this.
 
-            It does nothing at all if you type a name in, which is always the surest way to get
-            the one you want. Re-rolling a random name in character creation does follow it, so
-            you can keep pressing until you like what you see.
+            It does nothing at all if you type a name in, which is always the surest way to get the one you want. Re-rolling a random name in character creation does follow it, so you can keep pressing until you like what you see.
 
-            It follows you afterwards too. Renaming yourself in game draws from the same pool
-            rather than from whatever your gender would suggest, and changing this mid-run takes
-            effect on your next rename.
+            It follows you afterwards too. Renaming yourself in game draws from the same pool rather than from whatever your gender would suggest, and changing this mid-run takes effect on your next rename.
 
             It does not touch anyone else in the world. The two naming options above govern them.
         </helptext>
@@ -374,17 +333,11 @@
     <helptext>
             Adds a Gender row to character creation.
 
-            Qud has thirteen genders with full grammar, and ships every one of them written and
-            switched off - there is no way to pick yours, so the game rolls one for you. This turns
-            the row on, and widens what it offers from four to thirteen: elverson (ey/em), xe, ze,
-            sie, fae, spivak (e/em), ve, per and ne join male, female, neuterperson and
-            nonspecific.
+            Qud has thirteen genders with full grammar, and ships every one of them written and switched off - there is no way to pick yours, so the game rolls one for you. This turns the row on, and widens what it offers from four to thirteen: elverson (ey/em), xe, ze, sie, fae, spivak (e/em), ve, per and ne join male, female, neuterperson and nonspecific.
 
             The hindren third gender is deliberately not offered. It is theirs, not a general one.
 
-            Turning this off hides the row again and the game picks for you, as vanilla does. The
-            genders themselves stay declared either way, so a character who already has one keeps
-            it.
+            Turning this off hides the row again and the game picks for you, as vanilla does. The genders themselves stay declared either way, so a character who already has one keeps it.
         </helptext>
   </option>
 
@@ -399,15 +352,11 @@
     <helptext>
             Adds a Pronoun Set row to character creation, separate from gender.
 
-            Qud tracks pronouns apart from gender, so you can take a gender's grammar and a
-            different set of pronouns. The row defaults to "from gender", which is what you want
-            unless you want something else.
+            Qud tracks pronouns apart from gender, so you can take a gender's grammar and a different set of pronouns. The row defaults to "from gender", which is what you want unless you want something else.
 
-            Vanilla ships this switched off too. On, it offers fourteen sets - the three Qud
-            already wrote and never showed anyone, plus one for each gender.
+            Vanilla ships this switched off too. On, it offers fourteen sets - the three Qud already wrote and never showed anyone, plus one for each gender.
 
-            Turning it off hides the row. Your pronouns then follow your gender, as vanilla does
-            it.
+            Turning it off hides the row. Your pronouns then follow your gender, as vanilla does it.
         </helptext>
   </option>
   <option
@@ -421,22 +370,11 @@
     <helptext>
             A merchant you have charmed still charges you for their goods.
 
-            Caves of Qud treats anyone following you as a companion, and a companion's things are
-            shared - so beguiling, proselytizing or masking a shopkeep empties their whole shop for
-            free. That rule is right for someone who joined you over a long game and wrong for a
-            trader you enchanted forty seconds ago, and nothing in any of the five charms ever
-            checks whether the person following you keeps a shop.
+            Caves of Qud shares a companion's possessions with you, and a charmed shopkeep counts as a companion - so beguiling or masking one empties their whole shop for free. That rule is right for someone who joined you over a long game and wrong for a trader you enchanted forty seconds ago.
 
-            With this on, a charmed merchant still likes you, still shows you everything they have,
-            and still expects paying. The charm is not weakened anywhere else: they still follow
-            you, still fight for you, and their never-for-sale items are still on the shelf - you
-            just buy them.
+            The charm is not weakened anywhere else. They still follow you, still fight for you, and their never-for-sale items are still on the shelf - you just buy them. A merchant who genuinely joined you is unaffected, because the test is the charm rather than the following.
 
-            A merchant who genuinely joined you is unaffected. The test is the charm, not the
-            following, so a shopkeep recruited the long way round still shares everything.
-
-            Turning it off restores Caves of Qud's behaviour, and the shop is free again. Applies to
-            the next trade screen you open either way.
+            Turning it off makes the shop free again, from the next trade screen.
         </helptext>
   </option>
   <option
@@ -450,25 +388,13 @@
     <helptext>
             An arrow you shoot sometimes survives and lands where it hit, so you can pick it up again.
 
-            Caves of Qud already knows how to leave a projectile on the floor - it does it for
-            anything else that misses. Arrows are the exception, and only because they are built as
-            unreal objects that are deleted the moment they land. Nothing about the world says an
-            arrow you shot into a wall stops being an arrow.
+            Not all of them come back, and how often depends on what the arrow is made of: a wooden arrow survives about a fifth of the time, a zetachrome one about nine times in ten. So the arrows worth keeping are the ones you keep, and ammunition stays a resource.
 
-            Not all of them come back. How often depends on what the arrow is made of, using the
-            game's own material ladder: a wooden arrow survives about a fifth of the time and a
-            zetachrome one about nine times in ten. So the arrows worth keeping are the ones you
-            keep, and ammunition stays a resource rather than becoming free.
+            Arrows that carry something - explosive, cryo, gas, honey, flare - never come back. The payload is spent, and what is left is not an arrow any more.
 
-            Arrows that carry something - explosive, cryo, gas, honey, flare - never come back. The
-            payload is spent, and what is left is not an arrow any more.
+            If you have Caves of Qud's own "autoget primitive ammo" switched on, exploring collects them for you.
 
-            If you have "autoget primitive ammo" switched on in Caves of Qud's own options, exploring
-            will collect them for you. That half already existed; there was simply never anything on
-            the floor to collect.
-
-            Turning this off restores Caves of Qud's behaviour and fired arrows vanish again. Applies
-            to the next arrow you shoot either way.
+            Turning this off makes fired arrows vanish again, from the next shot.
         </helptext>
   </option>
 </options>
