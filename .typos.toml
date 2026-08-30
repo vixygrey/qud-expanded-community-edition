@@ -21,6 +21,12 @@ PNGs = "PNGs"
 # in docs/LESSONS.md because the entry is about what that field's comparison actually does. Correcting
 # the spelling would make the quotation wrong. #678.
 knownRecipies = "knownRecipies"
+# "OthoWander1" - a vanilla blueprint name, quoted verbatim in docs/LESSONS.md as the worked example
+# of an actor that keeps taking turns off-screen. `typos` reads the leading Otho as a misspelling of
+# Otoh. Allowlisted as an *identifier* rather than a word on purpose: this exempts only the whole
+# token, so plain "Otho" stays checked everywhere, which is what the file-exclusion note above about
+# qud-api.json is protecting. #701.
+OthoWander1 = "OthoWander1"
 
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables
