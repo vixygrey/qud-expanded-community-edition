@@ -5420,9 +5420,20 @@ and is the one place it could silently become per-projectile.
 anything with no `Tier` tag — 2,061 carried `MeleeWeapon` blueprints that are largely corpses and
 oddments. The tag is the opt-in.
 
-**A `[worn]` tag past a third of the wear.** Vanilla shows no item condition at all; armour simply
-breaks. That is tolerable when the cause is visibly being hit and much worse when it is a counter
-nobody can see, so this is not decoration.
+**Three visible states, because vanilla has none.** Armour simply breaks with no warning, which is
+tolerable when the cause is visibly being hit and much worse when it is a counter nobody can see.
+
+| state | at | tier 0 | tier 8 |
+|---|---:|---:|---:|
+| `[{{y|worn}}]` | 6 of 19 | 60 hits | 300 hits |
+| `[{{O|battered}}]` | 12 of 19 | 120 hits | 600 hits |
+| `[{{r|broken}}]` — vanilla's own | 19 of 19 | 190 hits | 950 hits |
+
+**The middle state was added after play.** One warning at a third and then nothing until the weapon
+breaks tells you something is wrong but not how urgent it is. Three bands split the capacity evenly
+and escalate in colour, so the display answers *how bad* rather than only *yes or no*. `battered`
+collides with nothing — the assembly contains no such string, and vanilla's item vocabulary is only
+`broken`, `rusted` and `cracked`.
 
 ### 41.6 Off-switch
 

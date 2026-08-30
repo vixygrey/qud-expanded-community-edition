@@ -24,8 +24,9 @@ recorded because contributors need them, not because subscribers do.
 
   A weapon spends one point of wear every so many uses — per hit for melee, per shot for missile —
   and breaks after nineteen of them, exactly as armour does. It is **repaired the same ways**: the
-  Repair skill, fix-it spray foam, or paying a village tinker in water. A weapon past a third of its
-  wear shows as **[worn]**, so it never breaks without warning.
+  Repair skill, fix-it spray foam, or paying a village tinker in water. It tells you where it is
+  along the way — **[worn]** a third of the way through, **[battered]** two thirds — so nothing ever
+  breaks without warning.
 
   **Low-tier weapons wear far faster.** A bronze axe spends wear every 10 hits and breaks after 190,
   a zetachrome one every 50 and breaks after 950 — because a bronze axe is a thing you replace and a

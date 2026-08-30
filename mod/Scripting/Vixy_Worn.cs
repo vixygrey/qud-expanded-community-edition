@@ -83,10 +83,25 @@ namespace XRL.World.Parts
 
         /// <summary>
         /// Points of wear a weapon holds: 25 hitpoints down to the 6 at which `Broken` fires.
-        /// Not used to decide anything — recorded so the `[worn]` threshold below has a stated
-        /// denominator rather than a magic number.
+        /// The denominator for both thresholds below, so neither is a magic number.
         /// </summary>
         public const int WearCapacity = 19;
+
+        /// <summary>A third of the way through: <c>[worn]</c>.</summary>
+        public const int WornAt = WearCapacity / 3;
+
+        /// <summary>Two thirds of the way through: <c>[battered]</c>.</summary>
+        /// <remarks>
+        /// A second state was added after play (#195): one warning that arrives at a third and then
+        /// nothing until the weapon breaks tells you something is wrong but not how urgent it is.
+        /// Three bands split the capacity evenly and escalate in colour — yellow, orange, and the
+        /// red `Broken` appends through this same event — so the display answers *how bad* rather
+        /// than only *yes or no*.
+        ///
+        /// `battered` collides with nothing: the whole assembly contains no such string, and vanilla
+        /// ships no item condition vocabulary of its own beyond `broken`, `rusted` and `cracked`.
+        /// </remarks>
+        public const int BatteredAt = WearCapacity * 2 / 3;
 
         public override bool WantEvent(int ID, int cascade)
         {
@@ -118,9 +133,17 @@ namespace XRL.World.Parts
 
         public override bool HandleEvent(GetDisplayNameEvent E)
         {
-            if (!E.Reference && IsWorn(ParentObject))
+            if (!E.Reference)
             {
-                E.AddTag("[{{y|worn}}]", 25);
+                int spent = WearSpent(ParentObject);
+                if (spent >= BatteredAt)
+                {
+                    E.AddTag("[{{O|battered}}]", 25);
+                }
+                else if (spent >= WornAt)
+                {
+                    E.AddTag("[{{y|worn}}]", 25);
+                }
             }
 
             return base.HandleEvent(E);
@@ -193,23 +216,23 @@ namespace XRL.World.Parts
             return Raven_Options.ScaleWeaponWearInterval(interval);
         }
 
+        /// <summary>Wear spent so far, in points, of the <see cref="WearCapacity"/> a weapon holds.</summary>
+        public static int WearSpent(GameObject Weapon)
+        {
+            return Weapon?.GetStat("Hitpoints")?.Penalty ?? 0;
+        }
+
         /// <summary>
-        /// True once a weapon has spent a third of the wear it holds — the point at which it is
-        /// worth telling the player, while there is still time to do something about it.
+        /// True once a weapon has spent a third of the wear it holds.
         /// </summary>
         /// <remarks>
-        /// Vanilla shows no item condition at all: armour simply breaks. That is tolerable when the
-        /// cause is visibly being hit and much worse when it is a counter nobody can see, so this
-        /// half is not decoration. `Broken` appends its own tag through the same event.
+        /// Kept as a named test because it is the threshold anything outside this class would want
+        /// to ask about, and because <see cref="WornAt"/> alone reads as a magic number at a call
+        /// site.
         /// </remarks>
         public static bool IsWorn(GameObject Weapon)
         {
-            if (Weapon == null)
-            {
-                return false;
-            }
-
-            return Weapon.GetStat("Hitpoints")?.Penalty >= WearCapacity / 3;
+            return WearSpent(Weapon) >= WornAt;
         }
     }
 }
