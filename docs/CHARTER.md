@@ -23,7 +23,7 @@ tools/   validation and helpers   .github/ CI
 ```
 
 **Read `docs/FEATURES.md` before touching anything.** It's the complete reference for what the mod
-does — every system, every item, all 490 new blueprints and 230 vanilla merges, which I
+does — every system, every item, all 492 new blueprints and 230 vanilla merges, which I
 reconstructed from the source because no complete list had ever existed. Section 10 is the bug and
 fork checklist. **`docs/STYLEGUIDE.md`** covers naming, formatting, and Workshop requirements — read
 §1 before renaming anything, because several conventions that look like mess are load-bearing
