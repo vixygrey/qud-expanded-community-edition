@@ -132,6 +132,13 @@ issue says, and a closing keyword written on Monday closes an issue rewritten on
 Cheapest form: `gh issue view <n> --json title,body` immediately before the merge, and compare against
 what the branch actually contains. It costs one command per issue and would have caught this.
 
+**And the link check lags an edit.** Writing this entry, its own pull request body said *"#675 closed
+#673 …"*, so `closingIssuesReferences` returned `[673, 678]` — the *"writing about a closing keyword is
+writing one"* trap, in the pull request about that trap. Rewording the sentence fixed the body
+immediately and **the API kept reporting the stale pair for another minute or so**. Re-check after a
+pause rather than concluding the link is stuck; and do not read a single clean result straight after an
+edit as proof either, for the same reason.
+
 ## The check you drop is the one that was working
 
 `gh pr view <n> --json closingIssuesReferences` is prescribed two sections above, by me, after it
