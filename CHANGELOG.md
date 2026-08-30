@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Twelve more trinkets, and half of them can't be taken apart** (#704).
+
+  A tuning fork, a horseshoe magnet, a key that opens nothing, a stopped pocket watch, a metronome
+  and a pair of spectacles. Then a sprig of dried lavender, a feather, a paper fan, a paper boat, a
+  cloth doll and a spool of thread.
+
+  Which of those you can scrap for bits is decided by what it is made of, not by a rule I imposed
+  item by item: the machines come apart, and the soft things don't. Metal and glass survive out here
+  to be broken down for parts. Paper, cloth, plant and feather only ever survive as themselves.
+
+  That takes the category to twenty-four, and I have made each one rarer to pay for it. Vanilla's
+  original six now turn up about three times as often as any single one of mine, so most of what you
+  find is still the game you bought and any particular curiosity of mine is a genuine find.
+
 - **Six more trinkets, and each of them does one small useless thing** (#603).
 
   An hourglass you turn over, a hand mirror you look in, a snow globe you shake, a kaleidoscope you
@@ -25,7 +39,8 @@ recorded because contributors need them, not because subscribers do.
   a tier-eight ruin as in a hut outside Joppa. That sameness is right and I have not touched it — a
   folding chair is a folding chair, and grading trinkets by tier would make a joke of the one thing
   that makes them affecting. What was missing is breadth, so these six join all eight trinket tables
-  at vanilla's own weight, and are exactly as likely to turn up as the originals.
+  in every tier band, rarer per item than vanilla's own six so that most of what you turn up is
+  still the game you bought.
 
   They are held to the register the existing ones set: one small, ordinary, human thing each, and no
   mechanical payoff whatsoever. Nothing here is secretly useful, nothing is a joke, and all six can

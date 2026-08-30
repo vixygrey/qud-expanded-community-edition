@@ -5,7 +5,14 @@
        Vanilla's category is six objects, and `Trinkets 1` through `Trinkets 8` offer the same six
        at every tier. That sameness is correct and is not being changed here - a folding chair is a
        folding chair, and the decision not to tier-grade trinkets is recorded in #603. The gap is
-       breadth, so these six go into all eight tables at vanilla's own weight of 35.
+       breadth, so these six go into all eight tables.
+
+       They are entered at **weight 11 against vanilla's 35**, which is not a judgement about how
+       interesting they are. STYLEGUIDE.md 3.2.1 caps this fork's share of a vanilla loot table at
+       half and says so explicitly: where completeness tips a table past half, the fix is a lower
+       per-item weight, never less content. Eighteen fork trinkets at 11 come to 198 against
+       vanilla's 210. So vanilla's six stay the ones a player meets most, which is the texture that
+       ceiling exists to protect.
 
        The register, read off the existing five (PlasticTree is furniture by weight, value and
        unknown appearance, so it is not part of the reference set): each does exactly ONE small,
@@ -52,6 +59,7 @@
     <part Name="Physics" Category="Trade Goods" Weight="1" />
     <part Name="Vixy_TrinketHourglass" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 
@@ -75,6 +83,7 @@
     <part Name="Physics" Category="Trade Goods" Weight="1" />
     <part Name="Vixy_TrinketHandMirror" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 
@@ -98,6 +107,7 @@
     <part Name="Physics" Category="Trade Goods" Weight="1" />
     <part Name="Vixy_TrinketSnowGlobe" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 
@@ -121,6 +131,7 @@
     <part Name="Physics" Category="Trade Goods" Weight="1" />
     <part Name="Vixy_TrinketKaleidoscope" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 
@@ -143,6 +154,7 @@
     <part Name="Physics" Category="Trade Goods" Weight="1" />
     <part Name="Vixy_TrinketSpinningTop" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 
@@ -166,6 +178,307 @@
     <part Name="Metal" />
     <part Name="Vixy_TrinketHandBell" />
     <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Trinkets, wave two. #704.
+
+       Twelve more, and the split between them is the point of this wave: six can be taken apart
+       and six cannot, decided by **material** rather than by a flag set per item.
+
+       `BoxOfCrayons` is the one vanilla trinket carrying `CanDisassemble="false"`, and the reason
+       is that wax and paper yield nothing a tinker wants. Generalised: the scrapable ones are the
+       old world's machines, and the unscrapable ones are its softness. Metal and glass survive to
+       be broken down for parts; paper, cloth, plant and feather only ever survive as themselves.
+
+       So `CanDisassemble` is a consequence of what a thing is, a player can predict which is which
+       without being told, and the rule is stated here once rather than repeated six times below.
+
+       Everything else follows wave one: `Trinket` is inherited untouched for `TinkerItem`,
+       `DynamicObjectsTable:Trinkets` and `Examiner`; `<stag Name="Trinket" />` earns the
+       value-curve exemption that `tools/validate_mod.py` enforces; and each carries a four-line
+       subclass of `Vixy_Trinket` for its one small human action.
+
+       **The `:Weight` tag on every one of these is load-bearing, not decoration.** `Trinket` carries
+       `DynamicObjectsTable:Trinkets`, a second distribution route that `table-share` does not reach
+       because it governs PopulationTables.xml rather than tags. That pool feeds
+       `JoppaConvertTrinket` and `OtherConvertTrinket` - the trinket you are handed at a water ritual
+       - and untagged, eighteen of these would take 73% of it. At 0.3 the pool sits at 45%, matching
+       the explicit route. Remove the tag and the ritual quietly becomes this fork's showcase. -->
+
+  <!-- ============================ the machines: metal and glass ============================ -->
+
+  <object Name="Vixy_Tuning Fork" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="tuning fork"
+      Tile="items/Vixy_TuningFork.png"
+      RenderString="*"
+      ColorString="&amp;y"
+      TileColor="&amp;y"
+      DetailColor="K"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Two steel tines on a stem, ground to a length that means one exact note and no other."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Metal" />
+    <part Name="Vixy_TrinketTuningFork" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Horseshoe Magnet" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="horseshoe magnet"
+      Tile="items/Vixy_Magnet.png"
+      RenderString="*"
+      ColorString="&amp;R"
+      TileColor="&amp;R"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Painted red once, worn back to grey at the bend. The poles still pull, faintly, at anything iron you are carrying."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Metal" />
+    <part Name="Vixy_TrinketHorseshoeMagnet" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Old Key" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="old key"
+      Tile="items/Vixy_Key.png"
+      RenderString="*"
+      ColorString="&amp;W"
+      TileColor="&amp;W"
+      DetailColor="w"
+    />
+    <part Name="Commerce" Value="5" />
+    <part Name="Description" Short="Cut brass, the teeth worn round. Somewhere there was a door." />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Metal" />
+    <part Name="Vixy_TrinketOldKey" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Pocket Watch" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="pocket watch"
+      Tile="items/Vixy_PocketWatch.png"
+      RenderString="*"
+      ColorString="&amp;W"
+      TileColor="&amp;W"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="10" />
+    <part
+      Name="Description"
+      Short="A hinged brass case over a white enamel face. The hands stopped at some particular minute and have kept it ever since."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Metal" />
+    <part Name="Vixy_TrinketPocketWatch" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Metronome" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="metronome"
+      Tile="items/Vixy_Metronome.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="W"
+    />
+    <part Name="Commerce" Value="10" />
+    <part
+      Name="Description"
+      Short="A lacquered wooden wedge with a brass arm that swings across a scale of numbers nobody here can read."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketMetronome" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Spectacles" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="spectacles"
+      Tile="items/Vixy_Spectacles.png"
+      RenderString="*"
+      ColorString="&amp;y"
+      TileColor="&amp;y"
+      DetailColor="C"
+    />
+    <part Name="Commerce" Value="10" />
+    <part
+      Name="Description"
+      Short="Wire loops around two ground lenses. They were made for one specific pair of eyes, and those were not yours."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketSpectacles" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- ====================== the softness: paper, cloth, plant, feather ====================== -->
+
+  <object Name="Vixy_Dried Lavender" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="sprig of dried lavender"
+      Tile="items/Vixy_Lavender.png"
+      RenderString="*"
+      ColorString="&amp;g"
+      TileColor="&amp;g"
+      DetailColor="m"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="A stem of small grey buds, bound at the base with thread. It has been dry a long time and has not finished being lavender."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketDriedLavender" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Feather" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="feather"
+      Tile="items/Vixy_Feather.png"
+      RenderString="*"
+      ColorString="&amp;y"
+      TileColor="&amp;K"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="A long barred feather off something that flew. Drawn the wrong way the barbs come apart, and drawn the right way they knit up again."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketFeather" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Paper Fan" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="paper fan"
+      Tile="items/Vixy_PaperFan.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Pleated paper on splints of cane. Folded shut it is a stick; opened out it is a half-circle of somebody's handwriting, too faded to read."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketPaperFan" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Paper Boat" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="paper boat"
+      Tile="items/Vixy_PaperBoat.png"
+      RenderString="*"
+      ColorString="&amp;Y"
+      TileColor="&amp;Y"
+      DetailColor="y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Folded from a single sheet in seven creases, all of them still sharp. It has never been in water."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketPaperBoat" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Cloth Doll" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="cloth doll"
+      Tile="items/Vixy_ClothDoll.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Stuffed with batting and closed with small even stitches. The dress is a scrap of something that used to be a larger thing."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketClothDoll" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
+    <stag Name="Trinket" />
+  </object>
+
+  <object Name="Vixy_Thread Spool" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="spool of thread"
+      Tile="items/Vixy_ThreadSpool.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="R"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="A turned wooden barrel still most of the way full. The thread is even, dyed, and stronger than it looks."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="TinkerItem" CanDisassemble="false" />
+    <part Name="Vixy_TrinketThreadSpool" />
+    <tag Name="Tier" Value="1" />
+    <tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />
     <stag Name="Trinket" />
   </object>
 </objects>
