@@ -3064,7 +3064,7 @@ same direction every time:
 | document | claim | what ships |
 |---|---|---|
 | `DESIGN_difficulty_systems.md` §B1 | nothing in the game charges you for time | it does, and the currency is water — `RegenCounter` spends it while you wait (#674) |
-| `DESIGN_difficulty_systems.md` §B3 | Freehold cut survival attrition deliberately | `Stomach` runs a complete water system. `WATER_MINIMUM` is 0, so at zero it prints *"You are dying of thirst!"*, sets `DeathCategory = "thirst"` and adds 2 hit points of penalty every action |
+| `DESIGN_difficulty_systems.md` §B3 | Freehold cut survival attrition deliberately | `Stomach` runs a complete water system. `WATER_MINIMUM` is 0, so reaching zero locks out natural healing and then takes 2 hit points on a natural 1 of `1d(Toughness)` per heal tick — on the order of 2 HP per hundred actions, not per action (#705) |
 | `DESIGN_difficulty_systems.md` §B4 | medium effort, Harmony maybe | `Broken`, `Tinkering_Repair` and per-use breakage in `ChargeUsedEvent` all ship. The mechanic is a new *trigger*, not a new system |
 | `DESIGN_sleep.md` §1 | Qud has no hunger and no thirst attrition | both exist and thirst kills. `Famished` is −10 Quickness at 2,400 actions |
 | `DESIGN_sleep.md` §7 | `Asleep` and `Wakeful` need verifying before coding | both resolve as *already satisfied*: `Wakeful` refuses only the involuntary events, and `Asleep.Voluntary` is set correctly at all ten call sites |
@@ -3076,6 +3076,21 @@ same direction every time:
 > traps elsewhere in this file, which are all about misreading *the game*. This is about misreading
 > *my own scoping* — and it is the more expensive kind, because it decides whether a thing gets built
 > at all rather than how.
+
+**One of the rows above broke that rule, and it was the correction rather than the claim** (#705).
+The §B3 row originally ended *"and adds 2 hit points of penalty every action"* — a figure written
+into this table *while recording the correction*, carried from there into `DESIGN_sleep.md` §1 and
+`DESIGN_difficulty_systems.md` §B3, and wrong by about ninetyfold. It **overstates** what Qud does,
+which is the one direction this entry says the errors never run.
+
+Two things follow, and the second is the one worth keeping:
+
+- A directional bias is a thing to notice, never a thing to lean on. The moment "my errors all run
+  one way" becomes a reason not to check the other way, it has stopped being an observation.
+- **The correction is not safer than the claim.** Both are prose about the assembly and neither has
+  a test; a figure written in the confident afterglow of having just been right is if anything the
+  more dangerous of the two, because nobody re-reads it. This row was copied into two more documents
+  before anyone did.
 
 **A design document's cost estimate is a claim about the assembly, and it ages exactly as badly as
 any other claim about the assembly.** It looks like a judgement, which is why it never gets checked;
