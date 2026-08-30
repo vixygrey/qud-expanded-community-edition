@@ -16,21 +16,6 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
-- **Wary — a Tactics power for spotting what you would otherwise walk into** (#221).
-
-  If you have ever been impaled by a young ivory you never saw, this is why: finding a hidden thing
-  rolls 1 to your Intelligence against a difficulty of 15, so **at Intelligence 14 or below you could
-  not find one. Ever.** Not unlikely — impossible. The same roll covers lagroots, yonderbrush, eel
-  spawn and every mine a miner lays, and a Mark III mine sits at 21.
-
-  Wary gives you a +6 on that roll, which takes the common case off zero: at Intelligence 10 a young
-  ivory goes from never to about one search in five. It does not make the worst mines easy, and it
-  does not make you better than someone who bought Intelligence — it just stops the answer being no.
-
-  It sits in **Tactics**, deliberately. The obvious homes were Tinkering and Customs and Folklore, and
-  both are Intelligence trees — which would have put the fix for low-Intelligence characters in the
-  one place they never look.
-
 - **Show someone their own work** (#595).
 
   Carry something a merchant or artisan made back to the person who made it, and you can now say so.
