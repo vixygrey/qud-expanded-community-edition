@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <!-- Trinkets, wave one. #603.
+
+       Vanilla's category is six objects, and `Trinkets 1` through `Trinkets 8` offer the same six
+       at every tier. That sameness is correct and is not being changed here - a folding chair is a
+       folding chair, and the decision not to tier-grade trinkets is recorded in #603. The gap is
+       breadth, so these six go into all eight tables at vanilla's own weight of 35.
+
+       The register, read off the existing five (PlasticTree is furniture by weight, value and
+       unknown appearance, so it is not part of the reference set): each does exactly ONE small,
+       ordinary, human thing. Not a stat, not a mechanic - an affordance. Sitting. Drawing.
+       Grinding salt. The failure modes are gag items and trinkets that turn out to be secretly
+       useful, and both are worse than leaving the category thin.
+
+       Inherited from `Trinket` and deliberately not overridden:
+         - `TinkerItem Bits="0" CanDisassemble="true"`. Scrapping is half the category's stated
+           purpose. `BoxOfCrayons` is the one vanilla trinket that opts out, and these follow the
+           five that do not.
+         - `<tag Name="DynamicObjectsTable:Trinkets" />`. The four pocket-sized vanilla trinkets
+           keep it; `FoldingChair` and `PlasticTree` `*delete` it because they are furniture.
+           These are pocket-sized, so they keep it.
+         - `Examiner Unknown="UnknownOddTrinket" Complexity="1"`. Unidentified appearances are a
+           shared pool of 49 blueprints, not per-item art, so this costs nothing per trinket.
+
+       Values sit at 5, with the hourglass at 10 as the one worked-glass-and-frame object - the
+       same shape as vanilla pricing five at 5 and `BoxOfCrayons` at 10. `<stag Name="Trinket" />`
+       is what earns the value-curve exemption in STYLEGUIDE.md §3.2, and tools/validate_mod.py
+       reads that marker, so it is load-bearing rather than decorative.
+
+       Tiles are 16x24 three-colour PNGs: black is the foreground and takes ColorString, white is
+       the DetailColor, transparent is the background. That mapping is the wiki's, not a guess -
+       it is the reverse of what the file bytes suggest at a glance. -->
+
+  <!-- Turn it over and watch it run out. The one material this world has in surplus, measured by
+       an object built to make a person watch it go. -->
+  <object Name="Vixy_Hourglass" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="hourglass"
+      Tile="items/Vixy_Hourglass.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="10" />
+    <part
+      Name="Description"
+      Short="Two blown bulbs meet at a throat no wider than a straw, pinned in a frame of dark wood. The sand inside is finer than any outside."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketHourglass" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Look at your own face. Worth something in a game where a character spends months becoming
+       someone else and is never once shown the result. -->
+  <object Name="Vixy_Hand Mirror" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="hand mirror"
+      Tile="items/Vixy_HandMirror.png"
+      RenderString="*"
+      ColorString="&amp;y"
+      TileColor="&amp;y"
+      DetailColor="b"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Silvering has crept back from the edges of the glass, so the face it returns is ringed in tarnish and slightly short of whole."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketHandMirror" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Shake it and watch it settle. Snow is the one weather this world does not have, sealed in a
+       bulb by people who did. -->
+  <object Name="Vixy_Snow Globe" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="snow globe"
+      Tile="items/Vixy_SnowGlobe.png"
+      RenderString="*"
+      ColorString="&amp;B"
+      TileColor="&amp;B"
+      DetailColor="Y"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="A glass bulb on a turned base holds water and a drift of white flecks. Whatever was moulded at the centre has come loose and lies on its side."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketSnowGlobe" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Look through it at nothing in particular. It shows you a pattern, and the pattern is the
+       whole of what it does. -->
+  <object Name="Vixy_Kaleidoscope" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="kaleidoscope"
+      Tile="items/Vixy_Kaleidoscope.png"
+      RenderString="*"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="m"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="A card tube banded in flaking foil. Three mirrors run its length to a chamber of coloured chips, and turning it drops them into a new arrangement that no one has seen before or will again."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketKaleidoscope" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Spin it on a flat surface. It falls over. -->
+  <object Name="Vixy_Spinning Top" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="spinning top"
+      Tile="items/Vixy_SpinningTop.png"
+      RenderString="*"
+      ColorString="&amp;r"
+      TileColor="&amp;r"
+      DetailColor="w"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Turned from a single block and painted in bands that blur to a flat colour once it is going. The point is worn off-centre, so it walks as it spins."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Vixy_TrinketSpinningTop" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+
+  <!-- Ring it. Nobody comes. -->
+  <object Name="Vixy_Hand Bell" Inherits="Trinket">
+    <part
+      Name="Render"
+      DisplayName="hand bell"
+      Tile="items/Vixy_HandBell.png"
+      RenderString="*"
+      ColorString="&amp;W"
+      TileColor="&amp;W"
+      DetailColor="w"
+    />
+    <part Name="Commerce" Value="5" />
+    <part
+      Name="Description"
+      Short="Cast brass with a turned handle, sized for a table rather than a tower. It was made to bring someone from another room."
+    />
+    <part Name="Physics" Category="Trade Goods" Weight="1" />
+    <part Name="Metal" />
+    <part Name="Vixy_TrinketHandBell" />
+    <tag Name="Tier" Value="1" />
+    <stag Name="Trinket" />
+  </object>
+</objects>

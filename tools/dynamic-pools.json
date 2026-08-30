@@ -476,15 +476,21 @@
       "Vixy_Fullerite Glaive",
       "Vixy_Fullerite Quarterstaff",
       "Vixy_Fullerite Spear",
+      "Vixy_Hand Bell",
+      "Vixy_Hand Mirror",
+      "Vixy_Hourglass",
       "Vixy_Iron Glaive",
       "Vixy_Iron Quarterstaff",
       "Vixy_Iron Spear",
+      "Vixy_Kaleidoscope",
       "Vixy_Pickled Rimeburr",
       "Vixy_Pressed Broadglove",
       "Vixy_Rimeburr Head",
       "Vixy_Salted Brinereed",
       "Vixy_Scour Slug",
       "Vixy_Shadetooth Pad",
+      "Vixy_Snow Globe",
+      "Vixy_Spinning Top",
       "Vixy_Steel Glaive",
       "Vixy_Steel Quarterstaff",
       "Vixy_Steel Spear",
@@ -497,9 +503,9 @@
       "Vixy_Zetachrome Spear"
     ],
     "shares": {
-      "Tier0": 51,
-      "Tier1": 21,
-      "Tier2": 18,
+      "Tier0": 52,
+      "Tier1": 26,
+      "Tier2": 19,
       "Tier3": 33,
       "Tier4": 26,
       "Tier5": 40,
@@ -751,10 +757,16 @@
       "Raven_Dark Matter Cell",
       "Raven_Large Sphere of Negative Weight",
       "Raven_Solar Cell Array",
-      "Raven_Solar Cell Nexus"
+      "Raven_Solar Cell Nexus",
+      "Vixy_Hand Bell",
+      "Vixy_Hand Mirror",
+      "Vixy_Hourglass",
+      "Vixy_Kaleidoscope",
+      "Vixy_Snow Globe",
+      "Vixy_Spinning Top"
     ],
     "shares": {
-      "Tier1": 0
+      "Tier1": 48
     }
   },
   "DynamicObjectsTable:Water_Creatures": {

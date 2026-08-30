@@ -14,6 +14,24 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Six more trinkets, and each of them does one small useless thing** (#603).
+
+  An hourglass you turn over, a hand mirror you look in, a snow globe you shake, a kaleidoscope you
+  look through, a spinning top you spin, and a hand bell you ring. Nobody comes.
+
+  Qud's whole category of ordinary objects from before was six items, and the same six turned up in
+  a tier-eight ruin as in a hut outside Joppa. That sameness is right and I have not touched it — a
+  folding chair is a folding chair, and grading trinkets by tier would make a joke of the one thing
+  that makes them affecting. What was missing is breadth, so these six join all eight trinket tables
+  at vanilla's own weight, and are exactly as likely to turn up as the originals.
+
+  They are held to the register the existing ones set: one small, ordinary, human thing each, and no
+  mechanical payoff whatsoever. Nothing here is secretly useful, nothing is a joke, and all six can
+  be taken apart for bits like the five vanilla trinkets that can. New tile art for each, in the
+  game's three-colour style.
+
 ## [2.10.0] - 2026-08-29
 
 ### Fixed
