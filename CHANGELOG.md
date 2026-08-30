@@ -16,6 +16,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Show someone their own work** (#595).
+
+  Carry something a merchant or artisan made back to the person who made it, and you can now say so.
+  They will know their own hand.
+
+  Qud already stamps a maker's mark onto everything a hero merchant stocks, already records whose it
+  is, and already prints it in the item's description — *"this dagger bears the mark of Argyve."* What
+  nobody ever did was **react** to being shown it. That is the only part I built; everything else was
+  already there and I had the issue wrong about it.
+
+  It appears only when you are actually carrying that person's work, and only notable items get
+  marked in the first place, so it stays a small moment rather than a fixture.
+
 - **Two more ways to carry things, and one of them helps weak characters most** (#584).
 
   An **arm satchel**, worn on either forearm — so you can wear two — and a **shoulder bag**, slung

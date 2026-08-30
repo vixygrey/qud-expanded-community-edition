@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 61 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 62 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5282,6 +5282,62 @@ population. Recorded here rather than built, so the reasoning survives if anyone
 
 New blueprints dropped from `Armor 1R` and `Utility 2`, live. No vanilla record modified, nothing to
 migrate. Both are placed beside vanilla's own capacity items rather than in a table of their own.
+
+## 39. Show someone their own work (`Vixy_ShowMakersMark`)
+
+**Carry something back to the person who made it and you can say so** (#595).
+
+### 39.1 Most of this issue was already built, and the issue said otherwise
+
+Qud records who made an object and, until this was checked, the fork's own investigation had three
+claims about it wrong. Worth stating them, because the corrections are what made the feature small:
+
+| the issue said | what ships |
+|---|---|
+| *"I recognise someone else's mark"* is the cheapest shape **to build** | it is not a shape to build — the item's description already reads *"this dagger bears the mark of Argyve"* |
+| the merchant shape is **impossible**, because `DynamicMakersMarks` ships off | `GenericInventoryRestocker.GetCraftmarkApplication` never consults that setting. Every hero merchant's stock is stamped today |
+| a search for **a price adjustment** returns nothing | `obj.RequirePart<Commerce>().Value += num` sits three lines below the stamp |
+
+**Two parts carry a mark and the issue conflated them.** `HasMakersMark` is on the **creature** and
+holds only `Mark` and `Color`. `XRL.World.Parts.MakersMark` is on the **item** and holds `Mark`,
+`Color` **and `CrafterName`** — so the link from an object back to its maker is already on the
+object, already serialised, and already printed.
+
+### 39.2 So the feature is one thing: the reaction
+
+You could buy a dagger stamped with Argyve's name, carry it to Argyve, and he had nothing to say.
+That was the entire gap, and it is what this fills — a conversation choice that appears **only** when
+you are carrying the speaker's own work.
+
+Matching is on **`CrafterName`, not the glyph**. `Mark` is one or more glyph characters that
+`AddCrafter` concatenates when several crafters touch an object, and `MakersMark.Generate` draws from
+a finite pool, so a substring test would false-positive the moment two makers shared a glyph.
+`CrafterName` is `;;`-joined and splits cleanly.
+
+A **replica is deliberately not its original**: `HasMakersMark` regenerates the mark on
+`ReplicaCreatedEvent`, so a clone of a smith is not that smith, and nothing here special-cases it —
+the names simply do not match.
+
+### 39.3 Rate-limited by Freehold rather than by me
+
+`TriggersMakersMarkCreationEvent` has exactly two handlers, `ModMasterwork` and `ModLegendary`. So
+the game's own answer to *when is an object worth marking* is **when it is notable**, and inheriting
+that filter is why this needs no frequency tuning — the issue's *"keep it quiet"* requirement is met
+by vanilla rather than by a number I chose.
+
+### 39.4 Off-switch
+
+None, on the same reasoning as §31's. It changes no number, no loot table and no character creation,
+and adds one conversation line that only appears when you are already carrying the speaker's work.
+There is nothing to refuse but a sentence — and #692 had just cut five options to fit the menu, so a
+new one would need to earn its line rather than default into it.
+
+### 39.5 What is still out of reach
+
+**The player's own mark.** `TinkeringHelpers` gates it on `DynamicMakersMarks`, which defaults false;
+a mod can supply `GlobalConfig.json` only from its root, and per #651 a manifest declaring
+`Directories` has no reachable root. Turning it on would cost the optional Joppa building. So
+*"a merchant recognises **my** mark"* stays unbuildable until that trade-off changes.
 
 ## Appendix A — every merged vanilla melee weapon
 
