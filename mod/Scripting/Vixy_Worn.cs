@@ -31,9 +31,10 @@ namespace XRL.World.Parts
     /// </para>
     /// <para>
     /// <b>The interval reads the weapon's tier, because tier is where vanilla keeps material.</b>
-    /// <c>20 × (Tier + 1)</c> uses, so bronze at tier 0 wears every 20 and zetachrome at tier 8
-    /// every 180 — a nine-fold spread that comes off a tag the weapon already declares rather than
-    /// out of a table somebody wrote.
+    /// <c>10 + 5 × Tier</c> uses, so bronze at tier 0 wears every 10 and zetachrome at tier 8 every
+    /// 50 — a five-fold spread that comes off a tag the weapon already declares rather than out of a
+    /// table somebody wrote. A weapon shows <c>[worn]</c> after 60 to 300 hits and breaks after 190
+    /// to 950, so every tier reaches both states in a real run.
     /// </para>
     /// <para>
     /// Putting durability in the blueprint instead — differing hitpoints per material — was the
@@ -62,8 +63,23 @@ namespace XRL.World.Parts
         /// <summary>Uses accumulated since the last point of wear was spent.</summary>
         public const string CounterProperty = "Vixy_WeaponUses";
 
-        /// <summary>Base interval in uses, multiplied by <c>Tier + 1</c>.</summary>
-        public const int BaseInterval = 20;
+        /// <summary>Uses per point of wear at tier 0, before <see cref="TierStep"/> is added.</summary>
+        public const int BaseInterval = 10;
+
+        /// <summary>Extra uses per point of wear for each tier above 0.</summary>
+        /// <remarks>
+        /// <c>10 + 5 × Tier</c> rather than the <c>20 × (Tier + 1)</c> this first shipped with. That
+        /// version was tuned by asking how long one weapon should last and never checking what the
+        /// multiplier did at the top of the range: a zetachrome weapon showed no wear for 1,080 hits
+        /// and broke at 3,420, which is never in a real run.
+        ///
+        /// **That inverted the point of the feature.** The repair economy is meant to engage with
+        /// gear worth keeping, and the steeper curve meant the better the weapon the less it ever
+        /// participated — bronze wore out while the things anybody would actually pay a tinker to
+        /// fix did not. A 5× spread keeps a bronze axe disposable and a zetachrome one durable
+        /// while landing every tier somewhere a player reaches.
+        /// </remarks>
+        public const int TierStep = 5;
 
         /// <summary>
         /// Points of wear a weapon holds: 25 hitpoints down to the 6 at which `Broken` fires.
@@ -173,7 +189,7 @@ namespace XRL.World.Parts
                 return 0;
             }
 
-            int interval = BaseInterval * (Tier + 1);
+            int interval = BaseInterval + TierStep * Tier;
             return Raven_Options.ScaleWeaponWearInterval(interval);
         }
 

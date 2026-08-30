@@ -27,8 +27,9 @@ recorded because contributors need them, not because subscribers do.
   Repair skill, fix-it spray foam, or paying a village tinker in water. A weapon past a third of its
   wear shows as **[worn]**, so it never breaks without warning.
 
-  **Low-tier weapons wear far faster.** A bronze axe spends wear every 20 hits, a zetachrome one
-  every 180 — because a bronze axe is a thing you replace and a zetachrome one is a thing you keep.
+  **Low-tier weapons wear far faster.** A bronze axe spends wear every 10 hits and breaks after 190,
+  a zetachrome one every 50 and breaks after 950 — because a bronze axe is a thing you replace and a
+  zetachrome one is a thing you keep. Both are numbers you will actually reach.
 
   There is a slider for it under the mod options: off, light, normal or heavy.
 

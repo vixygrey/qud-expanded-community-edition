@@ -5370,13 +5370,20 @@ Weapons are **HP 25** — 84 of 86 missile weapons and the melee line alike — 
 
 > **A weapon holds exactly 19 points of wear**, identical for a bronze dagger and a carbide greataxe.
 
-The interval is `20 × (Tier + 1)` uses, because tier is where vanilla keeps material:
+The interval is `10 + 5 × Tier` uses, because tier is where vanilla keeps material:
 
-| tier | roughly | interval | lifetime |
-|---:|---|---:|---:|
-| 0 | bronze | 20 | 380 |
-| 4 | steel | 100 | 1,900 |
-| 8 | zetachrome | 180 | 3,420 |
+| tier | roughly | interval | `[worn]` at | breaks at |
+|---:|---|---:|---:|---:|
+| 0 | bronze | 10 | 60 hits | 190 |
+| 4 | steel | 30 | 180 hits | 570 |
+| 8 | zetachrome | 50 | 300 hits | 950 |
+
+**This was retuned after play.** It first shipped at `20 × (Tier + 1)`, which put zetachrome at
+1,080 hits before it showed any wear and 3,420 before it broke — never, in a real run. That inverted
+the point of the feature: the repair economy is meant to engage with gear worth keeping, and the
+steeper curve meant the better the weapon the less it ever participated. The figure had been chosen
+by asking how long *one* weapon should last, without checking what the multiplier did at the top of
+the range.
 
 **Differing hitpoints per material was the better instinct and does not work.** Of 1,935 carried
 weapons with a numeric tier, 718 sit at 25 HP and only 277 declare it — the rest inherit from
