@@ -3093,3 +3093,49 @@ is the same failure aimed at the repository instead of at the assembly, and
 [`A decompiled call site tells you what that frame does not do, never what happens instead`](#a-decompiled-call-site-tells-you-what-that-frame-does-not-do-never-what-happens-instead)
 is what happens when the check is run but the conclusion overreaches. All three are cheaper to catch
 before the design than after.
+
+## A capped listing answers a smaller question, and nothing in the output says so
+
+`gh project item-list 1 --owner "@me" --limit N` returns the first N items and stops. There is no
+truncation marker, no warning on stderr, and the exit status is 0. The board crossed 200 items during
+August 2026 and held **247** on the 30th, so a `--limit 200` dump I was reading columns out of had
+already run off the end before it reached Todo.
+
+Todo came back as 13 rows. It has 22. **#193, #580, #583, #588, #595, #596, #633, #634 and #691 were
+simply not in the output**, and I went on to recommend two promotions from what was left — while #595,
+which on a full read is one of the two strongest candidates in the whole column, sat in the nine that
+had been cut.
+
+The tell was there and I walked past it: an On Deck column of ten against a Todo of thirteen is not a
+plausible backlog for this fork, and I had just spent an hour establishing how much work is queued.
+A number that disagrees with what you already know is worth more than a number that merely looks
+tidy.
+
+> **This is the [empty-search trap](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
+> one step further on, and it hides better.** Zero results feel like something went wrong, so they at
+> least invite a second look. Thirteen plausible rows feel like an answer. A capped listing does not
+> report a partial world; it reports a smaller one, in the same shape a complete answer would take.
+
+The general form: **a limit is a silent filter, and every listing command has one whether you passed
+it or not.** `gh` defaults to 30 items on most subcommands, and the flag that raises it does not
+announce when it is still binding.
+
+**What actually catches it.** Not raising the limit — I raised it from 100 to 200 and was still
+wrong. Cross-check the listing against a source that counts differently:
+
+```bash
+comm -23 <(gh issue list --state open --limit 200 --json number --jq '.[].number' | sort -n) \
+         <(gh project item-list 1 --owner "@me" --format json --limit 300 \
+           | jq -r '.items[].content.number' | sort -n)
+```
+
+Empty output means every open issue is on the board. It also fails loudly the moment the board dump
+is short, because the missing rows show up as differences. That one line is what I should have run
+before reading any column, and it is now how I check the board is fully loaded before trusting a
+count off it. Dump once to a file and query the file repeatedly, rather than re-running the command
+at different limits and comparing impressions.
+
+Related: [`A search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
+is the zero-result version of the same failure, and
+[`"Could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member of the
+family — in all three a tool declines to answer the question and the silence gets read as the answer.
