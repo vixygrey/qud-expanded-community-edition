@@ -174,4 +174,115 @@ namespace XRL.World.Parts
         protected override string Verb => "ring";
         protected override string Message => "You ring the bell. Nobody comes.";
     }
+
+    // Wave two (#704). The scrapable/unscrapable split is a property of the blueprints, not
+    // of these classes - every one of them does the same nothing, at the same price.
+
+    /// <summary>Strike it.</summary>
+    [Serializable]
+    public class Vixy_TrinketTuningFork : Vixy_Trinket
+    {
+        protected override string Verb => "strike it";
+        protected override string Message =>
+            "You strike the fork against your palm. It hums one note, and holds it.";
+    }
+
+    /// <summary>Hold it out and feel your iron lean.</summary>
+    [Serializable]
+    public class Vixy_TrinketHorseshoeMagnet : Vixy_Trinket
+    {
+        protected override string Verb => "hold it out";
+        protected override string Message =>
+            "You hold the magnet out. Everything iron on you leans very slightly toward it.";
+    }
+
+    /// <summary>Try it. There is nothing here it fits.</summary>
+    [Serializable]
+    public class Vixy_TrinketOldKey : Vixy_Trinket
+    {
+        protected override string Verb => "try it";
+        protected override string Message =>
+            "You close your hand around the key. Whatever it opened is a long way behind you.";
+    }
+
+    /// <summary>Hold it to your ear.</summary>
+    [Serializable]
+    public class Vixy_TrinketPocketWatch : Vixy_Trinket
+    {
+        protected override string Verb => "hold it to your ear";
+        protected override string Message =>
+            "You hold the watch to your ear. It has not ticked in a very long time.";
+    }
+
+    /// <summary>Set it going.</summary>
+    [Serializable]
+    public class Vixy_TrinketMetronome : Vixy_Trinket
+    {
+        protected override string Verb => "set it going";
+        protected override string Message =>
+            "You set the arm swinging. It keeps time for a while, for nobody.";
+    }
+
+    /// <summary>Put them on. They were ground for someone else.</summary>
+    [Serializable]
+    public class Vixy_TrinketSpectacles : Vixy_Trinket
+    {
+        protected override string Verb => "put them on";
+        protected override string Message =>
+            "You put the spectacles on. The world swims, and everything close is suddenly enormous.";
+    }
+
+    /// <summary>Smell it.</summary>
+    [Serializable]
+    public class Vixy_TrinketDriedLavender : Vixy_Trinket
+    {
+        protected override string Verb => "smell it";
+        protected override string Message =>
+            "You hold the sprig to your face. Faint, and dusty, and still lavender.";
+    }
+
+    /// <summary>Run it through your fingers.</summary>
+    [Serializable]
+    public class Vixy_TrinketFeather : Vixy_Trinket
+    {
+        protected override string Verb => "run it through your fingers";
+        protected override string Message =>
+            "You draw the feather through your fingers and the barbs knit back together.";
+    }
+
+    /// <summary>Fan yourself.</summary>
+    [Serializable]
+    public class Vixy_TrinketPaperFan : Vixy_Trinket
+    {
+        protected override string Verb => "fan yourself";
+        protected override string Message =>
+            "You fan yourself. The air moves, and is still warm.";
+    }
+
+    /// <summary>Float it, on nothing.</summary>
+    [Serializable]
+    public class Vixy_TrinketPaperBoat : Vixy_Trinket
+    {
+        protected override string Verb => "float it";
+        protected override string Message =>
+            "You set the boat on your open palm. It sits there, waiting for water.";
+    }
+
+    /// <summary>Straighten its dress.</summary>
+    [Serializable]
+    public class Vixy_TrinketClothDoll : Vixy_Trinket
+    {
+        protected override string Verb => "straighten its dress";
+        protected override string Message =>
+            "You straighten the doll's dress. The stitching at its shoulder is somebody's careful work.";
+    }
+
+    /// <summary>Unwind a length, and wind it back.</summary>
+    [Serializable]
+    public class Vixy_TrinketThreadSpool : Vixy_Trinket
+    {
+        protected override string Verb => "unwind a length";
+        protected override string Message =>
+            "You unwind a length of thread, and wind it carefully back.";
+    }
 }

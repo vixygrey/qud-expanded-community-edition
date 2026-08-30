@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **478** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **490** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **230** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -589,8 +589,8 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 0 | 8 |
-| `Trinkets.xml` | 6 | 0 |
-| **Total** | **478 active** | **230** |
+| `Trinkets.xml` | 18 | 0 |
+| **Total** | **490 active** | **230** |
 
 ### 6.2 Melee weapons
 
@@ -2131,7 +2131,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Items.xml               # 8 merged (§30)
-│   ├── Trinkets.xml            # 6 new (§36)
+│   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
@@ -5037,19 +5037,23 @@ and here **the opposite answer is correct and is recorded so nobody "fixes" it**
 folding chair, mundane objects are not tiered, and a trinket's charm is that it is recognisable. The
 argument that deeper ruins are older and should yield stranger things was considered and rejected.
 
-So all six new blueprints go into all eight tables at vanilla's own weight of **35**, and each trinket
-is exactly as likely to appear as each original.
+So every new blueprint goes into all eight tables. The current pool and its weights are in §37.2,
+since wave two changed them.
 
-| | before | after |
-|---|---|---|
-| objects in the pool | 6 | 12 |
-| each trinket's share of a draw | 14.1% | 7.6% |
-| `Books` share of a draw | 14.1% | 7.6% |
+#### 36.1.1 Why this fork's trinkets weigh 11 and vanilla's weigh 35
 
-`Books` halving is real but almost invisible in play, because `Trinkets N` is not where books come
-from. It is consumed by `Junk 0C`–`8C` and eight `StartingGear_*` tables; books reach a player
-through six bookshelf tables and three booksellers, none of which this touches. #699 covers the book
-pool itself.
+`STYLEGUIDE.md` §3.2.1 caps this fork's share of any vanilla loot table at half, and is explicit
+that **half is a chosen number rather than a derived one** — vanilla has no opinion about how much
+of its loot pool may belong to someone else. The reasoning it gives is a texture decision: *at the
+low tiers most of what a player finds should still be the game they bought.*
+
+`validate_mod.py`'s `table-share` check enforces it, and wave two ran straight into it — eighteen
+fork entries at vanilla's own weight of 35 came to 630 against vanilla's 210, or 75%. The styleguide
+also says what to do about it, in as many words: **where completeness tips a table past half, the fix
+is a lower per-item weight, never less content.**
+
+So all eighteen sit at 11, totalling 198 against vanilla's 210. Wave one shipped at 35 and was
+brought down with wave two; it had not been released, so no save or player was affected.
 
 ### 36.2 The register, and what it forbids
 
@@ -5115,6 +5119,80 @@ None, and rule 6 asks whether anyone would use one. This adds blueprints to loot
 nothing away: no vanilla record is modified, no number moves, and a player who dislikes a snow globe
 can decline to pick it up. Dropping them from the tables is a live change with no save migration if
 that ever proves wrong.
+
+## 37. Twelve more trinkets, split by what the world can reclaim (#704)
+
+**Wave two takes the category from 12 objects to 24**, and the split between them is the point of it:
+six can be taken apart and six cannot, decided by material rather than by a flag set per item.
+
+### 37.1 The rule, which is the wave
+
+`BoxOfCrayons` is the one vanilla trinket carrying `CanDisassemble="false"`, and the reason is that
+wax and paper yield nothing a tinker wants. Generalised: **the scrapable ones are the old world's
+machines, and the unscrapable ones are its softness.** Metal and glass survive to be broken down for
+parts; paper, cloth, plant and feather only ever survive as themselves.
+
+That makes `CanDisassemble` a consequence of what a thing *is*, so a player can predict which is
+which without being told, and the rule is stated once in the blueprint header rather than repeated
+six times.
+
+| the machines — scrapable | the one small thing | | the softness — not scrapable | the one small thing |
+|---|---|---|---|---|
+| tuning fork | strike it | | sprig of dried lavender | smell it |
+| horseshoe magnet | hold it out | | feather | run it through your fingers |
+| old key | try it | | paper fan | fan yourself |
+| pocket watch | hold it to your ear | | paper boat | float it |
+| metronome | set it going | | cloth doll | straighten its dress |
+| spectacles | put them on | | spool of thread | unwind a length |
+
+Twenty-four distinct verbs across the whole category now, none repeated. *Smell* is the first that is
+not sight, sound or touch.
+
+### 37.2 The pool, and this fork's share of it
+
+| | vanilla | after wave one | after wave two |
+|---|---|---|---|
+| objects in the pool | 6 | 12 | **24** |
+| weight per vanilla trinket | 35 | 35 | 35 |
+| weight per fork trinket | — | 35 | **11** |
+| this fork's share of the table | 0% | 50% | **48.5%** |
+| each vanilla trinket's share of a draw | 14.1% | 7.6% | **7.9%** |
+| each fork trinket's share of a draw | — | 7.6% | **2.5%** |
+
+The weight drop is the whole reason the share *fell* while the content trebled, and §36.1.1 has the
+rule behind it.
+
+**There is a second route, and it needed its own dial.** `Trinket` carries
+`<tag Name="DynamicObjectsTable:Trinkets" />`, which these inherit, and that pool is consumed by
+`JoppaConvertTrinket` and `OtherConvertTrinket` — the trinket handed over at a water ritual. The
+`table-share` ceiling does not reach it, because it governs `PopulationTables.xml` and this is a tag.
+Left alone it would have put this fork at **73%** of that pool, so the ritual would have produced one
+of mine nearly three times in four.
+
+Every one of the eighteen therefore carries
+`<tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />`, the fine dial STYLEGUIDE.md
+§3.2.1 names for exactly this — *reach for `:Weight` when a blueprint should stay in a pool and weigh
+less*. Vanilla ships 167 blueprints carrying one, at 0.05 to 0.3. That brings the pool to **45.3%**,
+within a couple of points of the explicit route, so both ways a trinket can reach a player now have
+the same texture instead of one quietly contradicting the other. The effect on play is the one the ceiling exists to produce: vanilla's six stay the
+trinkets a player meets most, and this fork's eighteen are the long tail — a player still draws one
+of mine a little under half the time, but any particular one of them is now a genuine find.
+
+### 37.3 What this reuses rather than repeats
+
+Everything structural comes from §36 and is unchanged: `Trinket` inherited untouched for
+`TinkerItem`, `DynamicObjectsTable:Trinkets` and `Examiner`; `<stag Name="Trinket" />` for the
+value-curve exemption; and one four-line subclass of `Vixy_Trinket` each, whose expression-bodied
+overrides keep instance state at zero.
+
+The six soft ones are the first trinkets in this fork to override anything they inherit, and it is
+one attribute: `<part Name="TinkerItem" CanDisassemble="false" />`, which is exactly the shape
+`BoxOfCrayons` uses.
+
+### 37.4 Off-switch
+
+None, on the same reasoning as §36.6. New blueprints in loot tables, no vanilla record modified,
+nothing taken away, and dropping them from the tables is a live change with no save migration.
 
 ## Appendix A — every merged vanilla melee weapon
 

@@ -2216,93 +2216,196 @@
        tier is favoured.
 
        Merge, never replace: `Load="Merge"` on both the population and the group, so the vanilla
-       entries and any future additions to them survive. -->
+       entries and any future additions to them survive.
+
+       **Weights are 11, not 35, and that is a rule rather than a preference.** STYLEGUIDE.md 3.2.1
+       caps this fork's share of a vanilla loot table at half, and says that where completeness tips
+       a table past half the fix is a lower per-item weight and never less content. Wave two (#704)
+       took this to eighteen entries; at vanilla's own 35 that is 630 against vanilla's 210, which
+       `validate_mod.py`'s `table-share` check refuses. At 11 it is 198, and vanilla's six stay the
+       trinkets a player meets most. -->
 
   <population Name="Trinkets 1" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 2" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 3" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 4" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 5" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 6" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 7" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 
   <population Name="Trinkets 8" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Weight="35" Number="1" Blueprint="Vixy_Hourglass" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Mirror" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Snow Globe" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Kaleidoscope" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Spinning Top" />
-      <object Weight="35" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hourglass" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Mirror" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Snow Globe" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Kaleidoscope" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spinning Top" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Hand Bell" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Tuning Fork" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Horseshoe Magnet" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Old Key" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Pocket Watch" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Metronome" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Spectacles" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Dried Lavender" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Feather" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Fan" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Paper Boat" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Cloth Doll" />
+      <object Weight="11" Number="1" Blueprint="Vixy_Thread Spool" />
     </group>
   </population>
 </populations>
