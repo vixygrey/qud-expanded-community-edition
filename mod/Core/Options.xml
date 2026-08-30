@@ -450,4 +450,26 @@
             Off makes fired arrows vanish again, from the next shot.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEWeaponWear"
+    DisplayText="{{C|Qud Expanded}}: weapons wear from use"
+    Category="Mods"
+    Type="Slider"
+    Min="0"
+    Max="3"
+    Increment="1"
+    Default="2"
+    SearchKeywords="qud expanded weapon wear durability broken repair tinkering"
+  >
+    <helptext>
+            How fast weapons wear out and eventually break. Armour already wears from
+            being hit; this makes weapons wear from being used.
+
+            0 off, 1 light, 2 normal, 3 heavy. A weapon breaks after 19 points of wear
+            and is repaired the same way broken armour is.
+
+            Higher-tier weapons wear far more slowly than low-tier ones.
+    </helptext>
+  </option>
 </options>

@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **492** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **230** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **281** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -578,7 +578,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 |---|---|---|
 | `MeleeWeapons.xml` | 108 (4 dormant) | 77 |
 | `Armor.xml` | 61 | 38 |
-| `RangedWeapons.xml` | 49 | 11 |
+| `RangedWeapons.xml` | 49 | 62 |
 | `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 9 | 14 |
 | `OtherEquipment.xml` | 9 | 16 |
@@ -590,7 +590,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 0 | 8 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **492 active** | **230** |
+| **Total** | **492 active** | **281** |
 
 ### 6.2 Melee weapons
 
@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 21 options (§13)
+│   ├── Options.xml             # 22 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2125,7 +2125,7 @@ mod/                            # the only directory uploaded to the Workshop
 ├── ObjectBlueprints/
 │   ├── MeleeWeapons.xml        # 108 new / 77 merged
 │   ├── Armor.xml               # 61 new / 38 merged
-│   ├── RangedWeapons.xml       # 49 new / 11 merged
+│   ├── RangedWeapons.xml       # 49 new / 62 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 62 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 64 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -5338,6 +5338,91 @@ new one would need to earn its line rather than default into it.
 a mod can supply `GlobalConfig.json` only from its root, and per #651 a manifest declaring
 `Directories` has no reachable root. Turning it on would cost the optional Joppa building. So
 *"a merchant recognises **my** mark"* stays unbuildable until that trade-off changes.
+
+## 41. Weapons wear from use (`Vixy_Worn`, `Vixy_WeaponWear`)
+
+**Everything you wear degrades from wearing it. Nothing you wield degrades from wielding it.** This
+makes both halves follow one rule (#195).
+
+### 41.1 The premise this issue was written on was wrong
+
+#195 originally argued *"gear doesn't degrade, so the tinkering economy is optional."* Gear degrades
+five ways and the economy is load-bearing:
+
+| route | trigger | permanent? |
+|---|---|---|
+| `Broken` from damage | a `Breakable` item reaching **¼ HP**; force-unequipped, value **÷100** | yes |
+| `Broken` from examine / modding / overload | botched identification, botched mod, overloaded use | yes |
+| `Rusted` | qudzu, jells, sludge, normality. **Metal only** | yes — a *second* rusting destroys it |
+| `ShatteredArmor` ("cracked") | Cleave / Shattering Blows | **no — 300 turns**, 2000 from Shattering Blows |
+
+`ShatteredArmor` is the one to notice: Freehold made the *common combat* degradation temporary on
+purpose, so it is an inconvenience rather than an errand.
+
+**So the gap is not degradation. It is that armour wears from use and weapons do not** — using armour
+means being hit, and the item takes that damage. `Combat` and `MeleeWeapon` contain no path that
+damages a weapon.
+
+### 41.2 The capacity is vanilla's; only the interval was ours
+
+Weapons are **HP 25** — 84 of 86 missile weapons and the melee line alike — and `Broken` fires at
+`CurrentHP <= MaxHP / 4`, which integer division puts at 6.
+
+> **A weapon holds exactly 19 points of wear**, identical for a bronze dagger and a carbide greataxe.
+
+The interval is `20 × (Tier + 1)` uses, because tier is where vanilla keeps material:
+
+| tier | roughly | interval | lifetime |
+|---:|---|---:|---:|
+| 0 | bronze | 20 | 380 |
+| 4 | steel | 100 | 1,900 |
+| 8 | zetachrome | 180 | 3,420 |
+
+**Differing hitpoints per material was the better instinct and does not work.** Of 1,935 carried
+weapons with a numeric tier, 718 sit at 25 HP and only 277 declare it — the rest inherit from
+`PhysicalObject`, the root every object descends from. There is no bronze base to merge onto, so that
+route is ~718 merges *and* it changes how those weapons answer blasts and acid the moment it ships.
+
+### 41.3 Deterministic, not a chance roll
+
+A per-hit chance breaks a weapon mid-fight on bad luck, which is the specific thing that makes
+durability systems hated and which Part C already rejects for permanent destruction. A counter does
+the same economic work and never ambushes anybody.
+
+### 41.4 Two hooks, and why the feature is half part and half merge
+
+| | hook | on | cost |
+|---|---|---|---|
+| melee, per **hit** | `WieldedWeaponHit` | **attacker** — carries the weapon | one part on the player, **zero merges** |
+| missile, per **shot** | `ShotComplete` | the weapon | **51 merges** |
+
+Missile weapons get no central hook: `ShotComplete` knows the weapon but only reaches the weapon, and
+`BeginMissileAttack` reaches the attacker carrying no parameters at all. So that half is merged onto
+the blueprints declaring `MissileWeapon` with a numeric tier — 51 of the 64 declarers; the other 13
+are gazes, natural weapons and the base itself.
+
+**Per shot, not per projectile**, and vanilla's own shapes say why: a Swarm Rack burns ten rounds for
+ten projectiles, so per-projectile would double-bill a cost already levied in ammunition; and a pump
+shotgun puts eight pellets out of **one shell in one discharge**. `ShotCompleteEvent` is sent at the
+same brace depth as the projectile loop rather than inside it, which is what makes this per-shot —
+and is the one place it could silently become per-projectile.
+
+### 41.5 Exemptions and visibility
+
+`NaturalGear` (357 blueprints, every one a `MeleeWeapon` carrier) so nobody's fangs wear out, and
+anything with no `Tier` tag — 2,061 carried `MeleeWeapon` blueprints that are largely corpses and
+oddments. The tag is the opt-in.
+
+**A `[worn]` tag past a third of the wear.** Vanilla shows no item condition at all; armour simply
+breaks. That is tolerable when the cause is visibly being hit and much worse when it is a counter
+nobody can see, so this is not decoration.
+
+### 41.6 Off-switch
+
+A **0–3 slider** — off, light, normal, heavy — scaling the interval ×2 / ×1 / ×0.5. `Min` is 0
+deliberately: a slider with `Min` above 1 sends Qud's options menu into unbounded recursion and
+crashes the game (#51). Default **normal**, since the economy loop is the point. Read live, so
+turning it off stops wear accruing immediately; wear already spent stays spent, like any other damage.
 
 ## Appendix A — every merged vanilla melee weapon
 

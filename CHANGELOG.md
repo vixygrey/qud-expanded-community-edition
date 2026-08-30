@@ -16,6 +16,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Weapons wear out, the way armour already does** (#195).
+
+  Your armour has always worn from use — being hit damages it, and at a quarter of its hitpoints it
+  breaks. Your sword never did. Swing it ten thousand times and it is identical to the day you found
+  it. This makes both halves of a loadout follow the same rule.
+
+  A weapon spends one point of wear every so many uses — per hit for melee, per shot for missile —
+  and breaks after nineteen of them, exactly as armour does. It is **repaired the same ways**: the
+  Repair skill, fix-it spray foam, or paying a village tinker in water. A weapon past a third of its
+  wear shows as **[worn]**, so it never breaks without warning.
+
+  **Low-tier weapons wear far faster.** A bronze axe spends wear every 20 hits, a zetachrome one
+  every 180 — because a bronze axe is a thing you replace and a zetachrome one is a thing you keep.
+
+  There is a slider for it under the mod options: off, light, normal or heavy.
+
 - **Show someone their own work** (#595).
 
   Carry something a merchant or artisan made back to the person who made it, and you can now say so.

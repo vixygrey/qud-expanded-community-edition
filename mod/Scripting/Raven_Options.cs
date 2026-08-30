@@ -28,6 +28,8 @@ namespace QudExpandedCE
     public static class Raven_Options
     {
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
+
+        public const string WeaponWearID = "OptionQudExpandedCEWeaponWear";
         public const string MutantHPGainID = "OptionQudExpandedCEMutantHPGain";
         public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
@@ -593,6 +595,55 @@ namespace QudExpandedCE
         /// charm itself is untouched — same following, same fighting, same shelf.
         /// </summary>
         public static bool CharmedMerchantPrices => Enabled(CharmedMerchantPricesID, "Yes");
+
+        /// <summary>
+        /// Whether weapons wear from use. 0 off, 1 light, 2 normal, 3 heavy.
+        /// </summary>
+        /// <remarks>
+        /// A slider rather than a checkbox because 0 is the off-switch, so rule 6 is satisfied
+        /// without spending a second line in a menu #692 had just trimmed. `Min` is 0 deliberately:
+        /// a slider with `Min` above 1 sends Qud's options menu into unbounded recursion and
+        /// crashes the game, which #51 found and `validate_mod.py` refuses to let back in.
+        ///
+        /// Read live, so turning it off stops wear accruing immediately. Wear already spent stays
+        /// spent, which is the same shape as any other damage an item has taken.
+        /// </remarks>
+        public static int WeaponWearLevel
+        {
+            get
+            {
+                if (!int.TryParse(Options.GetOption(WeaponWearID, "2"), out int level))
+                {
+                    return 2;
+                }
+
+                return level;
+            }
+        }
+
+        /// <summary>Whether weapon wear is switched on at all.</summary>
+        public static bool WeaponWear => WeaponWearLevel > 0;
+
+        /// <summary>
+        /// The tier interval, scaled by the slider: light doubles it, heavy halves it.
+        /// </summary>
+        /// <remarks>
+        /// Scaling the interval rather than the capacity, because capacity is vanilla's — a weapon
+        /// holds 19 points of wear whatever this says, since `Broken` fires at a quarter of 25
+        /// hitpoints. Only how fast those points are spent was ever ours.
+        /// </remarks>
+        public static int ScaleWeaponWearInterval(int Interval)
+        {
+            switch (WeaponWearLevel)
+            {
+                case 1:
+                    return Interval * 2;
+                case 3:
+                    return Math.Max(1, Interval / 2);
+                default:
+                    return Interval;
+            }
+        }
 
         /// <summary>
         /// Whether a fired arrow can survive its impact and be picked up again.
