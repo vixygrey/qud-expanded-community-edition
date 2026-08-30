@@ -300,10 +300,20 @@ stops being precious quite early.
 **Mechanic.** Water consumption applies **only in specific hostile biomes** — salt
 desert, salt marsh. Entering them without provisioning is a real expedition problem.
 
-**Why this shape.** A global hunger/thirst clock fights the game's stated design;
-Freehold cut survival attrition deliberately. **Regional** scarcity gets the tension
-without the busywork, and it makes a specific region feel like what the lore says it
-is.
+**Why this shape.** A global thirst clock is not missing from Qud — it is present and
+lethal, and **capacity swamps it**. `Stomach` starts `Water` at 30,000 and spends
+`Speed / 5` per action, so 20 a turn at Speed 100: 1,500 actions from the starting
+value to *"You are dying of thirst!"*, `DeathCategory = "thirst"` and 2 hit points of
+penalty per action. `RuleSettings.WATER_MINIMUM` is 0, so nothing clamps it out of
+reach. But one dram restores 10,000 — 500 actions — and a waterskin holds 64 of them,
+which is **32,000 actions** in a single container. `Options.AutoSip` drinks at the
+Thirsty line, so the gauge never visibly moves.
+
+So the design position to argue with is not *"Qud rejects survival attrition"*. It is
+*"Qud runs survival attrition at a rate that almost never fires."* **Regional** scarcity
+gets the tension without the busywork, and it makes a specific region feel like what the
+lore says it is — and it does so by changing the term that actually decides the outcome,
+which is provisioning rather than the tick.
 
 **Decision created.** Provisioning before crossing the salt. Actual expedition
 planning.
@@ -321,6 +331,19 @@ planning.
 **Mechanic.** High-tier artifacts have a small per-use chance to **jam** — disabled
 until repaired, never destroyed. Repair uses the existing Tinkering skill and scrap
 economy.
+
+**This is a new trigger for an existing state, not a new system.** `Broken` is a
+shipped effect applied at roughly twenty-five sites, `Tinkering_Repair` already clears
+it for bits, and vanilla already does per-use breakage in `ChargeUsedEvent` — it is
+simply gated to overloaded items:
+
+```csharp
+if (PowerLoadLevel <= 100) return;
+int num = GetOverloadChargeEvent.GetFor(Object, Amount);
+if ((1 + num / 10).in10000() && Object.ApplyEffect(new Broken(FromOverload: true)))
+```
+
+The state, the hook and the repair economy all exist. What is new is the condition.
 
 **Decision created.** Makes Tinkering matter, makes redundancy worth carrying, makes
 the scrap economy live.
@@ -350,10 +373,10 @@ entirely. Keep it that way — never destroy an item.
 |---|---|---|---|---|
 | **A1 Faction rivalry** | High | Low | No | **Build first** |
 | **B1 Wound system** | High | Medium | Probably not | **Build second** |
-| B3 Regional scarcity | Medium | Low | No | Good third |
+| B3 Regional scarcity | Medium | Low | No | Good third — the lever is capacity and AutoSip, not the tick |
 | A4 Cybernetic attention | Medium | Low | No | Cheap, closes an asymmetry |
 | A2 Hoard notoriety | Medium | Medium | No | Needs the non-combat valve |
-| B4 Artifact instability | Medium | Medium | Maybe | Only as jamming |
+| B4 Artifact instability | Medium | **Low** | No | Only as jamming. `ChargeUsedEvent` is the hook; `Broken` already exists |
 | A3 Kill champions | Medium | High | No | Best content, most work |
 | B2 Pursuit | Medium | High | Likely | Most edge cases. Last. |
 
