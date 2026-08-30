@@ -754,4 +754,178 @@
     <part Name="OmniphaseProjectile" />
     <tag Name="Omniphase" />
   </object>
+
+  <!-- Weapon wear, the missile half. #195.
+
+       Armour already wears from being used, because using armour means being hit and the item takes
+       that damage; at a quarter of its hitpoints `Physics` applies `Broken`. Nothing you wield wears
+       from wielding it. This makes both halves of a loadout follow the same rule.
+
+       **Why 51 merges here and none for melee.** `Combat` fires `WieldedWeaponHit` at the
+       attacker carrying the weapon, so one part on the player hears every melee weapon and no
+       blueprint is touched. Missile weapons get no such hook: `ShotComplete` knows the weapon but
+       only reaches the weapon, and `BeginMissileAttack` reaches the attacker carrying no parameters
+       at all. So the missile half is a part on each weapon, and this is the whole of the cost.
+
+       Merged onto the blueprints that DECLARE `MissileWeapon` and carry a numeric `Tier`. The other
+       13 declarers are gazes, natural weapons and the `MissileWeapon` base itself, which do not wear
+       and would be wrong to mark. Everything that inherits from one of these inherits the part too.
+
+       `Vixy_Worn` holds all the arithmetic, so the two halves cannot drift apart, and it wears per
+       SHOT rather than per projectile - a pump shotgun putting eight pellets out of one shell is one
+       discharge, and a chaingun already pays per round in ammunition. -->
+
+  <object Name="Arc Cannon" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Arc Winder" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Blast Cannon" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Blood-Gradient Hand Vacuum" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Boosterbot_Gun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Borderlands Revolver" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Carbine" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Chain Laser" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Chain Pistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Chaingun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Combat Shotgun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Compound Bow" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Dart Gun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Defoliant Gas Pump" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Desert Rifle" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Di-Thermo Beam" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Eigenpistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Eigenrifle" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Electrobow" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Flamethrower" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Freeze Ray" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Fungicide Gas Pump" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Grappling Gun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Grenade Launcher" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Hand Rail" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Hypertractor" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Laser Pistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Laser Rifle" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Light Rail" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Linear Cannon" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Longreach Grappling Gun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Missile Launcher" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Mortar Tube" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Musket" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Normality Gas Pump" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Nullray Pistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Phase Cannon" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Point-Defense Drone" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Psychal Fleshgun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Pump Shotgun" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Ruin of House Isner" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Seed Slingshot" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Semi-Automatic Pistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Short Bow" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Sniper Rifle" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Space Inverter" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Spaser Pistol" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Spaser Rifle" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Swarm Rack" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Thistle Pitcher" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
+  <object Name="Turbow" Load="Merge">
+    <part Name="Vixy_Worn" />
+  </object>
 </objects>
