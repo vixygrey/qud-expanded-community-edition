@@ -3154,3 +3154,142 @@ Related: [`A search that finds nothing has two explanations, and one of them is 
 is the zero-result version of the same failure, and
 [`"Could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member of the
 family — in all three a tool declines to answer the question and the silence gets read as the answer.
+
+## A guard on a collection nothing fills is not a budget
+
+`Zone.GetSuspendability` tests `The.ZoneManager.PinnedZones.Count > 3`, logs an exception and clears
+the list. I read that as an engine cap of three concurrently pinned zones, wrote it into a comment on
+#583 as *"the constraint that should replace the one in the body"*, and built a scheduling argument on
+top of it.
+
+`PinnedZones` has **exactly one writer in the whole assembly** — `ZoneManager.cs:647`, inside the save
+loader, reading back what `:483` wrote. Nothing at runtime ever adds to it. The list is empty in every
+session, the `> 3` guard cannot fire, and the `Suspendability.Pinned` return behind it is unreachable.
+The pin vanilla actually uses is `GetZoneSuspendabilityEvent`, which has no cap at all.
+
+> **A limit is only a limit if something can reach it.** Before quoting a guard as a constraint, count
+> the writers of the thing it guards. `Count > N` is evidence about what the author considered
+> reasonable; it is never evidence that anything is bounded.
+
+The nearest neighbours here are [`a scope that looks load-bearing may match nothing at all`](#a-scope-that-looks-load-bearing-may-match-nothing-at-all)
+and [`a knob that accepts your value and rounds it away is worse than no knob`](#a-knob-that-accepts-your-value-and-rounds-it-away-is-worse-than-no-knob),
+both of which are a declaration with nothing on the other end. This is the same disease in a **guard**,
+which is worse, because a guard reads as enforcement rather than as data — I would have checked a tag's
+consumers and did not think to check a bounds check's.
+
+Worth keeping the useful half: the dead guard is still real evidence about intent. Three is what
+Freehold thought reasonable. That is a design opinion to adopt, not a limit to rely on.
+
+## A dead store looks exactly like a cache
+
+`AIWorldMapTravel.GetTravelSegments()` does the terrain lookup, caches the result in `TravelSegments`
+— and then `return 1000;`. The field is `[NonSerialized] private` and is read nowhere in the class.
+Travel is therefore a flat 100 turns per parasang, terrain-blind, where the discarded value would have
+been 300 to 1,200.
+
+What makes this an entry rather than a shrug is **where the eye stops**. The body is four lines of
+correct, plausible caching, so reading the top of the method confirms the behaviour you expected and
+the tail is one word you have already stopped looking at.
+
+> **When a method computes a value you are about to rely on, check that the value reaches the return.**
+> A private field written and never read means the computation is decoration.
+
+Every other habit in this file points at reading *more* of a method — [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-this-one-decays-its-own-bonus)
+among them. This is the case where the interesting line is the last one. It is a sibling of
+[`an effect that reports nothing is not an effect that did nothing`](#an-effect-that-reports-nothing-is-not-an-effect-that-did-nothing)
+rather than a duplicate: there the mechanism ran on wrong data; here it computes the right answer and
+throws it away.
+
+## You can keep an actor running off-screen, and you cannot start one there
+
+Two registrations decide whether something acts while the player is elsewhere. They have different
+gates, and the difference decides what an off-screen event can be:
+
+| | gate to join | gate to stay |
+|---|---|---|
+| **Acting** — a `Brain`, goals, `AIBoredEvent` | `AddActiveObject` (`ActionManager.cs:317`) refuses unless the zone is cached, null, or the active one | `ValidateActor` (`:689`) evicts only when the zone is **not cached**, not when it is merely inactive |
+| **Ticking** — `WantTurnTick` / `TurnTick` | `MakeLive()`, called by `ActivateObjects` on activation and by `Cell.AddObject` only when the zone `IsActive()` — **but the method is public and ungated** | `ShouldRemove` (`:430`) drops the object when its zone is `Suspended` |
+
+`AllowCachedTurns` has one writer in the assembly, `ReclamationSystem`, and is false otherwise. So an
+actor enqueued while its zone was active keeps taking full turns indefinitely — which is how
+`OthoWander1` walks to Omonporch, by pinning its zone so it is never dropped — while an actor created
+in a zone the player has never entered **cannot join the queue at all**.
+
+> **An event whose actor must be created off-screen has to be `TurnTick`-driven, and its spawner has
+> to call `MakeLive()` by hand.** Only an event that continues an *existing* actor can use a brain.
+
+That is what `AIWorldMapTravel`'s docstring — *"Ideally this would be possible with a separate action
+queue/non-zone world map"* — is apologising for, and why that part does its work in `TurnTick` rather
+than through the `Brain` it sits beside.
+
+## When a count supports a claim, resolve it — and read the difference before the total
+
+This file already says a declared-part count is a lower bound. I wrote that entry. Then, across three
+investigations in two days:
+
+| where | declared | resolved | what was in the gap |
+|---|---:|---:|---|
+| `DromadCaravan` (#583) | 9 | **11** | **`Tam`** — Joppa's merchant. *"Add the travel part to the carrier"* would have walked him out of the starting village |
+| `AddsRep` (#596) | 37 | **48** | the five fungal infections, which turned *"the only two-sided trade"* into a whole item family — the strongest precedent that issue has |
+| `GivesRep` (#188) | 44 | **57** | the blueprints carrying the part whose generated relations were the finding |
+
+> **In every case the gap was not noise, it was the answer.** The inherited members are not a rounding
+> error on a count; they are systematically the interesting ones, because a part worth putting on a
+> base is a part that governs a family.
+
+A third instance in two days is where *"be more careful"* has demonstrably stopped working, which is
+why #702 exists: `tools/validate_mod.py` walks `Inherits` by hand in five places and imports the
+tested `BlueprintIndex` in none of them.
+
+## A mod's faction data is live when it adds and permanent when it removes
+
+**Factions are save state.** `XRLGame.cs:2318` calls `Factions.Save`, which writes the whole
+`FactionTable` as composites, `Faction.Write` included. `Factions.Load` clears the table and rebuilds
+every faction from the save — **and then re-reads the XML**, which is the part that inverts the obvious
+conclusion:
+
+```csharp
+public static void Load(SerializationReader Reader)
+{
+    FactionTable.Clear();
+    // ... rebuild every faction from the save ...
+    Loading.LoadTask("Loading Factions.xml", LoadXml, showToUser: false);
+    InitAttitudes();
+}
+```
+
+`LoadFactionNode` then treats vanilla and mods differently on that pass: an existing **vanilla** entry
+is skipped, a **mod's** is merged, and a faction only a mod declares is created. Feelings land through
+`TryAddFactionFeeling` → `FactionFeeling.TryAdd`, which is add-if-absent.
+
+> **The asymmetry is the lesson.** Mod faction data is **live in the additive direction** — new
+> factions and new feelings reach a character created before the mod was installed, on the next load.
+> It is **permanent in the subtractive direction**: once an edge exists and the game has saved, it is
+> in the save's own copy, and deleting it from the XML does nothing. Turning the option off leaves
+> every edge it ever created.
+
+That is a **one-way edit**, and a fourth off-switch scope — neither live, nor restart-scoped, nor
+new-character-scoped, but *additive-live and subtractive-never*. Any feature built on faction edges
+has to say so in its `<helptext>` the way the Chip Interface option does.
+
+This is [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-this-one-decays-its-own-bonus)
+applied to a method rather than a loop, and the tell was available: a `Load` that only restored would
+have no reason to exist separately from `Init`.
+
+## `CanChangeMovementModeEvent.To` is a message name, not a mode
+
+The natural way to stop a burdened character running is to refuse `CanChangeMovementModeEvent`, the way
+vanilla's `Overburdened` refuses flight. **It does not work, and it fails silently.**
+
+`To` carries the movement **message name** rather than a mode identifier, and `Run` passes its own
+`ActiveEffectMessageName` — a field set from `EffectMessageName`, configurable per `Run` part. So a
+handler matching `"Running"` never fires, and the restriction ships inert with nothing to notice it.
+`Vixy_Burdened` vetoes the `ApplyRunning` string event instead, and records the rejected route in its
+docstring.
+
+> **Before matching on an event's string field, find where the string is set.** A field named for what
+> it selects is not necessarily populated with an identifier — this one carries display text, and
+> display text is configurable.
+
+The general form is [`a boolean's name is not its semantics, and neither is a skill's`](#a-booleans-name-is-not-its-semantics-and-neither-is-a-skills).
+`docs/STYLEGUIDE.md` §3.4 has the refusal idiom that this is the trap in.

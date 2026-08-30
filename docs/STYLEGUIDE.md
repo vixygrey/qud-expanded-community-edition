@@ -962,6 +962,63 @@ tags that decide this live on vanilla blueprints, so nothing in CI can check it 
 
 ---
 
+### 3.4 Refuse the action, don't tax the character
+
+**When a survival or state condition should stop the player doing something, refuse it at the moment
+they choose it, with text that says why — rather than applying a stat penalty and letting them do it
+anyway.** This is Freehold's own idiom, it is how both of Qud's survival timers actually express
+themselves, and this fork keeps rediscovering it. #706 is the record.
+
+Vanilla's example, and the one to copy:
+
+```csharp
+public override bool HandleEvent(CanTravelEvent E)
+{
+    if (E.Object == ParentObject && IsFamished() && !E.Object.HasSkill("Discipline_MindOverBody") && !The.Core.IDKFA)
+    {
+        return E.Object.ShowFailure("You're too famished to travel long distances.");
+    }
+    return base.HandleEvent(E);
+}
+```
+
+That is `Stomach`, and it is the larger half of what hunger does. The −10 Quickness from `Famished`
+is the smaller one.
+
+**Why it is the convention here rather than one option of two.** A stat penalty says *you are worse
+at everything now*; a refusal says *not this, and here is why*. Against the charter the difference is
+not close:
+
+| rule | how a refusal scores |
+|---|---|
+| 5 — use the game's own mechanism | The event is Freehold's, maintained by them across patches |
+| 1 — compatibility | A part on the player through `Vixy_PlayerParts` touches no vanilla record and needs no merge |
+| 6 — off-switch | An event handler holds no state, so the option is genuinely live in **both** directions |
+| 2 — causality | The refusal text *is* the reason, delivered at the moment it applies, which a stat penalty never does |
+
+**This fork has already built it twice, and the reasoning was buried in C# docstrings.** Both are
+correct where they are and both should stay; they are repeated here because a docstring is not
+somewhere anyone looks before designing:
+
+- `Vixy_TradeOffer` uses `CanTradeEvent` this way, and works out that `CanTradeEvent.Check` fires a
+  **legacy `"CanTrade"` string event on the actor and the speaker before its pooled dispatch**, which
+  is why it is *"one part on the player and no XML."*
+- `Vixy_Burdened` vetoes `ApplyRunning` with `Object.Fail("You are carrying too much to run.")`.
+
+**Two limits, both verified, both of which have already caught someone here.**
+
+`CanTravelEvent.Check` dispatches to the object **and** to `The.Game`, so it can be vetoed centrally
+by an `IGameSystem` rather than only by a part. But it gates **entering** the world map, not each
+parasang crossed — so it expresses *provision before you go*, and cannot turn anyone back halfway.
+
+And `CanChangeMovementModeEvent` is the trap: see `docs/LESSONS.md` for why matching on its `To`
+field silently never fires.
+
+**No catalogue of the twenty-eight `Can*Event` types is given here, deliberately.** A scan for
+`X.HandleEvent` was made and it is wrong in at least one row — it reports `CanTradeEvent` as having no
+actor dispatch, which is exactly the legacy-string case above. Publishing it would be a table that
+looks like a reference and is not one. Read the event you intend to use.
+
 ## 4. XML conventions
 
 ### 4.0b `<tag>` and `<stag>` are different tags
