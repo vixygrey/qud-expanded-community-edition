@@ -51,6 +51,7 @@ namespace QudExpandedCE
         public const string AskNameID = "OptionQudExpandedCEAskName";
         public const string ImportantArtifactsID = "OptionQudExpandedCEImportantArtifacts";
         public const string SilentTradeOffersID = "OptionQudExpandedCESilentTradeOffers";
+        public const string CharmedMerchantPricesID = "OptionQudExpandedCECharmedMerchantPrices";
         public const string WiderNamesID = "OptionQudExpandedCEWiderNames";
         public const string GenderedNamesID = "OptionQudExpandedCEGenderedNames";
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
@@ -743,6 +744,22 @@ namespace QudExpandedCE
         /// that follows it.
         /// </summary>
         public static bool SilentTradeOffers => Enabled(SilentTradeOffersID, "Yes");
+
+        /// <summary>
+        /// Whether a charmed merchant still charges for their goods.
+        ///
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_MerchantOwnership</c> reads this
+        /// when a trade screen opens, so flipping it applies to the next merchant you talk to.
+        /// Nothing is stored either way — it decides a multiplier that Caves of Qud recomputes on
+        /// every trade.
+        ///
+        /// Defaults on, and this one takes something away, which rule 6 says is exactly when an
+        /// option earns its place. What it takes away is the part vanilla gave away by accident: the
+        /// companion rule was written for someone who joined you, and it reaches a shopkeep you
+        /// enchanted because nothing in the five charms asks whether the follower keeps a shop. The
+        /// charm itself is untouched — same following, same fighting, same shelf.
+        /// </summary>
+        public static bool CharmedMerchantPrices => Enabled(CharmedMerchantPricesID, "Yes");
 
         private static void ApplyChipSlots()
         {
