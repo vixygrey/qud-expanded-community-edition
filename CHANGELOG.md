@@ -16,6 +16,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** A resolved carriers helper, and one documented figure that had drifted (#702).
+
+  `BlueprintIndex` gains `carriers` and `carriers_matching`, which answer *which blueprints does this
+  reach* through the inheritance chain and through `<mixin>`, rather than by counting declarations.
+  Counting declarations was short three times in two days, and the gap held the finding each time.
+
+  It immediately caught a live one. `docs/STYLEGUIDE.md` said 200 blueprints carry a `:Weight` tag;
+  the real figure was 189 when that was written, and my own trinket work moved it to 207 without
+  anything noticing. The combined number needs the game loaded to recompute, so CI never could — it
+  is gone now, and the vanilla half is a snapshot figure checked on every run.
+
 - **Twelve more trinkets, and half of them can't be taken apart** (#704).
 
   A tuning fork, a horseshoe magnet, a key that opens nothing, a stopped pocket watch, a metronome
