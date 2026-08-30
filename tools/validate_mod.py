@@ -767,6 +767,12 @@ def check_version_matches_changelog(f: Findings, version: str) -> None:
         )
 
 
+# The longest help text surviving #690's trim, rounded up. A ratchet, not a judgement: nothing today
+# fails and nothing new may be worse. Raise it only with a reason, and prefer trimming the prose.
+HELPTEXT_MAX = 550
+HELPTEXT_LINE = 80
+
+
 def check_options(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Guard the slider constraint that crashes Qud.
 
@@ -1576,6 +1582,57 @@ def check_shader_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                         f"attribute in this format, so declaring it redefines vanilla's for every "
                         f"place the game already uses it",
                     )
+
+
+def check_helptext_shape(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """An option's `<helptext>` must fit the box Qud renders it in.
+
+    **The options menu does not wrap, and this check exists because I got that backwards once.**
+    I read `Qud.UI.OptionsRow` calling `RTF.FormatToRTF(data.HelpText)` with `blockWrap` defaulting
+    to `-1`, concluded that `BlockWrap` never runs *because the container wraps instead*, and
+    unwrapped all twenty-one help texts onto one line per paragraph. In game that renders squashed
+    into a narrow box with the long lines running off the screen. The assembly told me what does
+    not wrap; it did not tell me what does, and I filled that in with an assumption.
+
+    So the source line is the rendered line, and the numbers come from vanilla rather than from me.
+    Caves of Qud ships four options with help text: 157 to 352 characters, longest source line 162,
+    shortest 80. `HELPTEXT_LINE` takes that floor. `HELPTEXT_MAX` is a ratchet a little above the
+    longest surviving text here, which is still half again vanilla's longest - rule 6 counts a
+    `<helptext>` as one more thing you have to keep true, and the reasoning belongs in
+    docs/FEATURES.md where nobody reads it through a tooltip.
+
+    This drifted before anything was looking: #690 found ten of twenty-six over 450 characters, one
+    at 2152. That is charter rule 4's argument for a check rather than a sentence.
+    """
+    for path, root in all_roots.items():
+        if "option" not in path.name.lower():
+            continue
+        for option in root.iter("option"):
+            node = option.find("helptext")
+            if node is None or not node.text:
+                continue
+            ident = option.get("ID", "?")
+            # Reproduce Qud's own normalisation before measuring. XmlDataHelper.GetTextNode strips
+            # each line's indentation and the surrounding blank lines, and leaves the rest alone.
+            text = "\n".join(line.strip() for line in node.text.splitlines()).strip(
+                "\n"
+            )
+            for line in text.splitlines():
+                if len(line) > HELPTEXT_LINE:
+                    f.add(
+                        "helptext-shape",
+                        f"{path}: {ident} has a {len(line)}-character line, over the "
+                        f"{HELPTEXT_LINE} cap - the menu renders the source line as written and "
+                        f"anything longer runs off the screen: {line[:60]!r}...",
+                    )
+                    break
+            if len(text) > HELPTEXT_MAX:
+                f.add(
+                    "helptext-shape",
+                    f"{path}: {ident} has a {len(text)}-character helptext, over the "
+                    f"{HELPTEXT_MAX} cap - vanilla's longest is 352, and this is read in a "
+                    f"tooltip rather than in the documentation",
+                )
 
 
 def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -3718,6 +3775,7 @@ def run() -> Findings:
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
+    check_helptext_shape(f, roots)
     check_option_defaults(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)

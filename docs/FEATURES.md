@@ -2109,7 +2109,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 26 options (§13)
+│   ├── Options.xml             # 21 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2175,7 +2175,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2214,20 +2214,15 @@ rather than anything the mod already was.
 | psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
-| Mind's Compass reports your bearings | Checkbox | **Yes** | Which of a parasang's nine zones you are standing in, on arrival. §20. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
 | Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
-| wider name pools | Checkbox | **Yes** | The syllables added to Qudish. Off restores vanilla's 29/20/24 exactly. §15.1. |
-| gendered name endings | Checkbox | **Yes** | Whether a generated name reflects the gender the game already rolled. Off makes naming gender-blind, as vanilla is. §15.2. |
 | how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.4. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
 | anthro mutations | Checkbox | **Yes** | Fangs, Keen Smell and Tail in the physical mutation list. §21–§23. |
-| creature colour variants | Checkbox | **Yes** | The 44 coat and name variants, each splitting its parent's share of a table. §17. |
 | Trash Divining thins out | Checkbox | **Yes** | Whether a zone's trash runs out of things to say as it is picked over. §25. |
 | ask a creature its name | Checkbox | **Yes** | The *what are you called* conversation choice. Asking forecloses renaming. §26. |
 | marked artifacts stay yours | Checkbox | **Yes** | Whether an artifact you marked important is kept out of Argyve's picker. §27. |
-| silent trade offers | Checkbox | **Yes** | Whether creatures with nothing to trade still offer to. §28. |
 | charmed merchants still expect paying | Checkbox | **Yes** | Whether a charmed merchant's shop is free. §34. |
 | arrows can be picked back up | Checkbox | **Yes** | Whether a fired arrow can survive and land. §35. |
 
@@ -2271,7 +2266,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, bearings, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
+| **Live** — applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -2624,11 +2619,12 @@ bearing in the argument for building this, and it went unchecked — the same fa
 `docs/LESSONS.md` about a premise nobody verified, this time inside my own case for the work rather
 than inside a bug report.
 
-#### Off-switch
+#### No off-switch
 
-The same `OptionQudExpandedCEWiderNames` that governs the Qudish pools, which is one idea — names
-that stop sounding alike — rather than two. Off zeroes the weight on the added entries, exactly as it
-does for Qudish, so vanilla's 280 come back live.
+Removed in #690. `NameElement.Weight` defaults to **1** and `Naming.xml` declares no `Weight`
+attribute, so the option's *on* branch was setting the value the XML already produced — it existed
+only to implement the off switch. Rule 6 asks whether anybody would turn a thing off, and a wider
+pool of syllables changes no mechanic and takes nothing away.
 
 Two checks hold it together. `validate_mod.py`'s `naming-option-coverage` was written for Qudish and
 named it in a string comparison, so a second namestyle would have gone unchecked — the precise
@@ -2778,8 +2774,8 @@ than a surprise.
 
 ## 17. Creature variants (`ObjectBlueprints/Creatures.xml`)
 
-**44 cosmetic colour and name variants of nineteen common creatures** (#171). Option-gated by
-`OptionQudExpandedCECreatureVariants`, default **on**.
+**44 cosmetic colour and name variants of nineteen common creatures** (#171). Always on — the option
+was removed in #690.
 
 ### 17.1 The one rule that keeps this cosmetic
 
@@ -2993,24 +2989,17 @@ Share is a property of a table; density is a property of a blueprint.
 `Style="pickone"`, so `Vixy_PaleCroc` takes a share of one draw rather than adding a second. The bug
 only ever existed where vanilla wrote a flat `Chance` list.
 
-### 17.8 The option
+### 17.8 No off-switch
 
-`OptionQudExpandedCECreatureVariants`, default on, read by `Raven_Options.ApplyCreatureVariants`. It
-walks `PopulationManager.Populations` and, for every entry whose blueprint carries the
-`Vixy_CreatureVariant` tag, **switches that entry to the blueprint it inherits from** — remembering
-the original so the toggle is reversible.
+Removed in #690. Its own rule above is the argument: **a variant differs in name, colour and flavour
+text and must not differ in stats.** Rule 6 says flavour that changes no mechanic does not need an
+option, and #664 removed §29's on exactly that reasoning — this is the same category as §30's object
+colours, which was never given one.
 
-**Off means ordinary, not absent**, and since #613 it has to. A brindle dog and a dog are one dog's
-worth of chance between them, so deleting the brindle half would take that dog out of the world
-rather than repainting it. Switching the blueprint keeps the entry's own `Chance` and `Number`,
-which were sized so the group sums to vanilla's expectation — so animal density is identical whether
-the coats are on or off, with no arithmetic anywhere.
+The apply method that backed it walked `PopulationManager.Populations` swapping each variant entry
+for the blueprint it inherits from. Its *enabled* branch only ever undid a previous disable, so
+deleting it leaves the shipped behaviour untouched.
 
-The tag matters: a `Vixy_` prefix match would also catch 32 glaives, spears and quarterstaves and
-quietly empty three weapon families out of the loot tables.
-
-The first attempt gated this with `ExcludeFromDynamicEncountersOption`, which needed no C# at all —
-but that tag is read only by the dynamic table fabricators, so on this route it gated nothing.
 
 ## 18. Harvestable plants (`ObjectBlueprints/Plants.xml`)
 
@@ -4313,10 +4302,11 @@ copied, so what can rot is the three-way combination and not the definition of a
 and a wrong answer costs a menu entry rather than an item. That is a different risk class from the
 rest of §26–§28, and it is the reason this section says so out loud.
 
-### 28.5 Off-switch
+### 28.5 No off-switch
 
-`OptionQudExpandedCESilentTradeOffers`, on by default, read live. Off restores the offer, and the
-refusal that follows it.
+Removed in #690. The trade was never possible; the only thing the option restored was the game
+offering it before saying so. Rule 6 asks whether anybody would turn a thing off, and nobody wants a
+menu entry back for the sake of the refusal behind it.
 
 ## 29. Gates swing shut (`ObjectBlueprints/Furniture.xml`, `Vixy_SelfClosingGate`)
 

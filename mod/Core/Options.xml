@@ -22,42 +22,18 @@
     SearchKeywords="qud expanded anthro animal mutation fangs bite teeth beast"
   >
     <helptext>
-            Adds this fork's animal-trait mutations to the physical mutation list.
+            Adds this fork's animal-trait mutations to the physical mutation list - the
+            ordinary animal end Qud has almost none of.
 
-            Qud's physical mutations are full of things that make you stranger - a carapace,
-            quills, a beak, an extra pair of legs. What it has almost none of is the ordinary
-            animal end of that: the traits a wolf or a cat has and a person does not.
+            {{Y|Fangs}}, 3 points. A bite alongside whatever you are wielding, roughly
+            one round in five. Your face slot stays free.
 
-            Currently three mutations:
+            {{Y|Keen Smell}}, 3 points. Scent creatures at twice Heightened Hearing's
+            range, but walls stop a smell dead.
 
-            Fangs, 3 points. Long teeth on your face that bite alongside whatever you are
-            wielding, roughly one round in five, and draw blood when they land. They do not
-            occupy your face slot, so a mask or goggles still fit.
+            {{Y|Tail}}, 1 point. 1 DV, and an Agility save against being knocked down.
 
-            Bleeding is normally bought - Bloodletter costs 150 skill points and needs Agility
-            17. Fangs give you a smaller share of it for a mutation point instead, and the two
-            stack if you have both.
-
-            Keen Smell, 3 points. You detect creatures around you by scent, at roughly twice the
-            range of Heightened Hearing - but walls stop a smell dead, and a closed door, deep
-            water or anything blocking your view cuts it down. Better in open country than in a
-            ruin, which is the opposite of hearing.
-
-            Keen Smell is Caves of Qud's own Heightened Smell. Freehold built it, gave it to a
-            few animals, and never put it in the list you pick from. This puts it there.
-
-            Tail, 1 point. A tail. It gives you 1 DV, and when something would knock you down you
-            get an Agility save to keep your feet - so it helps more the nimbler you are. It does
-            not attack and it cannot hold anything, and an axe can cut it off, which takes the
-            dodge with it.
-
-            Pick which tail at character creation - fox, wolf, cat, rat or lizard. That choice is
-            pure flavour; they all behave the same.
-
-            Turning this off hides the mutations at character creation and keeps them off
-            randomly generated creatures. Mutations are read while a character is being made,
-            so this applies to a NEW character - an existing one keeps whatever it was born
-            with.
+            Off hides them at character creation. Applies to a {{y|new}} character.
         </helptext>
   </option>
 
@@ -72,23 +48,15 @@
     <helptext>
             Makes carrying weight a gradient instead of a cliff.
 
-            Vanilla has one threshold: carry more than 15 pounds per point of Strength and you
-            become Overburdened, which means unable to move at all. Below that, nothing. So the
-            best play is to sit just under the limit forever and never think about it again.
+            Vanilla has one threshold - 15 pounds per point of Strength, then
+            Overburdened, unable to move. Below it, nothing at all.
 
-            With this on, four bands sit underneath that threshold:
+            This puts three bands underneath. Lightly burdened at half capacity, -1 DV.
+            Encumbered at three quarters, -2 DV. Heavily burdened at nine tenths, -4 DV,
+            -10 Quickness, and no running.
 
-            Lightly burdened, at half capacity - minus 1 DV.
-            Encumbered, at three quarters - minus 2 DV.
-            Heavily burdened, at nine tenths - minus 4 DV, minus 10 Quickness, and you cannot run.
-
-            Vanilla's Overburdened is untouched and still stops you dead at full capacity. What
-            changes is that you feel the weight coming before it stops you.
-
-            Player only, as in vanilla, where no NPC is ever overburdened at any load.
-
-            Safe to switch on or off mid-run: the band is recalculated every turn.
-    </helptext>
+            Overburdened is untouched. Player only, and safe to toggle mid-run.
+        </helptext>
   </option>
 
   <option
@@ -105,9 +73,11 @@
     <helptext>
             How many mutation points a Mutated Human starts character creation with.
 
-            Vanilla Caves of Qud gives 12. Caves of Qud Expanded has always given 16, which is the default here.
+            Vanilla Caves of Qud gives 12. Caves of Qud Expanded has always given 16,
+            which is the default here.
 
-            {{y|Set this before creating a character.}} Changing it has no effect on a character that already exists.
+            {{y|Set this before creating a character.}} Changing it has no effect on a
+            character that already exists.
         </helptext>
   </option>
 
@@ -121,9 +91,12 @@
     SearchKeywords="qud expanded mutation hit points hp level mutant health"
   >
     <helptext>
-            How many hit points a Mutated Human rolls each level, applied from your next level onward.
+            How many hit points a Mutated Human rolls each level, applied from your next
+            level onward.
 
-            {{G|1-5}} is this mod's: swingier than vanilla, with a higher ceiling. {{y|2-3}} is what version 2.2 shipped, apparently by mistake. {{y|1-4}} is vanilla's.
+            {{G|1-5}} is this mod's: swingier than vanilla, with a higher ceiling.
+            {{y|2-3}} is what version 2.2 shipped, apparently by mistake. {{y|1-4}} is
+            vanilla's.
 
             True Kin and Psionic Adepts are unaffected.
         </helptext>
@@ -138,9 +111,12 @@
     SearchKeywords="qud expanded skill points level gain mutant true kin"
   >
     <helptext>
-            Grants the extra skill points per level this mod has always given: {{G|65}} for a Mutated Human against vanilla's 50, and {{G|85}} for a True Kin against vanilla's 70.
+            Grants the extra skill points per level this mod has always given: {{G|65}}
+            for a Mutated Human against vanilla's 50, and {{G|85}} for a True Kin
+            against vanilla's 70.
 
-            Turn this off to earn exactly vanilla's. It applies from your next level and never takes back points you have earned. Psionic Adepts are unaffected.
+            Turn this off to earn exactly vanilla's. It applies from your next level and
+            never takes back points you have earned. Psionic Adepts are unaffected.
         </helptext>
   </option>
 
@@ -153,9 +129,12 @@
     SearchKeywords="qud expanded starting skills chargen cooking staunch wounds"
   >
     <helptext>
-            Grants Mutated Humans and True Kin this mod's extra starting skills: Staunch Wounds, Cooking and Gathering, and Meal Preparation, plus Menacing Stare for mutants.
+            Grants Mutated Humans and True Kin this mod's extra starting skills: Staunch
+            Wounds, Cooking and Gathering, and Meal Preparation, plus Menacing Stare for
+            mutants.
 
-            Turn this off to start with exactly vanilla's. Vanilla's own are never removed, and Psionic Adepts are unaffected.
+            Turn this off to start with exactly vanilla's. Vanilla's own are never
+            removed, and Psionic Adepts are unaffected.
 
             {{y|Set this before creating a character.}}
         </helptext>
@@ -171,9 +150,13 @@
     SearchKeywords="qud expanded skill requirements attribute axe cudgel long blade multiweapon en garde"
   >
     <helptext>
-            Keeps this mod's eased attribute requirements: {{W|Axe}} and {{W|Cudgel}} powers accept Strength {{y|or}} Agility, {{W|En Garde!}} needs 29 in either rather than 29 and 23 in both, and {{W|Multiweapon Expertise}} and {{W|Mastery}} ask 21 and 25 rather than 23 and 27.
+            Keeps this fork's eased attribute requirements. {{W|Axe}} and {{W|Cudgel}}
+            powers accept Strength {{y|or}} Agility. {{W|En Garde!}} needs 29 in either
+            rather than 29 and 23 in both. {{W|Multiweapon Expertise}} and {{W|Mastery}}
+            ask 21 and 25 rather than 23 and 27.
 
-            Turn this off for vanilla's. Skills you already own are never taken back. {{W|Tinkering}} is not covered - its requirements are vanilla's either way.
+            Off restores vanilla's. Skills you already own are never taken back.
+            {{W|Tinkering}} is vanilla's either way.
 
             {{y|Takes effect when you restart the game.}}
         </helptext>
@@ -188,9 +171,11 @@
     SearchKeywords="qud expanded skill point cost tinkering cooking butchery spicer reverse engineer"
   >
     <helptext>
-            Keeps this mod's skill point prices: {{W|Reverse Engineer}} {{G|200}}, and {{W|Butchery}} and {{W|Spicer}} {{G|100}} each.
+            Keeps this mod's skill point prices: {{W|Reverse Engineer}} {{G|200}}, and
+            {{W|Butchery}} and {{W|Spicer}} {{G|100}} each.
 
-            The Cooking prices pay for the free skills {{W|extra starting skills}} grants, so if that is off you may want this off too. Applies immediately.
+            The Cooking prices pay for the free skills {{W|extra starting skills}}
+            grants, so if that is off you may want this off too. Applies immediately.
         </helptext>
   </option>
 
@@ -205,7 +190,9 @@
     <helptext>
             Gives Mutated Humans {{G|+300}} reputation with Joppa at character creation.
 
-            {{y|Off by default}}, unlike the rest of this mod. It grants power with nothing attached to use it, so it is the kind of change you should have to ask for.
+            {{y|Off by default}}, unlike the rest of this mod. It grants power with
+            nothing attached to use it, so it is the kind of change you should have to
+            ask for.
 
             {{y|Set this before creating a character.}}
         </helptext>
@@ -221,30 +208,13 @@
     SearchKeywords="qud expanded joppa building home base becoming nook"
   >
     <helptext>
-            Adds a walled building near Argyve's workshop in Joppa: a bed, storage, an oven, and a becoming nook with a cybernetics rack.
+            Adds a walled building near Argyve's workshop in Joppa: a bed, storage, an
+            oven, and a becoming nook with a cybernetics rack.
 
-            {{y|Takes effect when you restart the game, and applies to Joppa as it is first generated.}} A character who already has the building keeps it, and one made without it will not gain it later - Joppa is built once, and what it was built with is in the save.
-        </helptext>
-  </option>
-
-  <option
-    ID="OptionQudExpandedCESilentTradeOffers"
-    DisplayText="{{C|Qud Expanded}}: don't offer trade to creatures with nothing to trade"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded trade barter offer empty inventory animal dragonfly conversation"
-  >
-    <helptext>
-            Hides {{G|[begin trade]}} when the creature you are talking to has nothing you could trade for.
-
-            Asking a giant dragonfly to trade is a valid choice right up until you make it, at which point the game tells you it has nothing to trade. The information existed before you asked.
-
-            A creature's natural equipment - a bite, a claw, a sting - is not tradeable, so an animal's side of the screen is empty even though it technically carries something. The check here is the game's own: if nothing in their inventory would appear on the trade screen, the option is not offered.
-
-            {{y|Companions are unaffected.}} Trading with someone who follows you is free and opens even when they carry nothing, because that is how you hand them things.
-
-            Applies immediately.
+            {{y|Takes effect when you restart the game, and applies to Joppa as it is
+            first generated.}} A character who already has the building keeps it, and
+            one made without it will not gain it later - Joppa is built once, and what
+            it was built with is in the save.
         </helptext>
   </option>
 
@@ -257,15 +227,17 @@
     SearchKeywords="qud expanded important marked artifact give argyve knickknack picker protect"
   >
     <helptext>
-            Keeps artifacts you marked {{Y|important}} out of the list when Argyve asks for a knickknack.
+            Keeps artifacts you marked {{Y|important}} out of the list when Argyve asks
+            for a knickknack.
 
-            Marking something important is supposed to mean {{y|don't let me lose this}}. When Argyve asks for a knickknack, the game offers you {{y|every artifact you are carrying}} - your marked, one-of-a-kind relic sits in that picker next to a bit of scrap, and there is no warning at all before it is gone.
+            Vanilla offers him every artifact you carry, with no warning before a marked
+            relic is gone. With this on, yours are simply not listed - and if they are
+            all you have, you are told how to undo it rather than handed an empty menu.
 
-            With this on, the ones you marked simply are not listed. If they are the only artifacts you have, you are told so and told how to undo it, rather than handed an empty menu: {{G|You only have artifacts you've marked important. Unmark any you wish to give.}}
+            Artifacts the {{y|game}} marked important are still offered, but ask you to
+            confirm.
 
-            Things the {{y|game}} marked important - quest items, storied relics - are still offered, but now ask you to confirm first. Caves of Qud does not ask at all here.
-
-            Applies immediately. This changes what a list shows, never what you own.
+            Applies immediately. Changes what a list shows, never what you own.
         </helptext>
   </option>
 
@@ -278,13 +250,14 @@
     SearchKeywords="qud expanded ask name conversation npc creature introduce naming"
   >
     <helptext>
-            Adds {{G|What is your name?}} to conversations with creatures that have no name yet, and they answer.
+            Adds {{G|What is your name?}} to conversations with creatures that have none
+            yet, and they answer - drawn from their own culture, faction and region, in
+            Caves of Qud's own wording.
 
-            Most of the people in Qud already have names - the game just never gave you a way to ask. A snapjaw answers with a snapjaw name, an Issachari raider with an Issachari one, because the name is drawn from their own culture, faction and region the same way a village elder's is.
-
-            The question is asked a different way each time, and what they say back is Caves of Qud's own wording.
-
-            {{y|Asking means you can no longer rename them.}} The game refuses to rename anyone who already has a name - {{y|"doesn't want a new name."}} - so a creature that has told you who it is cannot be given a name by you afterwards. Asking who someone is and deciding who they are are different things, and this makes you choose. Turn this off if you would rather name your companions yourself.
+            {{y|Asking means you can no longer rename them.}} The game refuses to rename
+            anyone who already has a name, so a creature that has told you who it is
+            cannot be renamed by you afterwards. Turn this off if you would rather name
+            your companions yourself.
 
             Applies immediately. Names already given are kept.
         </helptext>
@@ -299,36 +272,15 @@
     SearchKeywords="qud expanded trash divining secrets rifle garbage scavenging density diminishing"
   >
     <helptext>
-            Makes a zone's trash run out of things to tell you, instead of paying the same rate for all hundred piles.
+            Makes a zone's trash run out of things to tell you, instead of paying the
+            same rate for all hundred piles.
 
-            {{Y|Trash Divining}} rolls a 5% chance per pile, which sounds like a trickle and is not. The catacombs lay down 80 to 100 piles in a single zone, so rifling one of them hands you four or five secrets - and secrets are worth 50 reputation each at a water ritual.
+            {{Y|Trash Divining}} rolls 5% per pile, and the catacombs lay down 80 to 100
+            of them in one zone. With this on the first twenty still pay {{Y|5%}} in
+            full; after that the same zone drops to {{Y|3%}}, then {{Y|2%}}, then
+            {{Y|1%}}, and no lower. Thin zones never reach the second band.
 
-            With this on, the {{Y|5%}} is untouched and the first twenty piles in a zone still pay it in full. After that the same zone drops to {{Y|3%}}, then {{Y|2%}}, then {{Y|1%}}, and never lower. A catacombs zone pays around two secrets rather than four or five. Thin zones are left alone - a rustwell has too few piles to reach the second band, and pays what it always did.
-
-            The count is kept per zone, so walking out and back does not reset it, and the piles you already went through are gone regardless.
-
-            Applies immediately, and keeps counting while it is off - turning it off in a rich zone and on again will not hand you a fresh 5%.
-        </helptext>
-  </option>
-
-  <option
-    ID="OptionQudExpandedCEBearings"
-    DisplayText="{{C|Qud Expanded}}: Mind's Compass reports your bearings"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded wayfaring minds compass parasang bearings zone navigation"
-  >
-    <helptext>
-            Lets Mind's Compass tell you which of a parasang's nine zones you are standing in.
-
-            A parasang is a 3x3 block of zones and the game never says which one you are in, so you work it out by walking to an edge and watching which way the world map scrolls. With this on, you are told when you arrive, under the line where the game already gives you the zone and the time: {{G|The northeast of this parasang.}} And so on through the nine.
-
-            You need {{Y|Mind's Compass}}, which comes free with the {{Y|Wayfaring}} skill rather than being bought separately.
-
-            Nothing is said while you are {{y|lost}} - that is the one time you should not know - or on the world map, or anywhere without one. Going down stairs is silent too, since a staircase does not move you within the parasang.
-
-            Applies immediately.
+            The count is per zone and keeps running while this is off.
         </helptext>
   </option>
 
@@ -341,9 +293,12 @@
     SearchKeywords="qud expanded psionic chip drops loot artifact tables"
   >
     <helptext>
-            Lets psionic chips and chipsets appear in the world, rolled from the artifact tables at tiers 3 through 8.
+            Lets psionic chips and chipsets appear in the world, rolled from the
+            artifact tables at tiers 3 through 8.
 
-            Turn this off for the mod's weapons, armor and genotypes without the chip economy - no chip can be tinkered, so this closes the supply. Applies immediately.
+            Turn this off for the mod's weapons, armor and genotypes without the chip
+            economy - no chip can be tinkered, so this closes the supply. Applies
+            immediately.
         </helptext>
   </option>
 
@@ -356,9 +311,13 @@
     SearchKeywords="qud expanded chip interface slot chargen psionic implant true kin"
   >
     <helptext>
-            Gives a True Kin the {{G|2}} Chip Interface slots this mod grants them. Psionic Adepts are unaffected - their {{G|4}} are the genotype. A Mutated Human has none either way: chips grant mutations to genotypes that cannot mutate, and that one can.
+            Gives a True Kin the {{G|2}} Chip Interface slots this mod grants them.
+            Psionic Adepts are unaffected - their {{G|4}} are the genotype. A Mutated
+            Human has none either way: chips grant mutations to genotypes that cannot
+            mutate, and that one can.
 
-            {{y|Set this before creating a character.}} A body is built once, at character creation, so this cannot change a character who already exists.
+            {{y|Set this before creating a character.}} A body is built once, at
+            character creation, so this cannot change a character who already exists.
         </helptext>
   </option>
 
@@ -371,62 +330,15 @@
     SearchKeywords="qud expanded chip interface npc humanoid anatomy world"
   >
     <helptext>
-            Gives every other humanoid a Chip Interface slot, merged into the base humanoid anatomy. Nothing here puts a chip in an NPC's slot, so leaving it on has no effect you can see. Your own slots are the option above.
+            Gives every other humanoid a Chip Interface slot, merged into the base
+            humanoid anatomy. Nothing here puts a chip in an NPC's slot, so leaving it
+            on has no effect you can see. Your own slots are the option above.
 
-            {{y|Set this before creating a character.}} Bodies are built once, when a creature is generated.
-        </helptext>
-  </option>
-  <option
-    ID="OptionQudExpandedCEWiderNames"
-    DisplayText="{{C|Qud Expanded}}: wider name pools"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded name names naming repeat repetition syllable prefix postfix"
-  >
-    <helptext>
-            Adds syllables to the Qudish name pools, so procedurally generated people stop
-            sounding alike.
-
-            Vanilla draws from 29 openings and 24 endings, which is about 93,500 distinct names -
-            so it is not the whole name you notice repeating, it is the syllable. There is a 50%
-            chance of seeing a repeated opening after fewer than seven names. This takes openings
-            to 68 and endings to 36, which moves that to eleven.
-
-            The middle syllables are deliberately left nearly alone. That is not where the
-            collision is.
-
-            {{y|Issachari names are widened the opposite way, and for the opposite reason.}} An Issachari is one hyphenated phrase - {{G|Flays-upon-the-Sun}}, {{G|Chokes-in-Quicksalt}} - drawn from 7 verbs, 5 prepositions and 8 nouns. That is 280 names, so here it is the whole name that repeats, at around twenty people, and every single slot repeats at three or four. All three pools widen together to 10, 10 and 12, which is 1,200 names and a repeat at about forty.
-
-            Turning this off restores vanilla's pools exactly. Nothing vanilla is removed or
-            reweighted either way.
+            {{y|Set this before creating a character.}} Bodies are built once, when a
+            creature is generated.
         </helptext>
   </option>
 
-  <option
-    ID="OptionQudExpandedCEGenderedNames"
-    DisplayText="{{C|Qud Expanded}}: gendered name endings"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded name names naming gender feminine soft ending vowel"
-  >
-    <helptext>
-            Lets a generated person's name reflect the gender the game already gave them.
-
-            Qud rolls a gender for almost every human it generates - 117 of the 126 human
-            blueprints are a male-or-female coin flip - and then ignores it when naming them.
-            Vanilla's endings are 23 hard stops out of 24, so everyone ends up sounding the same
-            way regardless.
-
-            With this on, women draw mostly from open, vowel-final endings and the genders that
-            are neither draw from an even mix. It is a lean rather than a rule: about one name in
-            five still takes a hard ending, so a name never states someone's gender outright.
-
-            Turning this off makes naming gender-blind again, as vanilla is. It does not narrow
-            the pools - that is the option above.
-        </helptext>
-  </option>
   <option
     ID="OptionQudExpandedCENameFlavour"
     DisplayText="{{C|Qud Expanded}}: how your own random name sounds"
@@ -437,22 +349,17 @@
     SearchKeywords="qud expanded name random player character masc femme sound rename"
   >
     <helptext>
-            Chooses which pool your character's name is drawn from when the game rolls one for
-            you, rather than you typing one in.
+            Chooses which pool your own name is drawn from when the game rolls one for
+            you.
 
-            Masc gives the hard-stopped endings vanilla has always used. Femme gives the open,
-            vowel-final ones. Random splits evenly between those two and a mixed pool, which is
-            what you get if you never touch this.
+            Masc gives the hard-stopped endings vanilla has always used, femme the open
+            vowel-final ones, and random splits evenly between those and a mixed pool -
+            which is what you get if you never touch this.
 
-            It does nothing at all if you type a name in, which is always the surest way to get
-            the one you want. Re-rolling a random name in character creation does follow it, so
-            you can keep pressing until you like what you see.
+            It does nothing if you type a name in. Renaming yourself in game draws from
+            the same pool, so a change here takes effect on your next rename.
 
-            It follows you afterwards too. Renaming yourself in game draws from the same pool
-            rather than from whatever your gender would suggest, and changing this mid-run takes
-            effect on your next rename.
-
-            It does not touch anyone else in the world. The two naming options above govern them.
+            It does not touch anyone else in the world.
         </helptext>
   </option>
   <option
@@ -466,17 +373,15 @@
     <helptext>
             Adds a Gender row to character creation.
 
-            Qud has thirteen genders with full grammar, and ships every one of them written and
-            switched off - there is no way to pick yours, so the game rolls one for you. This turns
-            the row on, and widens what it offers from four to thirteen: elverson (ey/em), xe, ze,
-            sie, fae, spivak (e/em), ve, per and ne join male, female, neuterperson and
-            nonspecific.
+            Qud ships thirteen genders with full grammar and no way to pick one, so the
+            game rolls for you. This turns the row on and widens it from four to
+            thirteen: elverson, xe, ze, sie, fae, spivak, ve, per and ne join male,
+            female, neuterperson and nonspecific.
 
-            The hindren third gender is deliberately not offered. It is theirs, not a general one.
+            The hindren third gender is deliberately not offered. It is theirs.
 
-            Turning this off hides the row again and the game picks for you, as vanilla does. The
-            genders themselves stay declared either way, so a character who already has one keeps
-            it.
+            Off hides the row and the game picks, as vanilla does. A character who has
+            one keeps it.
         </helptext>
   </option>
 
@@ -491,38 +396,14 @@
     <helptext>
             Adds a Pronoun Set row to character creation, separate from gender.
 
-            Qud tracks pronouns apart from gender, so you can take a gender's grammar and a
-            different set of pronouns. The row defaults to "from gender", which is what you want
-            unless you want something else.
+            Qud tracks pronouns apart from gender, so you can take one gender's grammar
+            and a different set of pronouns. The row defaults to {{y|from gender}},
+            which is what you want unless you want something else.
 
-            Vanilla ships this switched off too. On, it offers fourteen sets - the three Qud
-            already wrote and never showed anyone, plus one for each gender.
+            On, it offers fourteen sets - the three Qud already wrote and never showed
+            anyone, plus one per gender.
 
-            Turning it off hides the row. Your pronouns then follow your gender, as vanilla does
-            it.
-        </helptext>
-  </option>
-  <option
-    ID="OptionQudExpandedCECreatureVariants"
-    DisplayText="{{C|Qud Expanded}}: creature colour variants"
-    Category="Mods"
-    Type="Checkbox"
-    Default="Yes"
-    SearchKeywords="qud expanded creature variants colour color coat spawn regional biome"
-  >
-    <helptext>
-            Adds 44 colour and name variants of nineteen common creatures - brindle and marsh dogs,
-            black goats, rust beetles, sorrel equimaxes, hoary bats - each in the biome its name
-            argues for.
-
-            Cosmetic only. A variant differs in name, colour and description and in nothing else, so
-            a pied dog fights exactly as a feral dog does.
-
-            Each sits below its vanilla parent in the spawn tables, so ordinary animals stay the
-            common ones and a variant is the occasional find rather than the rule.
-
-            Applies immediately, to zones generated from now on. Zones you have already visited keep
-            whatever they were built with.
+            Off hides the row and your pronouns follow your gender, as vanilla does.
         </helptext>
   </option>
   <option
@@ -536,22 +417,15 @@
     <helptext>
             A merchant you have charmed still charges you for their goods.
 
-            Caves of Qud treats anyone following you as a companion, and a companion's things are
-            shared - so beguiling, proselytizing or masking a shopkeep empties their whole shop for
-            free. That rule is right for someone who joined you over a long game and wrong for a
-            trader you enchanted forty seconds ago, and nothing in any of the five charms ever
-            checks whether the person following you keeps a shop.
+            Qud shares a companion's possessions with you and a charmed shopkeep counts
+            as one, so beguiling or masking a trader empties their whole shop for free.
 
-            With this on, a charmed merchant still likes you, still shows you everything they have,
-            and still expects paying. The charm is not weakened anywhere else: they still follow
-            you, still fight for you, and their never-for-sale items are still on the shelf - you
-            just buy them.
+            The charm is not weakened anywhere else - they still follow you, still fight
+            for you, and their never-for-sale items stay on the shelf. A merchant who
+            genuinely joined you is unaffected, because the test is the charm rather
+            than the following.
 
-            A merchant who genuinely joined you is unaffected. The test is the charm, not the
-            following, so a shopkeep recruited the long way round still shares everything.
-
-            Turning it off restores Caves of Qud's behaviour, and the shop is free again. Applies to
-            the next trade screen you open either way.
+            Off makes the shop free again, from the next trade screen.
         </helptext>
   </option>
   <option
@@ -563,27 +437,17 @@
     SearchKeywords="qud expanded arrow arrows bow archery ammo ammunition recover retrieve break"
   >
     <helptext>
-            An arrow you shoot sometimes survives and lands where it hit, so you can pick it up again.
+            An arrow you shoot sometimes survives and lands where it hit, so you can
+            pick it up again.
 
-            Caves of Qud already knows how to leave a projectile on the floor - it does it for
-            anything else that misses. Arrows are the exception, and only because they are built as
-            unreal objects that are deleted the moment they land. Nothing about the world says an
-            arrow you shot into a wall stops being an arrow.
+            How often depends on what it is made of - a wooden arrow about a fifth of
+            the time, a zetachrome one about nine times in ten. So the arrows worth
+            keeping are the ones you keep.
 
-            Not all of them come back. How often depends on what the arrow is made of, using the
-            game's own material ladder: a wooden arrow survives about a fifth of the time and a
-            zetachrome one about nine times in ten. So the arrows worth keeping are the ones you
-            keep, and ammunition stays a resource rather than becoming free.
+            Arrows that carry something - explosive, cryo, gas, honey, flare - never
+            come back. The payload is spent.
 
-            Arrows that carry something - explosive, cryo, gas, honey, flare - never come back. The
-            payload is spent, and what is left is not an arrow any more.
-
-            If you have "autoget primitive ammo" switched on in Caves of Qud's own options, exploring
-            will collect them for you. That half already existed; there was simply never anything on
-            the floor to collect.
-
-            Turning this off restores Caves of Qud's behaviour and fired arrows vanish again. Applies
-            to the next arrow you shoot either way.
+            Off makes fired arrows vanish again, from the next shot.
         </helptext>
   </option>
 </options>

@@ -16,6 +16,39 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Option help text fits the menu again** (#690).
+
+  If an option's description showed up squashed into a narrow box with the ends of the lines off the
+  side of the screen, that is because it was written at a scale the menu was never given. Vanilla
+  ships four options with help text, 157 to 352 characters each; eleven of the twenty-one here were
+  longer, the worst of them over a thousand.
+
+  They are all inside vanilla's range now, wrapped at 76 columns so no line can run off. What went is
+  the explaining — why the option exists, what vanilla does instead, the reasoning behind a number.
+  Every *"applies to a new character"* and *"takes effect when you restart"* warning survives word for
+  word, because those are the sentences that stop a run being wasted. The rest is in the feature
+  reference and on the wiki, in more room than a tooltip has.
+
+  This is the second time. [#271](https://github.com/vixygrey/qud-expanded-community-edition/issues/271)
+  fixed the same thing when there were eleven options, and it came back as there got to be
+  twenty-six — which is why there is now a check instead of an intention.
+
+- **(internal)** `helptext-shape` refuses an option help text that will not fit (#690).
+
+  A source line over 80 characters, or a total over 550. Both numbers are vanilla's: its shortest
+  longest-line is 80, its longest text 352.
+
+  I had this backwards first. `Qud.UI.OptionsRow` calls `RTF.FormatToRTF` with `blockWrap` at `-1`,
+  so `BlockWrap` never runs — from which I concluded the container wrapped instead, and unwrapped
+  every help text onto one line per paragraph. It renders worse, which a `--dev` pass caught before
+  the merge and would have caught before the writing. The assembly says what does *not* wrap; it does
+  not say what does.
+
+  The convention was never written down and it drifted: ten of twenty-six were hard-wrapped, six of
+  them recent. The length cap is a ratchet set just above the longest survivor, so nothing today fails
+  and nothing new may be worse.
+
+
 - **(internal)** `check_docs.py` could not read a hyphenated word number in a wiki claim (#674).
 
   `WORD_NUMBERS` has held `twenty-one` through `ninety-nine` since the options count crossed twenty,
@@ -27,6 +60,28 @@ recorded because contributors need them, not because subscribers do.
   wiki patterns did not inherit the fix** — the same shape as the *"second check that did not inherit
   the fix"* entry in `docs/LESSONS.md`. All sixteen are widened now, and the reasoning sits next to the
   compound-number table so the next person writing a claim pattern finds it.
+
+
+### Removed
+
+- **Five options taken out of the menu** (#690).
+
+  Bearings, creature colour variants, silent trade offers, wider name pools and gendered name
+  endings. **All five features stay exactly as they are — only the switches are gone**, so if you
+  never touched them nothing about your game changes.
+
+  Every option in this mod is meant to answer one question: would anybody actually turn this off?
+  These five could not. None of them changes a number, a difficulty, a drop or anything you choose at
+  character creation, and none takes anything away that you might want back — they are flavour, and
+  the menu was charging you a line to read past for each of them.
+
+  > **If you had one of the five switched off, it is on again.** There is nowhere left to store that
+  > preference. Coloured animals will reappear, your generated names will use the wider syllable
+  > pools, and creatures with nothing to trade will stop offering. Nothing is broken by this and
+  > nothing needs a new character — but it is a change you did not ask for, and I would rather say so
+  > here than let you find it.
+
+  Twenty-one options remain, and every one of them changes something you would notice.
 
 
 ### Added

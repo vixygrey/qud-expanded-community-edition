@@ -1270,6 +1270,7 @@ seconds rather than after a round trip.
 | Vanilla creatures swept into an `AggregateWith` slot by inheritance | `aggregate-sweep` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
 | Markup shader names not colliding with vanilla's | `shader-collision` |
+| Option help text wrapping and length | `helptext-shape` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
@@ -1379,6 +1380,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `manifest` | `validate_mod.py` | `manifest.json` validity, and its version against the changelog |
 | `merge-discipline` | `validate_mod.py` | `Load="Merge"` on vanilla records |
 | `shader-collision` | `validate_mod.py` | A `<shader>`/`<solidcolor>` name that vanilla already owns, or that this fork declares twice. `Colors.xml` has no `Load` attribute — merge is the only behaviour — so `merge-discipline` cannot see it |
+| `helptext-shape` | `validate_mod.py` | An option's `<helptext>` is one line per paragraph and under the length cap. Qud never re-wraps it — `RTF.FormatToRTF` is called with no `blockWrap`, so every source newline is a forced break in the menu |
 | `merge-value` | `validate_mod.py` | a merge keeping vanilla's value and resistances |
 | `missing-script` | `validate_mod.py` | a C# part referenced by XML having a class |
 | `variant-density` | `validate_mod.py` | a creature variant splitting its parent's share of a table rather than adding a second roll |
