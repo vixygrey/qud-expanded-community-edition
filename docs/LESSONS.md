@@ -1944,6 +1944,29 @@ The reliable answer is to decompile and grep the source: `ilspycmd -o <dir> -p A
 writes 5,435 `.cs` files in a couple of minutes, and a grep over those finds the call site with its
 containing method, which is what actually answers the question.
 
+### The sharper version: a search that could not *run*
+
+The entry above is about a search that could not match. This one is about a search that could not
+execute, and it is worse, because the shell hands back a value rather than an error.
+
+Assessing #638 I ran:
+
+```bash
+for f in Stealth.cs Hidden.cs HiddenRender.cs; do rg -c '…' "$SRC/$f" || echo 0; done
+```
+
+and reported **0, 0, 0** — written up as *"zero references in the stealth machinery."* `Stealth.cs`
+does not exist. `rg` failed on it, `|| echo 0` swallowed the failure, and a missing file was reported
+as a clean negative. The other two return **1**, not 0. So two of the three numbers were wrong and
+the third was meaningless.
+
+> **A shell fallback that turns an error into a value launders a failure into a finding.**
+> `|| echo 0`, `2>/dev/null`, a bare `-f` guard: each converts *"I could not look"* into *"I looked
+> and found nothing."* Before believing a zero, confirm the thing you searched exists.
+
+The conclusion survived only because I re-derived it from the type list instead, and the one real
+reference turned out to be benign. That is luck, not method.
+
 ## A version number cannot express a boundary inside a version
 
 #497 converted three classes to the `IScribed` bases, which changed what they write: `IComponent`
@@ -2723,6 +2746,80 @@ Across `ObjectBlueprints/` there are **957** `*noinherit` and **147** `*delete`.
 > The failure is loud if you are lucky — every count is zero — and silent if you are not, as a tag
 > filter quietly over-matches. Together with the two entries above and the `parse(lenient=True)` note,
 > this is one sequence: **parse, resolve `Inherits`, honour the sentinels, then count.**
+
+## Qud has no stealth system, so nothing can interact with one
+
+Worth knowing before a design proposes light and shadow, or sneaking, and assumes there is something
+to hook into. **There is no `Stealth` type anywhere in the assembly** — not a part, not a skill, not
+an effect. Across all 7,073 types nothing matches.
+
+Concealment is two unrelated things:
+
+- **`Hidden`** — hidden *objects*: traps, secret doors, stashes. Detection is
+  `Bonus + Random(1, Searcher.Intelligence) >= Difficulty`, fired from `Physics` as a `"Searched"`
+  event. **Intelligence and nothing else** — the same roll #621 records upstream, where a default
+  `Difficulty` of 15 means Intelligence 14 or below can never find a default hidden object.
+- **Camouflage** — `FoliageCamouflage` and `UrbanCamouflage` behind `ICamouflage`, plus
+  `ConcealedHologramMaterial`, which conceals but is *not* an `ICamouflage`. **None of the three
+  contains a single light reference.**
+
+The only light term anywhere in concealment is one line, identical in `Hidden`, `HiddenRender` and
+`EelSpawn`:
+
+```csharp
+if (!Found && E.GetParameter("RenderEvent") is RenderEvent renderEvent
+    && (renderEvent.Lit == LightLevel.Radar || renderEvent.Lit == LightLevel.LitRadar))
+{
+    Found = true;
+}
+```
+
+That is penetrating radar **defeating** concealment — a vision mode revealing what is hidden. It runs
+in the opposite direction from *"darkness helps you hide"*, and ambient light never enters it.
+
+> **Ambient light has no bearing on being seen or hiding, in either direction.** Darkness does not
+> conceal you and light does not expose you. Anything proposing a light-and-shadow interaction is
+> building the stealth system *and* the coupling from nothing, not extending either.
+
+What light does gate is targeting and information: `PickTarget` refuses unlit cells, `MissileWeapon`
+will not fire at one, and the sense effects render only cells that are `IsLit() && IsExplored()`. No
+combat penalty, no AI penalty.
+
+## The `Tier` tag is what an item costs to make, not when a player meets it
+
+A third trap in the same family as *"a part a blueprint inherits is not a part it declares"* and the
+tag sentinels. The tag is present, numeric, and read correctly — and the conclusion is still wrong,
+because the **population tables** decide when an item is encountered and they are an independent fact.
+
+#578 was filed on *"the face slot is dead until tier 3"*, measured off the `Tier` tag. The tables
+disagree:
+
+| item | `Tier` tag | drops from | draw chance |
+|---|---|---|---|
+| Vinewood Sap Mask | 3 | `Armor 1C` — tier-1 **common** | 3.5% |
+| Goggles | 2 | `Armor 1R` — tier-1 **rare** | 10.0% |
+| Issachari Sun Veil | 1 | `Armor 2C`, `Armor 3C` — **no** tier-1 table | 9.1% |
+
+Both of the slot's signature utilities are already in the tier-1 tables, and the item *tagged* tier 1
+is the one that never appears there. The gap the issue was named for was substantially not real.
+
+**It is not a one-off, and the shape differs by table kind.** Across every
+`Armor|Melee Weapon|Missile Weapon <N><C|R>` table, 238 entries carry a numeric `Tier` tag and **85 of
+them — 36% — disagree with their table's tier**:
+
+| table kind | n | agrees with table tier | spread |
+|---|---|---|---|
+| `NC` (common) | 81 | **86%** | −2 … +2 |
+| `NR` (rare) | 157 | **53%** | −3 … +2 |
+
+> **`Armor NC` is a fair proxy for tier N. `Armor NR` is not** — a rare table agrees with its own
+> number barely half the time and stocks items up to two tiers above it. `Strength Exo`, `Thermo Cask`
+> and `Gas Tumbler` are all `Tier` 6 in `Armor 4R`; five `Tier` 7 items sit in `Armor 5R`.
+
+**Not the same as the `Tier`-fallback entry above.** That one — *"a property the game derives is not
+the tag you can grep for"* — is about reading the field *correctly*, since `Tier` falls back to
+`Level / 5 + 1` when absent. Here the field is read correctly and the inference from it is what
+fails. The two are easy to conflate and only one is about grepping the right thing.
 
 ## A mechanism existing is not a mechanism working — check the values moving through it
 
