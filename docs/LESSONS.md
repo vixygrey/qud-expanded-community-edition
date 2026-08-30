@@ -3293,3 +3293,54 @@ docstring.
 
 The general form is [`a boolean's name is not its semantics, and neither is a skill's`](#a-booleans-name-is-not-its-semantics-and-neither-is-a-skills).
 `docs/STYLEGUIDE.md` §3.4 has the refusal idiom that this is the trap in.
+
+## A dispatch list is a snapshot, so *when* a call runs decides who is in it
+
+`Hidden` resolves a search as `Bonus + Stat.Random(1, Searcher.Intelligence) >= Difficulty`, and
+**nothing in the assembly writes `Bonus`**. #221 read that as an extension point left open. I built a
+skill to supply it, verified every link in the chain, shipped it in #717 — and it does nothing.
+
+The chain really is as I read it. `Physics.Search()` fires `Event.New("Searched", "Searcher", …)` at
+the current cell and its eight neighbours, passing one Event object by `ref` so a value set on the
+first pass survives into the rest. `Cell.FireEvent` iterates `Objects` and calls `FireEvent` on each.
+`AddSkill` does `AddPart` with `DoRegistration: true`, `ApplyRegistrar` calls `Register`, and
+`GameObject.FireEvent` dispatches from `RegisteredPartEvents[E.ID]`. Every one of those is true, and
+in the game the handler never ran once.
+
+The reason is four lines of `Cell.AddObject`:
+
+```csharp
+XRL.World.Parts.Physics physics = Object.Physics;
+if (physics != null && !physics.EnterCell(this))   // Search() runs in here
+{
+    return Object;
+}
+Objects.Add(Object);                                // the mover is added AFTER
+```
+
+`EnterCell` calls `Search()` **before** the mover is added to the cell's `Objects`. So on the movement
+path the searcher is in the dispatch set of neither their new cell nor its neighbours, and a part on
+the searcher cannot see the event at all. The `CmdWait` path calls `Search()` from `XRLCore` while the
+player is already standing in the cell, so that one works — which is why the feature was not uniformly
+dead, only dead in the case that matters.
+
+> **Membership in a dispatch list is evaluated at call time, and a call inside an "entering" method
+> runs before the entering has finished.** Verifying that A dispatches to B is not the same as
+> verifying that B is in A's list *at the moment A runs*. The second question decides whether a
+> handler fires, and it is invisible from the dispatch code.
+
+Two things this cost that are worth naming:
+
+- **Every static check passed.** It compiled, it validated, and the part was provably attached and
+  registered — a heartbeat printed in-game confirmed `HasRegisteredEvent("Searched") == true` on the
+  player while the handler never ran once. No check could have caught this, which is the whole
+  argument for `tools/sync_mod.py --dev` *before* merge rather than after.
+- **The trigger was published wrong as well.** I wrote that searching happens "every player turn" in
+  the issue, the pull request, `FEATURES.md` and the docstring. It happens on entering a cell and on
+  the wait command, and nowhere else. That figure came from an investigation comment I inherited and
+  never checked.
+
+Related: [`Containment is not dispatch — check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-check-the-cascade-level-before-assuming-a-part-is-reached)
+is the same family — there the part was in the object and outside the cascade, here it was registered
+for the event and outside the list. Both are *reachability at the moment of the call*, and neither is
+visible from the handler's side.
