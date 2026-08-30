@@ -3055,3 +3055,41 @@ assembly and had contradicted by a `tools/sync_mod.py --dev` pass, which is the 
 [`A claim about what a player experiences needs a source, and I am not one`](#a-claim-about-what-a-player-experiences-needs-a-source-and-i-am-not-one).
 The dev pass is not a formality before merge. It is the only step in the process that can tell me my
 reading was wrong.
+
+## My design docs assume Qud has less than it does, and the error is always optimistic
+
+Seven claims across four design documents have now failed against the assembly, and they fail in the
+same direction every time:
+
+| document | claim | what ships |
+|---|---|---|
+| `DESIGN_difficulty_systems.md` §B1 | nothing in the game charges you for time | it does, and the currency is water — `RegenCounter` spends it while you wait (#674) |
+| `DESIGN_difficulty_systems.md` §B3 | Freehold cut survival attrition deliberately | `Stomach` runs a complete water system. `WATER_MINIMUM` is 0, so at zero it prints *"You are dying of thirst!"*, sets `DeathCategory = "thirst"` and adds 2 hit points of penalty every action |
+| `DESIGN_difficulty_systems.md` §B4 | medium effort, Harmony maybe | `Broken`, `Tinkering_Repair` and per-use breakage in `ChargeUsedEvent` all ship. The mechanic is a new *trigger*, not a new system |
+| `DESIGN_sleep.md` §1 | Qud has no hunger and no thirst attrition | both exist and thirst kills. `Famished` is −10 Quickness at 2,400 actions |
+| `DESIGN_sleep.md` §7 | `Asleep` and `Wakeful` need verifying before coding | both resolve as *already satisfied*: `Wakeful` refuses only the involuntary events, and `Asleep.Voluntary` is set correctly at all ten call sites |
+| `API_VERIFICATION.md` | a kinship registry exists to read | three markers, all on the NPC, none enumerable (#182) |
+| `recon-findings.md` | the spice tree needs a code hook to mutate | `HistoricSpice.Init` merges a mod's `historyspice.json` already (#178, #689) |
+
+> **Every error is optimistic in the same direction: a mechanism read as absent when it ships, or a
+> cost priced as new work when the state and the hook already exist.** That is the opposite of the
+> traps elsewhere in this file, which are all about misreading *the game*. This is about misreading
+> *my own scoping* — and it is the more expensive kind, because it decides whether a thing gets built
+> at all rather than how.
+
+**A design document's cost estimate is a claim about the assembly, and it ages exactly as badly as
+any other claim about the assembly.** It looks like a judgement, which is why it never gets checked;
+it is actually an assertion that a hook does not exist, and that is falsifiable in one grep. §B4 was
+priced at *medium effort, Harmony maybe* on the strength of nobody having looked for `Broken`.
+
+**The correction usually strengthens the argument rather than weakening it**, which is the part I did
+not expect. `DESIGN_sleep.md` opened by conceding that Qud rejects survival timers and that the mod
+therefore swims against the design. It does not — Qud runs two, tuned so they almost never fire, and
+a sleep timer is a third one in that company rather than a foreign body. The honest premise was the
+better premise, and the document had been arguing uphill against a fact that was not true.
+
+Related: [`Check what this fork already did before investigating what vanilla does`](#check-what-this-fork-already-did-before-investigating-what-vanilla-does)
+is the same failure aimed at the repository instead of at the assembly, and
+[`A decompiled call site tells you what that frame does not do, never what happens instead`](#a-decompiled-call-site-tells-you-what-that-frame-does-not-do-never-what-happens-instead)
+is what happens when the check is run but the conclusion overreaches. All three are cheaper to catch
+before the design than after.
