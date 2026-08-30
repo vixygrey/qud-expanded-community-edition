@@ -556,7 +556,7 @@ CLAIMS: list[tuple[str, list[str]]] = [
     (r"The ([\w-]+) retuned attribute requirements", ["optioned-requirements"]),
     (r"([\w-]+) options, in Qud's own options menu", ["options"]),
     (r"Options\.xml\s+# (\d+) options", ["options"]),
-    (r"Scripting/\s+# (\d+) classes", ["scripting-files"]),
+    (r"Scripting/\s+# (\d+) files", ["scripting-files"]),
     (r"(\d+) referenced, (\d+) defined", ["mutation-stubs", "mutation-stubs"]),
     (
         r"MeleeWeapons\.xml\s+# (\d+) new / (\d+) merged",

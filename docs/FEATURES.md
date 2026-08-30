@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **472** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **478** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **230** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **112** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **120** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -589,7 +589,8 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 0 | 8 |
-| **Total** | **472 active** | **230** |
+| `Trinkets.xml` | 6 | 0 |
+| **Total** | **478 active** | **230** |
 
 ### 6.2 Melee weapons
 
@@ -1824,7 +1825,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-137 table definitions: **112 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+145 table definitions: **120 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2115,7 +2116,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
-│   └── PopulationTables.xml    # 137 tables (112 merge / 25 new)
+│   └── PopulationTables.xml    # 145 tables (120 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2130,11 +2131,12 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── OtherEquipment.xml      # 7 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Items.xml               # 8 merged (§30)
+│   ├── Trinkets.xml            # 6 new (§36)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 60 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 61 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5021,6 +5023,98 @@ Rule 6 reserves "off by default" for a change granting power with no content att
 a little. But it grants it against a scale the game already wrote, leaves every effect arrow consumed,
 and what it fixes is a bow becoming **dead weight** — a build stopping working, rather than a build
 being weaker than it might be.
+
+## 36. Six more trinkets (`ObjectBlueprints/Trinkets.xml`, `Vixy_Trinket`)
+
+**Qud's category of ordinary objects from before was six items, and this doubles it** — an hourglass,
+a hand mirror, a snow globe, a kaleidoscope, a spinning top and a hand bell (#603).
+
+### 36.1 The gap was breadth, and deliberately not the curve
+
+`Trinkets 1` through `Trinkets 8` offer the same six objects, so a tier-8 ruin yields the same
+curiosities as a hut outside Joppa. That looks like the flat-table defect #582 found for data disks,
+and here **the opposite answer is correct and is recorded so nobody "fixes" it**: a folding chair is a
+folding chair, mundane objects are not tiered, and a trinket's charm is that it is recognisable. The
+argument that deeper ruins are older and should yield stranger things was considered and rejected.
+
+So all six new blueprints go into all eight tables at vanilla's own weight of **35**, and each trinket
+is exactly as likely to appear as each original.
+
+| | before | after |
+|---|---|---|
+| objects in the pool | 6 | 12 |
+| each trinket's share of a draw | 14.1% | 7.6% |
+| `Books` share of a draw | 14.1% | 7.6% |
+
+`Books` halving is real but almost invisible in play, because `Trinkets N` is not where books come
+from. It is consumed by `Junk 0C`–`8C` and eight `StartingGear_*` tables; books reach a player
+through six bookshelf tables and three booksellers, none of which this touches. #699 covers the book
+pool itself.
+
+### 36.2 The register, and what it forbids
+
+Read off the existing five — `PlasticTree` is furniture by weight, value and unknown appearance, so
+it is not part of the reference set — each vanilla trinket does exactly **one small, ordinary, human
+thing**. Sitting. Drawing. Grinding salt. Not a stat and not a mechanic, but an affordance.
+
+The two failure modes are gag items and trinkets that turn out to be secretly useful, and both are
+worse than leaving the category thin (#154's caution). `Vixy_Trinket` is built so neither is
+reachable: it prints a message and spends a turn, and exposes no hook by which a subclass could
+touch a stat, move an object, or affect anything outside the message queue.
+
+| trinket | the action | value |
+|---|---|---|
+| hourglass | turn over | 10 |
+| hand mirror | look in | 5 |
+| snow globe | shake | 5 |
+| kaleidoscope | look through | 5 |
+| spinning top | spin | 5 |
+| hand bell | ring | 5 |
+
+### 36.3 Three behaviours are inherited rather than declared
+
+All six `Inherits="Trinket"` and deliberately override none of these:
+
+- **`TinkerItem Bits="0" CanDisassemble="true"`.** Scrapping is half the category's stated purpose.
+  `BoxOfCrayons` is the one vanilla trinket that opts out; these follow the five that do not.
+- **`<tag Name="DynamicObjectsTable:Trinkets" />`.** The four pocket-sized vanilla trinkets keep it;
+  `FoldingChair` and `PlasticTree` `*delete` it because they are furniture. These are pocket-sized.
+- **`Examiner Unknown="UnknownOddTrinket" Complexity="1"`.** A trinket arrives unidentified. The
+  unknown appearances are a shared pool of 49 blueprints rather than per-item art, so this costs a
+  line rather than a tile.
+
+`<stag Name="Trinket" />` is what earns the value-curve exemption in `docs/STYLEGUIDE.md` §3.2 —
+`tools/validate_mod.py` reads that marker, so it is load-bearing rather than decorative, and a
+trinket without it would be repriced against a curve it is exempt from.
+
+### 36.4 Why there is C# here at all, and why it is subclasses
+
+All 1,371 part classes in `tools/qud-api.json` were searched for a generic, XML-configurable
+"perform a flavour action" part. There is none — vanilla gives each of its six trinkets a bespoke
+class (`Chair`, `Crayons`, `BubbleLevel`, `SpiralIron`), so rule 5's "use the data where the game
+does it in data" had no data route to prefer.
+
+The first shape was one part with `Verb` and `Message` set per blueprint. That costs three instance
+fields, and rule 5 is explicit that `[Serializable]` field layout is written into every save;
+`validate_mod.py` flagged it. An expression-bodied member compiles to a get-only property with no
+backing storage, so an abstract base plus six four-line subclasses holds **zero instance state** and
+adds nothing to any save. #411 set that precedent with `VariantBlueprint => "Icy Vapor"`.
+
+The trade is worth naming: the flavour text lives in C# rather than XML, which is the wrong direction
+for a data-first fork. It buys save stability and a shape closer to vanilla's.
+
+### 36.5 Tiles
+
+Six new 16x24 three-colour PNGs in `mod/Textures/items/`. Black is the foreground and takes
+`ColorString`, white is the `DetailColor`, transparent is the background — that mapping is the
+modding wiki's, and it is the reverse of what the file bytes suggest at a glance.
+
+### 36.6 Off-switch
+
+None, and rule 6 asks whether anyone would use one. This adds blueprints to loot tables and takes
+nothing away: no vanilla record is modified, no number moves, and a player who dislikes a snow globe
+can decline to pick it up. Dropping them from the tables is a live change with no save migration if
+that ever proves wrong.
 
 ## Appendix A — every merged vanilla melee weapon
 
