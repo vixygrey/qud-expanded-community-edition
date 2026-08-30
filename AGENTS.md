@@ -44,7 +44,10 @@ in them applies to a contribution you're helping someone else write.
   count what's on the other end of it. Seven of the 36 cultures `Naming.xml` scopes on match nothing
   in the game, `Qudish` among them. And **resolve `Inherits=` before counting anything by part** — a
   declared-part count is a lower bound, and the tag sentinels `*noinherit` and `*delete` mean a naive
-  resolved tag set is wrong in both directions. `docs/LESSONS.md` has the worked example.
+  resolved tag set is wrong in both directions. **And a `Tier` tag says what an item costs to make,
+  not when a player meets it** — the population tables decide that, and across the tiered armour and
+  weapon tables 36% of entries disagree with their own table's tier. `docs/LESSONS.md` has all three
+  worked examples.
 
 ## Before you commit
 
