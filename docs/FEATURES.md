@@ -2109,7 +2109,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 24 options (§13)
+│   ├── Options.xml             # 25 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2134,9 +2134,10 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 58 classes: 36 mutation stubs, plus options,
+├── Scripting/                  # 59 classes: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
-│                               # gather, the ammo payload, and four Finesse powers
+│                               # gather, merchant pricing, the ammo payload, and
+│                               # four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2174,7 +2175,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2227,6 +2228,7 @@ rather than anything the mod already was.
 | ask a creature its name | Checkbox | **Yes** | The *what are you called* conversation choice. Asking forecloses renaming. §26. |
 | marked artifacts stay yours | Checkbox | **Yes** | Whether an artifact you marked important is kept out of Argyve's picker. §27. |
 | silent trade offers | Checkbox | **Yes** | Whether creatures with nothing to trade still offer to. §28. |
+| charmed merchants still expect paying | Checkbox | **Yes** | Whether a charmed merchant's shop is free. §34. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2268,7 +2270,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, bearings, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
+| **Live** — applies immediately | graded burden, bearings, charmed merchant prices, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. Bearings derives everything from the zone in front of it and stores nothing. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -4843,6 +4845,95 @@ was never that flying works.
   the thing a static read cannot prove.
 - **Whether the escort still loses to a determined ground attacker.** Penetration 3 against a melee
   build's AV says yes, but that wants the same play session.
+
+## 34. Charmed merchants still expect paying (`Vixy_MerchantOwnership`)
+
+**Beguile a shopkeep and their entire shop becomes free.** Not by design — by one line meant for
+somebody else (#563).
+
+### 34.1 The exploit is a companion rule reaching the wrong person
+
+`TradeUI.ShowTradeScreen` opens with:
+
+```csharp
+bool flag = Trader.IsPlayerLed();
+if (flag) { _costMultiple = 0f; }
+```
+
+A follower's possessions are communal, which is right for a companion recruited over a long game and
+wrong for a trader enchanted forty seconds ago. Four effects and one part reach that line — `Beguiled`,
+`Proselytized`, `Lovesick`, `Rebuked` and `DomesticatedSlave` — and **none of them contains a single
+check for a merchant.**
+
+Vanilla already blocks the renewable half: `GenericInventoryRestocker` skips
+`IsPlayerControlled()` creatures, so a charmed merchant never restocks while the charm holds. The
+exploit is one armful per charm, not a money printer.
+
+### 34.2 The seam, which I expected not to exist
+
+`TradeUI` is named in **no** `Base/` XML file — the shape `docs/LESSONS.md` records as *"a mod's reach
+ends where nothing in XML names the object"*, and the wall both #585 and #570 died on. That lesson is
+about **substituting a class**. This needs a **field**:
+
+| line | |
+|---|---|
+| `:64` | `public static float costMultiple = 1f;` — public, static, writable |
+| `:349` | `if (flag) { _costMultiple = 0f; }` |
+| `:351` | `costMultiple = _costMultiple;` |
+| **`:420`** | **`StartTradeEvent.Send(player, Trader, …)`** |
+| `:433` | `GetObjects(Trader, Objects[0], The.Player, costMultiple)` — first use |
+
+The event fires between the assignment and the first use, and `Send` dispatches to the actor before
+the trader. So **a part on the player writes the field and the screen prices from the new value** —
+public member, no reflection, no Harmony, no vanilla code copied, no blueprint merges. Attached
+through `Vixy_PlayerParts`, so it reaches characters already in a save.
+
+### 34.3 What it restores, and why `1f` is not a chosen number
+
+The conversation trade path (`Trade.cs:100`) calls `ShowTradeScreen(Trader)` and takes the
+`_costMultiple = 1f` default. So restoring `1f` is **exactly undoing the companion rule**, not
+inventing a rate. A charm discount would be new content wanting its own justification under charter
+rule 2, and vanilla gives charm no price benefit by design — the free shop is a leak, not a discount
+somebody wrote.
+
+**Containers are untouched structurally rather than by a guard.** Every vanilla caller passing `0f` is
+a container — `Container`, `InteriorContainer`, `PickItem`, `GameObject` — and none is `IsPlayerLed`,
+so nothing was zeroed and `E.Companion` is false.
+
+**A genuinely recruited merchant keeps communal pricing.** The discriminator is the charm, not the
+following, so a shopkeep who joined the long way round is unaffected.
+
+### 34.4 What it deliberately does not do
+
+`costMultiple` multiplies **every** row (`Totals[i] *= costMultiple`), so it cannot express #563's
+designed rule — the guild's stock costs, the merchant's own boots do not. That distinction *is* marked
+per item: `GenericInventoryRestocker.PerformStock` writes `_stock` on everything it produces and
+`norestock` on everything the merchant already had. Nothing in reach reads it before `TradeUI:1415`
+clears it on transfer — and it clears on a free transfer too, so reading it afterwards reads nothing.
+
+So this restores the price and says nothing about ownership. It also leaves the three `WontSell` gates
+(`:134`, `:138`, `:142`) alone, since those test `IsPlayerLed()` directly: a charmed merchant's
+never-for-sale items stay purchasable, at cost. Close enough to what charm ought to buy.
+
+**Domination is a different building entirely.** `Dominated` refuses `JoinPartyLeaderPossibleEvent`, so
+it never routes through `IsPlayerLed()`; the player becomes the merchant and walks the inventory out.
+No trade screen is involved and nothing here touches it.
+
+### 34.5 One correction to the issue
+
+#563 lists five *effects*. `SlaveMask` is not one — it is a part `DomesticatedSlave.cs:48` puts on the
+mask itself, whose job is to **clear** `PartyLeader` when the mask comes off, and it appears in no XML
+anywhere. The creature-side state is `DomesticatedSlave`, an `IBondedCompanion` part, and that is what
+this tests. Found by the compiler rejecting `HasEffect<SlaveMask>()`.
+
+### 34.6 Off-switch
+
+`OptionQudExpandedCECharmedMerchantPrices`, on by default, read live when a trade screen opens.
+
+Rule 6 says an option earns its place where it **takes something away that a player might want back**,
+and this plainly does. It defaults on for the same reason §25's trash density does: what it takes away
+is the part vanilla gave away by accident. The charm is untouched everywhere else — same following,
+same fighting, same shelf.
 
 ## Appendix A — every merged vanilla melee weapon
 

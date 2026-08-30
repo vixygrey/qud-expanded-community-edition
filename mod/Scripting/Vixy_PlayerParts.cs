@@ -66,6 +66,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_TrashMemory>();
                 player.RequirePart<Vixy_TradeOffer>();
                 player.RequirePart<Vixy_LiquidGather>();
+                player.RequirePart<Vixy_MerchantOwnership>();
             }
         }
     }

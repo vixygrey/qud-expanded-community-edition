@@ -31,6 +31,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Charmed merchants still expect paying** (#563).
+
+  Beguile, proselytize or mask a shopkeep and their whole shop became free. Caves of Qud treats
+  anyone following you as a companion, and a companion's things are shared — which is right for
+  someone who joined you over a long game and wrong for a trader you enchanted forty seconds ago.
+  Nothing in any of the charms ever asked whether the person now following you keeps a shop.
+
+  A charmed merchant still likes you, still shows you everything they have, and now still charges for
+  it. **The charm is not weakened anywhere else**: they follow you, they fight for you, and the things
+  they would never normally sell are still on the shelf — you just buy them. A merchant who genuinely
+  joined you is unaffected, because the test is the charm rather than the following.
+
+  This is not a rule about who owns the stock, which is what I originally wanted. Caves of Qud does
+  mark each item as shop stock or personal effects, but it clears the mark the instant anything
+  changes hands — including for free — so there is nothing left to read by the time it would matter.
+  What is left is the simpler statement: charm buys goodwill, not goods.
+
+  New option, **on by default**, read live: turning it off gives you the free shop back, from the next
+  merchant you talk to.
+
 - **Caravan guards carry a bow** (#591).
 
   A flying character could strip a dromad caravan at no risk. Not because caravans are undefended —

@@ -525,4 +525,33 @@
             whatever they were built with.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCECharmedMerchantPrices"
+    DisplayText="{{C|Qud Expanded}}: charmed merchants still expect paying"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded merchant charm beguile proselytize lovesick mask trade price free shop"
+  >
+    <helptext>
+            A merchant you have charmed still charges you for their goods.
+
+            Caves of Qud treats anyone following you as a companion, and a companion's things are
+            shared - so beguiling, proselytizing or masking a shopkeep empties their whole shop for
+            free. That rule is right for someone who joined you over a long game and wrong for a
+            trader you enchanted forty seconds ago, and nothing in any of the five charms ever
+            checks whether the person following you keeps a shop.
+
+            With this on, a charmed merchant still likes you, still shows you everything they have,
+            and still expects paying. The charm is not weakened anywhere else: they still follow
+            you, still fight for you, and their never-for-sale items are still on the shelf - you
+            just buy them.
+
+            A merchant who genuinely joined you is unaffected. The test is the charm, not the
+            following, so a shopkeep recruited the long way round still shares everything.
+
+            Turning it off restores Caves of Qud's behaviour, and the shop is free again. Applies to
+            the next trade screen you open either way.
+        </helptext>
+  </option>
 </options>
