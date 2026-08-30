@@ -920,6 +920,33 @@ def collect_mutation_names(game: Path) -> list[str]:
     return sorted(names)
 
 
+def collect_shader_names(game: Path) -> list[str]:
+    """Every markup shader and solid colour name vanilla declares.
+
+    `MarkupShaders.HandleShaderNode` has no `Load` attribute and no concept of one: a known `Name`
+    is *updated* and an unknown one registered, so merge is the only behaviour there is. That makes
+    a name collision a silent redefinition of a vanilla shader rather than an error, and `{{name|…}}`
+    is used by real content — vanilla's own `rainbow` reaches `rainboweave`, `flash of neon`,
+    `Books.xml` and three passages in `Conversations.xml`.
+
+    `check_merge_discipline` cannot see any of this: it reads blueprints and looks for `Load="Merge"`,
+    and there is no `Load` here to look for. So `check_shader_collision` needs the real list, and CI
+    has no game.
+
+    Solid colours are collected alongside shaders because `ByName` holds both in one dictionary, and
+    `HandleShaderNode` throws outright when a `<shader>` names an existing `<solidcolor>`.
+    """
+    names: set[str] = set()
+    for f in sorted(game.glob("Colors*.xml")):
+        root = parse(f, lenient=True)
+        for tag in ("shader", "solidcolor"):
+            for el in root.iter(tag):
+                name = el.get("Name")
+                if name:
+                    names.add(name)
+    return sorted(names)
+
+
 def collect_absent_tables(game: Path) -> list[str]:
     """Population tables this mod merges into that vanilla does not define.
 
@@ -1235,6 +1262,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     scatter_quantities = collect_scatter_quantities(game)
     variant_parent_quantities = collect_variant_parent_quantities(game)
     mutation_names = collect_mutation_names(game)
+    shader_names = collect_shader_names(game)
     absent_tables = collect_absent_tables(game)
     template_hints = collect_template_hints(game)
     skill_powers = collect_skill_powers(game)
@@ -1333,6 +1361,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "scatter_quantities": len(scatter_quantities),
             "variant_parent_quantities": len(variant_parent_quantities),
             "mutation_names": len(mutation_names),
+            "shader_names": len(shader_names),
             "absent_tables": len(absent_tables),
             "template_hints": len(template_hints),
             "skill_powers": len(skill_powers),
@@ -1352,6 +1381,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
         "variant_parent_quantities": dict(sorted(variant_parent_quantities.items())),
         "mutation_names": mutation_names,
+        "shader_names": shader_names,
         "absent_tables": absent_tables,
         "template_hints": template_hints,
         "skill_powers": dict(sorted(skill_powers.items())),

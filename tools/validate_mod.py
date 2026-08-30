@@ -1526,6 +1526,58 @@ def _report_field(
     )
 
 
+def check_shader_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """A `<shader>` or `<solidcolor>` name this fork declares that vanilla already uses.
+
+    `MarkupShaders.HandleShaderNode` has no `Load` attribute and no concept of one: it looks the
+    `Name` up in `ByName`, *updates* the entry when it finds one and registers it when it does not.
+    Merge is the only behaviour there is, so declaring a name vanilla already owns is a silent
+    redefinition of a vanilla shader - and `{{name|...}}` reaches real content. Vanilla's `rainbow`
+    is used by `rainboweave`, `flash of neon`, a passage in `Books.xml` and three in
+    `Conversations.xml`, so a `<shader Name="rainbow">` here would repaint all of it with no error
+    anywhere. #577 was filed proposing exactly that row.
+
+    `check_merge_discipline` cannot cover this and never could: it reads blueprints and looks for
+    `Load="Merge"`, and there is no `Load` in this file format to look for. Charter rule 1 is the
+    same either way.
+
+    The within-mod half is the cheaper failure and needs no snapshot: two `<shader>` entries sharing
+    a `Name` in this fork's own files mean the second silently overwrites the first, which reads as
+    a flag that shipped with the wrong colours.
+
+    A shader name is also a `docs/STYLEGUIDE.md` section 1.1b identifier once anything uses it.
+    `ItemNaming.NameItem` stores the literal string `{{lesbian|Whatever}}` as an item's proper name,
+    so a name that ships and is later renamed changes how every item already named with it renders,
+    in saves already written.
+    """
+    vanilla = snapshot_shader_names()
+    seen: dict[str, Path] = {}
+    for path, root in all_roots.items():
+        if root.tag != "colors":
+            continue
+        for tag in ("shader", "solidcolor"):
+            for el in root.iter(tag):
+                name = el.get("Name")
+                if not name:
+                    f.add("shader-collision", f"{path}: a <{tag}> has no Name")
+                    continue
+                if name in seen:
+                    f.add(
+                        "shader-collision",
+                        f"{path}: {name!r} is declared twice ({seen[name]} first) - the second "
+                        f"silently overwrites the first",
+                    )
+                else:
+                    seen[name] = path
+                if name in vanilla:
+                    f.add(
+                        "shader-collision",
+                        f"{path}: {name!r} is a vanilla shader or colour - there is no Load "
+                        f"attribute in this format, so declaring it redefines vanilla's for every "
+                        f"place the game already uses it",
+                    )
+
+
 def check_subtype_tiles(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Subtype tiles must exist on disk and be named for their affinity.
 
@@ -1836,6 +1888,17 @@ def snapshot_absent_tables() -> set[str]:
     if not QUD_API_PATH.is_file():
         return set()
     return set(json.loads(QUD_API_PATH.read_text()).get("absent_tables", []))
+
+
+def snapshot_shader_names() -> set[str]:
+    """Every markup shader and solid colour name vanilla declares, from tools/qud-api.json.
+
+    Empty when the snapshot predates the key, in which case `check_shader_collision` still runs its
+    within-mod half - the same bargain the other snapshot-backed checks make.
+    """
+    if not QUD_API_PATH.is_file():
+        return set()
+    return set(json.loads(QUD_API_PATH.read_text()).get("shader_names", []))
 
 
 def snapshot_scatter_quantities() -> dict[str, float]:
@@ -3658,6 +3721,7 @@ def run() -> Findings:
     check_option_defaults(f, roots)
     check_filenames(f)
     check_merge_discipline(f, roots)
+    check_shader_collision(f, roots)
     check_duplicate_children(f, roots)
     check_naming_discipline(f, roots)
     check_naming_syllables(f, roots)

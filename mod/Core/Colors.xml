@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<colors>
+  <!-- Twenty-four LGBTQIA+ flags for the item-naming colour picker. See #577.
+
+       There is no Load attribute anywhere in this file, and that is not an omission.
+       MarkupShaders.HandleShaderNode has none: it looks the Name up in ByName, updates the shader
+       when it finds one and registers it when it does not. Merge is not a mode you opt into, it is
+       the only behaviour - the same shape as Genders.xml, and the same reason <removegender> and
+       <removetable> go unused here. So adding a shader is pure addition, and naming an existing one
+       would be surgery on vanilla. None of the 24 below collides with vanilla's 152 shaders or 27
+       solid colours; tools/validate_mod.py's shader-collision check keeps it that way.
+
+       Type="alternation", not "sequence", which reads backwards from the names. ISequence returns
+       Colors[totalPos % Colors.Length] and cycles one colour per character; IAlternation returns
+       Colors[totalPos * Colors.Length / totalLen] and spreads the colours into contiguous runs
+       across the whole string. The second one is what draws a stripe. Vanilla settles it without
+       needing the assembly: its own rainbow is an alternation. Neither animates - the only
+       animation in the system is an opt-in Decorators="shimmering".
+
+       No rainbow row. Vanilla already ships one, it is already in the picker, and it is already a
+       pride rainbow (r-R-W-G-B-b-m). Redefining it would silently repaint rainboweave, flash of
+       neon, a passage in Books.xml and three in Conversations.xml - charter rule 1.
+
+       No transfeminine or transmasculine. Both were filed as C-M-Y-M-C, which is byte-identical to
+       transgender. Three names for one swatch serves nobody; they want their own colours or nothing.
+
+       The black stripes do not render, and that is accepted rather than unnoticed. Qud draws on
+       #0F252B and K is #155352, which is 1.81:1 against it - so the ten flags below carrying a K
+       band show one stripe fewer than they should. There is nowhere darker to go (k is darker
+       still, and K is already the lighter of the two blacks) and the alternative is substituting a
+       visible neutral, which makes a wrong flag rather than an incomplete one. An asexual flag
+       reading grey-white-purple is still recognisably itself; one with a brown stripe is not.
+
+       Name is a save-shape identifier, per docs/STYLEGUIDE.md section 1.1b. ItemNaming.NameItem
+       stores the literal string {{lesbian|Whatever}} as the item's proper name, so renaming one of
+       these later changes how every item already named with it renders, in saves already written.
+       DisplayName is free by comparison, and carries the "pride " prefix because
+       Popup.SetupColorPickers sorts the picker on it - without the prefix these scatter through
+       vanilla's 125 shaders and a player has to know a flag exists before they can find it. -->
+
+  <!-- Orientation -->
+  <shader
+    Name="progress"
+    DisplayName="pride progress"
+    Type="alternation"
+    Colors="K-w-C-M-Y-R-O-W-G-B-M"
+    ShowInPicker="true"
+  />
+  <shader Name="lesbian" DisplayName="pride lesbian" Type="alternation" Colors="r-O-Y-M-m" ShowInPicker="true" />
+  <shader Name="gaymen" DisplayName="pride gay men" Type="alternation" Colors="c-C-Y-B-b" ShowInPicker="true" />
+  <shader Name="bisexual" DisplayName="pride bisexual" Type="alternation" Colors="M-M-m-B-B" ShowInPicker="true" />
+  <shader Name="pansexual" DisplayName="pride pansexual" Type="alternation" Colors="M-W-C" ShowInPicker="true" />
+  <shader Name="polysexual" DisplayName="pride polysexual" Type="alternation" Colors="M-G-B" ShowInPicker="true" />
+  <shader Name="omnisexual" DisplayName="pride omnisexual" Type="alternation" Colors="M-m-K-b-C" ShowInPicker="true" />
+  <shader Name="asexual" DisplayName="pride asexual" Type="alternation" Colors="K-y-Y-m" ShowInPicker="true" />
+  <shader Name="graysexual" DisplayName="pride graysexual" Type="alternation" Colors="m-y-Y-y-m" ShowInPicker="true" />
+  <shader Name="demisexual" DisplayName="pride demisexual" Type="alternation" Colors="K-Y-m-y" ShowInPicker="true" />
+  <shader Name="abrosexual" DisplayName="pride abrosexual" Type="alternation" Colors="G-g-Y-M-m" ShowInPicker="true" />
+  <shader Name="aromantic" DisplayName="pride aromantic" Type="alternation" Colors="g-G-Y-y-K" ShowInPicker="true" />
+  <shader
+    Name="demiromantic"
+    DisplayName="pride demiromantic"
+    Type="alternation"
+    Colors="K-Y-G-y"
+    ShowInPicker="true"
+  />
+  <shader Name="aroace" DisplayName="pride aroace" Type="alternation" Colors="O-W-Y-C-b" ShowInPicker="true" />
+
+  <!-- Gender -->
+  <shader
+    Name="transgender"
+    DisplayName="pride transgender"
+    Type="alternation"
+    Colors="C-M-Y-M-C"
+    ShowInPicker="true"
+  />
+  <shader Name="nonbinary" DisplayName="pride nonbinary" Type="alternation" Colors="W-Y-m-K" ShowInPicker="true" />
+  <shader
+    Name="genderfluid"
+    DisplayName="pride genderfluid"
+    Type="alternation"
+    Colors="M-Y-m-K-B"
+    ShowInPicker="true"
+  />
+  <shader Name="genderqueer" DisplayName="pride genderqueer" Type="alternation" Colors="m-Y-G" ShowInPicker="true" />
+  <shader Name="agender" DisplayName="pride agender" Type="alternation" Colors="K-y-Y-G-Y-y-K" ShowInPicker="true" />
+  <shader Name="bigender" DisplayName="pride bigender" Type="alternation" Colors="M-m-Y-m-C-B" ShowInPicker="true" />
+  <shader Name="demigirl" DisplayName="pride demigirl" Type="alternation" Colors="y-y-M-Y-M-y-y" ShowInPicker="true" />
+  <shader Name="demiboy" DisplayName="pride demiboy" Type="alternation" Colors="y-y-C-Y-C-y-y" ShowInPicker="true" />
+  <shader Name="neutrois" DisplayName="pride neutrois" Type="alternation" Colors="Y-G-K" ShowInPicker="true" />
+  <shader Name="intersex" DisplayName="pride intersex" Type="alternation" Colors="W-m-W" ShowInPicker="true" />
+</colors>

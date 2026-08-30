@@ -2113,6 +2113,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
+│   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
 │   └── PopulationTables.xml    # 137 tables (112 merge / 25 new)
 │
@@ -4593,6 +4594,126 @@ have bought is a line in a menu somebody has to read past, a `<helptext>` to kee
 the wiring check and a branch to carry forever.
 
 This shipped with one and it came out before merge, the same call #664 made on §29's gate.
+
+## 32. Pride flags in the naming picker (`Core/Colors.xml`)
+
+**When I name an item, I can colour it with one of 24 LGBTQIA+ flags.** `ItemNaming` is the one call
+site in the game that passes `includePatterns: true` to `Popup.ShowColorPicker`, so naming a weapon
+after a kill is where these appear (#577).
+
+Pure data. One new file, no C#, no blueprint merges, no population tables.
+
+### 32.1 `alternation`, not `sequence` — the names read backwards
+
+This is the trap, and I filed the issue with it the wrong way round.
+
+| type | what it returns | what it draws |
+|---|---|---|
+| `ISequence` | `Colors[totalPos % Colors.Length]` | cycles one colour per character, repeating — confetti |
+| `IAlternation` | `Colors[totalPos * Colors.Length / totalLen]` | contiguous runs across the whole string — **stripes** |
+
+**Alternation is the one that draws a flag.** Neither animates; the only animation in the system is
+an opt-in `Decorators="shimmering"`. Vanilla settles it without needing the assembly at all — its own
+`rainbow` is `Type="alternation"`.
+
+### 32.2 No `rainbow` row, because vanilla's already is one
+
+The load path is merge-by-name and there is no `Load` attribute to opt out of it, so
+`<shader Name="rainbow">` would *edit* vanilla's rather than add one. Vanilla ships
+`r-R-W-G-B-b-m`, already in the picker, and `{{rainbow|…}}` reaches `rainboweave`, `flash of neon`,
+a passage in `Books.xml` and three in `Conversations.xml`. Charter rule 1, with nothing gained.
+
+`transfeminine` and `transmasculine` are out for a different reason: both were specified as
+`C-M-Y-M-C`, byte-identical to transgender. Three names for one swatch serves nobody.
+
+### 32.3 Black stripes do not render, and that is accepted
+
+Qud draws on `#0F252B`. Its darkest usable ink, `K` at `#155352`, is **1.81:1** against that — so the
+ten flags below carrying a `K` band show one stripe fewer than they should. Dark blue (2.02:1) and
+dark red (2.76:1) are weak too, which reaches the gay men's, lesbian and aroace flags.
+
+There is nowhere darker to go: `k` is darker still, and `K` is already the lighter of the two blacks.
+The alternative was substituting a visible neutral, which makes a *wrong* flag rather than an
+incomplete one — an asexual flag reading grey-white-purple is still recognisably itself; one with a
+brown stripe is not. Vanilla accepts the same thing for `bee` (`K-w-W-Y-W-w-K`).
+
+**A flag with more stops than the name has characters also loses stripes**, since alternation maps
+index to `pos * n / len`. At six characters — *dagger*, *cudgel* — anything above six stops drops one.
+It affects `progress` (11), `agender`, `demigirl` and `demiboy` (7 each).
+
+### 32.4 Distinguishability, measured
+
+Mean CIE76 ΔE across an 11-character name, all 276 pairs: **nothing collides**. The closest are
+demigirl and demiboy at 16.0, which is close but distinct; everything else is 24.3 or more. The two
+that *were* identical are the two that were cut.
+
+It also matters less than it looks, because `Popup.SetupColorPickers` renders every shader as
+`{{name|preview}} (DisplayName)` — **each entry is labelled**. Colour has to be good enough to
+recognise, not good enough to identify blind.
+
+### 32.5 The set
+
+`DisplayName` carries a `pride ` prefix because the picker **sorts on `DisplayName`**. Without it
+these scatter alphabetically through vanilla's 125 picker shaders and a player has to know a flag
+exists before they can find it; with it they arrive as one block.
+
+**Orientation**
+
+| flag | `Name` | `Colors` | stops |
+|---|---|---|---|
+| progress | `progress` | `K-w-C-M-Y-R-O-W-G-B-M` | 11 |
+| lesbian | `lesbian` | `r-O-Y-M-m` | 5 |
+| gay men | `gaymen` | `c-C-Y-B-b` | 5 |
+| bisexual | `bisexual` | `M-M-m-B-B` | 5 |
+| pansexual | `pansexual` | `M-W-C` | 3 |
+| polysexual | `polysexual` | `M-G-B` | 3 |
+| omnisexual | `omnisexual` | `M-m-K-b-C` | 5 |
+| asexual | `asexual` | `K-y-Y-m` | 4 |
+| graysexual | `graysexual` | `m-y-Y-y-m` | 5 |
+| demisexual | `demisexual` | `K-Y-m-y` | 4 |
+| abrosexual | `abrosexual` | `G-g-Y-M-m` | 5 |
+| aromantic | `aromantic` | `g-G-Y-y-K` | 5 |
+| demiromantic | `demiromantic` | `K-Y-G-y` | 4 |
+| aroace | `aroace` | `O-W-Y-C-b` | 5 |
+
+**Gender**
+
+| flag | `Name` | `Colors` | stops |
+|---|---|---|---|
+| transgender | `transgender` | `C-M-Y-M-C` | 5 |
+| nonbinary | `nonbinary` | `W-Y-m-K` | 4 |
+| genderfluid | `genderfluid` | `M-Y-m-K-B` | 5 |
+| genderqueer | `genderqueer` | `m-Y-G` | 3 |
+| agender | `agender` | `K-y-Y-G-Y-y-K` | 7 |
+| bigender | `bigender` | `M-m-Y-m-C-B` | 6 |
+| demigirl | `demigirl` | `y-y-M-Y-M-y-y` | 7 |
+| demiboy | `demiboy` | `y-y-C-Y-C-y-y` | 7 |
+| neutrois | `neutrois` | `Y-G-K` | 3 |
+| intersex | `intersex` | `W-m-W` | 3 |
+
+### 32.6 `Name` is inside the save
+
+`ItemNaming.NameItem` calls `ColorUtility.ApplyColor`, which builds the literal string
+`{{lesbian|Whatever}}` and stores *that* as the item's proper name. So these are
+`docs/STYLEGUIDE.md` §1.1b identifiers: renaming one changes how every item already named with it
+renders, in saves already written. None of the 24 collides with vanilla's 152 shaders or 27 solid
+colours, and `validate_mod.py`'s `shader-collision` check keeps it that way in both directions —
+against vanilla, and against a duplicate inside this fork's own files.
+
+Uninstalling is graceful. `MarkupControlNode` treats an unresolved shader as `null` and renders the
+children uncoloured — no braces, no error. A player who removes the mod keeps their named items and
+loses only the colour.
+
+### 32.7 No off-switch
+
+Rule 6: it changes no number, no loot table and no part of character creation, and takes nothing
+away. The nearest thing to a cost is 24 more entries in a picker that already holds 141, which is a
+17% longer list rather than a new kind of problem.
+
+### 32.8 The recipe half is not here
+
+`CookingRecipe` holds `DisplayName` and `ChefName` and no colour field, and there is no player-chosen
+recipe name until #576. That half stays blocked.
 
 ## Appendix A — every merged vanilla melee weapon
 
