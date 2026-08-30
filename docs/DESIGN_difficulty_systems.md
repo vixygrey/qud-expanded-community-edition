@@ -276,23 +276,34 @@ misery generator rather than a difficulty system.
 
 ---
 
-### B2. Pursuit across zones
+### B2. Pursuit across zones — *retired, because it already ships* (#719)
 
-**The gap.** Changing zones almost always breaks pursuit. Disengaging is close to free.
+**This section described a system Qud has.** It is kept as a record rather than deleted,
+so the premise is not re-derived a third time.
 
-**In-world basis.** Intelligent creatures would follow you. They currently don't.
+The stated gap was *"changing zones almost always breaks pursuit."* It does not.
+`XRL.World.AI.GoalHandlers.Kill` measures
+`currentCell.DistanceToRespectStairs(currentCell2)` — global coordinates, respecting
+stairs, and therefore across zones. It increments `LastSeen` **only** when that distance
+exceeds **80** or the target's zone is gone, and abandons the target at `LastSeen > 5`:
 
-**Mechanic.** Intelligent hostiles that were actively engaged have a chance to follow
-you through a zone transition, arriving a few turns behind.
+```csharp
+int num = currentCell.DistanceToRespectStairs(currentCell2);
+if (currentCell2.ParentZone == null || currentCell2.ParentZone.ZoneID == null || num > 80)
+{
+    LastSeen++;
+}
+if (LastSeen > 5) { Think("I can't find my target..."); Target = null; FailToParent(); }
+```
 
-**Decision created.** Fleeing becomes a real tactical choice with a cost, rather than
-the universal escape hatch.
+So a hostile already follows through a stairwell and across a zone edge, and gives up
+after six cumulative turns of having lost you. Confirmed in play as well as in the
+assembly.
 
-**Implementation.** Moderate. Zone-transition handling and off-screen entity persistence
-are fiddly, and this is the option most likely to have nasty edge cases.
-
-**Risk.** Could make the early game harder, which violates §0. **Gate it to intelligent
-factions and higher-tier creatures only** so it bites in the back half of the curve.
+The *"likely Harmony, most edge cases, last"* verdict was costing a system nobody needed
+to build. What survives is a **tuning** proposition — whether 80 and 6 are the right
+numbers — which is a different question with a different premise, and is tracked on its
+own rather than here.
 
 ---
 
@@ -419,28 +430,69 @@ entirely. Keep it that way — never destroy an item.
 
 ## Ranking
 
+**Seven systems, not eight.** B2 was removed in #719 — see below.
+
 | System | Value | Effort | Harmony? | Verdict |
 |---|---|---|---|---|
-| **A1 Faction rivalry** | High | Low | No | **Build first** |
-| **B1 Wound system** | High | Medium | Probably not | **Build second** |
-| B3 Provisioning refusal | Medium | Low | No | Good third — a `CanTravelEvent` refusal. Not the tick, and not AutoSip either: that is a bare global read with no dispatch, so suppressing it needs Harmony |
-| A4 Cybernetic attention | Medium | Low | No | Cheap, closes an asymmetry |
-| A2 Hoard notoriety | Medium | Medium | No | Needs the non-combat valve |
+| **B1 Wound system** | High | Medium | Probably not | **Build first.** The only effort estimate here that has survived contact with the assembly (#192) |
+| **A3 Kill champions** | Medium | **Medium** | No | **Build second.** Far cheaper than "most work" implied — see below |
 | B4 Artifact instability | Medium | **Low** | No | Only as jamming. `ChargeUsedEvent` is the hook; `Broken` already exists |
-| A3 Kill champions | Medium | High | No | Best content, most work |
-| B2 Pursuit | Medium | High | Likely | Most edge cases. Last. |
+| B3 Provisioning refusal | Medium | Low | No | A `CanTravelEvent` refusal. Not the tick, and not AutoSip either: that is a bare global read with no dispatch, so suppressing it needs Harmony |
+| A1 Faction rivalry | Medium | Low | No | **Downgraded from "build first."** Most of it ships; what is missing is narrower |
+| A2 Hoard notoriety | Medium | Medium | No | Needs the non-combat valve |
+| A4 Cybernetic attention | Medium | **High** | No | **Was "Low", and that was wrong twice over** — see below |
 
-**Suggested first release:** A1 alone. It's the clearest genuine gap, it's data and
-events with no Harmony, it changes how the whole social layer plays, and it ships
-small enough to actually finish.
+**Suggested first release:** **B1 alone.** A1 held that slot on the strength of being
+the clearest genuine gap, and it is no longer clearly a gap. B1 is the one whose cost
+was checked rather than estimated, it adds no enemy hit points, and it is self-contained.
+
+### Why four of these rows moved (#719)
+
+**A1 is mostly built.** The stated gap is *"helping one faction does not anger its
+rivals."* `WaterRitual.ModifyReputation` already walks the speaker's
+`GivesRep.relatedFactions` and applies `friend` / `dislike` / `hate` cases, non-silent
+and batched. What does **not** ship is propagation that follows the *canon* rather than
+a roll — the relations are generated per legendary, and few blueprints author even their
+first relation by hand. That is a narrower and more interesting feature than the row
+described, and it is not a "build first."
+
+**A4's "Low effort" was wrong twice.** `XRL.PsychicHunterSystem` is **701 lines** and
+Seeker-hardcoded throughout: `CreateSeekerHunters`, `GameObject.Create("PsychicSeekerHunter")`,
+`The.Game.PlayerReputation.Get("Seekers")`, its own rank ladder. Nothing is
+faction-parameterised, so *"nearly a copy of the glimmer system"* means writing a second
+one. **And it has to be an `IGameSystem`** — the class registers `ZoneActivatedEvent`,
+which fires before the player is placed on scripted arrival paths, so a part on the
+player would silently miss teleports, travel encounters and spore transits.
+
+**A3's "most work" is doubtful.** `HeroMaker.MakeHero` is public static, faction-aware
+through `BaseFactionHeroTemplate_*` / `SpecialFactionHeroTemplate_*`, and tier-scalable.
+Its `string SpecialType = "Hero"` parameter has **no branch on it anywhere in the
+method** — it is passed unexamined to five naming calls, each with
+`SpecialFaildown: true` — so `"Champion"` is a data addition rather than code. The
+irreducible work is a counter, a threshold, one dialogue line, and as much authoring as
+is wanted.
+
+**B2 Pursuit was deleted, because it ships.** The row read *"Likely Harmony. Most edge
+cases. Last."* `XRL.World.AI.GoalHandlers.Kill` measures
+`currentCell.DistanceToRespectStairs(currentCell2)` — global coordinates, across zones —
+increments `LastSeen` only when that exceeds **80** or the target's zone is gone, and
+gives up at `LastSeen > 5`. So a hostile already follows you through a stairwell and
+across a zone edge, and abandons the chase after six cumulative turns of having lost
+you. Cross-zone pursuit is not a system to build. What remains is a tuning proposition
+with a different premise, tracked separately.
+
+**B3 needed nothing.** #708 corrected the row along with the section, so the *"the lever
+is capacity and AutoSip"* text #719 reported was already gone before this pass.
 
 ---
 
 ## Technical notes
 
 - Everything in Part A is reputation/spawn logic — parts, events, and XML tables.
-- B1 needs a damage-event handler and an effect. B2 is the only one likely to need
-  Harmony, which is a further argument for doing it last.
+- B1 needs a damage-event handler and an effect. **Nothing here now needs Harmony** —
+  B2 was the only candidate and it turned out to ship (#719). The one place Harmony would
+  still be required is suppressing `Options.AutoSip` for B3, which is why B3 does not
+  propose that.
 - Every system behind a **mod option, defaulted off**. These are opinionated changes and
   players should opt into each one independently.
 - Freehold recommend treating Harmony as a last resort — postfix and non-blocking

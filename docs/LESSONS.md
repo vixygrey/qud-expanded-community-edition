@@ -2389,6 +2389,20 @@ I extend"* produced a better design than *"which of these is nearest"*, and it i
 that order. The 36 `ModImprovedMutationBase<T>` stubs in this fork work precisely because that base
 was written to be extended; a vanilla gameplay class carries no such promise.
 
+**And the rule has a positive form, which #190 found.** `HeroMaker.MakeHero` takes
+`string SpecialType = "Hero"` and **nothing branches on it anywhere in the method** — it is passed
+unexamined to five `NameMaker` / `GiveProperName` calls, each with `SpecialFaildown: true`, so it
+resolves as a scope dimension in `Naming.xml` and degrades gracefully when the scope is unrecognised.
+
+> **A string parameter is an extension point when nothing branches on it and the failure path is a
+> documented faildown.** That is the inverse test of the one above: there, a non-virtual method
+> called from every entry point sealed a class that looked open; here, the *absence* of any branch
+> is what makes a parameter genuinely open.
+
+It is also a cost estimate. Because `SpecialType` is never examined, adding a `"Champion"` hero kind
+is a data addition to `Naming.xml` rather than code — which is most of why the difficulty document's
+ranking of A3 as *"most work"* was wrong (#719).
+
 ## A virtual method that ends in `base` is not an extension point either
 
 The entry above settles the easy half: a member that is not virtual cannot be overridden, and reading
@@ -3344,3 +3358,103 @@ Related: [`Containment is not dispatch — check the cascade level before assumi
 is the same family — there the part was in the object and outside the cascade, here it was registered
 for the event and outside the list. Both are *reachability at the moment of the call*, and neither is
 visible from the handler's side.
+
+## Ask what dispatches per-object and what dispatches centrally — the answer is the estimate
+
+Costing a feature that applies to a whole category of objects turns on one question: **is there a hook
+a single registered listener can hear for every member?** Two events of near-identical shape answer it
+oppositely, and the difference is the entire cost of the feature.
+
+```csharp
+// ObjectCreatedEvent.Process — dispatches to the object ONLY
+if (Object.WantEvent(ID, MinEvent.CascadeLevel)) { … Object.HandleEvent(objectCreatedEvent); }
+
+// GetZoneSuspendabilityEvent.GetFor — dispatches to the game FIRST
+The.Game.HandleEvent(Instance);
+Zone.HandleEvent(Instance);
+```
+
+The second lets one `IGameSystem` answer for every zone in the game. The first does not, so a part
+that would act at creation has to already be on the object — which is usually the thing being solved.
+
+> **The answer sorts a feature into one of three costs that are orders of magnitude apart:** one merge
+> onto a shared base, N merges onto every member, or not reachable at all without touching the caller.
+> Ask it before estimating, not while implementing.
+
+For #579 it is the difference between one `<part>` on `Creature` and roughly 372 tag merges. This is
+also what forces `XRL.PsychicHunterSystem` to be an `IGameSystem` rather than a part on the player:
+it registers `ZoneActivatedEvent`, which fires before the player is placed on scripted arrival paths,
+so a player part would silently miss teleports, travel encounters and spore transits.
+
+## A generic entry point can fan out into a set that is not generic
+
+`Screens.Show(GameObject GO)` has one signature, honours its parameter in both UI branches, and every
+one of its nine call sites passes `The.Player`. It looks exactly like a facility written generically
+and never aimed anywhere else — and every test you would think to apply says so.
+
+It is a **cycler**. `Show` enters at `CurrentScreen` and loops `Next` / `Previous` through eight
+screens, wrapping. Four of them touch `The.Player`, and one is not benign: `TinkeringScreen` mixes the
+two subjects *inside single operations*.
+
+```csharp
+ItemModding.ModificationApplicable(ModRecipes[i].PartName, obj, The.Player)
+new ItemModdingSifrah(ModObject, …, The.Player.Stat("Intelligence"))
+TinkeringHelpers.ProcessTinkeredItem(gameObject2, The.Player)
+```
+
+Aimed at a follower it would list **their** items while modding against **the player's** Intelligence
+and delivering the results to **the player**. No crash and no error — a coherent-looking screen
+performing a hybrid action.
+
+> **Check what a generic entry point dispatches *to*, not only what it accepts.** The signature, the
+> parameter threading and the call-site census were all clean here and all beside the point.
+
+Sibling of [`a public field is not a supported setter if something caches what it derives`](#a-public-field-is-not-a-supported-setter-if-something-caches-what-it-derives):
+there the member was closed and looked open; here the entry is genuinely open and leads somewhere
+that is not.
+
+## A clamped formula only encodes its inputs inside the clamp
+
+The water ritual prices recruitment on the recruit's level relative to yours, which reads as *"the
+price already tells the player their level, so showing the level reveals nothing new."*
+
+```csharp
+Reputation = Math.Max(50, 200 + (The.Speaker.Stat("Level") - The.Player.Stat("Level"))
+                             * (int)((double)RuleSettings.REPUTATION_BASE_UNIT * 0.25));
+```
+
+`REPUTATION_BASE_UNIT` is 50, so the multiplier is 12 — and the expression is only an encoding of the
+level difference **above its floor**. At Δ ≤ −13 the price is a flat 50 and encodes nothing at all,
+which is most late-game recruiting.
+
+> **Before designing around "the number already tells the player X", find where the number stops
+> moving.** The uninformative region is often exactly where the feature matters most.
+
+## Vanilla answers "how bad", not "how far"
+
+Investigating grenade collateral, the premise was *"there is no blast radius to ask about."* That is
+true and it hides something. Nine grenade and mine parts implement
+`GetComponentAdjacentNavigationWeightEvent`, and the values are hand-ranked rather than uniform:
+
+| part | weight | | part | weight |
+|---|---:|---|---|---:|
+| `HEGrenade` | 10 | | `Tinkering_Mine` | 2 / 3 / 7 |
+| `ThermalGrenade` | 8 | | `EMPGrenade` | 2 / 3 |
+| `SunderGrenade` | 8 | | `TimeDilationGrenade` | 2 / 3 |
+| `GravityGrenade` | 5 | | `FlashbangGrenade` | 2 |
+| `GasGrenade` | 5 | | | |
+
+Those feed cell navigation weight, and `FindPath` walks the zone's navigation map bounded by the
+`MaxWeight` its callers pass. **So the AI already refuses to walk beside a live explosive and will
+still throw one next to its friends** — it reasons about blast areas with its feet and not with its
+arm.
+
+> **An area effect has two questions and they are answered in different places.** *Severity* — how bad
+> is it to be caught by this — is authored, ranked and consumed. *Extent* — which cells does it reach
+> — exists nowhere: `Radius`, `Force` and `Density` are per-type and unrelated. Check which half is
+> actually missing before building a blast-profile abstraction, and do not invent a second severity
+> scale beside Freehold's.
+
+This is the inverse of [`vanilla builds mechanisms it never wires up, and the unused half is usually complete`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete):
+there a finished mechanism has no consumer; here a finished mechanism has one consumer and was never
+extended to the obvious second one.
