@@ -410,6 +410,7 @@ CENSUS_KEYS = (
     "creature-blueprints",
     "creature-blueprints-bleeding",
     "humanoid-blueprints",
+    "weight-tag-carriers",
 ) + tuple(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS)
 
 
@@ -521,6 +522,15 @@ def collect_census(game: Path) -> dict[str, str]:
     tally["humanoid-blueprints"] = len(humanoids)
     tally["creature-blueprints-bleeding"] = sum(
         1 for name in creatures if intprop(name, "Bleeds") == "1"
+    )
+    # `:Weight` carriers, resolved. STYLEGUIDE.md 3.2.1 quotes this figure to establish that the
+    # dial is vanilla's own idiom rather than an invention, and it was **wrong and drifting** when
+    # #702 checked it: the document said 200 where the resolved count was 189, and a later change
+    # moved it to 207 without anything noticing. A declared-only count is 41, so this is the census
+    # `BlueprintIndex.carriers_matching` exists for - the tag sits on bases like `BaseNest` and
+    # reaches its descendants, which is the whole reason the figure is interesting.
+    tally["weight-tag-carriers"] = len(
+        index.carriers_matching("tag", lambda n: n.endswith(":Weight"))
     )
     count_into(tally, "creature", creatures)
     count_into(tally, "humanoid", humanoids)

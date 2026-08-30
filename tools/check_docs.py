@@ -341,6 +341,11 @@ def wrapped(phrase: str) -> str:
 
 
 VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
+    # The `:Weight` carrier census (#702). Quoted in STYLEGUIDE 3.2.1 and FEATURES 37.2 to
+    # establish that the dial is vanilla's own idiom. It is a *resolved* count -- the tag sits on
+    # bases and reaches descendants, so declaring alone gives 41 against 167 -- which is why it
+    # comes from `BlueprintIndex.carriers_matching` in the snapshot rather than from a grep.
+    (r"(\d+) vanilla blueprints carry a `:Weight` tag", ["weight-tag-carriers"]),
     # The creature census (#242). Each phrasing carries its own denominator so a sentence cannot
     # quote a share of one total against a count from another - which is the shape of the defect
     # these replace, where 813 and 282 were correct against two different populations.

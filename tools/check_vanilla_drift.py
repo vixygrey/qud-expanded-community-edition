@@ -240,6 +240,63 @@ class BlueprintIndex:
                     return not (depth > 0 and value == "*noinherit")
         return False
 
+    def carriers(self, kind: str, name: str) -> set[str]:
+        """Every blueprint a `<kind Name="name">` reaches, declared or inherited.
+
+        **This is the census method, and it exists because counting declarations is wrong three
+        times out of three.** `docs/LESSONS.md` records the run: `DromadCaravan` 9 declared against
+        11 resolved and the gap held `Tam`, Joppa's merchant; `AddsRep` 37 against 48 and the gap
+        held the fungal infections; `GivesRep` 44 against 57 and the gap held the finding. The
+        inherited members are not a rounding error, they are systematically the interesting ones,
+        because a part worth putting on a base is a part that governs a family (#701, #702).
+
+        Resolves through `lookup_chain`, so it follows `<mixin>` as well as `Inherits=` — the
+        distinction that made 143 vanilla blueprints invisible in #526. `kind` is the element name,
+        so this answers for `part`, `tag` and `stag` alike.
+
+        The two directives are honoured exactly as `has_tag` honours them, and for the same
+        reasons: `*delete` removes an inherited declaration outright, `*noinherit` confines one to
+        the blueprint that declares it. The nearest declaration decides.
+
+        Returns blueprint *names* rather than a count, deliberately — the count is `len()`, and
+        having the set is what lets a caller print the difference, which is the thing worth reading.
+        """
+        found: set[str] = set()
+        for blueprint in self.objects:
+            for depth, obj in enumerate(self.lookup_chain(blueprint, kind)):
+                hit = next(
+                    (e for e in obj.findall(kind) if e.get("Name") == name), None
+                )
+                if hit is None:
+                    continue
+                value = hit.get("Value")
+                if value != "*delete" and not (depth > 0 and value == "*noinherit"):
+                    found.add(blueprint)
+                break
+        return found
+
+    def carriers_matching(self, kind: str, predicate) -> set[str]:
+        """`carriers`, for a family of names rather than one — e.g. every tag ending `:Weight`.
+
+        Same resolution and the same two directives. Split out rather than folded in because a
+        predicate makes the common single-name case read worse, and that case is the one nearly
+        every caller wants.
+        """
+        found: set[str] = set()
+        for blueprint in self.objects:
+            for depth, obj in enumerate(self.lookup_chain(blueprint, kind)):
+                hit = next(
+                    (e for e in obj.findall(kind) if predicate(e.get("Name") or "")),
+                    None,
+                )
+                if hit is None:
+                    continue
+                value = hit.get("Value")
+                if value != "*delete" and not (depth > 0 and value == "*noinherit"):
+                    found.add(blueprint)
+                break
+        return found
+
     def tag_value(self, name: str, tag: str) -> str | None:
         """The value `tag` resolves to on `name`, or None when it does not reach it.
 

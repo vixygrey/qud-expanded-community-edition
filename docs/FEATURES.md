@@ -5172,7 +5172,7 @@ of mine nearly three times in four.
 Every one of the eighteen therefore carries
 `<tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />`, the fine dial STYLEGUIDE.md
 §3.2.1 names for exactly this — *reach for `:Weight` when a blueprint should stay in a pool and weigh
-less*. Vanilla ships 167 blueprints carrying one, at 0.05 to 0.3. That brings the pool to **45.3%**,
+less*. **167 vanilla blueprints carry a `:Weight` tag**, at 0.05 to 0.3. That brings the pool to **45.3%**,
 within a couple of points of the explicit route, so both ways a trinket can reach a player now have
 the same texture instead of one quietly contradicting the other. The effect on play is the one the ceiling exists to produce: vanilla's six stay the
 trinkets a player meets most, and this fork's eighteen are the long tail — a player still draws one

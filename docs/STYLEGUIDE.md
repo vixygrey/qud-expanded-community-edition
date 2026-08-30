@@ -747,8 +747,14 @@ wrong when the check was first written, and #494 fixed them together:
   fork's bronze line is tier 0 (#533, #537).
 - **A slice holds every member of its pool**, not the ones at its own tier. What the tier changes is
   the weight: a blueprint at the requested tier weighs 10⁸ and each step away divides by ten, then
-  `Role` multiplies, then a `:Weight` tag does — 200 blueprints carry one, 167 of them vanilla's. So
-  the nearest tier dominates, and counting members answers a question the game never asks.
+  `Role` multiplies, then a `:Weight` tag does — **167 vanilla blueprints carry a `:Weight` tag**,
+  at values from 0.05 to 0.3. So the nearest tier dominates, and counting members answers a
+  question the game never asks.
+
+  *(That sentence used to give a combined mod-and-vanilla total as well. It said 200 where the
+  resolved count was 189, and a later change moved it to 207 with nothing noticing — the figure
+  needs vanilla loaded to recompute, so CI never could. The vanilla half is now a snapshot
+  figure and is checked on every run; the combined one is gone rather than quietly wrong. #702.)*
 
 Getting this wrong understated `MeleeWeapon:Tier8` by more than thirty points, and reported two
 slices as clean that were the most dominated in the pool.
