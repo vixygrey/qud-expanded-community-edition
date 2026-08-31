@@ -2497,4 +2497,59 @@
       <object Blueprint="Vixy_AccountsOfTheOutcrop" Chance="20" Number="1" />
     </group>
   </population>
+
+  <!-- Books, #741. Two halves with deliberately different reach.
+
+       The two continuations join the general Books pool beside the volumes they continue. That
+       pool is 28 entries at 469 weight, of which 22 carry an authored text; adding two at parity
+       weight puts this fork at 7.9% of it, well inside the half ceiling in docs/STYLEGUIDE.md
+       3.2.1, which 23 entries would be needed to reach. The pool is worth being careful with for
+       a reason the share does not express: eleven StartingGear_* tables reach it through
+       BooksAndRandomBooks, so a general-pool book can be the first object a character owns, and
+       anything entered here has to survive being somebody's first impression of Qud's prose.
+
+       The eleven transposed works do NOT enter it. They are stocked by book merchants only, so
+       they add nothing a bookshelf, a trinket roll or a starting character can produce. That is
+       the point of the split rather than a caution about the writing: a bookseller's shelf is
+       where a strange volume belongs, and buying one is a small event in a way that finding one
+       on a shelf is not.
+
+       Vixy_Homages is a new table rather than a merge, referenced from the two vanilla inventories
+       that already stock books. Both are pickeach, so the reference is drawn every restock at its
+       own Number - it does not compete with vanilla's entries for a slot. -->
+
+  <population Name="Books" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Weight="20" Number="1" Blueprint="Vixy_FrivolousLivesVol2" />
+      <object Weight="20" Number="1" Blueprint="Vixy_EtaAndTheEarthling2" />
+    </group>
+  </population>
+
+  <population Name="Vixy_Homages">
+    <group Name="Items" Style="pickone">
+      <object Weight="20" Number="1" Blueprint="Vixy_SurveyOfTheSlumpedQuarter" />
+      <object Weight="20" Number="1" Blueprint="Vixy_OnTheWaterFormOfValue" />
+      <object Weight="20" Number="1" Blueprint="Vixy_ATreatiseOnTheClaim" />
+      <object Weight="20" Number="1" Blueprint="Vixy_TheShaleGallery" />
+      <object Weight="20" Number="1" Blueprint="Vixy_HusbandryOfDunes" />
+      <object Weight="20" Number="1" Blueprint="Vixy_AddressUponTheRelief" />
+      <object Weight="20" Number="1" Blueprint="Vixy_TheNinthBell" />
+      <object Weight="20" Number="1" Blueprint="Vixy_SaltWeek" />
+      <object Weight="20" Number="1" Blueprint="Vixy_OneHourAtTheCistern" />
+      <object Weight="20" Number="1" Blueprint="Vixy_OnTheProverbOfTheVine" />
+      <object Weight="20" Number="1" Blueprint="Vixy_AConcordanceOfLoss" />
+    </group>
+  </population>
+
+  <population Name="BookBinderInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Vixy_Homages" Number="1-2" />
+    </group>
+  </population>
+
+  <population Name="ScribeInventory_Legendary" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Vixy_Homages" Number="2-3" Hint="SetBonusModChance:100" />
+    </group>
+  </population>
 </populations>

@@ -160,4 +160,240 @@
     <part Name="Commerce" Value="0" />
     <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
   </object>
+
+  <!-- Books for the general pool and the booksellers, #741. Texts in Core/Books.xml, table entries
+       in Core/PopulationTables.xml.
+
+       These carry a real value and NO ExcludeFromDynamicEncounters, which is the opposite of the
+       four local histories above and deliberate. Across vanilla's 34 Book descendants the split is
+       clean: a general-pool scholarly text is priced 35-350 and carries no exclusion tag, while a
+       location-bound or trivial one is priced at or near zero and declares it. These are the first
+       kind. So they pay the Stilt librarian - LibrarianGiveBook awards value squared over 25 - and
+       they are eligible for the baetyl and Sifrah pools exactly as vanilla's own texts are, which
+       is correct for a scholarly find and wrong for a village's own history.
+
+       Values sit inside vanilla's band rather than above it. Salt Week is 35, matching Corpus as
+       the cheapest authored text in the pool, because it is a labourer's week on the back of a
+       ledger and pricing it like a treatise would be the joke misfiring. -->
+
+  <object Name="Vixy_FrivolousLivesVol2" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Frivolous Lives, Vol. II}}"
+      ColorString="&amp;g"
+      TileColor="&amp;W"
+      DetailColor="g"
+      Tile="Items/sw_book_2.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Pressed leaves are bound between board and a lacquer that has not aged. The margins are annotated in a hand that never presses hard."
+    />
+    <part Name="Book" ID="Vixy_FrivolousLivesVol2" />
+    <part Name="Commerce" Value="200" />
+  </object>
+
+  <object Name="Vixy_EtaAndTheEarthling2" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Eta and the Earthling, Canto II}}"
+      ColorString="&amp;b"
+      TileColor="&amp;b"
+      DetailColor="G"
+      Tile="Items/sw_book_3.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Verses run in two columns down goatskin vellum, one hand asking and one answering."
+    />
+    <part Name="Book" ID="Vixy_EtaAndTheEarthling2" />
+    <part Name="Commerce" Value="300" />
+  </object>
+
+  <object Name="Vixy_SurveyOfTheSlumpedQuarter" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Notes Toward a Survey of the Slumped Quarter}}"
+      ColorString="&amp;y"
+      TileColor="&amp;y"
+      DetailColor="c"
+      Tile="Items/sw_paper.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A surveyor's ledger, ruled for figures and filled with sentences. The last eleven pages are blank and the binding is water-stained."
+    />
+    <part Name="Book" ID="Vixy_SurveyOfTheSlumpedQuarter" />
+    <part Name="Commerce" Value="150" />
+  </object>
+
+  <object Name="Vixy_OnTheWaterFormOfValue" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|On the Water-Form of Value}}"
+      ColorString="&amp;r"
+      TileColor="&amp;r"
+      DetailColor="W"
+      Tile="Items/sw_book_1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A manuscript copy, stitched by hand and stitched again where the stitching failed. It has been read to pieces and repaired by more than one owner."
+    />
+    <part Name="Book" ID="Vixy_OnTheWaterFormOfValue" />
+    <part Name="Commerce" Value="200" />
+  </object>
+
+  <object Name="Vixy_ATreatiseOnTheClaim" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|A Treatise on the Claim}}"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="W"
+      Tile="Items/sw_book_1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Bound to match another volume, in a cloth chosen to sit beside it on a shelf. Someone wanted these two read together."
+    />
+    <part Name="Book" ID="Vixy_ATreatiseOnTheClaim" />
+    <part Name="Commerce" Value="200" />
+  </object>
+
+  <object Name="Vixy_TheShaleGallery" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|An Account of the Shale Gallery}}"
+      ColorString="&amp;K"
+      TileColor="&amp;K"
+      DetailColor="C"
+      Tile="Items/sw_book_4.bmp"
+    />
+    <part
+      Name="Description"
+      Short="An antiquarian's papers, tied rather than bound. The hand is neat at the start and is not neat at the end."
+    />
+    <part Name="Book" ID="Vixy_TheShaleGallery" />
+    <part Name="Commerce" Value="250" />
+  </object>
+
+  <object Name="Vixy_HusbandryOfDunes" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|On the Husbandry of Dunes}}"
+      ColorString="&amp;w"
+      TileColor="&amp;y"
+      DetailColor="g"
+      Tile="Items/sw_book_2.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A field manual, sand-scoured along one edge from being carried open. Grains still work loose from the gutter."
+    />
+    <part Name="Book" ID="Vixy_HusbandryOfDunes" />
+    <part Name="Commerce" Value="150" />
+  </object>
+
+  <object Name="Vixy_AddressUponTheRelief" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Address Upon the Relief of the Gate}}"
+      ColorString="&amp;W"
+      TileColor="&amp;W"
+      DetailColor="r"
+      Tile="Items/sw_scroll1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A printer's pamphlet, set in haste - a line of type has dropped and been hammered back crooked."
+    />
+    <part Name="Book" ID="Vixy_AddressUponTheRelief" />
+    <part Name="Commerce" Value="100" />
+  </object>
+
+  <object Name="Vixy_TheNinthBell" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|The Ninth Bell}}"
+      ColorString="&amp;m"
+      TileColor="&amp;K"
+      DetailColor="m"
+      Tile="Items/sw_paper.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Folded sheets that were hidden inside another book's binding, and bear the shape of it."
+    />
+    <part Name="Book" ID="Vixy_TheNinthBell" />
+    <part Name="Commerce" Value="100" />
+  </object>
+
+  <object Name="Vixy_SaltWeek" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Salt Week}}"
+      ColorString="&amp;w"
+      TileColor="&amp;w"
+      DetailColor="y"
+      Tile="Items/sw_paper.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Seven days accounted on the back of a salt ledger. The ruling underneath still shows through the writing."
+    />
+    <part Name="Book" ID="Vixy_SaltWeek" />
+    <part Name="Commerce" Value="35" />
+  </object>
+
+  <object Name="Vixy_OneHourAtTheCistern" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|One Hour at the Cistern}}"
+      ColorString="&amp;r"
+      TileColor="&amp;w"
+      DetailColor="R"
+      Tile="Items/sw_book_3.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A thin volume, cheaply made and often reprinted. This copy has a name inked inside the cover and then struck out."
+    />
+    <part Name="Book" ID="Vixy_OneHourAtTheCistern" />
+    <part Name="Commerce" Value="100" />
+  </object>
+
+  <object Name="Vixy_OnTheProverbOfTheVine" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Notes on the Proverb of the Vine}}"
+      ColorString="&amp;M"
+      TileColor="&amp;M"
+      DetailColor="Y"
+      Tile="Items/sw_book_1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A lecture taken down verbatim, including the parts where the lecturer answers himself."
+    />
+    <part Name="Book" ID="Vixy_OnTheProverbOfTheVine" />
+    <part Name="Commerce" Value="75" />
+  </object>
+
+  <object Name="Vixy_AConcordanceOfLoss" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|A Concordance of Loss}}"
+      ColorString="&amp;C"
+      TileColor="&amp;w"
+      DetailColor="W"
+      Tile="Items/sw_unfurled_scroll1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="A list, ruled and numbered, in two hands separated by a long time. It was meant to be given to someone."
+    />
+    <part Name="Book" ID="Vixy_AConcordanceOfLoss" />
+    <part Name="Commerce" Value="50" />
+  </object>
 </objects>
