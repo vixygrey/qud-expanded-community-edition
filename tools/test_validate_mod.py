@@ -2821,6 +2821,100 @@ class SnapshotBackedChecks(unittest.TestCase):
             pop, own
         )
 
+    # ---------------------------------------------------- group multipliers gate their contents
+
+    def test_a_group_chance_gates_the_objects_inside_it(self) -> None:
+        """#746. The walk used pop.iter("object"), which discarded the group structure, so a
+        group's own Chance was never applied to the entries it gates."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Items" Style="pickeach" Chance="10">\n'
+            '      <object Blueprint="Vixy_Reed" Number="1" />\n'
+            "    </group>\n"
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 0.10)
+
+    def test_a_group_number_multiplies_its_contents(self) -> None:
+        """PopulationGroup.Generate nests RollChance over RollNumber, so both come off the group."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Items" Style="pickeach" Number="1-4">\n'
+            '      <object Blueprint="Vixy_Reed" Number="1" />\n'
+            "    </group>\n"
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 2.5)
+
+    def test_chance_and_number_on_one_group_multiply(self) -> None:
+        """The DesertCanyon Creatures shape: Chance="95" Number="1-4" is 2.375 rolls."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Items" Style="pickeach" Chance="95" Number="1-4">\n'
+            '      <object Blueprint="Vixy_Reed" Chance="10" Number="1d4" />\n'
+            "    </group>\n"
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 0.95 * 2.5 * 0.10 * 2.5)
+
+    def test_nested_groups_multiply(self) -> None:
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Outer" Style="pickeach" Chance="50">\n'
+            '      <group Name="Inner" Style="pickeach" Chance="50">\n'
+            '        <object Blueprint="Vixy_Reed" Number="1" />\n'
+            "      </group>\n"
+            "    </group>\n"
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 0.25)
+
+    def test_a_group_with_neither_attribute_is_transparent(self) -> None:
+        """The common case must not move, or every existing figure would."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Items" Style="pickeach">\n'
+            '      <object Blueprint="Vixy_Reed" Chance="60" Number="40" />\n'
+            "    </group>\n"
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 24.0)
+
+    def test_an_object_directly_under_the_population_is_still_counted(self) -> None:
+        """Vanilla writes 887 of these, and a tree walk that only recursed into groups would
+        drop every one — which is exactly how three of my own drafts silently zeroed a table."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <object Blueprint="Vixy_Reed" Chance="50" Number="2" />\n'
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 1.0)
+
+    def test_a_gated_group_gates_the_table_it_references_too(self) -> None:
+        """The ManySnapjaws case: Chance="4" around a war party was counted at full weight, a
+        25x over-credit to vanilla."""
+        pool = (
+            '  <population Name="Vixy_Party">\n'
+            '    <group Name="Items" Style="pickeach">\n'
+            '      <object Blueprint="Vixy_Snapjaw" Number="5" />\n'
+            "    </group>\n"
+            "  </population>"
+        )
+        plain, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <group Name="Gate" Style="pickeach" Chance="4">\n'
+            '      <table Name="Vixy_Party" Number="4" />\n'
+            "    </group>\n"
+            "  </population>\n" + pool
+        )
+        self.assertEqual(plain, 0.0, "unresolved, a reference contributes nothing")
+        self.assertAlmostEqual(resolved, 0.04 * 4 * 5)
+
+    def test_group_multiplier_reads_both_attributes(self) -> None:
+        el = ET.fromstring('<group Chance="95" Number="1-4" />')
+        self.assertAlmostEqual(validate_mod.group_multiplier(el), 2.375)
+        self.assertEqual(validate_mod.group_multiplier(ET.fromstring("<group />")), 1.0)
+
     def test_a_multi_roll_chance_is_summed_not_parsed_as_one_number(self) -> None:
         """`Chance="100,50"` is two independent rolls, so it fires 1.5 times on average.
 

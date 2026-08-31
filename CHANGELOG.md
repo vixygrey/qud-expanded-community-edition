@@ -18,6 +18,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `scatter-share` measures a table by tree, so a group's `Chance` gates what is
+  inside it (#746).
+
+  The measure swept every `<object>` under a table and discarded the group structure, so a group's
+  own `Chance` and `Number` were never applied. `DesertCanyonZoneGlobals-Reachable` shows the error
+  running both ways at once: a `Chance="4"` group holding a snapjaw war party was counted as though
+  it always fired, while a `Chance="95" Number="1-4"` group worth 2.375 rolls was counted as one.
+  The table measured 28.47 objects where it scatters 7.56.
+
+  Over-crediting vanilla is the quiet direction — it shrinks this fork's share of a table, hiding a
+  ceiling breach rather than inventing one — which is why it wanted fixing although nothing was
+  failing. Eight of the 118 recorded tables move and none crosses the ceiling. `GritGateBookshelf`
+  now reads the 50% it always was, rather than 9%.
+
+  A merge block inheriting the multiplier of the group it merges into is still not modelled; that
+  needs vanilla's group structure in the snapshot, and is #748.
+
 - **(internal)** `validate_mod.py` guards `<book>`, which no check could reach (#745).
 
   A book is keyed by `ID` rather than `Name` and takes no `Load` attribute at all, so

@@ -670,7 +670,25 @@ which measure applies is decided by the entry itself:
 | entry style | measured as | check |
 |---|---|---|
 | carries `Weight` | summed weight | `table-share` |
-| carries no `Weight` | expected quantity, `Chance ÷ 100 × Number` | `scatter-share` |
+| carries no `Weight` | expected quantity — see below | `scatter-share` |
+
+**Expected quantity is not `Chance ÷ 100 × Number`**, though it reads that way at a glance. Two
+corrections, both from reading `PopulationItem` rather than the XML:
+
+- **`Chance` is a list of independent rolls, and their successes are a repeat count.**
+  `RollChance` splits on commas and returns how many passed, so `Chance="100,50"` means one always
+  plus a second half the time — an expectation of 1.5, not 1. Vanilla writes a multi-roll chance in
+  60 places; this fork in none, which is why calling `float()` on the whole string survived until
+  #740 reached one and raised.
+- **A group's `Chance` and `Number` gate everything inside it, and nested groups multiply.**
+  `PopulationGroup.Generate` loops on both, so `Chance="95" Number="1-4"` is 2.375 rolls of that
+  group's contents. Measuring by descendant sweep instead of by tree missed this entirely until
+  #746: `DesertCanyonZoneGlobals-Reachable` measured 28.47 where it scatters 7.56, because a
+  `Chance="4"` group holding a snapjaw war party was counted as though it always fired.
+
+Over-crediting **vanilla** is the quiet direction of an error here: it shrinks this fork's share and
+so hides a ceiling breach rather than inventing one. What is still not modelled is a merge block
+inheriting the multiplier of the group it merges into — #748.
 
 **`scatter-share` exists because the weight measure silently governed nothing for half the tables
 here** (#474). Biome globals scatter, so both sides summed to zero and the check could not fail

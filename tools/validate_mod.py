@@ -2441,6 +2441,21 @@ def chance_multiplier(chance: str | None) -> float:
     return total
 
 
+def group_multiplier(group: ET.Element) -> float:
+    """How many times a group's contents are rolled, from its own `Chance` and `Number`.
+
+    `PopulationGroup.Generate` nests two loops, and both counts come off the group:
+
+        for (int num = RollChance(Chance); i < num; i++)
+            for (int num2 = RollNumber(Number); j < num2; j++)
+                base.Generate(...)
+
+    So the group contributes `Chance x Number`, and nested groups multiply. Absent attributes are
+    one apiece, which makes an ordinary group transparent.
+    """
+    return chance_multiplier(group.get("Chance")) * number_midpoint(group.get("Number"))
+
+
 def scatter_quantity(
     pop: ET.Element, own_tables: dict[str, list[ET.Element]] | None = None
 ) -> float:
@@ -2449,8 +2464,8 @@ def scatter_quantity(
     A population entry is written one of two ways and vanilla never mixes them: a `pickone` group
     selects one child weighted by `Weight`, and everything else rolls each child independently at
     its `Chance`. Across vanilla's 4,860 pickone children **every one carries `Weight` and none
-    carries `Chance`**, and the reverse holds for pickeach. This mod's own 703 entries split the
-    same way, with nothing carrying both.
+    carries `Chance`**, and the reverse holds for pickeach. This mod's own entries split the same
+    way, with nothing carrying both.
 
     So "carries no `Weight`" identifies a scatter entry exactly, with no need to resolve which
     group it lands in - which matters, because a `Load="Merge"` block does not carry the `Style`
@@ -2458,85 +2473,111 @@ def scatter_quantity(
     styles come out wrong, and why this counts scatter entries **only** and leaves weighted ones
     to `check_table_share` (#474).
 
+    **The walk is by tree, not by descendant, because a group's `Chance` gates its contents**
+    (#746). This used `pop.iter("object")`, a flat descendant sweep that discarded the group
+    structure entirely - so a group's own multiplier was never applied. `DesertCanyonZoneGlobals-
+    Reachable` shows both directions of the error at once: its `ManySnapjaws` group is
+    `Chance="4"` around a snapjaw war party, counted at full weight as though it always happened,
+    a 25x over-credit; while its `Creatures` group is `Chance="95" Number="1-4"`, worth 2.375
+    rolls of its contents and counted as one. The table measured 28.47 where it scatters 7.56.
+
+    Over-crediting *vanilla* is the quiet direction of that error - it shrinks this fork's share of
+    a table and so hides a ceiling breach rather than inventing one - which is why it wanted
+    fixing even though nothing was failing.
+
+    The element vocabulary is closed: across vanilla and this mod, a `<population>` and a
+    `<group>` contain only `<group>`, `<object>` and `<table>`, and objects and tables appear
+    directly under a population as well as inside a group. Anything else is treated as a
+    transparent container and its contents counted at full weight, which over-counts rather than
+    drops - the direction that fails loud.
+
     **A `<table>` reference is followed only into `own_tables`, and never by default.** A shared
     sub-table belongs to whoever wrote it, which is the right rule for vanilla's - but it is not
     the right rule for one this fork writes itself. Vanilla's own overgrowth idiom is a sub-table
     (`BrightshroomPatches`, pulled into eight cave tiers by a single line), and a `Vixy_` copy of
     that shape would otherwise score its whole footprint at zero however dense the patch (#544).
 
-    Resolution is opt-in because `snapshot_qud_api.collect_scatter_quantities` runs this over
-    vanilla's tables to build the other side of the ratio. Called without `own_tables` the result
-    is byte-identical to before, so vanilla's figures - and the snapshot digest, and every share
-    number quoted in the documents - do not move.
+    Resolution is opt-in because `snapshot_qud_api.collect_scatter_quantities` passes vanilla's own
+    tables to build the other side of the ratio (#740).
 
     **A `Style="pickone"` group is over-counted, deliberately.** One child fires, and this sums
     every unweighted `<object>` regardless of the group holding it. `BrightshroomPatches` therefore
     measures its Small and Large arms together rather than 95/5 between them. Over-counting pushes
     a share toward the ceiling rather than under it, which is the direction that fails loud.
+
+    **What this still does not model** is a merge block inheriting the multiplier of the vanilla
+    group it merges into. Six of this fork's merges land in a group carrying a `Chance` or
+    `Number`, and at load those gate the fork's entries too - but resolving that needs vanilla's
+    per-group values, which are not in `tools/qud-api.json` and cannot be read in CI. #748.
     """
-    total = 0.0
-    for obj in pop.iter("object"):
-        if not obj.get("Blueprint") or obj.get("Weight") is not None:
-            continue
-        if obj.get("Load") in ("Remove", "Replace"):
-            # A removal is the opposite of a placement, the same way a `*delete` tag is the
-            # opposite of a route - `check_reachability` already says so about tags. Counting one
-            # as scattered content reports a merge that takes an entry OUT as adding one (#582).
-            continue
-        total += chance_multiplier(obj.get("Chance")) * number_midpoint(
-            obj.get("Number")
-        )
-    if own_tables:
-        total += _referenced_quantity(pop, own_tables, {pop.get("Name")})
-    return total
+    return _scatter_walk(pop, 1.0, own_tables, {pop.get("Name")})
 
 
-def _referenced_quantity(
-    pop: ET.Element, own_tables: dict[str, list[ET.Element]], seen: set[str | None]
+def _scatter_walk(
+    node: ET.Element,
+    multiplier: float,
+    own_tables: dict[str, list[ET.Element]] | None,
+    seen: set[str | None],
 ) -> float:
-    """What this table's `<table>` references contribute, following only into `own_tables`.
+    """One node of the tree, with the multiplier its ancestors have already accumulated.
 
-    `seen` carries the names already on the stack, so a table referencing itself - or a pair
+    `seen` carries the table names already on the stack, so a table referencing itself - or a pair
     referencing each other - terminates instead of recursing forever. A name is counted once per
     path rather than once overall: two separate lines naming the same sub-table are two rolls of
     it, and both are real.
     """
     total = 0.0
-    for ref in pop.iter("table"):
-        name = ref.get("Name")
-        if name is None or name in seen or name not in own_tables:
-            continue
-        if ref.get("Weight") is not None:
-            continue
-        share = chance_multiplier(ref.get("Chance")) * number_midpoint(
-            ref.get("Number")
-        )
-        for target in own_tables[name]:
-            inner = 0.0
-            weighted = False
-            for obj in target.iter("object"):
-                if not obj.get("Blueprint"):
-                    continue
-                if obj.get("Weight") is not None:
-                    weighted = True
-                    continue
-                inner += chance_multiplier(obj.get("Chance")) * number_midpoint(
-                    obj.get("Number")
-                )
-            inner += _referenced_quantity(target, own_tables, seen | {name})
-            if inner == 0.0 and weighted:
-                # A reference into a weighted pool yields one object, not none. `PopulationList`
-                # picks exactly one child of a `pickone` group, so the pool hands back a single
-                # object per roll - but every child carries `Weight`, so the scatter arithmetic
-                # above skips them all and scores the whole reference at zero.
-                #
-                # That is what made the six named bookshelf tables unmeasurable (#740). Vanilla
-                # stocks them with `<table Name="Books" />` from a pickeach group, `Books` is a
-                # pickone of 22 weighted texts, and both halves of the ratio therefore came out
-                # 0.0 - so any entry this fork added read as 100% of the table however small its
-                # chance, and no value could pass.
-                inner = 1.0
-            total += share * inner
+    for child in node:
+        if child.tag == "object":
+            if not child.get("Blueprint") or child.get("Weight") is not None:
+                continue
+            if child.get("Load") in ("Remove", "Replace"):
+                # A removal is the opposite of a placement, the same way a `*delete` tag is the
+                # opposite of a route - `check_reachability` already says so about tags. Counting
+                # one as scattered content reports a merge that takes an entry OUT as adding one
+                # (#582).
+                continue
+            total += (
+                multiplier
+                * chance_multiplier(child.get("Chance"))
+                * number_midpoint(child.get("Number"))
+            )
+        elif child.tag == "table":
+            if own_tables is None:
+                continue
+            name = child.get("Name")
+            if name is None or name in seen or name not in own_tables:
+                continue
+            if child.get("Weight") is not None:
+                continue
+            share = (
+                multiplier
+                * chance_multiplier(child.get("Chance"))
+                * number_midpoint(child.get("Number"))
+            )
+            for target in own_tables[name]:
+                inner = _scatter_walk(target, 1.0, own_tables, seen | {name})
+                if inner == 0.0 and any(
+                    obj.get("Weight") is not None for obj in target.iter("object")
+                ):
+                    # A reference into a weighted pool yields one object, not none.
+                    # `PopulationList` picks exactly one child of a `pickone` group, so the pool
+                    # hands back a single object per roll - but every child carries `Weight`, so
+                    # the arithmetic above skips them all and scores the reference at zero.
+                    #
+                    # That is what made the six named bookshelf tables unmeasurable (#740).
+                    # Vanilla stocks them with `<table Name="Books" />` from a pickeach group,
+                    # `Books` is a pickone of 22 weighted texts, and both halves of the ratio
+                    # therefore came out 0.0 - so any entry this fork added read as 100% of the
+                    # table however small its chance, and no value could pass.
+                    inner = 1.0
+                total += share * inner
+        elif child.tag == "group":
+            total += _scatter_walk(
+                child, multiplier * group_multiplier(child), own_tables, seen
+            )
+        else:
+            total += _scatter_walk(child, multiplier, own_tables, seen)
     return total
 
 
