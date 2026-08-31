@@ -338,8 +338,12 @@ is a way the mod breaks or becomes exploitable.
       only when it reads true. One field, no plumbing.
 - [ ] **Rest-until-healed** and other time-skip commands must accrue fatigue at the
       resting rate, not skip it. Any fast-forward path that bypasses accrual is a hole.
-- [ ] **Overland travel** — a world-map step is many turns. Accrue proportionally or
-      the map becomes a fatigue-free zone.
+- [x] **Overland travel** — **done, and the first attempt created exactly this hole.** The turn is
+      stamped on entry and the debt paid on return, `Stomach`'s own pattern. But the catch-up was
+      first capped at 1,200 turns, which is one parasang of North Sheva — so a twenty-parasang haul
+      cost the same as one bad crossing, and the map was nearly free after all. The cap is now a
+      sanity bound only; `Set` clamping at `Max` does the game-facing work. One parasang is 300 ticks
+      across ordinary ground and 1,200 across North Sheva, per `docs/STYLEGUIDE.md` §3.2.1.
 - [ ] **Narcolepsy** — **narrowed, and no longer an exploit.** `Narcolepsy.cs` constructs
       `new Asleep(Stat.Random(20, 29), forced: true)` with `Voluntary` defaulting false, so narcoleptic
       sleep would not clear fatigue either. What remains is a tuning question — whether involuntary

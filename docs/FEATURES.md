@@ -6452,12 +6452,39 @@ than guessing at it:
 | §6 checkbox | how `Stomach` answers it |
 |---|---|
 | companions exempt | an `IsPlayer()` gate — no special case needed |
-| overland travel must not be free | stamp the turn on entry, pay the debt capped on return |
+| overland travel must not be free | stamp the turn on entry, pay the debt on return (§51.3a) |
 | accrual must pause while asleep | `if (!ParentObject.HasEffect<Asleep>())` |
 
 It also settled the accrual hook. §7 recommended `EndTurnEvent`; `Stomach` uses
 **`BeginTakeActionEvent`**, and matching vanilla's own timer matters more than matching a doc written
 before there was one to look at.
+
+### 51.3a Crossing the map costs what it takes
+
+`Segments` on a terrain runs 1000–4000, so **one parasang is 300 ticks across ordinary ground and
+1,200 across North Sheva** — a quarter of an in-game day to a whole one. A tick is an action, which is
+the unit fatigue accrues in, so travel prices itself.
+
+| journey | ticks | fatigue | arrives |
+|---|---:|---:|---|
+| 1 parasang, baseline | 300 | 126 | rested |
+| 1 parasang, salt dunes | 750 | 315 | rested |
+| 1 parasang, North Sheva | 1,200 | 504 | Tired |
+| 8 parasangs, baseline | 2,400 | 1,000 | **Collapsing** |
+
+**The catch-up cap was 1,200 turns and that made the map nearly free** — the exact hole §6 warned
+about. A twenty-parasang haul cost the same as one bad parasang, because the cap bound the total
+rather than guarding against nonsense. It is now a sanity bound of 100,000, matching `Stomach`'s, and
+`Set` clamping at `Max` does the game-facing work: travel far enough without resting and you arrive
+with the meter full, which is the correct outcome and the player's own choice.
+
+Collapse cannot fire *on* the world map — accrual returns early there — so a long haul lands you in a
+zone and then takes you down, rather than stranding you between parasangs.
+
+**The skill lever cuts fatigue as well as time, and that is deliberate.** A matching Survival skill
+and Trailblazer each add +100 to travel speed, so a salt-dune crossing is 750 ticks unskilled, 375
+with one and 250 with both — and the fatigue falls with it. A traveller who invested in crossing
+ground quickly is also a traveller who arrives less tired.
 
 ### 51.4 Only voluntary sleep rests you
 
