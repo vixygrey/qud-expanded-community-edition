@@ -507,4 +507,30 @@
             wound as it ranks up. Off by default: this makes the game harder.
     </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEPlainRelicNames"
+    DisplayText="{{C|Qud Expanded}}: plainer relic names"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    Restart="true"
+    SearchKeywords="qud expanded relic name naming history spice plain register artifact"
+  >
+    <helptext>
+            Adds name forms for legendary relics built from plain words rather
+            than exotic ones - {{y|the cold hatchet}} beside
+            {{y|the sagittal quincunx}}.
+
+            Qud's relic vocabulary is large, so the trouble was never too few
+            words. It is that nearly all of them are strange, and strangeness
+            stops meaning anything with nothing ordinary beside it.
+
+            Vanilla's forms are never removed, so a plain name becomes
+            {{y|likelier}} rather than a strange one impossible.
+
+            {{y|Takes effect when you restart the game.}} Relics that already
+            have names keep them.
+        </helptext>
+  </option>
 </options>

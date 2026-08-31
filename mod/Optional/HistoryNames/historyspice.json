@@ -1,0 +1,29 @@
+{
+  "spice": {
+    "Vixy_plainAdjectives": [
+      "iron",
+      "salt",
+      "long",
+      "quiet",
+      "low",
+      "cold",
+      "bright",
+      "hollow",
+      "red",
+      "second",
+      "ninth",
+      "still",
+      "thin",
+      "grey",
+      "wide",
+      "old"
+    ],
+    "history": {
+      "relics": {
+        "names": [
+          "the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>"
+        ]
+      }
+    }
+  }
+}

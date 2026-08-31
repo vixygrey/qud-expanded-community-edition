@@ -136,6 +136,19 @@ Maintain **PLAIN** and **STRANGE** token sets, tagged by part of speech.
 
 The mod adds the PLAIN set. It does **not** need to add to STRANGE, and probably should not.
 
+**Only modifiers count toward the quota; a head noun does not.** Six of vanilla's eight forms are
+anchored by `spice.itemTypes`, which is already plain — *edge*, *hatchet*, *mace*, *helm*, *mask*,
+*tome* — while every modifier hanging off them stays exotic. *The hatchet of the sagittal quincunx*
+has a plain head and still reads as noise. A head noun is grammatically obligatory, so it cannot be
+evidence of restraint; the modifier is where a name chooses its register. Settled in #730.
+
+**Plainness is diluted rather than absent, which changes what to add.** Measured against the
+shipped grammar, three of the 30 `spice.adjectives` slots already reach a word on the PLAIN list
+above — `metals` holds *iron*, `commonPhrases.humble` holds *quiet*, and the Late Sultanate gospel
+adjectives hold *low* and *salt* — as do two of the 40 `spice.nouns` slots. So the fix is not to
+supply words the game lacks; it is to add **forms** that draw from a plain pool directly, rather
+than hoping a plain word wins a 1-in-30 slot draw.
+
 ### 4.2 Composition rule
 
 For every name of two or more lexical tokens:
@@ -153,9 +166,18 @@ an adjective does not.
 ### 4.3 Why this works
 
 At a 10% strange-strange rate, an unusual name arrives roughly once per ten relics and
-reads as *significant*. At 100% — the current state — it reads as noise. The mod's most
-noticeable single change may well be this ratio, and it is by far the cheapest thing in the
-document to implement.
+reads as *significant*. The mod's most noticeable single change may well be this ratio, and it is
+by far the cheapest thing in the document to implement.
+
+**The current state is 25%, not 100%.** Of vanilla's eight relic name forms only two are composed
+entirely from the exotic lexicon — `<noun>-<noun>` and `<adjective> <noun>` — because the other six
+are anchored by an item type or a possessive. The complaint is real and the earlier figure was not:
+what makes the pool read as noise is that the *modifiers* are exotic in all eight, which is why
+§4.1 counts modifiers only.
+
+That also sets the arithmetic. `MergeArrayHandling.Union` cannot remove a vanilla form, so the
+all-strange share is `2 / (8 + N)` for `N` added forms: six added gives 14.3%, and **twelve gives
+exactly 10%**.
 
 ---
 

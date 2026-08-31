@@ -72,6 +72,20 @@ namespace QudExpandedCE
         /// </summary>
         public const string JoppaBuildingID = "OptionQudExpandedCEJoppaBuilding";
 
+        /// <summary>
+        /// Read by nothing in this class, and by no C# at all, for the same reason as
+        /// <see cref="JoppaBuildingID"/>. The relic name forms are a historyspice.json that
+        /// HistoricSpice.Init merges into the shipped grammar, and manifest.json gates the
+        /// directory holding it on this option - so the option decides whether the file is ever
+        /// loaded rather than what any code then does about it.
+        ///
+        /// Restart-scoped rather than new-world-scoped, which is easy to get backwards.
+        /// ModInfo.InitializeFiles runs inside ModManager.BuildMods(), so the gate is read once
+        /// at mod build; but relics are named at worldgen, at lazy zone build and during play, so
+        /// a running game keeps making new relics from whichever pool was loaded. See #730.
+        /// </summary>
+        public const string PlainRelicNamesID = "OptionQudExpandedCEPlainRelicNames";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
