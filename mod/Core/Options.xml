@@ -543,19 +543,17 @@
     SearchKeywords="qud expanded creature npc equip pickup weapon reequip loot combat"
   >
     <helptext>
-            A creature that picks up a better weapon works out that it is
-            better, instead of carrying it and going on swinging.
+            A creature that gains a better weapon works out that it is better,
+            instead of carrying it and going on swinging.
 
-            What it will work out depends on what it could plausibly
-            understand. A tinker reconsiders anything, artifacts included.
-            Everyone else reconsiders a stick with an edge, and leaves the
-            guns alone.
+            A tinker reconsiders anything, artifacts included. Everyone else
+            reconsiders a stick with an edge and leaves the guns alone.
 
-            Loadouts creatures already had are untouched - this only applies
-            to something picked up after.
+            {{y|Mostly you will see this on companions.}} Qud's creatures do
+            not pick things up off the floor, so this bites when you hand
+            something to a follower and rarely otherwise.
 
-            {{y|This makes fights harder.}} Off returns them to swinging what
-            they started with, from the next pickup.
+            Loadouts they already had are untouched.
         </helptext>
   </option>
 </options>

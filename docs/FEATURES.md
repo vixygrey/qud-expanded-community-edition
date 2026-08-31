@@ -6248,7 +6248,7 @@ are gated either, or switching the option off leaves the table pointing at bluep
 exist. Gating this feature therefore meant either a silent hole in the share checks or widening them
 first, and neither is worth buying an option nobody wants.
 
-## 50. Creatures use what they pick up (`Vixy_Reequip`)
+## 50. Companions use what you give them (`Vixy_Reequip`)
 
 Tiers A and B of #588. Tier C — creatures that collect and never equip — is #759, split off because
 it is the only part that is invention rather than derivation.
@@ -6333,23 +6333,57 @@ not done here.
 creature holding is never re-evaluated: the yurtwarden keeps its rifle and the snapjaw shotgunner
 keeps its shotgun.
 
-### 50.6 Blast radius, stated rather than discovered
+### 50.6 What this actually reaches, which is less than it sounds
+
+**Qud's creatures do not pick things up.** This was found by playing, after the rest of the section
+was written, and it is the most important thing on this page.
+
+There is **no pickup goal**. The full goal-handler list is `Kill`, `Wander`, `MoveTo`, `Flee`,
+`Guard`, `Pet`, `Bored`, `Retreat`, `Wait` and their kin — nothing takes an item off the floor.
+`GoFetch` exists but is pushed only by `Fetches`, which **no creature carries**. `ChangeEquipment`
+only ever *unequips*. So the live acquisition paths are:
+
+| path | creatures |
+|---|---|
+| `Rummager` | **3** — Cave Arconaut, Graverobber, Svardym Scrounge |
+| `CryptFerretBehavior` | 1 |
+| `ThiefBot` | 1 |
+| being handed something | any companion |
+| trade | merchants |
+
+A snapjaw will still walk past a dropped axe, and #588's own example — *"a cannibal can make use of
+a better hitting stick"* — cannot happen, because cannibals never pick sticks up.
+
+**So this is a companion feature.** That is a smaller claim than the issue made, and it is the true
+one. The pickup half is a separate question, and a larger one: #222 already asked whether more
+creatures should scavenge and answered no, so widening it means reopening that rather than extending
+this.
+
+> **The mistake worth recording.** The hook was verified — `TookEvent` is the right event, dispatches
+> to the actor, fires on the take path including the silent variant. What was not verified is whether
+> anything *sends* it for an ordinary creature. `docs/LESSONS.md` already carries this exact trap at
+> *"Count the consumers before you count anything else"*: a declaration is evidence somebody wrote
+> it, not that anything reads it. Finding the other end of an event means asking who fires it, for
+> the case you care about — not only who receives it.
+
+### 50.7 Blast radius, stated rather than discovered
 
 The part is merged onto **`Creature`**, so it reaches all 849 non-base creature blueprints at once —
 the same order of reach as the Chip Interface merge into `Humanoid`, and **the first part this fork
 has merged onto a creature blueprint at all**. Everything else in `mod/Scripting/` hangs off an item,
 the player, or a skill.
 
-The reach is the feature rather than a side effect: a rule about creatures generally has to attach to
-creatures generally, and the alternative — an authored list — would invent the cohort instead of
-deriving it. The part then refuses the player, anything with no `Brain`, and anything with no
-`Combat` part, so what it reaches in practice is smaller than the merge.
+The reach is still right under the narrower scoping, and arguably more clearly so. **Almost anything
+in Qud can become a companion** — beguiled, proselytised, recruited — so "which creatures might be
+handed a weapon" really is *all of them*, and an authored list would invent the cohort rather than
+derive it. The part then refuses the player, anything with no `Brain`, and anything with no `Combat`
+part, so what it reaches in practice is smaller than the merge.
 
 **No instance fields, deliberately.** A part on `Creature` would otherwise write its layout into
 every save on every creature; charter rule 5 treats a shipped part's shape as frozen and
 `serializable-shape` enforces it. Everything is derived at the moment of the event.
 
-### 50.7 Off-switch
+### 50.8 Off-switch
 
 `OptionQudExpandedCEReequipOnPickup`, read on every acquisition — so turning it off stops the
 behaviour from the next pickup rather than the next load, which is the **runtime** off-switch rule 6

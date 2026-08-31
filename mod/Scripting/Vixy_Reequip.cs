@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using QudExpandedCE;
 
 namespace XRL.World.Parts
@@ -45,6 +45,15 @@ namespace XRL.World.Parts
     /// <c>Complexity</c> defaults to 0 and separates cleanly: across 3,959 weapon blueprints, 917
     /// resolve to 0 and 457 to 1 or more. Dagger, Long Sword and Steel Battle Axe are all 0;
     /// Carbine 1, Vibro Dagger 4, Nullray Pistol 8.
+    /// </para>
+    /// <para>
+    /// <b>What this reaches is companions, and that is smaller than #588 assumed.</b> Qud has no
+    /// pickup goal — <c>GoFetch</c> is pushed only by <c>Fetches</c>, which no creature carries, and
+    /// <c>ChangeEquipment</c> only unequips — so the only creatures that take anything off the floor
+    /// are the three with <c>Rummager</c>, the Crypt Ferret and the Strip Fly. A snapjaw walks past a
+    /// dropped axe. Everything else that reaches this handler was <em>given</em> the item, which in
+    /// practice means a follower. The pickup half is #761, and it means reopening #222 rather than
+    /// extending this.
     /// </para>
     /// <para>
     /// <b>Nothing hand-authored moves.</b> The rule fires on acquisition only, so a loadout the game

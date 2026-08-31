@@ -18,23 +18,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
-- **Creatures use what they pick up** (#588).
+- **Companions use what you give them** (#588).
 
-  A creature that finds a better weapon now works out that it is better, instead of carrying it
-  around and going on swinging. Nothing in Qud did this: the game has the machinery to re-equip an
-  NPC and never once calls it after an item changes hands, so a snapjaw that picks up a carbine
-  keeps hitting you with its axe.
+  Hand a follower a better axe and they work out that it is better, instead of carrying it around
+  and going on swinging. Qud has the machinery to re-equip a creature and never once calls it after
+  an item changes hands, so until now a companion you armed stayed armed with whatever it started
+  with.
 
   What a creature works out depends on what it could plausibly understand. A tinker reconsiders
-  anything, artifacts included — and the reason tinkers are the line is that Qud already drew it:
-  of the three creatures vanilla lets scavenge, two are tinkers. Everyone else reconsiders a stick
-  with an edge and leaves the guns alone.
+  anything, artifacts included — and the reason tinkers are the line is that Qud already drew it: of
+  the three creatures vanilla lets scavenge, two are tinkers. Everyone else reconsiders a stick with
+  an edge and leaves the guns alone.
 
-  Loadouts creatures already had are untouched, so nobody's rifle is taken away and nothing that
-  was hand-placed changes. This only applies to something picked up afterwards.
+  {{y|This is mostly a companion feature.}} Creatures in Qud do not pick things up off the floor —
+  a bare handful scavenge at all — so a snapjaw will still walk past a dropped axe. Making them
+  notice is a separate question and a bigger one.
 
-  {{y|It makes fights harder.}} Off by the {{C|creatures use what they pick up}} option, which takes
-  effect from the next pickup rather than the next restart.
+  Loadouts creatures already had are untouched. Off by the {{C|creatures use what they gain}}
+  option, which takes effect from the next pickup rather than the next restart.
 
 - **Thirteen books** (#741).
 
