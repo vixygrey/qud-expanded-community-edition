@@ -231,4 +231,37 @@ You travel on the world map twice as quickly.
 While the Qud Expanded bearings option is on, you know which of a parasang's nine zones you are standing in."
     />
   </skill>
+
+  <!-- Wary. The second attempt: #717 shipped a version that never ran, withdrawn in #720.
+
+       The mechanism is a *second* Searched event rather than a bonus on vanilla's. Physics.Search
+       runs inside Cell.AddObject's call to physics.EnterCell(this), which happens BEFORE
+       Objects.Add(Object) - so at the moment vanilla searches, the mover is in no cell's dispatch
+       list and a part on it hears nothing. EnteredCellEvent fires four lines later, with the mover
+       present. See #722.
+
+       Cost 100 and Agility 15: the same shape as the tree's mid powers, and reachable by the melee
+       and missile builds that carry low Intelligence, which is who the power is for. Tactics is
+       Agility-based, which is why it is here rather than in Tinkering or Customs and Folklore -
+       both are Intelligence trees, and a skill for low-Intelligence characters cannot sit behind an
+       Intelligence gate (#221).
+
+       The description says "a second look" rather than a bonus, because that is what it is: the
+       vanilla roll has already happened and cannot be suppressed, so this adds a roll rather than
+       improving one. The previous version's description said "every player turn" in four places and
+       the real trigger was never that. -->
+  <skill Name="Tactics" Load="Merge">
+    <power
+      Name="Wary"
+      Cost="100"
+      Attribute="Agility"
+      Minimum="15"
+      Class="Vixy_TacticsWary"
+      Snippet="wariness"
+      Description="You have learned what a tripwire looks like. Whenever you enter a cell, you take a second look around you for hidden things - traps, mines, and concealed creatures - searching again with a +6 bonus."
+      Tile="Abilities/sw_skill_tactics.png"
+      Foreground="y"
+      Detail="B"
+    />
+  </skill>
 </skills>

@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 71 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 72 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5863,6 +5863,101 @@ list partly on this — Pax Klanq is an explicit quest target.
 repoint saved water-ritual offers at different recipes. The feature is opt-in by its own shape
 instead: you must find a specific person, already know the base recipe, and have bought a 200-point
 skill rank. Nothing here changes unless a player goes and does all three.
+
+## 46. Wary — a second look (`Vixy_TacticsWary`)
+
+A Tactics power, **cost 100, Agility 15**: whenever you enter a cell you search again, with a **+6
+bonus**, for hidden things in that cell and the eight around it (#722).
+
+### 46.1 This is the second attempt, and the first one did nothing
+
+#717 put a part on the player registering `"Searched"`, on the reading that the searcher receives the
+event it fires. It never did. `Cell.AddObject`:
+
+```
+physics.EnterCell(this)          ← Search() runs here. Mover in NEITHER cell.
+Objects.Add(Object)              ← mover joins the cell
+Object.ProcessEnterCell(...)
+Object.ProcessEnteredCell(...)   ← EnteredCellEvent, mover present
+```
+
+At the moment vanilla searches, the mover has left one cell's `Objects` list and not yet joined the
+next — it is in the dispatch set of nothing. Withdrawn in #720; the lesson is in `docs/LESSONS.md`
+under *"a dispatch list is a snapshot"*.
+
+**The door is four lines further down the same method.** A part handling `EnteredCellEvent` is
+standing in the cell.
+
+### 46.2 The bonus belongs to whoever fires the event
+
+Which is the thing #717 had backwards. `Physics.DoSearching` builds the event and sets no bonus:
+
+```csharp
+eSearched = Event.New("Searched", "Searcher", ParentObject);
+C.FireEvent(eSearched);
+```
+
+and `Hidden` reads it straight off, consulting nothing about the searcher:
+
+```csharp
+if (E.GetIntParameter("Bonus") + Stat.Random(1, gameObjectParameter.Stat("Intelligence")) >= Difficulty)
+```
+
+So firing a **second** `Searched` with the term set puts the number where `Hidden` actually looks.
+
+### 46.3 It is a second roll, and that is accepted deliberately
+
+Vanilla's bonus-0 search has already run inside `EnterCell` and cannot be suppressed from here, so
+the real chance is `1 − P(both fail)` — `Hidden`'s `!Found` guard makes the two a clean union.
+
+| Intelligence | vanilla alone | as advertised | actual |
+|---:|---:|---:|---:|
+| 10 | 0% | 20.0% | **20.0%** |
+| 14 | 0% | 42.9% | **42.9%** |
+| 18 | 22.2% | 55.6% | **65.4%** |
+| 24 | 41.7% | 66.7% | **80.6%** |
+
+> **The divergence is entirely in the band the skill is not for.** Below a hidden thing's
+> `Difficulty`, `Stat.Random(1, Intelligence)` cannot succeed at all — the defect #221 was filed
+> about — so for exactly the characters this exists for, the double roll and the intended single
+> roll are the same number.
+
+The overshoot lands on characters who could already find things, and it errs toward noticing a mine
+rather than missing one. The alternatives — lowering the bonus, or firing only when the first roll
+was hopeless — both trade a real cost for exactness against a `Difficulty` the searcher has no way
+to know, since it fires at a *cell* and only `Hidden` knows what it guards.
+
+### 46.4 Mines are the population that matters, and no blueprint declares them
+
+Eight vanilla blueprints carry `Hidden`: Young Ivory, Yonderbrush, Holographic Ivory (15), Sprouting
+Orb (16), Lurking Beth and Holographic Beth (18), Lagroot (20), Elder Lagroot (23).
+
+That undercounts the mechanic badly. `Miner.SetMineOrBomb` adds it **when a mine is laid**:
+
+```csharp
+int num2 = 12 + Mark * 3;
+gameObject.RequirePart<Hidden>().Difficulty = num2;
+```
+
+Vanilla ships Marks 1–3, so a laid field sits at **15, 18 or 21**. `LayMineGoal` and `Submerged` also
+add it at runtime.
+
+> **A part added when an object is created is declared by no blueprint**, so a blueprint census
+> measures declarations and not reach.
+
+`Hidden`, `HiddenRender` and `EelSpawn` all read the bonus, so all three get the second roll — an eel
+lurking in water is exactly the hidden threat this is named for.
+
+### 46.5 It says what it did, because the last one could not be tested
+
+`Hidden` sets `Found = true` and prints nothing, so a successful search is indistinguishable from a
+search that never ran — which is how #717 reached a merge while doing nothing. Behind **Debug
+Internals**, off by default and vanilla's own convention for this, Wary reports how many nearby cells
+had something listening.
+
+### 46.6 Off-switch
+
+None needed: it is a skill power you choose to buy, holds no state, and does nothing until purchased.
 
 ## Appendix A — every merged vanilla melee weapon
 
