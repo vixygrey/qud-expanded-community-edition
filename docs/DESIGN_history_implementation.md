@@ -16,7 +16,7 @@ Unbreakable across patches, merges cleanly with other mods given unique identifi
 prefixes, no user approval prompt, near-zero maintenance.
 
 Cannot change slot *structure* — only what fills the slots. For this project that means it
-can plausibly deliver the plainness quota (`03-naming.md` §4) and nothing else. Whether even
+can plausibly deliver the plainness quota (`DESIGN_history_naming.md` §4) and nothing else. Whether even
 that is reachable depends on recon question #1.
 
 ### Tier 2 — C# scripted types
@@ -65,10 +65,10 @@ conversation early rather than after shipping.
 | Component | Expected tier | Confidence |
 |---|---|---|
 | Plainness quota / PLAIN lexicon | 1 if wordlists are XML, else 2 | low — gated on Q1 |
-| Naming derivation (`03-naming.md`) | 2, else 3 (gated, §8.7) | low — gated on Q2 |
-| Ledger + threads (`01-event-model.md`) | 2 | medium |
+| Naming derivation (`DESIGN_history_naming.md`) | 2, else 3 (gated, §8.7) | low — gated on Q2 |
+| Ledger + threads (`DESIGN_history_events.md`) | 2 | medium |
 | Event pool extension | 2 if registrable, else 3 (gated) | low — gated on Q3 |
-| Source divergence (`04-sources.md`) | 2 | low — gated on Q6 |
+| Source divergence (`DESIGN_history_sources.md`) | 2 | low — gated on Q6 |
 | Cross-sultan legacy | 2–3 | low — gated on Q5 |
 
 Most confidences are low. That is the honest state of the project and the reason §2 exists.
@@ -97,11 +97,11 @@ whether the rest of the plan has a fallback tier or not.
 **Q1 — Where does the text live?**
 For each of the seventeen event types, is its prose in shipped XML or compiled into the
 assembly? Determines whether *any* of this is Tier 1, and how the 128 authored fragments
-(`02-event-catalog.md` §6) would actually be delivered.
+(`DESIGN_history_catalog.md` §6) would actually be delivered.
 
 **Q2 — Is there a naming seam?**
 At the point a relic is named, is the originating event still in scope? This gates
-`03-naming.md` entirely. If the answer is no, the fallback is rung 3 of the ladder — the
+`DESIGN_history_naming.md` entirely. If the answer is no, the fallback is rung 3 of the ladder — the
 plainness quota applied to site-derived names — which is still a complete v0.1.
 
 **Q3 — Can the event pool be extended by registration?**
@@ -115,12 +115,12 @@ costs 2 fragments rather than 4 — **halving the authoring cost of the whole pr
 Highest value-per-minute question on this list.
 
 **Q5 — Are the five sultans generated in chronological sequence, in one pass?**
-Gates cross-sultan causality (`01-event-model.md` §7). If they are generated independently,
+Gates cross-sultan causality (`DESIGN_history_events.md` §7). If they are generated independently,
 the dynastic ledger needs a different mechanism.
 
 **Q6 — Do murals, gossip, and village descriptions read the history record, or generate
 independently?**
-Determines whether `04-sources.md` can reach beyond gospel and tomb, and would reveal how
+Determines whether `DESIGN_history_sources.md` can reach beyond gospel and tomb, and would reveal how
 much of the perceived incoherence comes from parallel generators rather than from history
 generation at all.
 
@@ -131,10 +131,10 @@ generation becomes trivial and tuning gets dramatically easier.
 
 ### Deliverable
 
-A `recon-findings.md` in this folder answering all eight, with the tier table in §1
+A `DESIGN_history_recon.md` in this folder answering all eight, with the tier table in §1
 re-scored. **No implementation work should begin before that document exists** — the
 sequencing risk (authoring in a format that later needs retrofitting) is exactly what
-`00-overview.md` P3 warns against.
+`DESIGN_history.md` P3 warns against.
 
 ---
 
@@ -170,13 +170,13 @@ output rather than surfacing as "histories look vanilla again."
 qud-mods/
 └── lore-expansion/
     ├── docs/                    ← this folder
-    │   ├── 00-overview.md
-    │   ├── 01-event-model.md
-    │   ├── 02-event-catalog.md
-    │   ├── 03-naming.md
-    │   ├── 04-sources.md
-    │   ├── 05-implementation.md
-    │   └── recon-findings.md    ← to be written (§2)
+    │   ├── DESIGN_history.md
+    │   ├── DESIGN_history_events.md
+    │   ├── DESIGN_history_catalog.md
+    │   ├── DESIGN_history_naming.md
+    │   ├── DESIGN_history_sources.md
+    │   ├── DESIGN_history_implementation.md
+    │   └── DESIGN_history_recon.md    ← to be written (§2)
     ├── mod/                     ← the shippable mod
     │   ├── manifest.json
     │   ├── Scripts/
@@ -201,8 +201,8 @@ With the Harmony quarantine (§8.7 W1) and its surface log, `mod/` and `docs/` b
 
 ## 5. Instrumentation
 
-`00-overview.md` §6 sets numeric targets. They need a harness, and building it early is what
-makes the tuning constants in `01-event-model.md` §5.2 adjustable rather than guessed.
+`DESIGN_history.md` §6 sets numeric targets. They need a harness, and building it early is what
+makes the tuning constants in `DESIGN_history_events.md` §5.2 adjustable rather than guessed.
 
 **Corpus dump.** Generate *n* worlds with fixed seeds and dump every sultan biography as
 structured data — events, roles, threads opened and closed, referents introduced, names
@@ -218,14 +218,14 @@ generated. Feasibility depends on Q7.
 - Plain-token share in generated names
 - Share of names referencing a record fact
 - Fallback rate (how often the generator hits `FALLBACK_POOL` — a pool-starvation alarm)
-- Noun reuse frequency (the plainness-quota risk, `03-naming.md` §6)
+- Noun reuse frequency (the plainness-quota risk, `DESIGN_history_naming.md` §6)
 
 **Chain viewer.** A small script rendering one biography as a graph — events as nodes,
 threads as edges. Worth building early; most bugs in this design are *structural* and are
 nearly invisible in prose but obvious in a graph.
 
 **Baseline first.** Run the harness against **unmodded** worldgen before writing any mod
-code. Every target in `00-overview.md` §6 is currently an estimate inferred from published
+code. Every target in `DESIGN_history.md` §6 is currently an estimate inferred from published
 descriptions. Measured baselines make the design falsifiable, and there is a real chance
 they show the vanilla situation is better or worse than assumed — either of which should
 change the plan.
@@ -239,7 +239,7 @@ change the plan.
 | Harmony unusable on the macOS dev machine | Medium | Windows machine available for verification; quarantine + release gate (§8.7) |
 | **Harmony surface drifts between Windows verification passes** | **High** | W1 quarantine, W2 documented surface, W4 application logging, W5 release gate |
 | No stateful seam in history generation (Q-blocking) | High | Tier 2 techniques first (§8.5); Harmony as gated fallback; else naming-only scope |
-| No naming seam with event in scope | High | Fallback ladder rung 3 (`03-naming.md` §7) |
+| No naming seam with event in scope | High | Fallback ladder rung 3 (`DESIGN_history_naming.md` §7) |
 | Event pool not extensible without replacing the factory | Medium | Replace factory wholesale; accept higher update fragility |
 | Authoring burden stalls the project | **High** | Ship 0.1 and 0.2 with zero new prose; expansion is optional upside |
 | Game update breaks the mod | Medium | Prefer Tier 2 over 3; version-check logging; postfix-only Harmony |
@@ -259,7 +259,7 @@ delivered a real mod.
    verification and corpus runs (§8.7).
 2. Run **Q0** on the Mac (§8.3). If Harmony works under Rosetta, the two-machine workflow
    becomes optional and everything gets easier.
-3. Run the rest of the recon plan (§2); write `recon-findings.md`.
+3. Run the rest of the recon plan (§2); write `DESIGN_history_recon.md`.
 4. Re-score the tier table (§1) and the risk register (§6) against actual findings.
 5. Build the corpus harness on the Windows machine and measure the vanilla baseline (§5).
 6. Only then: decide whether v0.1 is Tier 1 or Tier 2, and begin.
@@ -460,6 +460,6 @@ rather than making it a special occasion, which is exactly what keeps W5 from be
 - [Steam Workshop: Sultan's Names of Qud](https://steamcommunity.com/sharedfiles/filedetails/?id=3372513310)
 - Grinblat & Bucklew, *Subverting historical cause & effect: generation of mythic
   biographies in Caves of Qud* — [ACM DL](https://dl.acm.org/doi/10.1145/3102071.3110574).
-  Not yet read; **do so before finalising `01-event-model.md`**, as it states the designers'
+  Not yet read; **do so before finalising `DESIGN_history_events.md`**, as it states the designers'
   intent about deliberate non-causality.
 - Grinblat, "Generating Histories," in *Procedural Storytelling in Game Design* (CRC Press).

@@ -3,7 +3,7 @@
 **Project:** `lore-expansion` — a Caves of Qud mod targeting the sultan history and
 relic naming systems.
 **Target:** Steam Workshop release.
-**Status:** Design phase. No implementation tier committed yet (see `05-implementation.md`).
+**Status:** Design phase. No implementation tier committed yet (see `DESIGN_history_implementation.md`).
 
 ---
 
@@ -122,7 +122,7 @@ rather than **arbitrary**. Same tone, different provenance.
 **P5 — Contradiction is a feature if it is sourced.**
 Three accounts that differ randomly read as a bug. Three accounts that differ in ways
 traceable to who was speaking and what they wanted read as history. Do not eliminate
-inconsistency; attribute it. See `04-sources.md`.
+inconsistency; attribute it. See `DESIGN_history_sources.md`.
 
 **P6 — Every generated proper noun must be cross-referenceable.**
 If a relic is named for a cistern, that cistern must appear elsewhere in the record under
@@ -130,7 +130,7 @@ the same name. This single rule converts more perceived incoherence than any pro
 because it lets the player *verify* that the world hangs together.
 
 **P7 — Plainness quota.**
-No name may be assembled entirely from the exotic lexicon. See `03-naming.md` §4.
+No name may be assembled entirely from the exotic lexicon. See `DESIGN_history_naming.md` §4.
 
 **P8 — Fail toward vanilla.**
 Any generation step that cannot satisfy its constraints falls back to current behaviour
@@ -144,11 +144,11 @@ recoverable moment in the game.
 ### In scope
 
 - A compositional event model with preconditions, effects and open threads
-  (`01-event-model.md`)
-- Retrofit of the existing seventeen event types into that model (`02-event-catalog.md`)
-- An expansion of the event pool with **connective** event types (`02-event-catalog.md`)
-- Derivation-based naming for relics and sultan items (`03-naming.md`)
-- A source/divergence model for gospel, mural and tomb inscription (`04-sources.md`)
+  (`DESIGN_history_events.md`)
+- Retrofit of the existing seventeen event types into that model (`DESIGN_history_catalog.md`)
+- An expansion of the event pool with **connective** event types (`DESIGN_history_catalog.md`)
+- Derivation-based naming for relics and sultan items (`DESIGN_history_naming.md`)
+- A source/divergence model for gospel, mural and tomb inscription (`DESIGN_history_sources.md`)
 - Cross-sultan causality: later sultans reacting to earlier sultans' legacies
 
 ### Out of scope (for now)
@@ -188,7 +188,7 @@ good mod.
 ## 6. Success metrics
 
 Design intent should be measurable, otherwise "feels less formulaic" is unfalsifiable.
-Proposed instrumentation (see `05-implementation.md` §5 for how to collect it):
+Proposed instrumentation (see `DESIGN_history_implementation.md` §5 for how to collect it):
 
 | Metric | Vanilla baseline (est.) | Target |
 |---|---|---|
@@ -206,7 +206,7 @@ be measured directly once the game is installed.
 
 ## 7. Open questions
 
-Carried into `05-implementation.md`; listed here so the design record is self-contained.
+Carried into `DESIGN_history_implementation.md`; listed here so the design record is self-contained.
 
 1. How much of the event text lives in shipped XML versus compiled into the assembly?
 2. Is there a seam at which a relic is named where the originating event is still in scope?
@@ -220,4 +220,4 @@ Carried into `05-implementation.md`; listed here so the design record is self-co
 ---
 
 *Companion documents:*
-`01-event-model.md` · `02-event-catalog.md` · `03-naming.md` · `04-sources.md` · `05-implementation.md`
+`DESIGN_history_events.md` · `DESIGN_history_catalog.md` · `DESIGN_history_naming.md` · `DESIGN_history_sources.md` · `DESIGN_history_implementation.md`

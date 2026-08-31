@@ -70,7 +70,7 @@ Ledger {
 
 **[ASSUMPTION]** that a per-sultan mutable context can be threaded through generation at
 all. If the vanilla generator is stateless by design, this is the single largest
-implementation risk in the project, and `05-implementation.md` §2 treats it as the first
+implementation risk in the project, and `DESIGN_history_implementation.md` §2 treats it as the first
 recon question.
 
 ### 2.2 Reference types
@@ -125,7 +125,7 @@ A thread is an *indirection*. Direct links ("event B may follow event A") requir
 O(n²) authoring matrix and break whenever the pool changes. Threads let each event declare
 its requirements against a small vocabulary of obligation kinds, so a new event
 automatically composes with every existing event that opens a compatible thread. **This is
-what makes the expansion in `02-event-catalog.md` cheap.**
+what makes the expansion in `DESIGN_history_catalog.md` cheap.**
 
 ---
 
@@ -150,7 +150,7 @@ EventType {
   age_bands       : Set<AgeBand>
   era_affinity    : Map<Era, Float>     # cosmic/blended/earthen weighting
 
-  renderings      : Map<SourceType, Template>   # see 04-sources.md
+  renderings      : Map<SourceType, Template>   # see DESIGN_history_sources.md
 }
 ```
 
@@ -188,7 +188,7 @@ Each event type carries a **role** describing its function in a life:
 
 Vanilla's seventeen are overwhelmingly `escalation`-shaped set-pieces with no `inciting` or
 `resolution` counterparts. That imbalance is the structural reading of "formulaic," and
-`02-event-catalog.md` addresses it directly.
+`DESIGN_history_catalog.md` addresses it directly.
 
 Selection targets a **role curve** across the biography rather than uniform sampling: more
 `inciting` early, more `resolution` late, `reversal` weighted toward the middle third.
@@ -254,7 +254,7 @@ generate_biography(sultan_index, era, rng):
 
         if candidates is empty:
             candidates ← FALLBACK_POOL          # P8: fail toward vanilla
-        
+
         chosen ← weighted_choice(candidates, score(·, ledger, arc_pos), rng)
         apply(chosen, ledger, rng)
         age_threads(ledger)                     # urgency += 1 on each open thread
@@ -299,7 +299,7 @@ This is disproportionately valuable for three reasons. It converts the era-vocab
 from a cosmetic gradient into a *narrative* one; it gives relics a second life in the record
 (a relic mentioned twice, centuries apart, is worth more than two relics mentioned once);
 and iconoclasm gives an in-fiction license for genuine contradiction between sources, which
-`04-sources.md` then exploits directly.
+`DESIGN_history_sources.md` then exploits directly.
 
 **[ASSUMPTION]** that the five sultans are generated in chronological sequence within one
 pass. If they are generated independently or in parallel, this section needs rework.
@@ -309,7 +309,7 @@ pass. If they are generated independently or in parallel, this section needs rew
 ## 8. Retrofitting the vanilla seventeen
 
 The seventeen existing types are retained and given model metadata rather than replaced.
-Full table in `02-event-catalog.md` §2. The retrofit rules:
+Full table in `DESIGN_history_catalog.md` §2. The retrofit rules:
 
 1. **Preserve all existing text.** Retrofit assigns preconditions, effects and threads; it
    does not rewrite prose. This keeps 0.2 shippable without a writing pass and keeps the
@@ -334,9 +334,9 @@ Full table in `02-event-catalog.md` §2. The retrofit rules:
 | Referent explosion | Too many proper nouns; none recur | Cap `introduces`; prefer reusing existing refs |
 | Determinism break | Same seed, different world | Route all randomness through seeded rng |
 
-The instrumentation in `05-implementation.md` §5 exists to detect each of these before
+The instrumentation in `DESIGN_history_implementation.md` §5 exists to detect each of these before
 release rather than from Workshop comments after it.
 
 ---
 
-*Next:* `02-event-catalog.md` — the role grid, the retrofit table, and candidate new events.
+*Next:* `DESIGN_history_catalog.md` — the role grid, the retrofit table, and candidate new events.

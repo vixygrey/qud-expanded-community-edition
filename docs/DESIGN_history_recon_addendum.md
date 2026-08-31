@@ -6,7 +6,7 @@
 heaps. Parses TypeDef / Field / MethodDef / Param / TypeRef and decodes field and method
 signature blobs.
 
-> **How this differs from the previous pass.** `recon-findings.md` read the flat `#Strings`
+> **How this differs from the previous pass.** `DESIGN_history_recon.md` read the flat `#Strings`
 > heap, which lists every string in the assembly but cannot say *which field belongs to which
 > type*, *what type a field is*, or *what a method's signature looks like*. This pass parses
 > the metadata tables properly, so member structure and signatures are now direct observation.
@@ -43,7 +43,7 @@ presumably the idempotent "ensure loaded" entry point, which matters for a
 
 ### ⚠ Correction: the tree is **Newtonsoft**, not SimpleJSON
 
-`recon-findings.md` §Q8 states the tree is a `SimpleJSON.JSONNode` structure. **It is not.**
+`DESIGN_history_recon.md` §Q8 states the tree is a `SimpleJSON.JSONNode` structure. **It is not.**
 
 | Check | Result |
 |---|---|
@@ -89,7 +89,7 @@ HistoryKit.HistoricStringExpander  (static)
    in is bindable.
 2. `Dictionary<string,JToken> nodeVars` — binds a **subtree**, not a string. This means a
    caller can hand the grammar a whole JSON node to select from. That is a materially more
-   powerful seam than `03-naming.md` assumed.
+   powerful seam than `DESIGN_history_naming.md` assumed.
 
 **Scope:** the full `History` and a `HistoricEntitySnapshot` are passed to every meaningful
 overload. So at expansion time the entire record is reachable — entity properties, the event
@@ -188,7 +188,7 @@ HistoryKit.HistoricEntity
   → GetRandomEventWhereDelegate
 ```
 
-`01-event-model.md`'s ledger is **already the engine's data model**, including the
+`DESIGN_history_events.md`'s ledger is **already the engine's data model**, including the
 add/remove-list-property distinction. Build threads as entity list properties. The
 "generator may be stateless" risk is definitively dead.
 
@@ -210,7 +210,7 @@ So a perspective is `(whose view, of which event, how they feel, what colours re
 an *attitude*, held per-event in `HistoricEvent.perspectives` keyed by string. The differing
 **text** is then selected from spice using that attitude.
 
-`04-sources.md` should be reframed accordingly: adding a mural or oral-tradition source means
+`DESIGN_history_sources.md` should be reframed accordingly: adding a mural or oral-tradition source means
 adding a **perspective key plus spice branches keyed on feeling**, not adding text fields to a
 type. That is cheaper than the doc assumed, and it is still Tier 2-light.
 
@@ -252,11 +252,11 @@ surface you depend on.
 
 | Doc | Change |
 |---|---|
-| `recon-findings.md` §Q8 | **SimpleJSON → Newtonsoft `JObject`.** Correct before the spike is compiled. |
-| `recon-findings.md` §Q2 | Answered: two binding channels, event not in scope, entity+history are |
-| `recon-findings.md` §Q7 | Answered: plain classes, harness plausible |
-| `recon-findings.md` §Q5 | Upgrade to strongly-implied |
-| `recon-findings.md` §Q3 | Leans hardcoded — no registry field |
-| `recon-findings.md` N3 | Perspective is feeling+colour, not text |
-| `HANDOFF.md` §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong** |
-| `04-sources.md` | Reframe onto perspective-key + feeling-keyed spice |
+| `DESIGN_history_recon.md` §Q8 | **SimpleJSON → Newtonsoft `JObject`.** Correct before the spike is compiled. |
+| `DESIGN_history_recon.md` §Q2 | Answered: two binding channels, event not in scope, entity+history are |
+| `DESIGN_history_recon.md` §Q7 | Answered: plain classes, harness plausible |
+| `DESIGN_history_recon.md` §Q5 | Upgrade to strongly-implied |
+| `DESIGN_history_recon.md` §Q3 | Leans hardcoded — no registry field |
+| `DESIGN_history_recon.md` N3 | Perspective is feeling+colour, not text |
+| `DESIGN_history_handoff.md` §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong** |
+| `DESIGN_history_sources.md` | Reframe onto perspective-key + feeling-keyed spice |

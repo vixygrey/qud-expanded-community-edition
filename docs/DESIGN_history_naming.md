@@ -19,7 +19,7 @@ The fix is one sentence: **the name must reference a fact that exists elsewhere 
 record.** Not a fact-shaped word. An actual referent — a place, a person, a deed, a debt —
 that the player can encounter again somewhere else and match.
 
-This is why the naming work depends on the event model. Before `01-event-model.md`, there is
+This is why the naming work depends on the event model. Before `DESIGN_history_events.md`, there is
 almost nothing in the record specific enough to name something after. After it, every relic
 arrives carrying a ledger, a set of threads it participated in, and a list of stable
 `PlaceRef` / `EntityRef` handles.
@@ -44,7 +44,7 @@ NamingContext {
 
 **Open question:** whether such a seam exists — whether the originating event is still in
 scope when the name is produced, or whether naming happens later from a stripped record.
-This is recon question #2 in `05-implementation.md` §2 and it gates the entire document. If
+This is recon question #2 in `DESIGN_history_implementation.md` §2 and it gates the entire document. If
 no seam exists, the fallback is §7.
 
 ---
@@ -123,7 +123,7 @@ Requires the object to appear in an event that closed a thread badly.
 
 ## 4. The plainness quota
 
-Per `00-overview.md` §2.5, the register problem is that **every** token is exotic, so
+Per `DESIGN_history.md` §2.5, the register problem is that **every** token is exotic, so
 obscurity becomes the baseline and stops signifying.
 
 ### 4.1 Two lexicons
@@ -182,7 +182,7 @@ worthless. **Referent strings must be rendered once and reused**, never re-gener
 ### 5.1 Minimum reference count per world
 
 Target: **≥ 12 distinct proper nouns** appearing in both a relic name and at least one
-historical account (`00-overview.md` §6). Below roughly eight, the player never notices the
+historical account (`DESIGN_history.md` §6). Below roughly eight, the player never notices the
 system exists; the effect is not linear in the count but has a threshold.
 
 ---
@@ -241,7 +241,7 @@ drowning **and** the bow was there. Under §5 it either has that grounding or it
 
 ## 9. Worked examples
 
-From the biography in `02-event-catalog.md` §7 — an item crafted from the remainder of a
+From the biography in `DESIGN_history_catalog.md` §7 — an item crafted from the remainder of a
 ransom, later carried in a battle over the Cistern of Ubel.
 
 | Pattern | Generated name | Referent verifiable at |
@@ -258,4 +258,4 @@ checkable against nothing, and which is the reason the naming looks obvious.
 
 ---
 
-*Next:* `04-sources.md` — making the accounts disagree on purpose.
+*Next:* `DESIGN_history_sources.md` — making the accounts disagree on purpose.

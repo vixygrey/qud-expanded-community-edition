@@ -1,13 +1,13 @@
 # Event Catalog — Role Grid, Retrofit, and Expansion
 
-> Companion to `01-event-model.md`. All identifiers use the `LX_` prefix per the wiki's
+> Companion to `DESIGN_history_events.md`. All identifiers use the `LX_` prefix per the wiki's
 > compatibility guidance on unique namespacing.
 
 ---
 
 ## 1. The role grid
 
-The diagnosis in `00-overview.md` §2.3 says the vanilla pool is structurally lopsided. Here
+The diagnosis in `DESIGN_history.md` §2.3 says the vanilla pool is structurally lopsided. Here
 is the shape of that lopsidedness, and what filling it requires.
 
 | Role | Vanilla coverage | Needed | Gap |
@@ -34,7 +34,7 @@ already oversupplied role.
 
 ## 2. Retrofit table — the vanilla seventeen
 
-Per `01-event-model.md` §8: assign metadata, preserve all existing text, prefer permissive
+Per `DESIGN_history_events.md` §8: assign metadata, preserve all existing text, prefer permissive
 predicates. `requires` is written informally here; `∅` means unconditional.
 
 | # | Vanilla event | Role | `requires` | `opens` | `closes` |
@@ -73,7 +73,7 @@ learn that before authoring fifty prose fragments.
 ### 2.2 Oversupply note
 
 Items 6, 9, 10, 12, 14 are five distinct escalation-role combat set-pieces. Under the
-per-world type budget (`01-event-model.md` §5.4) these will now compete with each other
+per-world type budget (`DESIGN_history_events.md` §5.4) these will now compete with each other
 rather than all firing, which by itself should reduce the "constant war" texture of vanilla
 biographies.
 
@@ -92,7 +92,7 @@ alone. Ordered by value-per-unit-of-writing.
 · `effects:` `piety +1`
 The single highest-value addition. Oaths are the most versatile thread kind: they can be
 fulfilled, broken, or transmuted, and every outcome is narratively legible. Also the
-cheapest naming substrate in the system — see `03-naming.md` §3.2.
+cheapest naming substrate in the system — see `DESIGN_history_naming.md` §3.2.
 
 **`LX_DebtIncurred`** — a gift accepted, a loan taken, a levy raised against future spoils.
 `requires:` ∅ · `opens:` `debt` · `effects:` `treasury +1`, creditor → `EntityRef`
@@ -159,7 +159,7 @@ intentional.
 **`LX_DeathOfAnOldWound`** — the sultan dies of an injury sustained long before.
 `requires:` open `wound` with `urgency ≥ 2` · `closes:` `wound` · role: `terminal`
 The clearest possible demonstration that the system works: a consequence arriving from
-eight events away. Worth building the chain-viewer tooling (`05-implementation.md` §5) just
+eight events away. Worth building the chain-viewer tooling (`DESIGN_history_implementation.md` §5) just
 to confirm this fires correctly.
 
 ---
@@ -187,7 +187,7 @@ be built.
 | `LX_DeathAtRivalsHand` | terminal | `rival` set | — | `grudge` |
 | `LX_DeathUnresolved` | terminal | ∅ | — | *nothing, pointedly* |
 
-`LX_DeathUnresolved` is deliberate: per `01-event-model.md` §5.2, roughly a third of lives
+`LX_DeathUnresolved` is deliberate: per `DESIGN_history_events.md` §5.2, roughly a third of lives
 should end with threads still open. It is the mythic register's natural ending and a
 guardrail against the metronome failure mode.
 
@@ -195,14 +195,14 @@ guardrail against the metronome failure mode.
 
 ## 5. Legacy events — cross-sultan
 
-Per `01-event-model.md` §7. Each fires for sultans 2–5, reading the dynastic ledger. These
+Per `DESIGN_history_events.md` §7. Each fires for sultans 2–5, reading the dynastic ledger. These
 are disproportionately valuable per unit of writing because they make the *sultanate* a
 coherent object rather than five unrelated lives.
 
 | Id | Reads | Effect |
 |---|---|---|
 | `LX_Canonization` | predecessor's `epithets` | Predecessor venerated; `piety +1`; predecessor's relic gains a cult |
-| `LX_Iconoclasm` | predecessor's monuments | Monuments destroyed, name struck from inscriptions; **licenses source contradiction** (see `04-sources.md` §5) |
+| `LX_Iconoclasm` | predecessor's monuments | Monuments destroyed, name struck from inscriptions; **licenses source contradiction** (see `DESIGN_history_sources.md` §5) |
 | `LX_TombDesecrated` | predecessor's `possessions` | A relic leaves the tomb; opens `relic_lost` for a *later* sultan to close |
 | `LX_TreatyInherited` | predecessor's open `oath` | Honoured or repudiated; if repudiated, opens `grudge` with a faction that remembers |
 | `LX_OldGrudgeAvenged` | predecessor's open `grudge` | Closes a thread opened generations earlier |
@@ -216,7 +216,7 @@ are obvious mashups."
 
 ## 6. Authoring cost
 
-Per `00-overview.md` §2.2, every event needs a gospel rendering and a tomb-inscription
+Per `DESIGN_history.md` §2.2, every event needs a gospel rendering and a tomb-inscription
 rendering, and each must work in cosmic and earthen vocabulary registers.
 
 | Set | Types | Renderings each | Fragments |
@@ -226,12 +226,12 @@ rendering, and each must work in cosmic and earthen vocabulary registers.
 | Legacy (v0.5+) | 5 | 4 | 20 |
 | **Total if all built** | **32** | | **128** |
 
-**The prose is the project.** The model in `01-event-model.md` is a few hundred lines of
+**The prose is the project.** The model in `DESIGN_history_events.md` is a few hundred lines of
 code; 128 fragments in Qud's voice is months of intermittent writing. This is the argument
 for shipping v0.2 (retrofit, zero new writing) first and letting its reception fund the
 enthusiasm for v0.3.
 
-> **Open question 4** in `00-overview.md` §7 matters enormously here. If the era vocabulary
+> **Open question 4** in `DESIGN_history.md` §7 matters enormously here. If the era vocabulary
 > system substitutes *tokens* within a shared template, each event needs 2 fragments, not 4
 > — halving the cost of the entire project. Check this early.
 
@@ -271,4 +271,4 @@ That last property — a name a player can *check* — is the thing the mod is a
 
 ---
 
-*Next:* `03-naming.md` — deriving names from this record.
+*Next:* `DESIGN_history_naming.md` — deriving names from this record.

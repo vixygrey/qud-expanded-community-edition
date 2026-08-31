@@ -36,13 +36,13 @@ an explicit bias, and — critically — making the distortions **recoverable**.
 | **Mural** | Compressed, pictorial, captioned | Historic sites, ruins | Extreme compression; conflates and mislabels |
 | **Oral tradition** | Vernacular, local | Village gossip, NPC dialogue | Localised; inflates local relevance; temporally vague |
 
-Ground truth is the ledger produced by `01-event-model.md`. **No source renders ground truth
+Ground truth is the ledger produced by `DESIGN_history_events.md`. **No source renders ground truth
 directly.** The gospel is closest but is still a rendering — which is a meaningful design
 statement in itself, and matches how Qud already treats its own lore.
 
 > **Scope note:** murals and oral tradition are consumed by systems outside history
 > generation. Whether this mod can reach them is recon question #6
-> (`05-implementation.md` §2). If it cannot, the model degrades cleanly to gospel + tomb —
+> (`DESIGN_history_implementation.md` §2). If it cannot, the model degrades cleanly to gospel + tomb —
 > still worth building, since that pair alone supports §3's operators.
 
 ---
@@ -93,7 +93,7 @@ Three enforcement rules follow:
 **R1 — Never distort referent identity.**
 Proper nouns are inviolable. A source may lie about what happened at the Cistern of Ubel; it
 may not rename the cistern. If referents drift, cross-referencing collapses and the player
-is back to reading noise — undoing `03-naming.md` §5 entirely. **Distort predicates, never
+is back to reading noise — undoing `DESIGN_history_naming.md` §5 entirely. **Distort predicates, never
 handles.**
 
 **R2 — Distortions must be directional and consistent with bias.**
@@ -109,7 +109,7 @@ event, and the player perceives an unrelated event rather than a distorted one.
 
 ## 5. Iconoclasm — the diegetic license
 
-`LX_Iconoclasm` (`02-event-catalog.md` §5) is where the source model earns its place.
+`LX_Iconoclasm` (`DESIGN_history_catalog.md` §5) is where the source model earns its place.
 
 When a later sultan strikes a predecessor's name from inscriptions, the mod gains explicit
 in-fiction permission for the *most aggressive* distortion in the system: an inscription
@@ -121,7 +121,7 @@ That is the most coherent thing a generated history can produce, because the abs
 itself caused, and a player who finds both accounts can reconstruct not only what happened
 but *who wanted it forgotten*.
 
-This is the single strongest argument for cross-sultan causality (`01-event-model.md` §7),
+This is the single strongest argument for cross-sultan causality (`DESIGN_history_events.md` §7),
 and it is why the legacy events are worth their authoring cost despite being only five
 types.
 
@@ -162,4 +162,4 @@ comprehensibility. Test that combination first.
 
 ---
 
-*Next:* `05-implementation.md` — tiers, recon, and instrumentation.
+*Next:* `DESIGN_history_implementation.md` — tiers, recon, and instrumentation.

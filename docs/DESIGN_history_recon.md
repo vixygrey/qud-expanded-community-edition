@@ -13,7 +13,7 @@ of `Assembly-CSharp.dll`.
 > are marked **NEEDS DECOMPILE** and should be finished with ILSpy on the Windows machine.
 >
 > **UPDATE 2026-08-15 — a full metadata-table pass has since been done.** See
-> `recon-addendum-metadata.md`. It answers **Q9, Q2, Q7**, upgrades **Q5**, sharpens **Q3**,
+> `DESIGN_history_recon_addendum.md`. It answers **Q9, Q2, Q7**, upgrades **Q5**, sharpens **Q3**,
 > and **corrects the SimpleJSON claim in §Q8 below** (the tree is Newtonsoft, not SimpleJSON)
 > and the perspective claim in **N3**. Sections superseded by it are flagged inline.
 
@@ -57,7 +57,7 @@ build.**
 **Actionable:** this is forceable. Get Info on `CoQ.app` → *Open using Rosetta*, or a Steam
 launch option, will run the x86_64 slice — where Harmony uses its well-trodden x64 detour
 path. If that works, the Mac becomes a viable Harmony test environment and the two-machine
-workflow (`05-implementation.md` §8.7) becomes optional.
+workflow (`DESIGN_history_implementation.md` §8.7) becomes optional.
 
 **Still needs the live test:** launch with a known Harmony-using Workshop mod, native and
 under Rosetta, and check the log for patch application. That is the one thing here I cannot
@@ -94,7 +94,7 @@ taxonomy and noun→type mappings), `PopulationTables.xml`, `Conversations.xml`,
   `HistoricSpice`, `HistoricStringExpander`, plus `FuzzyFunctions`, `If`, `Switch`.
 - `XRL.Annals` — Qud's concrete events and `QudHistoryFactory`.
 
-> Note: `05-implementation.md` earlier "corrected" HistoryKit to `XRL.Annals`. Both exist —
+> Note: `DESIGN_history_implementation.md` earlier "corrected" HistoryKit to `XRL.Annals`. Both exist —
 > HistoryKit is the engine, XRL.Annals is the Qud content layer. The original guess was
 > right and the correction was wrong.
 
@@ -115,7 +115,7 @@ From assembly metadata, `XRL.Annals` event classes:
 
 **Resheph (16, fixed):** the scripted sixth-sultan sequence.
 
-This corroborates the wiki's "17 core types" and the diagnosis in `00-overview.md` §2.1.
+This corroborates the wiki's "17 core types" and the diagnosis in `DESIGN_history.md` §2.1.
 
 ---
 
@@ -139,7 +139,7 @@ connection to anything — two random nouns hyphenated, or a random adjective pl
 noun. One in four relics gets a name generated this way.
 
 The other six ground on `*itemType*`, `*element*`, and the owner's name — **but never on an
-event.** That is the precise gap `03-naming.md` predicted: the name references *what kind of
+event.** That is the precise gap `DESIGN_history_naming.md` predicted: the name references *what kind of
 thing it is* and *whose thematic domain it belongs to*, never *what happened*.
 
 **The good news is the `*variable*` mechanism.** The caller already binds `*itemType*`,
@@ -152,7 +152,7 @@ Dictionary<string,string> vars, Dictionary<string,JToken> nodeVars, System.Rando
 binding channels, the second binding a whole subtree rather than a string. The full `History`
 and an entity snapshot are in scope. The originating `HistoricEvent` is **not** a parameter,
 so event-derived naming must locate the event via `HistoricEntity.GetEventWithEventProperty` /
-`GetRandomEventWhereDelegate`. Viable without Harmony. See `recon-addendum-metadata.md` §Q2.
+`GetRandomEventWhereDelegate`. Viable without Harmony. See `DESIGN_history_recon_addendum.md` §Q2.
 
 ---
 
@@ -189,7 +189,7 @@ Both eras expose the **same five keys**, and templates reference
 **token substitution inside a shared template**, exactly as hoped.
 
 **Consequence:** each new event type needs **one template per source**, not one per source
-per register. The estimate in `02-event-catalog.md` §6 drops from **128 fragments to ~64**.
+per register. The estimate in `DESIGN_history_catalog.md` §6 drops from **128 fragments to ~64**.
 This is the single largest cost reduction available to the project, and it lands on the item
 identified as the project's main bulk.
 
@@ -215,7 +215,7 @@ events, and `HistorySpice.json` carries `villages` (15 keys) and `tombstones` (1
 categories.
 
 So villages are not a parallel generator; they are the same generator pointed at a different
-entity type. That is materially better news than `00-overview.md` assumed when it scoped
+entity type. That is materially better news than `DESIGN_history.md` assumed when it scoped
 village history out — the compositional model could extend there later at much lower cost
 than a separate project.
 
@@ -249,7 +249,7 @@ why the histories feel *stylistically* unified but *narratively* arbitrary.
 
 The mod should therefore **add a causal axis alongside the thematic one, not replace it** —
 and element affinity is an obvious input to the temperament system proposed in
-`01-event-model.md` §5.3, which may already be half-built here.
+`DESIGN_history_events.md` §5.3, which may already be half-built here.
 
 ### N2 — A ledger already exists in embryo
 
@@ -258,7 +258,7 @@ and element affinity is an obvious input to the temperament system proposed in
 `RemoveEntityListProperties` · `AddLocationToRegion` · `Regionalize`.
 
 Together with `HistoricEntity` / `HistoricEntitySnapshot`, this is **exactly the shape of the
-ledger** proposed in `01-event-model.md` §2 — mutable typed properties on a historic entity,
+ledger** proposed in `DESIGN_history_events.md` §2 — mutable typed properties on a historic entity,
 snapshotted over time.
 
 The `[ASSUMPTION]` flagged there as "the single largest implementation risk in the project"
@@ -273,13 +273,13 @@ the existing engine than the design assumed.
 > `HistoricEvent.perspectives`. It models an *attitude*, not text variants; the differing text
 > is selected from spice using that attitude. A new source is therefore a **perspective key +
 > feeling-keyed spice branches**, not new text fields. Cheaper than assumed, still Tier 2-light.
-> `04-sources.md` should be reframed accordingly. See `recon-addendum-metadata.md` N3.
+> `DESIGN_history_sources.md` should be reframed accordingly. See `DESIGN_history_recon_addendum.md` N3.
 
 
 `HistoryKit.HistoricPerspective`, plus string constants `gospelText`, `tombText`,
 `GospelText`, `perspectives`, `perspective`, and an `XRL.Annals.GospelEvent` class.
 
-The source model in `04-sources.md` is therefore **extending an existing abstraction rather
+The source model in `DESIGN_history_sources.md` is therefore **extending an existing abstraction rather
 than inventing one**. If `HistoricPerspective` is genuinely a first-class type, adding mural
 and oral-tradition perspectives may be a Tier 2 addition rather than an overhaul.
 
@@ -297,10 +297,10 @@ Expanding the grammar to terminal strings (1–2 word terminals, depth ≤ 5):
 **"Add more words" is refuted.** With ~280 adjectives and ~488 nouns, form 8
 (`<adjective> <noun>`) alone can produce well over 100,000 distinct names — and it still
 reads as obviously generated. That is the clearest possible evidence for the thesis in
-`03-naming.md` §1: the problem is not vocabulary size, it is that the name references
+`DESIGN_history_naming.md` §1: the problem is not vocabulary size, it is that the name references
 nothing. A player does not perceive a name as repetitive; they perceive it as *arbitrary*.
 
-This also means the **plainness quota (`03-naming.md` §4) is now the cheapest high-impact
+This also means the **plainness quota (`DESIGN_history_naming.md` §4) is now the cheapest high-impact
 change in the entire project** — it is a data edit to a shipped JSON file, and the register
 problem is entirely a property of which terminals those ~280 adjectives draw from.
 
@@ -348,7 +348,7 @@ This was the question gating every Tier 1 claim. The answer is nuanced but good.
 >   mod may ship `HistorySpice.json` in any casing and still match `"historyspice.json"`.
 > - **The merge is additive only.** `MergeArrayHandling.Union` adds new forms and vocabulary and
 >   **cannot remove vanilla's**. Forms 7 and 8 of `spice.history.relics.names` — the specific
->   complaint that started this project, per `HANDOFF.md` — **cannot be suppressed by a merge.**
+>   complaint that started this project, per `DESIGN_history_handoff.md` — **cannot be suppressed by a merge.**
 >   Diluting them is possible; removing them still needs code.
 >
 > **Why the recon missed it, which is the transferable part.** The search was the right one and
@@ -385,7 +385,7 @@ above.
 > `SimpleJSON` types do ship in the assembly, but never appear in TypeRefs and are not what
 > `HistoricSpice` holds. Code written against `SimpleJSON.JSONNode` **will not compile.**
 > Use `JObject` / `JArray` / `JValue`. The *WM Extended Mutations* precedent below presumably
-> predates a migration. See `recon-addendum-metadata.md` §Q9.
+> predates a migration. See `DESIGN_history_recon_addendum.md` §Q9.
 >
 > Also note: `HistorySpice.json` wraps all 51 categories in a single top-level `"spice"`
 > object, so paths the grammar addresses as `spice.foo` are `root["spice"]["foo"]` unless
@@ -492,13 +492,13 @@ not on the critical path until Q3 or Q5 forces it.
 
 | Doc | Change |
 |---|---|
-| `00-overview.md` | Add the element system to the diagnosis; note thematic-vs-causal coherence; correct HistoryKit/XRL.Annals |
-| `01-event-model.md` | Rework §2 ledger onto `HistoricEntity` properties; downgrade the stateless-generator risk; add element affinity to temperament (§5.3) |
-| `02-event-catalog.md` | Update the retrofit table to real class names; **halve** the §6 authoring estimate to ~64 fragments |
-| `03-naming.md` | Add the eight measured forms; promote plainness quota to Tier 1; add the ~280/~488 vocabulary measurement |
-| `04-sources.md` | Reframe as extending `HistoricPerspective` rather than inventing a model |
-| `05-implementation.md` | Revised tier table; Q0 finding (arm64 slice, Rosetta workaround); add the JSON-merge question |
-| **all of the above** | **Cross-check against `recon-addendum-metadata.md` (2026-08-15) first — it corrects §Q8 and N3, and answers Q2/Q7/Q9** |
+| `DESIGN_history.md` | Add the element system to the diagnosis; note thematic-vs-causal coherence; correct HistoryKit/XRL.Annals |
+| `DESIGN_history_events.md` | Rework §2 ledger onto `HistoricEntity` properties; downgrade the stateless-generator risk; add element affinity to temperament (§5.3) |
+| `DESIGN_history_catalog.md` | Update the retrofit table to real class names; **halve** the §6 authoring estimate to ~64 fragments |
+| `DESIGN_history_naming.md` | Add the eight measured forms; promote plainness quota to Tier 1; add the ~280/~488 vocabulary measurement |
+| `DESIGN_history_sources.md` | Reframe as extending `HistoricPerspective` rather than inventing a model |
+| `DESIGN_history_implementation.md` | Revised tier table; Q0 finding (arm64 slice, Rosetta workaround); add the JSON-merge question |
+| **all of the above** | **Cross-check against `DESIGN_history_recon_addendum.md` (2026-08-15) first — it corrects §Q8 and N3, and answers Q2/Q7/Q9** |
 
 
 ---
@@ -513,7 +513,7 @@ tracked as #689. Two of them change the shape of the project.
 **Q9 — the accessor exists, and the spike does not need it.** `HistoryKit.HistoricSpice` exposes
 `public static JObject root` (with `CheckInit()` in the getter) and
 `public static Dictionary<string, JContainer> roots`, keyed by top-level spice key. Newtonsoft,
-confirming `recon-addendum-metadata.md` over this document's original SimpleJSON claim. But §Q8 above
+confirming `DESIGN_history_recon_addendum.md` over this document's original SimpleJSON claim. But §Q8 above
 supersedes the whole question: shipping the file is the mechanism, so there is nothing to reach into.
 
 **Q2 — the gate on derivation-based naming is shut.** `ExpandQuery` is richer than expected —
@@ -529,7 +529,7 @@ RelicNameContext["*itemType*"] = Type;
 ```
 
 > **It is not a bag someone forgot to fill. It is a two-variable context by construction.** So the
-> question `HANDOFF.md` calls *"the gate on the core of the mod"* answers **no**: derivation-based
+> question `DESIGN_history_handoff.md` calls *"the gate on the core of the mod"* answers **no**: derivation-based
 > naming cannot be reached by grammar alone.
 
 There is a way through, and it already ships. `GenerateRelicNameByRegion` is taken whenever
@@ -549,7 +549,7 @@ for (int i = 0; i < 8; i++) {
 }
 ```
 
-So `00-overview.md`'s arithmetic — 17 types, 8 draws, 5 sultans, ~40 instances per world — is not an
+So `DESIGN_history.md`'s arithmetic — 17 types, 8 draws, 5 sultans, ~40 instances per world — is not an
 estimate from the wiki, it is the loop. **Adding one event type means replacing a static method on a
 static class**, which prices the events half of this project well above the naming half.
 

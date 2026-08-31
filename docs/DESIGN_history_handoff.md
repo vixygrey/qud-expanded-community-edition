@@ -14,9 +14,9 @@ a starting point written against observed data structures, not working code.
 
 | Area | Status |
 |---|---|
-| Diagnosis of the problem | **Done** — `docs/00-overview.md`, confirmed by recon |
+| Diagnosis of the problem | **Done** — `DESIGN_history.md`, confirmed by recon |
 | Design: event model, catalog, naming, sources | **Done** — docs 01–04 |
-| Recon of game internals | **Mostly done** — `docs/recon-findings.md` |
+| Recon of game internals | **Mostly done** — `DESIGN_history_recon.md` |
 | Decompilation of `Assembly-CSharp` | **Not done** — no .NET SDK in the prior sandbox |
 | v0.1 spike | **Scaffolded, never compiled** — `mod/` |
 | Metrics harness | **Not started** |
@@ -29,7 +29,7 @@ a starting point written against observed data structures, not working code.
 ### 1. v0.1 is a data file — delete the spike
 
 **This step used to say "make the v0.1 spike actually run". It should not run at all.**
-`docs/recon-findings.md` §Q8 said a mod could not ship a `HistorySpice.json` that merges, and
+`DESIGN_history_recon.md` §Q8 said a mod could not ship a `HistorySpice.json` that merges, and
 that was wrong: `HistoryKit.HistoricSpice.Init()` walks `ModManager.ActiveMods` and merges any
 mod file named `historyspice.json` into the tree with Newtonsoft's `JObject.Merge`.
 
@@ -50,7 +50,7 @@ additive: new forms and vocabulary go in, and **vanilla's cannot be taken out**.
 suppressed by a data file. Diluting them by adding alternatives is possible and is what v0.1 can
 achieve; removing them still needs code, and that is a different and later question.
 
-The full correction, including why the original recon missed it, is in `docs/recon-findings.md`
+The full correction, including why the original recon missed it, is in `DESIGN_history_recon.md`
 §Q8. Tracked as vixygrey/qud-expanded-community-edition#689.
 
 Then: build, load, generate a world, and look at relic names. Success is qualitative at this
@@ -69,7 +69,7 @@ All need method bodies. ILSpy or `ilspycmd` against
 | **Q7** | Can biography generation be invoked headlessly? | Determines how painful the metrics harness is |
 | **Q9** | The `HistoricSpice` root accessor | Blocks the v0.1 spike (see above) |
 
-Write answers into `docs/recon-findings.md` — keep it the single source of truth.
+Write answers into `DESIGN_history_recon.md` — keep it the single source of truth.
 
 ### 3. Optional, low priority: Q0
 
@@ -85,7 +85,7 @@ are Tier 2-light. Worth knowing before v0.3 planning.
 ## What was learned in recon that contradicts the design docs
 
 Docs 00–05 were written before the game was inspected. Four findings supersede them; the
-revisions table at the end of `recon-findings.md` lists the specific edits.
+revisions table at the end of `DESIGN_history_recon.md` lists the specific edits.
 
 1. **The prose is data.** All history and naming text is in `HistorySpice.json`, a recursive
    substitution grammar. Event *logic* is C# (`XRL.Annals`); event *text* is not.
@@ -96,10 +96,10 @@ revisions table at the end of `recon-findings.md` lists the specific edits.
    should add a *causal* axis alongside it, **not replace it**.
 4. **A ledger and a perspective model already exist in embryo.** `HistoricEntity` +
    `SetEntityProperty` / `MutateListProperty` / `AddEntityListItem` look like the ledger in
-   `01-event-model.md` §2. `HistoricPerspective` + `gospelText` / `tombText` look like the
-   source model in `04-sources.md`. **Extend these rather than building parallel structures.**
+   `DESIGN_history_events.md` §2. `HistoricPerspective` + `gospelText` / `tombText` look like the
+   source model in `DESIGN_history_sources.md`. **Extend these rather than building parallel structures.**
 
-Point 4 in particular means `01-event-model.md`'s biggest flagged risk — "the generator may be
+Point 4 in particular means `DESIGN_history_events.md`'s biggest flagged risk — "the generator may be
 stateless" — is probably not real.
 
 ---
@@ -141,4 +141,4 @@ stateless" — is probably not real.
 - Relic names no longer use the two ungrounded forms
 - A visible share of names use the plain register
 - Nothing throws during worldgen under any seed tried
-- `docs/recon-findings.md` updated with Q9's answer
+- `DESIGN_history_recon.md` updated with Q9's answer
