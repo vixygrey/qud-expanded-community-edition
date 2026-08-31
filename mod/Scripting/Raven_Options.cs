@@ -88,6 +88,8 @@ namespace QudExpandedCE
 
         public const string ReequipOnPickupID = "OptionQudExpandedCEReequipOnPickup";
 
+        public const string FatigueID = "OptionQudExpandedCEFatigue";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -714,6 +716,21 @@ namespace QudExpandedCE
         /// creature already holding what it chose keeps holding it.
         /// </remarks>
         public static bool ReequipOnPickup => Enabled(ReequipOnPickupID, "Yes");
+
+        /// <summary>
+        /// Whether the player accrues fatigue and must sleep.
+        /// </summary>
+        /// <remarks>
+        /// Off by default, and the only option in this mod that adds a system the base game does not
+        /// have at all. Qud runs two survival timers already - hunger and thirst - but tunes both so
+        /// they almost never fire, so a third that does fire is a genuinely new opinion about how the
+        /// game should play. Charter rule 6 keeps a new opinion off until it is asked for.
+        ///
+        /// Read every action by <see cref="XRL.World.Parts.Vixy_Fatigue"/>, so turning it off stops
+        /// accrual immediately rather than at the next load. Fatigue already banked stays on the
+        /// player and simply stops mattering.
+        /// </remarks>
+        public static bool Fatigue => Enabled(FatigueID, "No");
 
         private static void ApplyChipSlots()
         {

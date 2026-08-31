@@ -556,4 +556,29 @@
             Loadouts they already had are untouched.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEFatigue"
+    DisplayText="{{C|Qud Expanded}}: you have to sleep"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded sleep fatigue tired rest exhausted survival bedroll"
+  >
+    <helptext>
+            Adds fatigue. Stay awake long enough and you tire, and eventually
+            you fall down where you stand.
+
+            Where you sleep matters. A bed rests you fastest and is far safer
+            than lying down in the open, and something may find you while you
+            are under.
+
+            Exhaustion does not weaken you - it stops you crossing the world
+            map, the way being famished does, and it makes the writing
+            strange.
+
+            {{y|Off by default.}} Qud runs two survival timers already and
+            tunes both so they almost never fire. This one fires.
+        </helptext>
+  </option>
 </options>

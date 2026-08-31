@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 26 options (§13)
+│   ├── Options.xml             # 27 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 73 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 75 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-seven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -6389,6 +6389,106 @@ every save on every creature; charter rule 5 treats a shipped part's shape as fr
 behaviour from the next pickup rather than the next load, which is the **runtime** off-switch rule 6
 prefers over a load-time one. Nothing is taken back: a creature already holding what it chose keeps
 it. Default on, and the help text says it makes fights harder.
+
+## 51. Fatigue, and sleeping somewhere safe (`Vixy_Fatigue`, `Vixy_Sleep`)
+
+The first slice of #179 — the loop and its consequences. The unreliability layer (§3.2.1 of the
+design doc) and dreams (§4.1) are deferred. **Off by default**, and the only option here that adds a
+system the base game does not have.
+
+### 51.1 It is a third timer, not a foreign one
+
+`docs/DESIGN_sleep.md` §1 used to claim Qud has no survival attrition. It has two. Thirst empties at
+roughly 1,500 actions and then locks out natural healing; hunger reaches `Famished` at 2,400 and costs
+−10 Quickness plus a world-map travel refusal. What Freehold did was tune both so they almost never
+fire.
+
+So this is a third timer among two, and the only real question is what it costs when it fires. That
+question now has a benchmark, and it decided the design.
+
+### 51.2 No attribute penalties, because vanilla does not use them
+
+Between them, Qud's two survival timers spend **one stat penalty**. Everything else they do is a
+*capability* consequence — you cannot heal, and you cannot travel. The original spec proposed a
+four-tier ladder across three attributes, which would have made this by far the heaviest of the three.
+
+| Fatigue | State | Effect |
+|---|---|---|
+| 0–399 | Rested | none |
+| 400–599 | Tired | a message |
+| 600–799 | Weary | the message grows stranger, carrying `=WEIRDMARKOVSENTENCE=` |
+| 800–949 | Exhausted | **world-map travel refused**, following `Famished` |
+| 950–1000 | Collapsing | rising chance of dropping where you stand, 1% climbing to 25% |
+
+The travel refusal uses `CanTravelEvent`, which carries one field and fires *before* a destination
+exists — so an outright refusal is the only thing it can express, which is exactly what this wants.
+Anything conditioned on *where* you were going would need `ObjectLeavingCellEvent`; see
+`docs/LESSONS.md`.
+
+`=WEIRDMARKOVSENTENCE=` is a registered variable replacer that runs a Markov sentence through
+`Grammar.Weirdify`. It is §1's *"make the world stranger"* register available as **authored data with
+a token in it**, costing no C# at all.
+
+### 51.3 Modelled on `Stomach`, which answers three edge cases for free
+
+`Stomach` is vanilla's own survival timer, and following it structurally settles §6's checklist rather
+than guessing at it:
+
+| §6 checkbox | how `Stomach` answers it |
+|---|---|
+| companions exempt | an `IsPlayer()` gate — no special case needed |
+| overland travel must not be free | stamp the turn on entry, pay the debt capped on return |
+| accrual must pause while asleep | `if (!ParentObject.HasEffect<Asleep>())` |
+
+It also settled the accrual hook. §7 recommended `EndTurnEvent`; `Stomach` uses
+**`BeginTakeActionEvent`**, and matching vanilla's own timer matters more than matching a doc written
+before there was one to look at.
+
+### 51.4 Only voluntary sleep rests you
+
+`Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,
+`Slumberling` and the two lair sleepers pass `true`; `GasSleep`, `Narcolepsy`, `CrungleGaze`,
+`ModFatecaller` and `PaxKlanqMadness` leave it `false`. Reading that one field closes the exploit the
+design doc called its single most important interaction — **carry sleep gas and the system dies** —
+before it can open.
+
+Note `forced: true` does *not* mean involuntary. It bypasses the `CanApplySleep` refusals, and `Bed`
+passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to read backwards.
+
+### 51.5 Where you sleep is the decision
+
+| where | rest quality | ambush chance/turn |
+|---|---:|---:|
+| on a bed or bedroll | 1.5× | 0.05% |
+| sheltered, nothing hostile in the zone | 1.2× | 0.5% |
+| anywhere else | 1.0× | 0.5% |
+| hostiles in the zone | 1.0× | **3%** |
+
+A bed is sixty times safer than lying down among hostiles, which is what gives a bedroll a reason to
+exist. An ambush wakes you with `Dazed` — **nothing is spawned**: waking to something already in the
+zone is cheaper and less arbitrary than conjuring an attacker out of the design's convenience.
+
+### 51.6 State lives in the property bag, deliberately
+
+This is the mod's first part that holds real per-turn state, and the layout question is a charter rule
+5 obligation rather than a detail. A `[Serializable]` field's layout is written into every save, and
+renaming or removing one can break saves that already exist; a property key that goes missing simply
+reads as its default.
+
+So fatigue lives in `Vixy_Fatigue`, `Vixy_FatigueRemainder`, `Vixy_FatigueBandSeen` and
+`Vixy_FatigueOnWorldMapSince` on the player's property bag, and `serializable-shape` stays silent
+because there is nothing new in any save's shape. The mod already stores persistent state this way in
+`Vixy_OnsetWarning`, and vanilla does it for the closest analogue — `Stomach` keeps its counters in
+fields but puts `OnWorldMapSince` in a property.
+
+### 51.7 Off-switch
+
+`OptionQudExpandedCEFatigue`, **default No**. Rule 6 keeps a genuinely new opinion off until it is
+asked for, and this is the clearest case the mod has: Qud runs two survival timers and tunes both so
+they almost never fire. This one fires.
+
+Read every action, so turning it off stops accrual immediately rather than at the next load. Fatigue
+already banked stays on the player and simply stops mattering.
 
 ## Appendix A — every merged vanilla melee weapon
 
