@@ -3458,3 +3458,161 @@ arm.
 This is the inverse of [`vanilla builds mechanisms it never wires up, and the unused half is usually complete`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete):
 there a finished mechanism has no consumer; here a finished mechanism has one consumer and was never
 extended to the obvious second one.
+
+## A fallback is not one of the options, so a shorter list means more commitment
+
+`Kill.TakeAction` picks what a creature does by walking a list of categories:
+
+```csharp
+List<string> list = tryMeleeOrder;   // items, missile, abilities, defensiveItems, defensiveAbilities
+string tagOrStringProperty = base.ParentObject.GetTagOrStringProperty("customMeleeOrder");
+if (tagOrStringProperty != null) list = tagOrStringProperty.CachedCommaExpansion();
+else list.ShuffleInPlace();
+```
+
+That reads as a creature's menu of options, and I designed against it for a while as though it were.
+It is not. **Melee is not in the list** — the loop tries each named category, and if none of them
+fires it drops through to `Combat.AttackCell`. In the ranged branch the fallback is *approach the
+target*, equally absent from `tryMissileOrder`.
+
+So the list is what a creature fumbles with *before* committing. "Give a brute a melee-first
+doctrine" is not expressible, because melee is already guaranteed; what you can write is a *shorter
+list*, and shortening is the whole lever.
+
+Which makes omission look free, and it is not. `AIHealingTonicUse` answers
+`AIGetDefensiveItemListEvent`, which is exactly what `TryDefensiveItems` gathers — so **dropping
+`defensiveItems` from a creature's order stops it drinking healing tonics.** Not deprioritise: stop.
+The most attractive version of the change is the one that silently disables healing.
+
+Vanilla ships both shapes and the difference is the point: **`Galgal`** is a creature and *reorders*
+all six categories; **`TinkerTurret`** is a machine with no inventory and *restricts* to two.
+
+> **Before treating an ordered list of behaviours as the set of things that can happen, find what
+> runs when the list is exhausted.** A guaranteed fallback inverts the meaning of every edit — the
+> short list is the aggressive one — and any category you remove takes its handlers' side effects
+> with it.
+
+## A method name can invert its own evaluation order
+
+`Kill` reads doctrine through `GetTagOrStringProperty`, and the name says tag first:
+
+```csharp
+public string GetTagOrStringProperty(string Name, string Default = null)
+    => GetStringProperty(Name) ?? GetTag(Name) ?? Default;
+```
+
+**The property wins.** Anything writing that property at runtime silently overrides a value the
+blueprint author wrote by hand — here, the only two authored combat doctrines in the game.
+
+Nothing at the call site hints at it, and the neighbouring `GetPropertyOrTag` evaluates in the order
+*both* names suggest, so a spot check on the wrong one confirms the wrong belief.
+
+> **When a lookup merges two stores, read the body before deciding which store wins — especially
+> when the name appears to say so.** A name is documentation, and documentation drifts; the
+> precedence is a property of four lines of code.
+
+Sibling of [`a boolean's name is not its semantics, and neither is a skill's`](#a-booleans-name-is-not-its-semantics-and-neither-is-a-skills):
+there the name misdescribed what a value meant, here it misdescribes what a function does with two.
+
+## A blueprint tag reaches every save, and no option can reach the tag
+
+Two halves of one fact, and I have wanted them to be true in opposite directions on the same day.
+
+`GameObject.GetTag` does not read a copy stored on the object:
+
+```csharp
+public string GetTag(string Tag, string Default = null) => GetBlueprint().GetTag(Tag, Default);
+
+public GameObjectBlueprint GetBlueprint(bool UseDefault = true)
+{
+    if (_BlueprintCache != null || GameObjectFactory.Factory.Blueprints.TryGetValue(Blueprint, out _BlueprintCache))
+        return _BlueprintCache;
+    …
+}
+```
+
+It is a live lookup into the factory by blueprint name. **So a tag this fork merges applies to
+creatures already in an existing save**, at next load, with no migration — which is better than I
+assumed when worrying about it.
+
+And the same fact is why **an option can never switch that tag off.** The value is in the loaded
+blueprint, not on the object, so there is nothing runtime code can clear. `docs/CHARTER.md` is
+explicit about preferring designs "whose off-switch is a runtime decision rather than a load-time
+one" — and a pure-data overlay expressed as tags cannot have one, however much the design document
+promises it. Only a part that writes the *property* each turn can, because that is the store the
+reader consults first (see the entry above).
+
+> **Ask where a value is stored before promising an off-switch for it.** Blueprint data is durable
+> and retroactive, which is exactly what makes it unswitchable; object state is switchable, which is
+> exactly what makes it need a part on every object that has it.
+
+## The AI will tell you what it decided, if you ask it
+
+Auditing combat behaviour, I assumed the only way to know which branch a creature took was to infer
+it from what happened. `Brain.Think` is not dead scaffolding:
+
+```csharp
+public void Think(string Hrm)
+{
+    LastThought = Hrm;
+    if (ParentObject.TryGetIntProperty("ThinkOutLoud", out var Result) && Result > 0)
+        MessageQueue.AddPlayerMessage(ParentObject.DebugName + " thinks: '" + Hrm + "'");
+}
+```
+
+`Brain` exposes the toggle on the creature's own inventory actions, gated on
+`Options.DebugInternals`: enable **Debug Internals**, interact with the creature, choose **"enable
+think out loud"**. Every decision then prints — *"I'm going to melee my target in melee!"*, *"I'm
+going to try my defensive items"*, *"I'm going to stop pursuing my target."* `LastThought` also shows
+in the debug internals panel.
+
+> **Before building instrumentation to observe vanilla behaviour, check whether Freehold already
+> ships it.** This turned an impressionistic "watch fights and guess" audit into a readable log, and
+> it applies to any question about what a brain chose, not only to the one that found it.
+
+The same shape as [`the game ships its own API documentation`](#the-game-ships-its-own-api-documentation)
+and [`static checks answer "is it correct". launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen):
+the tool for the job was in the box, and the expensive path was the one I reached for first.
+
+## `rg` recurses by default, so `-r` is a replacement string
+
+`ripgrep` is the search tool this setup prefers and `grep`'s recursive flag is `-r`. Ripgrep recurses
+already, and spends `-r` on something else entirely:
+
+```
+-r REPLACEMENT, --replace=REPLACEMENT
+    Replaces every match with the text given when printing results.
+```
+
+So a `grep` habit produces evidence that has been rewritten:
+
+```console
+$ rg -rn 'SawSore' GlotrotOnset.cs        # meant: recursive + line numbers
+public bool n;                            # got:   --replace=n
+
+$ rg -rln 'OpinionFriendlyFire' src/      # meant: recursive + files + line numbers
+public class ln : IOpinionSubject         # got:   --replace=ln
+```
+
+It survives because **it does not error** — exit status 0, plausible output — and because it corrupts
+*only identifiers*. Counts (`-c`), file lists (`-l`) and "does this exist" answers stay correct while
+the names in the same output are wrong, so nothing looks broken.
+
+It was also camouflaged by a real phenomenon: `public class n : IOpinionSubject` looks exactly like a
+decompiler failing to recover a name, which genuinely happens and which this repository already
+reasons about. The artifact landed inside an existing mental model and was absorbed. I misdiagnosed
+it twice — first as the decompiler, then as "`rg` mangles matched tokens" — and the second was worse,
+because it blamed a tool for something I had typed.
+
+Nothing surfaced it directly. **An unrelated arithmetic oddity two steps away did**: a table claiming
+one effect had a single success message where two identical siblings had two. Three near-identical
+things differing by one is worth a second look, and pulling that thread led back to the search.
+
+> **A flag that means one thing in `grep` and another in `ripgrep` fails by rewriting your evidence,
+> not by refusing to run.** Before believing an identifier read out of a search, confirm the search
+> printed the file rather than a transformation of it — the cheapest check is a second tool over the
+> same line.
+
+Neighbour of [`a search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search),
+with the failure moved one step along: there the search could not match, here it matched correctly
+and rewrote what it found. Both end in output that reads as evidence and is not.
