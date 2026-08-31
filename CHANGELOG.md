@@ -18,6 +18,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **You can be made to sleep** (#179).
+
+  Stay awake long enough and you tire. Long enough after that and you fall down where you stand.
+
+  What tiredness costs you is not your attributes. At exhaustion you cannot cross the world map, the
+  way being famished already stops you, and from weariness onward the writing itself goes strange.
+  Qud runs two survival timers already and neither of them makes you weaker — thirst stops you
+  healing and hunger stops you travelling — so this one follows suit.
+
+  {{y|Where you sleep is the point.}} A bed rests you half again as fast and is sixty times safer
+  than lying down in the open. Sleep among things that want to kill you and something will find you.
+  Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
+  rests you.
+
+  {{y|Off by default}}, and it is the only thing in this mod that adds a system Caves of Qud does
+  not have. Turn it on from {{C|you have to sleep}} in the options.
+
 - **Companions use what you give them** (#588).
 
   Hand a follower a better axe and they work out that it is better, instead of carrying it around
