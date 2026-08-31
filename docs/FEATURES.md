@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **509** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **282** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -584,13 +584,13 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
-| `Creatures.xml` | 46 | 2 |
+| `Creatures.xml` | 46 | 3 |
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 17 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **509 active** | **282** |
+| **Total** | **509 active** | **283** |
 
 ### 6.2 Melee weapons
 
@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 25 options (§13)
+│   ├── Options.xml             # 26 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 72 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 73 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -6247,6 +6247,148 @@ option-gated directory are invisible to both. The entries cannot live in `Core/`
 are gated either, or switching the option off leaves the table pointing at blueprints that no longer
 exist. Gating this feature therefore meant either a silent hole in the share checks or widening them
 first, and neither is worth buying an option nobody wants.
+
+## 50. Companions use what you give them (`Vixy_Reequip`)
+
+Tiers A and B of #588. Tier C — creatures that collect and never equip — is #759, split off because
+it is the only part that is invention rather than derivation.
+
+### 50.1 Nothing in Qud re-equips an NPC after it acquires an item
+
+`Brain.PerformReequip` scans inventory properly through `SharedWeaponSorter`, but it runs only when
+`Brain.DoReequip` is set, and **none of the four things that set it sits on the acquisition path**:
+
+| setter | fires on |
+|---|---|
+| `Reequip` goal | pushed by `ModPsionic` alone |
+| `EquipCharge` | a cell being charged |
+| `MechaPlayer` | piloting |
+| `Brain.WantToReequip()` | body-plan changes — the multi-limb mutations, two cybernetics |
+
+`Inventory`, `Body`, `Combat` and `Physics` mention neither name. So a creature that picks up a
+carbine keeps swinging its axe.
+
+### 50.2 `TookEvent` is the hook, and its sibling is not
+
+`TakenEvent` and `TookEvent` are sent together from the one `CommandTakeObject` handler in
+`Inventory`, and they are a **passive/active pair**: `TakenEvent` dispatches to the *item*,
+`TookEvent` to the *actor*. `AddedToInventoryEvent` reaches only the item as well, so neither of the
+two obvious candidates can carry a rule about who is doing the taking.
+
+All four `CommandTakeObject` variants share one event ID and differ only in flags, so the **silent**
+path counts — which matters, because that is the one `Rummager` uses through `GameObject.TakeObject`.
+
+### 50.3 The axis is Tinkering, and the anchor is vanilla's own
+
+**Intelligence cannot do this job.** `Creature` declares 16 and `BaseHumanoid` overrides it with
+`sValue="14,1d3,(t)d1"`, so every humanoid lands in one band whatever it is holding — while
+**`Goatfolk Yurtwarden` inherits `Animal` at 6 and carries a Desert Rifle**. The stat tracks nothing
+useful in either direction.
+
+Tinkering does. **57 of 849 creatures carry it — 6.7%** — and the reason to believe it is the right
+axis rather than a convenient one is that `Rummager` is exactly three creatures, of which **two also
+have Tinkering**:
+
+| | Tinkering |
+|---|---|
+| Cave Arconaut | yes |
+| Graverobber | yes |
+| Svardym Scrounge | no |
+
+The creatures Qud already lets scavenge are the ones it credits with understanding technology. That
+agreement was not designed for this, which is what makes it a rule 2 anchor.
+
+### 50.4 The item line is `Complexity`, not `Examiner`
+
+**#588 was scoped on the reading that mundane weapons have no `Examiner`. They do.** `BaseDagger`,
+`BaseLongBlade` and `BaseAxe` all carry one, for the `Alternate="UnknownKnife"` display before
+identification — the count only looks right if `Inherits` is left unresolved, which is the trap
+`AGENTS.md` names outright.
+
+`Examiner.Complexity` defaults to 0 and separates cleanly. Across 3,959 weapon blueprints:
+
+| | count |
+|---|---:|
+| no `Examiner` — natural weapons, thrown | 2,585 |
+| **Complexity 0** — mundane | **917** |
+| Complexity 1–9 — artifact | 457 |
+
+### 50.5 What each creature does
+
+Computed from the resolved blueprints:
+
+| creature | tier | steel battle axe (C=0) | carbine (C=1) | vibro dagger (C=4) |
+|---|---|---|---|---|
+| Barathrumite Tinker | **A** | re-equips | re-equips | re-equips |
+| Snapjaw | B | re-equips | ignores | ignores |
+| Cannibal | B | re-equips | ignores | ignores |
+| Goatfolk Yurtwarden | B | re-equips | ignores | ignores |
+| Templar | B | re-equips | ignores | ignores |
+
+Note `Barathrumite` sits in **tier B** — the generic blueprint carries no Tinkering skill, only the
+Tinker variant does. Widening tier A by faction would be invention rather than derivation, and is
+not done here.
+
+**Nothing hand-authored moves.** The rule fires on acquisition only, so a loadout the game spawned a
+creature holding is never re-evaluated: the yurtwarden keeps its rifle and the snapjaw shotgunner
+keeps its shotgun.
+
+### 50.6 What this actually reaches, which is less than it sounds
+
+**Qud's creatures do not pick things up.** This was found by playing, after the rest of the section
+was written, and it is the most important thing on this page.
+
+There is **no pickup goal**. The full goal-handler list is `Kill`, `Wander`, `MoveTo`, `Flee`,
+`Guard`, `Pet`, `Bored`, `Retreat`, `Wait` and their kin — nothing takes an item off the floor.
+`GoFetch` exists but is pushed only by `Fetches`, which **no creature carries**. `ChangeEquipment`
+only ever *unequips*. So the live acquisition paths are:
+
+| path | creatures |
+|---|---|
+| `Rummager` | **3** — Cave Arconaut, Graverobber, Svardym Scrounge |
+| `CryptFerretBehavior` | 1 |
+| `ThiefBot` | 1 |
+| being handed something | any companion |
+| trade | merchants |
+
+A snapjaw will still walk past a dropped axe, and #588's own example — *"a cannibal can make use of
+a better hitting stick"* — cannot happen, because cannibals never pick sticks up.
+
+**So this is a companion feature.** That is a smaller claim than the issue made, and it is the true
+one. The pickup half is a separate question, and a larger one: #222 already asked whether more
+creatures should scavenge and answered no, so widening it means reopening that rather than extending
+this.
+
+> **The mistake worth recording.** The hook was verified — `TookEvent` is the right event, dispatches
+> to the actor, fires on the take path including the silent variant. What was not verified is whether
+> anything *sends* it for an ordinary creature. `docs/LESSONS.md` already carries this exact trap at
+> *"Count the consumers before you count anything else"*: a declaration is evidence somebody wrote
+> it, not that anything reads it. Finding the other end of an event means asking who fires it, for
+> the case you care about — not only who receives it.
+
+### 50.7 Blast radius, stated rather than discovered
+
+The part is merged onto **`Creature`**, so it reaches all 849 non-base creature blueprints at once —
+the same order of reach as the Chip Interface merge into `Humanoid`, and **the first part this fork
+has merged onto a creature blueprint at all**. Everything else in `mod/Scripting/` hangs off an item,
+the player, or a skill.
+
+The reach is still right under the narrower scoping, and arguably more clearly so. **Almost anything
+in Qud can become a companion** — beguiled, proselytised, recruited — so "which creatures might be
+handed a weapon" really is *all of them*, and an authored list would invent the cohort rather than
+derive it. The part then refuses the player, anything with no `Brain`, and anything with no `Combat`
+part, so what it reaches in practice is smaller than the merge.
+
+**No instance fields, deliberately.** A part on `Creature` would otherwise write its layout into
+every save on every creature; charter rule 5 treats a shipped part's shape as frozen and
+`serializable-shape` enforces it. Everything is derived at the moment of the event.
+
+### 50.8 Off-switch
+
+`OptionQudExpandedCEReequipOnPickup`, read on every acquisition — so turning it off stops the
+behaviour from the next pickup rather than the next load, which is the **runtime** off-switch rule 6
+prefers over a load-time one. Nothing is taken back: a creature already holding what it chose keeps
+it. Default on, and the help text says it makes fights harder.
 
 ## Appendix A — every merged vanilla melee weapon
 

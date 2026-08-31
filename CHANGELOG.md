@@ -18,6 +18,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Companions use what you give them** (#588).
+
+  Hand a follower a better axe and they work out that it is better, instead of carrying it around
+  and going on swinging. Qud has the machinery to re-equip a creature and never once calls it after
+  an item changes hands, so until now a companion you armed stayed armed with whatever it started
+  with.
+
+  What a creature works out depends on what it could plausibly understand. A tinker reconsiders
+  anything, artifacts included — and the reason tinkers are the line is that Qud already drew it: of
+  the three creatures vanilla lets scavenge, two are tinkers. Everyone else reconsiders a stick with
+  an edge and leaves the guns alone.
+
+  {{y|This is mostly a companion feature.}} Creatures in Qud do not pick things up off the floor —
+  a bare handful scavenge at all — so a snapjaw will still walk past a dropped axe. Making them
+  notice is a separate question and a bigger one.
+
+  Loadouts creatures already had are untouched. Off by the {{C|creatures use what they gain}}
+  option, which takes effect from the next pickup rather than the next restart.
+
 - **Thirteen books** (#741).
 
   Two of them continue series the game already has. {{y|Frivolous Lives, Vol. II}} carries on the

@@ -86,6 +86,8 @@ namespace QudExpandedCE
         /// </summary>
         public const string PlainRelicNamesID = "OptionQudExpandedCEPlainRelicNames";
 
+        public const string ReequipOnPickupID = "OptionQudExpandedCEReequipOnPickup";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -701,6 +703,17 @@ namespace QudExpandedCE
         /// weaker than it might be.
         /// </summary>
         public static bool ArrowRecovery => Enabled(ArrowRecoveryID, "Yes");
+
+        /// <summary>
+        /// Whether a creature reconsiders its loadout after picking something up.
+        /// </summary>
+        /// <remarks>
+        /// Read by <see cref="XRL.World.Parts.Vixy_Reequip"/> on every acquisition, so turning this
+        /// off stops the behaviour from the next pickup rather than at the next load — which is the
+        /// runtime off-switch <c>docs/CHARTER.md</c> rule 6 prefers. Nothing is taken back: a
+        /// creature already holding what it chose keeps holding it.
+        /// </remarks>
+        public static bool ReequipOnPickup => Enabled(ReequipOnPickupID, "Yes");
 
         private static void ApplyChipSlots()
         {
