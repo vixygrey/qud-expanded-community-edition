@@ -72,4 +72,92 @@
   <object Name="DataDisk" Load="Merge">
     <part Name="Vixy_UpgradeDiskFilter" />
   </object>
+
+  <!-- Local histories for four named bookshelves, #740. The texts are in Core/Books.xml, which
+       carries the register and the per-place reasoning; the population merges are in
+       Core/PopulationTables.xml.
+
+       Two attributes below are a pair, and vanilla is consistent about them. Across the 34
+       blueprints inheriting Book, every general-pool scholarly text is value 35-350 and carries
+       no exclusion tag, while every location-bound or trivial one - HistoryofJoppaVol1 and Vol2,
+       Sheaf1, GolemOperatingManual, Sonnet - is priced at or near zero AND declares
+       ExcludeFromDynamicEncounters. Both halves matter:
+
+       - Value 0 matches the two Joppa volumes and keeps these out of the Stilt librarian's
+         award. LibrarianGiveBook pays value squared over 25 and lists nothing scoring 0, so
+         scholarly finds still pay and a place's own history does not.
+       - ExcludeFromDynamicEncounters must be declared here rather than inherited. The base Book
+         blueprint carries it with *noinherit, which per docs/LESSONS.md means it applies to Book
+         alone and does not pass to children. Without it RandomAltarBaetyl, SocialSifrahTokenItem
+         and RitualSifrahTokenItem can all demand one of these - a baetyl asking for a book that
+         exists in exactly one location, and only sometimes.
+
+       No RevealSecretOnRead. The two Joppa volumes reveal JoppaSecret1 and JoppaSecret2, but the
+       journal-secret system is theirs and extending it is a separate decision, not a detail. -->
+
+  <object Name="Vixy_OnTheEnclaveOrchard" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|On the Enclave Orchard}}"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="Y"
+      Tile="Items/sw_book_1.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Lengths of spooled tape were cut into leaves and stitched between two thin plates of fulcrete."
+    />
+    <part Name="Book" ID="Vixy_OnTheEnclaveOrchard" />
+    <part Name="Commerce" Value="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+
+  <object Name="Vixy_TheRuinedNook" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|The Ruined Nook}}"
+      ColorString="&amp;g"
+      TileColor="&amp;g"
+      DetailColor="M"
+      Tile="Items/sw_scroll1.bmp"
+    />
+    <part Name="Description" Short="Pressed lilypad has been dried flat and sewn along one edge with root fiber." />
+    <part Name="Book" ID="Vixy_TheRuinedNook" />
+    <part Name="Commerce" Value="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+
+  <object Name="Vixy_ANoteOnTheSpongebed" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|A Note on the Spongebed}}"
+      ColorString="&amp;c"
+      TileColor="&amp;c"
+      DetailColor="W"
+      Tile="Items/sw_book_4.bmp"
+    />
+    <part Name="Description" Short="Sheets pressed from reef sponge are bound between two shims of palladium." />
+    <part Name="Book" ID="Vixy_ANoteOnTheSpongebed" />
+    <part Name="Commerce" Value="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+
+  <object Name="Vixy_AccountsOfTheOutcrop" Inherits="Book">
+    <part
+      Name="Render"
+      DisplayName="{{W|Accounts of the Outcrop}}"
+      ColorString="&amp;w"
+      TileColor="&amp;r"
+      DetailColor="r"
+      Tile="Items/sw_unfurled_scroll2.bmp"
+    />
+    <part
+      Name="Description"
+      Short="Salt-stiffened pages are stitched into a cover of cracked hide, swollen once by water and dried flat again."
+    />
+    <part Name="Book" ID="Vixy_AccountsOfTheOutcrop" />
+    <part Name="Commerce" Value="0" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
 </objects>

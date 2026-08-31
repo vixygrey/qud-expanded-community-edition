@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **492** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **496** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **282** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **121** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **125** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -588,9 +588,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
-| `Items.xml` | 0 | 9 |
+| `Items.xml` | 4 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **492 active** | **282** |
+| **Total** | **496 active** | **282** |
 
 ### 6.2 Melee weapons
 
@@ -1825,7 +1825,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-146 table definitions: **121 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+150 table definitions: **125 merged** into vanilla, **25 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2116,7 +2116,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
-│   └── PopulationTables.xml    # 146 tables (121 merge / 25 new)
+│   └── PopulationTables.xml    # 150 tables (125 merge / 25 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2130,7 +2130,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Items.xml               # 9 merged (§30)
+│   ├── Items.xml               # 4 new (§47), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
@@ -5958,6 +5958,93 @@ had something listening.
 ### 46.6 Off-switch
 
 None needed: it is a skill power you choose to buy, holds no state, and does nothing until purchased.
+
+## 47. Only Joppa's bookshelf was about Joppa (`Core/Books.xml`)
+
+Four local histories, one for each named bookshelf that had none. Pure data — four `<book>` texts,
+four blueprints, four population merges, no C#.
+
+### 47.1 What vanilla does, and where it stops
+
+A named bookshelf has two channels. `MarkovBookshelf` names a per-location corpus and produces
+procedural filler; an `InventoryPopulationTable` tag names a table of real, authored books. The
+second is where the gap was. Five of the six named tables contain nothing but a reference to the
+general `Books` pool, so a book pulled off the shelf at Grit Gate is the same book as one pulled
+off a shelf three hundred parasangs away.
+
+`JoppaBookshelf` is the exception, and it is the whole argument: it places `HistoryofJoppaVol1` and
+`Vol2` **unconditionally**, and those two texts appear in no other table in the game. It is also the
+only named shelf with no Markov corpus — Freehold gave Joppa real local writing instead of
+procedural filler.
+
+### 47.2 Joppa's shape does not generalise, because Joppa has one shelf
+
+Every one of these tables is `Style="pickeach"`, where `PopulationList.Generate` iterates every
+child and never reads `Weight` — that is consulted only for `pickone`. An entry with no `Chance` is
+therefore generated once per shelf, unconditionally. Joppa gets away with placing both volumes that
+way because **Joppa has exactly one bookshelf**.
+
+Counted from the static maps, and for Red Rock from `Redrock.cs`:
+
+| table | shelves | vanilla scatters | this fork's `Chance` | expected copies |
+|---|---:|---:|---:|---:|
+| `HydroponBookshelf` | 1 | 1.00 | 100 | 1.00 |
+| `GritGateBookshelf` | 8 | 0.10 | 10 | 0.80 |
+| `YdFreeholdBookshelf` | 9 | 0.25 | 11 | 0.99 |
+| `RedrockBookshelf` | 2, and only inside a Study room | 0.20 | 20 | 0.40 |
+
+Copying Joppa's unconditional shape would have handed a player eight identical copies of the same
+history at Grit Gate and nine at Yd Freehold. Each `Chance` is instead sized so this fork supplies
+at most half of what a player meets on that shelf, per `docs/STYLEGUIDE.md` §3.2.1 — Hydropon lands
+on certainty because one expected copy on one shelf *is* always, which is Joppa's situation exactly.
+
+Red Rock is thin by its own construction rather than by choice: `Worlds.xml` gives it a single
+Level 12 zone, `Redrock.cs` places 1.975 encounter regions there on average, and `Study` is one of
+fifteen equal-weight options — so Red Rock has any bookshelf at all in about 13% of playthroughs.
+
+### 47.3 The register
+
+Read off the two Joppa volumes: one page, a 30–50 word body (theirs are 48 and 30), a dim-white
+framing line, a blank line, one paragraph in third person past tense closing on something still
+true. Each text gives the origin of exactly one thing visible at that location, and no invented
+proper noun is ever glossed — vanilla names *Jeweled Dusk* and *Ut yara Ux* and explains neither.
+
+| text | place | subject |
+|---|---|---|
+| `{{W|On the Enclave Orchard}}` | Grit Gate | why an enclave under a sealed ruin planted trees |
+| `{{W|The Ruined Nook}}` | the hydropon | the recoming that did not arrive, and the lilies instead |
+| `{{W|A Note on the Spongebed}}` | Yd Freehold | why the reef is lived in and not harvested |
+| `{{W|Accounts of the Outcrop}}` | Red Rock | a landmark over water, occupied and left again |
+
+**The framing line is not reused, and that is deliberate.** `VillageBase.generateHistoryBooks`
+builds a history book per journal note for every procedural village, titled
+`History of <village>, Vol. <roman>` and opening with the same sentence the Joppa volumes use. That
+template is the *village* register, generated per world — so these four borrow its shape and none of
+its wording, and each speaks in the register its own place would use. It is also why generic
+`VillageBookshelf` is excluded: villages already have this feature.
+
+### 47.4 Two attributes that travel together
+
+Across the 34 vanilla blueprints inheriting `Book`, every general-pool scholarly text is value
+35–350 with no exclusion tag, and every location-bound or trivial one is priced at or near zero
+**and** declares `ExcludeFromDynamicEncounters`. Both halves are needed:
+
+- **Value 0** matches the two Joppa volumes and keeps these out of the Stilt librarian's award.
+  `LibrarianGiveBook` pays `value² / 25` and lists nothing scoring 0, so a treatise still pays and a
+  place's own history does not.
+- **`ExcludeFromDynamicEncounters` must be declared, not inherited.** The base `Book` carries it
+  with `*noinherit`, which applies it to `Book` alone. Without it, `RandomAltarBaetyl` and the two
+  Sifrah token pools can demand one of these — a baetyl asking for a book that exists in one
+  location, and only sometimes.
+
+No `RevealSecretOnRead`. The Joppa volumes reveal journal secrets; extending that system is a
+separate decision.
+
+### 47.5 Off-switch
+
+None. Per charter rule 6 an option has to earn its place, and four one-page, value-0 texts that
+change no mechanic are the flavour case #663 settled: nobody would turn this off. The merges are
+additive and no vanilla record is rewritten.
 
 ## Appendix A — every merged vanilla melee weapon
 

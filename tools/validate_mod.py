@@ -2331,6 +2331,29 @@ def table_weight(pop: ET.Element, fragment: bool = False) -> int:
     return total
 
 
+def chance_multiplier(chance: str | None) -> float:
+    """Expected number of times an entry fires, from its `Chance`.
+
+    `Chance` is not a percentage and not a gate. `PopulationItem.RollChance` splits it on commas,
+    rolls each value independently, and returns **how many succeeded** - and the caller uses that
+    count as a repeat count. So `Chance="100,50"` is "one always, plus a second half the time",
+    with an expectation of 1.5, and an absent `Chance` is exactly one.
+
+    Reading only the first value - or calling `float()` on the whole string - is wrong in two
+    different ways. `float("10,3")` raises, which is how #740 found this: following vanilla's
+    `<table>` references reached `Chance="10,3"` and the run died. Vanilla writes multi-roll
+    chances in 60 places, this fork in none, so nothing had ever handed one to this arithmetic.
+    """
+    if not chance:
+        return 1.0
+    total = 0.0
+    for part in str(chance).split(","):
+        part = part.strip()
+        if part:
+            total += float(part) / 100
+    return total
+
+
 def scatter_quantity(
     pop: ET.Element, own_tables: dict[str, list[ET.Element]] | None = None
 ) -> float:
@@ -2373,8 +2396,8 @@ def scatter_quantity(
             # opposite of a route - `check_reachability` already says so about tags. Counting one
             # as scattered content reports a merge that takes an entry OUT as adding one (#582).
             continue
-        total += (
-            float(obj.get("Chance") or 100) / 100 * number_midpoint(obj.get("Number"))
+        total += chance_multiplier(obj.get("Chance")) * number_midpoint(
+            obj.get("Number")
         )
     if own_tables:
         total += _referenced_quantity(pop, own_tables, {pop.get("Name")})
@@ -2398,20 +2421,34 @@ def _referenced_quantity(
             continue
         if ref.get("Weight") is not None:
             continue
-        share = (
-            float(ref.get("Chance") or 100) / 100 * number_midpoint(ref.get("Number"))
+        share = chance_multiplier(ref.get("Chance")) * number_midpoint(
+            ref.get("Number")
         )
         for target in own_tables[name]:
             inner = 0.0
+            weighted = False
             for obj in target.iter("object"):
-                if not obj.get("Blueprint") or obj.get("Weight") is not None:
+                if not obj.get("Blueprint"):
                     continue
-                inner += (
-                    float(obj.get("Chance") or 100)
-                    / 100
-                    * number_midpoint(obj.get("Number"))
+                if obj.get("Weight") is not None:
+                    weighted = True
+                    continue
+                inner += chance_multiplier(obj.get("Chance")) * number_midpoint(
+                    obj.get("Number")
                 )
             inner += _referenced_quantity(target, own_tables, seen | {name})
+            if inner == 0.0 and weighted:
+                # A reference into a weighted pool yields one object, not none. `PopulationList`
+                # picks exactly one child of a `pickone` group, so the pool hands back a single
+                # object per roll - but every child carries `Weight`, so the scatter arithmetic
+                # above skips them all and scores the whole reference at zero.
+                #
+                # That is what made the six named bookshelf tables unmeasurable (#740). Vanilla
+                # stocks them with `<table Name="Books" />` from a pickeach group, `Books` is a
+                # pickone of 22 weighted texts, and both halves of the ratio therefore came out
+                # 0.0 - so any entry this fork added read as 100% of the table however small its
+                # chance, and no value could pass.
+                inner = 1.0
             total += share * inner
     return total
 
