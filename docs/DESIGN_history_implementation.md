@@ -166,6 +166,11 @@ output rather than surfacing as "histories look vanilla again."
 
 ## 4. Repository layout
 
+> **Superseded by #178.** This describes the separate Workshop item these documents were written
+> for. The work ships in this mod, so `mod/` is this repository's, and the Harmony quarantine
+> below is void outright — charter rule 5 refuses Harmony. Kept as written pending the reframe
+> tracked in #732; the tier reasoning in §3 is affected the same way.
+
 ```
 qud-mods/
 └── lore-expansion/

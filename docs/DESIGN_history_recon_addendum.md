@@ -228,9 +228,9 @@ XRL.Annals.QudHistoryFactory
 **The player has a `HistoricEntity` in the same ledger the sultans live in**, with a reserved
 id and require-or-create accessors.
 
-Not needed for lore-expansion's current roadmap, but it is the single most important fact in
-this pass for anything involving the player and history — see the reconciliation note in
-`../design-docs/` regarding the legacy mod, which had assumed a parallel record was necessary.
+Not needed for the current roadmap, but it is the single most important fact in this pass for
+anything involving the player and history — the legacy design had assumed a parallel record was
+necessary.
 
 ---
 

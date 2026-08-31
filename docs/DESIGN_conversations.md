@@ -127,8 +127,9 @@ the player to ignore NPC dialogue, which is the opposite of the goal. Every gene
 should reference something real: a faction you have actually angered, a settlement that
 actually exists, a creature you actually killed nearby.
 
-That is the same **derive, don't sample** rule as ground rule G1 of `lore-expansion` — a private
-sibling project of mine, not readable from this repository — and it applies here for the same reason.
+That is the same **derive, don't sample** rule as P1 of `DESIGN_history.md` §3 — which was a private
+sibling project when this was written and is in this repository now — and it applies here for the same
+reason.
 
 Good sources, in rough order of how grounded they are:
 
