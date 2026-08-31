@@ -218,9 +218,22 @@ lie down.
 distinguishing a sheltered spot from open ground while ambush chance did not, so the two disagreed
 silently about how many tiers existed.
 
-Ambush rolls each turn asleep. On a hit: spawn or wake a nearby hostile, wake the
-player with Dazed, and print a hard-stop message. **This is what makes location a real
-decision** and gives bedrolls a reason to exist.
+Ambush rolls each turn asleep, **and only when something hostile is already in the zone**. That
+precondition is not a detail: without it the roll fires in empty zones, where there is nothing to do
+the ambushing, and the hard-stop message asserts something untrue. No culprit means no roll and an
+undisturbed sleep.
+
+On a hit: **wake the culprit** if it is asleep, aim it at the player with `Brain.Target` and a `Kill`
+goal, wake the player with `Dazed`, and name what found them. Nothing is spawned — *"spawn or wake"*
+above offers both and waking what is already there is the less arbitrary half, but it only works if
+the roll checks that there is something to wake.
+
+Because the roll is conditional, **hostility is a precondition rather than a tier**. Making it a tier
+breaks the table: a "hostile-occupied zone" row means the other rows only apply when nothing hostile
+is present, which is exactly when no ambush can happen. Where you are is the tier; what is in the zone
+decides whether the dice come out.
+
+**This is what makes location a real decision** and gives bedrolls a reason to exist.
 
 Involuntary sleep (gas, narcolepsy, conk) recovers fatigue at **0.5/turn** — better
 than nothing, never a substitute.
