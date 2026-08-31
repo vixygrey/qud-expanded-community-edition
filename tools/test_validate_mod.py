@@ -1262,6 +1262,153 @@ class NamingChecksTest(unittest.TestCase):
         self.assertTrue(any("does not add" in d for d in found), found)
 
 
+class BookChecksTest(unittest.TestCase):
+    """`<book>` is outside check_merge_discipline's reach, and all three failures are silent
+    in the XML — two of them are only visible when a player reads the book.
+
+    Every test is a positive control in both directions: the check fires on a fragment that earns
+    it and stays quiet on one that does not. #745.
+    """
+
+    def findings(
+        self, books: str = "<books />", items: str = "<objects />"
+    ) -> list[tuple]:
+        roots = {
+            Path("mod/Core/Books.xml"): ET.fromstring(books),
+            Path("mod/ObjectBlueprints/Items.xml"): ET.fromstring(items),
+        }
+        f = validate_mod.Findings()
+        validate_mod.check_book_discipline(f, roots)
+        return f.items
+
+    def names(self, **kw) -> list[str]:
+        return [c for c, _ in self.findings(**kw)]
+
+    # -- merge discipline ----------------------------------------------------------------------
+
+    def test_a_vanilla_book_id_is_a_replacement(self):
+        """There is no Load to forget, so the remedy is a rename rather than an attribute."""
+        found = self.findings(
+            books='<books><book ID="HistoryofJoppaVol1"><page>x</page></book></books>'
+        )
+        self.assertEqual([c for c, _ in found], ["book-merge-discipline"])
+        self.assertIn("cannot be merged", found[0][1])
+
+    def test_a_mod_prefixed_book_is_quiet(self):
+        self.assertEqual(
+            self.names(
+                books='<books><book ID="Vixy_Local"><page>x</page></book></books>'
+            ),
+            [],
+        )
+
+    def test_the_raven_prefix_is_accepted_too(self):
+        """MOD_PREFIXES carries Mura's prefix as well, and charter rule 3 keeps it."""
+        self.assertEqual(
+            self.names(
+                books='<books><book ID="Raven_Local"><page>x</page></book></books>'
+            ),
+            [],
+        )
+
+    def test_a_book_with_no_id_is_reported(self):
+        self.assertEqual(
+            self.names(books="<books><book><page>x</page></book></books>"),
+            ["book-duplicate-id"],
+        )
+
+    # -- duplicate ids -------------------------------------------------------------------------
+
+    def test_a_repeated_id_loses_the_first_text(self):
+        """HandleBookNode clears Texts on the second, so the first book's pages are gone."""
+        found = self.findings(
+            books=(
+                '<books><book ID="Vixy_A"><page>one</page></book>'
+                '<book ID="Vixy_A"><page>two</page></book></books>'
+            )
+        )
+        self.assertEqual([c for c, _ in found], ["book-duplicate-id"])
+
+    def test_two_distinct_ids_are_quiet(self):
+        self.assertEqual(
+            self.names(
+                books=(
+                    '<books><book ID="Vixy_A"><page>one</page></book>'
+                    '<book ID="Vixy_B"><page>two</page></book></books>'
+                )
+            ),
+            [],
+        )
+
+    # -- dangling references -------------------------------------------------------------------
+
+    def test_a_book_part_naming_no_book_is_reported(self):
+        """BookUI indexes Books[BookID] raw, so this throws when the book is read. A misspelled
+        ID is the realistic way in; the fixture names an absent book outright."""
+        found = self.findings(
+            books='<books><book ID="Vixy_Local"><page>x</page></book></books>',
+            items='<objects><object Name="Vixy_Tome" Inherits="Book">'
+            '<part Name="Book" ID="Vixy_NoSuchBook" /></object></objects>',
+        )
+        self.assertEqual([c for c, _ in found], ["book-reference"])
+        self.assertIn("Vixy_NoSuchBook", found[0][1])
+
+    def test_a_resolving_reference_is_quiet(self):
+        self.assertEqual(
+            self.names(
+                books='<books><book ID="Vixy_Local"><page>x</page></book></books>',
+                items='<objects><object Name="Vixy_Tome" Inherits="Book">'
+                '<part Name="Book" ID="Vixy_Local" /></object></objects>',
+            ),
+            [],
+        )
+
+    def test_a_vanilla_book_id_on_a_blueprint_is_left_alone(self):
+        """Vanilla's 53 IDs are not in the snapshot, so an unprefixed reference is not resolvable
+        here and must not be guessed at. Deliberate, and the docstring says why."""
+        self.assertEqual(
+            self.names(
+                items='<objects><object Name="Vixy_Tome" Inherits="Book">'
+                '<part Name="Book" ID="HistoryofJoppaVol1" /></object></objects>'
+            ),
+            [],
+        )
+
+    def test_a_part_that_is_not_a_book_is_ignored(self):
+        """The ID attribute is not unique to the Book part."""
+        self.assertEqual(
+            self.names(
+                items='<objects><object Name="Vixy_Thing">'
+                '<part Name="Render" ID="Vixy_Nope" /></object></objects>'
+            ),
+            [],
+        )
+
+    # -- reach ---------------------------------------------------------------------------------
+
+    def test_a_books_root_is_found_by_element_not_filename(self):
+        """STYLEGUIDE section 1: Qud resolves modded XML by root element."""
+        roots = {
+            Path("mod/Core/AnythingAtAll.xml"): ET.fromstring(
+                '<books><book ID="Joppa"><page>x</page></book></books>'
+            )
+        }
+        f = validate_mod.Findings()
+        validate_mod.check_book_discipline(f, roots)
+        self.assertEqual([c for c, _ in f.items], ["book-merge-discipline"])
+
+    def test_a_file_that_is_not_books_is_not_scanned(self):
+        """A <book> inside some other root is not a book Qud will load."""
+        roots = {
+            Path("mod/Core/Other.xml"): ET.fromstring(
+                '<objects><book ID="Joppa" /></objects>'
+            )
+        }
+        f = validate_mod.Findings()
+        validate_mod.check_book_discipline(f, roots)
+        self.assertEqual(f.items, [])
+
+
 class OptionDefaultTest(unittest.TestCase):
     """#443. Nothing here is broken today, which is exactly why it needs a check: the one wrong
     value in the file worked by accident, so copying it was a coin flip."""

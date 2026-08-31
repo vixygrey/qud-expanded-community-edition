@@ -1132,6 +1132,28 @@ Qud colour codes appear as XML entities: `ColorString="&amp;y"`, `DisplayName="&
 These must survive formatting unaltered. Any formatter or bulk edit is verified against this
 before adoption.
 
+### 4.4b `<book>` is keyed by `ID`, and cannot be merged
+
+Every other record this fork touches is keyed by `Name` and takes `Load="Merge"`. A book takes
+neither. `BookUI.HandleBookNode` reads the `ID` attribute, and where that ID already exists it
+**clears the stored pages and takes the new ones** — there is no merge mode to opt into, and none
+to forget.
+
+So the rule for books is not "remember `Load`", it is **the ID must be yours**. A `<book>` reusing
+a vanilla ID replaces vanilla's text outright, in a file that is valid XML and reports nothing
+anywhere. `book-merge-discipline` holds this; `docs/CHARTER.md` rule 1 is what it enforces.
+
+Two consequences worth knowing before writing one:
+
+- **A `<part Name="Book" ID="…">` naming no book throws when the book is read.** `BookUI` indexes
+  `Books[BookID]` with no `TryGetValue`, and the two UI paths do not fail alike — the legacy path
+  guards nothing, and `Qud.UI.BookScreen` guards one call site out of three. Which players see it
+  therefore depends on their ModernUI setting. `book-reference` holds this for mod-prefixed IDs.
+- **Page text is rendered literally.** It sits flush against its tags in vanilla —
+  `<page>{{w|…}}` on one line and `…text.</page>` on the last — because leading whitespace becomes
+  leading spaces on the page. Prettier is configured with `xmlWhitespaceSensitivity: "preserve"`,
+  so it will not reflow this for you either way.
+
 ### 4.5 Comments
 
 - Section comments mark groups within a file: `<!-- Feet -->`
@@ -1333,6 +1355,7 @@ seconds rather than after a round trip.
 | Figures and the version quoted by the Workshop description, which ships with a release | `workshop-figure`, `workshop-version` |
 | Vanilla creatures swept into an `AggregateWith` slot by inheritance | `aggregate-sweep` |
 | **`Load="Merge"` on vanilla records** | `merge-discipline` |
+| **A `<book ID>` being the fork's own** — a book has no `Load`, so touching a vanilla one replaces it | `book-merge-discipline`, `book-duplicate-id`, `book-reference` |
 | Markup shader names not colliding with vanilla's | `shader-collision` |
 | Option help text wrapping and length | `helptext-shape` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
@@ -1412,6 +1435,9 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `appendix-b` | `check_docs.py` | every row of FEATURES' chip appendix, against the blueprint it describes |
 | `armor-curve` | `validate_mod.py` | AV against §3.2.1's ceiling, per slot and for shields |
 | `bit-letters` | `validate_mod.py` | a `TinkerItem Bits` letter, which pins one bit where a digit names a level |
+| `book-duplicate-id` | `validate_mod.py` | one `<book ID>` per mod — a repeat clears the first book's pages |
+| `book-merge-discipline` | `validate_mod.py` | charter rule 1 for `<book>`, which has no `Load` and so cannot be merged at all |
+| `book-reference` | `validate_mod.py` | a `<part Name="Book" ID>` resolving to a book this mod declares — an unresolved one throws when read |
 | `built` | `check_build_log.py` | the game's own build log says the C# compiled |
 | `changelog-sections` | `check_docs.py` | no duplicate `### Added` / `### Changed` heading inside one release |
 | `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |
