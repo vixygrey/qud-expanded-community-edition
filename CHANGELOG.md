@@ -16,6 +16,34 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **What lies past sharp** (#723).
+
+  Caves of Qud contains six finished item modifications that nothing in the game can ever apply. Each
+  is the second rung of a ladder whose first rung you can already build: sharp has **keen** past it,
+  masterwork has **legendary**, serrated has **microserrated**, overloaded has **massively
+  overloaded**. They have effects, they have descriptions, and the base mod already knows to call
+  itself "keen" instead of "sharp keen" when you get there. Nobody could reach any of it.
+
+  Those four are now buildable — and they cannot be found. No loot carries them, no data disk holds
+  them, and you cannot take one apart to learn it, because none exists to take apart. **The first keen
+  blade in the world is the one you make.**
+
+  So the knowledge comes from people. Four tinkers each teach one, once you already know the rung
+  below it and have reached Tinker II:
+
+  - **Yla Haj** — keen
+  - **Barathrum the Old** — legendary
+  - **Bep** — microserrated
+  - **Q Girl** — massively overloaded
+
+  They will only bring it up if you can actually use it, and each is the only source for theirs.
+
+  The other two finished mods, *overbuilt* and *smart*, are deliberately still unreachable. Neither is
+  an upgrade: overbuilt buys +2 AV with −2 DV, a movement penalty and double weight, and smart turns a
+  scoped gun into a powered artifact that needs an energy cell, a boot sequence and a HUD before it
+  does anything. The tinkering screen has no way to warn you about either, and presenting them beside
+  the real upgrades would be a lie.
+
 - **Wounds that rest will not close** (#192). *Off by default.*
 
   Late Qud is easy partly because damage has no memory — hit points come back for free if you wait,

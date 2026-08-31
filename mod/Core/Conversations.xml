@@ -113,4 +113,132 @@
       </choice>
     </start>
   </conversation>
+
+  <!-- Yla Haj teaches keen. #723.
+
+       One teacher per recipe, so a tinker is a person worth finding rather than one of four
+       interchangeable sources. The cost is that killing them removes the recipe from that save.
+
+       Ordinal 9700 puts this below Vixy_ShowMakersMark at 9800 and Vixy_AskName at 10000, and above
+       vanilla's water ritual at 980 and [begin trade] at 990 - a thing you ask a tinker about after
+       greeting them and before doing business.
+
+       The teaching part carries no fields: which recipe it grants is the subclass, because
+       configuration fields on a [Serializable] type become save layout - the same reasoning as the
+       eighteen Vixy_Trinket subclasses.
+
+       The choice is invisible unless I already know ModSharp, do not know ModKeen, and hold the
+       Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
+       bases sit at. -->
+  <conversation ID="YlaHaj">
+    <start>
+      <choice ID="Vixy_TeachModKeen" Target="Vixy_TaughtModKeen" Ordinal="9700">
+        <text>You have the trick of a sharp edge. There is a finer one past it.</text>
+        <part Name="Vixy_TeachKeen" />
+      </choice>
+    </start>
+    <node ID="Vixy_TaughtModKeen">
+      <text
+      >Sharp is where an edge starts. Hold it to the light and grind past the shine - that is keen. Your hands will know when.</text>
+      <choice Target="Start">
+        <text>Thank you, =pronouns.formalAddressTerm=.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Barathrum the Old teaches legendary. #723.
+
+       One teacher per recipe, so a tinker is a person worth finding rather than one of four
+       interchangeable sources. The cost is that killing them removes the recipe from that save.
+
+       Ordinal 9700 puts this below Vixy_ShowMakersMark at 9800 and Vixy_AskName at 10000, and above
+       vanilla's water ritual at 980 and [begin trade] at 990 - a thing you ask a tinker about after
+       greeting them and before doing business.
+
+       The teaching part carries no fields: which recipe it grants is the subclass, because
+       configuration fields on a [Serializable] type become save layout - the same reasoning as the
+       eighteen Vixy_Trinket subclasses.
+
+       The choice is invisible unless I already know ModMasterwork, do not know ModLegendary, and hold the
+       Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
+       bases sit at. -->
+  <conversation ID="Barathrum">
+    <start>
+      <choice ID="Vixy_TeachModLegendary" Target="Vixy_TaughtModLegendary" Ordinal="9700">
+        <text>Master, teach me to make something that outlasts me.</text>
+        <part Name="Vixy_TeachLegendary" />
+      </choice>
+    </start>
+    <node ID="Vixy_TaughtModLegendary">
+      <text
+      >Masterwork is a thing made well. Legendary is a thing made once. The difference is not in the steel, child - it is in refusing to set it down.</text>
+      <choice Target="Start">
+        <text>Thank you, =pronouns.formalAddressTerm=.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Bep teaches microserrated. #723.
+
+       One teacher per recipe, so a tinker is a person worth finding rather than one of four
+       interchangeable sources. The cost is that killing them removes the recipe from that save.
+
+       Ordinal 9700 puts this below Vixy_ShowMakersMark at 9800 and Vixy_AskName at 10000, and above
+       vanilla's water ritual at 980 and [begin trade] at 990 - a thing you ask a tinker about after
+       greeting them and before doing business.
+
+       The teaching part carries no fields: which recipe it grants is the subclass, because
+       configuration fields on a [Serializable] type become save layout - the same reasoning as the
+       eighteen Vixy_Trinket subclasses.
+
+       The choice is invisible unless I already know ModSerrated, do not know ModMicroserrated, and hold the
+       Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
+       bases sit at. -->
+  <conversation ID="Bep">
+    <start>
+      <choice ID="Vixy_TeachModMicroserrated" Target="Vixy_TaughtModMicroserrated" Ordinal="9700">
+        <text>Your teeth are finer than my saw. Show me.</text>
+        <part Name="Vixy_TeachMicroserrated" />
+      </choice>
+    </start>
+    <node ID="Vixy_TaughtModMicroserrated">
+      <text
+      >Serration is teeth. Microserration is teeth on the teeth. Cut smaller, cut smaller, cut smaller - and then the flesh simply agrees to part.</text>
+      <choice Target="Start">
+        <text>Thank you, =pronouns.formalAddressTerm=.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Q Girl teaches massively overloaded. #723.
+
+       One teacher per recipe, so a tinker is a person worth finding rather than one of four
+       interchangeable sources. The cost is that killing them removes the recipe from that save.
+
+       Ordinal 9700 puts this below Vixy_ShowMakersMark at 9800 and Vixy_AskName at 10000, and above
+       vanilla's water ritual at 980 and [begin trade] at 990 - a thing you ask a tinker about after
+       greeting them and before doing business.
+
+       The teaching part carries no fields: which recipe it grants is the subclass, because
+       configuration fields on a [Serializable] type become save layout - the same reasoning as the
+       eighteen Vixy_Trinket subclasses.
+
+       The choice is invisible unless I already know ModOverloaded, do not know ModMassivelyOverloaded, and hold the
+       Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
+       bases sit at. -->
+  <conversation ID="Q Girl">
+    <start>
+      <choice ID="Vixy_TeachModMassivelyOverloaded" Target="Vixy_TaughtModMassivelyOverloaded" Ordinal="9700">
+        <text>How far past its rating can a cell actually be pushed?</text>
+        <part Name="Vixy_TeachMassivelyOverloaded" />
+      </choice>
+    </start>
+    <node ID="Vixy_TaughtModMassivelyOverloaded">
+      <text
+      >Further than the plate says. The plate is a promise to a customer, not a limit. Wind the regulator past its stop and hold your breath - it draws far more, and it will tell you when it disagrees.</text>
+      <choice Target="Start">
+        <text>Thank you, =pronouns.formalAddressTerm=.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
