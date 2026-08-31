@@ -473,6 +473,7 @@ paths work today.
 
 ## Facts worth not rediscovering
 
+<!-- check-docs: not-a-file DESIGN_history_handoff.md - retired in #734. The sentence is about that retirement, so naming it is the point. -->
 Moved here from `DESIGN_history_handoff.md` when that document was retired — it was a quick-reference
 list for a separate project's next session, and these are the parts that outlive it.
 

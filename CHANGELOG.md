@@ -16,6 +16,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `check_docs.py` validates file paths written as prose, not only markdown links
+  (#735).
+
+  Most paths in the documents are written in backticks rather than as markdown links, and nothing
+  looked at them — a reference could rot indefinitely and the gate stayed green. Two had.
+
+  The same change widened both link checks to every document in `docs/`. Eighteen of the
+  twenty-seven were invisible to `check_links` as well, including the one holding a rotted
+  reference.
+
 - **What lies past sharp** (#723).
 
   Caves of Qud contains six finished item modifications that nothing in the game can ever apply. Each

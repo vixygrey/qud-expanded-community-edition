@@ -210,7 +210,7 @@ QudOvergrowth/
 ```
 
 No Harmony. Confirmed Tier 2 at worst — a C# builder plus XML data — so it is fully
-developable and testable on macOS (`recon-findings.md` §Q0).
+developable and testable on macOS (`DESIGN_history_recon.md` §Q0).
 
 ---
 

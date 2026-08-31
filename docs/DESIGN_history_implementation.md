@@ -408,6 +408,7 @@ on Windows is the fallback, not the plan.
 folder — `mod/Scripts/Harmony/` — and nowhere else. No patch is scattered into a feature
 file. The point is that "what has not been verified on Windows" is answerable at a glance.
 
+<!-- check-docs: not-a-file docs/patched-surface.md - proposed by this document, not yet written. -->
 **W2 — Document the patched surface.** Maintain `docs/patched-surface.md`: every patched
 method, its signature, patch type, and why Tier 2 could not reach it. This is the Windows
 verification checklist, the update-breakage checklist after every Qud patch, and the
