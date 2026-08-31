@@ -57,12 +57,22 @@ namespace XRL.World.Parts
         public const int Collapsing = 950;
 
         /// <summary>
-        /// A world-map crossing is many turns; cap the debt so one long haul cannot dump the whole
-        /// meter at once. `Stomach` caps its own catch-up the same way. One day of travel — 1,200
-        /// turns at strain 1.5 — is about half the meter, which is a real cost without being a
-        /// mugging.
+        /// A sanity bound on the world-map catch-up, not a balance lever.
         /// </summary>
-        public const int MaxWorldMapCatchUp = 1200;
+        /// <remarks>
+        /// <b>This was 1,200 turns and that made the world map nearly free</b>, which is the exact
+        /// hole §6 warned about — *"a world-map step is many turns. Accrue proportionally or the map
+        /// becomes a fatigue-free zone."* One parasang costs 300 ticks across ordinary ground and
+        /// 1,200 across North Sheva, so a 1,200-turn cap meant a twenty-parasang haul cost the same
+        /// as one bad parasang: half the meter, and never more.
+        ///
+        /// The cap does not need to do balance work, because <see cref="Set"/> already clamps to
+        /// <see cref="Max"/>. Travel far enough without resting and you arrive with the meter full,
+        /// which is the correct outcome and the player's own choice. So this is only here to stop a
+        /// stale property producing a nonsense number, and it takes `Stomach`'s own bound for the
+        /// same job.
+        /// </remarks>
+        public const int MaxWorldMapCatchUp = 100000;
 
         public static int Get(GameObject Object)
         {

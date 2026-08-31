@@ -23,6 +23,10 @@ recorded because contributors need them, not because subscribers do.
   Go about three unhurried days without sleeping and you tire; fight for those days and you get
   there in half of them. Long enough after that and you fall down where you stand.
 
+  Crossing the world map costs what it takes. A parasang of ordinary ground is a quarter of a day
+  and North Sheva is a whole one, so a long haul arrives tired and a very long one arrives ready to
+  drop. Survival skills cut the fatigue as well as the time.
+
   What tiredness costs you is not your attributes. At exhaustion you cannot cross the world map, the
   way being famished already stops you, and from weariness onward the writing itself goes strange.
   Qud runs two survival timers already and neither of them makes you weaker — thirst stops you
