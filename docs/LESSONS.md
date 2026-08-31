@@ -3618,6 +3618,8 @@ Neighbour of [`a search that finds nothing has two explanations, and one of them
 with the failure moved one step along: there the search could not match, here it matched correctly
 and rewrote what it found. Both end in output that reads as evidence and is not.
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Named below because the entry is about exactly that. -->
+
 ## A file check reads the working tree, and CI reads the tracked one
 
 `check_docs.py` gained a check that file paths written as prose resolve. It passed locally and
