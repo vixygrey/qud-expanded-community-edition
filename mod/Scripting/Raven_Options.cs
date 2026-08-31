@@ -30,6 +30,8 @@ namespace QudExpandedCE
         public const string MutationPointsID = "OptionQudExpandedCEMutationPoints";
 
         public const string WeaponWearID = "OptionQudExpandedCEWeaponWear";
+
+        public const string OnsetWarningID = "OptionQudExpandedCEOnsetWarning";
         public const string MutantHPGainID = "OptionQudExpandedCEMutantHPGain";
         public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
@@ -623,6 +625,17 @@ namespace QudExpandedCE
 
         /// <summary>Whether weapon wear is switched on at all.</summary>
         public static bool WeaponWear => WeaponWearLevel > 0;
+
+        /// <summary>
+        /// Whether a disease onset announces itself, its deadline and its clearing.
+        /// </summary>
+        /// <remarks>
+        /// This one is worth an option where <c>Vixy_ShowMakersMark</c> was not: it changes the
+        /// game's voice rather than adding a line nobody would refuse, and Qud withholds information
+        /// on purpose. Everything it gates is text at display time, so the switch is live and there
+        /// is nothing stored to migrate.
+        /// </remarks>
+        public static bool OnsetWarning => Enabled(OnsetWarningID, "Yes");
 
         /// <summary>
         /// The tier interval, scaled by the slider: light doubles it, heavy halves it.
