@@ -6094,19 +6094,38 @@ reach a plain word. The fix is therefore to add *forms* that draw from a plain p
 add words that must win a 1-in-30 slot draw. `docs/DESIGN_history_naming.md` §4 carries the full
 reasoning.
 
-### 48.4 What ships here
+### 48.4 The twelve forms
 
-One form and its vocabulary:
+Twelve added forms against vanilla's eight, so the pool is twenty and the all-strange share is
+`2/20` — **exactly the 10% §4.2 asks for**, and the number `MergeArrayHandling.Union` makes the
+minimum, since vanilla's two cannot be removed.
 
-```
-the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>
-```
+Ten draw only on plain vocabulary; two are mixed, pairing a plain modifier with the relic's own
+element. Rendered as the game builds them:
 
-giving *the cold hatchet*, *the iron mask*, *the ninth tome*. Nine forms in the pool, so the
-all-strange share is `2/9` — 22%. Twelve added forms would reach the 10% §4.2 targets, and the
-remaining eleven wait on this one being confirmed in game: the merge path had been read end to end
-and never run, and #730 is explicit that no vocabulary should be authored against an unproven
-mechanism.
+| | form | example |
+|---|---|---|
+| 1 | `the <plainAdj> <itemType>` | the Iron Hood |
+| 2 | `the <itemType> of the <plainAdj> <plainNoun>` | the Edge of the Old Mile |
+| 3 | `the <itemType> of <plainMassNoun>` | the Mace of Water |
+| 4 | `the <itemType> of the <plainNoun>` | the Gear of the Crossing |
+| 5 | `the <plainOrdinal> <itemType>` | the Twelfth Edge |
+| 6 | `*personNounPossessive* <plainAdj> <itemType>` | the Wanderer's Still Mask |
+| 7 | `*creatureNamePossessive* <plainAdj> <itemType>` | Ptoh's Long Helm |
+| 8 | `the <plainAdj> <plainNoun>` | the Grey March |
+| 9 | `<plainAdj> <plainNoun>` | Still Watch |
+| 10 | `<plainNoun>-<plainNoun>` | Stone-ford |
+| 11 | `the <plainAdj> <itemType> of the <elementAdj> <elementNoun>` | the Bright Brand of the Desiccated Spice Root |
+| 12 | `*personNounPossessive* <plainAdj> <elementNoun>` | the Wanderer's Bright Mirror |
+
+Four vocabulary lists back them, and **the split between them is grammatical rather than
+decorative**. `Vixy_plainNouns` are count nouns and take an article — *the Gear of the Crossing*;
+`Vixy_plainMassNouns` do not — *the Mace of Water*. Writing form 3 against the count list first
+produced *the Cap of Wall*, which is why they are separate lists rather than one.
+
+Forms 9 and 10 carry no article. `QudHistoryHelpers.ExtractArticle` strips a leading `the ` into the
+relic's `Article` field and otherwise leaves it null, so a form without one becomes a bare proper
+name — the shape vanilla's own forms 7 and 8 use.
 
 Only the four bindings that exist are used — `*element*`, `*itemType*`, `*personNounPossessive*`,
 `*creatureNamePossessive*`. `*creatureName*` and `*personNoun*` appear nowhere in the assembly, and
@@ -6114,6 +6133,11 @@ the expander leaves an unmatched token in place, so a form naming one would rend
 inside a relic's name. `history-spice` in `tools/validate_mod.py` refuses that, and refuses a
 malformed file — the merge sits in a try/catch that logs a mod error and carries on, so a JSON
 error otherwise costs the whole feature in silence.
+
+**Not every relic reaches this pool.** A relic whose history entity is a region is named by
+`GenerateRelicNameByRegion`, a C# concat that never consults the forms, and `ItemNaming` has a
+branch that composes a name from the zone instead. Both are already grounded, so neither is a
+problem — but the 10% is a share of the names that reach the pool, not of every relic in the world.
 
 ### 48.5 Off-switch
 

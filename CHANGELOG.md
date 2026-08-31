@@ -25,13 +25,14 @@ recorded because contributors need them, not because subscribers do.
   it stops reading as significant and starts reading as noise. The vocabulary was never the
   problem — there are hundreds of words, and more would not have helped.
 
-  This adds a name form built from plain words instead: {{y|the cold hatchet}}, {{y|the iron mask}},
-  {{y|the ninth tome}}, beside the sagittal quincunxes. Vanilla's own forms are never removed, so a
-  plain name becomes likelier rather than a strange one impossible.
+  Twelve name forms built from plain words instead: {{y|the Iron Hood}}, {{y|the Mace of Water}},
+  {{y|the Wanderer's Still Mask}}, {{y|Stone-ford}}, beside the sagittal quincunxes. Two of them
+  are mixed, pairing a plain word with the relic's own element — {{y|the Bright Brand of the
+  Desiccated Spice Root}}.
 
-  One form for now. The path that merges it into the game's grammar had been read carefully and
-  never actually run, and I would rather confirm a single form works in a real world than write
-  twelve against an assumption. The rest follow once it does.
+  Vanilla's own forms are never removed, so a plain name becomes likelier rather than a strange one
+  impossible. Twelve is the number that makes it work: it puts the all-strange share at one in ten,
+  which is where an odd name reads as odd again.
 
   Off by the {{C|plainer relic names}} option, which takes effect on restart. Relics that already
   have names keep them.
