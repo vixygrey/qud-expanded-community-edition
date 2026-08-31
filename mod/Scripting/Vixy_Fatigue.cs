@@ -201,6 +201,10 @@ namespace XRL.World.Parts
             {
                 ParentObject.RemoveEffect(asleep);
                 MessageQueue.AddPlayerMessage("{{G|You wake rested.}}");
+                // Only here. Reaching zero without being woken is what "full and uninterrupted"
+                // means, so an ambush costs the dream as well as the rest - which is the reward half
+                // of where you chose to lie down.
+                Vixy_Dream.OnFullSleep(ParentObject);
                 return;
             }
 

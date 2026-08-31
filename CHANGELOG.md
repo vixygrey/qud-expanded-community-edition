@@ -40,6 +40,11 @@ recorded because contributors need them, not because subscribers do.
   Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
   rests you.
 
+  {{y|Sleep the whole way through and you dream.}} Mostly of something you actually did, told back
+  to you in the voice the sultan histories use - grander than it was, and not always accurate.
+  Sometimes of a place you have not been, and you wake knowing where it is. Being woken costs you
+  the dream as well as the rest.
+
   {{y|Off by default}}, and it is the only thing in this mod that adds a system Caves of Qud does
   not have. Turn it on from {{C|you have to sleep}} in the options.
 
