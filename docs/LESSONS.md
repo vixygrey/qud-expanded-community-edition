@@ -3083,6 +3083,8 @@ same direction every time:
 | `DESIGN_sleep.md` §1 | Qud has no hunger and no thirst attrition | both exist and thirst kills. `Famished` is −10 Quickness at 2,400 actions |
 | `DESIGN_sleep.md` §7 | `Asleep` and `Wakeful` need verifying before coding | both resolve as *already satisfied*: `Wakeful` refuses only the involuntary events, and `Asleep.Voluntary` is set correctly at all ten call sites |
 <!-- check-docs: not-a-file API_VERIFICATION.md - a private sibling project's document, brought in by #647 and deliberately taken back out by #648. Named because the claim was made there. -->
+| `DESIGN_sleep.md` §3.2 | a four-tier attribute ladder is a proportionate cost | vanilla's two survival timers use **one** stat penalty between them and otherwise refuse an action — no healing, no travel. The proposal was several times heavier than either (#179) |
+| `DESIGN_sleep.md` §4 | dreams can be Markov-generated from the player's history | both generators load a fixed offline corpus, `LibraryCorpus.json`. The player's history ships already, as authored prose in two registers, in `JournalAPI.Accomplishments` (#179) |
 | `API_VERIFICATION.md` | a kinship registry exists to read | three markers, all on the NPC, none enumerable (#182) |
 | `DESIGN_history_recon.md` | the spice tree needs a code hook to mutate | `HistoricSpice.Init` merges a mod's `historyspice.json` already (#178, #689) |
 
@@ -3091,6 +3093,18 @@ same direction every time:
 > traps elsewhere in this file, which are all about misreading *the game*. This is about misreading
 > *my own scoping* — and it is the more expensive kind, because it decides whether a thing gets built
 > at all rather than how.
+
+**The two `DESIGN_sleep.md` rows added in #179 share a shape worth naming**, because it recurs and it
+is more specific than "optimistic". Both reach for **generation where the game offers authored text**,
+and for **a stat penalty where the game refuses an action**. §3.2 proposed an attribute ladder where
+`Famished` simply declines to let you travel; §4 proposed generated history where the journal already
+holds timestamped deeds Freehold wrote prose for. In both cases the shipped mechanism is smaller,
+more idiomatic, and better than the invention — which is the same trade as `historyspice.json` two
+rows up.
+
+> **When a design calls for procedural content or a numeric penalty, check first whether Qud already
+> authored the content or already refuses the action.** Those are its two habits, and a spec that
+> misses them proposes more work for a worse result.
 
 **One of the rows above broke that rule, and it was the correction rather than the claim** (#705).
 The §B3 row originally ended *"and adds 2 hit points of penalty every action"* — a figure written
