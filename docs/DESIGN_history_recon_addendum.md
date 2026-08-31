@@ -258,5 +258,5 @@ surface you depend on.
 | `DESIGN_history_recon.md` §Q5 | Upgrade to strongly-implied |
 | `DESIGN_history_recon.md` §Q3 | Leans hardcoded — no registry field |
 | `DESIGN_history_recon.md` N3 | Perspective is feeling+colour, not text |
-| `DESIGN_history_handoff.md` §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong** |
+| *(retired handoff note)* §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong**. Both applied before the document was retired |
 | `DESIGN_history_sources.md` | Reframe onto perspective-key + feeling-keyed spice |

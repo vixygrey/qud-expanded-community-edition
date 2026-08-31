@@ -156,16 +156,28 @@ so event-derived naming must locate the event via `HistoricEntity.GetEventWithEv
 
 ---
 
-## Q3 — Is the event pool extensible? · **NEEDS BODIES — leans hardcoded** (addendum §Q3)
+## Q3 — Is the event pool extensible? · **ANSWERED: NO. HARDCODED.** (corrected 2026-08-30)
 
-Event types are C# classes in `XRL.Annals`. Whether `QudHistoryFactory` enumerates them by
-reflection (in which case a mod's own `XRL.Annals.*`-shaped classes may self-register — Tier
-2) or holds a hardcoded list (requiring factory replacement or Harmony) cannot be determined
-from metadata alone.
+**Metadata left this open and the decompile closed it.** `QudHistoryFactory.GenerateNewSultan`
+holds seventeen literal branches and constructs each event inline:
 
-Given the presence of `HistoricEntitySnapshot`, `CreatedHistoricEvent`, and generic helper
-types, a reflection-based registry is plausible — but do not plan on it. **Decompile
-`QudHistoryFactory` first.**
+```csharp
+for (int i = 0; i < 8; i++) {
+    int num = Stat.Random(0, 16);
+    if (num == 0)  historicEntity.ApplyEvent(new CorruptAdministrator(), …);
+    if (num == 1)  historicEntity.ApplyEvent(new CapturedByBandits(), …);
+    …
+    if (num == 16) historicEntity.ApplyEvent(new Marry(), …);
+}
+```
+
+No reflection, no registry, no data. The reflection-based registry this section called
+plausible does not exist, and the instruction not to plan on it was right.
+
+Two consequences. **Adding a single event type means replacing a static method on a static
+class** — which is the cost `DESIGN_history_implementation.md`'s tier table has to carry. And
+`DESIGN_history.md` §2.1's arithmetic — 17 types, 8 draws, 5 sultans, ~40 instances per world
+— is not an estimate from the wiki. It is this loop.
 
 ---
 
@@ -200,10 +212,21 @@ Thirteen other gospel categories use the same two-era structure: `VehicularSabot
 
 ---
 
-## Q5 — Sultans generated in sequence? · **STRONGLY IMPLIED** (addendum §Q5)
+## Q5 — Sultans generated in sequence? · **ANSWERED: YES** (corrected 2026-08-30)
 
-No metadata-level evidence either way. `InitializeSultan` exists as a distinct event class,
-which is consistent with per-sultan initialisation in a loop, but that is suggestive at best.
+One pass, chronological, over a single shared mutable `History`:
+
+```csharp
+for (int i = 1; i <= 5; i++) {
+    GenerateNewRegions(history, Stat.Random(2, 3), i);
+    GenerateNewSultan(history, i);
+    history.currentYear += spreadOfSultanYears[i - 1];
+}
+```
+
+Each sultan is generated after everything written before it and can see all of it, so
+**cross-sultan legacy events are feasible.** This section previously read *"strongly implied"*
+on the strength of `InitializeSultan` existing as a distinct class; the loop settles it.
 
 ---
 
@@ -348,7 +371,8 @@ This was the question gating every Tier 1 claim. The answer is nuanced but good.
 >   mod may ship `HistorySpice.json` in any casing and still match `"historyspice.json"`.
 > - **The merge is additive only.** `MergeArrayHandling.Union` adds new forms and vocabulary and
 >   **cannot remove vanilla's**. Forms 7 and 8 of `spice.history.relics.names` — the specific
->   complaint that started this project, per `DESIGN_history_handoff.md` — **cannot be suppressed by a merge.**
+>   complaint that started this project, per *Facts worth not rediscovering* below — **cannot be
+>   suppressed by a merge.**
 >   Diluting them is possible; removing them still needs code.
 >
 > **Why the recon missed it, which is the transferable part.** The search was the right one and
@@ -447,6 +471,29 @@ paths work today.
 
 ---
 
+## Facts worth not rediscovering
+
+Moved here from `DESIGN_history_handoff.md` when that document was retired — it was a quick-reference
+list for a separate project's next session, and these are the parts that outlive it.
+
+- **The relic grammar is `spice.history.relics.names`** — 8 forms. Forms 7
+  (`<noun>-<noun>`) and 8 (`<adjective> <noun>`) are pure random assembly with no grounding.
+  **They are the specific cause of the complaint that started this project.**
+- **Vocabulary is large:** ~280 adjective terminals, ~488 noun terminals. Form 8 alone can
+  produce >100,000 distinct names and still reads as generated. Adding words will not help.
+- **Existing plain-ish pools you can use immediately:** `spice.basicColors` (13),
+  `spice.metals` (23). Both are already plain register.
+- **`spice.ordinal` is numeric** (`1st`, `2nd`) — word ordinals need adding separately.
+- **Event classes:** ~24 sultan, 12 village, 16 Resheph-specific, all in `XRL.Annals`.
+- **Village history uses the same machinery** as sultan history — extending there later is
+  much cheaper than the docs assumed.
+- **Build target:** `netstandard2.0`, C# 9, per the game's own `Mods.csproj.template.txt`.
+- **`manifest.json` uses lowercase keys** in the shipped DLC (`id`, `title`, `version`,
+  `author`, `tags`, `loadOrder`, `previewImage`); community mods use PascalCase and also
+  work, so it appears case-insensitive.
+
+---
+
 ## Revised tier assignment
 
 | Component | Prior | **Revised** | Basis |
@@ -529,7 +576,7 @@ RelicNameContext["*itemType*"] = Type;
 ```
 
 > **It is not a bag someone forgot to fill. It is a two-variable context by construction.** So the
-> question `DESIGN_history_handoff.md` calls *"the gate on the core of the mod"* answers **no**: derivation-based
+> question this project called *"the gate on the core of the mod"* answers **no**: derivation-based
 > naming cannot be reached by grammar alone.
 
 There is a way through, and it already ships. `GenerateRelicNameByRegion` is taken whenever
