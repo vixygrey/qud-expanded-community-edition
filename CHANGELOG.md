@@ -33,9 +33,12 @@ recorded because contributors need them, not because subscribers do.
   healing and hunger stops you travelling — so this one follows suit.
 
   {{y|Where you sleep is the point.}} In Joppa, the Stilt, Grit Gate or any settlement you are
-  simply safe. A bed is nearly so. Sleep on open ground and something finds you about one time in
-  three; sleep among things that want to kill you and it is four times in five. Sleep gas will not do
-  instead of sleep, and neither will narcolepsy: only lying down on purpose rests you.
+  simply safe. A bed is nearly so. Sleep on open ground with something hostile in the zone and it
+  finds you more often than not - it wakes, it comes for you, and you get told what it is. Sleep
+  somewhere empty and nothing happens, because there is nothing there to happen.
+
+  Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
+  rests you.
 
   {{y|Off by default}}, and it is the only thing in this mod that adds a system Caves of Qud does
   not have. Turn it on from {{C|you have to sleep}} in the options.

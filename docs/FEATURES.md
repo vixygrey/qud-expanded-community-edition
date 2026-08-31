@@ -6497,33 +6497,44 @@ before it can open.
 Note `forced: true` does *not* mean involuntary. It bypasses the `CanApplySleep` refusals, and `Bed`
 passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to read backwards.
 
-### 51.5 Where you sleep is the decision
+### 51.5 Where you sleep is the decision, and an ambush needs a culprit
 
-**Rates are derived from per-sleep odds, not chosen per turn.** That distinction is the whole of this
-table. A full sleep is 167–250 actions, so a rate that reads harmless per turn compounds into
-something else: the design doc's 0.5% for open ground is a **71% chance of being ambushed over one
-sleep**, which is not "location is a decision" but "beds or nothing".
+**An ambush requires something already in the zone that could come and find you.** No hostile
+present means no roll and an undisturbed sleep, whatever the terrain.
 
-| where | rest quality | P(ambushed) per sleep | per turn |
+That precondition is what the rate always meant, and getting it wrong made the mechanic dishonest.
+The first version woke the player, applied `Dazed` and printed *"something is moving nearby"* without
+checking that anything was — so on open ground in an empty zone, the common case, the message was
+simply **false** and the mechanic was a randomised penalty with no danger attached. §3.3 asked for
+*"spawn or wake a nearby hostile"*; declining to spawn was deliberate, and then the waking was never
+written, so neither half happened.
+
+**Hostility is a precondition, not a tier.** It used to be one, and that quietly broke the table:
+`Locate` returned `Hostile` whenever anything hostile stood in the zone, so `Bed`, `Sheltered` and
+`Open` could only apply when nothing hostile was present — which is exactly when no ambush is
+possible. Five tiers collapsed to two.
+
+| where | rest quality | P(found) per sleep | per turn |
 |---|---:|---:|---:|
 | **in a settlement** | 1.5× | **0%** | 0 |
-| on a bed or bedroll | 1.5× | 5% | 0.03% |
-| indoors, nothing hostile | 1.2× | 14% | 0.06% |
-| open ground | 1.0× | 30% | 0.14% |
-| hostiles in the zone | 1.0× | 80% | 0.64% |
+| on a bed or bedroll | 1.5× | 10% | 0.06% |
+| indoors, sheltered | 1.2× | 30% | 0.14% |
+| open ground | 1.0× | 60% | 0.37% |
 
-**A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub —
-it tests for a `CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork
-invented and has to maintain: **Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra and the
-Arrivarium**. A tier list with no top end gives the player nowhere to aim, and *"walk to a town and
-you can rest"* is a decision worth making. Hostiles in the zone still override it.
+Odds are *given something hostile is in the zone*, and derived from per-sleep targets by solving
+`1 − (1 − p)ⁿ` backwards rather than chosen per turn.
 
-Both tables key on one `Locate()` function so they cannot disagree about how many tiers exist. The
-first implementation had rest quality distinguishing a sheltered spot from open ground while ambush
-chance did not, and the two drifted apart silently.
+**A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub — a
+`CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork invented and
+has to maintain: **Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra, the Arrivarium.**
 
-An ambush wakes you with `Dazed` — **nothing is spawned**: waking to something already in the zone is
-cheaper and less arbitrary than conjuring an attacker out of the design's convenience.
+On a hit the culprit is **woken if it was asleep** and aimed with `Brain.Target` plus a `Kill` goal —
+which is how `PsychicHunterSystem` sends a hunter after the player. The sleeper wakes `Dazed` for 3–6
+turns (−4 Agility, −4 Intelligence, −10 Move Speed) and the message **names what found them**, because
+*"a snapjaw has found you"* is a decision and *"something is moving"* is only atmosphere.
+
+Nothing is spawned. Waking what is already there is less arbitrary than conjuring an attacker out of
+the design's convenience, and it means the tier rates describe a real population.
 
 ### 51.6 State lives in the property bag, deliberately
 

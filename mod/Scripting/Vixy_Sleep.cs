@@ -3,6 +3,7 @@ using QudExpandedCE;
 using XRL;
 using XRL.Messages;
 using XRL.Rules;
+using XRL.World.AI.GoalHandlers;
 using XRL.World.Effects;
 
 namespace XRL.World.Parts
@@ -47,7 +48,7 @@ namespace XRL.World.Parts
         /// `AmbushChance` did not, so the two disagreed silently. One function deciding the tier and
         /// two reading it removes the failure rather than fixing an instance of it.
         /// </remarks>
-        public enum Where { Settlement, Bed, Sheltered, Open, Hostile }
+        public enum Where { Settlement, Bed, Sheltered, Open }
 
         /// <summary>
         /// A named settlement is the one genuinely safe place to sleep.
@@ -59,15 +60,19 @@ namespace XRL.World.Parts
         /// Freehold's rather than one this fork invented and would have to maintain.
         ///
         /// The design doc put a settlement at 0.1% per turn. It is 0 here, deliberately: a tier list
-        /// with no top end gives the player nowhere to aim, and "walk to a town and you can rest"
-        /// is a decision worth making. Hostiles in the zone still override it - a settlement under
-        /// attack is not a safe place to lie down.
+        /// with no top end gives the player nowhere to aim, and "walk to a town and you can rest" is
+        /// a decision worth making.
+        ///
+        /// <b>Hostility is not a tier here, and used to be.</b> When it was, `Locate` returned
+        /// Hostile whenever anything hostile stood in the zone - so Bed, Sheltered and Open could
+        /// only apply when nothing hostile was present, which is exactly when no ambush is possible.
+        /// Five tiers collapsed to two. Where you are is the tier; whether anything is there to find
+        /// you is a precondition, checked in <see cref="RollAmbush"/>.
         /// </remarks>
         public static Where Locate(GameObject Player)
         {
             Cell cell = Player?.CurrentCell;
             if (cell == null) return Where.Open;
-            if (HostilesPresent(Player)) return Where.Hostile;
             if (Player.CurrentZone?.IsCheckpoint() ?? false) return Where.Settlement;
             if (cell.HasObjectWithPart("Bed")) return Where.Bed;
             if (Player.CurrentZone?.IsInside() ?? false) return Where.Sheltered;
@@ -92,67 +97,102 @@ namespace XRL.World.Parts
             return Math.Max(1, tenths);
         }
 
-        /// <summary>Ambush chance per turn asleep, in hundredths of a percent.</summary>
+        /// <summary>
+        /// Chance per turn that something already in the zone finds you, in hundredths of a percent.
+        /// </summary>
         /// <remarks>
-        /// <b>These are derived from per-sleep odds, not chosen per turn.</b> That is the correction
-        /// this table needed: a full sleep is 167-250 actions, so a rate that reads harmless per turn
-        /// compounds into something else entirely. The design doc's 0.5% for open ground is a
-        /// <b>71%</b> chance of being ambushed over one sleep, which is not "location is a decision",
-        /// it is "beds or nothing".
+        /// <b>Derived from per-sleep odds, not chosen per turn</b>, and conditional on a hostile
+        /// being in the zone at all. A full sleep is 167-250 actions, so a rate that reads harmless
+        /// per turn compounds into something else entirely.
         ///
-        /// Targets, and what they compound to over a full 1000-fatigue sleep:
+        /// Targets, given something hostile is present:
         ///
         ///   settlement   0 per turn  ->   0%
-        ///   bed          3           ->   5%
-        ///   sheltered    6           ->  14%
-        ///   open        14           ->  30%
-        ///   hostile     64           ->  80%
+        ///   bed          6           ->  10%
+        ///   sheltered   14           ->  30%
+        ///   open        37           ->  60%
         /// </remarks>
         public static int AmbushChance(GameObject Player)
         {
             return Locate(Player) switch
             {
                 Where.Settlement => 0,
-                Where.Bed => 3,
-                Where.Sheltered => 6,
-                Where.Hostile => 64,
-                _ => 14,
+                Where.Bed => 6,
+                Where.Sheltered => 14,
+                _ => 37,
             };
         }
 
-        private static bool HostilesPresent(GameObject Player)
+        /// <summary>
+        /// The nearest thing in the zone that could plausibly come and find you.
+        /// </summary>
+        /// <remarks>
+        /// Sleeping and dormant creatures count - waking them is the point - but the merely
+        /// unconscious do not, since a stunned enemy is not a threat that crept up on you.
+        /// </remarks>
+        private static GameObject FindCulprit(GameObject Player)
         {
             Zone zone = Player?.CurrentZone;
-            if (zone == null) return false;
-            foreach (GameObject obj in zone.GetObjectsWithPart("Combat"))
+            if (zone == null) return null;
+
+            GameObject nearest = null;
+            int best = int.MaxValue;
+            foreach (GameObject obj in zone.GetObjectsWithPart("Brain"))
             {
-                if (obj != Player && obj.IsHostileTowards(Player) && obj.IsAlive)
-                {
-                    return true;
-                }
+                if (obj == Player || !obj.IsAlive || obj.Brain == null) continue;
+                if (!obj.IsHostileTowards(Player)) continue;
+                if (obj.HasEffect("Stun") || obj.HasEffect("Paralyzed")) continue;
+
+                int d = obj.DistanceTo(Player);
+                if (d < best) { best = d; nearest = obj; }
             }
-            return false;
+            return nearest;
         }
 
         /// <summary>
-        /// One ambush roll per turn asleep. On a hit, wake hard.
+        /// One ambush roll per turn asleep. On a hit, something real comes for you.
         /// </summary>
         /// <remarks>
-        /// This is what makes location a decision rather than a formality, and why a bedroll earns
-        /// its weight: a bed is sixty times safer than lying down among hostiles. Nothing is spawned
-        /// - waking to something already in the zone is both cheaper and less arbitrary than
-        /// conjuring an attacker out of the design's convenience.
+        /// <b>The first version woke the player, applied Dazed and printed "something is moving
+        /// nearby" without checking that anything was.</b> On open ground in an empty zone - the
+        /// common case - that message was simply false, and the mechanic was a randomised penalty
+        /// with no danger attached. §3.3 asked for "spawn or wake a nearby hostile"; declining to
+        /// spawn was deliberate, and then the waking was never written.
+        ///
+        /// So an ambush now needs a culprit. No hostile in the zone means no roll and an undisturbed
+        /// sleep, which makes the rate mean "chance something finds you" rather than "chance you are
+        /// interrupted" - what the tier table always described. Nothing is spawned: waking what is
+        /// already there is less arbitrary than conjuring an attacker out of the design's
+        /// convenience.
+        ///
+        /// Aiming it is `Brain.Target` plus a `Kill` goal, which is how `PsychicHunterSystem` sends
+        /// a hunter after the player and how the two tutorial creatures work.
         /// </remarks>
         public static void RollAmbush(GameObject Player)
         {
             if (Player == null || !Player.HasEffect<Asleep>()) return;
-            if (Stat.Random(1, 10000) > AmbushChance(Player)) return;
 
-            Asleep asleep = Player.GetEffect<Asleep>();
-            if (asleep != null) Player.RemoveEffect(asleep);
+            int chance = AmbushChance(Player);
+            if (chance <= 0) return;
 
+            GameObject culprit = FindCulprit(Player);
+            if (culprit == null) return;
+
+            if (Stat.Random(1, 10000) > chance) return;
+
+            // Wake it if it was asleep - that is the half of §3.3 that was missing - and point it
+            // at the player rather than hoping its own wandering brings it over.
+            Asleep theirs = culprit.GetEffect<Asleep>();
+            if (theirs != null) culprit.RemoveEffect(theirs);
+            culprit.Brain.Target = Player;
+            culprit.Brain.PushGoal(new Kill(Player));
+
+            Asleep mine = Player.GetEffect<Asleep>();
+            if (mine != null) Player.RemoveEffect(mine);
             Player.ApplyEffect(new Dazed(Stat.Random(3, 6)));
-            MessageQueue.AddPlayerMessage("{{R|You wake with a start. Something is moving nearby.}}");
+
+            MessageQueue.AddPlayerMessage(
+                "{{R|You wake with a start. " + culprit.The + culprit.ShortDisplayName + " has found you.}}");
             The.Core?.RenderBase();
         }
 
