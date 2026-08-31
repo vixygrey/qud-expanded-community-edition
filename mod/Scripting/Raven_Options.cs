@@ -32,6 +32,8 @@ namespace QudExpandedCE
         public const string WeaponWearID = "OptionQudExpandedCEWeaponWear";
 
         public const string OnsetWarningID = "OptionQudExpandedCEOnsetWarning";
+
+        public const string WoundsID = "OptionQudExpandedCEWounds";
         public const string MutantHPGainID = "OptionQudExpandedCEMutantHPGain";
         public const string SkillPointGainID = "OptionQudExpandedCESkillPointGain";
         public const string StartingSkillsID = "OptionQudExpandedCEStartingSkills";
@@ -636,6 +638,18 @@ namespace QudExpandedCE
         /// is nothing stored to migrate.
         /// </remarks>
         public static bool OnsetWarning => Enabled(OnsetWarningID, "Yes");
+
+        /// <summary>
+        /// Whether a blow taking half my hit points leaves a wound that rest will not close.
+        /// </summary>
+        /// <remarks>
+        /// <b>Default off</b>, unlike every other option in this file. That is
+        /// <c>docs/DESIGN_difficulty_systems.md</c> §0's standing constraint on all eight of its
+        /// items: they make the game harder, so the player opts in rather than out. §B1 is also the
+        /// one that document names as most likely to feel bad, which makes the default the honest
+        /// one rather than a formality.
+        /// </remarks>
+        public static bool Wounds => Enabled(WoundsID, "No");
 
         /// <summary>
         /// The tier interval, scaled by the slider: light doubles it, heavy halves it.

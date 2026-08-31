@@ -488,4 +488,23 @@
             onset you beat outright can pass in complete silence.
     </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEWounds"
+    DisplayText="Heavy blows leave wounds that rest will not close"
+    Category="Qud Expanded CE"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded wounds difficulty healing regeneration physic treatment"
+  >
+    <helptext>
+            A single blow taking half your hit points leaves a wound. Natural healing
+            then stops a quarter short of full until it is treated.
+
+            Any treatment clears it - a bandage, salve, an injector, the Physic skills,
+            a regeneration tank or a healing meal. Untreated it fades on its own.
+
+            Damage over time never wounds, and the Regeneration mutation shrinks the
+            wound as it ranks up. Off by default: this makes the game harder.
+    </helptext>
+  </option>
 </options>

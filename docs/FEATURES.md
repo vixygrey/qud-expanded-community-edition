@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 23 options (§13)
+│   ├── Options.xml             # 24 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 67 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 69 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -5629,6 +5629,107 @@ I reasoned about dispatch order; this arranges not to care about it.**
 A **checkbox**, default on. This one earns an option where §39's maker's marks did not: it changes
 the game's *voice*, and Qud withholds information on purpose. Everything it gates is text at display
 time, so the switch is live and there is nothing stored to migrate.
+
+## 44. Wounds that rest will not close (`Vixy_Wound`, `Vixy_Wounding`)
+
+**Off by default.** This is item **B1** of `docs/DESIGN_difficulty_systems.md`, and §0's standing
+constraint on all eight of that document's items is that the player opts in (#192).
+
+Part A of that document adds opposition; Part B removes the free resources that make late Qud easy.
+**This adds no enemy hit points at all.**
+
+### 44.1 The gap
+
+Natural healing is `(20 + 2×ToughnessMod + 2×WillpowerMod)` per turn into a counter paying 1 HP per
+100 — roughly 0.2 HP a turn. Slow, but turns are cheap, so hit points are very nearly renewable and
+damage has no memory: you walk out of every fight as though it never happened.
+
+Qud already has the answer to that and never requires it. #640 counted the treatment economy —
+**11 restorative blueprints, four cooking domains, Convalessence and the `Physic` tree** — and closed
+as *deliberate, not a gap*. Nothing needed building first.
+
+### 44.2 What a wound is
+
+A single **direct** blow taking **half** your maximum hit points leaves a wound. Natural healing then
+stops **a quarter short of full** until it is treated.
+
+| | |
+|---|---|
+| trigger | one blow ≥ 50% of max HP, `!Indirect` |
+| reserve | 25% of max HP, withheld from natural healing only |
+| clears | **any** treatment at all |
+| backstop | expires after 1,500 turns untreated |
+| Regeneration mutation | shrinks the reserve 10% per level, gone at 10 |
+
+### 44.3 The mechanism is vanilla's, down to a six-line precedent
+
+`Stomach.ProcessNaturalHealing` fires `Regenerating` and then `Regenerating2` as ordinary string
+events carrying a mutable `Amount`. `XRL.World.Parts.DisabledNaturalHealing` already exists to zero
+it:
+
+```csharp
+public override void Register(GameObject Object, IEventRegistrar Registrar)
+    => Registrar.Register("Regenerating");
+public override bool FireEvent(Event E)
+{
+    if (E.ID == "Regenerating") E.SetParameter("Amount", 0);
+    return base.FireEvent(E);
+}
+```
+
+This does the same thing conditionally. And the arithmetic is vanilla's too: **`Penalty` on the
+Hitpoints stat *is* the damage store** — `Stomach` heals by `Penalty -= num` — so "hit points a wound
+holds back" is a floor below which natural healing may not lower `Penalty`, and needs no bookkeeping
+of its own.
+
+### 44.4 Treatment passes through, and nothing had to be changed to let it
+
+`GameObject.Heal` writes `stat.Penalty -= num2` **directly and never fires `Regenerating`**. So every
+bandage, salve, injector, `Physic` use, regeneration tank and healing meal already heals through a
+wound. The treatment economy becomes load-bearing without a single item being touched.
+
+And `Heal` fires a `Healing` event before applying, so the wound removes itself on being treated
+**at all** — rather than requiring you to be healed past the reserve. That is the gentler of the two
+readings and a deliberate choice: the bite is the interruption and the consumable, not the
+arithmetic. §B1 names itself the item most likely to feel bad, and a wound you cannot clear without
+the right supplies is exactly how that happens.
+
+### 44.5 A proportional threshold, which is vanilla's own
+
+Immediately above the `TookDamageEvent` send site, the floating combat text scales itself by
+`damage.Amount / stat.BaseValue` in five bands — 0.1, 0.2, 0.3, 0.4, 0.5. **Freehold already
+classifies how big a hit was as a fraction of maximum hit points**, and the player has been trained
+on it all game: the number gets visibly bigger at exactly those steps. The wound fires at the top
+band.
+
+That also closes #192's last checkbox. This fork adds **+4** to the maximum weapon die at tier 5 and
+nothing at the other eight — which only matters to an absolute number. A fraction of maximum hit
+points is invariant to weapon tier, character level, Strength and every multiplier at once.
+
+*Honest limit:* those bands are read from a **presentation** path — how large to draw a number — so
+they are good evidence of how Freehold thinks about severity, and are not a balance figure anybody
+tuned for consequences. The shape is well founded; the number wants play.
+
+### 44.6 Damage over time cannot wound
+
+`IDamageEvent.Indirect` is passed `Indirect: true` by `Poisoned`, `PhasePoisoned`, `PoisonGasPoison`,
+`SporeCloudPoison`, `AshPoison`, `Bleeding`, `Burning`, `GasDamaging` and `LifeDrain` — every
+damage-over-time source — and it reaches `TookDamageEvent`. So most of the *"generous thresholds"*
+worry is answered by a flag that already exists rather than by tuning. A wound comes from being hit
+hard once, not from standing in gas.
+
+### 44.7 The Regeneration mutation is blunted, not exempted
+
+The mutation registers `Regenerating`; this clamps on `Regenerating2`, which
+`ProcessNaturalHealing` fires **second**, so the clamp lands last whatever the mutation did to
+`Amount`. Rather than bolting a wound-specific exemption on top, the reserve itself shrinks 10% per
+level and is gone at 10 — the existing lever, which is what #192 asked for.
+
+### 44.8 Never permanent, two ways
+
+Any treatment removes it, and failing that it expires on its own after 1,500 turns. Both are needed:
+the first is what makes the treatment economy matter, the second means a player with nothing left is
+delayed rather than stranded.
 
 ## Appendix A — every merged vanilla melee weapon
 
