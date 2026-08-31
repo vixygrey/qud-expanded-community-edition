@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **496** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **509** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **282** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **125** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **128** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -588,9 +588,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
-| `Items.xml` | 4 | 9 |
+| `Items.xml` | 17 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **496 active** | **282** |
+| **Total** | **509 active** | **282** |
 
 ### 6.2 Melee weapons
 
@@ -1825,7 +1825,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-150 table definitions: **125 merged** into vanilla, **25 declared fresh**. The 48/28 split this
+154 table definitions: **128 merged** into vanilla, **26 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2116,7 +2116,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
-│   └── PopulationTables.xml    # 150 tables (125 merge / 25 new)
+│   └── PopulationTables.xml    # 154 tables (128 merge / 26 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2130,7 +2130,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Items.xml               # 4 new (§47), 9 merged (§30)
+│   ├── Items.xml               # 17 new (§47, §49), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
@@ -6151,6 +6151,102 @@ inside `ModManager.BuildMods()`, so the gate is read once at mod build; but reli
 worldgen, at lazy zone build, and during play, so a running game keeps drawing from whichever pool
 was loaded. Relics that already have names keep them — a name is written once, when the relic is
 made.
+
+## 49. Thirteen books (`Core/Books.xml`)
+
+Two continuations into the general pool, and eleven volumes stocked by booksellers only. Pure data —
+texts, blueprints and table entries. No C#. #741.
+
+### 49.1 The pool, and why it is worth being careful with
+
+`Books` is **28 entries at 469 weight**, of which **22 carry an authored text** — 84.4% of the weight,
+71 pages. The half ceiling in §3.2.1 would permit about **23** new entries at parity weight, so the
+share was never the binding constraint here. Two things are.
+
+The first is #154's sparseness caution. The second does not show up in a share at all: **eleven
+`StartingGear_*` tables reach this pool** through `BooksAndRandomBooks`, so a Scholar, Pilgrim or
+Priest begins the game holding a general-pool book about one run in twenty-seven. Anything entered
+here has to survive being somebody's first impression of Qud's prose.
+
+**A page is a container, not a length.** Eleven of the 22 are one page, which makes the pool look
+cheap to join; the median is **612 words** and `Across3` is 1,356 on a single page. One pool text is
+roughly the whole of §47's four local histories, three times over.
+
+### 49.2 Two continuations
+
+| | words | joins |
+|---|---:|---|
+| `{{W\|Frivolous Lives, Vol. II}}` | 398 | beside `Lives1` |
+| `{{W\|Eta and the Earthling, Canto II}}` | 321 | beside `EtaandtheEarthling1` |
+
+Continuing a series inherits a register instead of testing a new one against 22 established texts, and
+a volume II of something already on the shelf reads as a find rather than an addition. Both voices are
+strict: the Yewtarch is a plant of the Consortium of Phyta cataloguing humanoid kings it considers
+seedlings, dating everything **PP** — prior to publication — because it takes its own volumes as the
+epoch of paramount significance. Eta answers a question containing a category error with a parable
+that reframes rather than corrects, under Roman numerals, with *"Eta smiled in patience"* as refrain.
+
+Together they put this fork at **7.9%** of the pool.
+
+### 49.3 Eleven volumes the booksellers carry
+
+Ten transpose the manner of a writer the maintainer admires and ask what it would have produced had it
+grown here — so they are Qud books by Qud authors, and **no real person is named, quoted or attributed
+anywhere**. Style is not the property of the stylist; the prose is this fork's. The eleventh, *A
+Concordance of Loss*, is neither transposition nor continuation.
+
+They lean on the pool's dominant convention rather than inventing one: **thirteen of vanilla's
+twenty-two open with editorial apparatus** — an editor's note, a translator's note, a named compiler —
+presenting a text as a published artifact within the world rather than as raw narration. Every one of
+these carries that frame.
+
+**None of them enters the general pool.** `Vixy_Homages` is referenced from `BookBinderInventory` and
+`ScribeInventory_Legendary` — no bookshelf, no trinket roll, no starting character. Shares are 17.6%
+and 26.3%, both inside the ceiling.
+
+One route is not a choice made here and should not be described as one. Every item in the game
+inherits `DynamicObjectsTable:Items` from the `Item` root, and `HamilcrabInventory` rolls it — so a
+hamilcrab can carry one of these, exactly as it can carry any of vanilla's own books. That is
+vanilla's design rather than this fork's, it applies to all 256 of this fork's items already, and
+`dynamic-pools` is what refused the first commit here and made the point. The four local histories in
+§47 escape it only because they declare `ExcludeFromDynamicEncounters`, which these deliberately do
+not.
+
+### 49.4 Value, and what it buys
+
+These carry a real value and **no** `ExcludeFromDynamicEncounters`, which is the exact opposite of
+§47's local histories and is deliberate. Across vanilla's 34 `Book` descendants the split is clean: a
+general-pool scholarly text is priced 35–350 with no exclusion tag, while a location-bound or trivial
+one is priced at or near zero and declares it. These are the first kind — so they pay the Stilt
+librarian, `LibrarianGiveBook` awarding value² / 25, and they are baetyl- and Sifrah-eligible exactly
+as vanilla's own texts are. That is right for a scholarly find and wrong for a village's own history,
+which is why the two features price oppositely.
+
+Values sit inside vanilla's band rather than above it. *Salt Week* is **35**, matching `Corpus` as the
+cheapest authored text in the pool, because it is a labourer's week written on the back of a ledger
+and pricing it like a treatise would be the joke misfiring.
+
+### 49.5 One dependency worth not forgetting
+
+*A Concordance of Loss* lists, among things a village can no longer recover, *"the greater part of a
+story about a girl and a globe of pearl-glass."* That is `TeleporterOrbs` — **The Girl in the Sky**,
+764 words about Aphir's daughter, which #699 found is reachable by nothing in the game: no blueprint,
+no `Story` property, no code. #741 decided to leave it cut, and the line is true only while that
+holds. **If that text is ever given a blueprint, this item becomes a lie and must go** — the story
+would then be recoverable, sitting on a shelf two rooms away.
+
+### 49.6 Off-switch
+
+None, on the same reading as §47.5. Rule 6 asks whether anybody would actually turn it off, and
+thirteen books that change no mechanic — eleven of which a player must choose to buy — are the flavour
+case #663 settled.
+
+There was a second reason to keep them ungated, and it is worth recording. `table-share` and
+`scatter-share` read **only** `mod/Core/PopulationTables.xml`, so population entries in an
+option-gated directory are invisible to both. The entries cannot live in `Core/` while the blueprints
+are gated either, or switching the option off leaves the table pointing at blueprints that no longer
+exist. Gating this feature therefore meant either a silent hole in the share checks or widening them
+first, and neither is worth buying an option nobody wants.
 
 ## Appendix A — every merged vanilla melee weapon
 

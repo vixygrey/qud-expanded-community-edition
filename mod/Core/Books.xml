@@ -64,4 +64,321 @@ The founders argued the question for a season and settled it without a vote, whi
 
 The rock was a landmark before it was a shelter, and a shelter before anyone cut rooms into it. Each occupant took the last one's furniture and left their own. Water still runs at the bottom, which is the only reason any of them stayed.</page>
   </book>
+
+  <!-- Two continuations of vanilla series, #741. These enter the general Books pool beside their
+       own predecessors, which is the argument for them: a volume II of something already on the
+       shelf reads as a find rather than as an addition, and it inherits its register instead of
+       testing a new one against 22 established texts.
+
+       Frivolous Lives is by the Baccata Yewtarch, a plant of the Consortium of Phyta cataloguing
+       humanoid kings it considers seedlings. Its dating is "PP" - prior to publication - because
+       the author takes its own volumes as the epoch of paramount historical significance. The
+       condescension is the joke and has to be maintained exactly.
+
+       Eta and the Earthling is a dialogue: the Earthling asks a question that contains a category
+       error, Eta answers with a parable that reframes rather than corrects it. Sections are Roman
+       numerals; "Eta smiled in patience" is the refrain.
+
+       [[ ]] marks a header. HandlePageNode strips the brackets and MarkovCorpusGenerator excludes
+       what they wrap, so a header does not pollute the procedural corpus. -->
+
+  <book ID="Vixy_FrivolousLivesVol2" Title="{{W|Frivolous Lives, Vol. II}}" Format="Auto" Margins="1,2,2,2">
+    <page>Frivolous Lives: Being the Foremost Catalogue of Humanoid Kings by the Baccata Yewtarch, Volume II
+
+[[{{C|Preface to the Second Volume}}]]
+The first volume was received by its humanoid subjects with the enthusiasm one expects of a species that cannot read it. I am assured by the Consortium that a copy was eaten. I record this without rancour: the gesture is, in its way, the most attentive reading the work has received.
+
+I continue the catalogue below. The reader will note that the reigns grow shorter as they approach the present. I offer no theory for this. I merely observe that a thing which grows quickly is not obliged to grow long.</page>
+    <page>[[{{C|Isner II, called the Unpruned (61? - 59? PP)}}]]
+Inherited the seven holdings of his house and divided them among his sons, who divided them again, until the holdings were smaller than the parchment recording them. The Consortium considers this the single most instructive act in humanoid history and has preserved the parchment. The holdings are not preserved.
+
+[[{{C|Tavvi of the Ford (58? - 58? PP)}}]]
+Crowned in spring, deposed in spring. Her chroniclers were still describing the coronation when the reign concluded, and the resulting document treats her fall as an event of the coronation, which in the strict sense it was.
+
+[[{{C|Mehal, the Quiet King (55? - 40? PP)}}]]
+Reigned fifteen years and issued no decree, founded no house, and fought no war. His subjects remember him fondly and cannot say why. I include him as a courtesy to my humanoid readers, who I am told find such figures restful. Among the Phyta he would be considered merely young.</page>
+    <page>[[{{C|On the Succession Generally}}]]
+It is the practice of humanoid kings to name an heir, and the practice of heirs to be named too late. I have compiled the intervals between the naming and the dying, and the median is four days.
+
+I once put this figure to a humanoid king, who replied that a man cannot know the hour of his death. I answered that a man may know the hour of his naming, and that the two are related by a quantity entirely within his gift. He did not name an heir. He died on a Tuesday.
+
+[[{{C|Closing}}]]
+Volume III will treat the reigns nearer to publication, if the reigns permit. The Yewtarch does not anticipate difficulty. The Yewtarch anticipates outliving the subject matter.</page>
+  </book>
+
+  <book ID="Vixy_EtaAndTheEarthling2" Title="{{W|Eta and the Earthling, Canto II}}" Format="Auto" Margins="1,2,2,2">
+    <page>[[{{w|VII.}}]]
+
+Once, the Earthling knelt at a dry well and asked, "How much water is a life worth?"
+
+Eta smiled in patience. "You have asked how much rope is a knot worth. The question mistakes the measure for the thing measured. Tell me instead: when you drink, does the water become you, or do you become somewhere the water is passing through?"
+
+The Earthling considered this for a long while and did not answer.
+
+"Good," said Eta. "That was the whole of the lesson."</page>
+    <page>[[{{w|VIII.}}]]
+
+Once, the Earthling watched a snapjaw bury its dead and asked, "Do they grieve, or do they only imitate us?"
+
+Eta smiled in patience. "A child learns to speak by imitation, and the words are no less true for it. Ask rather why you require their grief to be original before you will call it grief."</page>
+    <page>[[{{w|IX.}}]]
+
+Once, the Earthling stood before a machine that had run without purpose for a thousand years and asked, "Should I stop it?"
+
+Eta was silent.
+
+"You do not answer," said the Earthling.
+
+"I am waiting," said Eta, "to see whether you stop it. The answer is downstream of the deed, Earthling, and not the other way about. Most of what you call thinking is the sound of a decision already made."</page>
+    <page>[[{{w|X.}}]]
+
+Once, the Earthling asked, "Why do you smile in patience? Am I so slow?"
+
+Eta smiled in patience. "I smile because you ask. The ptychosaur did not ask, and roamed in sovereignty for an age, and is a bone in your hand. Slowness is not the failing you imagine. A question is a kind of root: it goes down before anything goes up."</page>
+    <page>[[{{w|XI.}}]]
+
+Once, the Earthling asked nothing at all, and sat, and watched the light move along the salt.
+
+Eta said nothing, and sat, and watched beside them.
+
+Later the Earthling said, "I have no question today."
+
+"Then today," said Eta, "you have understood me."</page>
+  </book>
+
+  <!-- Ten transposed works, #741. Each takes the manner of a writer I admire and asks what that
+       manner would have produced had it grown here instead - so they are Qud books by Qud authors,
+       and no real person is named, quoted or attributed anywhere. Style is not the property of the
+       stylist; the prose is mine.
+
+       These do NOT enter the general Books pool. They are stocked by book merchants only, through
+       Vixy_Homages in Core/PopulationTables.xml, so they add nothing to what a bookshelf or a
+       starting character can produce. A bookseller's shelf is where a strange volume belongs, and
+       buying one is a small event in a way that finding one is not.
+
+       They lean on the pool's dominant convention rather than inventing one: thirteen of vanilla's
+       twenty-two open with editorial apparatus - an editor's note, a translator's note, a named
+       compiler - which presents a text as a published artifact within the world rather than as raw
+       narration. Every one of these carries that frame. -->
+
+  <book
+    ID="Vixy_SurveyOfTheSlumpedQuarter"
+    Title="{{W|Notes Toward a Survey of the Slumped Quarter}}"
+    Format="Auto"
+    Margins="1,2,2,2"
+  >
+    <page
+    >{{w|Recovered from a locker at the perimeter. The surveyor is not named in the record and did not return to claim wages.}}
+
+Day one. Marked the northeast approach with lime. The lime was gone by evening. Not scattered — gone, and the ground under it dry.
+
+Day three. Recovered: one sphere, palm-sized, warm on the shaded side and cold on the lit side. Consortium schedule has no entry for it. I have entered it as *anomalous, spherical* and drawn a circle, which is the most honest thing in the ledger.
+
+Day six. Vosk went in past the third arch against the standing order. He came out. He is well. He is entirely well, and he answers every question put to him, and I have known him eleven years and I cannot say what is wrong. I have filed no report on this because there is no box on the form.
+
+Day nine. The sphere is cold on the shaded side now and warm on the lit side. I did not turn it.
+
+Day eleven. Requisition denied for a second surveyor. The clerk writes that the quarter is "of no established significance." I have read that phrase forty times today. Every word of it is true and the sentence is a lie, and I do not know how to write back and say so in a way that fits the form.
+
+Day fourteen. Going in past the third arch. If the ledger continues in my hand, disregard everything above. If it continues in another hand, that is the finding.</page>
+  </book>
+
+  <book ID="Vixy_OnTheWaterFormOfValue" Title="{{W|On the Water-Form of Value}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: circulated in manuscript among the freeholds. The Consortium has declined to comment on its contents or its author.}}
+
+A dram is not wealth. A dram is water that has been prevented from being drunk.
+
+Observe the two faces of the thing. In the cistern it is life, and its measure is thirst. In the purse it is price, and its measure is whatever the holder can be brought to accept. It is the same water. Nothing has been added to it but a delay, and the delay is the whole of the value.
+
+Who profits by the delay? Not the drinker, who is thirsty for the duration. Not the carrier, who is paid in the very substance withheld and must therefore work again tomorrow at the same thirst. The merchant does not sell water. The merchant sells the interval between wanting and having, and has arranged matters so that the interval is his to lengthen.
+
+I have been told that this arrangement is natural, as the salt is natural. I answer that the salt does not keep ledgers.
+
+Nor is the labourer's wage a share of what he made. It is precisely the quantity of water required to return him to the well tomorrow — no more, or he would rest; no less, or he would die and be replaced at cost. Between what he draws and what he keeps stands a difference, and that difference is a building in Kyakukya with a good roof.
+
+None of this is hidden. That is what most deserves explaining. Every carrier can perform the arithmetic and does not, because a man who has counted it cannot un-know it, and he must still carry water in the morning.</page>
+  </book>
+
+  <book ID="Vixy_ATreatiseOnTheClaim" Title="{{W|A Treatise on the Claim}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: bound with the preceding work in three surviving copies, apparently by a hand that wished them read together.}}
+
+My correspondent writes that a dram is water prevented from being drunk. He writes well and reasons badly, and I shall say where.
+
+Consider a well in the waste that no one has dug. It is not water. It is the rumour of water, and a man may die of thirst above it. Now a man digs. He spends his back and his summer and the risk that there is nothing below, and at the end there is a well.
+
+What is his? Not the water — the water was always there, as my correspondent says. His is the digging. But the digging cannot be separated from the well, for a well is nothing but digging that has stopped, and so in claiming the labour he must claim the hole, and in claiming the hole he has the water whether he wished it or not. This is not theft. It is arithmetic.
+
+He asks who profits by the delay. I answer: the second man, who arrives in a dry season and finds a well already dug and need only pay. He calls the price a theft. It is a bargain, and he is only able to consider it a theft because the alternative — a waste with no well in it — has been made invisible by the very labour he resents.
+
+I grant him one thing and it is not small. A man who digs a well may fence it, and a man who fences a well may fence a hundred, and at some number the fencing is no longer digging and has become something else, for which we have no good word and want one badly.</page>
+  </book>
+
+  <book ID="Vixy_TheShaleGallery" Title="{{W|An Account of the Shale Gallery}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: the author was an antiquarian of some standing. This is the last of his papers and the only one his executors declined to catalogue.}}
+
+I had come for the frescoes. I wish to be clear on this, because what follows will be read as the account of a man who went looking for something, and I did not. I went looking for pigment.
+
+The gallery runs eleven hundred paces on a bearing that does not deviate. I measured it twice. The builders cut through shale, through a seam of flint that must have cost them a season, and through what I can only describe as an older gallery running crosswise, which they did not divert around and did not acknowledge. They cut through it as a road cuts through a field.
+
+It was at the ninth hundred that I began to attend to the figures. They are not frescoes. They are incised, and they are all of them the same figure, and the figure is shown from behind. In eleven hundred paces of wall there is not one that turns.
+
+I want to set down plainly that nothing happened to me. No sound, no light, no visitation. I walked to the end of the gallery and the gallery ended in shale, unworked, as though the diggers had simply stopped. I walked back. I emerged. I am at my desk.
+
+But I find I cannot write the word *behind* without setting down my pen. I have tried it four times on this page. I have begun to understand that the figures are not shown from behind. They are shown correctly, and it is we who are always behind them, and the gallery was not a corridor but a demonstration, and it was not made for us, and it was not made for us, and someone has been very patient.</page>
+  </book>
+
+  <book ID="Vixy_HusbandryOfDunes" Title="{{W|On the Husbandry of Dunes}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: an excerpt. The epigraphs are the author's own and are drawn from a longer work that has not survived.}}
+
+{{c|"The desert does not advance. The desert is what remains when nothing opposes it."}}
+{{c|— from the Salt Commentaries}}
+
+The error of the freeholds is to fight the dune at its face. The face is where the dune is visible and therefore where it is weakest, and a season of labour at the face will move it a hand's breadth and cost you the season.
+
+The dune is made at its back, where the wind lifts grain from the flat and lays it over the crest. A child with a hurdle-fence at the back of a dune does more in a month than a village at its face does in a year. This is not a technique. It is a way of seeing, and it is the whole of the discipline: find where the thing is being made, not where it is arriving.
+
+{{c|"A people who plant for themselves will eat. A people who plant for their grandchildren will have grandchildren."}}
+{{c|— from the Salt Commentaries}}
+
+The vine is planted not for its fruit but for its root, and the root is not planted for the vine but for the soil, and the soil is not made for this generation. I have said this to freeholders and watched them do the arithmetic and reach the correct conclusion and plant nothing, because the correct conclusion is that they will not see it.
+
+They are not wrong about the arithmetic. They are wrong about who is doing the counting.</page>
+  </book>
+
+  <book
+    ID="Vixy_AddressUponTheRelief"
+    Title="{{W|Address Upon the Relief of the Gate}}"
+    Format="Auto"
+    Margins="1,2,2,2"
+  >
+    <page
+    >{{w|Publisher's Note: taken down as spoken, three days after the assault was broken. The speaker declined to revise it for print.}}
+
+We are told that we held. I would put it otherwise. We were not strong enough to hold and we held; and the distance between those two statements is where the whole of the credit lies, and it does not lie with me.
+
+Let us have the account plainly, for it will be dressed up soon enough and I would rather be first. We were outnumbered from the second hour. The eastern emplacement failed at dusk and was not recovered. We lost the outer works, and we lost them because I judged they could be kept, and they could not.
+
+And yet. And yet at the third watch, when the line was thinner than any line has a right to be, it did not break. Not because of any order I gave — I gave none that hour; there was no one to carry it — but because along a hundred paces of rubble, men and women who had every reason to run declined, one at a time, in the dark, without knowing whether anyone to their left or right had made the same choice.
+
+That is the whole of what happened here. It has been called a defence. It was ten score private decisions that happened to agree.
+
+We are asked what we will do if they come again. We will do this again. We will do it worse, being fewer, and we will do it again after that. Not because we expect to prevail — I have never said we would prevail — but because the alternative has been examined by better people than me and found to be nothing at all.</page>
+  </book>
+
+  <book ID="Vixy_TheNinthBell" Title="{{W|The Ninth Bell}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: found folded into the binding of another volume, in a hand that deteriorates markedly across its length.}}
+
+I did not steal it. I want that established before the rest, though I am aware that a man who begins by establishing his innocence has already told you what the document is about.
+
+It hung in the tower at Ess and it rang eight times at dusk, and every soul in that town could tell you it rang eight, and I counted nine. Not once. Not in fever. Nine, on the ninth evening of my stay, and nine on every evening after, and eight for everyone else.
+
+I asked the bellman. He was patient with me in the way one is patient with a guest. He showed me the wheel, the stay, the rope — eight, he said, has been eight since his father. I agreed with him. I have never disagreed with anyone about this. I simply continued to hear nine.
+
+You will say: leave the town. I left the town. It followed me to Kyakukya and it followed me across the salt, and now it does not wait for dusk. Now it is whenever I am nearly asleep, which is a thing a bell cannot know and yet it knows it.
+
+I took it down. I want to be exact: I took down the bell, which was not mine, and I carried it four days, and I put it in a place I will not write here. And it rang the ninth stroke as I walked away, from behind me, in the empty tower I had emptied.
+
+I am no longer frightened of the sound. I am frightened that I have begun to wait for it, and that I am disappointed on the nights it does not come, and that this disappointment is the last thing that is still mine.</page>
+  </book>
+
+  <book ID="Vixy_SaltWeek" Title="{{W|Salt Week}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: acquired with a lot of ledgers. The compiler has been unable to establish that the author intended publication.}}
+
+Monday the pump failed. Not broken. Failed, which is different, and which means you stand there working the handle correctly for an hour before you accept it.
+
+Tuesday I walked to Ezra to borrow a fitting. Ezra has one man who has the fitting and he wanted to talk about his son. I stood in his doorway for two hours and heard about the son and I got the fitting. It was the wrong size. I did not go back.
+
+Wednesday I drank the week's ration on Wednesday. There is no defending it and I am not going to.
+
+Thursday the woman from the eastern pans came by and looked at the pump and fixed it in about the time it takes to describe. She did not say anything about it. That was the decent thing and I have thought about it more than I thought about the pump.
+
+Friday I hauled. Just hauled. Nine trips. It was the best day of the week and I want that written down somewhere, because if you asked me Sunday which day was best I would have said Thursday, on account of the pump, and I would have been wrong.
+
+Saturday nothing.
+
+Sunday a man came through selling a book about how to live. I told him I could not read. I can read. I did not want him to have the satisfaction, and I have been turning that over since, and I think what I did not want was for him to be right in front of me.</page>
+  </book>
+
+  <book ID="Vixy_OneHourAtTheCistern" Title="{{W|One Hour at the Cistern}}" Format="Auto" Margins="1,2,2,2">
+    <page>{{w|Editor's note: an excerpt, published with the permission of the survivors' kin.}}
+
+Ferrin had the left arc and Ferrin was talking, because Ferrin always talked, and the talking was how you knew the line was holding.
+
+"Cistern's dry," he said. "Whole reason we're stood here. Dry."
+
+Nobody answered. Answering was Vess's job and Vess was face-down at the second step with her hands still on the haft, which they had all seen and none of them had said, because saying it made it a fact you had to carry and there was an hour left.
+
+They came again at the quarter. Not a charge — a lean, a pressure, the way water finds a seam. Ferrin killed one and then another and stopped talking, and the silence went down the line faster than any order.
+
+"Talk," said Odo, from the right.
+
+Ferrin talked.
+
+He talked about a fitting he owed a man in Ezra. He talked about the size of his father's hands. He talked while he worked and the line heard him working and held, and at the half hour the pressure went off them the way weather goes off, all at once and for no reason they would ever learn.
+
+Odo counted. Nine standing of the sixteen. He counted twice because the first count had included Vess, and the correction took him a moment he could not afford and took anyway.
+
+"Cistern's still dry," said Ferrin.
+
+"Aye," said Odo.
+
+They held it another hour. Nothing came. That was the engagement: two hours, seven dead, one dry cistern, and no name for it in any account, because nothing had been taken and nothing had been lost that the ledger recognised.</page>
+  </book>
+
+  <book ID="Vixy_OnTheProverbOfTheVine" Title="{{W|Notes on the Proverb of the Vine}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Editor's note: a lecture, transcribed. The audience's interjections have been removed at the lecturer's insistence and against the transcriber's judgement.}}
+
+The villagers of Joppa say: {{y|the vine takes what the soil is owed}}. Very good. Everyone nods. But notice — and this is the crucial point, the point everyone misses — notice that nobody in Joppa can tell you what the soil is owed. Ask them! They will look at you with a kind of embarrassed patience, as one looks at a child, and they will repeat the proverb slightly louder.
+
+This is not a failure of the proverb. This is the proverb functioning perfectly.
+
+Because what is a debt that cannot be quantified? It is not a debt at all — it is a relation, dressed as a debt, so that it can be felt as an obligation rather than negotiated as a bargain. And so on and so on. The genius of the thing is that it makes the arrangement unavailable for renegotiation by making it unavailable for statement.
+
+Now, my opponent will say: this is a peasant saying about crop rotation, and you have made it into a conspiracy. But no! Precisely the opposite. I am not saying the villagers are deceived. I am saying something far more uncomfortable, which is that they are entirely correct, and that the proverb is true, and that its truth is what does the work.
+
+The true ideological achievement is never the lie. Anyone can tell a lie. The achievement is the truth so shaped that having it changes nothing.
+
+Consider finally that they say it while planting. Always while planting, never at harvest. At harvest they say nothing at all. Somebody should write about that. I have said enough.</page>
+  </book>
+
+  <!-- Not a transposition and not a continuation - its own thing, kept at the maintainer's
+       request. It is stocked with the homages rather than entering the general pool, because a
+       fragmentary list of what a village cannot remember is a bookseller's oddity rather than
+       something to find on a shelf.
+
+       Its fifth item points at TeleporterOrbs, "The Girl in the Sky" - 764 words about Aphir's
+       daughter and a pearl-glass globe from Aepsyonth, which #699 found is reachable by nothing
+       in the game: no blueprint, no Story property, no code. The decision on #741 is to leave it
+       cut, so the line stays true. If that text is ever given a blueprint this item becomes a
+       lie, because the story would then be recoverable, and the item must go. -->
+
+  <book ID="Vixy_AConcordanceOfLoss" Title="{{W|A Concordance of Loss}}" Format="Auto" Margins="1,2,2,2">
+    <page
+    >{{w|Translator's note: a fragment. The original is a list, and I have preserved it as a list, though the convention of our own scholarship would render it as prose and lose the thing entirely.}}
+
+Recorded at Ess, in the year the well came back:
+
+Item. One name, belonging to the woman who dug the eastern channel. The channel is called hers. The name is not known.
+
+Item. The tune of six bells. Five are known. The sixth is known to be missing, which is a different kind of knowing and is recorded here as a possession.
+
+Item. The reason for the fence at the northern boundary, which is maintained annually by agreement of all households, none of whom can say against what.
+
+Item. One word, meaning the particular grief of outliving a tool you made. The word is gone. The grief is not, and is now carried in a phrase of four words that everyone agrees is inadequate.
+
+Item. The greater part of a story about a girl and a globe of pearl-glass. The beginning survives. The end survives. What she did is lost.
+
+Item. Every song of the salt-cutters but one, and the one that remains is the one nobody liked.
+
+Item. The knowledge of what this list was for, and who was to receive it, and whether the receiving was the point or the making was.
+
+The compiler notes, in a later hand: {{y|Nothing on this list is recoverable. It is kept because a loss that is written down is a loss that has been survived by something.}}</page>
+  </book>
 </books>

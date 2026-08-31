@@ -18,6 +18,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Thirteen books** (#741).
+
+  Two of them continue series the game already has. {{y|Frivolous Lives, Vol. II}} carries on the
+  Baccata Yewtarch's catalogue of humanoid kings, still dating everything by its own publication and
+  still faintly sorry for everyone in it. {{y|Eta and the Earthling, Canto II}} is five more
+  questions and five more answers that decline to be answers. Both sit in the general book pool
+  beside the volumes they continue.
+
+  The other eleven are stocked by booksellers — not on shelves, not in trinket piles, not in a
+  starting pack, though a hamilcrab may turn one up the way it turns up anything. Ten of them take the manner of a writer I love and ask what that
+  manner would have produced if it had grown up here instead: a stalker's survey of a ruin that will
+  not make sense, a treatise on what a dram of water actually costs and a furious reply to it, an
+  antiquarian who should have turned back, a week in the salt pans written by somebody having a bad
+  one. No real writer is named or quoted anywhere in them. The prose is mine; only the angle is
+  borrowed.
+
+  The eleventh is a list of things a village can no longer remember, including one it is right to
+  have lost.
+
 - **Plainer names for legendary relics** (#730).
 
   A relic's name is built from a grammar of exotic words, and almost every one of them is strange.
