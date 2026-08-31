@@ -233,6 +233,104 @@ def item_findings(row: str) -> list[tuple[str, str]]:
             return f.items
 
 
+def prose_findings(files: dict[str, str]) -> list[tuple[str, str]]:
+    """Run check_prose_doc_links over a synthetic docs/ tree. Keys are repo-relative paths."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        Path(root, "docs").mkdir()
+        for name, body in files.items():
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(body, encoding="utf-8")
+        with chdir(root):
+            f = check_docs.Findings()
+            check_docs.check_prose_doc_links(f)
+            return f.items
+
+
+class ProseDocLinks(unittest.TestCase):
+    """#735: paths written as prose rot silently, because check_links sees only [text](target)."""
+
+    def test_a_prose_path_that_resolves_is_quiet(self) -> None:
+        self.assertEqual(
+            prose_findings(
+                {
+                    "docs/A.md": "See `B.md` for the rest.\n",
+                    "docs/B.md": "Here.\n",
+                }
+            ),
+            [],
+        )
+
+    def test_a_prose_path_that_does_not_resolve_is_reported(self) -> None:
+        found = prose_findings({"docs/A.md": "See `gone.md` for the rest.\n"})
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0][0], "prose-links")
+        self.assertIn("gone.md", found[0][1])
+
+    def test_a_marker_exempts_the_path_it_names(self) -> None:
+        body = (
+            "<!-- check-docs: not-a-file gone.md - another project's file. -->\n"
+            "See `gone.md` for the rest.\n"
+        )
+        self.assertEqual(prose_findings({"docs/A.md": body}), [])
+
+    def test_a_marker_does_not_exempt_a_path_it_does_not_name(self) -> None:
+        """The whole point of naming paths: a marker must not become a blanket suppression."""
+        body = (
+            "<!-- check-docs: not-a-file gone.md - another project's file. -->\n"
+            "See `gone.md` and `alsogone.md`.\n"
+        )
+        found = prose_findings({"docs/A.md": body})
+        self.assertEqual(len(found), 1)
+        self.assertIn("alsogone.md", found[0][1])
+
+    def test_a_marker_may_name_several_paths(self) -> None:
+        body = (
+            "<!-- check-docs: not-a-file one.md, two.md - naming patterns. -->\n"
+            "Use `one.md` or `two.md`.\n"
+        )
+        self.assertEqual(prose_findings({"docs/A.md": body}), [])
+
+    def test_a_hyphenated_path_can_be_exempted(self) -> None:
+        """The first marker pattern ended the path list at any '-', so `Title-Case.md` and
+        `docs/patched-surface.md` could not be expressed at all."""
+        body = (
+            "<!-- check-docs: not-a-file Title-Case.md, docs/patched-surface.md - patterns. -->\n"
+            "Use `Title-Case.md`, and maintain `docs/patched-surface.md`.\n"
+        )
+        self.assertEqual(prose_findings({"docs/A.md": body}), [])
+
+    def test_a_bare_basename_of_a_real_document_resolves(self) -> None:
+        """Prose legitimately writes `LESSONS.md` without its directory."""
+        self.assertEqual(
+            prose_findings(
+                {
+                    "README.md": "See `LESSONS.md`.\n",
+                    "docs/LESSONS.md": "Here.\n",
+                }
+            ),
+            [],
+        )
+
+    def test_non_markdown_paths_are_not_checked(self) -> None:
+        """Vanilla data, decompiled source and naming examples are .xml, .cs and .py, and 93 of
+        them do not resolve on purpose. Checking them would be all false positive."""
+        body = "Read `Bodies.xml`, `Village.cs` and `snake_case.py`.\n"
+        self.assertEqual(prose_findings({"docs/A.md": body}), [])
+
+    def test_the_check_actually_looks_at_something(self) -> None:
+        """A check that silently matches nothing is the failure mode this one exists to fix."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            Path(root, "docs").mkdir()
+            Path(root, "docs", "A.md").write_text("See `B.md`.\n", encoding="utf-8")
+            Path(root, "docs", "B.md").write_text("Here.\n", encoding="utf-8")
+            with chdir(root):
+                f = check_docs.Findings()
+                self.assertGreater(check_docs.check_prose_doc_links(f), 0)
+
+
 class ItemTables(unittest.TestCase):
     """#287. 254 rows of typed figures that nothing recomputed, and they were worse than stale.
 

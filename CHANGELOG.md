@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Present on her machine, absent from a clean checkout, so it must never be treated as resolvable. -->
+
 All notable changes to this fork are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
@@ -15,6 +17,16 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+
+- **(internal)** `check_docs.py` validates file paths written as prose, not only markdown links
+  (#735).
+
+  Most paths in the documents are written in backticks rather than as markdown links, and nothing
+  looked at them — a reference could rot indefinitely and the gate stayed green. Two had.
+
+  The same change widened both link checks to every document in `docs/`. Eighteen of the
+  twenty-seven were invisible to `check_links` as well, including the one holding a rotted
+  reference.
 
 - **What lies past sharp** (#723).
 

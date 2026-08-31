@@ -3082,8 +3082,9 @@ same direction every time:
 | `DESIGN_difficulty_systems.md` §B4 | medium effort, Harmony maybe | `Broken`, `Tinkering_Repair` and per-use breakage in `ChargeUsedEvent` all ship. The mechanic is a new *trigger*, not a new system |
 | `DESIGN_sleep.md` §1 | Qud has no hunger and no thirst attrition | both exist and thirst kills. `Famished` is −10 Quickness at 2,400 actions |
 | `DESIGN_sleep.md` §7 | `Asleep` and `Wakeful` need verifying before coding | both resolve as *already satisfied*: `Wakeful` refuses only the involuntary events, and `Asleep.Voluntary` is set correctly at all ten call sites |
+<!-- check-docs: not-a-file API_VERIFICATION.md - a private sibling project's document, brought in by #647 and deliberately taken back out by #648. Named because the claim was made there. -->
 | `API_VERIFICATION.md` | a kinship registry exists to read | three markers, all on the NPC, none enumerable (#182) |
-| `recon-findings.md` | the spice tree needs a code hook to mutate | `HistoricSpice.Init` merges a mod's `historyspice.json` already (#178, #689) |
+| `DESIGN_history_recon.md` | the spice tree needs a code hook to mutate | `HistoricSpice.Init` merges a mod's `historyspice.json` already (#178, #689) |
 
 > **Every error is optimistic in the same direction: a mechanism read as absent when it ships, or a
 > cost priced as new work when the state and the hook already exist.** That is the opposite of the

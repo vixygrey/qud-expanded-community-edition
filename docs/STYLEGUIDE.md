@@ -236,6 +236,7 @@ matching vanilla makes modded files instantly legible to anyone who knows the ga
 | C# files | `PascalCase.cs`, one public class per file, filename == class name | `Raven_ModKindle.cs` |
 | C# classes for this fork | `Raven_` prefix retained — see §6 | `Raven_ModFrostWebs` |
 | Textures | `camelCase.png`, `<affinity><Role>` | `forcePsionic.png`, `lightGuardian.png` |
+<!-- check-docs: not-a-file SCREAMING_CASE.md, Title-Case.md - naming patterns illustrating a rule, which must never resolve. -->
 | Repo-root docs | `SCREAMING_CASE.md` for top-level standards, `Title-Case.md` otherwise | `README.md`, `STYLEGUIDE.md` |
 | Tooling scripts | `kebab-case` or `snake_case.py`, matching the language's norm | `validate-mod.py` |
 | Branches | `type/kebab-case-description` | `fix/artifact-table-merge` |
@@ -1460,6 +1461,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |
 | `part-builder` | `validate_mod.py` | `<part Builder="…">` naming a real class |
 | `preserved` | `check_docs.py` | Mura's preserved documents unedited since the fork |
+| `prose-links` | `check_docs.py` | file paths written as prose, not as markdown links, resolving |
 | `qud-api-snapshot` | `validate_mod.py` | the API snapshot being present and carrying what a check needs |
 | `required-checks` | `check_docs.py` | the documented count of required checks matching the ruleset copy |
 | `scripting-policy` | `validate_mod.py` | charter rule 5's banned APIs in `mod/Scripting/` |

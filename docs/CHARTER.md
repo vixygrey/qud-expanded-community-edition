@@ -1,5 +1,7 @@
 # Charter
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Present on her machine, absent from a clean checkout, so it must never be treated as resolvable. -->
+
 The rules I maintain this fork under, and why. `docs/STYLEGUIDE.md` is the mechanical layer beneath
 this one — given these rules, what does a file get called and how is it formatted. Where the two
 touch, this document wins.

@@ -144,6 +144,22 @@ DOCS = [
     )
 ]
 
+
+# Every document that can hold a reference, which is a wider set than DOCS. DOCS drives the figure,
+# section and heading checks and is curated; the link checks want everything, because a rotted
+# pointer is a defect wherever it sits. Eighteen of the 27 documents in docs/ were invisible to
+# check_links until #735 - including DESIGN_overgrowth.md, which held one of the rotted references
+# that motivated it.
+def linked_docs() -> list[Path]:
+    """Resolved when called, not at import.
+
+    A module-level constant would be computed against whatever directory the interpreter started
+    in, which makes the check untestable against a synthetic tree and would quietly miss a document
+    added during the run.
+    """
+    return sorted(set(DOCS) | set(Path("docs").glob("*.md")))
+
+
 # Mura's documents, preserved byte-for-byte. They were renamed in #23, so comparing against the
 # upstream import needs the ORIGINAL paths — using the current ones reports both as modified when
 # they are untouched, which is how the first version of this check cried wolf.
@@ -1329,12 +1345,16 @@ def check_item_tables(f: Findings) -> int:
 
 
 def check_links(f: Findings) -> None:
-    for doc in DOCS:
+    for doc in linked_docs():
         if not doc.is_file():
             continue
         for target in re.findall(
             r"\[[^\]]*\]\(([^)#]+?)(?:#[^)]*)?\)", doc.read_text()
         ):
+            # Markdown allows <angle brackets> around a target, which is how a URL containing
+            # parentheses is written - docs/WIKI.md has three. The capture keeps the leading "<",
+            # so stripping it is what lets the scheme test see a scheme.
+            target = target.strip("<>")
             if target.startswith(("http://", "https://", "mailto:")):
                 continue
             if not (doc.parent / target).resolve().exists():
@@ -1370,6 +1390,78 @@ def sort_key(number: str) -> tuple:
         m = re.match(r"^(\d+)([a-z]*)$", piece)
         parts.append((int(m.group(1)), m.group(2)) if m else (0, piece))
     return tuple(parts)
+
+
+# A path written as prose rather than as a markdown link. `check_links` sees only
+# `[text](target)`, and most of the paths in `docs/` are prose in backticks - 194 of them, against
+# roughly 60 markdown links. See #735.
+PROSE_DOC_PATH = re.compile(r"`([A-Za-z0-9_./-]+\.md)`")
+
+# The marker that exempts a path the prose names deliberately. Document-scoped and it must name the
+# paths, so a marker cannot silently cover a *different* rotted path that appears later on the same
+# line or in the same file.
+#
+# The body is captured whole and the reason split off afterwards rather than excluded by the
+# pattern: the first version ended the path list at any "-", which cannot express `Title-Case.md`
+# or `docs/patched-surface.md`. Hyphens are ordinary in a filename and the separator is " - ".
+NOT_A_FILE = re.compile(r"<!--\s*check-docs:\s*not-a-file\s+(.*?)\s*-->", re.DOTALL)
+
+REASON_SEPARATOR = re.compile(r"\s+[-—]\s+")
+
+
+def exempt_paths(text: str) -> set[str]:
+    """Paths this document declares are deliberately not files here."""
+    found: set[str] = set()
+    for body in NOT_A_FILE.findall(text):
+        names = REASON_SEPARATOR.split(body, maxsplit=1)[0]
+        found.update(n.strip() for n in names.split(",") if n.strip())
+    return found
+
+
+def check_prose_doc_links(f: Findings) -> int:
+    """Markdown paths written as prose must resolve, or say why they do not.
+
+    `check_links` validates `[text](target)` and nothing else, so a reference written as
+    `` `DESIGN_history_recon.md` `` rots silently. #647 imported a document and left
+    `DESIGN_options.md` pointing at its old home; the reference was wrong from the moment of the
+    import and stayed green through every run until it was found by hand.
+
+    Scoped to `.md` deliberately. Of 194 backticked paths across these documents 93 resolve to
+    nothing, and nearly all of them legitimately: vanilla game data (`Bodies.xml`), decompiled
+    source (`Village.cs`), naming-convention illustrations (`snake_case.py`), and other projects'
+    files. Those are `.xml`, `.cs` and `.py`. **This repository's own documents are the `.md`
+    ones**, which cuts the population to six and the false positives to three - each of which now
+    carries a marker naming itself.
+
+    A whitelist in this file was the other option and is the wrong shape: it inverts to "everything
+    is fine unless listed", which is how the first rotted reference got through. The marker sits
+    next to the prose it excuses and has to name the path.
+    """
+    checked = 0
+    for doc in linked_docs():
+        if not doc.is_file():
+            continue
+        text = doc.read_text()
+        exempt = exempt_paths(text)
+        for i, line in enumerate(text.splitlines(), 1):
+            for target in PROSE_DOC_PATH.findall(line):
+                if target in exempt:
+                    continue
+                checked += 1
+                # Prose legitimately writes a bare `LESSONS.md`, so try the places a document of
+                # ours could be before calling it dead.
+                if any(
+                    (base / target).exists()
+                    for base in (Path("."), Path("docs"), doc.parent)
+                ):
+                    continue
+                f.add(
+                    "prose-links",
+                    f"{doc}:{i}: prose names {target}, which is not a file here - fix the "
+                    f"reference, or mark it with "
+                    f"<!-- check-docs: not-a-file {target} - why -->",
+                )
+    return checked
 
 
 def check_heading_order(f: Findings) -> None:
@@ -1829,6 +1921,7 @@ def main() -> int:
     items = check_item_tables(f)
     file_rows = check_file_rows(f, known)
     check_links(f)
+    prose_links = check_prose_doc_links(f)
     check_sections(f)
     check_heading_order(f)
     check_changelog_sections(f)
@@ -1855,6 +1948,7 @@ def main() -> int:
         f"{appendix} chip row(s), {items} item-table figure(s) and {file_rows} per-file "
         f"row figure(s) match their blueprints; "
         f"links, sections, check names and preserved documents all clean; "
+        f"{prose_links} prose path(s) resolve; "
         f"{markers} tracked file(s) carry no conflict markers"
     )
     return 0
