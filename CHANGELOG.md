@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Present on her machine, absent from a clean checkout, so it must never be treated as resolvable. -->
+
 All notable changes to this fork are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project

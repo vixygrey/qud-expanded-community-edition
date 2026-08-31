@@ -1,5 +1,7 @@
 # Notes for coding agents
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Present on her machine, absent from a clean checkout, so it must never be treated as resolvable. -->
+
 If you're an AI assistant working in this repository, start here. This file is deliberately short
 and carries no personal preferences — it points at the documents that already exist.
 
