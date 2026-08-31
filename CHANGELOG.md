@@ -16,6 +16,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Diseases tell you what is happening while you can still do something** (#581).
+
+  Catching glotrot, ironshank or monochrome vision starts a five-day fight you can win — a Toughness
+  save every 1200 turns, two good rolls clear it, and Yuckwheat or honey improve your odds. The game
+  never told you any of that was underway.
+
+  Now an onset says when it takes hold, warns you on the fourth of its five days, and tells you when
+  you have shaken it off.
+
+  **The fourth-day warning is the point.** The deadline does not care how well you are doing — win
+  three saves in a row and the disease still lands on day five, and the last thing vanilla says to
+  you is *"You feel a bit better."* One day's warning is enough to go eat yuckwheat.
+
+  And if your first two saves both passed, vanilla said **nothing at all** — not that you had caught
+  anything, not that you had fought it off. The good-news messages only unlock once you have already
+  failed a roll, so doing well was what made it silent.
+
+  There is a checkbox for it under the mod options.
+
 - **Know the people who follow you** (#592).
 
   Companions now have a **Look Over** action, next to *Attack Target* and *Come*. It shows their

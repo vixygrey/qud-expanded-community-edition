@@ -472,4 +472,20 @@
             Higher-tier weapons wear far more slowly than low-tier ones.
     </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEOnsetWarning"
+    DisplayText="Disease onsets say what is happening"
+    Category="Qud Expanded CE"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded disease glotrot ironshank monochrome onset warning"
+  >
+    <helptext>
+            A disease onset tells you it has begun, warns you on the fourth of its five
+            days, and says when you have fought it off.
+
+            Vanilla only reports an onset once you have already failed a save, so an
+            onset you beat outright can pass in complete silence.
+    </helptext>
+  </option>
 </options>

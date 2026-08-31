@@ -69,6 +69,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_MerchantOwnership>();
                 player.RequirePart<Vixy_WeaponWear>();
                 player.RequirePart<Vixy_CompanionSheet>();
+                player.RequirePart<Vixy_OnsetWarning>();
             }
         }
     }

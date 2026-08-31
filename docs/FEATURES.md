@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 22 options (§13)
+│   ├── Options.xml             # 23 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 66 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 67 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -5527,6 +5527,108 @@ outright**. Hence the fixed `{{K|…}}`, the register `Description` already uses
 to a menu you opened deliberately and four characters to a tag, changes no number and no table, and
 #692 had just cut five options to fit the menu. An option would have bought a branch to carry
 forever and nothing else.
+
+## 43. Disease onsets say what is happening (`Vixy_OnsetWarning`)
+
+**Qud's feedback about disease is loudest when it stops mattering and quietest when it matters
+most.** Contracting glotrot gets a popup and a journal entry, by which point nothing can be changed.
+The five-day contest you could still win gets one repeated line — and sometimes nothing at all
+(#581).
+
+### 43.1 There is a path where the whole episode is invisible
+
+All three onsets run the same twelve lines: every 1200 turns a `MakeSave("Toughness", 13)`, a pass is
+`Stage--`, a fail is `Stage++`, cured at `Stage <= -2`, contracted at `Stage >= 3 || Days >= 5`.
+
+Both *good news* messages are gated on `SawSore`, and `SawSore` is set **only when a save is failed**:
+
+```csharp
+if (Object.MakeSave("Toughness", 13, …)) {
+    Stage--;
+    if (SawSore && Stage > -2 && Object.IsPlayer())
+        AddPlayerMessage("You feel a bit better.");
+} else {
+    Stage++;
+    if (Stage < 3) { …AddPlayerMessage("Your throat feels sore."); SawSore = true; }
+}
+```
+
+> Two consecutive opening passes reach `Stage -2`, the cure branch runs, and **its message is gated
+> on `SawSore` too**. Two rolls, 2,400 turns, complete silence — and the silence is *caused* by having
+> done well on the first roll.
+
+### 43.2 And the last thing it tells you can be that you are improving
+
+`Days >= 5` is tested **after** the improvement message, and does not care what `Stage` is:
+
+| day | roll | stage | message |
+|---:|---|---:|---|
+| 1 | fail | 1 | *"Your throat feels sore."* |
+| 2 | fail | 2 | *"Your throat feels sore."* |
+| 3 | pass | 1 | *"You feel a bit better."* |
+| 4 | pass | 0 | *"You feel a bit better."* |
+| 5 | pass | −1 | *"You feel a bit better."* — **then glotrot lands in the same tick** |
+
+Three saves won in a row, the last word from the game is that it is easing, and the disease arrives
+because the clock ran out one step short of the cure. Not a missing message — an actively misleading
+one, produced by correct code doing what it says.
+
+### 43.3 What this adds
+
+Three lines, and no numbers:
+
+| moment | glotrot | ironshank | monochrome |
+|---|---|---|---|
+| it begins | *Something is wrong with your throat.* | *…your legs.* | *…your eyes.* |
+| day 4 of 5 | *Your tongue is blackening at the root.* | *Your knees are setting like cooling iron.* | *The colour is draining out of the world.* |
+| beaten | *Whatever had hold of you loosens its grip.* | ” | ” |
+
+**The deadline is the one worth saying, because it is the one you can act on.** All three onsets take
+Yuckwheat and honey for a save bonus — +3 for glotrot, +2 for the others — and glotrot has an outright
+cure in flaming ick. `Bonus` is consumed when a save actually uses it, so it is a one-shot a player
+can deliberately stack before a roll. The game ships three counters to this and never says the clock
+is running.
+
+Nothing fires when the onset is *lost*: the player is then carrying the disease itself, and vanilla's
+own popup and journal entry already cover that. It was never the quiet moment.
+
+### 43.4 Messages only, because `GetDetails()` is closed
+
+#581 asked for the status-screen line to carry the trend. Both call sites invoke `GetDetails()`
+directly on the effect — `CharacterStatusScreen.HandleHighlightEffect` and `GameObject` — and
+`Campfire.ProcessEffectDescription` is pure string substitution. **There is no hook.**
+
+Reaching it would mean Harmony, or substituting a subclass and thereby writing a mod type into save
+data that an uninstall could not read back. Neither is worth a line of flavour text — and a deadline
+belongs in a message at the moment it matters rather than on a screen you would have to think to
+open. Stage magnitude is absent for the same reason, and because day 2 versus day 5 matters more than
+stage 1 versus stage 2: only one of them is a deadline.
+
+### 43.5 Three diseases, and that is all of them
+
+`ApplyEffectEvent.Check` is called with `"Disease"` six times and `"DiseaseOnset"` three, with named
+checks for Glotrot, Ironshank and Monochrome twice each. `Ill` does not gate on `Disease` and is not
+one. **This is not a pilot for a fourth.**
+
+The three share no base class — each carries its own copy of the same twelve lines — so the wording
+is written once here and applied by type rather than inherited.
+
+### 43.6 Zero vanilla records, and no polling
+
+`ApplyEffectEvent` reaches the object an onset is being applied to, so the start is *heard* rather
+than discovered. `GetDiseaseOnsetEvent.GetFor` is vanilla's own central lookup, which all three
+onsets answer and which `BoostedImmunity` and `Campfire` already use.
+
+The day counter is polled from that lookup rather than run inside the effect's own tick, so nothing
+depends on whether this part's `EndTurn` handler is registered before or after the effect's — worst
+case a line lands one turn late, invisible against a 1200-turn cadence. **#717 shipped inert because
+I reasoned about dispatch order; this arranges not to care about it.**
+
+### 43.7 Off-switch
+
+A **checkbox**, default on. This one earns an option where §39's maker's marks did not: it changes
+the game's *voice*, and Qud withholds information on purpose. Everything it gates is text at display
+time, so the switch is live and there is nothing stored to migrate.
 
 ## Appendix A — every merged vanilla melee weapon
 
