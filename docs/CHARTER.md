@@ -68,6 +68,16 @@ player-facing changelog rather than staying in my head. Two different bars:
   asymmetry the game already created. "It felt weak" is not a reason. The test I use: does the
   world explain it, and does it change a decision the player makes?
 
+A third question, added after #596, because the first two let it through: **did the player earn it?**
+Standing with a faction should follow from what I did — who I shared water with, who I killed, whose
+relics I carry — and not from something I chose to put on. #596 wanted an insignia that raised one
+faction and lowered its rival, and the syntax for it ships today. I closed it anyway: an item I can
+wear at the gate and pocket before the Templar see me turns a relationship into inventory management,
+and the world explaining the *insignia* does not make the *standing* earned.
+
+This is narrower than it sounds. It bars declaring an allegiance and being believed; it does not bar
+an object that records one I already have.
+
 New content is *derived*, not invented: a new tier-4 halberd's stats fall out of the tier and
 value curves. That derivability is the whole reason Mura's conventions are worth keeping.
 
