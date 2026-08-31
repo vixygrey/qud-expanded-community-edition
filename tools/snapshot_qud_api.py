@@ -1059,6 +1059,48 @@ def collect_template_hints(game: Path) -> dict[str, list[str]]:
     return {k: sorted(v) for k, v in sorted(found.items())}
 
 
+def collect_group_multipliers(game: Path) -> dict[str, dict[str, list[str | None]]]:
+    """Vanilla's per-group `Chance` and `Number`, for the tables this fork merges into.
+
+    A `Load="Merge"` block that writes `<group Name="Creatures">` with no `Chance` of its own
+    **keeps the target group's**, and at load that multiplier gates this fork's entries exactly as
+    it gates vanilla's. `PopulationGroup.MergeFrom` copies each attribute only when it is set:
+
+        if (populationGroup.Number != null) Number = populationGroup.Number;
+        if (populationGroup.Chance != null) Chance = populationGroup.Chance;
+
+    `scatter_quantity` walks this fork's XML alone, so without this it sees no attributes on the
+    merged group and treats the multiplier as one — understating this fork's share of six tables,
+    by a factor of 2.375 on `DesertCanyonZoneGlobals-Reachable` (#748).
+
+    **Raw strings rather than a computed float**, because that `if` pair makes inheritance
+    per-attribute: a group setting `Number` and not `Chance` keeps the target's `Chance`, and one
+    number cannot express "inherit one, override the other". No merge in this fork does that today;
+    the arithmetic is right for one that does.
+
+    Keyed by table then group name, which is unambiguous — `LoadPopulationGroup` throws on a
+    duplicate group name inside one population, no vanilla table this fork merges into is declared
+    twice, and no (table, group) pair carries two different definitions. Restricted to the merged
+    tables, which is 17 entries; the whole game has 120.
+    """
+    _, wanted = merged_record_names()
+    out: dict[str, dict[str, list[str | None]]] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            table = pop.get("Name")
+            if table not in wanted:
+                continue
+            for group in pop.iter("group"):
+                name = group.get("Name")
+                if not name:
+                    continue
+                chance, number = group.get("Chance"), group.get("Number")
+                if chance is None and number is None:
+                    continue  # a group with neither is transparent; nothing to inherit
+                out.setdefault(table, {})[name] = [chance, number]
+    return {t: dict(sorted(g.items())) for t, g in sorted(out.items())}
+
+
 def collect_table_weights(game: Path) -> dict[str, int]:
     """Vanilla's total drop weight for each population table this mod adds entries to.
 
@@ -1289,6 +1331,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     tag_forms = collect_tag_forms(game)
     tag_forms_absent = collect_tag_forms_absent(game)
     scatter_quantities = collect_scatter_quantities(game)
+    group_multipliers = collect_group_multipliers(game)
     variant_parent_quantities = collect_variant_parent_quantities(game)
     mutation_names = collect_mutation_names(game)
     shader_names = collect_shader_names(game)
@@ -1342,6 +1385,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + json.dumps(tag_forms_absent, sort_keys=True)
             + "\0"
             + json.dumps(scatter_quantities, sort_keys=True)
+            + "\0"
+            + json.dumps(group_multipliers, sort_keys=True)
             + json.dumps(variant_parent_quantities, sort_keys=True)
             + json.dumps(mutation_names, sort_keys=True)
             + "\0"
@@ -1388,6 +1433,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             "tag_forms": len(tag_forms),
             "tag_forms_absent": len(tag_forms_absent),
             "scatter_quantities": len(scatter_quantities),
+            "group_multipliers": sum(len(v) for v in group_multipliers.values()),
             "variant_parent_quantities": len(variant_parent_quantities),
             "mutation_names": len(mutation_names),
             "shader_names": len(shader_names),
@@ -1408,6 +1454,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "tag_forms": tag_forms,
         "tag_forms_absent": tag_forms_absent,
         "scatter_quantities": dict(sorted(scatter_quantities.items())),
+        "group_multipliers": group_multipliers,
         "variant_parent_quantities": dict(sorted(variant_parent_quantities.items())),
         "mutation_names": mutation_names,
         "shader_names": shader_names,
