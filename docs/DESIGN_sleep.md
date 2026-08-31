@@ -93,10 +93,22 @@ FatiguePerTurn = 1.0
   × StrainMultiplier      // see below
 ```
 
-At 1 point/turn, 1000 turns of wakefulness reaches maximum. For scale, a typical
-dungeon delve is a few hundred turns; a long overland trek is thousands. **Target: the
-player sleeps roughly once per two in-game days of active play, and can push to three
-days if they accept real penalties.**
+**`Calendar.TurnsPerDay` is 1200**, which is the number this section needed and did not have. At 1
+point per action, 1000 actions is **0.83 of one day** — not the "roughly two in-game days" claimed
+here. The target is three days unhurried, so the baseline is `1000 / 3600` = **0.28 per action**,
+carried in hundredths so the multipliers stay exact integers.
+
+What that produces:
+
+| activity | per action | actions to full | in-game days |
+|---|---:|---:|---:|
+| unhurried | 0.28 | 3,571 | **2.98** |
+| overland travel, or bleeding | 0.42 | 2,380 | 1.98 |
+| in combat throughout | 0.56 | 1,785 | 1.49 |
+
+**Three days is the unhurried figure and a character who fights for it arrives in half that**, which
+is the lever this section is actually about: fatigue is a consequence of what you did, not of elapsed
+time.
 
 `StrainMultiplier` makes fatigue a consequence of *what you did*, not just elapsed time:
 
@@ -176,14 +188,35 @@ FatigueRecoveredPerTurn = 4  × RestQualityMultiplier
 
 So a full 1000 → 0 sleep takes ~250 turns at quality 1.0.
 
-| Where the player sleeps | Rest quality | Ambush chance/turn |
-|---|---|---|
-| On a bed / bedroll | 1.5 | 0.05% |
-| Indoors, door closed, no hostiles in zone | 1.25 | 0.2% |
-| Anywhere in a settlement | 1.25 | 0.1% |
-| Open wilderness | 1.0 | 0.5% |
-| Hostile-occupied zone | 0.75 | 3% |
-| While Overburdened / in heavy armour | ×0.75 | — |
+**This table was written per turn and nobody multiplied it out.** A full sleep is 167–250 actions, so
+a rate that reads harmless per turn compounds into something else entirely: the 0.5% for open
+wilderness is a **71% chance of being ambushed over one sleep**. That is not "location is a decision",
+it is "beds or nothing", and it fails §1's acceptance test — the player's summary becomes *"I get
+jumped every time I sleep."*
+
+**So the rates are derived from per-sleep odds now, not chosen per turn.** Pick what fraction of
+sleeps should be interrupted, then solve `1 − (1 − p)ⁿ` backwards for the per-turn rate:
+
+| Where the player sleeps | Rest quality | P(ambushed) per sleep | per turn |
+|---|---|---:|---:|
+| **In a settlement** | 1.5 | **0%** | 0 |
+| On a bed / bedroll | 1.5 | 5% | 0.03% |
+| Indoors, no hostiles in zone | 1.2 | 14% | 0.06% |
+| Open wilderness | 1.0 | 30% | 0.14% |
+| Hostile-occupied zone | 1.0 | 80% | 0.64% |
+| While heavily burdened | ×0.75 | — | — |
+
+**A settlement is genuinely safe, at 0 rather than the 0.1% first written here.** A tier list with no
+top end gives the player nowhere to aim, and *"walk to a town and you can rest"* is a decision worth
+making. The signal is `Zone.IsCheckpoint()` — the game's own notion of a safe hub, testing for a
+`CheckpointWidget` in cell (0,0) — so the safe list is Freehold's rather than one this fork invented
+and would have to maintain. It covers Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra and the
+Arrivarium. Hostiles in the zone still override it: a settlement under attack is not a safe place to
+lie down.
+
+**Both tables must key on one tier function.** The first implementation had rest quality
+distinguishing a sheltered spot from open ground while ambush chance did not, so the two disagreed
+silently about how many tiers existed.
 
 Ambush rolls each turn asleep. On a hit: spawn or wake a nearby hostile, wake the
 player with Dazed, and print a hard-stop message. **This is what makes location a real

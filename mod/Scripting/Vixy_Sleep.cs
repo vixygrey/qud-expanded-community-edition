@@ -38,35 +38,86 @@ namespace XRL.World.Parts
     /// </remarks>
     public static class Vixy_Sleep
     {
+        /// <summary>
+        /// Where the player is sleeping, as one tier. Both tables key on this so they cannot
+        /// disagree about how many tiers exist.
+        /// </summary>
+        /// <remarks>
+        /// The first version had `RestQuality` distinguishing a sheltered spot from open ground while
+        /// `AmbushChance` did not, so the two disagreed silently. One function deciding the tier and
+        /// two reading it removes the failure rather than fixing an instance of it.
+        /// </remarks>
+        public enum Where { Settlement, Bed, Sheltered, Open, Hostile }
+
+        /// <summary>
+        /// A named settlement is the one genuinely safe place to sleep.
+        /// </summary>
+        /// <remarks>
+        /// `Zone.IsCheckpoint()` is the game's own notion of a safe hub - it tests for a
+        /// `CheckpointWidget` in cell (0,0) - and the ten zones carrying it are Joppa, the Stilt,
+        /// Grit Gate, Kyakukya, Yd Freehold, Ezra and the Arrivarium. Using it means the safe list is
+        /// Freehold's rather than one this fork invented and would have to maintain.
+        ///
+        /// The design doc put a settlement at 0.1% per turn. It is 0 here, deliberately: a tier list
+        /// with no top end gives the player nowhere to aim, and "walk to a town and you can rest"
+        /// is a decision worth making. Hostiles in the zone still override it - a settlement under
+        /// attack is not a safe place to lie down.
+        /// </remarks>
+        public static Where Locate(GameObject Player)
+        {
+            Cell cell = Player?.CurrentCell;
+            if (cell == null) return Where.Open;
+            if (HostilesPresent(Player)) return Where.Hostile;
+            if (Player.CurrentZone?.IsCheckpoint() ?? false) return Where.Settlement;
+            if (cell.HasObjectWithPart("Bed")) return Where.Bed;
+            if (Player.CurrentZone?.IsInside() ?? false) return Where.Sheltered;
+            return Where.Open;
+        }
+
         /// <summary>Rest quality in tenths, so the arithmetic stays integer.</summary>
         public static int RestQuality(GameObject Player)
         {
-            Cell cell = Player?.CurrentCell;
-            if (cell == null) return 10;
-
-            int tenths = 10;
-            if (cell.HasObjectWithPart("Bed")) tenths = 15;
-            else if (Player.CurrentZone != null && !HostilesPresent(Player)) tenths = 12;
+            int tenths = Locate(Player) switch
+            {
+                Where.Settlement => 15,
+                Where.Bed => 15,
+                Where.Sheltered => 12,
+                _ => 10,
+            };
 
             // Sleeping in your armour rests you less. Heavily burdened is the burden mod's band 3;
             // it is off by default, so this is a bonus interaction rather than load-bearing. #176.
-            if (Player.GetIntProperty("Vixy_BurdenBand") >= 3) tenths = tenths * 3 / 4;
+            if (Player != null && Player.GetIntProperty("Vixy_BurdenBand") >= 3) tenths = tenths * 3 / 4;
 
             return Math.Max(1, tenths);
         }
 
         /// <summary>Ambush chance per turn asleep, in hundredths of a percent.</summary>
         /// <remarks>
-        /// The spread is what makes location a real decision: a bed is two orders of magnitude safer
-        /// than lying down in a hostile zone.
+        /// <b>These are derived from per-sleep odds, not chosen per turn.</b> That is the correction
+        /// this table needed: a full sleep is 167-250 actions, so a rate that reads harmless per turn
+        /// compounds into something else entirely. The design doc's 0.5% for open ground is a
+        /// <b>71%</b> chance of being ambushed over one sleep, which is not "location is a decision",
+        /// it is "beds or nothing".
+        ///
+        /// Targets, and what they compound to over a full 1000-fatigue sleep:
+        ///
+        ///   settlement   0 per turn  ->   0%
+        ///   bed          3           ->   5%
+        ///   sheltered    6           ->  14%
+        ///   open        14           ->  30%
+        ///   hostile     64           ->  80%
         /// </remarks>
         public static int AmbushChance(GameObject Player)
         {
-            Cell cell = Player?.CurrentCell;
-            if (cell == null) return 50;
-            if (HostilesPresent(Player)) return 300;
-            if (cell.HasObjectWithPart("Bed")) return 5;
-            return 50;
+            return Locate(Player) switch
+            {
+                Where.Settlement => 0,
+                Where.Bed => 3,
+                Where.Sheltered => 6,
+                Where.Hostile => 64,
+                _ => 14,
+            };
         }
 
         private static bool HostilesPresent(GameObject Player)

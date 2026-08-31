@@ -20,17 +20,18 @@ recorded because contributors need them, not because subscribers do.
 
 - **You can be made to sleep** (#179).
 
-  Stay awake long enough and you tire. Long enough after that and you fall down where you stand.
+  Go about three unhurried days without sleeping and you tire; fight for those days and you get
+  there in half of them. Long enough after that and you fall down where you stand.
 
   What tiredness costs you is not your attributes. At exhaustion you cannot cross the world map, the
   way being famished already stops you, and from weariness onward the writing itself goes strange.
   Qud runs two survival timers already and neither of them makes you weaker — thirst stops you
   healing and hunger stops you travelling — so this one follows suit.
 
-  {{y|Where you sleep is the point.}} A bed rests you half again as fast and is sixty times safer
-  than lying down in the open. Sleep among things that want to kill you and something will find you.
-  Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
-  rests you.
+  {{y|Where you sleep is the point.}} In Joppa, the Stilt, Grit Gate or any settlement you are
+  simply safe. A bed is nearly so. Sleep on open ground and something finds you about one time in
+  three; sleep among things that want to kill you and it is four times in five. Sleep gas will not do
+  instead of sleep, and neither will narcolepsy: only lying down on purpose rests you.
 
   {{y|Off by default}}, and it is the only thing in this mod that adds a system Caves of Qud does
   not have. Turn it on from {{C|you have to sleep}} in the options.

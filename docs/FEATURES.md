@@ -6429,6 +6429,21 @@ Anything conditioned on *where* you were going would need `ObjectLeavingCellEven
 `Grammar.Weirdify`. It is §1's *"make the world stranger"* register available as **authored data with
 a token in it**, costing no C# at all.
 
+### 51.2a Three in-game days, and the spec's day was wrong
+
+`Calendar.TurnsPerDay` is **1200**. The design doc put accrual at 1 per action and called 1,000
+actions *"roughly two in-game days"*; it is **0.83 of one**. Reaching full fatigue in three days means
+3,600 actions, so the baseline is 0.28 per action, carried in hundredths.
+
+| activity | per action | actions to full | in-game days |
+|---|---:|---:|---:|
+| unhurried | 0.28 | 3,571 | **2.98** |
+| overland travel, or bleeding | 0.42 | 2,380 | 1.98 |
+| in combat throughout | 0.56 | 1,785 | 1.49 |
+
+Three days is the unhurried figure and a character who fights for it arrives in half that, which is
+the lever §3.1 is actually about: fatigue is a consequence of what you did, not of elapsed time.
+
 ### 51.3 Modelled on `Stomach`, which answers three edge cases for free
 
 `Stomach` is vanilla's own survival timer, and following it structurally settles §6's checklist rather
@@ -6457,16 +6472,31 @@ passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to 
 
 ### 51.5 Where you sleep is the decision
 
-| where | rest quality | ambush chance/turn |
-|---|---:|---:|
-| on a bed or bedroll | 1.5× | 0.05% |
-| sheltered, nothing hostile in the zone | 1.2× | 0.5% |
-| anywhere else | 1.0× | 0.5% |
-| hostiles in the zone | 1.0× | **3%** |
+**Rates are derived from per-sleep odds, not chosen per turn.** That distinction is the whole of this
+table. A full sleep is 167–250 actions, so a rate that reads harmless per turn compounds into
+something else: the design doc's 0.5% for open ground is a **71% chance of being ambushed over one
+sleep**, which is not "location is a decision" but "beds or nothing".
 
-A bed is sixty times safer than lying down among hostiles, which is what gives a bedroll a reason to
-exist. An ambush wakes you with `Dazed` — **nothing is spawned**: waking to something already in the
-zone is cheaper and less arbitrary than conjuring an attacker out of the design's convenience.
+| where | rest quality | P(ambushed) per sleep | per turn |
+|---|---:|---:|---:|
+| **in a settlement** | 1.5× | **0%** | 0 |
+| on a bed or bedroll | 1.5× | 5% | 0.03% |
+| indoors, nothing hostile | 1.2× | 14% | 0.06% |
+| open ground | 1.0× | 30% | 0.14% |
+| hostiles in the zone | 1.0× | 80% | 0.64% |
+
+**A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub —
+it tests for a `CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork
+invented and has to maintain: **Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra and the
+Arrivarium**. A tier list with no top end gives the player nowhere to aim, and *"walk to a town and
+you can rest"* is a decision worth making. Hostiles in the zone still override it.
+
+Both tables key on one `Locate()` function so they cannot disagree about how many tiers exist. The
+first implementation had rest quality distinguishing a sheltered spot from open ground while ambush
+chance did not, and the two drifted apart silently.
+
+An ambush wakes you with `Dazed` — **nothing is spawned**: waking to something already in the zone is
+cheaper and less arbitrary than conjuring an attacker out of the design's convenience.
 
 ### 51.6 State lives in the property bag, deliberately
 

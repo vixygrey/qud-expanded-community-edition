@@ -56,9 +56,13 @@ namespace XRL.World.Parts
         public const int Exhausted = 800;
         public const int Collapsing = 950;
 
-        /// <summary>A world-map crossing is many turns; cap the debt so a long haul cannot dump the
-        /// whole meter at once. `Stomach` caps its own catch-up the same way.</summary>
-        public const int MaxWorldMapCatchUp = 400;
+        /// <summary>
+        /// A world-map crossing is many turns; cap the debt so one long haul cannot dump the whole
+        /// meter at once. `Stomach` caps its own catch-up the same way. One day of travel — 1,200
+        /// turns at strain 1.5 — is about half the meter, which is a real cost without being a
+        /// mugging.
+        /// </summary>
+        public const int MaxWorldMapCatchUp = 1200;
 
         public static int Get(GameObject Object)
         {
@@ -114,8 +118,8 @@ namespace XRL.World.Parts
                 int crossed = (int)Math.Min(XRLCore.CurrentTurn - since, MaxWorldMapCatchUp);
                 if (crossed > 0)
                 {
-                    // Overland travel is strain 1.5 per §3.1.
-                    Accrue(crossed * 3 / 2);
+                    // Overland travel is strain 1.5 per §3.1, in the same hundredths.
+                    Accrue(crossed * BaseAccrual * 3 / 2);
                 }
             }
 
@@ -134,30 +138,43 @@ namespace XRL.World.Parts
         }
 
         /// <summary>
-        /// §3.1's strain multiplier, in tenths so it stays integer arithmetic.
+        /// Baseline accrual, in hundredths of a fatigue point per action.
+        /// </summary>
+        /// <remarks>
+        /// <b>`Calendar.TurnsPerDay` is 1200</b>, which is the number §3.1 needed and did not have.
+        /// The spec put accrual at 1 per action and called 1000 actions "roughly two in-game days";
+        /// it is 0.83 of one. Reaching <see cref="Max"/> in three days means 3,600 actions, so the
+        /// baseline is 1000/3600 — 0.28 a turn, carried in hundredths so the multipliers below stay
+        /// exact integers.
+        /// </remarks>
+        public const int BaseAccrual = 28;
+
+        /// <summary>
+        /// §3.1's strain multiplier, in hundredths so it stays integer arithmetic.
         /// </summary>
         /// <remarks>
         /// Fatigue is a consequence of what the character did, not only of elapsed time — which is
-        /// the design's main lever, since it rewards the careful play Qud already rewards.
+        /// the design's main lever, since it rewards the careful play Qud already rewards. Three days
+        /// is the unhurried figure; a character who fights for it arrives much sooner.
         /// </remarks>
         private int Strain()
         {
-            int tenths = 10;
-            if (ParentObject.IsInCombat()) tenths = 20;
+            int rate = BaseAccrual;
+            if (ParentObject.IsInCombat()) rate *= 2;
             if (ParentObject.HasEffect("Bleeding")
                 || ParentObject.HasEffect("Poisoned")
                 || ParentObject.HasEffect("Burning"))
             {
-                tenths += 5;
+                rate += BaseAccrual / 2;
             }
-            return tenths;
+            return rate;
         }
 
-        private void Accrue(int Tenths)
+        private void Accrue(int Hundredths)
         {
-            int carried = ParentObject.GetIntProperty("Vixy_FatigueRemainder") + Tenths;
-            Set(ParentObject, Get(ParentObject) + carried / 10);
-            ParentObject.SetIntProperty("Vixy_FatigueRemainder", carried % 10);
+            int carried = ParentObject.GetIntProperty("Vixy_FatigueRemainder") + Hundredths;
+            Set(ParentObject, Get(ParentObject) + carried / 100);
+            ParentObject.SetIntProperty("Vixy_FatigueRemainder", carried % 100);
         }
 
         private void Rest()

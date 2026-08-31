@@ -566,16 +566,15 @@
     SearchKeywords="qud expanded sleep fatigue tired rest exhausted survival bedroll"
   >
     <helptext>
-            Adds fatigue. Stay awake long enough and you tire, and eventually
-            you fall down where you stand.
+            Adds fatigue. About three unhurried days without sleep and you
+            tire; fight for those days and you get there in half.
 
-            Where you sleep matters. A bed rests you fastest and is far safer
-            than lying down in the open, and something may find you while you
-            are under.
+            Where you sleep matters. In a settlement you are safe. A bed is
+            nearly so. On open ground something finds you about one time in
+            three.
 
             Exhaustion does not weaken you - it stops you crossing the world
-            map, the way being famished does, and it makes the writing
-            strange.
+            map, the way being famished does.
 
             {{y|Off by default.}} Qud runs two survival timers already and
             tunes both so they almost never fire. This one fires.
