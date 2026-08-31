@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **492** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **281** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **282** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -588,9 +588,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
-| `Items.xml` | 0 | 8 |
+| `Items.xml` | 0 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **492 active** | **281** |
+| **Total** | **492 active** | **282** |
 
 ### 6.2 Melee weapons
 
@@ -2130,13 +2130,13 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 9 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Items.xml               # 8 merged (§30)
+│   ├── Items.xml               # 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 69 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 71 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -5730,6 +5730,139 @@ level and is gone at 10 — the existing lever, which is what #192 asked for.
 Any treatment removes it, and failing that it expires on its own after 1,500 turns. Both are needed:
 the first is what makes the treatment economy matter, the second means a player with nothing left is
 delayed rather than stranded.
+
+## 45. What lies past sharp (`Vixy_TeachUpgrade`, `Vixy_UpgradeDiskFilter`)
+
+**Six vanilla item mods are complete, gated, presented — and reachable by nothing.** Each is the
+second rung of a ladder whose first rung ships and is tinkerable today. Four of them are genuine
+rungs, and this makes those four reachable, from a person (#723).
+
+### 45.1 What was already written, and what was missing
+
+Each upgrade already carries three finished pieces: **the gate** (`ModKeen.ModificationApplicable`
+returns `Object.HasPart<ModSharp>()`), **the effect**, and **the presentation** — the base suppresses
+its own adjective and rules text so the item reads *"keen"* rather than *"sharp keen"*.
+
+All six carry Freehold's own `/// This part is not used in the base game.` The only missing piece was
+a `<mod>` entry.
+
+| base | upgrade | what the upgrade adds | teacher | tier |
+|---|---|---|---|---:|
+| `ModSharp` | `ModKeen` | +1 pen again — +2 total | **Yla Haj** | 4 |
+| `ModMasterwork` | `ModLegendary` | crit threshold −4, 20% more crits | **Barathrum the Old** | 5 |
+| `ModSerrated` | `ModMicroserrated` | 7% dismember, stacking with the base's 3% | **Bep** | 6 |
+| `ModOverloaded` | `ModMassivelyOverloaded` | power load +800 against the base's +300 | **Q Girl** | 6 |
+
+### 45.2 Two of the six are deliberately left out
+
+`ModOverbuilt` and `ModSmart` are complete too, and they are **not rungs**.
+
+**`ModOverbuilt` is a trade, not an upgrade**: `AV += 2` but `DV -= 2`, `SpeedPenalty += 10`, and
+`GetIntrinsicWeightEvent` doubles the item's weight. On heavy armour that is a real decision; on light
+armour it is close to strictly bad.
+
+It also has a detail worth recording: its description reads *"+3 AV, -2 DV, -10 move speed, x2
+weight"* while its code adds **2**. That is correct — `ModReinforced` suppresses **both** its adjective
+and its rules text when Overbuilt is present, so Overbuilt's line has to state the *combined* total,
+1 + 2. **The deference is load-bearing for the numbers being right, not cosmetic.**
+
+**`ModSmart` converts a scoped gun into a powered artifact.** It calls
+`Object.RequirePart<EnergyCellSocket>()`, installs a `Smartgun` and a `BootSequence`, and applies
+`IncreaseDifficultyAndComplexity(5, 2)` — the only one of the six using the unconditional form, which
+calls `RequirePart<Examiner>()` and so *creates* complexity. Its bonus is conditional three ways:
+powered, booted, and a HUD or techscanner on the wielder. `ModScoped` gives a flat
+`AimVarianceBonus = 4` with no conditions, so **smart is not strictly better than scoped.**
+
+> The tinker tree has no way to say *"this one costs you something"*, so presenting either as a rung
+> would be a lie told by the UI.
+
+### 45.3 `Tables` is mandatory, and this nearly shipped without it
+
+#723's plan was to omit `Tables` so the upgrades would be "tinker-only". That produces a **dead
+entry**:
+
+```csharp
+public bool CanMod(string ModTag)
+{
+    …
+    string[] tableList = value.TableList;   // Tables.Split(','), empty array when absent
+    foreach (string item in tableList)
+        if (list.Contains(item)) return true;
+    return false;                            // an empty TableList always lands here
+}
+```
+
+`Tables` is not only loot distribution — it is **the whitelist of what a mod may be applied to in the
+tinker screen**. Without it the recipe is learnable, visible, and applicable to nothing, forever.
+
+**`MinTier="99"` is what keeps them out of loot instead.** `ModEntry.MinTier` is read in exactly two
+places: the generation eligibility test, and `RandomAltarBaetyl`'s `MinTier <= 8` gate — so one
+attribute closes both loot and the Sparking Baetyl. Generation could not have produced them anyway,
+since eligibility is computed once against the bare item and `ModificationApplicable` requires the
+base mod.
+
+### 45.4 `TinkerTier` does four jobs at once
+
+Which is why each is set deliberately rather than left to `ModEntry`'s default of **1** — a default
+that would put an upgrade in the tree *beside or before* its own prerequisite.
+
+| what it drives | how |
+|---|---|
+| tree position | `TinkerData.Tier` |
+| data-disk rarity | `DataDisk.GetDataScore` |
+| water ritual price | `50 × Tier / 3` reputation |
+| **required skill** | `DataDisk.GetRequiredSkill` — Tinker I ≤ 3, Tinker II ≤ 6, else Tinker III |
+
+Every value here lands in **Tinker II**, one rank above the Tinker I that Sharp, Masterwork and
+Serrated sit at. Tinker I/II/III are independent purchases at 100/200/300 points with
+`Requires=None`, so this is a real 200-point gate rather than a formality.
+
+### 45.5 You cannot find these, and that is the fiction
+
+**Disks are filtered.** There is no per-recipe "tinkerable but not findable" attribute — every
+consumer reads the one `TinkerData.TinkerRecipes` list, and its only gate, `TinkerAllowed`, removes a
+recipe from tinkering too. So `Vixy_UpgradeDiskFilter` merges onto `DataDisk` and re-rolls.
+
+It uses **two** events, and a one-event version would break quest rewards:
+
+```csharp
+BeforeObjectCreated?.Invoke(gameObject);   // TinkerData.createDataDisk sets Data here
+BeforeObjectCreatedEvent.Process(…);
+ObjectCreatedEvent.Process(…);             // vanilla DataDisk rolls a recipe, if Data == null
+AfterObjectCreatedEvent.Process(…);
+```
+
+A deliberately minted disk already carries its recipe before vanilla's roll. Straddling that roll
+separates *drawn* from *authored* on ordering the engine guarantees, rather than on part registration
+order. Disks naming a `TargetBlueprint` are left alone for the same reason.
+
+**Reverse engineering was never open.** `Disassembly` teaches any mod on the object taken apart, and
+with no loot route nothing in the world carries one.
+
+> **So the first keen blade in existence is the one you make.** The knowledge exists only as
+> knowledge, and it has to come from a person who has it.
+
+### 45.6 One teacher each
+
+The choice appears only when you already know the base recipe, do not know the upgrade, and hold the
+Tinkering rank — and it is invisible otherwise, so it never reads as a non sequitur.
+
+**No reputation price.** The water ritual charges for a recipe, but two of these four teachers have no
+water ritual at all, so borrowing that mechanism would make the feature inconsistent between them. The
+cost is already real: finding the person, knowing the base, and buying the rank.
+
+**One teacher per recipe is a maintainer's decision with a cost**, taken deliberately: a tinker who
+dies takes their recipe out of that save permanently. A recipe with four interchangeable sources is a
+checklist; one with a single source is a person worth finding. Barathrum replaced Pax Klanq in that
+list partly on this — Pax Klanq is an explicit quest target.
+
+### 45.7 Off-switch
+
+**None, and this one cannot honestly have a live one.** `TinkerRecipes` is built once per session and
+`WaterRitual.Record.tinkerdata` stores *indices into it*, so removing entries at runtime would
+repoint saved water-ritual offers at different recipes. The feature is opt-in by its own shape
+instead: you must find a specific person, already know the base recipe, and have bought a 200-point
+skill rank. Nothing here changes unless a player goes and does all three.
 
 ## Appendix A — every merged vanilla melee weapon
 

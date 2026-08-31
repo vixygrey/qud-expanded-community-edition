@@ -53,4 +53,23 @@
   <object Name="Sandals" Load="Merge">
     <part Name="RandomColors" DetailColor="w,y,r" />
   </object>
+
+  <!-- Keeps the four unreachable-mod upgrade recipes off data disks found in the world. #723.
+
+       There is no per-recipe "tinkerable but not findable" attribute: every consumer reads the one
+       TinkerData.TinkerRecipes list, and its only gate, TinkerAllowed, removes a recipe from
+       tinkering as well. So the exclusion has to happen where a disk picks its recipe.
+
+       The part uses BeforeObjectCreatedEvent and AfterObjectCreatedEvent rather than
+       ObjectCreatedEvent, because GameObjectFactory.CreateObject runs the BeforeObjectCreated
+       delegate - which is where TinkerData.createDataDisk sets Data - before either. A disk minted
+       deliberately therefore already has its recipe, vanilla's own handler is guarded by
+       `if (Data == null)`, and a one-event re-roll would destroy exactly the disk a quest or a
+       teacher hands over. Straddling vanilla's roll separates the two on ordering the engine
+       guarantees rather than on part registration order.
+
+       Loot generation is closed separately and by data, with MinTier="99" in Core/Mods.xml. -->
+  <object Name="DataDisk" Load="Merge">
+    <part Name="Vixy_UpgradeDiskFilter" />
+  </object>
 </objects>

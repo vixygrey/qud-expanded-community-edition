@@ -22,4 +22,87 @@
         merge-discipline asks for it on every vanilla record, and being explicit costs nothing.
     -->
   <mod Part="ModGigantic" Load="Merge" TinkerAllowed="true" TinkerTier="7" />
+
+  <!--
+        Six vanilla item mods are complete, gated, presented - and reachable by nothing. Each is the
+        second rung of a ladder whose first rung ships and is tinkerable today. These are the four
+        that are genuinely rungs: a further bonus on the same axis as their base. See #723.
+
+        ModOverbuilt and ModSmart are deliberately left out. Overbuilt is not an upgrade but a
+        TRADE (+2 AV for -2 DV, +10 speed penalty and double weight), and Smart converts a scoped
+        gun into a powered artifact needing an energy cell, a boot sequence and a HUD on the wielder
+        before its bonus applies at all. The tinker tree has no way to say "this one costs you
+        something", so presenting either as a rung would be a lie told by the UI.
+
+        Tables is MANDATORY and is not only about loot. TinkerData.CanMod iterates
+        ModEntry.TableList and returns true only on a match - an absent Tables attribute yields an
+        empty array, so the recipe would be learnable, visible in the tinker screen, and applicable
+        to nothing, forever. #723's own plan had it as "tinker-only, a decision rather than an
+        omission"; it is a dead entry.
+
+        MinTier="99" is what keeps them out of loot instead. ModEntry.MinTier is read in exactly two
+        places: ModificationFactory line 365, which gates whether a mod may be rolled onto a
+        generated item, and RandomAltarBaetyl, which gates the Sparking Baetyl on MinTier <= 8. So
+        one attribute closes both. (Generation could not produce them anyway - eligibility is
+        computed once against the bare item and ModificationApplicable requires the base mod - but
+        being explicit costs nothing and the baetyl exclusion is real.)
+
+        TinkerTier does four jobs at once, which is why each is set deliberately rather than left to
+        ModEntry's default of 1: it places the recipe in the tinker tree, sets data-disk rarity
+        through DataDisk.GetDataScore, prices the water ritual at 50 x Tier / 3, and picks the
+        required skill through DataDisk.GetRequiredSkill - Tinker I at 3 or below, Tinker II at 6
+        or below, Tinker III above. Every value here lands in Tinker II, one rank above the
+        Tinker I that Sharp, Masterwork and Serrated sit at. That rank is the real gate: the
+        schematic says what to do and the rank is whether you are good enough to do it.
+
+        Value is the item's price multiplier and is set one step above each base's, since a keen
+        blade is a sharp blade plus more.
+
+        No Rarity attribute: getRarityCode throws on anything it does not know and the default is
+        fine, but more to the point rarity only matters to generation, which MinTier already closes.
+    -->
+  <mod
+    Part="ModKeen"
+    Tables="BladeMods,ThrownWeaponMods"
+    MinTier="99"
+    TinkerTier="4"
+    TinkerDisplayName="keen"
+    TinkerCategory="melee weapons"
+    Value="1.2"
+    Description="Keen: +1 to penetration rolls, in addition to sharp."
+  />
+
+  <mod
+    Part="ModLegendary"
+    Tables="WeaponMods,MissileWeaponMods,ThrownWeaponMods"
+    MinTier="99"
+    TinkerTier="5"
+    TinkerDisplayName="legendary"
+    TinkerCategory="melee weapons"
+    Value="1.4"
+    Description="Legendary: This weapon is 20% more likely to score critical hits, in addition to masterwork."
+  />
+
+  <mod
+    Part="ModMicroserrated"
+    Tables="LongBladeMods,AxeMods"
+    MinTier="99"
+    TinkerTier="6"
+    TinkerDisplayName="microserrated"
+    TinkerCategory="melee weapons"
+    Value="1.5"
+    Description="Microserrated: This weapon has a 7% chance to dismember opponents, in addition to serrated."
+  />
+
+  <mod
+    Part="ModMassivelyOverloaded"
+    Tables="CommonMods"
+    MinTier="99"
+    TinkerTier="6"
+    CanAutoTinker="false"
+    TinkerDisplayName="massively overloaded"
+    TinkerCategory="utility"
+    Value="1.5"
+    Description="Massively overloaded: This item's power load is greatly increased, in addition to overloaded."
+  />
 </mods>
