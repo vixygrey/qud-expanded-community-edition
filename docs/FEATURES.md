@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 75 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 76 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6535,6 +6535,42 @@ turns (−4 Agility, −4 Intelligence, −10 Move Speed) and the message **name
 
 Nothing is spawned. Waking what is already there is less arbitrary than conjuring an attacker out of
 the design's convenience, and it means the tier rates describe a real population.
+
+### 51.5a A full sleep gives something back
+
+The design doc's own instruction is **design the reward before the punishment**. Fatigue alone is a
+tax; a dream is the reason to sleep properly, in a safe place, without being woken — and it fires in
+exactly one place, when fatigue reaches zero with the sleeper undisturbed. **An ambush costs the
+dream as well as the rest**, which is what makes where you lie down matter for something beyond
+safety.
+
+**Dreams quote rather than generate.** §4 originally asked for text *"Markov-generated from the
+player's recent history"*; both of Qud's generators load `LibraryCorpus.json`, a fixed offline corpus
+with nothing about the player in it, so that was never possible. `JournalAPI.Accomplishments` is the
+store it wanted — timestamped deeds with pre-authored prose in **three** registers:
+
+| field | voice |
+|---|---|
+| `Text` | plain, second person — *"You journeyed to Kyakukya."* |
+| `MuralText` | third person, mythic |
+| **`GospelText`** | legendary, and often **counterfactual** |
+
+**The gospel voice is the one a dream wants, and picking it is the whole idea.** The mural voice
+reports what happened; the gospel voice mythologises it and is frequently untrue — vanilla's own
+Omonporch entry reads *"=name= appointed the corrupt administrator Asphodel as earl"*, which the
+player did not do. Deeds returning grander and slightly wrong is what a dream is. `MuralText` then
+`Text` are the fallbacks, since not every accomplishment carries all three.
+
+The stored prose contains `=name=`, pronoun tokens and `<spice.…>` lookups, so it goes through
+`GameText.VariableReplace` before anyone reads it — the same replacer the journal uses.
+
+**The portent tier** reveals an unrevealed `JournalMapNote`. `RevealMapNote` takes a `LearnedFrom`
+string, so the dream is recorded as the source the location was learned from rather than the map
+simply changing. It rolls at 30% and falls back to a recollection when there is nothing left to learn,
+so a full sleep is never unrewarded.
+
+The **psychic echo** tier from §4.1 is deliberately not built. A temporary buff or a mutation bump is a
+balance question rather than a prose one and deserves its own look.
 
 ### 51.6 State lives in the property bag, deliberately
 
