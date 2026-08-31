@@ -18,6 +18,21 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `scatter-share` weighs a merge block by the group it merges into (#748).
+
+  `PopulationGroup.MergeFrom` copies a group's `Chance` and `Number` only when the incoming group
+  sets them, so a merge writing `<group Name="Creatures">` with neither keeps the target's — and at
+  load that multiplier gates this fork's entries exactly as it gates vanilla's. The measure walked
+  this fork's XML alone, saw no attributes, and counted the multiplier as one.
+
+  Six merges here inherit one. The largest is `DesertCanyonZoneGlobals-Reachable`, whose group is
+  worth 2.375 rolls of its contents: this fork's share there reads 34% rather than 18%. Nothing
+  crosses the half ceiling, and two tables move down.
+
+  Vanilla's per-group values are a new `group_multipliers` section in `tools/qud-api.json` — 17
+  entries — held as raw strings rather than a computed number, because inheritance is per
+  attribute and a group may inherit one while overriding the other.
+
 - **(internal)** `scatter-share` measures a table by tree, so a group's `Chance` gates what is
   inside it (#746).
 

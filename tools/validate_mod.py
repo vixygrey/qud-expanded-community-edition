@@ -2057,6 +2057,19 @@ def snapshot_scatter_quantities() -> dict[str, float]:
     return json.loads(QUD_API_PATH.read_text()).get("scatter_quantities", {})
 
 
+def snapshot_group_multipliers() -> dict[str, dict[str, list[str | None]]]:
+    """Vanilla's per-group `Chance` and `Number` for the merged tables, from tools/qud-api.json.
+
+    A merge block whose group sets neither keeps the target's, so this is what lets
+    `scatter_quantity` weigh this fork's entries the way the game will (#748). Empty when the
+    snapshot predates the key, which simply means no group inherits — the pre-#748 reading, and a
+    reason to regenerate after every Qud update rather than a silent wrong answer.
+    """
+    if not QUD_API_PATH.is_file():
+        return {}
+    return json.loads(QUD_API_PATH.read_text()).get("group_multipliers", {})
+
+
 def snapshot_template_hints() -> dict[str, list[str]]:
     """The default placement hint each zone template supplies, from tools/qud-api.json.
 
@@ -2441,7 +2454,9 @@ def chance_multiplier(chance: str | None) -> float:
     return total
 
 
-def group_multiplier(group: ET.Element) -> float:
+def group_multiplier(
+    group: ET.Element, inherited: dict[str, list[str | None]] | None = None
+) -> float:
     """How many times a group's contents are rolled, from its own `Chance` and `Number`.
 
     `PopulationGroup.Generate` nests two loops, and both counts come off the group:
@@ -2452,12 +2467,24 @@ def group_multiplier(group: ET.Element) -> float:
 
     So the group contributes `Chance x Number`, and nested groups multiply. Absent attributes are
     one apiece, which makes an ordinary group transparent.
+
+    `inherited` maps a group name to the `[Chance, Number]` of the vanilla group a merge block
+    merges into. Each attribute falls back independently, matching `MergeFrom`, which copies each
+    only when the incoming group sets it (#748).
     """
-    return chance_multiplier(group.get("Chance")) * number_midpoint(group.get("Number"))
+    chance, number = group.get("Chance"), group.get("Number")
+    if inherited is not None:
+        from_vanilla = inherited.get(group.get("Name") or "")
+        if from_vanilla:
+            chance = chance if chance is not None else from_vanilla[0]
+            number = number if number is not None else from_vanilla[1]
+    return chance_multiplier(chance) * number_midpoint(number)
 
 
 def scatter_quantity(
-    pop: ET.Element, own_tables: dict[str, list[ET.Element]] | None = None
+    pop: ET.Element,
+    own_tables: dict[str, list[ET.Element]] | None = None,
+    inherited: dict[str, list[str | None]] | None = None,
 ) -> float:
     """Expected number of objects one roll of this table scatters.
 
@@ -2505,12 +2532,20 @@ def scatter_quantity(
     measures its Small and Large arms together rather than 95/5 between them. Over-counting pushes
     a share toward the ceiling rather than under it, which is the direction that fails loud.
 
-    **What this still does not model** is a merge block inheriting the multiplier of the vanilla
-    group it merges into. Six of this fork's merges land in a group carrying a `Chance` or
-    `Number`, and at load those gate the fork's entries too - but resolving that needs vanilla's
-    per-group values, which are not in `tools/qud-api.json` and cannot be read in CI. #748.
+    **`inherited` carries the multipliers of the vanilla groups a merge block merges into**
+    (#748). `PopulationGroup.MergeFrom` copies `Chance` and `Number` only when the incoming group
+    sets them, so a merged `<group Name="Creatures">` with neither keeps the target's - and at load
+    those gate this fork's entries exactly as they gate vanilla's. Six of this fork's merges land
+    in such a group, worth 2.375 rolls on `DesertCanyonZoneGlobals-Reachable`.
+
+    Fallback is **per attribute**, because that pair of `if`s is: a group setting `Number` and not
+    `Chance` keeps the target's `Chance`. A group this fork adds under its own name simply misses
+    the lookup, so new groups need no special case, and the lookup applies at any depth because
+    `Info.GroupLookup` is keyed per table rather than per parent.
+
+    Vanilla's own tables pass `None`: they are not merge blocks, and carry their multipliers inline.
     """
-    return _scatter_walk(pop, 1.0, own_tables, {pop.get("Name")})
+    return _scatter_walk(pop, 1.0, own_tables, {pop.get("Name")}, inherited)
 
 
 def _scatter_walk(
@@ -2518,6 +2553,7 @@ def _scatter_walk(
     multiplier: float,
     own_tables: dict[str, list[ET.Element]] | None,
     seen: set[str | None],
+    inherited: dict[str, list[str | None]] | None = None,
 ) -> float:
     """One node of the tree, with the multiplier its ancestors have already accumulated.
 
@@ -2556,7 +2592,7 @@ def _scatter_walk(
                 * number_midpoint(child.get("Number"))
             )
             for target in own_tables[name]:
-                inner = _scatter_walk(target, 1.0, own_tables, seen | {name})
+                inner = _scatter_walk(target, 1.0, own_tables, seen | {name}, inherited)
                 if inner == 0.0 and any(
                     obj.get("Weight") is not None for obj in target.iter("object")
                 ):
@@ -2574,10 +2610,14 @@ def _scatter_walk(
                 total += share * inner
         elif child.tag == "group":
             total += _scatter_walk(
-                child, multiplier * group_multiplier(child), own_tables, seen
+                child,
+                multiplier * group_multiplier(child, inherited),
+                own_tables,
+                seen,
+                inherited,
             )
         else:
-            total += _scatter_walk(child, multiplier, own_tables, seen)
+            total += _scatter_walk(child, multiplier, own_tables, seen, inherited)
     return total
 
 
@@ -2824,6 +2864,7 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """
     quantities = snapshot_scatter_quantities()
     absent = snapshot_absent_tables()
+    multipliers = snapshot_group_multipliers()
     if not quantities:
         return
 
@@ -2849,7 +2890,9 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     for pop in root.iter("population"):
         name = pop.get("Name")
         if name and pop.get("Load") == "Merge":
-            mine[name] = mine.get(name, 0.0) + scatter_quantity(pop, own_tables)
+            mine[name] = mine.get(name, 0.0) + scatter_quantity(
+                pop, own_tables, multipliers.get(name)
+            )
 
     for name, ours in sorted(mine.items()):
         if ours <= 0:

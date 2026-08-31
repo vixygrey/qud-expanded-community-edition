@@ -20,6 +20,7 @@ import os
 import shutil
 import sys
 import tempfile
+import typing
 import unittest
 import unittest.mock
 import xml.etree.ElementTree as ET
@@ -2914,6 +2915,91 @@ class SnapshotBackedChecks(unittest.TestCase):
         el = ET.fromstring('<group Chance="95" Number="1-4" />')
         self.assertAlmostEqual(validate_mod.group_multiplier(el), 2.375)
         self.assertEqual(validate_mod.group_multiplier(ET.fromstring("<group />")), 1.0)
+
+    # ------------------------------------------- a merge block inherits its target's multiplier
+
+    INHERITED: typing.ClassVar = {"Creatures": ["95", "1-4"]}
+
+    def _merged(self, body: str, inherited=None) -> float:
+        root = ET.fromstring(
+            "<populations>\n"
+            '  <population Name="Merged" Load="Merge">\n' + body + "  </population>\n"
+            "</populations>"
+        )
+        pop = next(p for p in root.iter("population"))
+        return validate_mod.scatter_quantity(pop, None, inherited)
+
+    def test_a_merged_group_setting_neither_inherits_both(self) -> None:
+        """#748. MergeFrom keeps the target's Chance and Number when the incoming group sets
+        neither, so at load the fork's entries are gated exactly as vanilla's are."""
+        body = (
+            '    <group Name="Creatures" Load="Merge">\n'
+            '      <object Blueprint="Vixy_Dog" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(
+            self._merged(body), 1.0, msg="without the snapshot, no multiplier"
+        )
+        self.assertAlmostEqual(self._merged(body, self.INHERITED), 0.95 * 2.5)
+
+    def test_a_merged_group_setting_both_overrides_both(self) -> None:
+        body = (
+            '    <group Name="Creatures" Load="Merge" Chance="10" Number="2">\n'
+            '      <object Blueprint="Vixy_Dog" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(self._merged(body, self.INHERITED), 0.20)
+
+    def test_inheritance_is_per_attribute_not_per_group(self) -> None:
+        """PopulationGroup.MergeFrom copies each attribute only when it is set:
+
+            if (populationGroup.Number != null) Number = populationGroup.Number;
+            if (populationGroup.Chance != null) Chance = populationGroup.Chance;
+
+        so a group setting Number and not Chance keeps the target's Chance. No merge in this fork
+        does that today; the arithmetic is right for one that does, which is why the snapshot
+        stores raw strings rather than a computed float."""
+        number_only = (
+            '    <group Name="Creatures" Load="Merge" Number="2">\n'
+            '      <object Blueprint="Vixy_Dog" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(self._merged(number_only, self.INHERITED), 0.95 * 2)
+        chance_only = (
+            '    <group Name="Creatures" Load="Merge" Chance="50">\n'
+            '      <object Blueprint="Vixy_Dog" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(self._merged(chance_only, self.INHERITED), 0.50 * 2.5)
+
+    def test_a_group_this_fork_adds_under_its_own_name_inherits_nothing(self) -> None:
+        """A Vixy_ group is new rather than merged, so it simply misses the lookup — which is why
+        new groups need no special case. This is the shape the bookshelf merges use."""
+        body = (
+            '    <group Name="Vixy_Local" Style="pickeach" Chance="10">\n'
+            '      <object Blueprint="Vixy_Book" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(self._merged(body, self.INHERITED), 0.10)
+
+    def test_an_absent_snapshot_section_reads_as_no_inheritance(self) -> None:
+        """The pre-#748 answer, which is the right thing for a snapshot that predates the key."""
+        body = (
+            '    <group Name="Creatures" Load="Merge">\n'
+            '      <object Blueprint="Vixy_Dog" Number="1" />\n'
+            "    </group>\n"
+        )
+        self.assertAlmostEqual(self._merged(body, {}), 1.0)
+
+    def test_group_multiplier_falls_back_per_attribute(self) -> None:
+        el = ET.fromstring('<group Name="Creatures" Number="2" />')
+        self.assertAlmostEqual(
+            validate_mod.group_multiplier(el, {"Creatures": ["95", "1-4"]}), 0.95 * 2
+        )
+        self.assertAlmostEqual(validate_mod.group_multiplier(el, None), 2.0)
+        self.assertAlmostEqual(
+            validate_mod.group_multiplier(el, {"Other": ["10", None]}), 2.0
+        )
 
     def test_a_multi_roll_chance_is_summed_not_parsed_as_one_number(self) -> None:
         """`Chance="100,50"` is two independent rolls, so it fires 1.5 times on average.

@@ -686,9 +686,21 @@ corrections, both from reading `PopulationItem` rather than the XML:
   #746: `DesertCanyonZoneGlobals-Reachable` measured 28.47 where it scatters 7.56, because a
   `Chance="4"` group holding a snapjaw war party was counted as though it always fired.
 
+- **A merge block inherits the multiplier of the group it merges into**, per attribute.
+  `PopulationGroup.MergeFrom` copies `Chance` and `Number` only when the incoming group sets them,
+  so `<group Name="Creatures" Load="Merge">` with neither keeps the target's — and at load those
+  gate this fork's entries exactly as they gate vanilla's. Six merges here do that, worth 2.375
+  rolls on `DesertCanyonZoneGlobals-Reachable`, which took its share from 18% to 34% when #748
+  modelled it. Vanilla's per-group values come from the snapshot's `group_multipliers`, as raw
+  strings rather than a computed number, because inheriting one attribute while overriding the
+  other is a case one float cannot express.
+
 Over-crediting **vanilla** is the quiet direction of an error here: it shrinks this fork's share and
-so hides a ceiling breach rather than inventing one. What is still not modelled is a merge block
-inheriting the multiplier of the group it merges into — #748.
+so hides a ceiling breach rather than inventing one. Both corrections above were found that way —
+nothing was failing, and that was the problem.
+
+> **`DesertCanyonZoneGlobals-Reachable` sits at 34%**, which is the least headroom of any table this
+> fork scatters into. Worth knowing before adding a creature there.
 
 **`scatter-share` exists because the weight measure silently governed nothing for half the tables
 here** (#474). Biome globals scatter, so both sides summed to zero and the check could not fail
