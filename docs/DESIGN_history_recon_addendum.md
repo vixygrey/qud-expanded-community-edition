@@ -228,9 +228,9 @@ XRL.Annals.QudHistoryFactory
 **The player has a `HistoricEntity` in the same ledger the sultans live in**, with a reserved
 id and require-or-create accessors.
 
-Not needed for lore-expansion's current roadmap, but it is the single most important fact in
-this pass for anything involving the player and history — see the reconciliation note in
-`../design-docs/` regarding the legacy mod, which had assumed a parallel record was necessary.
+Not needed for the current roadmap, but it is the single most important fact in this pass for
+anything involving the player and history — the legacy design had assumed a parallel record was
+necessary.
 
 ---
 
@@ -258,5 +258,5 @@ surface you depend on.
 | `DESIGN_history_recon.md` §Q5 | Upgrade to strongly-implied |
 | `DESIGN_history_recon.md` §Q3 | Leans hardcoded — no registry field |
 | `DESIGN_history_recon.md` N3 | Perspective is feeling+colour, not text |
-| `DESIGN_history_handoff.md` §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong** |
+| *(retired handoff note)* §1 | Q9 answered — `HistoricSpice.root`; **and the SimpleJSON assumption is wrong**. Both applied before the document was retired |
 | `DESIGN_history_sources.md` | Reframe onto perspective-key + feeling-keyed spice |

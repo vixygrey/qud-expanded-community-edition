@@ -178,8 +178,9 @@ are public fields and public static methods, so charter rule 5's "documented ext
 only" is satisfied in substance: no private state is being reached into.
 
 The lesson is worth keeping: `Assembly-CSharp.xml` documents *some* members. For "does this exist
-at all", the DLL metadata is the authority. The tool is my own `cli_meta.py`, in `lore-expansion`
-— a private sibling project, not readable from this repository — pointed at the installed game.
+at all", the DLL metadata is the authority. The tool is my own `cli_meta.py`, in the `lore-expansion`
+repository — that project's design documents are now in `docs/`, but the helper itself is not —
+pointed at the installed game.
 
 The remaining unknown is **the Joppa map patch (§4.5)**, which has no identified hook.
 
@@ -432,7 +433,7 @@ Steps 1–3 are a plausible first release with options. Steps 4–6 can follow.
 - Installed Workshop mods under `steamapps/workshop/content/333640/` — 87 mods, 12 with
   `Options.xml`, all 12 shipping C#
 - `docs/CHARTER.md` — rules 2, 5 and 6
-- `../design-docs/DESIGN_difficulty.md` §1 and §5 — argues the opposite conclusion (split into
+- `DESIGN_difficulty.md` §1 and §5 — argues the opposite conclusion (split into
   separate mods) for a *new* mod with no existing audience. The difference is deliberate: that
   doc is designing a mod from scratch, this one is continuing a mod players already subscribe to
   as a single item.

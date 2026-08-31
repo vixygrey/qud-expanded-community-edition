@@ -1,9 +1,10 @@
-# Lore Expansion — Design Overview
+# World history and relic naming — design overview
 
-**Project:** `lore-expansion` — a Caves of Qud mod targeting the sultan history and
-relic naming systems.
-**Target:** Steam Workshop release.
-**Status:** Design phase. No implementation tier committed yet (see `DESIGN_history_implementation.md`).
+**Scope:** Qud's sultan history and relic naming systems.
+**Where it ships:** this mod. Settled in #178 under the charter's *One mod, not a constellation*;
+these documents were written for a separate Workshop item called `lore-expansion` and predate that
+decision, so the framing elsewhere in the set has not caught up yet.
+**Status:** design done, recon done, no implementation. The work is #730 (naming) and #731 (events).
 
 ---
 
