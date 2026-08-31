@@ -2420,4 +2420,81 @@
       <object Weight="10" Number="1" Blueprint="Vixy_Shoulder Bag" />
     </group>
   </population>
+
+  <!-- Local histories on the four named bookshelves that have none, #740. Texts in Core/Books.xml,
+       blueprints in ObjectBlueprints/Items.xml.
+
+       Each merge adds a NEW, Vixy_-prefixed group rather than merging into vanilla's. That is
+       load-bearing, not cosmetic. PopulationManager.LoadPopulationGroup reads
+       `Load = GetAttribute("Load").Coalesce("Merge")`, so a <group> defaults to merging - unlike
+       an <object>. A group named `Items` or `Books` here would therefore merge into vanilla's
+       group of that name, and PopulationGroup.MergeFrom overwrites the target's Chance and
+       Number, silently retuning vanilla's own general-pool rate on that shelf. A prefixed name
+       lands as a new sibling and touches nothing.
+
+       The Chance values are sized against each location's shelf count, which is the whole reason
+       Joppa's shape could not simply be copied. Every one of these tables is Style="pickeach", so
+       Weight is never read - PopulationList.Generate consults it only for pickone - and an entry
+       with no Chance is generated unconditionally, once per shelf. Joppa places both its volumes
+       that way and gets away with it because Joppa has exactly ONE shelf. Grit Gate has eight and
+       Yd Freehold nine, so the same shape would hand a player eight or nine identical copies.
+
+       Chance is also not a gate: PopulationItem.RollChance rolls each comma-separated value
+       independently and returns how many succeeded, as a repeat count. Single values are used
+       below so each group yields at most one copy.
+
+       Chance sits on the <object> rather than on the group. The two are behaviourally identical
+       here - RollChance runs per item and per group, and one repetition of a group holding one
+       unconditional object is the same as one conditional object - but the entry is where vanilla
+       puts it on these very tables (RedrockBookshelf is Chance="15,5" on the entry, and
+       YdFreeholdBookshelf Chance="20" and "5"), and it is where tools/validate_mod.py's
+       scatter_quantity reads it. On the group it is invisible to the measure, which then scores
+       each of these as a full expected object instead of a fraction of one.
+
+       Counted from the static maps and, for Red Rock, from the builder:
+
+         GritGateBookshelf     8 shelves in GritGate.rpm            Chance 10  -> 0.80 expected
+         YdFreeholdBookshelf   9 shelves in YdFreehold-under.rpm    Chance 11  -> 0.99 expected
+         HydroponBookshelf     1 shelf  in Hydropon.rpm             Chance 100 -> always
+         RedrockBookshelf      2 shelves, and only when a Study     Chance 20  -> 0.40 expected
+                               room rolls at all                                  within a Study
+
+       Grit Gate and Red Rock are sized by the docs/STYLEGUIDE.md 3.2.1 half-ceiling rather than
+       by the one-expected-copy rule, because the two disagree there and the ceiling wins. Vanilla
+       scatters 0.10 books per Grit Gate shelf and 0.20 per Red Rock shelf, so matching each
+       exactly puts this fork at half of what a player meets on that shelf and no more. Hydropon
+       (1.00 against vanilla's 1.00) and Yd Freehold (0.11 against 0.25) were already inside it.
+
+       Hydropon lands on certainty because one shelf is what Joppa has, and one expected copy on
+       one shelf means always. Red Rock is the outlier in the other direction: Worlds.xml gives it
+       a single Level 12 zone, Redrock.cs places 1.975 encounter regions there on average, and
+       Study is one of fifteen equal-weight options - so Red Rock has any bookshelf at all in about
+       13% of playthroughs. Chance 50 gives one expected copy of the four *when the study exists*,
+       which is the same rule as the other three; the rarity is Red Rock's own. -->
+
+  <population Name="GritGateBookshelf" Load="Merge">
+    <group Name="Vixy_GritGateLocalHistory" Style="pickeach">
+      <object Blueprint="Vixy_OnTheEnclaveOrchard" Chance="10" Number="1" />
+    </group>
+  </population>
+
+  <population Name="HydroponBookshelf" Load="Merge">
+    <group Name="Vixy_HydroponLocalHistory" Style="pickeach">
+      <object Blueprint="Vixy_TheRuinedNook" Chance="100" Number="1" />
+    </group>
+  </population>
+
+  <!-- YdFreeholdBookshelf already lists `Books` twice in vanilla, at Chance 20 and Chance 5. That
+       duplicate is vanilla's and predates this merge - do not read it as something added here. -->
+  <population Name="YdFreeholdBookshelf" Load="Merge">
+    <group Name="Vixy_YdFreeholdLocalHistory" Style="pickeach">
+      <object Blueprint="Vixy_ANoteOnTheSpongebed" Chance="11" Number="1" />
+    </group>
+  </population>
+
+  <population Name="RedrockBookshelf" Load="Merge">
+    <group Name="Vixy_RedrockLocalHistory" Style="pickeach">
+      <object Blueprint="Vixy_AccountsOfTheOutcrop" Chance="20" Number="1" />
+    </group>
+  </population>
 </populations>

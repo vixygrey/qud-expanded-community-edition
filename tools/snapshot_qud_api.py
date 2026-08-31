@@ -825,13 +825,32 @@ def collect_scatter_quantities(game: Path) -> dict[str, float]:
     from validate_mod import scatter_quantity
 
     _, wanted = merged_record_names()
+
+    # Vanilla's own tables, so a vanilla `<table>` reference resolves into vanilla the way a
+    # `Vixy_` one resolves into this fork's (#740). Without this, a table that stocks itself
+    # entirely by reference measured 0.0 on the vanilla side - and a table measuring 0.0 makes
+    # every entry this fork adds read as 100% of it, however small the chance. That is the
+    # opposite of the guard's purpose: the six named bookshelf tables each delegate to `Books`
+    # and none of them could be merged into at all.
+    #
+    # Resolution only ever *adds* to vanilla's side, so this fork's share of any table can fall
+    # but never rise - no check that passed before can begin to fail because of it.
+    vanilla_tables: dict[str, list] = {}
+    for f in sorted(game.glob("PopulationTables*.xml")):
+        for pop in parse(f, lenient=True).iter("population"):
+            name = pop.get("Name")
+            if name:
+                vanilla_tables.setdefault(name, []).append(pop)
+
     totals: dict[str, float] = {}
     for f in sorted(game.glob("PopulationTables*.xml")):
         for pop in parse(f, lenient=True).iter("population"):
             name = pop.get("Name")
             if name not in wanted:
                 continue
-            totals[name] = round(totals.get(name, 0.0) + scatter_quantity(pop), 4)
+            totals[name] = round(
+                totals.get(name, 0.0) + scatter_quantity(pop, vanilla_tables), 4
+            )
     return totals
 
 

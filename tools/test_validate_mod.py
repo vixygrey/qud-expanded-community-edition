@@ -2674,6 +2674,67 @@ class SnapshotBackedChecks(unittest.TestCase):
             pop, own
         )
 
+    def test_a_multi_roll_chance_is_summed_not_parsed_as_one_number(self) -> None:
+        """`Chance="100,50"` is two independent rolls, so it fires 1.5 times on average.
+
+        `RollChance` returns how many of the comma-separated values succeeded and the caller uses
+        that as a repeat count. The old arithmetic called `float()` on the whole string, which
+        raises on any of vanilla's 60 multi-roll chances - found by #740, when following vanilla's
+        `<table>` references first reached one.
+        """
+        self.assertEqual(validate_mod.chance_multiplier(None), 1.0)
+        self.assertEqual(validate_mod.chance_multiplier(""), 1.0)
+        self.assertAlmostEqual(validate_mod.chance_multiplier("15"), 0.15)
+        self.assertAlmostEqual(validate_mod.chance_multiplier("100,50"), 1.5)
+        self.assertAlmostEqual(validate_mod.chance_multiplier("90,80,50"), 2.2)
+
+    def test_a_multi_roll_chance_reaches_the_quantity(self) -> None:
+        """The crash path, end to end: an entry vanilla writes and this arithmetic must survive."""
+        plain, _ = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <object Blueprint="Vixy_Reed" Chance="15,5" Number="1" />\n'
+            "  </population>\n"
+        )
+        self.assertAlmostEqual(plain, 0.2)
+
+    def test_a_reference_into_a_weighted_pool_yields_one_object(self) -> None:
+        """#740. A pickone pool hands back exactly one object per roll, and every child carries
+        `Weight`, so summing unweighted entries scores the whole reference at zero.
+
+        This is the shape of all six named bookshelf tables: vanilla stocks them with
+        `<table Name="Books" />` and `Books` is a pickone of weighted texts. Both sides of the
+        ratio came out 0.0, so any entry this fork added read as 100% of the table however small
+        its chance - and no value could ever pass.
+        """
+        pool = (
+            '  <population Name="Vixy_Texts">\n'
+            '    <group Name="Items" Style="pickone">\n'
+            '      <object Weight="20" Number="1" Blueprint="Vixy_TextA" />\n'
+            '      <object Weight="20" Number="1" Blueprint="Vixy_TextB" />\n'
+            "    </group>\n"
+            "  </population>"
+        )
+        plain, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <table Name="Vixy_Texts" Chance="10" Number="1" />\n'
+            "  </population>\n" + pool
+        )
+        self.assertEqual(
+            plain, 0.0, "the unresolved reading is what the hole looked like"
+        )
+        self.assertAlmostEqual(
+            resolved, 0.10, msg="one object, at the reference's own chance"
+        )
+
+    def test_a_pool_that_scatters_is_not_overridden_by_the_weighted_rule(self) -> None:
+        """The one-object rule is a floor for pools that measure zero, not a cap on real ones."""
+        _, resolved = self._quantities(
+            '  <population Name="Merged" Load="Merge">\n'
+            '    <table Name="Vixy_IvyPatches" Chance="30" />\n'
+            "  </population>\n" + self.PATCHES
+        )
+        self.assertAlmostEqual(resolved, 7.2)
+
     def test_an_own_sub_table_is_counted_once_resolution_is_asked_for(self) -> None:
         """#544. Vanilla's overgrowth idiom is a sub-table pulled in by one line, so a Vixy_ copy
         of that shape carried its whole footprint past the measure."""

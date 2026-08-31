@@ -16,6 +16,31 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Four bookshelves that are about the place they stand in** (#740).
+
+  Only one bookshelf in Qud is about where you are standing. Joppa's holds the two volumes of its
+  own history, and they appear nowhere else in the game. Every other named shelf — Grit Gate, the
+  hydropon, Yd Freehold, Red Rock — is dressed for its location and stocked from the same general
+  pool, so a book you pull off a shelf at Grit Gate is a book you could have found anywhere.
+
+  Each of those four now has one local history of its own, sitting alongside the general pool
+  rather than replacing it. Why the Barathrumites planted an orchard under a sealed ruin. What
+  happened to the recoming nook the hydropon was built around, and what came up instead. Why the
+  Yd Freehold lives in its reef without harvesting it. Who has used the outcrop at Red Rock, and
+  why they kept coming back.
+
+  One page each, in the register of the place rather than of a village — Grit Gate is an
+  institution, not a farming hamlet, and the four do not sound alike. They are worth nothing, like
+  Joppa's, so the Stilt librarian pays for scholarship and not for handing a place its own past
+  back.
+
+  How often you find one is sized to how many shelves each location has, so no place hands you the
+  same book twice. Generic village shelves are deliberately untouched: villages already write their
+  own histories as the world is made.
+
+
 ## [2.11.0] - 2026-08-31
 
 ### Added

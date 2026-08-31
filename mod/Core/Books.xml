@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<books>
+  <!-- Local histories for the four named bookshelves that have none, #740.
+
+       Vanilla gives exactly one location writing about itself: JoppaBookshelf holds
+       HistoryofJoppaVol1 and Vol2, and both are placed unconditionally on Joppa's single shelf.
+       The other five named shelves draw only from the general Books pool, so a book pulled at
+       Grit Gate is the same book as one pulled three hundred parasangs away.
+
+       VillageBookshelf is deliberately not among these. Villages already have the feature:
+       VillageBase.generateHistoryBooks builds one volume per journal note at world generation,
+       titled "History of <village>, Vol. <roman>" and opening with a framing line the two Joppa
+       volumes reuse verbatim. That template is the *village* register, generated per world, and
+       none of the four places below is a village - so these borrow its shape and none of its
+       wording. Each is in the register the place itself would use.
+
+       Form, read off the Joppa volumes: one page, 30-50 words (theirs are 48 and 30), a
+       dim-white framing line saying what the book is, a blank line, then one paragraph in third
+       person past tense that closes by connecting the past to something still true. No invented
+       proper noun is ever glossed - vanilla names Jeweled Dusk and Ut yara Ux and explains
+       neither - and nothing here references the player, a quest, or a current event.
+
+       Format and Margins match the Joppa volumes. Vanilla is split 25/28 on carrying them at
+       all; these follow the two books the register came from. Page text sits flush against its
+       tags, because BookUI renders it literally and any indentation becomes leading spaces. -->
+
+  <!-- Grit Gate. Nine Starapple Tree Barathrumite and nine Yuckwheat Barathrumite grow inside the
+       enclave, watered by three GritGateHydraulicIrrigator. An orchard under a sealed ruin is the
+       oddity; the Barathrumite covenant being measured in millennia is what explains it. -->
+  <book ID="Vixy_OnTheEnclaveOrchard" Title="{{W|On the Enclave Orchard}}" Format="Auto" Margins="1,2,2,2">
+    <page>{{w|Filed with the enclave's agronomy records, undated.}}
+
+The first seedlings went down before the enclave had doors. Those who planted them did not expect to eat starapples, and entered as much in the record. The irrigators have run without interruption since, and the trees fruit on a schedule of their own.</page>
+  </book>
+
+  <!-- The hydropon. Built around a ruined recoming nook: Melted Reliquary, Melted Pad and Melted
+       Jug are melted counterparts of Gyl's Recoming Reliquary, Full-Scale Recompositer and
+       Recoming Water Jug, and inherit from them. The jug's description says two pictographs have
+       been rendered illegible. The slynth were grown one by one from the pad. Written by them,
+       who arrived after all of it - so the cause of the melting stays unexplained. -->
+  <book ID="Vixy_TheRuinedNook" Title="{{W|The Ruined Nook}}" Format="Auto" Margins="1,2,2,2">
+    <page>{{w|Kept by the slynth, who were not present for any of it.}}
+
+The nook did not survive what came through the roof. Whoever the reliquary had been prepared for never arrived, and the two pictographs on the vessel burned past reading. Lilies took the landing pad instead, one at a time. They have been walking ever since.</page>
+  </book>
+
+  <!-- Yd Freehold. The surface zone carries the NoPolypPlucking zone part, so the game refuses to
+       let anyone pluck the reef there - a rule with real mechanical force that nothing in
+       Conversations.xml explains. Warden Une calls the Freehold "a collective thriving without
+       hierarchy", and the world map calls it a lyrical community, so it is settled in song and
+       without a vote. -->
+  <book ID="Vixy_ANoteOnTheSpongebed" Title="{{W|A Note on the Spongebed}}" Format="Auto" Margins="1,2,2,2">
+    <page>{{w|Copied into the library from a song that is still sung.}}
+
+The founders argued the question for a season and settled it without a vote, which is how the Freehold settles things. The reef would be lived in and not harvested. Nothing was written down at the time. No polyp has been plucked here since.</page>
+  </book>
+
+  <!-- Red Rock. Its stratum-12 rooms come from a pickone of fifteen encounters - an alchemist, a
+       workshop, a study, a forge, a pariah camp, shrines - so the place reads as one nobody holds
+       for long. The bottom opens on the underground river that runs to Joppa, which is the reason
+       anyone stops here at all. Left behind rather than written for a library. -->
+  <book ID="Vixy_AccountsOfTheOutcrop" Title="{{W|Accounts of the Outcrop}}" Format="Auto" Margins="1,2,2,2">
+    <page>{{w|Left on the shelf by a reader who did not come back for it.}}
+
+The rock was a landmark before it was a shelter, and a shelter before anyone cut rooms into it. Each occupant took the last one's furniture and left their own. Water still runs at the bottom, which is the only reason any of them stayed.</page>
+  </book>
+</books>
