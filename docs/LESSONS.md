@@ -3617,3 +3617,73 @@ things differing by one is worth a second look, and pulling that thread led back
 Neighbour of [`a search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search),
 with the failure moved one step along: there the search could not match, here it matched correctly
 and rewrote what it found. Both end in output that reads as evidence and is not.
+
+## A file check reads the working tree, and CI reads the tracked one
+
+`check_docs.py` gained a check that file paths written as prose resolve. It passed locally and
+failed on CI with seventeen findings, every one naming `CLAUDE.md`.
+
+That file is real. It is also `.gitignore`d — private working notes, untracked since #115. So it
+exists on my machine and does not exist in a clean checkout, and a check asking the filesystem
+*"does this resolve"* answers differently in the two places.
+
+```python
+if any((base / target).exists() for base in (Path("."), Path("docs"), doc.parent)):
+    continue
+```
+
+Nothing about that line is wrong in isolation. What is wrong is the assumption that the directory
+the check runs in is the repository — it is the repository **plus whatever else is lying around**,
+and `.gitignore` is precisely the list of things that differ.
+
+> **A gate that reads the working tree is testing a different repository than CI is.** Anything
+> asking whether a file exists should ask the *tracked* tree, or be verified with the untracked
+> files temporarily out of the way, before it is trusted.
+
+The check itself is fine; the verification was not. Local green meant nothing here because the
+failure mode is *invisible locally by construction* — the same shape as
+[`a hook that was never installed protects nothing, and this one failed to install quietly`](#a-hook-that-was-never-installed-protects-nothing-and-this-one-failed-to-install-quietly),
+where the thing that would have reported the problem was the thing that was missing.
+
+**And fix the class, not the instance.** Having marked `CLAUDE.md`, I swept every prose path in
+every document for anything else resolving to an untracked file. Zero — but the sweep is the part
+that makes the fix trustworthy, because one instance found by CI says nothing about the second.
+
+## Three vanilla defects worth not rediscovering
+
+Found while investigating features that were then not built. All three are Freehold's rather than
+this fork's, all three are the kind that fail silently, and none is worked around anywhere here —
+recorded so the next investigation does not spend the same hours.
+
+**`Cell.DistanceToRespectStairs` makes flight direction matter by a factor of three.** `Kill` gives
+up pursuit past `num > 80`, and the metric composes global coordinates against a zone that is 80
+wide and 25 tall:
+
+```csharp
+int num  = C.ParentZone.GetZonewX() * Definitions.Width  * 80 + C.ParentZone.GetZoneX() * 80 + C.X;
+int num2 = C.ParentZone.GetZonewY() * Definitions.Height * 25 + C.ParentZone.GetZoneY() * 25 + C.Y;
+```
+
+One zone east is ~80 and one zone north is ~25, so **fleeing north is roughly three times safer than
+fleeing east** — a consequence of zone geometry rather than a design decision. See #716.
+
+**`Kill.LastSeen` is a budget, not a counter, and its name says otherwise.** Declared once,
+incremented once, tested once, assigned nowhere else in the file. So it is not *"six consecutive
+turns without a fix"* but a cumulative allowance across the whole life of the goal: a pursuer that
+loses you twice for three turns each has spent it. Sibling of
+[`a boolean's name is not its semantics, and neither is a skill's`](#a-booleans-name-is-not-its-semantics-and-neither-is-a-skills).
+
+**`GetThrowProfileEvent` asks the wrong object whether it wants the event.**
+
+```csharp
+if (Actor  != null && Actor.WantEvent(…) && !Actor.HandleEvent(getThrowProfileEvent))  return false;
+if (Object != null && Actor.WantEvent(…) && !Object.HandleEvent(getThrowProfileEvent)) return false;
+```
+
+The second branch tests **`Actor.WantEvent`** and calls **`Object.HandleEvent`**. A part on a thrown
+object that answers this event is silently skipped unless the thrower independently wants it — no
+error, no warning, the handler simply never runs for most throwers. This is why #580 could not be
+built cleanly, and it would have shipped inert exactly as #717 did.
+
+> **When a feature turns out not to be worth building, the defects found on the way still are.**
+> Each of these cost real investigation and none of them is discoverable from a call site.
