@@ -443,4 +443,29 @@
     <tag Name="DynamicInheritsTable:BaseAnimal:Tier1:Weight" Value="0.1" />
     <tag Name="DynamicInheritsTable:BaseAnimal:Tier2:Weight" Value="0.1" />
   </object>
+
+  <!-- Creatures use what they pick up, #588.
+
+       KNOW THE BLAST RADIUS, per charter rule 1. This is a part on `Creature`, so it reaches every
+       one of the 849 non-base creature blueprints in the game at once - the same order of reach as
+       the Chip Interface merge into `Humanoid`, and it is stated here rather than discovered. It is
+       also the first part this fork has merged onto a creature blueprint at all; everything else in
+       mod/Scripting/ hangs off an item, the player, or a skill.
+
+       The reach is the feature rather than a side effect. The rule is "a creature that picks
+       something up works out whether to use it", and a rule about creatures generally has to be
+       attached to creatures generally - the alternative is an authored list, which would be
+       inventing the cohort instead of deriving it.
+
+       Vixy_Reequip holds no instance fields, deliberately, because a part on `Creature` would
+       otherwise write its layout into every save on every creature. See its remarks, and
+       `serializable-shape` in tools/validate_mod.py.
+
+       The part refuses the player, anything with no Brain, and anything with no Combat part, so
+       what it actually reaches is smaller than 849 - but the merge is what it is and the number to
+       have in mind is the merge's. -->
+
+  <object Name="Creature" Load="Merge">
+    <part Name="Vixy_Reequip" />
+  </object>
 </objects>

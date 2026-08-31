@@ -18,6 +18,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Creatures use what they pick up** (#588).
+
+  A creature that finds a better weapon now works out that it is better, instead of carrying it
+  around and going on swinging. Nothing in Qud did this: the game has the machinery to re-equip an
+  NPC and never once calls it after an item changes hands, so a snapjaw that picks up a carbine
+  keeps hitting you with its axe.
+
+  What a creature works out depends on what it could plausibly understand. A tinker reconsiders
+  anything, artifacts included — and the reason tinkers are the line is that Qud already drew it:
+  of the three creatures vanilla lets scavenge, two are tinkers. Everyone else reconsiders a stick
+  with an edge and leaves the guns alone.
+
+  Loadouts creatures already had are untouched, so nobody's rifle is taken away and nothing that
+  was hand-placed changes. This only applies to something picked up afterwards.
+
+  {{y|It makes fights harder.}} Off by the {{C|creatures use what they pick up}} option, which takes
+  effect from the next pickup rather than the next restart.
+
 - **Thirteen books** (#741).
 
   Two of them continue series the game already has. {{y|Frivolous Lives, Vol. II}} carries on the

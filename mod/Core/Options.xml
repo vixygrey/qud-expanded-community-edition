@@ -533,4 +533,29 @@
             have names keep them.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEReequipOnPickup"
+    DisplayText="{{C|Qud Expanded}}: creatures use what they pick up"
+    Category="Mods"
+    Type="Checkbox"
+    Default="Yes"
+    SearchKeywords="qud expanded creature npc equip pickup weapon reequip loot combat"
+  >
+    <helptext>
+            A creature that picks up a better weapon works out that it is
+            better, instead of carrying it and going on swinging.
+
+            What it will work out depends on what it could plausibly
+            understand. A tinker reconsiders anything, artifacts included.
+            Everyone else reconsiders a stick with an edge, and leaves the
+            guns alone.
+
+            Loadouts creatures already had are untouched - this only applies
+            to something picked up after.
+
+            {{y|This makes fights harder.}} Off returns them to swinging what
+            they started with, from the next pickup.
+        </helptext>
+  </option>
 </options>
