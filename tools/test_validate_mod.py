@@ -1410,6 +1410,76 @@ class BookChecksTest(unittest.TestCase):
         self.assertEqual(f.items, [])
 
 
+class HistorySpiceTest(unittest.TestCase):
+    """`historyspice.json` fails silently in two ways, which is the whole argument for a check.
+
+    The merge sits in a try/catch that logs a mod error and carries on, so malformed JSON costs
+    the feature and reports nothing. And the expander leaves an unmatched `*token*` in place, so a
+    form written against a binding that does not exist renders the token inside a relic's name.
+    #730.
+    """
+
+    def findings(self, text: str, name: str = "historyspice.json") -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "mod"
+            (root / "Optional" / "HistoryNames").mkdir(parents=True)
+            (root / "Optional" / "HistoryNames" / name).write_text(
+                text, encoding="utf-8"
+            )
+            original = validate_mod.MOD
+            try:
+                validate_mod.MOD = root
+                f = validate_mod.Findings()
+                validate_mod.check_history_spice(f)
+                return [d for _, d in f.items]
+            finally:
+                validate_mod.MOD = original
+
+    def _form(self, form: str) -> str:
+        return json.dumps({"spice": {"history": {"relics": {"names": [form]}}}})
+
+    def test_malformed_json_is_reported(self) -> None:
+        found = self.findings('{ "spice": { oops }')
+        self.assertTrue(any("not valid JSON" in d for d in found), found)
+
+    def test_an_unbound_variable_is_reported(self) -> None:
+        """`*creatureName*` is absent from the whole assembly, and #730's own checklist named it —
+        so this is the mistake the check exists to catch."""
+        found = self.findings(self._form("the *creatureName* blade"))
+        self.assertTrue(any("*creatureName*" in d for d in found), found)
+
+    def test_the_four_real_bindings_are_quiet(self) -> None:
+        for token in (
+            "*element*",
+            "*itemType*",
+            "*personNounPossessive*",
+            "*creatureNamePossessive*",
+        ):
+            self.assertEqual(self.findings(self._form(f"the {token} thing")), [], token)
+
+    def test_a_form_with_no_variable_is_quiet(self) -> None:
+        self.assertEqual(
+            self.findings(self._form("the <spice.Vixy_plainAdjectives.!random> edge")),
+            [],
+        )
+
+    def test_names_that_is_not_a_list_is_reported(self) -> None:
+        found = self.findings(
+            json.dumps({"spice": {"history": {"relics": {"names": "no"}}}})
+        )
+        self.assertTrue(any("is not a list" in d for d in found), found)
+
+    def test_a_file_with_another_name_is_not_read(self) -> None:
+        """The game matches on the basename, so only that basename is this check's business."""
+        self.assertEqual(self.findings('{ "spice": { oops }', name="notspice.json"), [])
+
+    def test_a_valid_file_with_no_relic_forms_is_quiet(self) -> None:
+        """Adding vocabulary without adding a form is legitimate."""
+        self.assertEqual(
+            self.findings(json.dumps({"spice": {"Vixy_plain": ["iron"]}})), []
+        )
+
+
 class OptionDefaultTest(unittest.TestCase):
     """#443. Nothing here is broken today, which is exactly why it needs a check: the one wrong
     value in the file worked by accident, so copying it was a coin flip."""

@@ -18,6 +18,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Plainer names for legendary relics** (#730).
+
+  A relic's name is built from a grammar of exotic words, and almost every one of them is strange.
+  Strangeness only means something when there is something ordinary beside it, so at that density
+  it stops reading as significant and starts reading as noise. The vocabulary was never the
+  problem — there are hundreds of words, and more would not have helped.
+
+  This adds a name form built from plain words instead: {{y|the cold hatchet}}, {{y|the iron mask}},
+  {{y|the ninth tome}}, beside the sagittal quincunxes. Vanilla's own forms are never removed, so a
+  plain name becomes likelier rather than a strange one impossible.
+
+  One form for now. The path that merges it into the game's grammar had been read carefully and
+  never actually run, and I would rather confirm a single form works in a real world than write
+  twelve against an assumption. The rest follow once it does.
+
+  Off by the {{C|plainer relic names}} option, which takes effect on restart. Relics that already
+  have names keep them.
+
 - **(internal)** `scatter-share` weighs a merge block by the group it merges into (#748).
 
   `PopulationGroup.MergeFrom` copies a group's `Chance` and `Number` only when the incoming group

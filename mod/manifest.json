@@ -18,6 +18,10 @@
     {
       "Path": "Optional/JoppaBuilding",
       "Options": "OptionQudExpandedCEJoppaBuilding==Yes"
+    },
+    {
+      "Path": "Optional/HistoryNames",
+      "Options": "OptionQudExpandedCEPlainRelicNames==Yes"
     }
   ]
 }

@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 24 options (§13)
+│   ├── Options.xml             # 25 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -6045,6 +6045,88 @@ separate decision.
 None. Per charter rule 6 an option has to earn its place, and four one-page, value-0 texts that
 change no mechanic are the flavour case #663 settled: nobody would turn this off. The merges are
 additive and no vanilla record is rewritten.
+
+## 48. Plainer relic names (`Optional/HistoryNames/historyspice.json`)
+
+First stage of #730. Pure data — one JSON file the game merges into its own naming grammar. No C#,
+no scripting tier, no new blueprint.
+
+### 48.1 The complaint, and why more words would not fix it
+
+A legendary relic's name is assembled from a grammar in the game's `HistorySpice.json`. The
+vocabulary is not small — around 236 adjectives and 426 nouns sit behind the pools — so "add more
+words" is refuted rather than untried. What is missing is **plainness**. Real names are mostly
+mundane with occasional strangeness, and the strangeness registers *because* it is surrounded by
+plainness. When every modifier is exotic, obscurity becomes the baseline and reads as noise.
+
+### 48.2 The mechanism, and why it is free
+
+`HistoricSpice.Init` merges any mod file whose basename is `historyspice.json` into the shipped
+grammar:
+
+```csharp
+if (file.Type == ModFileType.JSON && file.Name == "historyspice.json")
+    jObject.Merge(JObject.Parse(File.ReadAllText(file.OriginalName)), settings);
+```
+
+- **Basename matching**, so `manifest.json` declaring `Directories` does not hide the file.
+- **`MergeArrayHandling.Union`** — additive only. Vanilla's own forms cannot be removed, so this
+  makes a plain name likelier rather than a strange one impossible. That is an honest ceiling and
+  the option's help text says so.
+- **The expander walks `HistoricSpice.root` by arbitrary path**, so a key this fork adds —
+  `spice.Vixy_plainAdjectives` — resolves like any vanilla one.
+
+The pool this writes into, `spice.history.relics.names`, has **no consumer besides the four relic
+naming sites**, so adding a form there is surgical. Seeding `spice.adjectives` or `spice.nouns`
+instead would reach proverbs, tombstone plaques, village festivals, cookbooks and calendar years;
+that is a different feature and is not done here.
+
+### 48.3 Only modifiers count
+
+Six of vanilla's eight forms are anchored by `spice.itemTypes`, which is already plain — *edge*,
+*hatchet*, *mace*, *helm*, *mask*, *tome*. So only two forms are composed entirely from the exotic
+lexicon, and the pool is **25% all-strange, not 100%**. But *the hatchet of the sagittal quincunx*
+has a plain head noun and still reads as noise, so a head noun does not count toward the quota: it
+is grammatically obligatory, and the modifier is where a name chooses its register.
+
+Plainness is also **diluted rather than absent** — three of the 30 `spice.adjectives` slots already
+reach a plain word. The fix is therefore to add *forms* that draw from a plain pool directly, not to
+add words that must win a 1-in-30 slot draw. `docs/DESIGN_history_naming.md` §4 carries the full
+reasoning.
+
+### 48.4 What ships here
+
+One form and its vocabulary:
+
+```
+the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>
+```
+
+giving *the cold hatchet*, *the iron mask*, *the ninth tome*. Nine forms in the pool, so the
+all-strange share is `2/9` — 22%. Twelve added forms would reach the 10% §4.2 targets, and the
+remaining eleven wait on this one being confirmed in game: the merge path had been read end to end
+and never run, and #730 is explicit that no vocabulary should be authored against an unproven
+mechanism.
+
+Only the four bindings that exist are used — `*element*`, `*itemType*`, `*personNounPossessive*`,
+`*creatureNamePossessive*`. `*creatureName*` and `*personNoun*` appear nowhere in the assembly, and
+the expander leaves an unmatched token in place, so a form naming one would render it literally
+inside a relic's name. `history-spice` in `tools/validate_mod.py` refuses that, and refuses a
+malformed file — the merge sits in a try/catch that logs a mod error and carries on, so a JSON
+error otherwise costs the whole feature in silence.
+
+### 48.5 Off-switch
+
+`OptionQudExpandedCEPlainRelicNames`, gating `Optional/HistoryNames` in `manifest.json` — the #498
+route, with no C# reading it. The directory is a **sibling** of `Optional/JoppaBuilding` rather than
+nested inside a listed path, because `ModInfo.InitializeFiles` recurses unconditionally and a gated
+directory inside a listed one has its gate silently ignored.
+
+**Restart-scoped, not new-world-scoped**, which is easy to get backwards. `InitializeFiles` runs
+inside `ModManager.BuildMods()`, so the gate is read once at mod build; but relics are named at
+worldgen, at lazy zone build, and during play, so a running game keeps drawing from whichever pool
+was loaded. Relics that already have names keep them — a name is written once, when the relic is
+made.
 
 ## Appendix A — every merged vanilla melee weapon
 

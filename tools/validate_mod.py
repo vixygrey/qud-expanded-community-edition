@@ -920,6 +920,78 @@ def blueprint_sources(roots: dict[Path, ET.Element]):
     return {p: r for p, r in roots.items() if p.suffix == ".xml"}
 
 
+# The four *variables* the relic-naming sites bind before expanding a name form. Read off
+# RelicGenerator and ItemNaming: three are built in the vars dictionary up front and two are
+# resolved in a post-pass, and no other token is ever set. `*creatureName*` and `*personNoun*`
+# are NOT among them - both are absent from the whole assembly, and a form written against
+# either would put the literal token into a relic's name.
+RELIC_NAME_VARIABLES = frozenset(
+    {"*element*", "*itemType*", "*personNounPossessive*", "*creatureNamePossessive*"}
+)
+
+SPICE_FILENAME = "historyspice.json"
+
+
+def check_history_spice(f: Findings) -> None:
+    """`historyspice.json` parses, and its relic name forms use bindings that exist.
+
+    `HistoricSpice.Init` merges any mod file with this basename into the shipped grammar. Two
+    things about that merge make it worth a check of its own (#730).
+
+    **A malformed file is non-fatal and silent.** The merge sits in a try/catch that calls
+    `MetricsManager.LogModError` and carries on, so a JSON error costs the whole feature and
+    reports nothing a player or a pull request would see. `check_json` does not reach this file:
+    it reads `manifest.json` and `workshop.json` by name.
+
+    **An unbound `*variable*` reaches a player as literal text.** `HistoricStringExpander` ends
+    with a replace loop over the bindings it was given and leaves anything else in place, so
+    `*creatureName*` - which does not exist, and which #730's own checklist named - would render
+    inside a relic's name rather than failing. The four that do exist are RELIC_NAME_VARIABLES.
+
+    The path walk is not checked. A form naming a spice path that does not resolve is a real
+    error, but the paths live in the game's own `HistorySpice.json` and are not in
+    `tools/qud-api.json`; adding them is a bigger change than this check earns, and the failure
+    is visible in the name rather than silent.
+    """
+    for path in sorted(MOD.rglob("*.json")):
+        if path.name.lower() != SPICE_FILENAME:
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8-sig"))
+        except json.JSONDecodeError as exc:
+            f.add(
+                "history-spice",
+                f"{path} is not valid JSON ({exc}) — the merge logs a mod error and carries on, "
+                "so the whole file is silently dropped",
+            )
+            continue
+        forms = (
+            data.get("spice", {}).get("history", {}).get("relics", {}).get("names", [])
+        )
+        if not isinstance(forms, list):
+            f.add(
+                "history-spice",
+                f"{path}: spice.history.relics.names is not a list, so the Union merge cannot "
+                "add to vanilla's forms",
+            )
+            continue
+        for form in forms:
+            if not isinstance(form, str):
+                f.add(
+                    "history-spice",
+                    f"{path}: a relic name form is not a string: {form!r}",
+                )
+                continue
+            for token in re.findall(r"\*[A-Za-z]+\*", form):
+                if token not in RELIC_NAME_VARIABLES:
+                    f.add(
+                        "history-spice",
+                        f"{path}: relic name form {form!r} uses {token}, which nothing binds — "
+                        "the expander leaves an unmatched token in place, so it would render "
+                        "inside a relic's name",
+                    )
+
+
 def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """Charter rule 1, mechanically enforced.
 
@@ -4005,6 +4077,7 @@ def run() -> Findings:
     check_helptext_shape(f, roots)
     check_option_defaults(f, roots)
     check_filenames(f)
+    check_history_spice(f)
     check_merge_discipline(f, roots)
     check_shader_collision(f, roots)
     check_duplicate_children(f, roots)

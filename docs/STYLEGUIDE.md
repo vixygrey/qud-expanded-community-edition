@@ -1470,6 +1470,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `book-reference` | `validate_mod.py` | a `<part Name="Book" ID>` resolving to a book this mod declares — an unresolved one throws when read |
 | `built` | `check_build_log.py` | the game's own build log says the C# compiled |
 | `changelog-sections` | `check_docs.py` | no duplicate `### Added` / `### Changed` heading inside one release |
+| `history-spice` | `validate_mod.py` | `historyspice.json` parsing, and its relic name forms using a `*variable*` something binds |
 | `heading-order` | `check_docs.py` | numbered headings being unique and ascending, so a cross-reference has one reading |
 | `check-names` | `check_docs.py` | this one — a documented check name exists, and an emitted one is documented |
 | `class-filename` | `validate_mod.py` | a C# class living in a file named for it |
