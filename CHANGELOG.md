@@ -16,6 +16,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Wounds that rest will not close** (#192). *Off by default.*
+
+  Late Qud is easy partly because damage has no memory — hit points come back for free if you wait,
+  so you walk out of every fight as though it never happened.
+
+  With this on, a single blow that takes half your hit points leaves a **wound**, and natural healing
+  then stops a quarter short of full until you treat it.
+
+  **Any treatment clears it** — a bandage, salve, an injector, the Physic skills, a regeneration tank
+  or a healing meal. Qud already has a whole treatment economy and never makes you use it; this is
+  what makes it matter. Untreated, a wound fades on its own, so you are never stranded.
+
+  Damage over time never wounds — poison, bleeding, burning and gas are all exempt — and the
+  Regeneration mutation shrinks the wound as it ranks up, gone entirely at rank 10.
+
+  **It adds no enemy hit points.** Nothing hits harder; what changed is that a hard hit stays with
+  you.
+
 - **Diseases tell you what is happening while you can still do something** (#581).
 
   Catching glotrot, ironshank or monochrome vision starts a five-day fight you can win — a Toughness
