@@ -18,6 +18,24 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Wary, a Tactics power for spotting hidden threats** (#722).
+
+  Qud already searches for you every time you move, but the roll is your Intelligence against the
+  thing's difficulty with no bonus at all — so below a certain Intelligence you **cannot** find a
+  mine, ever, no matter how many times you walk past it.
+
+  Wary gives you a second look. Enter a cell and you search again, this time with a +6 bonus,
+  covering that cell and the eight around it. It costs 100 in the Tactics tree and wants Agility 15,
+  so the melee and missile builds who carry low Intelligence can actually reach it.
+
+  It finds what the game already hides: laid mines, lurking beths, lagroots, young ivory, yonderbrush
+  and eels waiting in the water.
+
+  **This shipped once before and did nothing.** The first version listened for the search event
+  instead of causing one, and never received it — you could buy the skill and be no better off. That
+  version was pulled in 2.10.0. This one adds a search of its own, and says so behind Debug Internals
+  so it can never again look like it is working when it is not.
+
 - **(internal)** `check_docs.py` validates file paths written as prose, not only markdown links
   (#735).
 
