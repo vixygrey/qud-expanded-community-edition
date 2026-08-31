@@ -10,18 +10,74 @@
       "bright",
       "hollow",
       "red",
-      "second",
-      "ninth",
       "still",
       "thin",
       "grey",
       "wide",
       "old"
     ],
+    "Vixy_plainNouns": [
+      "road",
+      "well",
+      "bridge",
+      "gate",
+      "stone",
+      "water",
+      "thread",
+      "ash",
+      "field",
+      "wall",
+      "door",
+      "hill",
+      "ford",
+      "crossing",
+      "furrow",
+      "quarry",
+      "mile",
+      "watch",
+      "march",
+      "harvest"
+    ],
+    "Vixy_plainMassNouns": [
+      "salt",
+      "ash",
+      "water",
+      "iron",
+      "stone",
+      "dust",
+      "glass",
+      "smoke",
+      "rust",
+      "chalk",
+      "brine",
+      "tallow",
+      "clay",
+      "lime"
+    ],
+    "Vixy_plainOrdinals": [
+      "second",
+      "third",
+      "fifth",
+      "seventh",
+      "ninth",
+      "twelfth",
+      "hundredth"
+    ],
     "history": {
       "relics": {
         "names": [
-          "the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>"
+          "the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>",
+          "the <spice.itemTypes.*itemType*.!random> of the <spice.Vixy_plainAdjectives.!random> <spice.Vixy_plainNouns.!random>",
+          "the <spice.itemTypes.*itemType*.!random> of <spice.Vixy_plainMassNouns.!random>",
+          "the <spice.itemTypes.*itemType*.!random> of the <spice.Vixy_plainNouns.!random>",
+          "the <spice.Vixy_plainOrdinals.!random> <spice.itemTypes.*itemType*.!random>",
+          "*personNounPossessive* <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>",
+          "*creatureNamePossessive* <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random>",
+          "the <spice.Vixy_plainAdjectives.!random> <spice.Vixy_plainNouns.!random>",
+          "<spice.Vixy_plainAdjectives.!random> <spice.Vixy_plainNouns.!random>",
+          "<spice.Vixy_plainNouns.!random>-<spice.Vixy_plainNouns.!random>",
+          "the <spice.Vixy_plainAdjectives.!random> <spice.itemTypes.*itemType*.!random> of the <spice.elements.*element*.adjectives.!random> <spice.elements.*element*.nouns.!random>",
+          "*personNounPossessive* <spice.Vixy_plainAdjectives.!random> <spice.elements.*element*.nouns.!random>"
         ]
       }
     }
