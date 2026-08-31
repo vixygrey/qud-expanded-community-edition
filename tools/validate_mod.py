@@ -944,6 +944,93 @@ def check_merge_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> No
                     )
 
 
+def _books_roots(all_roots: dict[Path, ET.Element]) -> dict[Path, ET.Element]:
+    """Qud resolves modded XML by root element, not filename — so this is `<books>`, not
+    `Books.xml`. STYLEGUIDE.md section 1."""
+    return {p: r for p, r in all_roots.items() if r.tag == "books"}
+
+
+def check_book_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Charter rule 1 for `<book>`, which check_merge_discipline does not reach, plus the two
+    ways a book reference fails around it.
+
+    That check walks `<object>` and `<population>` and keys on `Name`. A book is keyed by `ID` and
+    lives under a `<books>` root, so none of this was guarded until #745 — on a record type this
+    fork first shipped in #740.
+
+    **A book cannot be merged at all.** There is no `Load` attribute on `<book>` to forget:
+    `BookUI.HandleBookNode` keys on `ID`, and when the ID is already present it clears the
+    existing text and takes the new one.
+
+        string attribute = Reader.GetAttribute("ID");
+        if (!Books.TryGetValue(attribute, out var value))
+            value = (Books[attribute] = new BookInfo());
+        else
+            value.Texts.Clear();
+
+    So a `<book ID="HistoryofJoppaVol1">` in a mod file replaces vanilla's text outright, and
+    nothing reports it — not this validator before now, not check_vanilla_drift.py, and not the
+    game. The remedy is unlike merge-discipline's: there is no attribute to add, so the ID has to
+    be a mod-prefixed one. That is why this reports under its own name rather than that one's.
+
+    **A dangling reference is a crash, not a blank page**, which is why it is worth a static check
+    rather than a play-test. `BookUI` indexes the dictionary raw — `Books[BookID].Pages[nPage]`
+    and `Books[BookID].Count`, with no TryGetValue — so a `<part Name="Book" ID="…">` naming no
+    book throws KeyNotFoundException when a player reads it. The two UI paths do not even fail
+    alike: `Qud.UI.BookScreen` guards one call site with ContainsKey and indexes raw at two
+    others, while the legacy path guards nothing. So which player sees it depends on their
+    ModernUI setting, and a maintainer can miss entirely what a reader hits.
+
+    Only mod-prefixed IDs are resolved. Vanilla's 53 book IDs are not in `tools/qud-api.json`, and
+    putting them there to catch a reference to a vanilla book would move the snapshot digest for a
+    case that has never happened — the realistic error is misspelling one's own ID, which this
+    catches with no snapshot at all.
+
+    **A duplicate ID inside the mod loses the first text**, by the same `Texts.Clear()` branch,
+    with both files valid XML and neither one wrong on its face.
+    """
+    declared: dict[str, Path] = {}
+    for path, root in _books_roots(all_roots).items():
+        for book in root.iter("book"):
+            book_id = book.get("ID")
+            if not book_id:
+                f.add(
+                    "book-duplicate-id",
+                    f"{path}: <book> has no ID, so nothing can reach it",
+                )
+                continue
+            if not book_id.startswith(MOD_PREFIXES):
+                f.add(
+                    "book-merge-discipline",
+                    f'{path}: <book ID="{book_id}"> replaces a vanilla book — a book has no '
+                    "Load attribute, so this cannot be merged and the vanilla text is discarded; "
+                    "give it a mod-prefixed ID",
+                )
+            if book_id in declared:
+                f.add(
+                    "book-duplicate-id",
+                    f'{path}: <book ID="{book_id}"> is already declared in {declared[book_id]} — '
+                    "the later one clears the earlier one's pages",
+                )
+            else:
+                declared[book_id] = path
+
+    for path, root in blueprint_sources(all_roots).items():
+        for obj in root.iter("object"):
+            for part in obj.findall("part"):
+                if part.get("Name") != "Book":
+                    continue
+                book_id = part.get("ID")
+                if not book_id or not book_id.startswith(MOD_PREFIXES):
+                    continue  # vanilla IDs are not in the snapshot; see the docstring
+                if book_id not in declared:
+                    f.add(
+                        "book-reference",
+                        f'{path}: <object Name="{obj.get("Name")}"> reads book {book_id!r}, '
+                        "which no <book> in this mod declares — reading it throws",
+                    )
+
+
 def check_role_form(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     """`Role` declared as a `<property>` rather than a `<tag>`.
 
@@ -3838,6 +3925,7 @@ def run() -> Findings:
     check_shader_collision(f, roots)
     check_duplicate_children(f, roots)
     check_naming_discipline(f, roots)
+    check_book_discipline(f, roots)
     check_naming_syllables(f, roots)
     check_naming_priority(f, roots)
     check_naming_option_coverage(f, roots)

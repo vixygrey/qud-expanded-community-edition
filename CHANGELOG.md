@@ -18,6 +18,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `validate_mod.py` guards `<book>`, which no check could reach (#745).
+
+  A book is keyed by `ID` rather than `Name` and takes no `Load` attribute at all, so
+  `merge-discipline` — which walks `<object>` and `<population>` and keys on `Name` — never saw
+  one. A `<book>` reusing a vanilla ID replaces that text outright, in a file that is valid XML
+  and reports nothing anywhere. That went unguarded from the moment this fork shipped its first
+  book.
+
+  Three rules now: `book-merge-discipline` for the ID being the fork's own, `book-duplicate-id`
+  for a repeat clearing the first book's pages, and `book-reference` for a
+  `<part Name="Book" ID>` naming a book that does not exist — which is worse than silent, since
+  `BookUI` indexes the dictionary raw and throws when the book is read.
+
+
 - **Four bookshelves that are about the place they stand in** (#740).
 
   Only one bookshelf in Qud is about where you are standing. Joppa's holds the two volumes of its
