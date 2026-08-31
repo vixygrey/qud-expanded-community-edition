@@ -3689,3 +3689,51 @@ built cleanly, and it would have shipped inert exactly as #717 did.
 
 > **When a feature turns out not to be worth building, the defects found on the way still are.**
 > Each of these cost real investigation and none of them is discoverable from a call site.
+
+## The world-map movement gate is `ObjectLeavingCellEvent`, and its name does not say so
+
+#194 wanted to refuse a world-map crossing on a survival condition — *provision before you enter the
+salt*. I spent three passes looking for the hook, settled on the wrong one, and the right one is not
+findable by name.
+
+**`CanTravelEvent` is the obvious candidate and cannot do it.** It carries exactly one field,
+`Object` — no cell, no destination — and its single call site is `The.Player.CanTravel()` at the
+moment the player asks to go to the world map, *before* a destination exists. The destination is
+chosen afterwards, tile by tile. Vanilla uses it correctly for the one thing it can express:
+`Stomach` refuses travel outright while `IsFamished()`, with player-facing text. Anything conditioned
+on *where you are going* is out of reach there.
+
+**`ObjectLeavingCellEvent` is the one, and it is cancellable.** `TerrainTravel` handles it to charge
+the cost of leaving a parasang, and returns `false` to refuse the move:
+
+```csharp
+public override bool HandleEvent(ObjectLeavingCellEvent E)
+{
+    if (E.Object != null && E.Object.IsPlayer() && !E.Forced
+        && (E.Type == null || E.Type == "SystemLongDistanceMove") && ...)
+    {
+        if (!HandleLeavingCell(E.Object, ref TotalSegments)) return false;
+    }
+    return base.HandleEvent(E);
+}
+```
+
+It fires per world-map step, and it carries the origin `Cell` together with `Direction` — so the
+destination is one lookup away, both halves of it being patterns vanilla already uses:
+
+```csharp
+E.Cell.GetCellFromDirection(E.Direction).GetFirstObjectWithPart("TerrainTravel")
+```
+
+`GetFirstObjectWithPart("TerrainTravel")` is how `JoppaWorldBuilder`, `RingGateBuilder` and two
+`Wishing` paths read a world-map cell's terrain.
+
+**The general shape.** `E.Cell` on a *leaving* event is the cell being left, not the target — the
+event dispatches to the contents of the origin, which is why the terrain you are standing on is the
+one that charges you. Direction plus origin is how you reach the destination, and that is worth
+knowing before concluding a hook cannot see where a move is going.
+
+**And note what vanilla does with the power once it has it.** Both of Qud's thirst interruptions
+*ask* — *"You have run out of water! Do you want to stop travelling?"* — rather than refusing. A mod
+that returns `false` here is making a harder claim on the player than the game makes anywhere in this
+system. That is a design decision, not a free capability.

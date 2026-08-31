@@ -889,6 +889,37 @@ another way:
 nothing. Reach for this when a blueprint should leave the generic pools altogether; reach for
 `:Weight` when it should stay and weigh less.
 
+**Overland travel cost is a curve too, and it prices passage rather than terrain flavour.** Twenty-seven
+terrains declare a `TerrainTravel` part, and `Segments` runs 1000 to 4000 — a fourfold spread. The cost
+of one parasang is
+
+```
+segments = 300 / (Speed × (100 + bonus) / 100) × Segments
+```
+
+with a full action tick, and so a tick of thirst, every tenth segment.
+
+| terrain | `Segments` | ticks per parasang |
+|---|---:|---:|
+| `TerrainNorthSheva` | 4000 | 1200 |
+| `TerrainSaltdunes2`, `TerrainDeepJungle`, `TerrainBaroqueRuins` | 3000 | 900 |
+| `TerrainSaltdunes` | 2500 | 750 |
+| `TerrainSaltmarsh`, the four `TerrainDesertCanyon` | 1250 | 375 |
+| `Terrain`, `TerrainFlowerfields` | 1000 | 300 |
+
+**Read the ordering before assuming what it measures.** Salt dunes are 2.5× the baseline and salt
+*marsh* is 1.25× — level with a desert canyon, and half the dunes — while the most expensive ground in
+the game is not salt at all. Vanilla is pricing **difficulty of passage**, not aridity or hostility.
+#194 was scoped against the opposite assumption and named both salt biomes as one target; they sit at
+opposite ends of the curve.
+
+**And the player already has a threefold lever on it.** `TravelClass` names a Survival skill,
+`GetTravelSegments` feeds it through `TravelSpeedEvent`, and both `BaseTerrainSurvivalSkill` (on its
+matching class) and `Survival_Trailblazer` (on every class) add **+100**. So a salt-dune crossing costs
+750 ticks unskilled, 375 with the matching skill, and 250 with both. Any claim that a region is
+punishing to cross has to say which of those three characters it means.
+
+
 
 ### 3.3 Two ways to distribute an item, and which to reach for
 
