@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-08-31
+
 ### Added
 
 - **Wary, a Tactics power for spotting hidden threats** (#722).
