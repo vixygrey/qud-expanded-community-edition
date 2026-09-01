@@ -18,6 +18,44 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `ruff` v0.16.4 → v0.16.5 and `typos` v1.49.1 → v1.50.0, each in both places it is
+  pinned.
+
+  **ruff** is a patch release with three rule fixes — `ASYNC210`, `DTZ007` and `SIM401` — and
+  everything else in it gated behind preview, which is disabled here. All three are in ruff's default
+  set, so they are live for `tools/` rather than academic: `tools/` contains no `async def`, no
+  `await` and no `asyncio` import anywhere, so `ASYNC210` has nothing to fire on, and `ruff check`
+  and `ruff format --check` are both clean on the new version.
+
+  **typos is the one that needed testing.** v1.50.0 is a dictionary release — 315 words added to
+  `words.csv` — which is the direction that can turn a green tree red without a line of mine
+  changing, and the opposite of the v1.49.1 bump below, where the only change removed a correction.
+  Reasoning from the release notes would not have settled it. Running it does: clean over the whole
+  tree, this file included.
+
+  **The comment added an hour earlier earned itself.** #715 put a note on both typos pins saying
+  they have to move together, because Dependabot cannot see one from the other. Its very next act
+  was to raise the hook to v1.50.0 and leave the action at v1.49.1 — exactly the drift the note
+  describes, in the same file, directly beneath it. Both pins move here.
+
+  That note also made a claim this pull request disproves. It said Dependabot "has never raised the
+  hook", which was true when I wrote it and false forty minutes later. The two are tracked in
+  separate ecosystems — the action under `github-actions`, the hook under `pre-commit` — so they move
+  at different times and in either order, and nothing raises both together. Corrected to say that
+  instead, since a pin comment that is confidently wrong is worse than no pin comment.
+
+  Verified the way #110 established: all 17 default-stage hooks against the whole tree on the new
+  versions. Every one passes, **nothing was modified**, and the byte-order-mark count is unchanged at
+  20. `pre-commit` built fresh environments for both revs, holding ruff 0.16.5 and typos 1.50.0
+  beside the older ones earlier revs left behind, so the sweep ran the versions being bumped rather
+  than anything cached.
+
+  **And a comment went back where it belongs.** The paragraph describing the Python hooks was written
+  directly above them in #75; #79 inserted the prettier block between the two later the same day, and
+  it has been stranded ever since — two stacked paragraphs above `- repo: local`, the first of them
+  explaining why Python linting is scoped away from `mod/`, which has nothing to do with an XML
+  formatter, while its actual subject sat fourteen lines further down.
+
 - **(internal)** `typos` v1.49.0 → v1.49.1, in both places it is pinned.
 
   A one-word patch release: it stops correcting the brand name `HashiCorp`. That is strictly *fewer*
