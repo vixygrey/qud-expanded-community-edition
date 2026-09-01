@@ -18,6 +18,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `scatter-share` can see a merge built from table references (#798).
+
+  A `<table>` reference into a pool this fork does not define scored **zero**, so a merge made
+  entirely of them measured as adding nothing at all — in both share checks, silently, with a clean
+  run. Not following the reference was right and still is: a shared pool's *contents* belong to
+  whoever wrote it. The draw is a different thing, and the draw is mine —
+  `<table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="1-2" />` merged into a vanilla merchant
+  puts one or two more items in that merchant's stock.
+
+  **It was hiding something the size of a feature.** #174's Grand Bazaar is exactly that shape: it
+  takes twenty vanilla merchant tables from 311 to 524 expected items, and three of them —
+  `HatterInventory`, `GloverInventory` and `ChefInventory` — measured *exactly zero* added. The tell
+  was an impossibility rather than care: `ArmorerInventory` read 0.00 while visibly gaining five tier
+  rows.
+
+  **Vanilla's side of every ratio moved with it**, which is the part that needed checking rather than
+  assuming. Twenty-four of the snapshot's 121 tables gained quantity, all upward, so shares relaxed
+  and nothing already shipped newly breaches. No documented figure moved.
+
+  **And the suite caught a real bug in the first version.** It treated a reference into a *cycle* the
+  same as one it could not resolve, so a table naming itself charged a phantom draw;
+  `test_a_reference_cycle_terminates` failed and its docstring said why. Five other tests then needed
+  updating because they asserted the rule being changed — each rewritten to state the new one rather
+  than to go quiet, and one of them had a justification that was already wrong: it claimed
+  `snapshot_qud_api` runs the unresolved path, which it does not.
+
 - **Experience follows the gap in tiers** (#792).
 
   Off by default. What a kill pays now depends on how far above or below me it was: something a tier
