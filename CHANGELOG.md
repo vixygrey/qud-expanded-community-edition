@@ -18,6 +18,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Kill enough of one people and they send someone** (#190). Off by default.
+
+  Kill five hundred of one faction and, rarely, somebody arrives about it: a named champion of
+  theirs, near my level, who says on arrival what he has come for. Five hundred is a lot of one
+  kind, so expect this a handful of times in a run rather than often — fifty snapjaws in one cave
+  is ordinary play, and that is a tenth of it.
+
+  Both rolls happen when I walk into a new zone, never on the kill itself, so a threshold crossed
+  mid-fight cannot put somebody into that fight. The count is spent rather than cleared, so carrying
+  on earns the next one instead of starting over.
+
+  **Far more rarely it goes the other way** and an envoy arrives from their enemies, pleased and
+  interested in me. Who is glad comes from Qud's own faction feelings rather than a table of my
+  own, and anybody who would not talk to me is dropped before the choice is made rather than after
+  — which narrows it, honestly, to Barathrum's quarrel with the Templar and the Mechanimists. The
+  three factions who dislike everyone are the same three who already hate me, and the rest of Qud
+  genuinely does not care who I have been killing. I would rather it stay silent than invent
+  rivalries the game does not have.
+
+  **Only peoples who could hear about it**, which is fifteen factions, listed and argued with in
+  `docs/FEATURES.md` §54.2 rather than derived. Qud has no flag for sentience and the obvious
+  proxies are wrong — it names bears and crabs and oozes too. A baboon troop sends no avenger.
+
 - **The Six Day Stilt is more of a market** (#174). Off by default.
 
   Two more traders — a smithy and a water merchant — a pedlar in the tents that would otherwise stand
