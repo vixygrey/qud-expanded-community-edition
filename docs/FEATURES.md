@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **509** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **510** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -580,7 +580,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Armor.xml` | 61 | 38 |
 | `RangedWeapons.xml` | 49 | 62 |
 | `PsionicChips.xml` | 145 | 0 |
-| `Cybernetics.xml` | 9 | 14 |
+| `Cybernetics.xml` | 10 | 14 |
 | `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
@@ -590,7 +590,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 17 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **509 active** | **283** |
+| **Total** | **510 active** | **283** |
 
 ### 6.2 Melee weapons
 
@@ -2127,7 +2127,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Armor.xml               # 61 new / 38 merged
 │   ├── RangedWeapons.xml       # 49 new / 62 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
-│   ├── Cybernetics.xml         # 9 new / 14 merged
+│   ├── Cybernetics.xml         # 10 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Items.xml               # 17 new (§47, §49), 9 merged (§30)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 77 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 79 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6659,6 +6659,50 @@ nothing for a false sound to hide among: eight distinct "You hear" strings in th
 every one tied to an identifiable cause, and no hallucination effect to borrow — `WakingDream` and
 `DeepDream` are the metempsychosis mechanic. A phantom noise with no true counterpart is not
 unsettling; it is identified as this mod the second time it happens.
+
+### 51.5c The sleep suppressor (`Vixy_SleepSuppressor`, `Vixy_Sleepless`)
+
+A two-point Body implant, in `Implants_1and2Pointers` alongside the mod's own steel dermal plating and
+OmniPass. **I cannot be put to sleep against my will, and I tire half as quickly.**
+
+**The second clause is the one that makes it worth shipping.** Fatigue is off by default under rule 6,
+so an item whose only effect were fatigue-shaped would sit in three vanilla implant tables doing
+nothing for most players — worse than not shipping it. Refusing involuntary sleep stands on its own,
+and **nothing in vanilla grants it**: `Wakeful` is applied from exactly one place, `Asleep` line 180,
+as a three-to-five turn grace after waking. It is never a standing state.
+
+**What it refuses is decided by `|| forced`, and that line falls in the right place on its own.**
+`Asleep` line 116 ends its whole refusal chain with `|| forced`, so anything constructed `forced: true`
+goes through regardless of what I do.
+
+| | |
+|---|---|
+| **Refused** | sleep gas, a cudgel to the head (`Cudgel_Bludgeon`), crungle gaze, Pax Klanq's madness, the fatecaller, `DeepDream` |
+| **Not refused** | narcolepsy — it is `ForceApplyEffect(..., forced: true)` |
+| **Not refused** | my own collapse from exhaustion, also `forced: true` |
+| **Not refused** | lying down on purpose, which is `Voluntary: true` and never enters the chain |
+
+The narcolepsy row is the one worth pausing on. When I proposed this the one real cost was that it
+would cancel a defect somebody took three points for at chargen — and mutants *can* take cybernetics,
+at a rejection-syndrome risk of `5 + Cost + mutation levels`, so it was not hypothetical. `|| forced`
+means the cost does not exist. And the collapse row is the same mechanism doing me a favour twice: the
+implant slows the clock, it does not let me buy my way out of the end of it.
+
+**Two parts, because the event is a legacy one.** `CanApplyInvoluntarySleep` is a string event, and
+those reach the parts of the object they are fired on — they do not cascade out to equipment the way
+the modern pooled events do. `GasMask` can sit on an implant and read `E.Object == ParentObject.Equipped`
+because `GetRespiratoryAgentPerformanceEvent` cascades; this cannot. So `Vixy_SleepSuppressor` sits on
+the item and grants `Vixy_Sleepless` to the body on `ImplantedEvent`, taking it back on
+`UnimplantedEvent`.
+
+**`ImmuneToSleepGas` is the part that looks built for this, and it does nothing.** It registers
+`CanApplySleepGas`; `GasSleep` fires `CanApplySleegas`, missing the p. Both occurrences of the
+correct-looking spelling in the whole assembly are inside `ImmuneToSleepGas` itself, and no blueprint
+declares the part. See `docs/LESSONS.md`.
+
+The halving is applied to `Strain()` **last**, after the combat and wound multipliers, so the implant
+is worth the same proportion of a hard day as an easy one. Halving the base first would have made it
+quietly weaker in exactly the fights it is bought for.
 
 ### 51.6 State lives in the property bag, deliberately
 

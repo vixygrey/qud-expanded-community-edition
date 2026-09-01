@@ -77,7 +77,7 @@ have that — nobody should need to swallow the whole mod to get one part of it.
   save.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
-document is also the complete reference for the mod itself: every system, all 509 new blueprints and
+document is also the complete reference for the mod itself: every system, all 510 new blueprints and
 283 vanilla merges.
 
 ## Requires a new character

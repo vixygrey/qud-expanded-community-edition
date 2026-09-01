@@ -256,4 +256,25 @@
     <tag Name="WeaponUnarmed" />
     <tag Name="NoSparkingQuest" />
   </object>
+  <object Name="Vixy_SleepSuppressor" Inherits="BaseCyberneticsEquipment_2point">
+    <part Name="Physics" Weight="1" />
+    <part
+      Name="Description"
+      Short="A lattice of fine filaments threaded through the brainstem, holding the sleep centres just short of firing. The wearer does not lose consciousness to anything applied from outside."
+    />
+    <part
+      Name="Render"
+      DisplayName="&amp;Ysleep suppressor"
+      Tile="Items/sw_nanoinjector.bmp"
+      ColorString="&amp;Y"
+      DetailColor="K"
+    />
+    <part
+      Name="CyberneticsBaseItem"
+      Slots="Body"
+      Cost="2"
+      BehaviorDescription="You cannot be put to sleep against your will, and you tire half as quickly."
+    />
+    <part Name="Vixy_SleepSuppressor" />
+  </object>
 </objects>

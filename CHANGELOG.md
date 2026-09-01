@@ -33,6 +33,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **A sleep suppressor** (#771).
+
+  A two-point implant for the body, turning up wherever the other one- and two-point implants do.
+  Nothing can put me to sleep against my will — not sleep gas, not a cudgel to the back of the head,
+  not a crungle's stare — and if I am running the fatigue system, I tire half as quickly on top of
+  that.
+
+  Two things it deliberately will not do. It does not stop narcolepsy, so it cannot cancel a defect
+  somebody took points for at character creation. And it does not stop me collapsing from exhaustion:
+  it slows the clock, it does not buy me out of the end of it.
+
 - **You can be made to sleep** (#179).
 
   Go about three unhurried days without sleeping and you tire; fight for those days and you get

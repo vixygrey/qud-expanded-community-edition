@@ -3665,7 +3665,7 @@ where the thing that would have reported the problem was the thing that was miss
 every document for anything else resolving to an untracked file. Zero — but the sweep is the part
 that makes the fix trustworthy, because one instance found by CI says nothing about the second.
 
-## Three vanilla defects worth not rediscovering
+## Four vanilla defects worth not rediscovering
 
 Found while investigating features that were then not built. All three are Freehold's rather than
 this fork's, all three are the kind that fail silently, and none is worked around anywhere here —
@@ -3703,6 +3703,17 @@ built cleanly, and it would have shipped inert exactly as #717 did.
 
 > **When a feature turns out not to be worth building, the defects found on the way still are.**
 > Each of these cost real investigation and none of them is discoverable from a call site.
+
+**`ImmuneToSleepGas` is spelled past the event it is trying to catch.** The part registers
+`CanApplySleepGas`; `GasSleep` line 130 fires `CanApplySleegas`, missing the p. Both occurrences of the
+correct-looking spelling in the entire assembly are inside `ImmuneToSleepGas` itself, so nothing sends
+it what it is listening for — and no vanilla blueprint declares the part, so nothing has ever noticed.
+It is a working implementation of the right idea, wired to a name that does not exist.
+
+The general shape is worth more than the instance: **a part that looks purpose-built for the job is
+evidence about intent, not about behaviour.** The check is one grep for the event name outside the file
+that handles it, and if every occurrence is inside that file, nothing fires it. Found while building
+#771, which wanted exactly this capability and had to write it again.
 
 ## The world-map movement gate is `ObjectLeavingCellEvent`, and its name does not say so
 

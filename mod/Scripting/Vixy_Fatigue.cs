@@ -266,6 +266,15 @@ namespace XRL.World.Parts
             {
                 rate += BaseAccrual / 2;
             }
+
+            // Halved last, so the implant is worth the same proportion of a hard day as an easy one.
+            // Applying it to the base before the multipliers would make it quietly weaker in exactly
+            // the fights it is bought for. #771.
+            if (ParentObject.HasInstalledCybernetics("Vixy_SleepSuppressor"))
+            {
+                rate /= 2;
+            }
+
             return rate;
         }
 
