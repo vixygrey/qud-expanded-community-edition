@@ -127,6 +127,9 @@ namespace XRL.World.Parts
                 if (ParentObject.IsPlayer())
                 {
                     ParentObject.SetIntProperty(ChargedTurnProperty, (int)XRLCore.CurrentTurn);
+                    // Otherwise the readout hangs around saying "exhausted" about a system that is
+                    // no longer running. #782.
+                    ParentObject.RemoveEffect<Vixy_Fatigued>();
                 }
                 return base.HandleEvent(E);
             }
@@ -173,8 +176,43 @@ namespace XRL.World.Parts
                 Collapse();
             }
 
+            // Outside the branch above, so the word follows the meter down while I sleep as well as
+            // up while I do not.
+            Readout();
+
             ParentObject.SetIntProperty(ChargedTurnProperty, (int)XRLCore.CurrentTurn);
             return base.HandleEvent(E);
+        }
+
+        /// <summary>
+        /// Keep the active-effects line in step with the meter.
+        /// </summary>
+        /// <remarks>
+        /// From Tired upward, deliberately. The band is what makes the sleep menu answerable - "until
+        /// rested" is a different choice at 420 than at 940 - and starting at Weary would leave that
+        /// decision unlit for the whole first band. `Vixy_Fatigued` renames itself rather than being
+        /// swapped, which is `Vixy_Burden`'s own pattern. #782.
+        /// </remarks>
+        private void Readout()
+        {
+            if (BandFor(Get(ParentObject)) < Tired)
+            {
+                ParentObject.RemoveEffect<Vixy_Fatigued>();
+                return;
+            }
+
+            Vixy_Fatigued current = ParentObject.GetEffect<Vixy_Fatigued>();
+            if (current == null)
+            {
+                // Named before it is applied, so it never spends a turn reading "tired" at a band
+                // that is not Tired.
+                current = new Vixy_Fatigued();
+                current.Refresh(ParentObject);
+                ParentObject.ApplyEffect(current);
+                return;
+            }
+
+            current.Refresh(ParentObject);
         }
 
         /// <summary>
