@@ -6589,11 +6589,23 @@ waking early, in both senses.
 loud exposed. A full meter on open ground drains at 4 a turn and needs about 250 of them; the old
 `Stat.Random(200, 320)` woke me unrested on roughly half its rolls. It never showed, because nothing
 had promised otherwise. `TurnsToRest` now derives the bound from the drain, and both it and `Rest`
-spend the same `DrainPerAction`, so the budget and the spending cannot come apart again.
+spend the same `DrainHundredths`, so the budget and the spending cannot come apart again.
 
-Ambush is still rolled per sleep rather than per round, so a nap carries the same risk as a night.
-That is deliberate: the decision the feature is about is *where* I lie down, and pricing naps
-separately would turn it into a decision about how long.
+**A short sleep is a safer sleep, and I had this backwards in writing.** This paragraph used to say
+ambush was rolled once per sleep, so a nap carried the same risk as a night. It is not: `RollAmbush` is
+called from `Rest` on **every action**, and the per-sleep odds in §51.5 are compounded from a per-action
+rate. Same coupling as #777 — how long a sleep takes decides how many times the dice come out.
+
+| sleeping on open ground | actions | found |
+|---|---:|---:|
+| from a full meter | 250 | 60% |
+| from 600 | 150 | 43% |
+
+So going to bed before the meter fills costs about a third less risk. **That is kept deliberately**, now
+that it is understood. It rewards sleeping regularly rather than running to empty, which is what a
+survival timer should want, and it falls out of one honest mechanism rather than a rule that would have
+to be written and tuned. The decision the feature is about is still *where* I lie down; this adds a
+second, smaller one about *when*, at no cost in machinery.
 
 ### 51.5 Where you sleep is the decision, and an ambush needs a culprit
 

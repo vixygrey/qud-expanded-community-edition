@@ -314,7 +314,7 @@ namespace XRL.World.Parts
         /// Long enough to reach zero from here, with slack.
         /// </summary>
         /// <remarks>
-        /// Derived from <see cref="DrainPerAction"/> rather than guessed, so "until rested" keeps its
+        /// Derived from <see cref="DrainHundredths"/> rather than guessed, so "until rested" keeps its
         /// word at every rest quality and stays correct if the drain is ever retuned.
         /// </remarks>
         public static int TurnsToRest(GameObject Player)
