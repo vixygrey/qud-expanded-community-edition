@@ -6940,6 +6940,16 @@ has the measurement and `docs/LESSONS.md` has the trap.
 | 2 below | full | **×1.3** |
 | 3 below | full | **×1.6** |
 
+**Verified in game, all three branches**, because none of this is a question static checks can
+answer. At tier 0 against a Level-15 snapjaw howler (tier 3) the award came back at x1.6 with a
+`Bonus` line. At tier 6 against the same howler (gap 3) it came back **0 with no message**, which is
+vanilla's floor. And at tier 6 against a Level-20 cragmensch (gap 2) a 500-point award paid **166**,
+with `(Base: 500 | Penalty: -334)`.
+
+That last one is the case worth having: vanilla would have paid 50, and a build where
+`E.TierScaling = false` failed to take — vanilla re-scaling an already-scaled number — would have paid
+16. Three hypotheses, an order of magnitude apart, and only one of them gives 166.
+
 **The bonus has no ceiling**, and that is Mura's design rather than an oversight: the multiplier is
 `1 + 0.05 × g × (g + 1)`, so four tiers up doubles the award and eight tiers up pays ×4.6. Killing
 something eight tiers above you is a feat vanilla already pays full price for; this pays more. There
