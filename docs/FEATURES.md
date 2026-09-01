@@ -2329,6 +2329,43 @@ stores nothing, so the option takes hold on the next tick and adds nothing to th
 > compile-time proof — **an existing save picks the part up on load**, not just a fresh character.
 > That last one is the whole reason `Vixy_PlayerParts` carries two hooks rather than one.
 
+### 14.0a A part attached only to the player still reaches other creatures (#769)
+
+`Vixy_PlayerParts` attaches eleven parts and had exactly one target: `The.Player`. Two of Qud's own
+mechanisms put those parts on creatures that are not me, by different routes and with different
+severities.
+
+**Domination reassigns the player.** `Domination.Dominate` does `The.Game.Player.Body = defender`, so
+a save made while I am dominating something reloads with `The.Player` pointing at the puppet — and all
+eleven parts get attached to it permanently, because they outlive the domination. `CmdSaveAndQuit` has
+no guard, so the save is reachable at any moment. The attach now walks back through the `Dominated`
+effect's `Dominator` field to the body I actually own.
+
+`IsOriginalPlayerBody()` is *not* the discriminator, and that is the trap worth knowing. It is stamped
+once at character creation and stripped from clones and fugue duplicates, so it means "the body I
+started the game in" — and `Domination.Metempsychosis` is a legitimate **permanent** body change where
+attaching to the new body is correct. Gating on it would leave a post-Metempsychosis character with
+none of these parts, a worse hole than the one being closed.
+
+**`DeepCopy` copies every part**, and that is the wider route. `TemporalFugue` line 280 and `Cloning`
+line 84 both deep-copy me, so a fugue duplicate or a clone carries all eleven with no save, no load and
+no domination involved. Guarding the attach cannot reach this at all; the parts have to guard
+themselves.
+
+Nine of the eleven already did, on `IsPlayerControlled()`, `IsPlayerLed()` or `IsPlayer()` — relational
+predicates that go false the moment the copy stops being me. Two did not:
+
+| part | what it did on a body that is not mine |
+|---|---|
+| `Vixy_WeaponWear` | wore the holder's weapon on every melee hit, permanently, with no check on who was holding it |
+| `Vixy_TrashMemory` | wrote the rifled count to a **zone** property, so a copy rifling in my zone spent down my own trash-divining odds there |
+
+And one guarded correctly and was still wrong: `Vixy_Fatigue` checks `IsPlayer()`, which a puppet
+*passes*, because during a domination it is the player. It would accrue on the borrowed body, announce
+bands to me about a rat, and be able to collapse me mid-domination — while the true body's stale stamp
+billed the same window again on return under §51.3b. It now bails on `Dominated`, so there is one
+meter and it is the one I own.
+
 ### 14.1 Two spec items that could not be built
 
 Neither is a shortcut; Qud has nowhere to put them.

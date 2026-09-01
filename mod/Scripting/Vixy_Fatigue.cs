@@ -139,6 +139,15 @@ namespace XRL.World.Parts
                 return base.HandleEvent(E);
             }
 
+            // A puppet passes IsPlayer(), because during a domination it *is* the player. Left alone
+            // it would accrue on the borrowed body, announce bands to me about a rat, and be able to
+            // collapse me mid-domination - while the true body's stale stamp billed the same window
+            // again on return. One meter, and it is the one I own. #769.
+            if (ParentObject.HasEffect<Dominated>())
+            {
+                return base.HandleEvent(E);
+            }
+
             if (ParentObject.OnWorldMap())
             {
                 // Stamp the crossing and charge it on return, as Stomach does. Accruing per action

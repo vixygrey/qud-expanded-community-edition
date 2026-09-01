@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **My parts stay on my own body** (#769).
+
+  Two of Qud's own mechanisms were putting this mod's eleven player parts onto creatures that are not
+  me. Saving while dominating something and reloading bolted all eleven onto the puppet, permanently —
+  they outlive the domination. And copying me copies my parts wholesale, so a temporal fugue duplicate
+  or a clone carried them with no save or load involved at all.
+
+  Most of them noticed and went quiet on their own. Two did not: worn weapons wore for whoever was
+  holding them, and a copy rifling through trash in my zone spent down my own odds of finding anything
+  there. Fatigue was the odd one — its check was right for every other purpose and wrong for this one,
+  because a body I am dominating counts as me, so it tired out a borrowed body and then charged me for
+  the same stretch of time twice.
+
 ### Added
 
 - **You can be made to sleep** (#179).
