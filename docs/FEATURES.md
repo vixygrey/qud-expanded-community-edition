@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 80 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 81 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6817,6 +6817,36 @@ would leave that decision unlit for the whole first band.
 serialisable class and no per-band churn. It carries no state: the band is derived from the property bag
 on every refresh, so the word cannot disagree with the meter. Turning the option off removes it, rather
 than leaving *"exhausted"* on screen for a system that is no longer running.
+
+### 51.5e `wish vixyfatigue`, because the test plan could not be carried out
+
+**I wrote checks nobody could perform.** Three of the fatigue regression checks are claims about a
+number — that a world-map crossing charges once rather than twice, that a domination bills once on
+return, that turning the option off and on costs nothing. §51.5d shows four words, and 126 against 252
+reads as the same word. None of those was executable. I had checked the mechanism and not the consumer,
+this time for my own QA.
+
+`wish vixyfatigue` prints what no UI shows: the value and band, both carried remainders, where I am
+standing with its rest quality and burden factor, the drain per action and actions to rest, the ambush
+rate — and the two stamps.
+
+**The stamps are the point.** Single-charging is not a claim about the meter, it is a claim about
+`Vixy_FatigueChargedTurn` and `Vixy_FatigueOnWorldMapSince`. Printing those against the current turn,
+with the gap between them, answers in one line what watching the bands cannot answer at all.
+
+`wish vixyfatigue:600` sets the meter, and that is what makes the rest of the plan affordable. Several
+checks begin *"reach Exhausted"*, which is about **2,900 actions** of unhurried play — not a test, an
+afternoon.
+
+**Wishes reach mods by design.** `WishManager.UpdateCommandCollection` calls
+`ModManager.GetMethodsWithAttribute(typeof(WishCommand), typeof(HasWishCommand))` — `ModManager`, so
+mod assemblies are scanned deliberately, the same way `[PlayerMutator]` is found. Two overloads share
+one command name because the dispatcher builds `^cmd$` for a no-argument handler and
+`^cmd(?::|\s+)(.*)$` for one taking a string; `SoundManager.ShowSoundLog` is vanilla doing exactly
+this. Rule 5 is untouched — no file I/O, no network, no reflection of my own, no Harmony.
+
+Namespaced rather than plain `fatigue`, because wish names are one global namespace shared with every
+other installed mod.
 
 ### 51.6 State lives in the property bag, deliberately
 

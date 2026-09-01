@@ -64,6 +64,9 @@ recorded because contributors need them, not because subscribers do.
   somebody took points for at character creation. And it does not stop me collapsing from exhaustion:
   it slows the clock, it does not buy me out of the end of it.
 
+- **(internal)** `wish vixyfatigue` reports the fatigue meter, its stamps and every rate derived from
+  where you are standing; `wish vixyfatigue:600` sets it. Invisible unless typed (#782).
+
 - **You can be made to sleep** (#179).
 
   Go about three unhurried days without sleeping and you tire; fight for those days and you get
