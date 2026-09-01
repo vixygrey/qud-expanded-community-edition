@@ -141,6 +141,7 @@ namespace XRL.World.Parts
             {
                 Accrue(Strain());
                 Announce();
+                Vixy_Gutter.Slip(ParentObject);
                 Collapse();
             }
 

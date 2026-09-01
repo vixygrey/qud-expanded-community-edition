@@ -32,6 +32,12 @@ recorded because contributors need them, not because subscribers do.
   Qud runs two survival timers already and neither of them makes you weaker — thirst stops you
   healing and hunger stops you travelling — so this one follows suit.
 
+  {{y|What it costs you instead is reliability.}} Once you are exhausted, your concentration starts
+  slipping: a mental mutation you were counting on gutters out mid-thought and stays down for twenty
+  rounds. About five times across the stretch between exhausted and collapsing, and more often the
+  closer you get to falling over. It takes a capability away at a moment you did not choose, which is
+  a sharper thing than shaving a point off an attribute.
+
   {{y|Where you sleep is the point.}} In Joppa, the Stilt, Grit Gate or any settlement you are
   simply safe. A bed is nearly so. Sleep on open ground with something hostile in the zone and it
   finds you more often than not - it wakes, it comes for you, and you get told what it is. Sleep
