@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-09-01
+
 ### Fixed
 
 - **Sleeping in my armour rests me worse** (#780).
@@ -67,6 +69,14 @@ recorded because contributors need them, not because subscribers do.
 - **(internal)** `wish vixyfatigue` reports the fatigue meter, its stamps and every rate derived from
   where you are standing; `wish vixyfatigue:600` sets it. Invisible unless typed (#782).
 
+- **I choose how long I sleep** (#776).
+
+  The same question a bedroll asks — until this hour or that one — with one more on top: until
+  rested. Each says how many rounds it is, which a bedroll does not; "until Harvest Dawn" only tells
+  you how long if you already know what time it is. Pick a time and you wake at it or sooner,
+  whichever comes first, because being rested always ends a sleep early. Wake on the clock with the
+  meter still up and you get no dream — waking early is waking early.
+
 - **You can be made to sleep** (#179).
 
   Go about three unhurried days without sleeping and you tire; fight for those days and you get
@@ -107,12 +117,6 @@ recorded because contributors need them, not because subscribers do.
   {{y|You can see how tired you are.}} Tired, weary, exhausted, collapsing — one word on the active
   effects line, next to burdened, in colours that climb the way hunger's do. Until now the only thing
   that ever told you was a message as you crossed each threshold, and messages scroll away.
-
-  {{y|How long you sleep is yours to choose.}} The same question a bedroll asks, with the same three
-  times and one more: until rested. Each one says how many rounds it is, which a bedroll does not —
-  "until Harvest Dawn" only tells you how long if you already know what time it is. Pick a time and you wake at it or sooner, whichever comes first,
-  because being rested always ends a sleep early. Wake on the clock with the meter still up and you
-  get no dream — waking early is waking early.
 
   {{y|Sleep the whole way through and you dream.}} Mostly of something you actually did, told back
   to you in the voice the sultan histories use - grander than it was, and not always accurate.
