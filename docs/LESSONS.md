@@ -4091,3 +4091,62 @@ of this entry's problem.
 Related: [`my design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
 is the same optimism aimed at the game rather than at the documentation — there I assume a mechanism
 is missing, here I assume its description is.
+
+---
+
+## A default argument was hiding every named character in the game
+
+`Faction.GetMembers` takes `Dynamic` and it defaults to `true`. I passed `false`, wanting the widest
+possible pool of members for #190's champions. It is the widest possible pool, and that is the
+problem: the argument does not mean "prefer dynamic encounters", it means **apply
+`IsExcludedFromDynamicEncounters`**, which is the flag Qud marks its unique named characters with.
+
+```csharp
+if (!blueprint.IsBaseBlueprint()
+    && (!Dynamic || !blueprint.IsExcludedFromDynamicEncounters())
+    && IsMember(blueprint, FactionName) ...
+```
+
+Two filters, and they read alike but do not behave alike. `IsBaseBlueprint` is unconditional —
+abstract parents can never come out, whatever I pass. `IsExcludedFromDynamicEncounters` is applied
+**only** when `Dynamic` is set, and `!Dynamic ||` short-circuits it away entirely otherwise.
+
+So with `Dynamic: false` a Barathrumite could be **Argyve**, **Rodanis Y** or **Euclid**; a
+Consortium one **Asphodel**; a Mechanimist **High Priest Eschelstadt**. 133 blueprints across the
+fifteen factions carry the flag. A second Argyve walking into a zone is not a rough edge, it is
+somebody's questline.
+
+**What makes it dangerous is that it cannot fail visibly.** A blueprint list is a blueprint list; a
+longer one looks better than a shorter one. Nothing throws, no check fires, and a unique is rare
+enough in the pool that a dozen test spawns can all come back ordinary. I found it only because a
+`[creature]` with the wrong sprite — from my own bad wish, not from the mod — made me go and read
+what `GetMembers` actually filters.
+
+**The lesson is not about this method.** It is that a boolean whose name describes a *category of
+content* (`Dynamic`) may in fact gate a *safety filter*, and the two readings are indistinguishable
+from the call site. `Faction.GetMembers(f, null, Dynamic: false)` reads like "give me everyone" and
+means "give me everyone, uniques included". Read the body before overriding a default, especially
+when the override widens something.
+
+**A second lesson sits on top of the first, and I paid for it twice in one session.** I counted the
+cost of respecting the flag three times and got three different answers — 98, then 125, then 133 —
+because my first pass read only each blueprint's own body. `ExcludeFromDynamicEncounters` is an
+ordinary tag: it **inherits**, and it arrives through **mixins**. `PaxKlanq2` never declares it and
+is excluded anyway, via `BasePaxKlanq`; every `Chiliad Creature` is excluded via
+`BaseChiliadCreatureStats`. I had written both up as leaks the game had missed. They were not leaks,
+they were my resolver.
+
+So: **when measuring what a blueprint "has", resolve the chain the way the game does — `Inherits`
+and `<mixin>` both — or the measurement will read as a vanilla bug rather than as your own.** The
+`*noinherit` value is the exception that proves it matters: `Asphodel` carries the flag that way
+precisely so its children do *not* inherit it.
+
+Check before shipping any faction-to-blueprint lookup: does every faction still have members once
+the flag is respected? Here one does not. **The Hindren pool is empty** — every hindren blueprint is
+a named character or a pariah filed elsewhere — so no hindren can ever be sent. That is survivable
+only because the empty case was already guarded and the tally is spent after placement rather than
+before. Count it rather than assuming it; an empty pool is exactly the failure this trade buys.
+
+Related: [`pickeach ignores Weight, and Chance is a repeat count`](#pickeach-ignores-weight-and-chance-is-a-repeat-count)
+is the same shape in the population tables — an argument that reads as one thing, silently means
+another, and produces a plausible result either way.

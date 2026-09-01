@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 29 options (§13)
+│   ├── Options.xml             # 30 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 82 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 83 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-nine options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7058,6 +7058,145 @@ children. `dynamic-pools.json` records the three, so a fourth arriving later fai
 
 `Role` is a `<tag>` on all three creatures, not a `<property>`. Mura's originals used a property;
 vanilla declares `Role` as a tag 349 times and as a property never, and `role-form` holds the line.
+
+## 54. Kill enough of one people and they send someone (`Vixy_Notoriety`)
+
+Off by default. Kill five hundred of one faction and, rarely, somebody arrives about it: a named
+champion of theirs, near my level, who says on arrival what he has come for. Far more rarely it goes
+the other way and an envoy turns up from their enemies — pleased, and interested in me.
+
+Item **A3** of `docs/DESIGN_difficulty_systems.md`, split out as #190. Its §0 governs: it scales with
+player power rather than depth or elapsed time, it ships behind an option defaulted off, and it has
+to *sometimes* pay rather than only cost — the fourth constraint #644 added, and the reason the
+second roll exists at all.
+
+### 54.1 Five hundred, and why it is not a large number by accident
+
+Fifty snapjaws in one cave expedition is ordinary play, and that is a tenth of one threshold. The
+intent is a handful of these across a whole run: a hunter who arrives twice is a story, one who
+arrives twenty times is a tax.
+
+Both rolls are made **on arriving in a new zone**, not on the kill. A threshold crossed mid-fight
+should not put somebody into that fight, and an arrival is the natural moment for the world to have
+already heard. The hunter is rolled first at 4%, and only if it misses is the envoy rolled at 1%, so
+the two can never arrive together.
+
+The tally is **spent, not cleared** — and only once somebody is actually standing there. Five hundred
+comes off the count and the rest keeps running, so carrying on earns the next one rather than
+starting over, and a visit that could not be placed costs nothing.
+
+### 54.2 Only peoples who could hear about it
+
+Fifteen factions are eligible, and the list is **curated rather than derived**. Qud has no faction
+flag for sentience. The obvious proxy — factions with `Naming.xml` scopes — fails outright, because
+Qud authors names for bears, crabs, fish, worms and oozes; and `Culture` tags are the mechanism
+`docs/LESSONS.md` records as nearly dead. So it is a judgement written where it can be argued with,
+which beats a derivation that would be wrong. A baboon troop sends no avenger, because a baboon troop
+cannot hear about it.
+
+> Barathrumites, Consortium, Dromad, Goatfolk, Hindren, Issachari, Mechanimists, Mopango, Naphtaali,
+> Pariahs, Seekers, Snapjaws, Templar, Trolls, Urchins.
+
+### 54.3 The hunter
+
+He is built from the faction's own members, given my level give or take two, and passed through
+`HeroMaker` so he is named and equipped as one of their heroes.
+
+**`GetMembers` is asked with `Dynamic: true`, and that argument is load-bearing.** It filters
+`IsBaseBlueprint` either way, so an abstract parent like `Templar` — which spawns nameless and
+unrendered if you wish for it directly — can never arrive. But `IsExcludedFromDynamicEncounters` is
+applied *only* when `Dynamic` is set, and that is the flag Qud marks its named characters with.
+Without it a Barathrumite envoy could be Argyve, Rodanis Y or Euclid, a Consortium one Asphodel, and
+a Mechanimist hunter High Priest Eschelstadt. 133 blueprints across the fifteen carry the flag —
+counting those that inherit it or take it from a mixin, which is how `BasePaxKlanq` and every
+`Chiliad Creature` are covered without declaring it themselves.
+
+**It leaves the Hindren with nobody at all**, and that is vanilla's shape rather than a fault here:
+every hindren blueprint is either a named character or a pariah filed under another faction. The
+empty pool is caught and the visit dropped before the tally is spent, so nothing breaks — hindren
+kills simply accumulate against a faction that can never answer. They stay on the list because they
+plainly belong on it, and because one generic hindren added by a later patch makes it work with no
+change here. The Consortium and the Trolls have a single eligible blueprint each, so those two will
+always send the same face.
+
+**Nothing forces him hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
+personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them — five
+hundred of their dead is far past the -10 line on its own. Forcing it would mean
+`Allegiance.Hostile`, which is hostile to *everything* and would set the champion against his own kin.
+
+**The arrival message is the whole explanation, and it has to be**, because hostile creatures attack
+rather than converse — #632 established that the expensive way, so a `ConversationScript` on somebody
+sent to kill me is worth nothing. The line names the faction for that reason; it is not atmosphere.
+
+`SpecialType` is left at its `"Hero"` default deliberately. A `Special="Champion"` scope would need
+one namestyle per faction — every scope in vanilla's `Naming.xml` is faction-bound — and until those
+exist, all five `NameMaker` calls carry `SpecialFaildown: true`, so an unknown value does not merely
+do nothing: it **misses** each faction's own hero namestyle (`Snapjaw Hero Title` and its kin) and
+falls down to generic. Passing nothing names them better than passing a word with no scope behind it.
+
+They arrive **eight cells off**, not in my square. The bare `getClosestPassableCell()` sorts every
+passable cell in the zone by distance from its own and returns the nearest — so called on my cell it
+returns my cell. The predicate overload keeps that nearest-first ordering, so a distance floor lands
+them at the edge of the room: seen, then met. Both overloads return the cell they were called on when
+nothing matches, which is the one case that must be caught rather than placed.
+
+### 54.4 The envoy, and how narrow it honestly is
+
+Who is glad comes from **Qud's own faction feelings**, through `GetFeelingTowardsFaction` rather than
+the `FactionFeeling` dictionary directly — the accessor resolves a specific entry, then `About="*"`,
+then zero. Reading the dictionary raw misses every wildcard, and wildcards are how most of the fifteen
+say it.
+
+Candidates who would not talk to me are dropped **before** the comparison rather than after, and that
+is most of the design. Only three of the fifteen carry a `-50` wildcard — and they are precisely the
+three whose starting reputation with me is worst:
+
+| | wildcard | starting reputation |
+|---|---:|---:|
+| Seekers | -50 | -500 |
+| Snapjaws | -50 | -475 |
+| Templar | -50 | -700 |
+
+The blanket dislike that would make them "gladdest" about everything is the same misanthropy that
+makes them hostile to me. Ranking first and filtering after would have picked one of them nearly
+every time and then thrown the visit away.
+
+Every other faction's wildcard is zero or absent, so once those three are out, **the only dislike
+left among the fifteen is authored** — and this is what the feature actually pays out on:
+
+| I keep killing five hundred of | who may arrive glad | their feeling |
+|---|---|---:|
+| Templar | Barathrumites, or the Consortium | -100 |
+| Mechanimists | Barathrumites | -50 |
+| the other thirteen | nobody, at starting reputation | |
+
+**Thirteen of fifteen are silent, and I am keeping it that way.** What survives is Barathrum's
+quarrel with the Templar and the Mechanimists — Qud's central mid-game conflict, and legible on sight
+in a way a snapjaw thanking me for goatfolk never would have been. Broadening it would mean a table of
+rivalries of my own invention sitting on top of the game's, and the game's answer here is that the
+Barathrumites genuinely do not care about snapjaws. Reputation moves during a run, so the third
+column is a starting position rather than a fixed one.
+
+Ties break randomly. Where two qualify jointly there is no reason to prefer whichever I listed first,
+and a fixed order would read as a rule rather than a world.
+
+### 54.5 Where the counts live
+
+In game state, not on the part. A `Dictionary` field on a `[Serializable]` part puts its shape into
+every save, and charter rule 5 treats a shipped part's layout as frozen. Game state is keyed by string
+and costs nothing to extend, so a sixteenth faction later is not a save migration. The keys are
+`Vixy_Kills_<faction>`.
+
+The count hangs off the legacy `Killed` string event rather than a `MinEvent`: `KilledEvent.Send`
+fires `Event.New("Killed")` on the killer and gates it on `HasRegisteredEvent`, so registering is what
+makes counting possible at all.
+
+**It is a part, not an `IGameSystem`.** `ZoneActivatedEvent` dispatches to `The.Game` and to `Zone`,
+never to the player — which is why `XRL.PsychicHunterSystem` must be a system, since it acts *before*
+the player is placed. A hunter needs the player placed first, so `EnteredCellEvent` on a part is both
+cheaper and more correct. `Vixy_TacticsWary` is this fork's precedent for the hook.
+
+---
 
 ## Appendix A — every merged vanilla melee weapon
 

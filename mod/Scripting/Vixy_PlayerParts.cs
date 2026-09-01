@@ -110,6 +110,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Wounding>();
                 player.RequirePart<Vixy_Fatigue>();
                 player.RequirePart<Vixy_XPCurve>();
+                player.RequirePart<Vixy_Notoriety>();
             }
         }
     }

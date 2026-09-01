@@ -622,4 +622,26 @@
             while you play, so set it before you start.
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEFactionChampions"
+    DisplayText="{{C|Qud Expanded}}: kill enough of one people and they send someone"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded champion hunter faction notoriety kills grudge reputation"
+  >
+    <helptext>
+            Kill five hundred of one people and they may send somebody after
+            you - named, near your level, and carrying the grudge in his title.
+
+            Only peoples who could hear about it. Animals send nobody.
+
+            Rarely, somebody comes the other way instead: an envoy from their
+            enemies, who would like to thank you or to hire you.
+
+            {{y|Off by default.}} Five hundred is a lot of one kind, so expect
+            this a handful of times in a run, not often.
+</helptext>
+  </option>
 </options>

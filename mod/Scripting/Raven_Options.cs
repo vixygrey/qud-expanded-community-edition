@@ -106,6 +106,8 @@ namespace QudExpandedCE
         /// </remarks>
         public const string StiltMarketID = "OptionQudExpandedCEStiltMarket";
 
+        public const string FactionChampionsID = "OptionQudExpandedCEFactionChampions";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -757,6 +759,16 @@ namespace QudExpandedCE
         /// reserves for staying off.
         /// </remarks>
         public static bool XPCurve => Enabled(XPCurveID, "No");
+
+        /// <summary>True when a faction may send somebody after a long enough grudge.</summary>
+        /// <remarks>
+        /// Read live on every kill and every arrival, so this is a toggle in both directions with no
+        /// restart. Switching it off stops the counting as well as the sending — the tallies already
+        /// banked stay in game state and simply stop mattering, the same shape <c>Fatigue</c> takes.
+        /// Off by default: `docs/DESIGN_difficulty_systems.md` §0 requires it of every system in that
+        /// document, and this one makes the game harder in a way nobody asked for.
+        /// </remarks>
+        public static bool FactionChampions => Enabled(FactionChampionsID, "No");
 
         private static void ApplyChipSlots()
         {
