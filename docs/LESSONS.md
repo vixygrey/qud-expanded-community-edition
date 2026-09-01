@@ -3665,7 +3665,7 @@ where the thing that would have reported the problem was the thing that was miss
 every document for anything else resolving to an untracked file. Zero — but the sweep is the part
 that makes the fix trustworthy, because one instance found by CI says nothing about the second.
 
-## Four vanilla defects worth not rediscovering
+## Five vanilla defects worth not rediscovering
 
 Found while investigating features that were then not built. All three are Freehold's rather than
 this fork's, all three are the kind that fail silently, and none is worked around anywhere here —
@@ -3714,6 +3714,30 @@ The general shape is worth more than the instance: **a part that looks purpose-b
 evidence about intent, not about behaviour.** The check is one grep for the event name outside the file
 that handles it, and if every occurrence is inside that file, nothing fires it. Found while building
 #771, which wanted exactly this capability and had to write it again.
+
+**`XRLCore.SetClipboard` does not touch the clipboard.** The whole body is one line:
+
+```csharp
+public static void SetClipboard(string Msg)
+{
+    UnityEngine.Debug.LogError(Msg);
+}
+```
+
+It writes to the Unity log. And unlike `ImmuneToSleepGas`, this one **has a caller**: `wish where?` at
+`Wishing.cs` line 2160 prints the zone ID and then "copies" it, so that wish has never put anything on
+anyone's clipboard. The working API is `ClipboardHelper.SetClipboardData`, which sets a flag that
+`GameManager` drains on the next frame through `UpdateFromMainThread` — seven vanilla call sites use it,
+including `Popup.ShowBlockWithCopy`, which is the affordance to reach for rather than the clipboard
+directly.
+
+Two things generalise. **A method whose body is one call to something unrelated is worth reading even
+when its name is unambiguous** — this is the second defect in this list of that exact shape, and both
+were found by opening a method I had already decided I understood. And **when two APIs exist for one job,
+count the call sites**: seven against one is the fork in the road, and the one is the broken one.
+
+Note `SetClipboardData` opens with `if (!bPutClipboard)`, so a second copy queued before the first drains
+is **silently dropped**. Fine behind a button, wrong inside a loop.
 
 ## The world-map movement gate is `ObjectLeavingCellEvent`, and its name does not say so
 

@@ -6845,6 +6845,15 @@ one command name because the dispatcher builds `^cmd$` for a no-argument handler
 `^cmd(?::|\s+)(.*)$` for one taking a string; `SoundManager.ShowSoundLog` is vanilla doing exactly
 this. Rule 5 is untouched — no file I/O, no network, no reflection of my own, no Harmony.
 
+**The report copies.** `Popup.ShowBlockWithCopy` is the game's own affordance — a Copy button calling
+`ClipboardHelper.SetClipboardData`, the same one the world-seed display uses — and the copied text is
+stripped of colour markup, because the point of copying a diagnostic is pasting it somewhere that is
+not Qud.
+
+`XRLCore.SetClipboard` is emphatically *not* the API for that, despite the name: its entire body is
+`UnityEngine.Debug.LogError(Msg)`. `wish where?` calls it, and has therefore never put anything on
+anyone's clipboard. `docs/LESSONS.md` records it as the fifth vanilla defect.
+
 Namespaced rather than plain `fatigue`, because wish names are one global namespace shared with every
 other installed mod.
 

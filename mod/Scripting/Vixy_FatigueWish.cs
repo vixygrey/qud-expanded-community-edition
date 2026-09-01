@@ -85,7 +85,16 @@ namespace XRL.World
               .Append(" ({{C|gap ").Append(charged == 0 ? 0 : now - charged).Append("}})")
               .Append("   on map since ").Append(onMap == 0 ? "not on map" : onMap.ToString());
 
-            Popup.Show(sb.ToString());
+            // `ShowBlockWithCopy` is the game's own copy affordance - a Copy button that calls
+            // `ClipboardHelper.SetClipboardData` and confirms - and it is what the world-seed display
+            // uses. The copied text is stripped of colour markup, because the point of copying a
+            // diagnostic is pasting it somewhere that is not Qud.
+            //
+            // Note `XRLCore.SetClipboard` is *not* the API for this despite its name: its whole body
+            // is `UnityEngine.Debug.LogError(Msg)`. `wish where?` calls it and has therefore never put
+            // anything on anyone's clipboard. See docs/LESSONS.md.
+            string report = sb.ToString();
+            Popup.ShowBlockWithCopy(report, null, "Fatigue", report.Strip());
         }
 
         [WishCommand("vixyfatigue", null)]
