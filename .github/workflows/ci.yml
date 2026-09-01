@@ -88,7 +88,7 @@ jobs:
         # Must match the ruff-pre-commit rev in .pre-commit-config.yaml. Dependabot updates that
         # file and cannot see this pin, so bumping ruff is always a two-file change - and if the
         # two drift, CI's `ruff format --check` can disagree with the hook a contributor just ran.
-        run: pipx install ruff==0.16.4
+        run: pipx install ruff==0.16.5
 
       - name: ruff check
         run: ruff check tools/
@@ -135,13 +135,13 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: typos
-        # Must match the crate-ci/typos rev in .pre-commit-config.yaml. Dependabot raises this pin
-        # under the `github-actions` ecosystem and has never raised the hook, so bumping typos is a
-        # two-file change nothing will do for you - and if the two drift, this job's dictionary
-        # disagrees with the hook a contributor just ran. #715 is where that happened: v1.49.1
-        # stopped correcting `HashiCorp`, and the changelog entry naming the word failed the hook
-        # while passing here.
-        uses: crate-ci/typos@a8168dc2984a9e2352f183ffe788f0f23a300389 # v1.49.1
+        # Must match the crate-ci/typos rev in .pre-commit-config.yaml. Dependabot tracks the two
+        # in separate ecosystems - this pin under `github-actions`, the hook under `pre-commit` -
+        # so they move at different times, in either order, and nothing ever raises both together.
+        # Drift means this job's dictionary disagrees with the hook a contributor just ran. #715
+        # found the drift; #786 is where this comment earned itself, when Dependabot raised the
+        # hook to v1.50.0 an hour later and left this pin sitting at v1.49.1.
+        uses: crate-ci/typos@4d9c206a77c041268485162b8e2579ad7a5cb9a3 # v1.50.0
         with:
           config: .typos.toml
 
