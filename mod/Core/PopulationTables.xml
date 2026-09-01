@@ -364,6 +364,7 @@
       <object Blueprint="Raven_DermalPlatingSteel" Number="1" Weight="1" />
       <object Blueprint="Raven_OmniPass" Number="1" Weight="1" />
       <object Blueprint="Raven_SteelHandBones" Number="1" Weight="1" />
+      <object Blueprint="Vixy_SleepSuppressor" Number="1" Weight="1" />
     </group>
   </population>
 
