@@ -18,6 +18,40 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **The Six Day Stilt is more of a market** (#174). Off by default.
+
+  Two more traders — a smithy and a water merchant — a pedlar in the tents that would otherwise stand
+  empty, and about a third more stock on every merchant, reaching a tier or two above what they
+  usually carry. Tier 6 at best, and rarely; nothing there sells zetachrome.
+
+  **The idea and the two merchants are Mura's**, from the Grand Bazaar sub-mod, absorbed with his
+  permission. **The numbers are mine.** His version raises merchant stock about 1.68× and reaches
+  tier 8; this is held to 1.3× per merchant and stops at tier 6, so about three quarters of what he
+  added is not here. It would be inaccurate to call this a port, and the credit is his either way.
+
+  **His tent layout did not come across, and could not have.** That part is C# declaring vanilla's
+  own type name, so it has never run for anybody who installed it — and the only way to point the
+  game at a replacement would be to redeclare vanilla's entire Six Day Stilt map cell, which this
+  fork does not do. Both of his earlier attempts are shut to me as well: one is a Harmony patch and
+  the other shadows a second vanilla type.
+
+  The pedlar is mine. Vanilla's empty tent holds a table; the Grand Bazaar filled it with bedrolls.
+  A person with almost nothing to sell is the only version that explains why the tent was standing.
+
+- **(internal)** The API snapshot could not see `mod/Optional/` (#174).
+
+  Three of its collectors globbed `mod/ObjectBlueprints/*.xml` while `validate_mod.py` walks the whole
+  tree, so a blueprint in a gated directory produced tag names the snapshot could never learn and
+  `snapshot-coverage` reported them for ever. `check_docs.py` had the mirror image: its per-file
+  counts were keyed on the bare filename, so a second `Creatures.xml` overwrote the first and
+  `FEATURES.md` §6.1 reported one optional feature's three creatures as the mod's forty-six.
+
+  Nobody had hit either, because the Stilt market is the first optional directory to contain
+  blueprints at all — `HistoryNames` is a `.json` and `JoppaBuilding` is an `.rpm`. `variant_parents`
+  stays scoped to the top level on purpose and now says why: a variant is identified by inheriting a
+  blueprint this fork does not own, and an ordinary new creature does that too, so widening it would
+  file a merchant as a coat of `BaseMerchant`.
+
 - **(internal)** `scatter-share` can see a merge built from table references (#798).
 
   A `<table>` reference into a pool this fork does not define scored **zero**, so a merge made

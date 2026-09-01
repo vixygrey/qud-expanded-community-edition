@@ -437,6 +437,8 @@
   "Creature": {
     "mine": [
       "PsionicAdept",
+      "Raven_Smithy",
+      "Raven_WaterMerchant",
       "TrueKin",
       "Vixy_AshcoatDog",
       "Vixy_AshenSalamander",
@@ -467,6 +469,7 @@
       "Vixy_PaleBoar",
       "Vixy_PaleCroc",
       "Vixy_PaleGlowfish",
+      "Vixy_Pedlar",
       "Vixy_PiebaldEquimax",
       "Vixy_PiedDog",
       "Vixy_RangyDog",
@@ -484,8 +487,8 @@
       "Vixy_VerdigrisGlowfish"
     ],
     "shares": {
-      "Tier1": 38,
-      "Tier2": 20,
+      "Tier1": 39,
+      "Tier2": 21,
       "Tier3": 21,
       "Tier4": 3,
       "Tier5": 0,
@@ -497,13 +500,16 @@
   "Humanoid": {
     "mine": [
       "PsionicAdept",
+      "Raven_Smithy",
+      "Raven_WaterMerchant",
       "TrueKin",
       "Vixy_MangyBaboon",
+      "Vixy_Pedlar",
       "Vixy_RustBaboon",
       "Vixy_SilverBaboon"
     ],
     "shares": {
-      "Tier1": 5,
+      "Tier1": 10,
       "Tier2": 12,
       "Tier3": 2,
       "Tier4": 0,
@@ -682,6 +688,9 @@
       "Raven_Vibro Rapier",
       "Raven_Vibro Vinereaper",
       "Raven_Vibro Wristblade",
+      "Raven_Water Bottle",
+      "Raven_Water Pitcher",
+      "Raven_Water Vase",
       "Raven_Zetachrome Buckler",
       "Raven_Zetachrome Greataxe",
       "Raven_Zetachrome Greatshield",
@@ -1101,6 +1110,8 @@
       "Raven_Perception Psionic Rifle",
       "Raven_Reinforced Suspension",
       "Raven_Rusted Door",
+      "Raven_Smithy",
+      "Raven_SmithySign",
       "Raven_Solar Cell Array",
       "Raven_Solar Cell Nexus",
       "Raven_Starshell Arrow",
@@ -1125,6 +1136,11 @@
       "Raven_Vibro Rapier",
       "Raven_Vibro Vinereaper",
       "Raven_Vibro Wristblade",
+      "Raven_Water Bottle",
+      "Raven_Water Pitcher",
+      "Raven_Water Vase",
+      "Raven_WaterMerchant",
+      "Raven_WaterMerchantSign",
       "Raven_Zetachrome Buckler",
       "Raven_Zetachrome Greataxe",
       "Raven_Zetachrome Greatshield",
@@ -1222,6 +1238,7 @@
       "Vixy_Pallvine",
       "Vixy_Paper Boat",
       "Vixy_Paper Fan",
+      "Vixy_Pedlar",
       "Vixy_Pickled Rimeburr",
       "Vixy_PiebaldEquimax",
       "Vixy_PiedDog",
@@ -1271,7 +1288,7 @@
       "Vixy_Zetachrome Spear"
     ],
     "shares": {
-      "Tier1": 27,
+      "Tier1": 28,
       "Tier2": 16,
       "Tier3": 21,
       "Tier4": 12,

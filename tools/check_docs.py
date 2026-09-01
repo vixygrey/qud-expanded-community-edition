@@ -260,7 +260,13 @@ def facts() -> dict[str, int]:
                 fm += 1
             else:
                 fn += 1
-        if f.parent.name == "ObjectBlueprints":
+        if f.parent == MOD / "ObjectBlueprints":
+            # The top level only, and keyed on the bare filename because that is how FEATURES 6.1
+            # names its rows. `mod/Optional/<feature>/ObjectBlueprints/` can hold a Creatures.xml
+            # too - the Stilt market does - and matching on `f.parent.name` let it overwrite the
+            # main file's counts, so 6.1 reported the optional feature's three creatures as the
+            # whole mod's forty-six. The totals above still count every blueprint under mod/,
+            # which is why they are recounted rather than summed from these rows.
             per_file[f.name] = (fn, fm)
             dormant[f.name] = dormant_objects(f)
         new += fn

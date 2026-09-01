@@ -1,4 +1,4 @@
-# Charter
+﻿# Charter
 
 <!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Present on her machine, absent from a clean checkout, so it must never be treated as resolvable. -->
 
@@ -25,7 +25,7 @@ tools/   validation and helpers   .github/ CI
 ```
 
 **Read `docs/FEATURES.md` before touching anything.** It's the complete reference for what the mod
-does — every system, every item, all 510 new blueprints and 283 vanilla merges, which I
+does — every system, every item, all 521 new blueprints and 283 vanilla merges, which I
 reconstructed from the source because no complete list had ever existed. Section 10 is the bug and
 fork checklist. **`docs/STYLEGUIDE.md`** covers naming, formatting, and Workshop requirements — read
 §1 before renaming anything, because several conventions that look like mess are load-bearing

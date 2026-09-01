@@ -601,4 +601,25 @@
             vanilla does, so it makes levelling faster.
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEStiltMarket"
+    DisplayText="{{C|Qud Expanded}}: the Six Day Stilt is more of a market"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    Restart="true"
+    SearchKeywords="qud expanded stilt bazaar market merchant trader tent stock shop"
+  >
+    <helptext>
+            Two more traders at the Stilt - a smithy and a water merchant - and
+            a pedlar in the tents that would otherwise stand empty.
+
+            Every merchant carries about a third more than they do now, and can
+            reach one or two tiers higher than usual. Tier 6 at best, rarely.
+
+            {{y|Off by default}}, and it is read when the game loads rather than
+            while you play, so set it before you start.
+</helptext>
+  </option>
 </options>

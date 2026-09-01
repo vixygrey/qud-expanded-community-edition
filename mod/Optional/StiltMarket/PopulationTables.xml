@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  The Six Day Stilt, made more of a market.
+
+  The idea and the two new merchants are Mura's, from the Caves of Qud Expanded - The Grand Bazaar
+  sub-mod, absorbed under the permission recorded in docs/PERMISSION.md §9. **The numbers are not
+  his.** That mod raises merchant stock about 1.68x overall and reaches tier 8; this is held to
+  1.3x per table and stops at tier 6, so roughly three quarters of what it added is not here. See
+  #174 for the derivation and docs/FEATURES.md for the reasoning.
+
+  Its SixDayTents.cs does not travel. It declares vanilla's own type name and has therefore never
+  run for anybody (#775), and repointing the builder would mean replacing vanilla's whole
+  SixDayStilt cell, which charter rule 1 refuses (#793).
+
+  Every vanilla record here is a merge. A child that *changes* a vanilla value carries its own
+  Load="Merge" - without it the child appends and both rows roll, which is the duplication trap
+  #798 recorded.
+-->
+<populations>
+  <!-- ============================================================ Mura's two merchants and tents -->
+
+  <population Name="Raven_SmithyTent">
+    <group Name="Contents" Style="pickeach">
+      <object Blueprint="Raven_Smithy" Number="1" Hint="Interior" />
+      <table Name="Raven_SmithyTentContents" />
+    </group>
+  </population>
+
+  <population Name="Raven_SmithyTentContents">
+    <group Name="Contents" Style="pickeach">
+      <object Blueprint="Torchpost" Number="1-2" Hint="InsideCorner" />
+      <object Blueprint="Raven_SmithySign" Number="1" Hint="OutsideDoor:1" />
+      <object Blueprint="Torchpost" Number="1-2" Hint="OutsideDoor:2" />
+      <object Blueprint="Table" Number="2-3" Hint="AlongInsideWall" />
+      <object Blueprint="Woven Basket" Number="1-2" />
+      <object Blueprint="Chest" Number="2-3" Hint="AlongInsideWall" />
+      <object Blueprint="Long Sword2" Number="1" Chance="33" />
+      <object Blueprint="Desert Kris" Number="1" Chance="33" />
+      <object Blueprint="Iron Vinereaper" Number="1" Chance="33" />
+      <object Blueprint="Bronze Ingot" Number="1-2" />
+    </group>
+  </population>
+
+  <population Name="Raven_WaterMerchantTent">
+    <group Name="Contents" Style="pickeach">
+      <object Blueprint="Raven_WaterMerchant" Number="1" Hint="Interior" />
+      <table Name="Raven_WaterMerchantTentContents" />
+    </group>
+  </population>
+
+  <population Name="Raven_WaterMerchantTentContents">
+    <group Name="Contents" Style="pickeach">
+      <object Blueprint="Torchpost" Number="1" Hint="InsideCorner" />
+      <object Blueprint="Raven_WaterMerchantSign" Number="1" Hint="OutsideDoor:1" />
+      <object Blueprint="Torchpost" Number="1-2" Hint="OutsideDoor:2" />
+      <object Blueprint="Table" Number="1-2" Hint="AlongInsideWall" />
+      <object Blueprint="Woven Basket" Number="1-2" />
+      <object Blueprint="Chest" Number="0-1" Hint="AlongInsideWall" />
+      <object Blueprint="Raven_Merchant Water Vase" Number="2-3" Hint="AlongOutsideFrontWall" />
+      <object Blueprint="Raven_Merchant Water Vase" Number="1-2" Hint="AlongInsideWall" />
+      <object Blueprint="Raven_Merchant Water Bottle" Number="2-3" Hint="AlongInsideWall" />
+      <object Blueprint="Raven_Merchant Water Pitcher" Number="2-3" Hint="AlongInsideWall" />
+      <object Blueprint="Merchant Guard" Number="2" Hint="AlongInsideWall" />
+    </group>
+  </population>
+
+  <!--
+    Mura's smithy stock, with his ArmsTier7 and ArmsTier8 groups removed. A smithy at the Stilt
+    tops out at tier 6 and finds it rarely; zetachrome is not something a market stall sells.
+  -->
+  <population Name="Raven_SmithyInventory">
+    <group Name="Items" Style="pickeach">
+      <table Name="DynamicInheritsTable:BaseCudgel:Tier1" Number="2" />
+      <table Name="DynamicInheritsTable:BaseAxe:Tier1" Number="2" />
+      <table Name="DynamicInheritsTable:BaseDagger:Tier1" Number="2" />
+      <table Name="DynamicInheritsTable:BaseLongBlade:Tier1" Number="2" />
+
+      <table Name="DynamicInheritsTable:BaseCudgel:Tier2" Number="1" />
+      <table Name="DynamicInheritsTable:BaseAxe:Tier2" Number="1" />
+      <table Name="DynamicInheritsTable:BaseDagger:Tier2" Number="1" />
+      <table Name="DynamicInheritsTable:BaseLongBlade:Tier2" Number="1" />
+
+      <group Name="ArmsTier3" Style="pickone" Number="2-4">
+        <table Name="DynamicInheritsTable:BaseCudgel:Tier3" Number="1" />
+        <table Name="DynamicInheritsTable:BaseAxe:Tier3" Number="1" />
+        <table Name="DynamicInheritsTable:BaseDagger:Tier3" Number="1" />
+        <table Name="DynamicInheritsTable:BaseLongBlade:Tier3" Number="1" />
+      </group>
+
+      <group Name="ArmsTier4" Style="pickone" Number="1-2">
+        <table Name="DynamicInheritsTable:BaseCudgel:Tier4" Number="1" />
+        <table Name="DynamicInheritsTable:BaseAxe:Tier4" Number="1" />
+        <table Name="DynamicInheritsTable:BaseDagger:Tier4" Number="1" />
+        <table Name="DynamicInheritsTable:BaseLongBlade:Tier4" Number="1" />
+      </group>
+
+      <group Name="ArmsTier5" Style="pickone" Chance="20">
+        <table Name="DynamicInheritsTable:BaseCudgel:Tier5" Number="1" />
+        <table Name="DynamicInheritsTable:BaseAxe:Tier5" Number="1" />
+        <table Name="DynamicInheritsTable:BaseDagger:Tier5" Number="1" />
+        <table Name="DynamicInheritsTable:BaseLongBlade:Tier5" Number="1" />
+      </group>
+
+      <group Name="ArmsTier6" Style="pickone" Chance="10">
+        <table Name="DynamicInheritsTable:BaseCudgel:Tier6" Number="1" />
+        <table Name="DynamicInheritsTable:BaseAxe:Tier6" Number="1" />
+        <table Name="DynamicInheritsTable:BaseDagger:Tier6" Number="1" />
+        <table Name="DynamicInheritsTable:BaseLongBlade:Tier6" Number="1" />
+      </group>
+
+      <object Blueprint="Bronze Ingot" Number="2-4" />
+    </group>
+  </population>
+
+  <!--
+    A legendary smithy draws one tier above the zone, which is vanilla's own idiom for a hero
+    merchant. `{zonetier+1}` is substituted before RequireTable sees it, and Tier.Constrain clamps
+    the result, so this cannot reach past tier 8 even where the zone could.
+  -->
+  <population Name="Raven_SmithyInventory_Legendary">
+    <group Name="Items" Style="pickeach">
+      <table Name="DynamicInheritsTable:BaseCudgel:Tier{zonetier+1}" Number="2" Hint="SetBonusModChance:30" />
+      <table Name="DynamicInheritsTable:BaseAxe:Tier{zonetier+1}" Number="2" Hint="SetBonusModChance:30" />
+      <table Name="DynamicInheritsTable:BaseDagger:Tier{zonetier+1}" Number="2" Hint="SetBonusModChance:30" />
+      <table Name="DynamicInheritsTable:BaseLongBlade:Tier{zonetier+1}" Number="2" Hint="SetBonusModChance:30" />
+    </group>
+  </population>
+
+  <population Name="Raven_WaterMerchantInventory">
+    <group Name="Items" Style="pickeach">
+      <object Blueprint="FullWaterskin" Number="2-3" />
+      <object Blueprint="HalfFullWaterskin" Number="2-3" />
+      <object Blueprint="EmptyWaterskin" Number="5-6" />
+      <object Blueprint="FullCanteen" Number="2-3" />
+      <object Blueprint="HalfFullCanteen" Number="2-3" />
+      <object Blueprint="EmptyCanteen" Number="5-6" />
+      <object Blueprint="Copper Nugget" Number="24-36" />
+      <object Blueprint="Silver Nugget" Number="6-9" />
+      <object Blueprint="Gold Nugget" Number="2-3" />
+    </group>
+  </population>
+
+  <!-- ================================================================== the pedlar, this fork's -->
+
+  <!--
+    Deliberately the poorest stock at the Stilt: junk, a little water, and whatever the scrap heap
+    gave up. Nothing here is worth crossing the salt for, which is the point - the pedlar exists so
+    an empty tent has somebody in it, not so it has treasure in it.
+  -->
+  <population Name="Vixy_PedlarInventory">
+    <group Name="Items" Style="pickeach">
+      <table Name="Junk 1" Number="4-7" />
+      <object Blueprint="EmptyWaterskin" Number="1-2" />
+      <object Blueprint="HalfFullWaterskin" Number="0-1" />
+      <object Blueprint="Yuckwheat Stem" Number="2-4" />
+      <object Blueprint="Vinewafer" Number="1-3" />
+      <table Name="Scrap 1" Number="3-6" />
+      <object Blueprint="Torch" Number="1-3" />
+      <object Blueprint="Bandage" Number="1-2" />
+      <table Name="Injectors" Number="1" Chance="15" />
+    </group>
+  </population>
+
+  <population Name="Vixy_PedlarTentContents">
+    <group Name="Contents" Style="pickeach">
+      <object Blueprint="Vixy_Pedlar" Number="1" Hint="Interior" />
+      <object Blueprint="Woven Basket" Number="1-2" Hint="AlongInsideWall" />
+    </group>
+  </population>
+
+  <!-- ============================================================================ vanilla merges -->
+
+  <!--
+    Two more tent kinds. StiltTents is a pickone, so adding weight dilutes every existing entry
+    without touching anybody's number - and an empty tent goes from 5.0% to 4.5% of tents as a
+    side-effect, which is the honest way to have fewer of them. Weight 4 matches what vanilla gives
+    its own ordinary merchant tents.
+  -->
+  <population Name="StiltTents" Load="Merge">
+    <group Name="Types" Load="Merge">
+      <table Name="Raven_SmithyTent" Weight="4" />
+      <table Name="Raven_WaterMerchantTent" Weight="4" />
+    </group>
+  </population>
+
+  <!--
+    An unclaimed stall is somebody with not much to sell, rather than eight to twelve bedrolls,
+    which is what the Grand Bazaar put here. Vanilla's EmptyTent holds one table; this adds a person
+    beside it and takes nothing away.
+
+    Note the weight of EmptyTent itself is left alone. It could be merged down to 2 or 3 - but not
+    to 1, because PopulationItem.MergeFrom reads `if (Item.Weight != 1)`, so a merged weight of
+    exactly one is silently discarded. Adding a merchant is additive and needs no such trick.
+  -->
+  <population Name="EmptyTent" Load="Merge">
+    <group Name="Contents" Load="Merge">
+      <table Name="Vixy_PedlarTentContents" />
+    </group>
+  </population>
+
+  <!-- ================================================= merchant stock, each held to 1.3x -->
+
+  <!-- ApothecaryInventory: 32.4 -> 42.1, 1.30x -->
+  <population Name="ApothecaryInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Corpus" Number="1" Chance="10" />
+      <object Blueprint="HoneyWaterskin" Number="1-2" Load="Merge" />
+      <!-- vanilla 0-1 -->
+      <object Blueprint="Hoarshroom" Number="1" Chance="100,80,60" Load="Merge" />
+      <!-- vanilla 1 -->
+      <object Blueprint="Witchwood Bark" Number="6-10" Load="Merge" />
+      <!-- vanilla 4-8 -->
+      <object Blueprint="Yuckwheat Stem" Number="8-12" Load="Merge" />
+      <!-- vanilla 5-8 -->
+      <table Name="Injectors" Number="2" Load="Merge" />
+      <!-- vanilla 1 -->
+    </group>
+  </population>
+
+  <!-- AppleMerchantInventory: 6.1 -> 7.9, 1.30x -->
+  <population Name="AppleMerchantInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Cookbooks" Number="1-2" Chance="10" Load="Merge" />
+      <!-- vanilla 1 -->
+      <object Blueprint="Starapple" Number="3-5" Load="Merge" />
+      <!-- vanilla 2-3 -->
+    </group>
+  </population>
+
+  <!-- ArmorerInventory: 13.0 -> 16.3, 1.25x -->
+  <population Name="ArmorerInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="DynamicInheritsTable:BaseArmor:Tier6" Number="1" Chance="10" />
+      <table Name="DynamicInheritsTable:BaseArmor:Tier5" Number="1" Chance="20" />
+      <table Name="DynamicInheritsTable:BaseArmor:Tier3" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+      <table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="1-2" />
+    </group>
+  </population>
+
+  <!-- BookBinderInventory: 7.0 -> 9.1, 1.30x -->
+  <population Name="BookBinderInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Books" Number="5-6" Load="Merge" />
+      <!-- vanilla 3-4 -->
+    </group>
+  </population>
+
+  <!-- ChefInventory: 25.3 -> 32.9, 1.30x -->
+  <population Name="ChefInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Ingredients" Number="26-39" Load="Merge" />
+      <!-- vanilla 20-30 -->
+    </group>
+  </population>
+
+  <!-- DiskMerchantInventory: 6.0 -> 7.8, 1.30x -->
+  <population Name="DiskMerchantInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="DataDisk" Number="6-9" Load="Merge" />
+      <!-- vanilla 5-7 -->
+    </group>
+  </population>
+
+  <!-- GloverInventory: 10.0 -> 11.8, 1.18x -->
+  <population Name="GloverInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="DynamicInheritsTable:BaseGlove:Tier6" Number="1" Chance="10" />
+      <table Name="DynamicInheritsTable:BaseGlove:Tier5" Number="1" Chance="20" />
+      <table Name="DynamicInheritsTable:BaseGlove:Tier3" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+    </group>
+  </population>
+
+  <!-- GrenadierInventory: 11.5 -> 14.9, 1.30x -->
+  <population Name="GrenadierInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Oilskin" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+      <table Name="Explosives 1" Number="7-12" Load="Merge" />
+      <!-- vanilla 6-10 -->
+    </group>
+  </population>
+
+  <!-- GunsmithInventory: 51.5 -> 67.0, 1.30x -->
+  <population Name="GunsmithInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Guns 6" Number="1" Chance="10" />
+      <table Name="Guns 5" Number="1" Chance="20" />
+      <table Name="Guns 3" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+      <table Name="Guns 4" Number="1-2" />
+      <table Name="Cells" Number="5" />
+      <object Blueprint="Lead Slug" Number="35-59" Load="Merge" />
+      <!-- vanilla 30-50 -->
+    </group>
+  </population>
+
+  <!-- HaberdasherInventory: 16.0 -> 19.3, 1.21x -->
+  <population Name="HaberdasherInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="DynamicInheritsTable:BaseCloak:Tier6" Number="1" Chance="10" />
+      <table Name="DynamicInheritsTable:BaseCloak:Tier5" Number="1" Chance="20" />
+      <table Name="DynamicInheritsTable:BaseCloak:Tier3" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+      <table Name="DynamicInheritsTable:BaseCloak:Tier4" Number="1-2" />
+    </group>
+  </population>
+
+  <!-- HatterInventory: 10.0 -> 11.8, 1.18x -->
+  <population Name="HatterInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="DynamicObjectsTable:Headwear:Tier6" Number="1" Chance="10" />
+      <table Name="DynamicObjectsTable:Headwear:Tier5" Number="1" Chance="20" />
+      <table Name="DynamicObjectsTable:Headwear:Tier3" Number="2-3" Load="Merge" />
+      <!-- vanilla 1 -->
+    </group>
+  </population>
+
+  <!-- IchorMerchantInventory: 27.5 -> 27.8, 1.01x -->
+  <population Name="IchorMerchantInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Random Rare Phial" Number="2" Chance="15, 15" Load="Merge" />
+      <!-- vanilla 1 -->
+    </group>
+  </population>
+
+  <!-- JewelerInventory: 10.7 -> 13.9, 1.30x -->
+  <population Name="JewelerInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Bracelet1" Number="1-3" Load="Merge" />
+      <!-- vanilla 0-2 -->
+      <object Blueprint="Bracelet2" Number="1-3" Load="Merge" />
+      <!-- vanilla 0-2 -->
+      <object Blueprint="Bracelet3" Number="1-3" Load="Merge" />
+      <!-- vanilla 0-2 -->
+    </group>
+  </population>
+
+  <!-- ShoemakerInventory: 9.0 -> 10.8, 1.20x -->
+  <population Name="ShoemakerInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <table Name="Shoes 6" Number="1" Chance="10" />
+      <table Name="Shoes 5" Number="1" Chance="20" />
+      <table Name="Shoes 4" Number="1-2" />
+    </group>
+  </population>
+
+  <!-- VintnerInventory: 8.5 -> 11.1, 1.30x -->
+  <population Name="VintnerInventory" Load="Merge">
+    <group Name="Items" Load="Merge">
+      <object Blueprint="Smoldered Mushroom" Number="2-4" Chance="20" Load="Merge" />
+      <!-- vanilla 1-2 -->
+      <object Blueprint="Crusty Loaf" Number="2-4" Load="Merge" />
+      <!-- vanilla 1-2 -->
+      <object Blueprint="Hunk of Cheese" Number="2-3" Load="Merge" />
+      <!-- vanilla 1-2 -->
+    </group>
+  </population>
+</populations>

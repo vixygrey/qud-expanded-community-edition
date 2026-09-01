@@ -540,6 +540,27 @@ def collect_census(game: Path) -> dict[str, str]:
 MOD = Path("mod")
 
 
+def mod_blueprint_files() -> list[Path]:
+    """Every ObjectBlueprints file this mod ships, including under `Optional/`.
+
+    `mod/Optional/<feature>/` is a real content directory - `manifest.json` gates it on an option
+    and the game loads it exactly like any other. Globbing only `mod/ObjectBlueprints/` therefore
+    missed a whole feature's blueprints, and it missed them **on the generator side only**:
+    `validate_mod.check_snapshot_coverage` walks `MOD.rglob`, so it sees tags the snapshot could
+    never learn about and reports them for ever. The two sides have to walk the same tree.
+
+    Nobody hit this until #174, because `Optional/HistoryNames` is a `.json` and
+    `Optional/JoppaBuilding` is a `.rpm` - the Stilt market is the first optional directory to
+    contain blueprints at all.
+    """
+    return sorted(p for p in MOD.rglob("*.xml") if p.parent.name == "ObjectBlueprints")
+
+
+def mod_population_files() -> list[Path]:
+    """Every PopulationTables file this mod ships, for the same reason as above."""
+    return sorted(MOD.rglob("PopulationTables.xml"))
+
+
 def merged_record_names() -> tuple[list[str], list[str]]:
     """Every vanilla record this mod edits: blueprints by `Load="Merge"`, and population tables.
 
@@ -552,13 +573,12 @@ def merged_record_names() -> tuple[list[str], list[str]]:
     snapshot has never seen makes its check fail loudly rather than skip in silence.
     """
     blueprints: set[str] = set()
-    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+    for f in mod_blueprint_files():
         for obj in parse(f, lenient=True).iter("object"):
             if obj.get("Load") == "Merge" and obj.get("Name"):
                 blueprints.add(obj.get("Name"))
     tables: set[str] = set()
-    pops = MOD / "Core" / "PopulationTables.xml"
-    if pops.is_file():
+    for pops in mod_population_files():
         for pop in parse(pops, lenient=True).iter("population"):
             if pop.get("Name"):
                 tables.add(pop.get("Name"))
@@ -755,7 +775,7 @@ def collect_tag_forms(game: Path) -> dict[str, str]:
     dump of vanilla's 710. Names vanilla writes both ways carry no opinion and are omitted.
     """
     wanted: set[str] = set()
-    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+    for f in mod_blueprint_files():
         for obj in parse(f, lenient=True).iter("object"):
             for child in obj:
                 if child.tag in ("tag", "stag") and child.get("Name"):
@@ -793,7 +813,7 @@ def collect_tag_forms_absent(game: Path) -> dict[str, str]:
       `Vixy_CreatureVariant` are this mod's own, read only by its own C#.
     """
     wanted: set[str] = set()
-    for f in sorted((MOD / "ObjectBlueprints").glob("*.xml")):
+    for f in mod_blueprint_files():
         for obj in parse(f, lenient=True).iter("object"):
             for child in obj:
                 if child.tag in ("tag", "stag") and child.get("Name"):
@@ -864,6 +884,11 @@ def variant_parents() -> dict[str, set[str]]:
     """
     prefixes = ("Vixy_", "Raven_")
     parents: dict[str, str] = {}
+    # Deliberately *not* mod_blueprint_files(). A variant is identified by inheriting a blueprint
+    # this fork does not own, and an ordinary new creature does that too - the Stilt market's
+    # `Raven_Smithy` inherits vanilla's `BaseMerchant`. Widening this would file it as a coat of
+    # BaseMerchant and hand `variant-density` a creature that is not a variant. The coats live in
+    # the top-level Creatures.xml and this is scoped to them on purpose.
     creatures = MOD / "ObjectBlueprints" / "Creatures.xml"
     if creatures.is_file():
         for obj in parse(creatures, lenient=True).iter("object"):
