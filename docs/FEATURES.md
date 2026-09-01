@@ -6546,6 +6546,22 @@ Two things the stamp deliberately does not do. It is not updated when the part i
 not the current player — that staleness *is* the bill. And it **is** updated while the option is off,
 so turning fatigue back on does not charge me for the time it was off.
 
+### 51.3c The bands only speak on the way up
+
+One message per band crossed, and **only while getting worse**. Every line is written for a worsening —
+*"your eyes are heavy"*, *"you cannot keep this up"*, *"you are going to fall down"* — and each of the
+last three carries `=WEIRDMARKOVSENTENCE=` on top.
+
+The first version announced any change of band, up or down. Found in play: an ambush cut a sleep short
+somewhere between Exhausted and Weary, and waking gave *"Your eyes are heavy, and the edges of things
+will not hold still"* — a deterioration message delivered at the exact moment the rest had helped, with
+the unreliability flavour riding along just as I became more reliable. It read as the system being
+broken, which is fair, because it was.
+
+The stamp still updates in both directions, so climbing back into a band announces it again. Nothing is
+said coming down: §51.5d's readout already shows the improvement, and a survival timer that congratulates
+me is a different feature.
+
 ### 51.4 Only voluntary sleep rests you
 
 `Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,

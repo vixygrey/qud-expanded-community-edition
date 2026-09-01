@@ -101,6 +101,9 @@ recorded because contributors need them, not because subscribers do.
   Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
   rests you.
 
+  Tiredness only speaks up when it is getting worse. Being woken part-way through a sleep used to
+  greet you with "your eyes are heavy" — a warning delivered at the moment the rest had helped.
+
   {{y|You can see how tired you are.}} Tired, weary, exhausted, collapsing — one word on the active
   effects line, next to burdened, in colours that climb the way hunger's do. Until now the only thing
   that ever told you was a message as you crossed each threshold, and messages scroll away.

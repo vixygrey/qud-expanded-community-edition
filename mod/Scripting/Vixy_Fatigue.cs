@@ -375,8 +375,19 @@ namespace XRL.World.Parts
         private void Announce()
         {
             int band = BandFor(Get(ParentObject));
-            if (band == ParentObject.GetIntProperty("Vixy_FatigueBandSeen")) return;
+            int seen = ParentObject.GetIntProperty("Vixy_FatigueBandSeen");
+            if (band == seen) return;
+
+            // Always stamp, so a band is re-announced if I climb back into it later.
             ParentObject.SetIntProperty("Vixy_FatigueBandSeen", band);
+
+            // But only speak on the way *up*. Every line below is written for a worsening - "your
+            // eyes are heavy", "you cannot keep this up", "you are going to fall down" - so firing
+            // one on a downward crossing tells me I am deteriorating at the moment I rested. Seen in
+            // play: an ambush cut a sleep short somewhere between Exhausted and Weary, and waking to
+            // "your eyes are heavy" read as the system being broken. Nothing is said coming down;
+            // the readout on the active-effects line already shows the improvement. #779.
+            if (band < seen) return;
 
             string text = band switch
             {
