@@ -18,6 +18,36 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** `pin-parity` fails a build where a tool's two pins disagree (#787).
+
+  `ruff` and `typos` are each pinned twice — once in `ci.yml`, once in `.pre-commit-config.yaml` —
+  and Dependabot tracks the halves in separate ecosystems, so it raises one without the other and
+  nothing ever raises both. While they disagree, CI runs a different version of a checker than the
+  hook a contributor just ran.
+
+  Both pairs drifted the day before this landed, and nothing mechanical noticed either. The typos
+  pair is what decided it was worth building: that one had drifted with no comment and nothing
+  watching, and what surfaced it was luck — v1.49.1 stopped correcting one brand name, a changelog
+  entry happened to need that word, and the older hook rejected the sentence the newer action
+  accepted. Any other word in that release and both pull requests would have merged green.
+
+  **The map of pairs is explicit, and `gitleaks` is why.** The hook is `gitleaks/gitleaks` at
+  v8.30.1 while the workflow uses `gitleaks/gitleaks-action` at v3.0.0 — different repositories on
+  independent version lines. Any rule pairing them by owner or by prefix reports drift that is not
+  there, permanently, and a guard that fires on a correct state is one people learn to bypass.
+
+  It reports three things rather than one, because the quiet failures are the ones worth having: a
+  mapped pair whose versions differ; a pinned hook in neither table, so a third tool cannot go
+  silently uncovered the way `naming-option-coverage` did the moment a second namestyle arrived; and
+  a CI pin it can no longer read, which is a **finding rather than a skip**, since a skip here is
+  indistinguishable from a pass.
+
+  Thirteen tests, and I broke the check three ways to confirm they catch it rather than trusting a
+  green run — dropping the comparison fails two of them, dropping the `v`-prefix normalisation fails
+  eleven, and making the coverage guard vacuous fails one. Scope is the two config files and stays
+  there: a version written in a tool's own config or in prose is out of reach, and a check that
+  sweeps wider than it can parse is how a skip starts reading as a pass.
+
 - **(internal)** `ruff` v0.16.4 → v0.16.5 and `typos` v1.49.1 → v1.50.0, each in both places it is
   pinned.
 
