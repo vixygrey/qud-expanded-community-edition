@@ -7076,10 +7076,25 @@ Fifty snapjaws in one cave expedition is ordinary play, and that is a tenth of o
 intent is a handful of these across a whole run: a hunter who arrives twice is a story, one who
 arrives twenty times is a tax.
 
-Both rolls are made **on arriving in a new zone**, not on the kill. A threshold crossed mid-fight
-should not put somebody into that fight, and an arrival is the natural moment for the world to have
-already heard. The hunter is rolled first at 4%, and only if it misses is the envoy rolled at 1%, so
-the two can never arrive together.
+Both rolls are made **the first time I enter a given zone**, not on the kill. A threshold crossed
+mid-fight should not put somebody into that fight, and walking somewhere new is the natural moment
+for the world to have already heard. The hunter is rolled first at 4%, and only if it misses is the
+envoy rolled at 1%, so the two can never arrive together.
+
+**A zone is retired on arrival, before anything is rolled**, so a failed roll spends it too and
+walking back through is completely inert. That is vanilla's own order in `CheckPsychicHunters`, and
+it is what stops re-walking a cleared dungeon from turning into a stream of hunters — the kill tally
+already caps how many can ever come, but only this caps how fast (#802).
+
+The consequence is deliberate: past a threshold, somebody arrives only somewhere I have not been.
+Cross five hundred kills in territory I have already cleared and it stays quiet until I move on.
+That is the better story as well as the quieter one — a hunter appearing in a corridor I emptied an
+hour ago never had one attached.
+
+**The flag lives on the zone rather than on the part.** `ZoneManager.ZoneProperties` is serialised by
+the manager itself and is where vanilla reads `AmbushChance` in the very method being copied, so the
+part's save layout does not change, a second feature can take its own key on the same store, and only
+zones actually entered cost anything.
 
 The tally is **spent, not cleared** — and only once somebody is actually standing there. Five hundred
 comes off the count and the rest keeps running, so carrying on earns the next one rather than
