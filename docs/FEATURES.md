@@ -7107,9 +7107,17 @@ He is built from the faction's own members, given my level give or take two, and
 unrendered if you wish for it directly — can never arrive. But `IsExcludedFromDynamicEncounters` is
 applied *only* when `Dynamic` is set, and that is the flag Qud marks its named characters with.
 Without it a Barathrumite envoy could be Argyve, Rodanis Y or Euclid, a Consortium one Asphodel, and
-a Mechanimist hunter High Priest Eschelstadt. Ninety-eight blueprints across the fifteen carry the
-flag; every faction still has ordinary members once they are gone, the smallest pool being the
-Hindren at one.
+a Mechanimist hunter High Priest Eschelstadt. 133 blueprints across the fifteen carry the flag —
+counting those that inherit it or take it from a mixin, which is how `BasePaxKlanq` and every
+`Chiliad Creature` are covered without declaring it themselves.
+
+**It leaves the Hindren with nobody at all**, and that is vanilla's shape rather than a fault here:
+every hindren blueprint is either a named character or a pariah filed under another faction. The
+empty pool is caught and the visit dropped before the tally is spent, so nothing breaks — hindren
+kills simply accumulate against a faction that can never answer. They stay on the list because they
+plainly belong on it, and because one generic hindren added by a later patch makes it work with no
+change here. The Consortium and the Trolls have a single eligible blueprint each, so those two will
+always send the same face.
 
 **Nothing forces him hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
 personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them — five

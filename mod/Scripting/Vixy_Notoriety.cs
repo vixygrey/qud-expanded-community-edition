@@ -278,8 +278,19 @@ namespace XRL.World.Parts
         /// it.</b> <c>GetMembers</c> filters <c>IsBaseBlueprint</c> unconditionally, so an abstract
         /// parent can never arrive — but <c>IsExcludedFromDynamicEncounters</c> is applied only
         /// when <c>Dynamic</c> is set, and that is the flag Qud marks its named characters with.
-        /// Ninety-eight blueprints across the fifteen carry it, and every one of the fifteen still
-        /// has ordinary members left once they are removed.
+        /// 133 blueprints across the fifteen carry it, counting the ones that inherit it from a
+        /// parent or pick it up from a mixin, which is how <c>BasePaxKlanq</c> and every
+        /// <c>Chiliad Creature</c> are covered without saying so themselves.
+        /// </para>
+        /// <para>
+        /// <b>One faction is left with nobody, and that is vanilla's shape rather than a bug
+        /// here.</b> Every hindren blueprint in the game is either a named character or a pariah
+        /// filed under a different faction, so the Hindren pool is empty and no hindren can ever
+        /// arrive. <c>IsNullOrEmpty</c> catches it and the visit is simply dropped, before the
+        /// tally is spent. They stay on the list because they plainly belong on it and because a
+        /// later patch — or another mod — adding one generic hindren makes it work with no change
+        /// here. The Consortium and the Trolls are down to a single blueprint each, so those two
+        /// will always send the same face.
         /// </para>
         /// <para>
         /// <b><c>TierOverride</c> is not a difficulty lever.</b> It reaches
@@ -302,9 +313,10 @@ namespace XRL.World.Parts
             // Dynamic: true is load-bearing, not a default. It applies
             // IsExcludedFromDynamicEncounters, which is what holds back unique named characters -
             // without it a Barathrumite envoy can be Argyve, Rodanis Y or Euclid, a Consortium one
-            // Asphodel, and a Mechanimist hunter High Priest Eschelstadt. Ninety-eight blueprints
-            // across the fifteen carry that flag, and every faction still has members without it.
-            // IsBaseBlueprint is filtered either way, so abstract parents cannot arrive.
+            // Asphodel, and a Mechanimist hunter High Priest Eschelstadt. 133 blueprints across the
+            // fifteen carry that flag once inheritance and mixins are followed. IsBaseBlueprint is
+            // filtered either way, so abstract parents cannot arrive. The Hindren are left with an
+            // empty pool, which is why this guard matters; see the remarks.
             List<GameObjectBlueprint> members = Faction.GetMembers(faction, null, Dynamic: true);
             if (members.IsNullOrEmpty()) return;
 

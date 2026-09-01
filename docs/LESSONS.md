@@ -4112,9 +4112,9 @@ abstract parents can never come out, whatever I pass. `IsExcludedFromDynamicEnco
 **only** when `Dynamic` is set, and `!Dynamic ||` short-circuits it away entirely otherwise.
 
 So with `Dynamic: false` a Barathrumite could be **Argyve**, **Rodanis Y** or **Euclid**; a
-Consortium one **Asphodel**; a Mechanimist **High Priest Eschelstadt**. Ninety-eight blueprints
-across the fifteen factions carry the flag. A second Argyve walking into a zone is not a rough edge,
-it is somebody's questline.
+Consortium one **Asphodel**; a Mechanimist **High Priest Eschelstadt**. 133 blueprints across the
+fifteen factions carry the flag. A second Argyve walking into a zone is not a rough edge, it is
+somebody's questline.
 
 **What makes it dangerous is that it cannot fail visibly.** A blueprint list is a blueprint list; a
 longer one looks better than a shorter one. Nothing throws, no check fires, and a unique is rare
@@ -4128,10 +4128,24 @@ from the call site. `Faction.GetMembers(f, null, Dynamic: false)` reads like "gi
 means "give me everyone, uniques included". Read the body before overriding a default, especially
 when the override widens something.
 
+**A second lesson sits on top of the first, and I paid for it twice in one session.** I counted the
+cost of respecting the flag three times and got three different answers — 98, then 125, then 133 —
+because my first pass read only each blueprint's own body. `ExcludeFromDynamicEncounters` is an
+ordinary tag: it **inherits**, and it arrives through **mixins**. `PaxKlanq2` never declares it and
+is excluded anyway, via `BasePaxKlanq`; every `Chiliad Creature` is excluded via
+`BaseChiliadCreatureStats`. I had written both up as leaks the game had missed. They were not leaks,
+they were my resolver.
+
+So: **when measuring what a blueprint "has", resolve the chain the way the game does — `Inherits`
+and `<mixin>` both — or the measurement will read as a vanilla bug rather than as your own.** The
+`*noinherit` value is the exception that proves it matters: `Asphodel` carries the flag that way
+precisely so its children do *not* inherit it.
+
 Check before shipping any faction-to-blueprint lookup: does every faction still have members once
-the flag is respected? For the fifteen here, the smallest surviving pool is the Hindren at one, and
-none is empty — but an empty pool is the failure this would otherwise trade for, so it is worth
-counting rather than assuming.
+the flag is respected? Here one does not. **The Hindren pool is empty** — every hindren blueprint is
+a named character or a pariah filed elsewhere — so no hindren can ever be sent. That is survivable
+only because the empty case was already guarded and the tally is spent after placement rather than
+before. Count it rather than assuming it; an empty pool is exactly the failure this trade buys.
 
 Related: [`pickeach ignores Weight, and Chance is a repeat count`](#pickeach-ignores-weight-and-chance-is-a-repeat-count)
 is the same shape in the population tables — an argument that reads as one thing, silently means
