@@ -80,9 +80,10 @@ namespace XRL.World.Parts
             "Seekers", "Snapjaws", "Templar", "Trolls", "Urchins",
         };
 
-        /// <summary>The zone I was last seen in, so an arrival can be told from a step.</summary>
-        [NonSerialized]
-        private string LastZone;
+        /// <summary>
+        /// The per-zone flag marking a zone as already rolled. See <see cref="Arrived"/>.
+        /// </summary>
+        public const string RolledProperty = "Vixy_NotorietyRolled";
 
         public override bool SameAs(IPart p) => true;
 
@@ -129,17 +130,13 @@ namespace XRL.World.Parts
                 return base.HandleEvent(E);
             }
 
-            string zone = ParentObject.CurrentZone?.ZoneID;
-            if (zone.IsNullOrEmpty() || zone == LastZone)
-            {
-                return base.HandleEvent(E);
-            }
-            LastZone = zone;
+            if (!Arrived()) return base.HandleEvent(E);
 
-            // Both rolls are made per arrival rather than per kill: a threshold crossed mid-fight
-            // should not put somebody into that fight, and an arrival is the moment the world gets
-            // to have already heard. The hunter is rolled first and returns if it fires, so the two
-            // can never arrive together and the grateful visit stays the rarer of the two.
+            // Both rolls are made on a first arrival rather than per kill: a threshold crossed
+            // mid-fight should not put somebody into that fight, and walking into somewhere new is
+            // the moment the world gets to have already heard. The hunter is rolled first and
+            // returns if it fires, so the two can never arrive together and the grateful visit
+            // stays the rarer of the two.
             List<string> owed = Owed();
             if (owed.Count == 0) return base.HandleEvent(E);
 
@@ -351,6 +348,43 @@ namespace XRL.World.Parts
                     + " has sought you out, on the strength of what you have done to "
                     + Faction.GetFormattedName(about) + ".");
             }
+        }
+
+        /// <summary>
+        /// True once per zone, on the first arrival in it — and never again in that zone.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>The zone is retired before anything is rolled, which is the point rather than an
+        /// ordering detail.</b> Marking after a successful roll would leave a failed roll to be
+        /// retried on the way back through, and re-walking a cleared dungeon is exactly where the
+        /// rate used to spike. Vanilla's <c>CheckPsychicHunters</c> does it in this order for the
+        /// same reason. #802.
+        /// </para>
+        /// <para>
+        /// <b>The flag lives on the zone, not on this part.</b>
+        /// <c>ZoneManager.ZoneProperties</c> is a <c>Dictionary&lt;string, Dictionary&lt;string,
+        /// object&gt;&gt;</c> serialised by the manager's own <c>Read</c>/<c>Write</c>, and it is
+        /// where vanilla reads <c>AmbushChance</c> in the very method this copies. So this part's
+        /// serialised layout does not change and charter rule 5 never comes into it, a second
+        /// feature can take its own key on the same store without either knowing about the other,
+        /// and only zones actually entered cost anything.
+        /// </para>
+        /// <para>
+        /// The consequence is deliberate: past the threshold, somebody arrives only where I have
+        /// not been before. Crossing five hundred kills in cleared territory is quiet until I move
+        /// on — which is the better story as well as the quieter one, since a hunter appearing in a
+        /// corridor I emptied an hour ago never had one attached.
+        /// </para>
+        /// </remarks>
+        private bool Arrived()
+        {
+            Zone zone = ParentObject.CurrentZone;
+            if (zone == null || zone.IsWorldMap() || zone.ZoneID.IsNullOrEmpty()) return false;
+
+            if (The.ZoneManager.HasZoneProperty(zone.ZoneID, RolledProperty)) return false;
+            The.ZoneManager.SetZoneProperty(zone.ZoneID, RolledProperty, true);
+            return true;
         }
 
         /// <summary>Every faction currently owed a reckoning, cheapest test first.</summary>

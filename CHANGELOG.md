@@ -25,9 +25,14 @@ recorded because contributors need them, not because subscribers do.
   kind, so expect this a handful of times in a run rather than often — fifty snapjaws in one cave
   is ordinary play, and that is a tenth of it.
 
-  Both rolls happen when I walk into a new zone, never on the kill itself, so a threshold crossed
-  mid-fight cannot put somebody into that fight. The count is spent rather than cleared, so carrying
-  on earns the next one instead of starting over.
+  Both rolls happen the first time I walk into a given zone, never on the kill itself, so a threshold
+  crossed mid-fight cannot put somebody into that fight. A zone is retired on arrival whether or not
+  anything comes of it, so walking back through somewhere I have already been is completely inert —
+  the kill count caps how many can ever come, and this caps how fast. The count is spent rather than
+  cleared, so carrying on earns the next one instead of starting over.
+
+  Past a threshold, then, somebody arrives only somewhere I have not been. Crossing five hundred
+  kills in territory I have already cleared stays quiet until I move on.
 
   **Far more rarely it goes the other way** and an envoy arrives from their enemies, pleased and
   interested in me. Who is glad comes from Qud's own faction feelings rather than a table of my
