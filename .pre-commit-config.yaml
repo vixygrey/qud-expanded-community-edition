@@ -46,7 +46,9 @@ repos:
         files: ^tools/.*\.py$
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.49.0
+    # Must match the crate-ci/typos pin in .github/workflows/ci.yml — see the note there.
+    # Dependabot raises the action and not this rev, so the two only stay in step by hand.
+    rev: v1.49.1
     hooks:
       - id: typos
         args: [--config, .typos.toml]
