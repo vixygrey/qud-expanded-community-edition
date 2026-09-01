@@ -274,6 +274,14 @@ namespace XRL.World.Parts
         /// which is the one case that has to be caught rather than placed.
         /// </para>
         /// <para>
+        /// <b>Uniques are held back by <c>Dynamic: true</c>, and that argument is the whole of
+        /// it.</b> <c>GetMembers</c> filters <c>IsBaseBlueprint</c> unconditionally, so an abstract
+        /// parent can never arrive — but <c>IsExcludedFromDynamicEncounters</c> is applied only
+        /// when <c>Dynamic</c> is set, and that is the flag Qud marks its named characters with.
+        /// Ninety-eight blueprints across the fifteen carry it, and every one of the fifteen still
+        /// has ordinary members left once they are removed.
+        /// </para>
+        /// <para>
         /// <b><c>TierOverride</c> is not a difficulty lever.</b> It reaches
         /// <c>MutateFromPopulationTable</c> and <c>inventoryTier</c> only, so it scales gear and
         /// mutations. Matching my level is a separate write to the creature's own <c>Level</c>, a
@@ -291,7 +299,13 @@ namespace XRL.World.Parts
             Cell landing = cell.getClosestPassableCell(c => c.DistanceTo(cell) >= ArrivalDistance);
             if (landing == null || landing == cell) return;
 
-            List<GameObjectBlueprint> members = Faction.GetMembers(faction, null, Dynamic: false);
+            // Dynamic: true is load-bearing, not a default. It applies
+            // IsExcludedFromDynamicEncounters, which is what holds back unique named characters -
+            // without it a Barathrumite envoy can be Argyve, Rodanis Y or Euclid, a Consortium one
+            // Asphodel, and a Mechanimist hunter High Priest Eschelstadt. Ninety-eight blueprints
+            // across the fifteen carry that flag, and every faction still has members without it.
+            // IsBaseBlueprint is filtered either way, so abstract parents cannot arrive.
+            List<GameObjectBlueprint> members = Faction.GetMembers(faction, null, Dynamic: true);
             if (members.IsNullOrEmpty()) return;
 
             GameObject who = GameObject.Create(members.GetRandomElement().Name);

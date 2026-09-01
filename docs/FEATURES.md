@@ -7102,6 +7102,15 @@ cannot hear about it.
 He is built from the faction's own members, given my level give or take two, and passed through
 `HeroMaker` so he is named and equipped as one of their heroes.
 
+**`GetMembers` is asked with `Dynamic: true`, and that argument is load-bearing.** It filters
+`IsBaseBlueprint` either way, so an abstract parent like `Templar` — which spawns nameless and
+unrendered if you wish for it directly — can never arrive. But `IsExcludedFromDynamicEncounters` is
+applied *only* when `Dynamic` is set, and that is the flag Qud marks its named characters with.
+Without it a Barathrumite envoy could be Argyve, Rodanis Y or Euclid, a Consortium one Asphodel, and
+a Mechanimist hunter High Priest Eschelstadt. Ninety-eight blueprints across the fifteen carry the
+flag; every faction still has ordinary members once they are gone, the smallest pool being the
+Hindren at one.
+
 **Nothing forces him hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
 personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them — five
 hundred of their dead is far past the -10 line on its own. Forcing it would mean
