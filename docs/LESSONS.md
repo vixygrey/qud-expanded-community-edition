@@ -3751,3 +3751,46 @@ knowing before concluding a hook cannot see where a move is going.
 *ask* — *"You have run out of water! Do you want to stop travelling?"* — rather than refusing. A mod
 that returns `false` here is making a harder claim on the player than the game makes anywhere in this
 system. That is a design decision, not a free capability.
+
+## A mechanic that works by imitation needs the thing it imitates counted first
+
+I planned a *false sound* for exhaustion — a phantom noise, no source, to make an exhausted character
+distrust their own senses. It only works if a false sound is indistinguishable from a real one, so
+before writing it I counted the real ones.
+
+There are **eight** distinct `"You hear …"` strings in the entire assembly, and every one names its
+own cause:
+
+| the string | what it actually is |
+|---|---|
+| "You hear a distant click." / "…a loud click from across the room." | a lever or pressure plate firing |
+| "You hear a shloop and the world around you shifts." | a recoiler teleporting you |
+| "You hear a shloop and then a hitch. Nothing happens." | a recoiler failing |
+| "You hear a muffled grunting coming from inside the block of ice." | a frozen creature |
+| "You hear inaudible mumbling." | a conversation out of earshot |
+| "you hear a cry of distress from " | a named creature calling for help |
+
+There is no ambient soundscape, and no hallucination effect to borrow either — `WakingDream` and
+`DeepDream` are the metempsychosis mechanic (dream you are another creature, gain a level), not
+misperception. `"You sense a subtle psychic disturbance."` looks like a candidate and is not: it fires
+only for a player carrying `SensePsychic`, when someone else uses `Precognition`.
+
+So a phantom noise would have had **no true counterpart anywhere in the game**. It is not ambiguous,
+because nothing else in Qud says anything like it. I would have identified it as my own mod on its
+second occurrence, and after that it would read as a status message with a costume on.
+
+**The general shape.** For a mechanic whose whole effect is *being mistaken for something else*, the
+thing it imitates is a dependency, and it has to be counted the same way a hook's consumers get
+counted before a hook is built. "Atmospheric" is not a property of the message — it is a property of
+the message's *neighbours*, and I priced it without looking at them. The cheap check is one `grep` for
+the register I am proposing to join, run before the design rather than after.
+
+**Note which direction this one runs.**
+[`My design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
+collects nine claims that all fail by reading a shipped mechanism as absent. This is the first that
+fails the other way — a mechanism assumed present that Qud does not have. Both are optimistic about
+how much work is left; only the direction changes. `DESIGN_sleep.md` §3.2.1 had actually recorded half
+of it already — *"There is no hallucination effect in the game to inherit"* — and I read that as a note
+about implementation when it was a verdict on the idea.
+
+Related: [`When a count supports a claim, resolve it`](#when-a-count-supports-a-claim-resolve-it--and-read-the-difference-before-the-total).

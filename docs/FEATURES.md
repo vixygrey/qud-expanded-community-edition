@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 76 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 77 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6571,6 +6571,34 @@ so a full sleep is never unrewarded.
 
 The **psychic echo** tier from §4.1 is deliberately not built. A temporary buff or a mutation bump is a
 balance question rather than a prose one and deserves its own look.
+
+### 51.5b Exhaustion makes the mind unreliable (`Vixy_Gutter`)
+
+§3.2.1 of the design doc asks fatigue to make me *unreliable* rather than *weaker*, and this is that
+rule as a mechanism. Past Exhausted, roughly one action in 200 — one in 80 once I am Collapsing — my
+concentration slips and a mental mutation I could have used this turn gutters out for twenty rounds.
+Across the whole exhausted stretch that is about five slips. It costs me a capability I was counting
+on, at a moment I did not pick, which is a sharper thing than two points of Agility.
+
+**It does not intercept the activation, and that is the finding.** The obvious build is a true
+misfire — cancel the use, keep the cooldown — and it cannot be done evenly. Mutation commands
+dispatch two different ways: 28 go through `CommandEvent`, which a part on the player can cancel, and
+35 go through the legacy `Event.New(Command)` path that `CommandEvent.Send` fires *first* and aborts
+on, so a handler never sees those in time. That misfire would land on some of my mutations and
+silently never land on the rest, decided by which ones I happened to roll — the #588 defect a second
+time.
+
+Writing the cooldown is vanilla's own idiom instead. `SphynxSalt_Tonic` finds mental abilities with
+`Class.Contains("Mental")` and assigns `entry.Cooldown` directly; the setter registers the countdown
+with `ActivatedAbilities`, so it is the supported path rather than a way around one. It reaches all
+26 activated mental abilities identically, and `NotUsableDescription` — the one gate consulted before
+any command is sent — already refuses the press with the right message.
+
+**The companion mechanic is absent on purpose.** §3.2.1 paired this with false sounds, and Qud has
+nothing for a false sound to hide among: eight distinct "You hear" strings in the whole assembly,
+every one tied to an identifiable cause, and no hallucination effect to borrow — `WakingDream` and
+`DeepDream` are the metempsychosis mechanic. A phantom noise with no true counterpart is not
+unsettling; it is identified as this mod the second time it happens.
 
 ### 51.6 State lives in the property bag, deliberately
 
