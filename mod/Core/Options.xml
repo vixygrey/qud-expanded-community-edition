@@ -580,4 +580,25 @@
             tunes both so they almost never fire. This one fires.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEXPCurve"
+    DisplayText="{{C|Qud Expanded}}: experience follows the gap in tiers"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded experience xp level levelling tier curve kill reward"
+  >
+    <helptext>
+            Kills pay by how far above or below you they were. Something a
+            tier over you pays a tenth more, three tiers over pays half again.
+
+            Punching down still tapers, and still stops: two tiers under you
+            pays a third rather than vanilla's tenth, and three tiers under
+            pays nothing at all, exactly as it does now.
+
+            {{y|Off by default.}} Every tier this changes pays more than
+            vanilla does, so it makes levelling faster.
+</helptext>
+  </option>
 </options>

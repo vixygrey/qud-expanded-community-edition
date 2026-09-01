@@ -1,4 +1,4 @@
-# Caves of Qud Expanded — Complete Feature Reference
+﻿# Caves of Qud Expanded — Complete Feature Reference
 
 *I reconstructed this by reading the whole mod source — every XML blueprint, population table,
 skill, genotype, subtype, body, C# script, and the Joppa map patch. No complete list of what this
@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 27 options (§13)
+│   ├── Options.xml             # 28 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 81 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 82 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-seven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-eight options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2268,7 +2268,7 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Live** — applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
 | **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
@@ -6913,6 +6913,69 @@ they almost never fire. This one fires.
 
 Read every action, so turning it off stops accrual immediately rather than at the next load. Fatigue
 already banked stays on the player and simply stops mattering.
+
+## 52. Experience follows the gap in tiers (`Vixy_XPCurve`)
+
+Off by default. What a kill is worth depends on how far above or below me it was — I am paid more
+for punching up, and the taper for punching down is gentler than vanilla's without losing its floor.
+
+**The design is Mura's**, from the Experience Curve sub-mod. **The implementation is not, and could
+not be.** That mod declares a class called `XRL.World.Parts.Experience` — vanilla's own name — and
+relies on type resolution preferring the mod's copy. It does not, and never has: `ModManager.
+ResolveType` calls `Type.GetType` first, which searches `Assembly-CSharp`, so vanilla's type is found
+and the mod assemblies are never consulted. That C# has never run for anybody who installed it. #775
+has the measurement and `docs/LESSONS.md` has the trap.
+
+### 52.1 The curve
+
+`gap` is my tier minus the tier of what I killed, where a tier is `Level / 5`.
+
+| gap | vanilla | here |
+|---|---|---|
+| 3 or more above it | nothing | **nothing** — vanilla's floor, kept |
+| 2 above | a tenth | **a third** |
+| 1 above | a half | a half |
+| level with it | full | full |
+| 1 below | full | **×1.1** |
+| 2 below | full | **×1.3** |
+| 3 below | full | **×1.6** |
+
+**The bonus has no ceiling**, and that is Mura's design rather than an oversight: the multiplier is
+`1 + 0.05 × g × (g + 1)`, so four tiers up doubles the award and eight tiers up pays ×4.6. Killing
+something eight tiers above you is a feat vanilla already pays full price for; this pays more. There
+is no cap because the gap is self-limiting — you have to survive the thing first.
+
+**Vanilla's zero at three tiers up is kept on purpose, and Mura's curve did not keep it.** His formula
+is `Amount / (gap + 1)` at every positive gap, which never reaches zero, so a high-level character
+farming trivia would go on earning. That floor is vanilla's anti-grind measure and it stands. What is
+adopted is the middle of the range, where two tiers up pays a third rather than a tenth.
+
+**The bonus is ×1.6 at three tiers up, and Mura's own comment says ×1.3.** His comment describes
+increments of 0.05; his code is `i * -0.1`, giving `1 + (0.1 + 0.2 + 0.3)`. The code is what shipped
+and what he tuned against, so the code is what was ported. It is written down here and in the part's
+docstring because the annotation is the more persuasive of the two and reads as authoritative.
+
+### 52.2 Why this is a part and not a fork
+
+`IXPEvent.TierScaling` is a public flag that vanilla's own `Experience` part gates its tier scaling
+on, and **nothing in the game ever sets it false** — an unwired switch whose single purpose is
+disabling exactly the behaviour being replaced. So `Vixy_XPCurve` rewrites `E.Amount`, turns that flag
+off, and hands back. Vanilla still does the clamping, the global multiplier, the award, the write-back
+and the party pass-down. Only the curve is this fork's, and everything around it keeps tracking
+upstream — which the sub-mod's whole-file copy did not: it sat two behaviours behind vanilla, ignoring
+`TierScaling` and never doing the `E.Amount` write-back, with nothing able to show it.
+
+`Priority` is load-bearing. Part order is dispatch order, this has to run before vanilla's
+`Experience`, and a higher priority is the only thing that moves a part earlier. `Experience` does not
+override `Priority`, so it sits at `IPart`'s default 45000; **90000** is vanilla's own value for parts
+that must go first — `Combat`, `Render`, `Body`, `Inventory` and `Brain` all use it.
+
+### 52.3 The message
+
+Vanilla prints `You gain N XP!` and *then* sends `AwardedXPEvent`, so the annotation lands as a second
+line — `(Base: 40 | Bonus: 24)` — with nothing suppressed and no vanilla code replaced. Mura folded
+both into one line, which is not available without owning the award, and owning the award is the fork
+this avoids.
 
 ## Appendix A — every merged vanilla melee weapon
 

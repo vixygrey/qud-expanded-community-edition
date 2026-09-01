@@ -1,4 +1,4 @@
-# Qud Expanded Community Edition
+﻿# Qud Expanded Community Edition
 
 A community-maintained fork of **[Caves of Qud Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=1134036260)** by **Mura**.
 
@@ -62,7 +62,7 @@ rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Twenty-seven options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+Twenty-eight options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
 the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
 have that — nobody should need to swallow the whole mod to get one part of it.
 
