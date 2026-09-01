@@ -16,6 +16,33 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** `typos` v1.49.0 → v1.49.1, in both places it is pinned.
+
+  A one-word patch release: it stops correcting the brand name `HashiCorp`. That is strictly *fewer*
+  corrections, so it cannot turn the spelling gate red — which is the thing worth establishing,
+  because a dictionary bump is the one dependency update that can fail a tree nobody has touched.
+  The rest of the range is a Rust toolchain bump, an internal refactor and README links.
+
+  **The second file is the find.** `typos` is pinned twice — the action `ci.yml` runs, and the hook
+  in `.pre-commit-config.yaml` — and Dependabot raises only the first. Across every pull request it
+  has opened on this repository, this is the only one that mentions typos at all, so the bump as
+  filed would have left the two dictionaries a version apart. That is the same defect the `ruff`
+  pin already carries a comment about, in a tool where nobody had noticed it. Both typos pins carry
+  one now, and the fuller note sits beside the action, where the bump lands.
+
+  It is not theoretical, and it caught me writing this entry: naming `HashiCorp` above failed the
+  v1.49.0 hook while passing the v1.49.1 action. One brand name is a small consequence. A gate that
+  disagrees with the hook a contributor just ran is not, and that is what I would have shipped.
+
+  Verified the way #110 established: all 17 hooks that run by default, against the whole tree, on
+  the new versions. Every one passes, **nothing was modified**, and the byte-order-mark count is
+  unchanged at 20 — which matters because the mod's XML depends on those marks and a hook that
+  stripped them would break the mod quietly. I checked the pin as well as the version: `v1.49.1` is
+  an annotated tag, so it dereferences twice before reaching a commit, and the commit it reaches is
+  the SHA now in the workflow. The `# v1.49.1` comment beside it proves nothing on its own.
+
 ## [2.12.0] - 2026-09-01
 
 ### Fixed

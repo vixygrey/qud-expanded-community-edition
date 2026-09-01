@@ -135,7 +135,13 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: typos
-        uses: crate-ci/typos@8a48f81b6c64dcfea44b3633223084c4be58ac5f # v1.49.0
+        # Must match the crate-ci/typos rev in .pre-commit-config.yaml. Dependabot raises this pin
+        # under the `github-actions` ecosystem and has never raised the hook, so bumping typos is a
+        # two-file change nothing will do for you - and if the two drift, this job's dictionary
+        # disagrees with the hook a contributor just ran. #715 is where that happened: v1.49.1
+        # stopped correcting `HashiCorp`, and the changelog entry naming the word failed the hook
+        # while passing here.
+        uses: crate-ci/typos@a8168dc2984a9e2352f183ffe788f0f23a300389 # v1.49.1
         with:
           config: .typos.toml
 
