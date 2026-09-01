@@ -4036,3 +4036,58 @@ to ask for it. And
 is what the port turned out to need: `IXPEvent.TierScaling` is a public flag, read by vanilla's
 `Experience` part, that **nothing in the game ever sets false** — the switch for replacing exactly
 the behaviour the shadowing mod was trying to replace.
+
+## The index is for reading first, and I keep using it to confirm afterwards
+
+`docs/WIKI.md` exists because I asked for it, and this file already carries one entry about not
+reading it — [`I built the reference, then did not read it`](#i-built-the-reference-then-did-not-read-it),
+written after I re-derived `<mixin>` out of the decompiled loader that `Modding:Objects` documents
+nine times. That entry ends with the instruction: **read Freehold's page on it before reading the
+assembly.**
+
+I did it the other way round twice more in a single session, and the second time was after being
+asked to check the wiki.
+
+**#775.** I read `ModManager.ResolveType`'s body, traced its 87 call sites, and built a two-assembly
+probe to measure the resolution order — good work, and all of it about a mechanism
+[`Modding:Compatibility`](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) exists to describe.
+
+**#793.** I read `WorldFactory.LoadWorldsNode`, established that a same-named cell is replaced
+wholesale rather than merged, and confirmed it by checking that `LoadCellNode` always constructs a new
+blueprint. [`Modding:Worlds`](https://wiki.cavesofqud.com/wiki/Modding:Worlds) says it in one line:
+*"Cell nodes are completely overwritten if they have a matching Name to one that already exists in the
+game files."* Its table also documents the `-` prefix that removes a world builder, which I found by
+reading a `foreach` and had no idea to look for.
+
+> **The order is the whole lesson, and getting the right answer hides it.** Both readings were
+> correct, so nothing failed and nothing prompted a second look. What the assembly cannot tell you is
+> *what to go and read* — it answers the question you already knew to ask, while the page is
+> organised around the questions somebody else knew to ask. `Priority` on a `<mixin>` was the first
+> example; the `-` builder removal is the second, and neither is discoverable from the data.
+
+**And the page is quicker.** One `curl` with a browser user agent and a grep for `merge|override|
+existing` answered #793's open question in about ten seconds. The assembly trace that reached the
+same answer took several passes through three methods.
+
+**What makes this recur is that reading the assembly feels like the rigorous choice**, and this
+repository's own rules encourage it — `AGENTS.md` says to verify claims about Qud against the game's
+own files, and the wiki is a secondary source that loses to the assembly wherever they disagree. All
+true, and none of it is an argument for reading the assembly *first*. The correction is one word:
+the wiki tells you **what the mechanism is**, the assembly tells you **what this build does**, and
+you want the first before you can ask for the second.
+
+The practical form, which is cheap enough to have no excuse:
+
+```bash
+UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+curl -s -A "$UA" "https://wiki.cavesofqud.com/index.php?title=Modding:Worlds&action=raw"
+```
+
+`action=raw` gives wikitext rather than HTML, which greps far better than a rendered page. The browser
+user agent is not decoration — the wiki answers **403** to an unrecognised one, so `WebFetch` and a
+bare `curl` both bounce, which is recorded at the end of `docs/WIKI.md` and is its own small instance
+of this entry's problem.
+
+Related: [`my design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
+is the same optimism aimed at the game rather than at the documentation — there I assume a mechanism
+is missing, here I assume its description is.
