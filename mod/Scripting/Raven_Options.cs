@@ -90,6 +90,8 @@ namespace QudExpandedCE
 
         public const string FatigueID = "OptionQudExpandedCEFatigue";
 
+        public const string XPCurveID = "OptionQudExpandedCEXPCurve";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -731,6 +733,16 @@ namespace QudExpandedCE
         /// player and simply stops mattering.
         /// </remarks>
         public static bool Fatigue => Enabled(FatigueID, "No");
+
+        /// <summary>True when experience scales on the gap in tiers.</summary>
+        /// <remarks>
+        /// Read live on every award, so this is a toggle in both directions with no restart: off,
+        /// <c>Vixy_XPCurve</c> leaves <c>TierScaling</c> alone and vanilla's own curve applies.
+        /// Off by default under charter rule 6 — every tier this changes pays <em>more</em> than
+        /// vanilla, so it grants levelling speed and no content, which is the exception that rule
+        /// reserves for staying off.
+        /// </remarks>
+        public static bool XPCurve => Enabled(XPCurveID, "No");
 
         private static void ApplyChipSlots()
         {

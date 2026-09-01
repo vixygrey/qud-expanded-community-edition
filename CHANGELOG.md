@@ -18,6 +18,29 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Experience follows the gap in tiers** (#792).
+
+  Off by default. What a kill pays now depends on how far above or below me it was: something a tier
+  over me pays a tenth more and three tiers over pays half again, while punching down tapers more
+  gently than vanilla — two tiers under me pays a third rather than a tenth. **Three tiers under still
+  pays nothing**, because that floor is what stops me farming trivia at level thirty, and it is
+  vanilla's on purpose.
+
+  The design is Mura's, from the Experience Curve sub-mod. **The implementation could not be**, and
+  that is the part worth saying: that mod declares a class with vanilla's own name and relies on type
+  resolution preferring its copy. It does not, and never has — so its C# has never run for anybody who
+  installed it. The measurement is in #775.
+
+  What replaces it is smaller than what it replaces. `IXPEvent.TierScaling` is a flag vanilla's own
+  experience part reads and **nothing in the game ever sets false**, so one part switches it off,
+  writes the amount, and leaves vanilla to do the clamping, the multiplier, the award and the party
+  pass-down. Only the curve is mine. The sub-mod's whole-file copy had already drifted two behaviours
+  behind vanilla with nothing able to show it, which is the cost this shape does not pay.
+
+  One correction carried across deliberately: Mura's comment says three tiers up pays ×1.3 and his
+  arithmetic says ×1.6. The code is what shipped and what he tuned against, so ×1.6 is what I built —
+  written down in three places, because the comment is the more persuasive of the two.
+
 - **(internal)** `pin-parity` fails a build where a tool's two pins disagree (#787).
 
   `ruff` and `typos` are each pinned twice — once in `ci.yml`, once in `.pre-commit-config.yaml` —
