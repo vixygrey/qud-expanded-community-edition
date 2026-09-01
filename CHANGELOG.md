@@ -18,6 +18,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Carrying a fortune attracts attention** (#189). Off by default.
+
+  Carry enough of value and, rarely, somebody takes an interest the first time I walk somewhere new:
+  a raiding party who wants it off me, or — about as often — a trader who sought me out because of
+  what I am carrying, and who arrives with stock to sell.
+
+  **The decision is whether to carry it or cache it**, and caching is genuinely safe: a zone is
+  written to disk rather than discarded, so anything left in a chest stays there. This is meant to
+  give my storage a purpose beyond tidiness, not to punish me for finding things.
+
+  **What the fortune is made of decides who turns up.** Mostly ancient tech draws the Putus Templar
+  and the Mechanimists, and on the good days a gunsmith or a grenadier. Mostly treasure draws the
+  Issachari, and a jeweler or a gemcutter. Nobody robs me who does not already want me dead — mend
+  things with the Templar and they stop coming.
+
+  **The trader is the part I built first**, because it is the part that gets cut. Vanilla wrote its
+  own version of it — a creature drawn by your glimmer that turns up to talk rather than to fight —
+  and then never called it from anywhere. Across the whole of Qud's only notoriety system, the number
+  of shipping encounters where being noticed pays rather than costs is zero. I would rather not
+  repeat that.
+
 - **Kill enough of one people and they send someone** (#190). Off by default.
 
   Kill five hundred of one faction and, rarely, somebody arrives about it: a named champion of

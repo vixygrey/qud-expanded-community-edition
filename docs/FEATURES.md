@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 30 options (§13)
+│   ├── Options.xml             # 31 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 83 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 84 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7210,6 +7210,113 @@ makes counting possible at all.
 never to the player — which is why `XRL.PsychicHunterSystem` must be a system, since it acts *before*
 the player is placed. A hunter needs the player placed first, so `EnteredCellEvent` on a part is both
 cheaper and more correct. `Vixy_TacticsWary` is this fork's precedent for the hook.
+
+---
+
+## 55. Carrying a fortune attracts attention (`Vixy_Hoard`)
+
+Off by default. Carry enough of value and, rarely, somebody takes an interest the first time I walk
+somewhere new — a raiding party who wants it off me, or about as often a trader who sought me out
+because of what I am carrying, and arrives with stock.
+
+Item **A2** of `docs/DESIGN_difficulty_systems.md`, split out as #189. Its §0 governs: it scales with
+player power rather than depth or elapsed time, it ships behind an option defaulted off, and it has
+to *sometimes* pay rather than only cost (#644).
+
+**The decision is carry or cache, and caching is genuinely safe.** `ZoneManager.FreezeZone`
+serialises a zone to disk rather than discarding it, and the only path that discards one —
+`DeleteZone` — is reachable solely from the `rebuild`/`flushandrebuild` wish commands. A homestead
+cache persists, so this asks a real question rather than setting a trap.
+
+### 55.1 The axis is what I carry, and nothing had to be built to measure it
+
+`GameObject.ValueEach` runs `GetIntrinsicValueEvent`, then `AdjustValueEvent`, then
+`GetExtrinsicValueEvent` — and both `Inventory` and `Body` answer that last one by adding each
+contained or worn object's own `Value`, which recurses into containers. So asking the player for
+`.Value` already totals everything carried and worn. It is a property read, not a sum.
+
+**Value rather than artifacts, and the margin is not close.** The obvious alternative is
+`GiveArtifact.IsArtifact`, which this fork already uses in `Vixy_GiveArtifact` (§27). But it requires
+a `TinkerItem`, and the most valuable objects in the game do not carry one:
+
+| item | value | passes `IsArtifact`? |
+|---|---:|---|
+| Otherpearl | 33,333 | **no** |
+| Gimeleth | 12,000 | **no** |
+| The Kesil Face | 10,000 | **no** |
+| Light Circles (×7) | 7,500 each | **no** |
+| Nullray Pistol | 1,200 | yes |
+
+Of the top fifty items by value, **69% is invisible to `IsArtifact`**. It measures ancient tech; this
+feature is about a fortune, and the treasure end is exactly the half it cannot see.
+
+**Water counts, at one per dram**, through `LiquidVolume`. Two thousand drams is about one Nullray
+Pistol — bounded, and correct for a setting where water is the currency.
+
+### 55.2 So the artifact predicate chooses *who*, not *whether*
+
+Mechanimists venerate ancient tech and the Putus Templar want it destroyed, so a hoard made mostly of
+artifacts draws different attention from one made mostly of treasure. That splits the two nouns
+cleanly instead of making one axis do both jobs.
+
+It is measured as a **share of value, not a count**, because a count cannot tell one Otherpearl from
+forty grenades. `GiveArtifact.IsArtifact` is `public static`, so the definition of *artifact* comes
+from vanilla and cannot drift between this fork's two answers to that question — it would be a real
+defect for the hoard index to count something the give-artifact picker then declined to offer.
+
+| the hoard is mostly | raiders | trader |
+|---|---|---|
+| ancient tech | Putus Templar, Mechanimists | gunsmith, armorer, grenadier, disk merchant |
+| treasure | Issachari | jeweler, gemcutter, apothecary |
+
+**Nobody raids me who does not already want me dead.** The Templar open at -700 reputation and the
+Issachari at -475, both past `Brain.GetFeelingLevel`'s -10 line from the start — but the
+**Mechanimists open at 0**. Sent unfiltered they would arrive perfectly friendly and stand there
+while the message announced they had come for my hoard, which is §54.4's envoy problem wearing the
+other face. Filtering before the choice rather than forcing hostility after keeps the world's own
+answer: a faction I am on good terms with does not rob me, and mending things with the Templar stops
+them coming.
+
+Raiders are ordinary faction members at my level give or take two, two or three of them — not
+`HeroMaker` heroes. §54 sends one named champion because one *is* the event there; here the fiction
+is a raiding party, and a fight I can lose is not the same as a wall.
+
+### 55.3 The trader, which is the part vanilla never shipped
+
+**This is §0's fourth constraint, and it is the piece most at risk of being cut** — so I built it
+first.
+
+Vanilla wrote its own version of this valve. `PsychicHunterSystem.CreateExtradimensionalSoloDeviant`
+clears allegiance, joins a faction, attaches a conversation and never sets `Hostile` — a creature
+drawn by your glimmer that turns up to *talk*. **And nothing calls it.** It appears once in the whole
+assembly, its own definition, against fifteen mentions of the three hostile creators beside it. So
+across the entirety of Qud's only notoriety system, the number of shipping encounters where notoriety
+pays rather than costs is **zero**.
+
+Here it is a **merchant blueprint rather than dialogue of my own**. `BaseMerchant` already carries a
+`GenericMerchant` conversation, the neutral `Merchants` faction and a `GenericInventoryRestocker`, so
+one arrives able to trade with stock in hand. Writing dialogue would have taken longer and produced
+something worse.
+
+They are skipped if I have somehow made an enemy of the Merchants faction, since a trader who will
+not talk to me is not an opportunity.
+
+### 55.4 When it rolls
+
+**3% raiders, and only if that misses, 2% trader** — so the two can never arrive together and the
+effective trader rate is 2% of the 97% that miss, 1.94% against 3%. Near enough to even that the
+system is not a difficulty tax with a story attached. §54 is the deliberately lopsided one; this is
+not.
+
+Rolled on the **first arrival in a zone**, using the same per-zone flag mechanism as §54 under its own
+key, so the two features share the idiom without either knowing about the other. The zone is retired
+before the threshold is even checked — otherwise every zone I walked through while poor would stay
+armed, and coming into money would set off everywhere I had already been the next time I passed
+through.
+
+Threshold is **15,000** carried value: about twelve Nullray Pistols, or two and a half Zetachrome
+Lunes, or the Otherpearl by itself. Set from blueprint data rather than from a real character, so
+treat it as a starting position.
 
 ---
 

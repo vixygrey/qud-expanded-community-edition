@@ -108,6 +108,8 @@ namespace QudExpandedCE
 
         public const string FactionChampionsID = "OptionQudExpandedCEFactionChampions";
 
+        public const string CarriedHoardID = "OptionQudExpandedCECarriedHoard";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -769,6 +771,8 @@ namespace QudExpandedCE
         /// document, and this one makes the game harder in a way nobody asked for.
         /// </remarks>
         public static bool FactionChampions => Enabled(FactionChampionsID, "No");
+
+        public static bool CarriedHoard => Enabled(CarriedHoardID, "No");
 
         private static void ApplyChipSlots()
         {

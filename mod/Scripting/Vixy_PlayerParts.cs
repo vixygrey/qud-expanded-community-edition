@@ -111,6 +111,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Fatigue>();
                 player.RequirePart<Vixy_XPCurve>();
                 player.RequirePart<Vixy_Notoriety>();
+                player.RequirePart<Vixy_Hoard>();
             }
         }
     }
