@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 80 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 81 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6546,6 +6546,22 @@ Two things the stamp deliberately does not do. It is not updated when the part i
 not the current player — that staleness *is* the bill. And it **is** updated while the option is off,
 so turning fatigue back on does not charge me for the time it was off.
 
+### 51.3c The bands only speak on the way up
+
+One message per band crossed, and **only while getting worse**. Every line is written for a worsening —
+*"your eyes are heavy"*, *"you cannot keep this up"*, *"you are going to fall down"* — and each of the
+last three carries `=WEIRDMARKOVSENTENCE=` on top.
+
+The first version announced any change of band, up or down. Found in play: an ambush cut a sleep short
+somewhere between Exhausted and Weary, and waking gave *"Your eyes are heavy, and the edges of things
+will not hold still"* — a deterioration message delivered at the exact moment the rest had helped, with
+the unreliability flavour riding along just as I became more reliable. It read as the system being
+broken, which is fair, because it was.
+
+The stamp still updates in both directions, so climbing back into a band announces it again. Nothing is
+said coming down: §51.5d's readout already shows the improvement, and a survival timer that congratulates
+me is a different feature.
+
 ### 51.4 Only voluntary sleep rests you
 
 `Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,
@@ -6569,6 +6585,13 @@ to invent one.
 `Until rested` sits first, because it is what most nights want. Then vanilla's three, in vanilla's
 order, so the muscle memory survives. Escape backs out and costs nothing.
 
+**Every option carries its round count, and that part is not vanilla's.** `Calendar.GetTime` returns
+Qud's own time-of-day names — *Harvest Dawn*, *Waning Salt Sun*, *Jeweled Dusk* — which is verbatim what
+a bedroll says and reads as flavour rather than as an answer. It only tells me how long if I already
+know what time it is, which at the moment I decide to lie down is precisely what I do not know. So each
+line ends `{{K|(150 rounds)}}`, and *Until rested* carries its own computed figure. Borrowing the prompt
+was right; inheriting its one weakness was not.
+
 **A timed choice is a ceiling, not a span.** `Rest` ends the sleep the moment fatigue reaches zero, so
 "until 9:00" means "no later than 9:00" — waking earlier because I am rested is the good outcome
 rather than a broken promise.
@@ -6582,11 +6605,23 @@ waking early, in both senses.
 loud exposed. A full meter on open ground drains at 4 a turn and needs about 250 of them; the old
 `Stat.Random(200, 320)` woke me unrested on roughly half its rolls. It never showed, because nothing
 had promised otherwise. `TurnsToRest` now derives the bound from the drain, and both it and `Rest`
-spend the same `DrainPerAction`, so the budget and the spending cannot come apart again.
+spend the same `DrainHundredths`, so the budget and the spending cannot come apart again.
 
-Ambush is still rolled per sleep rather than per round, so a nap carries the same risk as a night.
-That is deliberate: the decision the feature is about is *where* I lie down, and pricing naps
-separately would turn it into a decision about how long.
+**A short sleep is a safer sleep, and I had this backwards in writing.** This paragraph used to say
+ambush was rolled once per sleep, so a nap carried the same risk as a night. It is not: `RollAmbush` is
+called from `Rest` on **every action**, and the per-sleep odds in §51.5 are compounded from a per-action
+rate. Same coupling as #777 — how long a sleep takes decides how many times the dice come out.
+
+| sleeping on open ground | actions | found |
+|---|---:|---:|
+| from a full meter | 250 | 60% |
+| from 600 | 150 | 43% |
+
+So going to bed before the meter fills costs about a third less risk. **That is kept deliberately**, now
+that it is understood. It rewards sleeping regularly rather than running to empty, which is what a
+survival timer should want, and it falls out of one honest mechanism rather than a rule that would have
+to be written and tuned. The decision the feature is about is still *where* I lie down; this adds a
+second, smaller one about *when*, at no cost in machinery.
 
 ### 51.5 Where you sleep is the decision, and an ambush needs a culprit
 
@@ -6817,6 +6852,45 @@ would leave that decision unlit for the whole first band.
 serialisable class and no per-band churn. It carries no state: the band is derived from the property bag
 on every refresh, so the word cannot disagree with the meter. Turning the option off removes it, rather
 than leaving *"exhausted"* on screen for a system that is no longer running.
+
+### 51.5e `wish vixyfatigue`, because the test plan could not be carried out
+
+**I wrote checks nobody could perform.** Three of the fatigue regression checks are claims about a
+number — that a world-map crossing charges once rather than twice, that a domination bills once on
+return, that turning the option off and on costs nothing. §51.5d shows four words, and 126 against 252
+reads as the same word. None of those was executable. I had checked the mechanism and not the consumer,
+this time for my own QA.
+
+`wish vixyfatigue` prints what no UI shows: the value and band, both carried remainders, where I am
+standing with its rest quality and burden factor, the drain per action and actions to rest, the ambush
+rate — and the two stamps.
+
+**The stamps are the point.** Single-charging is not a claim about the meter, it is a claim about
+`Vixy_FatigueChargedTurn` and `Vixy_FatigueOnWorldMapSince`. Printing those against the current turn,
+with the gap between them, answers in one line what watching the bands cannot answer at all.
+
+`wish vixyfatigue:600` sets the meter, and that is what makes the rest of the plan affordable. Several
+checks begin *"reach Exhausted"*, which is about **2,900 actions** of unhurried play — not a test, an
+afternoon.
+
+**Wishes reach mods by design.** `WishManager.UpdateCommandCollection` calls
+`ModManager.GetMethodsWithAttribute(typeof(WishCommand), typeof(HasWishCommand))` — `ModManager`, so
+mod assemblies are scanned deliberately, the same way `[PlayerMutator]` is found. Two overloads share
+one command name because the dispatcher builds `^cmd$` for a no-argument handler and
+`^cmd(?::|\s+)(.*)$` for one taking a string; `SoundManager.ShowSoundLog` is vanilla doing exactly
+this. Rule 5 is untouched — no file I/O, no network, no reflection of my own, no Harmony.
+
+**The report copies.** `Popup.ShowBlockWithCopy` is the game's own affordance — a Copy button calling
+`ClipboardHelper.SetClipboardData`, the same one the world-seed display uses — and the copied text is
+stripped of colour markup, because the point of copying a diagnostic is pasting it somewhere that is
+not Qud.
+
+`XRLCore.SetClipboard` is emphatically *not* the API for that, despite the name: its entire body is
+`UnityEngine.Debug.LogError(Msg)`. `wish where?` calls it, and has therefore never put anything on
+anyone's clipboard. `docs/LESSONS.md` records it as the fifth vanilla defect.
+
+Namespaced rather than plain `fatigue`, because wish names are one global namespace shared with every
+other installed mod.
 
 ### 51.6 State lives in the property bag, deliberately
 

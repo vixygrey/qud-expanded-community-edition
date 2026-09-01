@@ -64,6 +64,9 @@ recorded because contributors need them, not because subscribers do.
   somebody took points for at character creation. And it does not stop me collapsing from exhaustion:
   it slows the clock, it does not buy me out of the end of it.
 
+- **(internal)** `wish vixyfatigue` reports the fatigue meter, its stamps and every rate derived from
+  where you are standing; `wish vixyfatigue:600` sets it. Invisible unless typed (#782).
+
 - **You can be made to sleep** (#179).
 
   Go about three unhurried days without sleeping and you tire; fight for those days and you get
@@ -98,12 +101,16 @@ recorded because contributors need them, not because subscribers do.
   Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
   rests you.
 
+  Tiredness only speaks up when it is getting worse. Being woken part-way through a sleep used to
+  greet you with "your eyes are heavy" — a warning delivered at the moment the rest had helped.
+
   {{y|You can see how tired you are.}} Tired, weary, exhausted, collapsing — one word on the active
   effects line, next to burdened, in colours that climb the way hunger's do. Until now the only thing
   that ever told you was a message as you crossed each threshold, and messages scroll away.
 
   {{y|How long you sleep is yours to choose.}} The same question a bedroll asks, with the same three
-  times and one more: until rested. Pick a time and you wake at it or sooner, whichever comes first,
+  times and one more: until rested. Each one says how many rounds it is, which a bedroll does not —
+  "until Harvest Dawn" only tells you how long if you already know what time it is. Pick a time and you wake at it or sooner, whichever comes first,
   because being rested always ends a sleep early. Wake on the clock with the meter still up and you
   get no dream — waking early is waking early.
 
