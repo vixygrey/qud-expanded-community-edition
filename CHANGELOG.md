@@ -78,6 +78,11 @@ recorded because contributors need them, not because subscribers do.
   Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
   rests you.
 
+  {{y|How long you sleep is yours to choose.}} The same question a bedroll asks, with the same three
+  times and one more: until rested. Pick a time and you wake at it or sooner, whichever comes first,
+  because being rested always ends a sleep early. Wake on the clock with the meter still up and you
+  get no dream — waking early is waking early.
+
   {{y|Sleep the whole way through and you dream.}} Mostly of something you actually did, told back
   to you in the voice the sultan histories use - grander than it was, and not always accurate.
   Sometimes of a place you have not been, and you wake knowing where it is. Being woken costs you

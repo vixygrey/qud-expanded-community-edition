@@ -6557,6 +6557,37 @@ before it can open.
 Note `forced: true` does *not* mean involuntary. It bypasses the `CanApplySleep` refusals, and `Bed`
 passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to read backwards.
 
+### 51.4a How long I sleep is mine to choose (#776)
+
+**The command used to give me no say, and a bedroll already does.** `Bed.cs` line 337 opens
+`Popup.PickOption("How long would you like to sleep?", …)` with three fixed spans — 150, 375 and 600
+rounds — each labelled with the clock time I would wake at, off `Calendar.GetTime`. Anyone who has
+used a bedroll knows that dialogue. My `Sleep` command silently applied `Stat.Random(200, 320)`
+instead, which is *less* control than the bedroll in my own pack. The fix is to borrow the prompt, not
+to invent one.
+
+`Until rested` sits first, because it is what most nights want. Then vanilla's three, in vanilla's
+order, so the muscle memory survives. Escape backs out and costs nothing.
+
+**A timed choice is a ceiling, not a span.** `Rest` ends the sleep the moment fatigue reaches zero, so
+"until 9:00" means "no later than 9:00" — waking earlier because I am rested is the good outcome
+rather than a broken promise.
+
+**A timed sleep that ends on the clock does not dream, and nothing had to be written for that.**
+`Vixy_Dream.OnFullSleep` fires from one place, the moment fatigue reaches zero undisturbed. If the
+duration runs out first, `Asleep` removes itself and that branch is never reached. Waking early is
+waking early, in both senses.
+
+**"Until rested" could not have kept its word under the old cap**, which is what writing the label out
+loud exposed. A full meter on open ground drains at 4 a turn and needs about 250 of them; the old
+`Stat.Random(200, 320)` woke me unrested on roughly half its rolls. It never showed, because nothing
+had promised otherwise. `TurnsToRest` now derives the bound from the drain, and both it and `Rest`
+spend the same `DrainPerAction`, so the budget and the spending cannot come apart again.
+
+Ambush is still rolled per sleep rather than per round, so a nap carries the same risk as a night.
+That is deliberate: the decision the feature is about is *where* I lie down, and pricing naps
+separately would turn it into a decision about how long.
+
 ### 51.5 Where you sleep is the decision, and an ambush needs a culprit
 
 **An ambush requires something already in the zone that could come and find you.** No hostile
