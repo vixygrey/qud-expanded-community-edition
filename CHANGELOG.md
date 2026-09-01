@@ -18,6 +18,18 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Sleeping in my armour rests me worse** (#780).
+
+  It was always meant to and never once did — the check read a value nothing in the mod ever wrote, so
+  a full pack cost me nothing at all. It costs me now, on a slope rather than a cliff: a little over
+  half loaded and I lose a twentieth of my rest, near capacity and I lose a quarter. The game says so
+  when I lie down, because a penalty that size ought to be something I notice rather than something I
+  work out.
+
+  And it costs twice over, because the longer I lie there the more chances something has to find me.
+  Heavily burdened on open ground, that is the difference between three sleeps in five going wrong and
+  five in seven.
+
 - **Sleeping somewhere sheltered finally means something** (#777).
 
   Finding a doorway was supposed to rest me half again as fast as lying in the open. It never did —

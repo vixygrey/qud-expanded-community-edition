@@ -6631,6 +6631,40 @@ actions rather than 250 is 25%, not the 30% it was deliberately set to. So the p
 always claimed to be — a doorway is worth finding for the reason the table gives, and for no accidental
 second reason.
 
+### What I am carrying, and a penalty that had never once applied (#780)
+
+Sleeping in my armour rests me worse. It was supposed to already: `RestQuality` read
+`GetIntProperty("Vixy_BurdenBand")`, and **that string appeared exactly once in the whole
+repository — on the line reading it.** Nothing ever wrote it, so the branch was never taken. The band
+was two functions away the entire time, in `Vixy_Burdened.BandFor`.
+
+Graded now, rather than the single threshold the dead line had, and applied to the hundredths rather
+than the tenths — `tenths * 3 / 4` truncates 15 to 11, 12 to 9 and 10 to 7, which is §51.5's own trap
+one layer down, waiting for the moment anyone made the code run.
+
+| load | band | rest |
+|---|---|---:|
+| under 50% | — | 100% |
+| 50%+ | lightly burdened | 95% |
+| 75%+ | encumbered | 85% |
+| 90%+ | heavily burdened | 75% |
+
+**It keys on load, not on the burden option.** `Vixy_Burdened.BandFor` is a pure function of carried
+weight; only the *effect* is option-gated. So this reaches anyone running fatigue, whichever way they
+set graded burden — which is the right boundary, because "carrying a lot rests me worse" is a fatigue
+opinion rather than a burden one.
+
+And because the ambush roll fires every action asleep, the cost lands twice. Heavy on open ground:
+
+| | drain | actions | found |
+|---|---:|---:|---:|
+| unburdened | 4.00 | 250 | 60.4% |
+| heavily burdened | 3.00 | 333 | **70.9%** |
+
+A quarter less rest is a third more actions lying there. That is the same lever this section is about,
+and it is why the sleep menu now says *"You do not sleep well under all this"* — a penalty this size
+that nothing mentions is one I could only find with arithmetic.
+
 **A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub — a
 `CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork invented and
 has to maintain: **Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra, the Arrivarium.**

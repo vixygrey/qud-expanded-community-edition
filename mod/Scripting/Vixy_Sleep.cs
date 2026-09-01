@@ -92,10 +92,10 @@ namespace XRL.World.Parts
                 _ => 10,
             };
 
-            // Sleeping in your armour rests you less. Heavily burdened is the burden mod's band 3;
-            // it is off by default, so this is a bonus interaction rather than load-bearing. #176.
-            if (Player != null && Player.GetIntProperty("Vixy_BurdenBand") >= 3) tenths = tenths * 3 / 4;
-
+            // Load used to be folded in here, against a `Vixy_BurdenBand` property that nothing ever
+            // wrote - so it never applied at all. It now lives in `BurdenFactor`, applied by
+            // `DrainHundredths`, because this function answers "where am I" and the message in
+            // `Attempt` reads it for exactly that. #780.
             return Math.Max(1, tenths);
         }
 
@@ -241,6 +241,17 @@ namespace XRL.World.Parts
                 : (quality >= 12 ? "You find a sheltered spot and lie down." : "You lie down on the bare ground.");
             MessageQueue.AddPlayerMessage(where);
 
+            // A quarter less rest that nothing mentions is a penalty the player can only find by
+            // arithmetic. Say it once, at the moment it starts costing something.
+            int band = Vixy_Burdened.BandFor(Vixy_Burdened.LoadPercent(Player));
+            if (band >= Vixy_Burdened.Light)
+            {
+                MessageQueue.AddPlayerMessage(
+                    "{{y|You do not sleep well " + (band >= Vixy_Burdened.Heavy
+                        ? "under all this."
+                        : "with so much strapped to you.") + "}}");
+            }
+
             Player.ForceApplyEffect(new Asleep(duration, forced: true, quicksleep: true, Voluntary: true));
         }
 
@@ -322,7 +333,50 @@ namespace XRL.World.Parts
         /// </remarks>
         public static int DrainHundredths(GameObject Player)
         {
-            return Math.Max(1, 40 * RestQuality(Player));
+            return Math.Max(1, 40 * RestQuality(Player) * BurdenFactor(Player) / 100);
+        }
+
+        /// <summary>
+        /// What fraction of normal rest I get, as a percentage, for what I am carrying.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>This existed and had never once run.</b> `RestQuality` read
+        /// <c>GetIntProperty("Vixy_BurdenBand")</c>, and that string appeared exactly once in the
+        /// whole repository - on the line reading it. Nothing wrote it, so the branch was never taken
+        /// and sleeping in my armour has always rested me exactly as well as sleeping without it.
+        /// The band was two functions away the entire time. #780.
+        /// </para>
+        /// <para>
+        /// <b>It keys on load rather than on the burden option.</b> `Vixy_Burdened.BandFor` is a pure
+        /// function of carried weight - only the *effect* is option-gated - so this reaches anyone
+        /// who turned fatigue on, whether or not they wanted graded burden. That is the right
+        /// boundary: "carrying a lot rests me worse" is a fatigue opinion, not a burden one.
+        /// </para>
+        /// <para>
+        /// <b>Graded rather than one threshold, and applied in hundredths.</b> The old line was
+        /// <c>tenths * 3 / 4</c>, which truncates 15 to 11, 12 to 9 and 10 to 7 - #777 one layer
+        /// down, waiting to happen the moment anyone made the code run. Multiplying the hundredths
+        /// keeps every band distinct at every tier.
+        /// </para>
+        /// <para>
+        /// <b>The ambush odds move with this and that is not a second effect.</b> The roll fires
+        /// every action asleep, so a quarter less rest is a third more actions lying there: heavy on
+        /// open ground goes from 60% found to 71%. The rest penalty and the risk are the same lever,
+        /// as §51.5 sets out.
+        /// </para>
+        /// </remarks>
+        public static int BurdenFactor(GameObject Player)
+        {
+            if (Player == null) return 100;
+
+            return Vixy_Burdened.BandFor(Vixy_Burdened.LoadPercent(Player)) switch
+            {
+                Vixy_Burdened.Heavy => 75,
+                Vixy_Burdened.Encumbered => 85,
+                Vixy_Burdened.Light => 95,
+                _ => 100,
+            };
         }
     }
 }

@@ -3869,6 +3869,14 @@ extra rolls — pushing a tier tuned to 30% up to a real 29.5% by accident and, 
 drain, down to 25% by a second accident. The rest rate and the ambush rate were never two numbers.
 Fixing one silently retunes the other.
 
+**And there is a cheaper way to find the sibling of this bug.** The same feature carried a second dead
+path: `RestQuality` read `GetIntProperty("Vixy_BurdenBand")`, and that string occurred **once in the
+whole repository — on the line reading it**. Nothing wrote it, so "sleeping in your armour rests you
+less" had never once happened. A property key is a contract between two pieces of code that never
+reference each other, so nothing links them and no compiler complains; the check is a sweep for keys
+that are read and never written, which takes one script over `mod/` and came back with exactly one
+real hit across 79 scripting files. Worth running whenever a feature keeps state in the property bag.
+
 **The general shape, in three parts.**
 
 - **A fractional constant in an integer expression is a design decision that may not survive contact
