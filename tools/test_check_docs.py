@@ -1319,3 +1319,134 @@ class FileRows(unittest.TestCase):
             check_docs.check_file_rows(f, {})
         self.assertTrue(f.items)
         self.assertIn("heading not found", min(f.items)[1])
+
+
+def pin_findings(precommit: str, ci: str) -> list[tuple[str, str]]:
+    """Run check_pin_parity over a synthetic pair of config files."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        Path(root, ".github", "workflows").mkdir(parents=True)
+        Path(root, ".pre-commit-config.yaml").write_text(precommit, encoding="utf-8")
+        Path(root, ".github", "workflows", "ci.yml").write_text(ci, encoding="utf-8")
+        with chdir(root):
+            f = check_docs.Findings()
+            checked = check_docs.check_pin_parity(f)
+            return f.items, checked
+
+
+def hook_block(repo: str, rev: str, comment: bool = False) -> str:
+    note = "    # a note between the repo and its rev\n" if comment else ""
+    return f"  - repo: {repo}\n{note}    rev: {rev}\n    hooks:\n      - id: x\n"
+
+
+BOTH_HOOKS = hook_block(
+    "https://github.com/astral-sh/ruff-pre-commit", "v0.16.5"
+) + hook_block("https://github.com/crate-ci/typos", "v1.50.0")
+BOTH_CI = (
+    "jobs:\n"
+    "  python:\n"
+    "    steps:\n"
+    "      - run: pipx install ruff==0.16.5\n"
+    "  spelling:\n"
+    "    steps:\n"
+    "      - uses: crate-ci/typos@4d9c206a77c041268485162b8e2579ad7a5cb9a3 # v1.50.0\n"
+)
+
+
+class PinParity(unittest.TestCase):
+    """#787: ruff and typos are each pinned twice, and Dependabot moves one half at a time."""
+
+    def test_matching_pins_are_quiet(self) -> None:
+        found, checked = pin_findings(BOTH_HOOKS, BOTH_CI)
+        self.assertEqual(found, [])
+        self.assertEqual(checked, 2)
+
+    def test_a_drifted_pair_is_reported(self) -> None:
+        """The negative. This is #714 exactly: the hook moved and ci.yml did not."""
+        found, _ = pin_findings(
+            BOTH_HOOKS, BOTH_CI.replace("ruff==0.16.5", "ruff==0.16.4")
+        )
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0][0], "pin-parity")
+        self.assertIn("0.16.4", found[0][1])
+        self.assertIn("0.16.5", found[0][1])
+
+    def test_the_typos_half_drifts_the_same_way(self) -> None:
+        """#786, which moved the hook to v1.50.0 and left the action at v1.49.1."""
+        found, _ = pin_findings(BOTH_HOOKS, BOTH_CI.replace("# v1.50.0", "# v1.49.1"))
+        self.assertEqual(len(found), 1)
+        self.assertIn("typos", found[0][1])
+
+    def test_the_v_prefix_is_not_a_difference(self) -> None:
+        """One side writes v0.16.5 and the other 0.16.5; those are the same pin."""
+        self.assertEqual(pin_findings(BOTH_HOOKS, BOTH_CI)[0], [])
+
+    def test_a_comment_between_repo_and_rev_does_not_break_the_pairing(self) -> None:
+        """Both pinned tools carry exactly such a comment, added by #715 and #786."""
+        hooks = hook_block(
+            "https://github.com/astral-sh/ruff-pre-commit", "v0.16.5", comment=True
+        ) + hook_block("https://github.com/crate-ci/typos", "v1.50.0", comment=True)
+        found, checked = pin_findings(hooks, BOTH_CI)
+        self.assertEqual(found, [])
+        self.assertEqual(checked, 2)
+
+    def test_an_unreadable_ci_pin_is_a_finding_not_a_skip(self) -> None:
+        """A reworded pin must fail. A skip here is indistinguishable from a pass."""
+        found, _ = pin_findings(BOTH_HOOKS, BOTH_CI.replace(" # v1.50.0", ""))
+        self.assertEqual(len(found), 1)
+        self.assertIn("could not read the typos version", found[0][1])
+
+    def test_ci_pinning_one_tool_twice_at_odds_is_reported(self) -> None:
+        found, _ = pin_findings(
+            BOTH_HOOKS, BOTH_CI + "      - run: pipx install ruff==0.16.4\n"
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("more than one version", found[0][1])
+
+    def test_a_hook_that_lost_its_pin_is_reported(self) -> None:
+        found, _ = pin_findings(
+            hook_block("https://github.com/crate-ci/typos", "v1.50.0"), BOTH_CI
+        )
+        self.assertEqual(len(found), 1)
+        self.assertIn("no longer pins", found[0][1])
+
+    def test_an_unmapped_pinned_hook_is_reported(self) -> None:
+        """The anti-expiry half: a third pinned tool must not go quietly uncovered."""
+        hooks = BOTH_HOOKS + hook_block("https://github.com/example/newtool", "v1.2.3")
+        found, _ = pin_findings(hooks, BOTH_CI)
+        self.assertEqual(len(found), 1)
+        self.assertIn("example/newtool", found[0][1])
+
+    def test_a_deliberately_unpaired_hook_is_not_reported(self) -> None:
+        """gitleaks is the reason the map is explicit. The hook is gitleaks/gitleaks at v8 and
+        the workflow uses gitleaks/gitleaks-action at v3 - different repositories, independent
+        version lines. Pairing them by owner reports drift that is not there, for ever."""
+        hooks = BOTH_HOOKS + hook_block(
+            "https://github.com/gitleaks/gitleaks", "v8.30.1"
+        )
+        ci = BOTH_CI + (
+            "      - uses: gitleaks/gitleaks-action"
+            "@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0\n"
+        )
+        self.assertEqual(pin_findings(hooks, ci)[0], [])
+
+    def test_local_repos_are_not_pins(self) -> None:
+        """`- repo: local` declares no rev and must not be demanded one."""
+        hooks = BOTH_HOOKS + "  - repo: local\n    hooks:\n      - id: prettier-xml\n"
+        self.assertEqual(pin_findings(hooks, BOTH_CI)[0], [])
+
+    def test_a_missing_config_is_a_finding_not_a_pass(self) -> None:
+        """The vacuous case. No pins parsed means nothing was compared, and it must say so."""
+        found, checked = pin_findings("repos:\n", BOTH_CI)
+        self.assertEqual(checked, 0)
+        self.assertEqual(len(found), 1)
+        self.assertIn("declares no pinned repo", found[0][1])
+
+    def test_every_mapped_pair_is_present_in_the_real_repository(self) -> None:
+        """The positive control, against the tree rather than a fixture: the map must describe
+        this repository, or the check is comparing pins nothing here declares."""
+        root = Path(__file__).resolve().parent.parent
+        with chdir(root):
+            hooks = check_docs.precommit_pins()
+        for tool, (repo, _) in check_docs.PIN_PAIRS.items():
+            self.assertIn(repo, hooks, f"{tool} is mapped but {repo} is not pinned")

@@ -1007,6 +1007,152 @@ def check_required_checks(f: Findings) -> None:
             )
 
 
+PRECOMMIT_CONFIG = Path(".pre-commit-config.yaml")
+
+# A tool pinned in both places, and how to read the CI side of it.
+#
+# The map is explicit rather than derived, and the reason is `gitleaks`: the hook is
+# gitleaks/gitleaks at v8.30.1 and the workflow uses gitleaks/gitleaks-action at v3.0.0. Those are
+# different repositories on independent version lines, so any rule that pairs them by owner or by
+# prefix reports drift that is not there - and docs/LESSONS.md is clear that a guard firing on a
+# correct action teaches people to reach for the bypass.
+PIN_PAIRS = {
+    "ruff": (
+        "https://github.com/astral-sh/ruff-pre-commit",
+        r"pipx install ruff==([0-9][\w.]*)",
+    ),
+    "typos": (
+        "https://github.com/crate-ci/typos",
+        r"uses:\s*crate-ci/typos@[0-9a-f]{40}\s*#\s*v?([0-9][\w.]*)",
+    ),
+}
+
+# Pinned hooks with no CI counterpart to compare against. Each carries its reason, the way
+# required-checks makes an exemption a sentence somebody had to write rather than a silent omission.
+PIN_UNPAIRED = {
+    "https://github.com/pre-commit/pre-commit-hooks": (
+        "no CI counterpart - these hooks run only locally"
+    ),
+    "https://github.com/gitleaks/gitleaks": (
+        "ci.yml uses gitleaks/gitleaks-action, a different repository on its own version line - "
+        "v3 against the scanner's v8"
+    ),
+}
+
+
+def precommit_pins() -> dict[str, str]:
+    """Map each pinned pre-commit repo URL to its rev.
+
+    Regexes rather than a YAML library, for the same standard-library-only reason
+    workflow_jobs() gives. A `rev:` is matched against the most recent `- repo:` above it, so
+    comment lines between the two - which both pinned tools now carry - are stepped over rather
+    than breaking the pairing. `- repo: local` declares no rev and so never enters the map.
+    """
+    if not PRECOMMIT_CONFIG.is_file():
+        return {}
+    pins: dict[str, str] = {}
+    repo: str | None = None
+    for line in PRECOMMIT_CONFIG.read_text().splitlines():
+        m = re.match(r"\s*-\s*repo:\s*(\S+)", line)
+        if m:
+            repo = m.group(1)
+            continue
+        m = re.match(r"\s*rev:\s*(\S+)", line)
+        if m and repo is not None:
+            pins[repo] = m.group(1)
+            repo = None
+    return pins
+
+
+def check_pin_parity(f: Findings) -> int:
+    """A tool pinned twice must carry the same version in both places.
+
+    `ruff` and `typos` are each pinned in .github/workflows/ci.yml and in
+    .pre-commit-config.yaml, and Dependabot tracks the halves in separate ecosystems - the action
+    under `github-actions`, the hook under `pre-commit`. It raises one without the other, in either
+    order, and nothing ever raises both. While they disagree CI runs a different version of a
+    checker than the hook a contributor just ran.
+
+    Both pairs drifted the day this was written and neither was caught by anything mechanical.
+    The typos pair is the one that matters: it drifted with no comment and nothing watching, and
+    what surfaced it was luck - v1.49.1 stopped correcting one brand name, a changelog entry
+    happened to need that word, and the older hook rejected the sentence the newer action accepted.
+    Any other word in that release and both pull requests would have merged green. #787.
+
+    Scope is deliberately the two config files. A version written anywhere else - a tool's own
+    config, or prose - is out of reach here and stays that way, because a check that sweeps wider
+    than it can parse is how a skip starts reading as a pass.
+    """
+    hooks = precommit_pins()
+    if not hooks:
+        f.add(
+            "pin-parity",
+            f"{PRECOMMIT_CONFIG} declares no pinned repo - either it is missing or the format "
+            f"moved, and either way nothing below this line is being checked",
+        )
+        return 0
+
+    ci = "\n".join(w.read_text() for w in CI_WORKFLOWS if w.is_file())
+
+    checked = 0
+    for tool, (repo, pattern) in sorted(PIN_PAIRS.items()):
+        if repo not in hooks:
+            f.add(
+                "pin-parity",
+                f"{PRECOMMIT_CONFIG} no longer pins {repo} - {tool} is mapped as a two-place pin "
+                f"and one of the places has gone",
+            )
+            continue
+        found = sorted(set(re.findall(pattern, ci)))
+        if not found:
+            # A skip here would be indistinguishable from a pass, which is the failure this whole
+            # file keeps recording. A reworded comment or a replaced install line is a finding.
+            f.add(
+                "pin-parity",
+                f"could not read the {tool} version out of the CI workflows - the pin was "
+                f"reworded or removed, so this pair is no longer being compared",
+            )
+            continue
+        if len(found) > 1:
+            f.add(
+                "pin-parity",
+                f"the CI workflows pin {tool} at more than one version ({', '.join(found)}) - "
+                f"they disagree with each other before anything compares them to the hook",
+            )
+            continue
+        hook_version = hooks[repo].lstrip("v")
+        if found[0] != hook_version:
+            f.add(
+                "pin-parity",
+                f"{tool} is pinned at {found[0]} in the CI workflows and {hooks[repo]} in "
+                f"{PRECOMMIT_CONFIG} - CI runs a different version than the hook a contributor "
+                f"just ran",
+            )
+            continue
+        checked += 1
+
+    # The anti-expiry half. A check that names only the tools there are currently two of stops
+    # covering the file the moment a third arrives, and says nothing while it happens - which is
+    # exactly how naming-option-coverage went quiet when a second namestyle landed.
+    mapped = {repo for repo, _ in PIN_PAIRS.values()}
+    for repo in sorted(hooks):
+        if repo in mapped or repo in PIN_UNPAIRED:
+            continue
+        f.add(
+            "pin-parity",
+            f"{PRECOMMIT_CONFIG} pins {repo}, which is in neither PIN_PAIRS nor PIN_UNPAIRED - "
+            f"add it to whichever applies, with a reason if it has no CI counterpart",
+        )
+
+    for repo, reason in sorted(PIN_UNPAIRED.items()):
+        if not reason:
+            f.add(
+                "pin-parity", f"{repo} is exempt from pin parity with no reason given"
+            )
+
+    return checked
+
+
 # The mutation a chip part grants, read off whichever base it inherits. #411 added
 # Raven_ModVariantMutationBase for the two mutations that need a variant, and matching only the
 # stock name silently dropped both from Appendix B - the rows stopped resolving to a blueprint
@@ -1927,6 +2073,7 @@ def main() -> int:
     check_changelog_sections(f)
     check_check_names(f)
     check_required_checks(f)
+    pins = check_pin_parity(f)
     check_preserved(f)
     markers = check_conflict_markers(f)
 
@@ -1948,6 +2095,7 @@ def main() -> int:
         f"{appendix} chip row(s), {items} item-table figure(s) and {file_rows} per-file "
         f"row figure(s) match their blueprints; "
         f"links, sections, check names and preserved documents all clean; "
+        f"{pins} pinned tool(s) in step; "
         f"{prose_links} prose path(s) resolve; "
         f"{markers} tracked file(s) carry no conflict markers"
     )

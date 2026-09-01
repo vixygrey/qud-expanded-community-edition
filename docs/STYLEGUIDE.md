@@ -1464,6 +1464,7 @@ seconds rather than after a round trip.
 | Conventional PR title, and a changelog entry | The `conventions` job in `.github/workflows/ci.yml` |
 | No direct commits to `main`, linear history, squash-only merges | GitHub ruleset, plus a local `pre-commit` hook that fails first |
 | Every CI job being required or deliberately not, and this section's count | `required-checks` in `tools/check_docs.py`, against `tools/required-checks.json` |
+| A tool pinned in both `ci.yml` and `.pre-commit-config.yaml` carrying the same version in each | `pin-parity` in `tools/check_docs.py` |
 
 The `merge-discipline` check is the important one: it turns this fork's headline compatibility rule
 into something mechanically enforced rather than remembered, and it would have caught #3 on the
@@ -1548,6 +1549,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `option-wiring` | `validate_mod.py` | an option declared but unread, or read but undeclared |
 | `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |
 | `part-builder` | `validate_mod.py` | `<part Builder="…">` naming a real class |
+| `pin-parity` | `check_docs.py` | a tool pinned in both `ci.yml` and `.pre-commit-config.yaml` carrying the same version in each. Dependabot tracks the two halves in separate ecosystems and raises one without the other |
 | `preserved` | `check_docs.py` | Mura's preserved documents unedited since the fork |
 | `prose-links` | `check_docs.py` | file paths written as prose, not as markdown links, resolving |
 | `qud-api-snapshot` | `validate_mod.py` | the API snapshot being present and carrying what a check needs |
