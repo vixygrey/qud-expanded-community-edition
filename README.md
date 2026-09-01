@@ -103,15 +103,21 @@ The other two mods in the family are fine, and are unaffected by this fork:
 |---|---|---|
 | **Caves of Qud Expanded** (Mura's original) | ❌ | Same 36 types in `XRL.World.Parts` — enable one or the other |
 | **Caves of Qud Expanded — The Grand Bazaar** | ✅ | No shared records or types with this fork |
-| **Caves of Qud Expanded — Experience Curve Beta** | ✅ | Script-only, and this fork never touches experience |
+| **Caves of Qud Expanded — Experience Curve Beta** | ✅ | No shared record or type — and its own script cannot run at all |
 
 Where those green ticks come from, so you can judge them: I compared every object, population table
 and C# type the three mods declare. The Bazaar shares **no** object name, **no** C# type, and **not
 one** vanilla record merged by both — its only merge target is vanilla's `EmptyTent` table, which this
-fork doesn't touch — and all 79 of its blueprint references resolve. The Experience Curve ships no XML
-at all, and its one class handles `AwardXPEvent`, which nothing in `mod/Scripting/` goes near. Neither
-declares a dependency on the original, and Mura's own description of the Bazaar says it works with or
-without it.
+fork doesn't touch — and all 79 of its blueprint references resolve. Neither declares a dependency on
+the original, and Mura's own description of the Bazaar says it works with or without it.
+
+**The Experience Curve needs a longer answer than it used to.** It ships no XML at all, and its one
+class is called `XRL.World.Parts.Experience` — vanilla's own name. That is why it does nothing: type
+resolution reaches vanilla's type first, so the sub-mod's C# has been inert since the day it shipped,
+for everyone, whatever else is installed. #775 has the measurement. This fork now has its own
+experience curve, off by default, in a separately named part, so the two still share no type and no
+record and the tick stands — but enabling the sub-mod alongside adds nothing, because it adds nothing
+on its own either.
 
 That is a record-level comparison rather than a play-test of every combination, which is the honest
 limit of the claim. If you hit something anyway, please [file an
