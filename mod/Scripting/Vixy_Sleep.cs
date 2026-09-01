@@ -120,7 +120,12 @@ namespace XRL.World.Parts
             {
                 Where.Settlement => 0,
                 Where.Bed => 6,
-                Where.Sheltered => 14,
+                // 17 rather than 14, and the change is #777's rather than a retune. The roll fires
+                // every action asleep, so shortening a sheltered sleep from 250 actions to its
+                // intended 208 also removed 42 rolls - which would have dropped the odds this tier
+                // was tuned to from 30% a sleep to 25% as a side effect of fixing arithmetic. 17
+                // over 208 actions is 29.8%, which is where #764 put it deliberately.
+                Where.Sheltered => 17,
                 _ => 37,
             };
         }
@@ -293,21 +298,31 @@ namespace XRL.World.Parts
         /// </remarks>
         public static int TurnsToRest(GameObject Player)
         {
-            int drain = DrainPerAction(Player);
-            return Vixy_Fatigue.Get(Player) / drain + 20;
+            int drain = DrainHundredths(Player);
+            return Vixy_Fatigue.Get(Player) * 100 / drain + 20;
         }
 
         /// <summary>
-        /// Fatigue removed per action of voluntary sleep.
+        /// Fatigue removed per action of voluntary sleep, in hundredths of a point.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The one place this arithmetic lives. `Vixy_Fatigue.Rest` spends it and
         /// <see cref="TurnsToRest"/> budgets against it, and a promise made in the sleep menu is only
         /// as good as those two agreeing.
+        /// </para>
+        /// <para>
+        /// <b>It is carried in hundredths because whole points truncated a tier away.</b> This was
+        /// <c>4 * RestQuality / 10</c>, and §3.3's rest qualities are tenths — so a sheltered spot's
+        /// 12 became <c>4 * 12 / 10 == 4</c>, which is precisely what open ground gets. One of the
+        /// four tiers did nothing at all from the day it shipped, and `docs/FEATURES.md` §51.3 spent
+        /// that whole time quoting a 4.8 the code never produced. `Accrue` had the same problem on
+        /// the other side of the meter and already solved it this way. #777.
+        /// </para>
         /// </remarks>
-        public static int DrainPerAction(GameObject Player)
+        public static int DrainHundredths(GameObject Player)
         {
-            return Math.Max(1, 4 * RestQuality(Player) / 10);
+            return Math.Max(1, 40 * RestQuality(Player));
         }
     }
 }

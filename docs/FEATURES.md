@@ -6605,15 +6605,31 @@ written, so neither half happened.
 `Open` could only apply when nothing hostile was present — which is exactly when no ambush is
 possible. Five tiers collapsed to two.
 
-| where | rest quality | P(found) per sleep | per turn |
-|---|---:|---:|---:|
-| **in a settlement** | 1.5× | **0%** | 0 |
-| on a bed or bedroll | 1.5× | 10% | 0.06% |
-| indoors, sheltered | 1.2× | 30% | 0.14% |
-| open ground | 1.0× | 60% | 0.37% |
+| where | rest quality | fatigue/action | actions to rest | P(found) per sleep | per turn |
+|---|---:|---:|---:|---:|---:|
+| **in a settlement** | 1.5× | 6.0 | 167 | **0%** | 0 |
+| on a bed or bedroll | 1.5× | 6.0 | 167 | 10% | 0.06% |
+| indoors, sheltered | 1.2× | 4.8 | 208 | 30% | 0.17% |
+| open ground | 1.0× | 4.0 | 250 | 60% | 0.37% |
 
 Odds are *given something hostile is in the zone*, and derived from per-sleep targets by solving
 `1 − (1 − p)ⁿ` backwards rather than chosen per turn.
+
+**The two right-hand columns are one number, not two, and that is the trap #777 fell into.** The roll
+fires every action asleep, so how fast a tier rests me decides how many times it is rolled — a slower
+sleep is a more dangerous one. The rest column and the ambush column are the same lever seen twice.
+
+For most of this feature's life the sheltered row was wrong in both. `DrainPerAction` was
+`4 * RestQuality / 10` in whole points, and rest qualities are tenths, so a sheltered spot's 12 came
+out as `4 * 12 / 10 == 4` — exactly what open ground gets. **One of the four tiers did nothing from
+the day it shipped**, and this table quoted a 4.8 the code never produced. Worse, the extra 42 actions
+it spent asleep carried 42 extra rolls, so it was also more dangerous than the row said.
+
+Fixing the arithmetic alone would have quietly retuned the ambush column too: the same 0.14% over 208
+actions rather than 250 is 25%, not the 30% it was deliberately set to. So the per-turn rate moved
+0.14% → 0.17% in the same change. The tier is now 17% faster to rest, and exactly as dangerous as it
+always claimed to be — a doorway is worth finding for the reason the table gives, and for no accidental
+second reason.
 
 **A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub — a
 `CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork invented and

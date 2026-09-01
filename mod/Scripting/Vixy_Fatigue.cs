@@ -285,6 +285,22 @@ namespace XRL.World.Parts
             ParentObject.SetIntProperty("Vixy_FatigueRemainder", carried % 100);
         }
 
+        /// <summary>
+        /// Spend fatigue at a fractional rate, mirroring <see cref="Accrue"/>.
+        /// </summary>
+        /// <remarks>
+        /// Its own remainder key rather than <c>Accrue</c>'s, because the two never run on the same
+        /// action and mixing a credit and a debit in one carried value is a subtlety nobody needs.
+        /// Rest rates are fractional at three of the four tiers, and rounding them to whole points is
+        /// what erased the sheltered tier entirely. #777.
+        /// </remarks>
+        private void Drain(int Hundredths)
+        {
+            int carried = ParentObject.GetIntProperty("Vixy_FatigueRestRemainder") + Hundredths;
+            Set(ParentObject, Get(ParentObject) - carried / 100);
+            ParentObject.SetIntProperty("Vixy_FatigueRestRemainder", carried % 100);
+        }
+
         private void Rest()
         {
             // Only voluntary sleep rests. Asleep.Voluntary is false at every involuntary call site -
@@ -293,7 +309,7 @@ namespace XRL.World.Parts
             Asleep asleep = ParentObject.GetEffect<Asleep>();
             if (asleep == null || !asleep.Voluntary) return;
 
-            Set(ParentObject, Get(ParentObject) - Vixy_Sleep.DrainPerAction(ParentObject));
+            Drain(Vixy_Sleep.DrainHundredths(ParentObject));
 
             if (Get(ParentObject) <= 0)
             {

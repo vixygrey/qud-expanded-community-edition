@@ -3845,3 +3845,43 @@ underneath code that never moved.
 
 Related: [`A blueprint tag reaches every save, and no option can reach the tag`](#a-blueprint-tag-reaches-every-save-and-no-option-can-reach-the-tag)
 is the same failure aimed at data instead of at parts.
+
+## Integer division is where a design tier goes to die, and the neighbouring table dies with it
+
+`Vixy_Sleep.RestQuality` returns tenths — 15 for a settlement, **12 for a sheltered spot**, 10 for open
+ground — and the drain spent them as `4 * RestQuality / 10` in whole points:
+
+| where | tenths | intended | `4 * t / 10` |
+|---|---:|---:|---:|
+| settlement, bed | 15 | 6 | 6 |
+| sheltered | 12 | **4.8** | **4** |
+| open ground | 10 | 4 | 4 |
+
+`4 * 12 / 10` truncates to 4, which is exactly what open ground gets. **One of four design tiers did
+nothing from the day it shipped**, and `docs/FEATURES.md` spent that whole time quoting a 4.8 the code
+had never produced. Every check passed, because no check compares a documented rate against the
+arithmetic that produces it.
+
+**The second half is the part worth remembering.** The ambush roll fires *every action asleep*, and its
+per-sleep odds were derived by compounding a per-turn rate over the expected sleep length. So the same
+truncation that made a sheltered spot rest like open ground also kept me there 42 actions longer — 42
+extra rolls — pushing a tier tuned to 30% up to a real 29.5% by accident and, had I only fixed the
+drain, down to 25% by a second accident. The rest rate and the ambush rate were never two numbers.
+Fixing one silently retunes the other.
+
+**The general shape, in three parts.**
+
+- **A fractional constant in an integer expression is a design decision that may not survive contact
+  with the code.** Carry the fraction — this codebase already had the answer on the other side of the
+  same meter, where `Accrue` keeps hundredths and a remainder. The bug was on the half that had not
+  been given the same treatment.
+- **A tier collapsing into its neighbour is invisible from either end.** Nothing errors, nothing looks
+  odd in play, and the two tiers differ elsewhere — here in ambush odds — so the feature still *seems*
+  to distinguish them. Multiplying a documented rate table out by hand is the only thing that finds it.
+- **Before changing a rate, ask what else is measured in the same units of time.** Anything rolled per
+  turn is coupled to anything that changes how many turns there are. That coupling is not visible in
+  either function.
+
+Related: [`My design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
+is about a figure being wrong in the document; this is the same figure being right in the document and
+wrong in the code.

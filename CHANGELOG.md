@@ -18,6 +18,14 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Sleeping somewhere sheltered finally means something** (#777).
+
+  Finding a doorway was supposed to rest me half again as fast as lying in the open. It never did —
+  the arithmetic rounded the difference away, so a sheltered spot rested me at exactly the rate of bare
+  ground and, because I lay there longer for it, was found more often too. It now rests me the 20%
+  faster it always claimed, and carries the same risk it always claimed, rather than one of those being
+  a rounding error and the other an accident.
+
 - **My parts stay on my own body** (#769).
 
   Two of Qud's own mechanisms were putting this mod's eleven player parts onto creatures that are not
