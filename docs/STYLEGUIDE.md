@@ -716,13 +716,31 @@ and did the same to twelve more. Splitting by "does this entry carry a `Weight`"
 at all, because vanilla's disjointness above makes that question equivalent.
 
 **A sub-table this fork writes is measured; one vanilla wrote is not** (#544). `<table>` references
-are normally not followed — a shared sub-table belongs to whoever wrote it. But vanilla's own
-overgrowth idiom *is* a sub-table (`BrightshroomPatches`, pulled into eight cave tiers by one line),
-so a `Vixy_` copy of that shape would carry its entire footprint past the measure. Resolution
-follows a reference only into a table this fork defines, and is opt-in so that vanilla's side of
-every ratio — and the snapshot digest with it — does not move. A `Style="pickone"` group is
-over-counted, since one child fires and all are summed; that pushes a share toward the ceiling
-rather than under it.
+are not followed — a shared sub-table belongs to whoever wrote it. But vanilla's own overgrowth
+idiom *is* a sub-table (`BrightshroomPatches`, pulled into eight cave tiers by one line), so a
+`Vixy_` copy of that shape would carry its entire footprint past the measure. Resolution follows a
+reference only into a table this fork defines. A `Style="pickone"` group is over-counted, since one
+child fires and all are summed; that pushes a share toward the ceiling rather than under it.
+
+**But the *draw* is counted whether or not the reference is followed** (#798), and the distinction
+is the whole of it. Not following the reference is right: a shared pool's *contents* belong to
+whoever wrote it, and attributing vanilla's `BaseArmor` pool to this fork would be nonsense. The
+placement is a different thing — `<table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="1-2" />`
+merged into a vanilla merchant puts one or two more items in that merchant's stock, and the entry
+adding them is this fork's.
+
+Scoring such an entry at zero meant **a merge built out of table references measured as adding
+nothing at all**, in both `scatter-share` and `table-share`. That is not hypothetical: it is the
+shape of the Grand Bazaar in #174, which takes twenty vanilla merchant tables from 311 to 524
+expected items while every check returns clean. Three of them — `HatterInventory`, `GloverInventory`
+and `ChefInventory` — measured *exactly zero* added.
+
+Two consequences worth knowing. **Vanilla's side of every ratio moved** when this landed: 24 of the
+121 tables in the snapshot gained quantity, all upward, so shares relaxed rather than tightened and
+nothing shipped newly breached. And **a cycle is not an unresolvable reference** — a table naming
+itself is already being counted further up the walk, so charging a draw for the self-reference
+invents a placement. The first version of this change did exactly that, and
+`test_a_reference_cycle_terminates` is what caught it.
 
 #### Every scattered blueprint reads as its own thing
 

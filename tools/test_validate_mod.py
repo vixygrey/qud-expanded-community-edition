@@ -2892,6 +2892,76 @@ class SnapshotBackedChecks(unittest.TestCase):
             pop, own
         )
 
+    # ------------------------------------------------------ a table reference is a placement too
+
+    def test_an_unresolvable_table_reference_counts_its_draw(self) -> None:
+        """#798. A `<table>` child into a pool this fork does not define still places items.
+
+        Not following the reference is right - a shared pool's *contents* belong to whoever wrote
+        it. But the draw is this fork's, and scoring it at zero made a merge built out of table
+        references measure as adding nothing at all.
+        """
+        plain, resolved = self._quantities(
+            '<population Name="Merged" Load="Merge">'
+            '  <group Name="Items">'
+            '    <table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="1-2" />'
+            "  </group>"
+            "</population>"
+        )
+        self.assertEqual(plain, 1.5)
+        self.assertEqual(resolved, 1.5)
+
+    def test_a_chance_on_an_unresolvable_reference_is_applied(self) -> None:
+        plain, _ = self._quantities(
+            '<population Name="Merged" Load="Merge">'
+            '  <group Name="Items">'
+            '    <table Name="DynamicInheritsTable:BaseArmor:Tier8" Number="1" Chance="20" />'
+            "  </group>"
+            "</population>"
+        )
+        self.assertAlmostEqual(plain, 0.2)
+
+    def test_a_weighted_reference_is_still_not_scattered_content(self) -> None:
+        """`table-share` owns weighted entries. Counting one here would double-measure it."""
+        plain, _ = self._quantities(
+            '<population Name="Merged" Load="Merge">'
+            '  <group Name="Items">'
+            '    <table Name="Raven_Chips Tier 1" Number="1" Weight="10" />'
+            "  </group>"
+            "</population>"
+        )
+        self.assertEqual(plain, 0.0)
+
+    def test_a_removed_reference_is_not_a_placement(self) -> None:
+        """The guard the object branch has had since #582, which this branch lacked."""
+        plain, _ = self._quantities(
+            '<population Name="Merged" Load="Merge">'
+            '  <group Name="Items">'
+            '    <table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="2" Load="Remove" />'
+            "  </group>"
+            "</population>"
+        )
+        self.assertEqual(plain, 0.0)
+
+    def test_a_resolvable_reference_is_followed_and_not_double_counted(self) -> None:
+        """The #544 behaviour has to survive: a table this fork writes is resolved into, and its
+        contents counted once - not counted once as a draw and again as contents."""
+        plain, resolved = self._quantities(
+            '<population Name="Vixy_Patch">'
+            '  <group Name="Items">'
+            '    <object Blueprint="Vixy_Slabmoss" Number="4" />'
+            "  </group>"
+            "</population>"
+            '<population Name="Merged" Load="Merge">'
+            '  <group Name="Items">'
+            '    <table Name="Vixy_Patch" Number="1" />'
+            "  </group>"
+            "</population>"
+        )
+        # Unresolved it is one draw; resolved it is the four objects that draw yields.
+        self.assertEqual(plain, 1.0)
+        self.assertEqual(resolved, 4.0)
+
     # ---------------------------------------------------- group multipliers gate their contents
 
     def test_a_group_chance_gates_the_objects_inside_it(self) -> None:
@@ -2978,7 +3048,11 @@ class SnapshotBackedChecks(unittest.TestCase):
             "    </group>\n"
             "  </population>\n" + pool
         )
-        self.assertEqual(plain, 0.0, "unresolved, a reference contributes nothing")
+        self.assertAlmostEqual(
+            plain,
+            0.04 * 4,
+            msg="unresolved, the gate still applies to the draw itself (#798)",
+        )
         self.assertAlmostEqual(resolved, 0.04 * 4 * 5)
 
     def test_group_multiplier_reads_both_attributes(self) -> None:
@@ -3116,8 +3190,8 @@ class SnapshotBackedChecks(unittest.TestCase):
             '    <table Name="Vixy_Texts" Chance="10" Number="1" />\n'
             "  </population>\n" + pool
         )
-        self.assertEqual(
-            plain, 0.0, "the unresolved reading is what the hole looked like"
+        self.assertAlmostEqual(
+            plain, 0.10, msg="unresolved, the draw counts at its own chance (#798)"
         )
         self.assertAlmostEqual(
             resolved, 0.10, msg="one object, at the reference's own chance"
@@ -3140,20 +3214,29 @@ class SnapshotBackedChecks(unittest.TestCase):
             '    <table Name="Vixy_IvyPatches" Chance="30" />\n'
             "  </population>\n" + self.PATCHES
         )
-        self.assertEqual(
-            plain, 0.0, "the unresolved reading is what the hole looked like"
+        self.assertAlmostEqual(
+            plain,
+            0.3,
+            msg="unresolved it is one draw at the reference's chance, not the patch's "
+            "whole footprint - which is what #544 was about and #798 does not undo",
         )
         # 0.30 * (1.00 * 16 + 0.50 * 16)
         self.assertAlmostEqual(resolved, 7.2)
 
     def test_vanillas_sub_table_is_still_not_followed(self) -> None:
-        """The rule the original docstring states, and it has to survive the exception."""
+        """The rule the original docstring states, and it has to survive both exceptions.
+
+        **Not followed still means not followed**: vanilla's patch table is not opened and its
+        contents are not summed, because those contents are vanilla's. What #798 changed is that
+        the *draw* is counted - the reference is a placement this fork added, and one roll of it
+        puts one thing in the table however many objects vanilla's pool holds.
+        """
         _, resolved = self._quantities(
             '  <population Name="Merged" Load="Merge">\n'
             '    <table Name="BrightshroomPatches" Chance="100" />\n'
             "  </population>"
         )
-        self.assertEqual(resolved, 0.0)
+        self.assertEqual(resolved, 1.0, "one draw, and none of vanilla's contents")
 
     def test_a_reference_cycle_terminates(self) -> None:
         """A table naming itself, which nothing forbids."""
@@ -3168,16 +3251,28 @@ class SnapshotBackedChecks(unittest.TestCase):
         )
         self.assertEqual(resolved, 2.0, "the objects count once and the cycle stops")
 
-    def test_omitting_own_tables_is_byte_identical_to_before(self) -> None:
-        """`snapshot_qud_api` runs this over vanilla to build the other side of the ratio. If the
-        default behaviour moved, every share figure in the documents would move with it."""
+    def test_the_default_path_counts_objects_and_draws(self) -> None:
+        """What the default path measures with no resolution asked for.
+
+        This was `test_omitting_own_tables_is_byte_identical_to_before`, and its justification was
+        wrong in a way worth recording: it said `snapshot_qud_api` runs the default path, so moving
+        it would move every documented share. `collect_scatter_quantities` actually calls
+        `scatter_quantity(pop, vanilla_tables)` - **with** own_tables - so the default path is not
+        the one the snapshot takes. The guard is still worth having; the reason given for it was
+        not true.
+
+        #798 moved this deliberately: the object contributes 5.0 as before, and the reference now
+        contributes its own draw of 0.3 rather than nothing.
+        """
         plain, _ = self._quantities(
             '  <population Name="Merged" Load="Merge">\n'
             '    <object Blueprint="Vixy_Thing" Chance="50" Number="10" />\n'
             '    <table Name="Vixy_IvyPatches" Chance="30" />\n'
             "  </population>\n" + self.PATCHES
         )
-        self.assertEqual(plain, 5.0, "only the direct entry counts without resolution")
+        self.assertAlmostEqual(
+            plain, 5.3, msg="the direct entry, plus the reference's draw"
+        )
 
     PATCH_TABLE = (
         '  <population Name="Vixy_MossPatches">\n'

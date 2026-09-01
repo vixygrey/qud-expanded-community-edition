@@ -2651,18 +2651,40 @@ def _scatter_walk(
                 * number_midpoint(child.get("Number"))
             )
         elif child.tag == "table":
-            if own_tables is None:
-                continue
-            name = child.get("Name")
-            if name is None or name in seen or name not in own_tables:
-                continue
             if child.get("Weight") is not None:
                 continue
+            if child.get("Load") in ("Remove", "Replace"):
+                # The same reasoning the object branch gives above (#582): a reference taken OUT
+                # is the opposite of a placement, and counting it as one reports a merge that
+                # removes stock as adding it. The object branch has had this guard since #582 and
+                # this one did not, which is the asymmetry #798 is about in miniature.
+                continue
+            name = child.get("Name")
             share = (
                 multiplier
                 * chance_multiplier(child.get("Chance"))
                 * number_midpoint(child.get("Number"))
             )
+            if name is not None and name in seen:
+                # A cycle, not an unresolvable reference. This table is already being counted
+                # further up the walk, so charging a draw for the self-reference invents a
+                # placement that does not exist. `test_a_reference_cycle_terminates` caught that
+                # the first time this branch was written, which is why it exists.
+                continue
+            if own_tables is None or name is None or name not in own_tables:
+                # **Count the draw without following the reference.** Not following it is right:
+                # a shared sub-table's *contents* belong to whoever wrote it, and attributing
+                # vanilla's `BaseArmor` pool to this fork would be nonsense. But this function
+                # measures *placements*, and the placement is this fork's whatever it points at -
+                # `<table Name="DynamicInheritsTable:BaseArmor:Tier4" Number="1-2" />` merged into
+                # a vanilla merchant puts one or two more items in that merchant's stock.
+                #
+                # Skipping it entirely scored such an entry at zero, so a merge built out of table
+                # references measured as adding nothing at all. #174's Grand Bazaar is exactly that
+                # shape: it takes twenty vanilla merchant tables from 311 to 524 expected items and
+                # every check returned clean. #798.
+                total += share
+                continue
             for target in own_tables[name]:
                 inner = _scatter_walk(target, 1.0, own_tables, seen | {name}, inherited)
                 if inner == 0.0 and any(
