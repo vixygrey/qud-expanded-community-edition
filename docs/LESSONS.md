@@ -3794,3 +3794,43 @@ of it already — *"There is no hallucination effect in the game to inherit"* �
 about implementation when it was a verdict on the idea.
 
 Related: [`When a count supports a claim, resolve it`](#when-a-count-supports-a-claim-resolve-it--and-read-the-difference-before-the-total).
+
+## "I only ever attach it to the player" is a statement about my code, not about the game
+
+Eleven parts, one attach site, one target: `The.Player`. Every one of them still reached creatures that
+were not me, by two routes I had not looked for.
+
+**`GameObject.DeepCopy()` copies every part.** `TemporalFugue` line 280 and `Cloning` line 84 both use
+it, so a fugue duplicate or a clone of me carries my whole part list — no save, no load, nothing I did.
+This is the common route and the one I did not think of first, because I was looking for a way the
+*attach* could go wrong rather than a way a part could travel without being attached at all.
+
+**`Domination` reassigns who the player is.** `Domination.Dominate` does
+`The.Game.Player.Body = defender`, and `CmdSaveAndQuit` has no guard, so a save made mid-domination
+reloads with `The.Player` pointing at the puppet. An attach that trusts `The.Player` then bolts
+everything onto a creature permanently, because the parts outlive the domination.
+
+**Two guards that look interchangeable and are not.**
+
+| predicate | means | goes false when |
+|---|---|---|
+| `IsPlayer()` | this object *is* `Game.Player.Body` right now | the player's body is reassigned — so a **puppet passes it** |
+| `IsPlayerControlled()` / `IsPlayerLed()` | relational, about who is driving | the copy stops being driven by me — self-limiting, which is why nine parts were fine |
+| `IsOriginalPlayerBody()` | stamped once at chargen, stripped from clones and fugue copies | never, for the body I started in — and it is **wrong** as an ownership test, because `Metempsychosis` is a legitimate permanent body change |
+
+The last row is the one that would have cost me. Reaching for `IsOriginalPlayerBody()` as "is this
+really me" looks exactly right and would leave a post-Metempsychosis character with none of the parts —
+a bigger hole than the one being closed. The ownership test I wanted was the `Dominated` effect, whose
+`Dominator` field is also the way back to the real body.
+
+**And a guard can be correct and still wrong.** `Vixy_Fatigue` checked `IsPlayer()`, which is the right
+question for every other purpose and the wrong one here, because a puppet passes it. It would have
+accrued on a borrowed body and billed me twice for the same window.
+
+**The general shape.** Before deciding a part is player-only, ask two separate questions: *what attaches
+it*, and *what copies it*. I had only asked the first. The cheap check is one grep for `DeepCopy` and
+one for assignments to `Player.Body` — both are short lists, and both change who "the player" is
+underneath code that never moved.
+
+Related: [`A blueprint tag reaches every save, and no option can reach the tag`](#a-blueprint-tag-reaches-every-save-and-no-option-can-reach-the-tag)
+is the same failure aimed at data instead of at parts.

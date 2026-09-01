@@ -1,5 +1,6 @@
 ﻿using XRL;
 using XRL.World;
+using XRL.World.Effects;
 using XRL.World.Parts;
 
 namespace QudExpandedCE
@@ -54,7 +55,43 @@ namespace QudExpandedCE
         [CallAfterGameLoaded]
         public static void OnGameLoaded()
         {
-            Attach(The.Player);
+            Attach(TrueBody());
+        }
+
+        /// <summary>
+        /// The body these parts belong on, which is not always <c>The.Player</c>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b><c>Domination</c> reassigns the player.</b> `Domination.Dominate` does
+        /// `The.Game.Player.Body = defender`, so a save made while dominating something reloads with
+        /// `The.Player` pointing at the puppet — and attaching here would bolt all eleven parts onto
+        /// a creature permanently, since they outlive the domination. #769.
+        /// </para>
+        /// <para>
+        /// <b><c>IsOriginalPlayerBody()</c> is the wrong discriminator</b>, which is the trap worth
+        /// recording. It is stamped once at character creation and stripped from clones and temporal
+        /// fugue duplicates, so it means "the body I started the game in" — and
+        /// `Domination.Metempsychosis` is a legitimate *permanent* body change where attaching to the
+        /// new body is correct. Gating on it would leave a post-Metempsychosis character with none of
+        /// these parts, which is a worse hole than the one being closed.
+        /// </para>
+        /// <para>
+        /// The discriminator is the `Dominated` effect on the current body: true only for a puppet,
+        /// false for a body I have permanently become. Its `Dominator` field is the way back.
+        /// </para>
+        /// </remarks>
+        private static GameObject TrueBody()
+        {
+            GameObject player = The.Player;
+            if (player == null) return null;
+
+            Dominated dominated = player.GetEffect<Dominated>();
+            if (dominated != null && GameObject.Validate(dominated.Dominator))
+            {
+                return dominated.Dominator;
+            }
+            return player;
         }
 
         private static void Attach(GameObject player)

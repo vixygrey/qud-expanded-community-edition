@@ -98,6 +98,16 @@ namespace XRL.World.Parts
         {
             if (E.Skill is Customs_TrashDivining)
             {
+                // The rifled count is a *zone* property, shared by everyone standing in it, so an
+                // NPC carrying this part does not just skew its own odds - it spends down the player's
+                // own odds in that zone. This part is only ever attached to the player, but
+                // `GameObject.DeepCopy` copies every part, so a temporal fugue duplicate or a clone
+                // carries it too. #769.
+                if (!ParentObject.IsPlayerControlled())
+                {
+                    return base.HandleEvent(E);
+                }
+
                 Zone zone = ParentObject?.CurrentZone;
                 if (zone != null)
                 {

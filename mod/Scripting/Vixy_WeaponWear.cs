@@ -47,6 +47,15 @@ namespace XRL.World.Parts
         {
             if (E.ID == "WieldedWeaponHit")
             {
+                // Wear is a player-facing system, and this part is only ever attached to the player -
+                // but `GameObject.DeepCopy` copies every part, so a temporal fugue duplicate or a
+                // clone of the player carries it too, with no save or load involved. Without this the
+                // copy wears its own weapons for as long as it exists. #769.
+                if (!ParentObject.IsPlayerControlled())
+                {
+                    return base.FireEvent(E);
+                }
+
                 GameObject weapon = E.GetGameObjectParameter("Weapon");
 
                 // A missile weapon used as a club would otherwise wear twice - once here and once
