@@ -106,7 +106,8 @@ recorded because contributors need them, not because subscribers do.
   that ever told you was a message as you crossed each threshold, and messages scroll away.
 
   {{y|How long you sleep is yours to choose.}} The same question a bedroll asks, with the same three
-  times and one more: until rested. Pick a time and you wake at it or sooner, whichever comes first,
+  times and one more: until rested. Each one says how many rounds it is, which a bedroll does not —
+  "until Harvest Dawn" only tells you how long if you already know what time it is. Pick a time and you wake at it or sooner, whichever comes first,
   because being rested always ends a sleep early. Wake on the clock with the meter still up and you
   get no dream — waking early is waking early.
 

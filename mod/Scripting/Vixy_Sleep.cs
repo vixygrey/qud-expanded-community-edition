@@ -280,10 +280,20 @@ namespace XRL.World.Parts
         private static int AskHowLong(GameObject Player)
         {
             int[] spans = { 150, 375, 600 };
-            List<string> options = new List<string> { "Until rested" };
+
+            // The round count is mine; the rest is Bed's. `Calendar.GetTime` returns Qud's own
+            // time-of-day names - "Harvest Dawn", "Waning Salt Sun", "Jeweled Dusk" - which is
+            // exactly what a bedroll says and reads as flavour rather than as an answer. It only
+            // tells me how long if I already know what time it is, which at the moment I decide to
+            // lie down is precisely what I do not know. #776.
+            List<string> options = new List<string>
+            {
+                "Until rested {{K|(" + TurnsToRest(Player) + " rounds)}}",
+            };
             foreach (int span in spans)
             {
-                options.Add("Until " + Calendar.GetTime(Calendar.TotalTimeTicks + span));
+                options.Add("Until " + Calendar.GetTime(Calendar.TotalTimeTicks + span)
+                    + " {{K|(" + span + " rounds)}}");
             }
 
             int pick = Popup.PickOption(

@@ -6569,6 +6569,13 @@ to invent one.
 `Until rested` sits first, because it is what most nights want. Then vanilla's three, in vanilla's
 order, so the muscle memory survives. Escape backs out and costs nothing.
 
+**Every option carries its round count, and that part is not vanilla's.** `Calendar.GetTime` returns
+Qud's own time-of-day names — *Harvest Dawn*, *Waning Salt Sun*, *Jeweled Dusk* — which is verbatim what
+a bedroll says and reads as flavour rather than as an answer. It only tells me how long if I already
+know what time it is, which at the moment I decide to lie down is precisely what I do not know. So each
+line ends `{{K|(150 rounds)}}`, and *Until rested* carries its own computed figure. Borrowing the prompt
+was right; inheriting its one weakness was not.
+
 **A timed choice is a ceiling, not a span.** `Rest` ends the sleep the moment fatigue reaches zero, so
 "until 9:00" means "no later than 9:00" — waking earlier because I am rested is the good outcome
 rather than a broken promise.
