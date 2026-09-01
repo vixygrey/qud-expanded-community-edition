@@ -37,7 +37,7 @@ repos:
         files: ^mod/.*\.(xml|rpm)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.5
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -48,7 +48,7 @@ repos:
   - repo: https://github.com/crate-ci/typos
     # Must match the crate-ci/typos pin in .github/workflows/ci.yml — see the note there.
     # Dependabot raises the action and not this rev, so the two only stay in step by hand.
-    rev: v1.49.1
+    rev: v1.50.0
     hooks:
       - id: typos
         args: [--config, .typos.toml]
