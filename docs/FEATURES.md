@@ -6486,6 +6486,29 @@ and Trailblazer each add +100 to travel speed, so a salt-dune crossing is 750 ti
 with one and 250 with both — and the fatigue falls with it. A traveller who invested in crossing
 ground quickly is also a traveller who arrives less tired.
 
+### 51.3b Time I did not spend in my own body is still time (`Settle`)
+
+**Domination was a fatigue-free window wide enough to live in.** `Domination.Dominate` assigns
+`The.Game.Player.Body = defender`, so the puppet becomes the player and my real body stops answering
+`IsPlayer()`. The puppet never carries the fatigue part, and my real body's `Dominating` effect
+returns false from its own `BeginTakeActionEvent` handler — which zeroes that body's energy and stops
+the dispatch chain, so whether the fatigue part is reached at all comes down to part-versus-effect
+ordering rather than anything worth relying on. Duration is `100 * (Level + 1)` rounds against a
+75-round cooldown, so at rank 10 that is roughly 1,100 rounds, recastable before it lapses.
+
+**The fix generalises the world-map catch-up instead of sitting beside it.** The turn fatigue was last
+charged is stamped on every action; a gap wider than `GapThreshold` — ten turns, which ordinary play
+never approaches — is billed at the base rate when I come back. The map was the first gap of this
+shape and domination the second, and any future one is now billed without a line being written for it.
+
+The gap is charged at the **base** rate with no strain multiplier, because strain describes what I was
+doing and across a gap that is exactly what is not known. The world map keeps its own branch, because
+there the answer *is* known: overland travel is strain 1.5.
+
+Two things the stamp deliberately does not do. It is not updated when the part is on a body that is
+not the current player — that staleness *is* the bill. And it **is** updated while the option is off,
+so turning fatigue back on does not charge me for the time it was off.
+
 ### 51.4 Only voluntary sleep rests you
 
 `Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,

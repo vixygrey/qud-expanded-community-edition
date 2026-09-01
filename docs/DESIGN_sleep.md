@@ -349,44 +349,69 @@ is a way the mod breaks or becomes exploitable.
 - [x] **Sleep gas must not clear fatigue.** **Settled by vanilla.** `Asleep.Voluntary` is false at
       every involuntary call site and true at every voluntary one, so a fatigue system clears fatigue
       only when it reads true. One field, no plumbing.
-- [ ] **Rest-until-healed** and other time-skip commands must accrue fatigue at the
-      resting rate, not skip it. Any fast-forward path that bypasses accrual is a hole.
+- [x] **Rest-until-healed** — **there is no fast-forward to plug.** `BeginTakeActionEvent.Check` has
+      exactly two call sites in the game: `ActionManager` line 743, the per-actor scheduler, and
+      `TerrainTravel` line 233. Resting is ordinary turns through the scheduler, so it already
+      accrues. It accrues at the *base* rate rather than a reduced resting one, and `Stomach` does not
+      slow hunger while resting either. The consequence is a good one: rest long enough to heal and
+      you eventually collapse into real sleep.
 - [x] **Overland travel** — **done, and the first attempt created exactly this hole.** The turn is
       stamped on entry and the debt paid on return, `Stomach`'s own pattern. But the catch-up was
       first capped at 1,200 turns, which is one parasang of North Sheva — so a twenty-parasang haul
       cost the same as one bad crossing, and the map was nearly free after all. The cap is now a
       sanity bound only; `Set` clamping at `Max` does the game-facing work. One parasang is 300 ticks
       across ordinary ground and 1,200 across North Sheva, per `docs/STYLEGUIDE.md` §3.2.1.
-- [ ] **Narcolepsy** — **narrowed, and no longer an exploit.** `Narcolepsy.cs` constructs
+- [x] **Narcolepsy** — **narrowed, and no longer an exploit.** `Narcolepsy.cs` constructs
       `new Asleep(Stat.Random(20, 29), forced: true)` with `Voluntary` defaulting false, so narcoleptic
       sleep would not clear fatigue either. What remains is a tuning question — whether involuntary
       sleep should rest the character *at all*, or whether narcolepsy plus fatigue means being knocked
-      down repeatedly and never rested.
+      down repeatedly and never rested. Tracked separately.
 - [x] **Wakeful** — **already vanilla behaviour, nothing to build.** `Wakeful` registers for and
       refuses only `CanApplyInvoluntarySleep` and `ApplyInvoluntarySleep`. `GasSleep` fires the check;
       `Bed` never goes near it.
-- [ ] **Unbreathing / robotic True Kin and cybernetics** — decide explicitly whether
-      any build is exempt. Recommendation: no full exemptions, but a
-      "Sleep Suppressor" cybernetic that halves accrual is a good sink.
+- [x] **Unbreathing / robotic True Kin and cybernetics** — **decided: no exemptions.** No build
+      skips the timer; a body that does not breathe still gets tired. The "Sleep Suppressor"
+      cybernetic that halves accrual is new content rather than an edge case, and is tracked
+      separately.
 - [x] **Per-turn state on the player** — **the precedent is `Stomach`.** Vanilla's own survival timer
       is a plain `IPart` with public int fields (`Water`, `HungerLevel`, `CookingCounter`,
       `RegenCounter`, `HitCounter`), no custom serialisation, declared as `<part Name="Stomach" />`.
       This fork already ships 59 parts of that shape and `serializable-shape` covers them.
-- [ ] **Saving mid-sleep**, then reloading. Verify the effect and fatigue value
-      round-trip. `[Serializable]` on the part.
-- [ ] **Death while asleep** — make sure the state is cleaned up.
-- [ ] **Companions and followers** should be exempt entirely. This is a player-only
-      system; do not put the part on every creature.
-- [ ] **Dominated / possessed bodies** — whose fatigue counts? Recommendation: the
-      fatigue stays with the player's true body and keeps accruing.
+- [x] **Saving mid-sleep** — **nothing to build.** `GameObject.IntProperty` is written and read by
+      the save serialiser (`GameObject.cs` lines 1929 and 2069), so all four fatigue keys round-trip
+      on their own. `Asleep` is vanilla's own serialised effect and `Vixy_Gutter` holds no state.
+- [x] **Death while asleep** — **nothing to clean up.** Every piece of fatigue state is a property
+      on the body that died, so it goes with the body. A replacement body starts at zero, which is
+      the right answer.
+- [x] **Companions and followers** — **already exempt.** `Vixy_Fatigue` is declared in no blueprint
+      and is attached only through `Vixy_PlayerParts.Attach(The.Player)`.
+- [x] **Dominated / possessed bodies** — **this was the one real hole, and it was wide.**
+      `Domination.Dominate` assigns `The.Game.Player.Body = defender`, so the puppet becomes the
+      player and the true body stops answering `IsPlayer()`. The puppet never carries the part, and
+      the true body's `Dominating` effect returns false from its own `BeginTakeActionEvent` handler,
+      which zeroes that body's energy and halts the dispatch chain — so whether the part is even
+      reached is part-versus-effect ordering rather than anything to rely on. Duration is
+      `100 * (Level + 1)` rounds against a 75-round cooldown: about 1,100 free rounds at rank 10,
+      recastable before it lapses.
+
+      Fixed by generalising the world-map catch-up rather than adding a second mechanism beside it.
+      The turn fatigue was last charged is stamped on every action, and a gap wider than
+      `GapThreshold` is billed at the base rate on return. The map was the first gap of this shape
+      and domination the second; any future one is billed with nothing new written.
 
 **Should handle**
 
-- [ ] Amnesia / madness effects interacting with the hallucination layer (double-up
-      could get genuinely unreadable).
-- [ ] Zone regeneration while asleep for 250 turns.
-- [ ] Very high Quickness — `EndTurnEvent` fires per standard turn, so a fast player
-      accrues less fatigue per *action*. That's arguably correct; make it deliberate.
+- [x] Amnesia / madness effects interacting with the hallucination layer — **moot.** There is no
+      hallucination layer. False sounds were investigated and dropped, because Qud has eight distinct
+      "You hear" strings in the whole assembly and every one names its own cause, so a phantom noise
+      would have had no true counterpart to be mistaken for. See `docs/LESSONS.md`.
+- [x] Zone regeneration while asleep for 250 turns — **cannot happen.** The player's own zone is
+      never suspended or frozen; `ZoneManager` line 897 logs an error if anything tries.
+- [x] Very high Quickness — **the concern is inverted, and the answer is precedent.** This assumed
+      `EndTurnEvent`. Accrual is on `BeginTakeActionEvent`, which `ActionManager` fires per action
+      opportunity, so fatigue tracks exertion rather than the clock — a quick character covers more
+      ground for the same fatigue, and pays the same per action. `Stomach` uses the same event, so
+      whatever bias this carries, hunger and thirst carry it identically.
 
 ---
 

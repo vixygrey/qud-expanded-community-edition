@@ -38,6 +38,12 @@ recorded because contributors need them, not because subscribers do.
   closer you get to falling over. It takes a capability away at a moment you did not choose, which is
   a sharper thing than shaving a point off an attribute.
 
+  Time I did not spend in my own body is still time. Dominating a creature used to stop the clock
+  entirely — my real body is no longer the player while it is happening, so nothing was accruing on
+  either end, and at a high enough rank the window is wide enough to live in. Now any stretch where
+  the timer could not see me is billed when I come back, the same way a world-map crossing already
+  was.
+
   {{y|Where you sleep is the point.}} In Joppa, the Stilt, Grit Gate or any settlement you are
   simply safe. A bed is nearly so. Sleep on open ground with something hostile in the zone and it
   finds you more often than not - it wakes, it comes for you, and you get told what it is. Sleep
