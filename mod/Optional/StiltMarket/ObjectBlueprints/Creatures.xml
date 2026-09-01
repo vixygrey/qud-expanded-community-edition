@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <object Name="Raven_Smithy" Inherits="BaseMerchant">
+    <part
+      Name="Render"
+      DisplayName="smithy"
+      ColorString="&amp;b"
+      DetailColor="K"
+      RenderString="h"
+      Tile="Creatures/caste_9.bmp"
+    />
+    <part Name="ConversationScript" ConversationID="Raven_Smithy" />
+    <part
+      Name="GenericInventoryRestocker"
+      Table="Raven_SmithyInventory"
+      HeroTable="Raven_SmithyInventory_Legendary"
+      Chance="71"
+    />
+    <inventoryobject Blueprint="Leather Boots" />
+    <inventoryobject Blueprint="Leather Apron" />
+    <inventoryobject Blueprint="Cudgel3" />
+    <inventoryobject Blueprint="Basic Toolkit" Number="0-1" />
+    <inventoryobject Blueprint="@Junk 1" Number="1-3" />
+    <part
+      Name="Description"
+      Short="Tongs clip between =pronouns.possessive= soot-seared apron and the barrel of =pronouns.possessive= chest. =pronouns.Subjective= =verb:clasp:afterpronoun= a swivel knife and hammer for working leather and metal."
+    />
+    <part Name="AISelfPreservation" Threshold="30" />
+    <tag Name="LairAdjectives" Value="smithy" />
+    <tag Name="StaticLikeReason" Value="crafting them an artisan weapon" />
+    <tag Name="StaticHateReason" Value="refusing to craft them an artisan weapon" />
+    <tag Name="Role" Value="Brute" />
+    <tag Name="HeroHasGuards" Value="3-4" />
+  </object>
+
+  <object Name="Raven_WaterMerchant" Inherits="BaseMerchant">
+    <part
+      Name="Render"
+      DisplayName="water merchant"
+      Tile="Creatures/caste_23.bmp"
+      ColorString="&amp;y"
+      DetailColor="B"
+      RenderString="f"
+    />
+    <part Name="ConversationScript" ConversationID="Raven_WaterMerchant" />
+    <part Name="GenericInventoryRestocker" Table="Raven_WaterMerchantInventory" Chance="71" />
+    <inventoryobject Blueprint="Sandals" />
+    <inventoryobject Blueprint="Leather Apron" />
+    <inventoryobject Blueprint="Steel Utility Knife" />
+    <inventoryobject Blueprint="Elastyne Gloves" />
+    <inventoryobject Blueprint="@Junk 1" Number="1-3" />
+    <skill Name="CookingAndGathering_Harvestry" />
+    <part
+      Name="Description"
+      Short="=pronouns.Subjective= =verb:inspect:afterpronoun= a collection of valuables arrayed before =pronouns.Subjective= and =verb:determine:afterpronoun= their worth."
+    />
+    <tag Name="Role" Value="Skirmisher" />
+    <part Name="AIShootAndScoot" Duration="1d1" />
+    <tag Name="HeroHasGuards" Value="3-4" />
+  </object>
+
+  <!--
+    Vixy_Pedlar - this fork's, not Mura's.
+
+    An unclaimed stall in a real bazaar is not empty, it is somebody with not much to sell. Vanilla's
+    EmptyTent holds one table and nothing else, and the Grand Bazaar filled it with eight to twelve
+    bedrolls; this puts a person there instead, which is the only version that explains why the tent
+    was standing.
+
+    Deliberately the poorest merchant at the Stilt. Junk, a little water, whatever the scrap heap gave
+    up - the odds and ends nobody else stocks. Role="Skirmisher" rather than Brute or Minion, because
+    Role is a x4 lever on the dynamic pools and a pedlar has no business being common there.
+  -->
+  <object Name="Vixy_Pedlar" Inherits="BaseMerchant">
+    <part
+      Name="Render"
+      DisplayName="pedlar"
+      Tile="Creatures/caste_5.bmp"
+      ColorString="&amp;w"
+      DetailColor="K"
+      RenderString="@"
+    />
+    <part Name="ConversationScript" ConversationID="Vixy_Pedlar" />
+    <part Name="GenericInventoryRestocker" Table="Vixy_PedlarInventory" Chance="71" />
+    <inventoryobject Blueprint="Sandals" />
+    <inventoryobject Blueprint="@Junk 1" Number="2-4" />
+    <part
+      Name="Description"
+      Short="=pronouns.Subjective= =verb:have:afterpronoun= laid out what =pronouns.subjective= =verb:have:afterpronoun=, which is not much, on a square of cloth =pronouns.subjective= =verb:intend:afterpronoun= to fold up and carry off."
+    />
+    <part Name="AISelfPreservation" Threshold="40" />
+    <tag Name="LairAdjectives" Value="threadbare" />
+    <tag Name="StaticLikeReason" Value="buying something nobody else wanted" />
+    <tag Name="StaticHateReason" Value="turning out their cloth" />
+    <tag Name="Role" Value="Skirmisher" />
+  </object>
+</objects>

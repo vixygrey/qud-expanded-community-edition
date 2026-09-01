@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <object Name="Raven_SmithySign" Inherits="Sign">
+    <part Name="Render" DisplayName="sign" Tile="Items/sw_sign_sword.bmp" Occluding="false" />
+    <part Name="Chat" Says="All Sorts of Arms" ShowInShortDescription="true" />
+  </object>
+
+  <object Name="Raven_WaterMerchantSign" Inherits="Sign">
+    <part
+      Name="Render"
+      DisplayName="sign"
+      Tile="Items/sw_hookah_sign.bmp"
+      RenderString="="
+      ColorString="&amp;y"
+      DetailColor="r"
+      Occluding="false"
+    />
+    <part Name="Chat" Says="Water Merchant" ShowInShortDescription="true" />
+  </object>
+
+  <object Name="Raven_Water Vase" Inherits="Vase">
+    <part
+      Name="Render"
+      DisplayName="vase"
+      ColorString="&amp;w"
+      DetailColor="B"
+      Tile="Items/sw_jug.bmp"
+      RenderLayer="6"
+      Occluding="false"
+    />
+    <part Name="LiquidVolume" MaxVolume="64" StartVolume="1d32+16" InitialLiquid="water-1000" />
+    <removepart Name="RandomColors" />
+    <removepart Name="PopulationLiquidFiller" />
+  </object>
+
+  <object Name="Raven_Merchant Water Vase" Inherits="Raven_Water Vase">
+    <part Name="Physics" Owner="Merchants" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+
+  <object Name="Raven_Water Bottle" Inherits="Bottle">
+    <part Name="LiquidVolume" MaxVolume="16" StartVolume="1d7-1" InitialLiquid="water-1000" />
+    <removepart Name="PopulationLiquidFiller" />
+  </object>
+
+  <object Name="Raven_Merchant Water Bottle" Inherits="Raven_Water Bottle">
+    <part Name="Physics" Owner="Merchants" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+
+  <object Name="Raven_Water Pitcher" Inherits="Pitcher">
+    <part
+      Name="Render"
+      DisplayName="clay pitcher"
+      ColorString="&amp;w"
+      DetailColor="B"
+      Tile="Items/sw_jug3.bmp"
+      RenderLayer="6"
+      Occluding="false"
+    />
+    <part Name="LiquidVolume" MaxVolume="64" StartVolume="1d32+16" InitialLiquid="water-1000" />
+    <removepart Name="RandomColors" />
+    <removepart Name="PopulationLiquidFiller" />
+  </object>
+
+  <object Name="Raven_Merchant Water Pitcher" Inherits="Raven_Water Pitcher">
+    <part Name="Physics" Owner="Merchants" />
+    <tag Name="ExcludeFromDynamicEncounters" Value="*noinherit" />
+  </object>
+</objects>

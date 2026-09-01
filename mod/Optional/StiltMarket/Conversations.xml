@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<conversations>
+  <!-- armorers -->
+  <conversation ID="Raven_Smithy">
+    <node ID="Start">
+      <text>
+        {{emote|*silent nod*}}~
+        Careful. It's hot.~
+        =player.FormalAddressTerm=. Need weaponry?~
+        Be quick about it, eh?~
+        Greetings.~
+        Mm?~
+        I've got my eye on you.~
+        Blade and cudgel to keep you alive.~
+        Don't get near the hearth.~
+        =player.FormalAddressTerm=. Live and drink.
+      </text>
+      <choice GotoID="End">Live and drink.</choice>
+    </node>
+  </conversation>
+
+  <conversation ID="Raven_WaterMerchant">
+    <node ID="Start">
+      <text>
+        Come, friend, exchange your goods for water or precious metals.~
+        Water-wealth means nothing if you cannot carry it. Need precious metals?~
+        Friend, I have precious metals to trade.~
+        Raw metals buy and sell for a fixed water-cost.~
+        Come, wanderer, let me see what valuables you have for trade.~
+        Few are those with more riches than I.~
+      </text>
+      <choice GotoID="End">Live and drink.</choice>
+    </node>
+  </conversation>
+
+  <conversation ID="Vixy_Pedlar">
+    <node ID="Start">
+      <text>
+        Nothing here you need. Look anyway.~
+        It is all worth more than I am asking. That is not saying much.~
+        =player.FormalAddressTerm=. I have odds. I have ends.~
+        Somebody threw this away. Their loss, maybe.~
+        I had a tent with a sign once.~
+        Water first, then we talk.~
+        Take a look. I am not going anywhere until it rains.
+      </text>
+      <choice GotoID="End">Live and drink.</choice>
+    </node>
+  </conversation>
+</conversations>

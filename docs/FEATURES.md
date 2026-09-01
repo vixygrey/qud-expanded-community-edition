@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **510** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **521** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -590,7 +590,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 17 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **510 active** | **283** |
+| **Total** | **521 active** | **283** |
 
 ### 6.2 Melee weapons
 
@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 28 options (§13)
+│   ├── Options.xml             # 29 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Twenty-eight options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Twenty-nine options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -6986,6 +6986,78 @@ Vanilla prints `You gain N XP!` and *then* sends `AwardedXPEvent`, so the annota
 line — `(Base: 40 | Bonus: 24)` — with nothing suppressed and no vanilla code replaced. Mura folded
 both into one line, which is not available without owning the award, and owning the award is the fork
 this avoids.
+
+## 53. The Six Day Stilt, made more of a market (`Optional/StiltMarket/`)
+
+Off by default, and read at load rather than while you play. Two more traders at the Stilt — a smithy
+and a water merchant — a pedlar in the tents that would otherwise stand empty, and about a third more
+stock on every merchant, reaching one or two tiers higher than usual.
+
+**The idea and the two merchants are Mura's**, from the Caves of Qud Expanded — The Grand Bazaar
+sub-mod, absorbed under `docs/PERMISSION.md` §9. **The numbers are not.** That mod raises merchant
+stock about 1.68× and reaches tier 8; this is held to 1.3× per table and stops at tier 6, so roughly
+three quarters of what it added is not here. Calling it a port would be inaccurate in the one
+direction charter rule 3 cares about.
+
+### 53.1 What did not come across
+
+`SixDayTents.cs` does not travel, and could not have. It declares `XRL.World.ZoneBuilders.SixDayTents`
+— vanilla's own name — so it has never run for anybody who installed that sub-mod (#775). Repointing
+the builder at a prefixed class would mean **replacing vanilla's whole `SixDayStilt` cell**, because
+cells are overwritten wholesale by name with no cell- or zone-level merge anywhere in `WorldFactory`.
+That is charter rule 1's full-redeclaration shape, and #793 refused it.
+
+Its two `.bak` variants are closed to this fork as well: `Raven_SixDayTents.cs.bak` is a
+`[HarmonyPatch]`, which rule 5 refuses outright, and `InfluenceMap.cs.bak` shadows
+`Genkit.InfluenceMap` and is inert for the same reason as the live file. Three routes to that tent
+layout, all shut.
+
+### 53.2 The ceiling, and where it binds
+
+Every merchant table is held to **1.3× vanilla**, measured as expected quantity. Fifteen tables move;
+the rest are left alone because the Bazaar wanted little or nothing there.
+
+| | vanilla | after | |
+|---|---:|---:|---|
+| `GunsmithInventory` | 51.5 | 67.0 | 1.30× |
+| `ApothecaryInventory` | 32.4 | 42.1 | 1.30× |
+| `ChefInventory` | 25.3 | 32.9 | 1.30× |
+| `HaberdasherInventory` | 16.0 | 19.3 | 1.21× |
+| `ArmorerInventory` | 13.0 | 16.3 | 1.25× |
+| eleven others | | | 1.01×–1.30× |
+| **all fifteen** | **295** | **355** | **1.20×** |
+
+**The tier cap and the volume cap are independent**, which is worth knowing before tuning either. The
+Bazaar's tier-7 and tier-8 rows carry `Chance="2"` and `"1"`, so removing them costs about 0.2
+expected items and does nothing whatever for volume. They are gone because zetachrome should not be
+purchasable, not because they were expensive.
+
+The budget is spent cheapest-first, so the *reach* — one or two tiers above what a merchant normally
+stocks, at 20% and 10% — always fits, and whatever remains goes to the staple. That is why a gunsmith
+gains `Guns 4`, `Guns 5` and `Guns 6` **and** more ammunition, while a small merchant gains only the
+reach.
+
+### 53.3 The pedlar
+
+Vanilla's `EmptyTent` holds one table and nothing else; the Grand Bazaar filled it with eight to
+twelve bedrolls. `Vixy_Pedlar` puts a person there instead — junk, a little water, whatever the scrap
+heap gave up. It is the only version that explains why the tent was standing.
+
+**Its weight is left alone deliberately.** `EmptyTent` is weight 4 of 80 in `StiltTents`, and could be
+merged down to 2 or 3 — but **not to 1**, because `PopulationItem.MergeFrom` reads
+`if (Item.Weight != 1)`, so a merged weight of exactly one is indistinguishable from none given and is
+silently discarded. Adding the two new tents dilutes empty tents from 5.0% to 4.5% as a side-effect,
+which is the additive way to have fewer of them.
+
+**Three of the water vessels join `DynamicObjectsTable:Items`**, and that is Mura's design rather
+than an accident. `Raven_Water Vase`, `Raven_Water Bottle` and `Raven_Water Pitcher` inherit vanilla's
+`Vase`, `Bottle` and `Pitcher`, which carry that membership — so with the option on, a container that
+already holds water can turn up as ordinary loot. The *merchant-owned* copies are the ones he
+excluded, with `ExcludeFromDynamicEncounters` marked `*noinherit` so the exclusion does not travel to
+children. `dynamic-pools.json` records the three, so a fourth arriving later fails a commit.
+
+`Role` is a `<tag>` on all three creatures, not a `<property>`. Mura's originals used a property;
+vanilla declares `Role` as a tag 349 times and as a property never, and `role-form` holds the line.
 
 ## Appendix A — every merged vanilla melee weapon
 

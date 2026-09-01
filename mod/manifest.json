@@ -22,6 +22,10 @@
     {
       "Path": "Optional/HistoryNames",
       "Options": "OptionQudExpandedCEPlainRelicNames==Yes"
+    },
+    {
+      "Path": "Optional/StiltMarket",
+      "Options": "OptionQudExpandedCEStiltMarket==Yes"
     }
   ]
 }

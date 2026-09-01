@@ -92,6 +92,20 @@ namespace QudExpandedCE
 
         public const string XPCurveID = "OptionQudExpandedCEXPCurve";
 
+        /// <summary>
+        /// The Six Day Stilt market. Gated by <c>manifest.json</c> rather than by code — the whole
+        /// of <c>mod/Optional/StiltMarket/</c> is data, so <c>Directories</c> can switch it off and
+        /// no C# needs to read it (#498's discovery, the same route the Joppa building takes).
+        /// </summary>
+        /// <remarks>
+        /// It is declared here anyway, and only here, because <c>option-wiring</c> counts an option
+        /// as read when its ID appears in <c>mod/Scripting/</c> or as an
+        /// <c>ExcludeFromDynamicEncountersOption</c> tag — it does not read <c>manifest.json</c>.
+        /// Without this constant a correctly wired option reports as dead. <c>JoppaBuildingID</c>
+        /// sits here for exactly the same reason.
+        /// </remarks>
+        public const string StiltMarketID = "OptionQudExpandedCEStiltMarket";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>

@@ -62,7 +62,7 @@ rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Twenty-eight options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+Twenty-nine options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
 the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
 have that — nobody should need to swallow the whole mod to get one part of it.
 
@@ -77,7 +77,7 @@ have that — nobody should need to swallow the whole mod to get one part of it.
   save.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
-document is also the complete reference for the mod itself: every system, all 510 new blueprints and
+document is also the complete reference for the mod itself: every system, all 521 new blueprints and
 283 vanilla merges.
 
 ## Requires a new character
@@ -97,19 +97,22 @@ types with the same names in the same namespace**, one per psionic chip part. Qu
 may get either mod's version of any given part. It isn't a bug in either mod, it's what a fork *is*.
 Saves don't carry across either, as above.
 
-The other two mods in the family are fine, and are unaffected by this fork:
+The other two mods in the family:
 
 | Mod | | |
 |---|---|---|
 | **Caves of Qud Expanded** (Mura's original) | ❌ | Same 36 types in `XRL.World.Parts` — enable one or the other |
-| **Caves of Qud Expanded — The Grand Bazaar** | ✅ | No shared records or types with this fork |
+| **Caves of Qud Expanded — The Grand Bazaar** | ❌ | Its content is in this fork now — enable one or the other |
 | **Caves of Qud Expanded — Experience Curve Beta** | ✅ | No shared record or type — and its own script cannot run at all |
 
-Where those green ticks come from, so you can judge them: I compared every object, population table
-and C# type the three mods declare. The Bazaar shares **no** object name, **no** C# type, and **not
-one** vanilla record merged by both — its only merge target is vanilla's `EmptyTent` table, which this
-fork doesn't touch — and all 79 of its blueprint references resolve. Neither declares a dependency on
-the original, and Mura's own description of the Bazaar says it works with or without it.
+**The Bazaar's tick went red, and it is this fork's doing.** Its two merchants, their tents and its
+merchant retuning are part of this mod now, behind the *Six Day Stilt* option — so running both
+declares `Raven_Smithy` and `Raven_WaterMerchant` twice and merges the same merchant tables twice
+over. That is not a defect in Mura's mod; it is what absorbing content means, and the honest thing is
+to say so on the page rather than leave a tick that was true last release. Pick one.
+
+Its tent-layout script is a separate matter and was never running for anybody — see
+`docs/FEATURES.md` §53.1.
 
 **The Experience Curve needs a longer answer than it used to.** It ships no XML at all, and its one
 class is called `XRL.World.Parts.Experience` — vanilla's own name. That is why it does nothing: type
