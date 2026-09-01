@@ -3967,3 +3967,72 @@ one step further along: there the wrong answer is blank and at least invites a s
 is fully populated. All three share the family with
 [`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) — a tool declining to
 answer the question asked, and the silence being read as the answer.
+
+## A mod cannot shadow a vanilla type, and the method's own summary says the opposite
+
+Two sub-mods waiting to merge here replace a vanilla behaviour by declaring a class with vanilla's
+**exact fully-qualified name** and expecting type resolution to prefer theirs — `XRL.World.Parts.
+Experience` in one, `XRL.World.ZoneBuilders.SixDayTents` in the other. It does not work, and it has
+never worked.
+
+`ModManager.ResolveType` is where every XML-named extension point in the game arrives — **87 call
+sites**, covering parts, skills, mutations, effects, zone builders, biomes, embark modules,
+genotypes and populations. Its summary reads:
+
+> *Attempt to find a type within loaded assemblies. Mods are searched first according to priority,
+> followed by the main game assembly.*
+
+Its body does the reverse:
+
+```csharp
+value = Type.GetType(text, throwOnError: false, IgnoreCase);
+if ((object)value == null)
+{
+    foreach (Assembly modAssembly in ModAssemblies) { ... }
+}
+```
+
+`Type.GetType` with a namespace-qualified but not assembly-qualified name searches the **calling**
+assembly, and the caller is `Assembly-CSharp` — which is where vanilla's types live. So it finds
+vanilla's, returns it, and `ModAssemblies` is never reached. The resolution cache has exactly one
+writer, inside this method, so nothing can seed a mod type ahead of it either.
+
+**Measured rather than reasoned.** A reading this load-bearing deserved an experiment, so I built
+two assemblies — a host and a separately compiled library — both declaring the same
+fully-qualified type, and reproduced the method's structure over them:
+
+| what declares the name | result |
+|---|---|
+| host **and** library | `Type.GetType` returns non-null, the library is **never consulted**, the host's type wins |
+| library only | `Type.GetType` returns null, the loop runs, the library's type wins |
+
+The second row is the control, and it is the half that matters: the probe *can* return the mod's
+type, so the first row is a finding rather than a rigged setup.
+
+> **A mod type can only ever win a name vanilla does not already use.** That is the exact opposite
+> of shadowing, and it means a whole-file fork of a vanilla class is inert — it compiles, it ships,
+> it loads, and nothing ever constructs it.
+
+**Freehold names this and warns about it, which I did not expect.** `ModManager.CheckXRLConflicts`
+walks every active mod's exported `XRL.*` types, and where the base assembly declares the same full
+name it records a conflict, writes `==== TYPE CONFLICTS DETECTED ====` to the build log, and raises
+a mod error ending *"It's strongly recommended to rename your type to be unique."* It is called
+unconditionally straight after `BuildMods()` — I checked the caller, because a mechanism with none
+is decoration. So this is not an undocumented corner: it is a thing the game detects, reports, and
+tells you to stop doing.
+
+**The constructive half, and it is the useful one.** The same resolver that refuses to shadow
+resolves a *uniquely named* mod type without complaint — that is the branch the control row above
+exercises. So the route for replacing a vanilla behaviour is never "declare their name"; it is
+**declare your own name and get the game to ask for it**, which is exactly what a prefixed part,
+mutation `Class`, or `<builder Class=>` already does. This fork has been doing that by accident of
+convention all along: 103 public types across 81 files, and **zero** collisions with vanilla's
+4,833 classes.
+
+Related: [`a mod's reach ends where nothing in XML names the object`](#a-mods-reach-ends-where-nothing-in-xml-names-the-object)
+is the constraint this sits inside — a unique name only helps where something in `Base/` can be made
+to ask for it. And
+[`vanilla builds mechanisms it never wires up`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete)
+is what the port turned out to need: `IXPEvent.TierScaling` is a public flag, read by vanilla's
+`Experience` part, that **nothing in the game ever sets false** — the switch for replacing exactly
+the behaviour the shadowing mod was trying to replace.
