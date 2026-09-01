@@ -48,6 +48,7 @@ namespace XRL.World.Parts
     {
         public const string FatigueProperty = "Vixy_Fatigue";
         public const string OnMapSinceProperty = "Vixy_FatigueOnWorldMapSince";
+        public const string ChargedTurnProperty = "Vixy_FatigueChargedTurn";
         public const string SleepCommand = "Vixy_CommandSleep";
 
         public const int Max = 1000;
@@ -57,7 +58,7 @@ namespace XRL.World.Parts
         public const int Collapsing = 950;
 
         /// <summary>
-        /// A sanity bound on the world-map catch-up, not a balance lever.
+        /// A sanity bound on any catch-up charge, not a balance lever.
         /// </summary>
         /// <remarks>
         /// <b>This was 1,200 turns and that made the world map nearly free</b>, which is the exact
@@ -72,7 +73,20 @@ namespace XRL.World.Parts
         /// stale property producing a nonsense number, and it takes `Stomach`'s own bound for the
         /// same job.
         /// </remarks>
-        public const int MaxWorldMapCatchUp = 100000;
+        public const int MaxCatchUp = 100000;
+
+        /// <summary>
+        /// Turns of silence that count as a gap rather than as ordinary play.
+        /// </summary>
+        /// <remarks>
+        /// A character at normal speed acts about once a turn, and a slow one every two or three, so
+        /// nothing in ordinary play comes near this. It exists so that a window where the handler
+        /// does not run at all - a domination, or anything future with the same shape - is billed on
+        /// return instead of being free. Set low enough that a genuinely sluggish character is still
+        /// charged for the time they spent being sluggish, which is the correct answer: being slow
+        /// is not restful.
+        /// </remarks>
+        public const int GapThreshold = 10;
 
         public static int Get(GameObject Object)
         {
@@ -105,7 +119,22 @@ namespace XRL.World.Parts
 
         public override bool HandleEvent(BeginTakeActionEvent E)
         {
-            if (!Raven_Options.Fatigue || !ParentObject.IsPlayer())
+            if (!Raven_Options.Fatigue)
+            {
+                // Keep the stamp current while the option is off, so switching it back on does not
+                // bill for the time it was off. Only on the real player - see below for why the
+                // other guard must not do this.
+                if (ParentObject.IsPlayer())
+                {
+                    ParentObject.SetIntProperty(ChargedTurnProperty, (int)XRLCore.CurrentTurn);
+                }
+                return base.HandleEvent(E);
+            }
+
+            // Deliberately does *not* stamp. While the player is dominating something, this body is
+            // no longer `The.Player` and this handler stops running on it, so the stamp going stale
+            // is exactly what bills the domination on return. #179.
+            if (!ParentObject.IsPlayer())
             {
                 return base.HandleEvent(E);
             }
@@ -121,17 +150,7 @@ namespace XRL.World.Parts
                 return base.HandleEvent(E);
             }
 
-            int since = ParentObject.GetIntProperty(OnMapSinceProperty);
-            if (since > 0)
-            {
-                ParentObject.SetIntProperty(OnMapSinceProperty, 0);
-                int crossed = (int)Math.Min(XRLCore.CurrentTurn - since, MaxWorldMapCatchUp);
-                if (crossed > 0)
-                {
-                    // Overland travel is strain 1.5 per §3.1, in the same hundredths.
-                    Accrue(crossed * BaseAccrual * 3 / 2);
-                }
-            }
+            Settle();
 
             if (ParentObject.HasEffect<Asleep>())
             {
@@ -145,7 +164,67 @@ namespace XRL.World.Parts
                 Collapse();
             }
 
+            ParentObject.SetIntProperty(ChargedTurnProperty, (int)XRLCore.CurrentTurn);
             return base.HandleEvent(E);
+        }
+
+        /// <summary>
+        /// Bill any stretch of turns this part did not see, before charging for this action.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>This generalises the world-map catch-up rather than adding a second mechanism beside
+        /// it.</b> The map was the first place where time passed without this handler charging for
+        /// it; domination was the second, and the fix for one is the fix for both. Any future gap of
+        /// the same shape is now billed without anything new being written.
+        /// </para>
+        /// <para>
+        /// <b>Domination is the case that made this necessary.</b> `Domination.Dominate` assigns
+        /// `The.Game.Player.Body = defender`, so the puppet becomes the player and the real body
+        /// stops answering `IsPlayer()`. The puppet never carries this part, and the real body's
+        /// `Dominating` effect returns false from its own `BeginTakeActionEvent` handler - which
+        /// zeroes that body's energy and stops the dispatch chain, so whether this part is reached
+        /// at all is a question of part-versus-effect ordering rather than anything to rely on.
+        /// Duration is `100 * (Level + 1)` rounds against a 75-round cooldown, so at rank 10 that is
+        /// about 1,100 rounds, recastable before it lapses. Left alone it is a fatigue-free window
+        /// wide enough to live in.
+        /// </para>
+        /// <para>
+        /// <b>The gap is charged at the base rate, with no strain multiplier.</b> Strain describes
+        /// what the character was doing, and across a gap that is precisely what is not known. The
+        /// world map is the one exception, because there the answer *is* known - overland travel is
+        /// strain 1.5 per §3.1 - so it keeps its own branch.
+        /// </para>
+        /// </remarks>
+        private void Settle()
+        {
+            int now = (int)XRLCore.CurrentTurn;
+
+            int since = ParentObject.GetIntProperty(OnMapSinceProperty);
+            if (since > 0)
+            {
+                ParentObject.SetIntProperty(OnMapSinceProperty, 0);
+                int crossed = (int)Math.Min(now - since, MaxCatchUp);
+                if (crossed > 0)
+                {
+                    // Overland travel is strain 1.5 per §3.1, in the same hundredths.
+                    Accrue(crossed * BaseAccrual * 3 / 2);
+                }
+                return;
+            }
+
+            int charged = ParentObject.GetIntProperty(ChargedTurnProperty);
+            if (charged <= 0)
+            {
+                // First action of a save that predates this stamp. Nothing owed.
+                return;
+            }
+
+            int gap = (int)Math.Min(now - charged, MaxCatchUp);
+            if (gap > GapThreshold)
+            {
+                Accrue(gap * BaseAccrual);
+            }
         }
 
         /// <summary>
