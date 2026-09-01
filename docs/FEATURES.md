@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 79 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 80 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -6784,6 +6784,39 @@ declares the part. See `docs/LESSONS.md`.
 The halving is applied to `Strain()` **last**, after the combat and wound multipliers, so the implant
 is worth the same proportion of a hard day as an easy one. Halving the base first would have made it
 quietly weaker in exactly the fights it is bought for.
+
+### 51.5d The meter you can actually see (`Vixy_Fatigued`)
+
+From Tired upward, one word sits on the **active-effects line** beside `burdened` — `{{y|tired}}`,
+`{{W|weary}}`, `{{r|exhausted}}`, `{{R|collapsing}}`.
+
+**It had no readout at all before this.** `Vixy_Fatigue` is an `IPart`, and
+`AbilityBar.InternalUpdateActiveEffects` walks `Object.Effects` — parts never reach that line. The only
+thing that had ever told me my fatigue was a one-off message at each band crossing, and those scroll
+away. Burden appeared there from the start because `Vixy_Burdened` is an `Effect`; fatigue could not,
+for no better reason than which base class it happened to inherit.
+
+**The status bar is where it belongs and it is shut to a mod.** Hunger and thirst are not effects:
+`Stomach.FoodStatus()` is rendered directly by `Qud.UI/PlayerStatusBar.cs` line 333 and
+`XRL.UI/Sidebar.cs` line 1268. `StringDataType` is a **private** enum of exactly eight members, each
+with its own `UITextSkin` field; `Stomach` is fetched by `GetPart<Stomach>()` and its methods called by
+name; and no event is fired anywhere in `PlayerStatusBar`. Nothing to register for and nothing to
+append to, so reaching it would need Harmony and rule 5 closes it.
+
+**But vanilla does this twice, and the second half is open.** `Famished` is an ordinary `Effect` with a
+`Duration` and a coloured `GetDescription()`, so hunger appears both as a continuous readout in the
+status bar and as a chip on the effects line once it turns bad. Fatigue gets the chip. The colours climb
+the way the band messages already do and borrow vanilla's own hunger vocabulary at the top — `{{W|}}`
+then `{{R|}}`, matching `FoodStatus` — so the same escalation means the same thing on both lines.
+
+**Tired rather than Weary, and that is the point of building it.** §51.4a asks me how long I want to
+sleep, and *"until rested"* is a different choice at 420 than at 940. Starting the readout at Weary
+would leave that decision unlit for the whole first band.
+
+**One effect that renames itself**, rather than four that swap — `Vixy_Burdened`'s own pattern, so one
+serialisable class and no per-band churn. It carries no state: the band is derived from the property bag
+on every refresh, so the word cannot disagree with the meter. Turning the option off removes it, rather
+than leaving *"exhausted"* on screen for a system that is no longer running.
 
 ### 51.6 State lives in the property bag, deliberately
 

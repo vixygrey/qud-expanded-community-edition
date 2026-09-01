@@ -98,6 +98,10 @@ recorded because contributors need them, not because subscribers do.
   Sleep gas will not do instead of sleep, and neither will narcolepsy: only lying down on purpose
   rests you.
 
+  {{y|You can see how tired you are.}} Tired, weary, exhausted, collapsing — one word on the active
+  effects line, next to burdened, in colours that climb the way hunger's do. Until now the only thing
+  that ever told you was a message as you crossed each threshold, and messages scroll away.
+
   {{y|How long you sleep is yours to choose.}} The same question a bedroll asks, with the same three
   times and one more: until rested. Pick a time and you wake at it or sooner, whichever comes first,
   because being rested always ends a sleep early. Wake on the clock with the meter still up and you
