@@ -3917,3 +3917,53 @@ real hit across 79 scripting files. Worth running whenever a feature keeps state
 Related: [`My design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
 is about a figure being wrong in the document; this is the same figure being right in the document and
 wrong in the code.
+
+## A freshly pushed pull request serves its previous check run, and it looks settled
+
+Twice in one afternoon I read a check result that was not the current one, and the second time I
+nearly reported it as the outcome.
+
+`gh pr checks <n>` and `gh pr view <n> --json statusCheckRollup` both answer from the pull request's
+**current head**, and GitHub takes a while to move that head after a push. I measured **ninety
+seconds** on #715. Inside that window both commands return the *previous* run: complete, every
+context settled, and with nothing anywhere marking it stale.
+
+**That is worse than an empty result.** A screenful of nine greens and one red is exactly the shape a
+real answer takes, so there is nothing to be suspicious of. I armed a monitor to watch the checks; it
+read the old run, saw everything settled, and reported `ALL-SETTLED` within seconds of a push whose
+CI could not possibly have finished. I read it as the new state and said so.
+
+**The tell was arithmetic, not intuition.** CI here takes minutes, so a fully settled result seconds
+after a push cannot be describing that push. That is the only thing available — the output carries no
+timestamp, no head SHA and no hint that it describes a commit you have already replaced.
+
+> **Resolve the head SHA and ask about that commit.** A commit cannot be stale about itself:
+>
+> ```bash
+> sha=$(git rev-parse HEAD)
+> gh api "repos/OWNER/REPO/commits/$sha/check-runs" \
+>   --jq '.check_runs[] | "\(.name)=\(.conclusion // .status)"'
+> ```
+>
+> and before believing anything keyed on the pull request rather than the commit, confirm it has
+> caught up:
+>
+> ```bash
+> gh api repos/OWNER/REPO/pulls/<n> --jq '.head.sha'
+> ```
+
+**And my first diagnosis was wrong, which is the half worth keeping.** I read it as `gh pr view`'s
+GraphQL serving stale data against REST, because a REST call a minute later showed the new head. It
+was not that. The sync had simply happened in between, and a watcher I set afterwards timed it. Had
+I stopped at the first explanation, *"GraphQL lags REST"* would have gone into this file as a fact,
+sounded plausible for ever, and sent somebody looking for a consistency bug that does not exist. The
+two readings are distinguishable by one cheap experiment — poll one endpoint until it changes — and
+I only ran it because the story felt tidier than the evidence.
+
+This is [`a capped listing answers a smaller question`](#a-capped-listing-answers-a-smaller-question-and-nothing-in-the-output-says-so)
+with the world not merely smaller but *older*, and it is
+[`a search that finds nothing`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
+one step further along: there the wrong answer is blank and at least invites a second look, here it
+is fully populated. All three share the family with
+[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) — a tool declining to
+answer the question asked, and the silence being read as the answer.
