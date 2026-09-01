@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using QudExpandedCE;
 using XRL;
 using XRL.Messages;
 using XRL.Rules;
+using XRL.UI;
 using XRL.World.AI.GoalHandlers;
 using XRL.World.Effects;
 
@@ -225,15 +227,87 @@ namespace XRL.World.Parts
                 return;
             }
 
+            int duration = AskHowLong(Player);
+            if (duration <= 0) return;
+
             int quality = RestQuality(Player);
             string where = quality >= 15
                 ? "You settle down to sleep."
                 : (quality >= 12 ? "You find a sheltered spot and lie down." : "You lie down on the bare ground.");
             MessageQueue.AddPlayerMessage(where);
 
-            // Duration is generous - fatigue drain, not the clock, is what ends the sleep in
-            // practice, and Asleep already wakes on damage.
-            Player.ForceApplyEffect(new Asleep(Stat.Random(200, 320), forced: true, quicksleep: true, Voluntary: true));
+            Player.ForceApplyEffect(new Asleep(duration, forced: true, quicksleep: true, Voluntary: true));
+        }
+
+        /// <summary>Rounds of sleep the player chose, or 0 if they backed out.</summary>
+        /// <remarks>
+        /// <para>
+        /// <b>This is `Bed`'s own prompt, borrowed rather than invented.</b> `Bed.cs` line 337 asks
+        /// "How long would you like to sleep?" with three fixed spans - 150, 375 and 600 rounds -
+        /// each labelled with the clock time the sleeper would wake at. Anyone who has used a bedroll
+        /// already knows this dialogue, and a `Sleep` command that silently did something else while
+        /// offering *less* control than the bedroll in their pack was the actual defect. #776.
+        /// </para>
+        /// <para>
+        /// <b>A timed choice is a ceiling, not a span.</b> `Vixy_Fatigue.Rest` ends the sleep the
+        /// moment fatigue reaches zero, so "until 9:00" means "no later than 9:00" - waking earlier
+        /// because I am rested is the good outcome rather than a broken promise.
+        /// </para>
+        /// <para>
+        /// <b>"Until rested" is first because it is what most nights want</b>, and it carries a
+        /// computed bound rather than the old `Stat.Random(200, 320)`. That range could not keep the
+        /// promise the label now makes out loud: a full meter on open ground drains at 4 a turn and
+        /// needs about 250, so a low roll woke me unrested roughly half the time. `TurnsToRest`
+        /// derives the bound from the drain itself, so the two cannot come apart again.
+        /// </para>
+        /// </remarks>
+        private static int AskHowLong(GameObject Player)
+        {
+            int[] spans = { 150, 375, 600 };
+            List<string> options = new List<string> { "Until rested" };
+            foreach (int span in spans)
+            {
+                options.Add("Until " + Calendar.GetTime(Calendar.TotalTimeTicks + span));
+            }
+
+            int pick = Popup.PickOption(
+                "How long would you like to sleep?",
+                null,
+                "",
+                "Sounds/UI/ui_notification",
+                options.ToArray(),
+                null, null, null, null, null, null,
+                0, 60, 0, -1,
+                AllowEscape: true);
+
+            if (pick < 0) return 0;
+            return pick == 0 ? TurnsToRest(Player) : spans[pick - 1];
+        }
+
+        /// <summary>
+        /// Long enough to reach zero from here, with slack.
+        /// </summary>
+        /// <remarks>
+        /// Derived from <see cref="DrainPerAction"/> rather than guessed, so "until rested" keeps its
+        /// word at every rest quality and stays correct if the drain is ever retuned.
+        /// </remarks>
+        public static int TurnsToRest(GameObject Player)
+        {
+            int drain = DrainPerAction(Player);
+            return Vixy_Fatigue.Get(Player) / drain + 20;
+        }
+
+        /// <summary>
+        /// Fatigue removed per action of voluntary sleep.
+        /// </summary>
+        /// <remarks>
+        /// The one place this arithmetic lives. `Vixy_Fatigue.Rest` spends it and
+        /// <see cref="TurnsToRest"/> budgets against it, and a promise made in the sleep menu is only
+        /// as good as those two agreeing.
+        /// </remarks>
+        public static int DrainPerAction(GameObject Player)
+        {
+            return Math.Max(1, 4 * RestQuality(Player) / 10);
         }
     }
 }

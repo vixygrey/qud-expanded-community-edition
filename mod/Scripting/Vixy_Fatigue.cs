@@ -293,7 +293,7 @@ namespace XRL.World.Parts
             Asleep asleep = ParentObject.GetEffect<Asleep>();
             if (asleep == null || !asleep.Voluntary) return;
 
-            Set(ParentObject, Get(ParentObject) - 4 * Vixy_Sleep.RestQuality(ParentObject) / 10);
+            Set(ParentObject, Get(ParentObject) - Vixy_Sleep.DrainPerAction(ParentObject));
 
             if (Get(ParentObject) <= 0)
             {
