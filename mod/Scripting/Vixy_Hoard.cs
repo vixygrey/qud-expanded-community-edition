@@ -35,13 +35,22 @@ namespace XRL.World.Parts
     /// </para>
     /// <para>
     /// <b>Value rather than artifacts, and the margin is not close.</b> The obvious alternative is
-    /// <c>GiveArtifact.IsArtifact</c>, which this fork already uses in <c>Vixy_GiveArtifact</c>. But
-    /// it requires a <c>TinkerItem</c>, and the most valuable objects in the game do not have one:
-    /// of the top fifty items by value, <b>69% is invisible to it</b> — the Otherpearl at 33,333,
+    /// <c>GiveArtifact.IsArtifact</c>, which this fork already uses in <c>Vixy_GiveArtifact</c>. Of
+    /// the top fifty items by value, <b>69% is invisible to it</b> — the Otherpearl at 33,333,
     /// Gimeleth, the Kesil and Shemesh Faces, all seven Light Circles. <c>IsArtifact</c> measures
     /// ancient tech; this issue says fortune, and the treasure end is exactly the half it cannot
     /// see. Water counts too, at one per dram through <c>LiquidVolume</c>, which is correct for a
     /// setting where water is the currency.
+    /// </para>
+    /// <para>
+    /// <b>They do not fail it on the <c>TinkerItem</c> clause, which is worth knowing before anyone
+    /// tries to widen the predicate.</b> The Otherpearl inherits <c>TinkerItem</c> from <c>Armor</c>
+    /// and Gimeleth inherits it from <c>MeleeWeapon</c>; both pass the first test. They fail the
+    /// second by two different routes — the Otherpearl carries an <c>Examiner</c> from
+    /// <c>BaseBracelet</c> that sets only <c>Alternate</c>, so its <c>Complexity</c> is the field's
+    /// default of 0 and <c>0 &gt; 0</c> is false, while Gimeleth has no <c>Examiner</c> at all and
+    /// falls through to the bare <c>return false</c>. Relaxing the <c>TinkerItem</c> requirement
+    /// would therefore change nothing about what this can see.
     /// </para>
     /// <para>
     /// <b>So <c>IsArtifact</c> still decides <em>who</em> turns up, just not <em>whether</em>.</b>

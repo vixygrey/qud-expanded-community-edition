@@ -7236,8 +7236,20 @@ contained or worn object's own `Value`, which recurses into containers. So askin
 `.Value` already totals everything carried and worn. It is a property read, not a sum.
 
 **Value rather than artifacts, and the margin is not close.** The obvious alternative is
-`GiveArtifact.IsArtifact`, which this fork already uses in `Vixy_GiveArtifact` (§27). But it requires
-a `TinkerItem`, and the most valuable objects in the game do not carry one:
+`GiveArtifact.IsArtifact`, which this fork already uses in `Vixy_GiveArtifact` (§27):
+
+```csharp
+if (!Object.HasPart<TinkerItem>()) return false;
+if (Object.TryGetPart<Examiner>(out var Part)) return Part.Complexity > 0;
+return false;
+```
+
+The most valuable objects in the game fail it — but **not on the `TinkerItem` clause**, which is
+worth stating precisely because the obvious guess is wrong. The Otherpearl inherits `TinkerItem` from
+`Armor` and Gimeleth inherits it from `MeleeWeapon`; both pass the first test. They fail the second,
+by two different routes: the Otherpearl has an `Examiner` (from `BaseBracelet`, which sets only
+`Alternate`) whose `Complexity` is therefore the field's default of **0**, and `0 > 0` is false, while
+Gimeleth has no `Examiner` at all and falls to the bare `return false`.
 
 | item | value | passes `IsArtifact`? |
 |---|---:|---|
