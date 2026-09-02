@@ -946,7 +946,7 @@ The key is the table name *as requested*, and `TryResolvePopulation` substitutes
 `RequireTable` sees it, so a tiered slice carries its tier in the key and each slice needs its own
 tag. A value of zero is not a small weight but an exclusion - `if (value == 0) continue`.
 
-## A change to a dynamic pool has one witness, and you have to go and find him
+## A change to a dynamic pool has one witness, and you have to go and find them
 
 A `DynamicObjectsTable:X` change is observable only through whatever consumes that pool, and the
 list is shorter than it looks. `DynamicObjectsTable:Guns` has **exactly one** consumer,
@@ -954,7 +954,7 @@ list is shorter than it looks. `DynamicObjectsTable:Guns` has **exactly one** co
 
 `Gunsmith` carries the legendary table as `HeroTable`, and `GenericInventoryRestocker` reaches for
 it only when `ParentObject.GetIntProperty("Hero") > 0`. **An ordinary gunsmith never touches it**,
-so wishing one and reading his stock tests nothing at all — which is the shape of mistake worth
+so wishing one and reading their stock tests nothing at all — which is the shape of mistake worth
 avoiding here, because it looks exactly like a test that passed.
 
 There is no shortcut to a hero. `HeroMaker.MakeHero` is a method with no wish exposing it, and no

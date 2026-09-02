@@ -309,7 +309,7 @@ namespace XRL.World.Parts
         /// <c>Brain.GetFeeling</c> sums a personal opinion and <c>GetBaseFactionFeeling</c>, and
         /// the latter reads my reputation with them — five hundred of their dead is far past the
         /// -10 line on its own. Forcing it would mean <c>Allegiance.Hostile</c>, which is hostile
-        /// to <em>everything</em> and would set the champion against his own kin.
+        /// to <em>everything</em> and would set the champion against their own kin.
         /// </para>
         /// <para>
         /// <b>That same arithmetic is why the envoy's faction is filtered before it is chosen.</b>
@@ -384,8 +384,8 @@ namespace XRL.World.Parts
             // fifteen carry that flag once inheritance and mixins are followed. IsBaseBlueprint is
             // filtered either way, so abstract parents cannot arrive. The Hindren are left with an
             // empty pool, which is why this guard matters; see the remarks.
-            // The hunter has to be a fair fight, so he is chosen by level. The envoy has not come
-            // to fight, and filtering him would silence this entirely past about level eighteen -
+            // The hunter has to be a fair fight, so they are chosen by level. The envoy has not
+            // come to fight, and filtering them would silence this entirely past level eighteen -
             // the Barathrumites, who are the envoy for the Templar and Mechanimist grudges, have
             // nobody within five levels of a character by then. #806.
             GameObjectBlueprint pick = Hunter

@@ -55,7 +55,7 @@ recorded because contributors need them, not because subscribers do.
 - **Kill enough of one people and they send someone** (#190). Off by default.
 
   Kill five hundred of one faction and, rarely, somebody arrives about it: a named champion of
-  theirs, near my level, who says on arrival what he has come for. Five hundred is a lot of one
+  theirs, near my level, who says on arrival what they have come for. Five hundred is a lot of one
   kind, so expect this a handful of times in a run rather than often — fifty snapjaws in one cave
   is ordinary play, and that is a tenth of it.
 
@@ -64,9 +64,9 @@ recorded because contributors need them, not because subscribers do.
   is not arriving. Whoever comes is near my own level, and a faction with nobody suitable sends
   nobody.
 
-  **And he does not appear the moment he is rolled for.** I am told when he picks up my trail and
-  have ten turns before he finds me — enough to drink something, take a position, or start for the
-  stairs — and leaving the area loses him entirely. Being killed by something that materialised
+  **And they do not appear the moment they are rolled for.** I am told when they pick up my trail
+  and have ten turns before they find me — enough to drink something, take a position, or start for
+  the stairs — and leaving the area loses them entirely. Being killed by something that materialised
   before I could act is not a story, and some of us play Classic. A zone is retired on arrival whether or not
   anything comes of it, so walking back through somewhere I have already been is completely inert —
   the kill count caps how many can ever come, and this caps how fast. The count is spent rather than
@@ -93,15 +93,15 @@ recorded because contributors need them, not because subscribers do.
   empty, and about a third more stock on every merchant, reaching a tier or two above what they
   usually carry. Tier 6 at best, and rarely; nothing there sells zetachrome.
 
-  **The idea and the two merchants are Mura's**, from the Grand Bazaar sub-mod, absorbed with his
-  permission. **The numbers are mine.** His version raises merchant stock about 1.68× and reaches
-  tier 8; this is held to 1.3× per merchant and stops at tier 6, so about three quarters of what he
-  added is not here. It would be inaccurate to call this a port, and the credit is his either way.
+  **The idea and the two merchants are Mura's**, from the Grand Bazaar sub-mod, absorbed with their
+  permission. **The numbers are mine.** Their version raises merchant stock about 1.68× and reaches
+  tier 8; this is held to 1.3× per merchant and stops at tier 6, so about three quarters of what they
+  added is not here. It would be inaccurate to call this a port, and the credit is theirs either way.
 
-  **His tent layout did not come across, and could not have.** That part is C# declaring vanilla's
+  **Their tent layout did not come across, and could not have.** That part is C# declaring vanilla's
   own type name, so it has never run for anybody who installed it — and the only way to point the
   game at a replacement would be to redeclare vanilla's entire Six Day Stilt map cell, which this
-  fork does not do. Both of his earlier attempts are shut to me as well: one is a Harmony patch and
+  fork does not do. Both of their earlier attempts are shut to me as well: one is a Harmony patch and
   the other shadows a second vanilla type.
 
   The pedlar is mine. Vanilla's empty tent holds a table; the Grand Bazaar filled it with bedrolls.
@@ -166,8 +166,8 @@ recorded because contributors need them, not because subscribers do.
   pass-down. Only the curve is mine. The sub-mod's whole-file copy had already drifted two behaviours
   behind vanilla with nothing able to show it, which is the cost this shape does not pay.
 
-  One correction carried across deliberately: Mura's comment says three tiers up pays ×1.3 and his
-  arithmetic says ×1.6. The code is what shipped and what he tuned against, so ×1.6 is what I built —
+  One correction carried across deliberately: Mura's comment says three tiers up pays ×1.3 and their
+  arithmetic says ×1.6. The code is what shipped and what they tuned against, so ×1.6 is what I built —
   written down in three places, because the comment is the more persuasive of the two.
 
 - **(internal)** `pin-parity` fails a build where a tool's two pins disagree (#787).
