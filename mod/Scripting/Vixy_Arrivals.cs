@@ -30,6 +30,23 @@ namespace QudExpandedCE
         /// </remarks>
         public const int LevelBand = 5;
 
+        /// <summary>Turns between being noticed and somebody hostile turning up.</summary>
+        /// <remarks>
+        /// <para>
+        /// <b>Only hostile arrivals wait.</b> The delay exists to remove the ambush quality — being
+        /// killed by something that materialised before I could act — and a trader or a grateful
+        /// envoy is not an ambush, so those still arrive on the spot.
+        /// </para>
+        /// <para>
+        /// Ten of my own actions, counted on <c>BeginTakeActionEvent</c>, which is the per-turn hook
+        /// <c>Vixy_Fatigue</c> and <c>Vixy_Bearing</c> already use. Long enough to drink something,
+        /// take a position, or start for the stairs if I am near them; not so long that crossing a
+        /// zone makes me untouchable. Leaving the zone cancels it outright, which is deliberate: the
+        /// feature is meant to pose a decision, and walking away is one of the answers.
+        /// </para>
+        /// </remarks>
+        public const int ArrivalDelay = 10;
+
         /// <summary>
         /// A member of <paramref name="faction"/> whose own blueprint sits within
         /// <see cref="LevelBand"/> of <paramref name="level"/>, or null if none does.

@@ -109,6 +109,23 @@ namespace XRL.World.Parts
         [NonSerialized]
         private bool Resumed;
 
+        /// <summary>Game-state keys for raiders rolled for but not yet arrived.</summary>
+        /// <remarks>
+        /// <b>In game state, not in fields on this part</b> — the same reason the rest of this
+        /// feature's state is, and `validate_mod.py`'s <c>serializable-shape</c> check enforces it:
+        /// a <c>[Serializable]</c> part's layout is written into every save, and charter rule 5
+        /// treats it as frozen. I thought this was free because nothing has been released yet. The
+        /// check is right and I was wrong — the rule is about the shape being fixed at all, not
+        /// about when it becomes expensive to change.
+        /// </remarks>
+        public const string PendingTurnsKey = "Vixy_HoardPendingTurns";
+
+        /// <summary>The faction on the way. See <see cref="PendingTurnsKey"/>.</summary>
+        public const string PendingFactionKey = "Vixy_HoardPendingFaction";
+
+        /// <summary>The zone it was owed in — leaving cancels it.</summary>
+        public const string PendingZoneKey = "Vixy_HoardPendingZone";
+
         /// <summary>Who comes for a hoard of ancient tech.</summary>
         /// <remarks>
         /// Both named in the issue: the Templar want artifacts destroyed, the Mechanimists want them
@@ -134,7 +151,40 @@ namespace XRL.World.Parts
 
         public override bool WantEvent(int ID, int cascade)
         {
-            return base.WantEvent(ID, cascade) || ID == EnteredCellEvent.ID;
+            return base.WantEvent(ID, cascade)
+                || ID == EnteredCellEvent.ID
+                || ID == SingletonEvent<BeginTakeActionEvent>.ID;
+        }
+
+        /// <summary>Counts down raiders who have been rolled for but have not arrived yet.</summary>
+        public override bool HandleEvent(BeginTakeActionEvent E)
+        {
+            int pending = The.Game.GetIntGameState(PendingTurnsKey);
+            if (pending <= 0) return base.HandleEvent(E);
+
+            // Leaving cancels it. People who set out after me in one place do not follow me across
+            // the world; the next zone gets its own roll.
+            if (ParentObject.CurrentZone?.ZoneID
+                != The.Game.GetStringGameState(PendingZoneKey))
+            {
+                Clear();
+                return base.HandleEvent(E);
+            }
+
+            The.Game.SetIntGameState(PendingTurnsKey, --pending);
+            if (pending > 0) return base.HandleEvent(E);
+
+            string faction = The.Game.GetStringGameState(PendingFactionKey);
+            Clear();
+            if (!faction.IsNullOrEmpty()) SendRaiders(faction);
+            return base.HandleEvent(E);
+        }
+
+        private static void Clear()
+        {
+            The.Game.SetIntGameState(PendingTurnsKey, 0);
+            The.Game.SetStringGameState(PendingFactionKey, null);
+            The.Game.SetStringGameState(PendingZoneKey, null);
         }
 
         public override bool HandleEvent(EnteredCellEvent E)
@@ -154,7 +204,20 @@ namespace XRL.World.Parts
             bool tech = MostlyArtifacts();
             if (Stat.Random(1, 100) <= RaiderChance)
             {
-                SendRaiders(tech);
+                // Noticed now, arriving later. Being killed by something that appeared before I
+                // could act is not a decision, and this fork's players include permadeath ones. The
+                // faction is settled here rather than on arrival so the warning can name it. #806.
+                string faction = Willing(tech ? TechRaiders : WealthRaiders);
+                if (!faction.IsNullOrEmpty())
+                {
+                    The.Game.SetIntGameState(PendingTurnsKey, Vixy_Arrivals.ArrivalDelay);
+                    The.Game.SetStringGameState(PendingFactionKey, faction);
+                    The.Game.SetStringGameState(PendingZoneKey, ParentObject.CurrentZone?.ZoneID);
+                    IComponent<GameObject>.AddPlayerMessage(
+                        "{{R|You are being watched.}} "
+                        + Faction.GetFormattedName(faction)
+                        + " know what you are carrying, and they are not far off.");
+                }
             }
             else if (Stat.Random(1, 100) <= TraderChance)
             {
@@ -230,11 +293,8 @@ namespace XRL.World.Parts
         /// to send anyone at all. #806.
         /// </para>
         /// </remarks>
-        private void SendRaiders(bool tech)
+        private void SendRaiders(string faction)
         {
-            string faction = Willing(tech ? TechRaiders : WealthRaiders);
-            if (faction.IsNullOrEmpty()) return;
-
             int placed = 0;
             int wanted = Stat.Random(2, 3);
             for (int i = 0; i < wanted; i++)

@@ -7139,6 +7139,15 @@ exactly the characters most likely to have earned it.
 **A faction with nobody suitable sends nobody.** The Issachari have only level-8 blueprints, the
 snapjaws top out around twenty; both go quiet for a late character, and silence is the right failure.
 
+**He does not appear when he is rolled for.** Being told *"you are being followed"* and then having
+ten of my own turns before he finds me is the difference between a threat and an ambush — long enough
+to drink something, take a position, or start for the stairs, and **leaving the zone loses him
+outright**. That is deliberate: the feature is meant to pose a decision, and walking away is one of
+the answers. The counter runs on `BeginTakeActionEvent`, which `Vixy_Fatigue` and `Vixy_Bearing`
+already use.
+
+The envoy has no such delay, because a visitor is not an ambush.
+
 **`GetMembers` is asked with `Dynamic: true`, and that argument is load-bearing.** It filters
 `IsBaseBlueprint` either way, so an abstract parent like `Templar` — which spawns nameless and
 unrendered if you wish for it directly — can never arrive. But `IsExcludedFromDynamicEncounters` is
@@ -7324,6 +7333,16 @@ said they were. That killed a character in testing; §54.3 has the detail and #8
 
 Each raider is drawn separately, so a party is not three copies of one blueprint where the faction
 has more to offer — and if the faction has nobody within range, nobody comes.
+
+**They do not appear when they are rolled for either.** *"You are being watched"* comes first, and
+they arrive ten of my turns later — or not at all, if I have left the zone by then. §54.3 has the
+reasoning; the trader is exempt for the same reason the envoy is.
+
+**The pending arrival lives in game state, not in a field on the part.** A `[Serializable]` part's
+layout is written into every save and charter rule 5 treats it as frozen, which `validate_mod.py`'s
+`serializable-shape` check enforces mechanically — it caught me writing these as fields on the
+grounds that nothing had shipped yet. The rule is about the shape being fixed at all, not about when
+changing it becomes expensive.
 
 ### 55.3 The trader, which is the part vanilla never shipped
 
