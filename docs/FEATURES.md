@@ -7411,6 +7411,13 @@ travelling with them in the save, and already attached to the ritual.
 the speaker, and that property is read by **nothing** — zero uses across vanilla's own
 `Conversations.xml`. A canonical marker going spare.
 
+**The snapshot lands after the ritual's own award**, and that is what makes it mean anything.
+`WaterRitual` calls `PerformRitual()` — where `ModifyReputation()` pays `repValue`, 100 by default, to
+the speaker's own faction — and only *then* sends the event. So what is recorded is where I stood once
+the ritual had done its work. A moment earlier and it would capture the standing the award was about
+to change, so everybody would report good news of me immediately, on the strength of the water I had
+just shared with them. That ordering is vanilla's rather than a choice here.
+
 `WaterRitualStartEvent.Send` dispatches to `Actor` and nobody else, and `Actor` is always the player.
 It fires the legacy string event first, gated on `HasRegisteredEvent`, then the `MinEvent` — the same
 shape as `Killed` in §54.5 — so both are registered, and the write is guarded against running twice.

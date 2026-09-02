@@ -40,6 +40,16 @@ namespace XRL.World.Parts
     /// satisfied by the speaking half, which is gated.
     /// </para>
     /// <para>
+    /// <b>The snapshot lands after the ritual's own award, and that is what makes it mean
+    /// anything.</b> <c>WaterRitual</c> calls <c>PerformRitual()</c> — which is where
+    /// <c>ModifyReputation()</c> pays out <c>repValue</c>, 100 by default, to the speaker's own
+    /// faction — and only then sends <c>WaterRitualStartEvent</c>. So what is recorded here is where
+    /// I stood <em>once the ritual had done its work</em>. Taken a moment earlier it would capture
+    /// the standing the award was about to change, and everybody would report good news of me
+    /// immediately, on the strength of the water I had just shared with them. That ordering is
+    /// vanilla's and not mine, so it is worth writing down rather than relying on quietly.
+    /// </para>
+    /// <para>
     /// <b>Why a part on the player.</b> <c>WaterRitualStartEvent.Send</c> dispatches to <c>Actor</c>
     /// and to nobody else, and <c>Actor</c> is always <c>The.Player</c>. It fires the legacy string
     /// event first, gated on <c>HasRegisteredEvent</c> — the same shape as <c>Killed</c> in #190 —
