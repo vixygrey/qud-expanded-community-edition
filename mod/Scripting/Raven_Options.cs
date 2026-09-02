@@ -110,6 +110,8 @@ namespace QudExpandedCE
 
         public const string CarriedHoardID = "OptionQudExpandedCECarriedHoard";
 
+        public const string WaterMemoryID = "OptionQudExpandedCEWaterMemory";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -773,6 +775,8 @@ namespace QudExpandedCE
         public static bool FactionChampions => Enabled(FactionChampionsID, "No");
 
         public static bool CarriedHoard => Enabled(CarriedHoardID, "No");
+
+        public static bool WaterMemory => Enabled(WaterMemoryID, "No");
 
         private static void ApplyChipSlots()
         {
