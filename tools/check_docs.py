@@ -494,7 +494,7 @@ IDLE_PHRASINGS: dict[str, str] = {
 # exactly how the six missing ones were found.
 WORKSHOP_CLAIMS: list[tuple[str, list[str]]] = [
     (r"\[b\]([\w-]+) settings in Qud's own options menu", ["options"]),
-    (r"(\d+) subtypes, casters and martial guardians", ["subtypes"]),
+    (r"(\d+) subtypes, sprites by Noble Lark", ["subtypes"]),
     (r"\[b\](\d+) psionic chips\[/b\]", ["chips"]),
     (r"(\d+) psionic subtype sprites", ["subtype-sprites"]),
 ]

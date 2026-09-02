@@ -16,7 +16,16 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-09-01
+
 ### Added
+
+- **(internal)** The Workshop claim for the subtype count follows its sentence (#174).
+
+  Trimming the Psionic Adept bullet to fit the 8,000-character limit reworded the sentence
+  `check_docs.py` reads that figure out of, and `claim-coverage` failed the build rather than letting
+  the claim quietly stop being checked. That is the check working: a figure nobody verifies is worse
+  than one nobody states.
 
 - **Carrying a fortune attracts attention** (#189). Off by default.
 
