@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 84 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 85 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -7082,7 +7082,10 @@ for the world to have already heard. The hunter is rolled first at 4%, and only 
 envoy rolled at 1%, so the two can never arrive together.
 
 **A zone is retired on arrival, before anything is rolled**, so a failed roll spends it too and
-walking back through is completely inert. That is vanilla's own order in `CheckPsychicHunters`, and
+walking back through is completely inert. **Loading a save rolls nothing at all**: resuming is not
+arriving, so the first zone seen after a load is retired without being rolled in. That also covers
+switching the option on mid-session, where the zone I am standing in would otherwise fire the moment
+I took a step (#806). That is vanilla's own order in `CheckPsychicHunters`, and
 it is what stops re-walking a cleared dungeon from turning into a stream of hunters — the kill tally
 already caps how many can ever come, but only this caps how fast (#802).
 
@@ -7114,8 +7117,27 @@ cannot hear about it.
 
 ### 54.3 The hunter
 
-He is built from the faction's own members, given my level give or take two, and passed through
-`HeroMaker` so he is named and equipped as one of their heroes.
+He is one of the faction's own members, **chosen** because his blueprint's own level is within five
+of mine, and passed through `HeroMaker` so he is named and equipped as one of their heroes.
+
+**Chosen, not assigned — and the difference is the whole of it.** This used to take any member and
+write my level onto its `Level` stat. That changes an integer and nothing else: hit points, armour,
+resistances and inventory are all declared on the blueprint. An `Issachari Raider` has 16 hit points
+and a dagger; a `Gunner-Knight Templar` has 90, fullerite flake armour, a long sword, two grenades
+and a rifle, and setting its level to twelve leaves all of that exactly where it is. #806 has the
+measurement, and a character died to it in testing.
+
+`HeroMaker`'s `TierOverride` does not help either: it reaches `MutateFromPopulationTable` and
+`inventoryTier`, so it scales what *HeroMaker adds* and never touches the base blueprint.
+
+**The envoy is deliberately not filtered this way.** Level matching exists so a fight is fair, and a
+visitor has not come to fight. Applying it there would do real harm rather than none — the
+Barathrumites, who are the envoy for both the Templar and Mechanimist grudges, have nobody within
+five levels of a character past about eighteen, so it would have silenced the only reward path for
+exactly the characters most likely to have earned it.
+
+**A faction with nobody suitable sends nobody.** The Issachari have only level-8 blueprints, the
+snapjaws top out around twenty; both go quiet for a late character, and silence is the right failure.
 
 **`GetMembers` is asked with `Dynamic: true`, and that argument is load-bearing.** It filters
 `IsBaseBlueprint` either way, so an abstract parent like `Templar` — which spawns nameless and
@@ -7289,9 +7311,19 @@ other face. Filtering before the choice rather than forcing hostility after keep
 answer: a faction I am on good terms with does not rob me, and mending things with the Templar stops
 them coming.
 
-Raiders are ordinary faction members at my level give or take two, two or three of them — not
-`HeroMaker` heroes. §54 sends one named champion because one *is* the event there; here the fiction
-is a raiding party, and a fight I can lose is not the same as a wall.
+Raiders are ordinary faction members — not `HeroMaker` heroes — two or three of them, each **chosen**
+because its blueprint's own level is within five of mine. §54 sends one named champion because one
+*is* the event there; here the fiction is a raiding party, and a fight I can lose is not the same as
+a wall.
+
+**Chosen, not assigned.** This used to take any member of the faction and write my level onto its
+`Level` stat, which changes an integer and leaves the blueprint's hit points, armour and weapons
+untouched. The Templar pool runs from level 9 to 39 and is mostly level-24 knights, so a party of
+three arrived with ninety hit points, fullerite armour and rifles apiece however small the number
+said they were. That killed a character in testing; §54.3 has the detail and #806 the measurement.
+
+Each raider is drawn separately, so a party is not three copies of one blueprint where the faction
+has more to offer — and if the faction has nobody within range, nobody comes.
 
 ### 55.3 The trader, which is the part vanilla never shipped
 
@@ -7325,6 +7357,10 @@ key, so the two features share the idiom without either knowing about the other.
 before the threshold is even checked — otherwise every zone I walked through while poor would stay
 armed, and coming into money would set off everywhere I had already been the next time I passed
 through.
+
+**Loading a save rolls nothing**, for the same reason §54.1 gives: resuming is not arriving. Without
+that, enabling the option and opening a save put a raiding party on top of me before I could act,
+which is how #806 was found.
 
 Threshold is **15,000** carried value: about twelve Nullray Pistols, or two and a half Zetachrome
 Lunes, or the Otherpearl by itself. Set from blueprint data rather than from a real character, so

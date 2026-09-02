@@ -4150,3 +4150,58 @@ before. Count it rather than assuming it; an empty pool is exactly the failure t
 Related: [`pickeach ignores Weight, and Chance is a repeat count`](#pickeach-ignores-weight-and-chance-is-a-repeat-count)
 is the same shape in the population tables — an argument that reads as one thing, silently means
 another, and produces a plausible result either way.
+
+---
+
+## Writing `Level` on a creature scales nothing, and the number makes it look like it did
+
+I built two features that send somebody to find the player, and both of them did this:
+
+```csharp
+who.GetStat("Level").BaseValue = Math.Max(1, ParentObject.Stat("Level") + Stat.Random(-2, 2));
+```
+
+Then I documented both as sending people **"at my level, give or take two."** They did not. That line
+writes one integer, and everything that makes a creature dangerous is declared on its blueprint and
+never consulted it:
+
+| | `Issachari Raider` | `Gunner-Knight Templar` |
+|---|---:|---|
+| Hitpoints | 16 | **90** |
+| gear | a dagger | Fullerite Flake Armor, Long Sword4, 2 grenades, a rifle |
+| resistances | — | 25% heat / cold / electric |
+
+The Templar pool runs from level 9 to 39 and is mostly level-24 knights, so "two or three ordinary
+faction members" was two or three fully equipped knights with the number twelve written on them. A
+character died to it, in the first session the feature was played.
+
+**`HeroMaker`'s `TierOverride` is not a rescue either**, which is the part I would have assumed. It
+reaches `MutateFromPopulationTable` and `inventoryTier` — it scales what *HeroMaker adds* and never
+touches the base blueprint. So the feature that looked more careful, because it went through
+`HeroMaker`, had exactly the same defect.
+
+**The fix is that the level has to be chosen, not assigned.** `GameObjectBlueprint.Stat("Level")`
+reads a blueprint's own authored level without instantiating it, and `Faction.GetMembers` takes a
+predicate, so the pool can be filtered before anything is created. A faction with nobody in range
+then sends nobody, which is the honest failure.
+
+**Three things this cost me that are worth carrying forward:**
+
+1. **A stat is not a difficulty dial.** In a data-driven game, a creature's threat lives in its
+   blueprint — hit points, armour, inventory — and a derived-looking number like `Level` is mostly a
+   label. Ask what actually reads the field before using it as a lever.
+2. **The documentation made it worse, not better.** I wrote "at my level, give or take two" into
+   `docs/FEATURES.md` and a PR body, and the confident phrasing is exactly why nobody looked again.
+   A claim about behaviour is a claim to be checked, and writing it down does not check it.
+3. **Sending nobody is a real option.** I reached for "pick any member and scale it" because I did not
+   want the feature to go quiet. Going quiet is fine. The Issachari have only level-8 blueprints and
+   the snapjaws stop around twenty; both should simply stop appearing for a late character.
+
+A related trap on the same fix: `Statistic.sValue` is a **separate string field** from `BaseValue`, so
+a blueprint written `<stat Name="Level" sValue="18-29" />` reports a level of **zero** through
+`Stat("Level")`. Two Barathrumite blueprints are written that way, and a bare read would have dropped
+both silently — leaving that faction able to send nothing but chromelings. Take the lower bound.
+
+Related: [`a default argument was hiding every named character in the game`](#a-default-argument-was-hiding-every-named-character-in-the-game)
+is the same session and the same shape — a field that reads like a description and behaves like a
+control.

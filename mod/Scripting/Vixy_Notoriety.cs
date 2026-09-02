@@ -85,6 +85,14 @@ namespace XRL.World.Parts
         /// </summary>
         public const string RolledProperty = "Vixy_NotorietyRolled";
 
+        /// <summary>Whether this part has seen a zone yet since the game was loaded.</summary>
+        /// <remarks>
+        /// <c>[NonSerialized]</c> is the whole mechanism, not an optimisation: it is false again
+        /// after every load by definition, which is exactly the condition being detected.
+        /// </remarks>
+        [NonSerialized]
+        private bool Resumed;
+
         public override bool SameAs(IPart p) => true;
 
         public override bool WantEvent(int ID, int cascade)
@@ -290,10 +298,14 @@ namespace XRL.World.Parts
         /// will always send the same face.
         /// </para>
         /// <para>
-        /// <b><c>TierOverride</c> is not a difficulty lever.</b> It reaches
-        /// <c>MutateFromPopulationTable</c> and <c>inventoryTier</c> only, so it scales gear and
-        /// mutations. Matching my level is a separate write to the creature's own <c>Level</c>, a
-        /// little either side so it is neither a pushover nor a wall.
+        /// <b><c>TierOverride</c> is not a difficulty lever, and writing <c>Level</c> was not one
+        /// either.</b> <c>TierOverride</c> reaches <c>MutateFromPopulationTable</c> and
+        /// <c>inventoryTier</c>, so it scales what <em>HeroMaker adds</em>. It does nothing about
+        /// the base blueprint, which is where the hit points, the armour and the weapons live —
+        /// this used to pick any member and then set its <c>Level</c> to mine, which changed an
+        /// integer and left a Knight Templar's ninety hit points and rifle exactly where they were.
+        /// The level is chosen now rather than assigned; see <see cref="Vixy_Arrivals.NearLevel"/>
+        /// and #806.
         /// </para>
         /// </remarks>
         private void Send(string faction, string about, bool Hunter)
@@ -314,16 +326,20 @@ namespace XRL.World.Parts
             // fifteen carry that flag once inheritance and mixins are followed. IsBaseBlueprint is
             // filtered either way, so abstract parents cannot arrive. The Hindren are left with an
             // empty pool, which is why this guard matters; see the remarks.
-            List<GameObjectBlueprint> members = Faction.GetMembers(faction, null, Dynamic: true);
-            if (members.IsNullOrEmpty()) return;
+            // The hunter has to be a fair fight, so he is chosen by level. The envoy has not come
+            // to fight, and filtering him would silence this entirely past about level eighteen -
+            // the Barathrumites, who are the envoy for the Templar and Mechanimist grudges, have
+            // nobody within five levels of a character by then. #806.
+            GameObjectBlueprint pick = Hunter
+                ? Vixy_Arrivals.NearLevel(faction, ParentObject.Stat("Level"))
+                : Vixy_Arrivals.AnyMember(faction);
+            if (pick == null) return;
 
-            GameObject who = GameObject.Create(members.GetRandomElement().Name);
+            GameObject who = GameObject.Create(pick.Name);
             if (who == null) return;
 
-            int level = Math.Max(1, ParentObject.Stat("Level") + Stat.Random(-2, 2));
-            who.GetStat("Level").BaseValue = level;
             HeroMaker.MakeHero(who, "BaseFactionHeroTemplate_" + faction, null,
-                Math.Max(1, level / 5));
+                Math.Max(1, who.Stat("Level") / 5));
 
             landing.AddObject(who);
 
@@ -382,9 +398,14 @@ namespace XRL.World.Parts
             Zone zone = ParentObject.CurrentZone;
             if (zone == null || zone.IsWorldMap() || zone.ZoneID.IsNullOrEmpty()) return false;
 
+            // Resuming a save is not arriving somewhere. The first zone seen after a load is still
+            // retired, so it cannot fire later either, but nothing is rolled in it. #806.
+            bool resuming = !Resumed;
+            Resumed = true;
+
             if (The.ZoneManager.HasZoneProperty(zone.ZoneID, RolledProperty)) return false;
             The.ZoneManager.SetZoneProperty(zone.ZoneID, RolledProperty, true);
-            return true;
+            return !resuming;
         }
 
         /// <summary>Every faction currently owed a reckoning, cheapest test first.</summary>

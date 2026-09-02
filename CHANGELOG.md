@@ -31,7 +31,8 @@ recorded because contributors need them, not because subscribers do.
   **What the fortune is made of decides who turns up.** Mostly ancient tech draws the Putus Templar
   and the Mechanimists, and on the good days a gunsmith or a grenadier. Mostly treasure draws the
   Issachari, and a jeweler or a gemcutter. Nobody robs me who does not already want me dead — mend
-  things with the Templar and they stop coming.
+  things with the Templar and they stop coming — and nobody arrives who is not near my own level. If
+  a faction has nobody suitable to send, nobody comes.
 
   **The trader is the part I built first**, because it is the part that gets cut. Vanilla wrote its
   own version of it — a creature drawn by your glimmer that turns up to talk rather than to fight —
@@ -47,7 +48,9 @@ recorded because contributors need them, not because subscribers do.
   is ordinary play, and that is a tenth of it.
 
   Both rolls happen the first time I walk into a given zone, never on the kill itself, so a threshold
-  crossed mid-fight cannot put somebody into that fight. A zone is retired on arrival whether or not
+  crossed mid-fight cannot put somebody into that fight, and loading a save brings nobody — resuming
+  is not arriving. Whoever comes is near my own level, and a faction with nobody suitable sends
+  nobody. A zone is retired on arrival whether or not
   anything comes of it, so walking back through somewhere I have already been is completely inert —
   the kill count caps how many can ever come, and this caps how fast. The count is spent rather than
   cleared, so carrying on earns the next one instead of starting over.
