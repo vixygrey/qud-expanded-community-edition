@@ -4292,3 +4292,39 @@ of which would have made a custom part unnecessary at all.
 Related: [`two adjacent methods, one of them inverted`](#two-adjacent-methods-one-of-them-inverted-and-the-broken-one-has-the-friendlier-name)
 came out of the same feature. Both were found by symptom in play rather than by reading, which is the
 expensive order.
+
+---
+
+## I validated a heuristic at the wrong granularity, and it was wrong in both directions
+
+I needed to recognise a conversation choice in which the player gives their name, so that vanilla's
+own introductions would satisfy a gate of mine. I surveyed vanilla's `Conversations.xml` with a
+regex, saw a handful of lines like *"Live and drink, =name="* that were clearly **not**
+introductions, and wrote a list of three phrasings narrow enough to exclude them.
+
+Both halves of that were wrong.
+
+**The false positives did not exist.** They were `<text>` on **nodes** — the speaker's words, not the
+player's. My regex, `<choice[^>]*>(.*?)</choice>` with `re.S`, had run together sibling elements and
+produced blobs containing both a choice and the node text around it. The runtime never sees those: it
+tests one choice's texts at a time.
+
+**And the narrow list missed a real one.** `MehmetIntroduce` reads *"I am called =name="*, which
+matches none of `I am =name=` / `My name is =name=` / `call me =name=`. So introducing yourself to
+Mehmet the way the game offers set nothing, and the gate stayed shut — the precise dead end the part
+had been written to prevent. It shipped to a test build and the maintainer hit it within minutes.
+
+**Parsed properly — per choice, per text, the way the code does — the answer was simpler than any of
+it.** 35 choice texts in vanilla contain `=name=` and **all 35 are introductions**. A choice is what
+the player says and `=name=` is the player's own name, so the bare token is the whole test. The phrase
+list was defending against a phantom while letting a real case through.
+
+**The lesson is not "parse XML properly", though I should have.** It is that a heuristic must be
+validated **at the same granularity the runtime applies it**. I tested against concatenated blobs and
+tuned the rule to fit them, so the rule I built was fitted to an artefact of my own tooling. Had I
+tested per-element from the start, the correct rule would have been visible immediately — and it was
+both simpler and more robust than the one I reasoned my way to.
+
+Related: [`conversation events bubble up`](#conversation-events-bubble-up-and-i-attached-the-part-to-the-wrong-element)
+is the same feature and the same week. Both were found by the maintainer in play rather than by me in
+the data, which is the expensive order twice over.

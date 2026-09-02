@@ -31,17 +31,27 @@ namespace XRL.World.Conversations.Parts
     /// the Speaker perspective and never see a choice, which is mine to speak.
     /// </para>
     /// <para>
-    /// <b>The test is on the raw text, before substitution.</b> Every introduction — vanilla's, this
-    /// fork's, and any mod's following the same convention — contains the literal <c>=name=</c>
-    /// token. Measured across all 2,375 choices in vanilla's <c>Conversations.xml</c>, the three
-    /// phrasings below match <b>32 introductions and nothing else</b>; the six other choices
-    /// containing <c>=name=</c> are greetings and speeches, and none of them matches.
+    /// <b>The test is the bare <c>=name=</c> token in a choice's unsubstituted text</b>, and it took
+    /// two corrections to arrive at something that simple. A choice is what <em>I</em> say and
+    /// <c>=name=</c> is <em>my</em> name, so a choice carrying it is me naming myself. Parsed and
+    /// tested per text exactly as this does, <b>35 choice texts in vanilla contain the token and all
+    /// 35 are introductions</b> — no false positive to defend against.
     /// </para>
     /// <para>
-    /// <b>It fails in the safe direction.</b> A phrasing this misses simply does not set the marker,
-    /// which leaves <see cref="Vixy_Introduce"/> visible and able to set it — so a miss costs a
-    /// duplicate choice in one menu, never a blocked ritual. That asymmetry is the same one that
-    /// makes the gate itself open rather than close when it cannot decide.
+    /// <b>I first wrote a list of three phrasings, and it was wrong in both directions.</b> The
+    /// false positives it was guarding against — <em>"Live and drink, =name="</em> and its kin — are
+    /// <c>&lt;text&gt;</c> on nodes, which is the speaker's words and never reaches this. Meanwhile
+    /// it missed <c>MehmetIntroduce</c>, whose line is <em>"I am called =name="</em> and matches none
+    /// of the three. So the ritual stayed locked for anybody who introduced themselves to Mehmet the
+    /// way the game offers, which is the exact dead end this part exists to prevent. I had built the
+    /// list by eye off a regex that concatenated sibling elements, rather than by parsing at the
+    /// granularity the runtime uses.
+    /// </para>
+    /// <para>
+    /// <b>It still fails in the safe direction.</b> A false positive sets the marker without a real
+    /// introduction, which opens the gate early; a miss leaves <see cref="Vixy_Introduce"/> visible
+    /// and able to set it. Neither locks the ritual, which is the same asymmetry that makes the gate
+    /// open rather than close when it cannot decide.
     /// </para>
     /// <para>
     /// Charter rule 5: no I/O, no network, no reflection, no Harmony.
@@ -50,13 +60,15 @@ namespace XRL.World.Conversations.Parts
     [Serializable]
     public class Vixy_Introductions : IConversationPart
     {
-        /// <summary>
-        /// The phrasings that count as giving my name, matched against unsubstituted text.
-        /// </summary>
-        public static readonly string[] Phrasings =
-        {
-            "i am =name=", "my name is =name=", "call me =name=",
-        };
+        /// <summary>The token that carries my own name into a line of dialogue.</summary>
+        /// <remarks>
+        /// <b>Matched bare, against a choice's unsubstituted text, and that is the whole test.</b>
+        /// A choice is what <em>I</em> say and <c>=name=</c> is <em>my</em> name, so a choice
+        /// carrying it is me naming myself. Measured against every choice in vanilla's
+        /// <c>Conversations.xml</c>, parsed and tested per text exactly as this does: <b>35 choice
+        /// texts contain the token and all 35 are introductions.</b> Not one false positive.
+        /// </remarks>
+        public const string NameToken = "=name=";
 
         public override bool WantEvent(int ID, int cascade)
         {
@@ -89,17 +101,8 @@ namespace XRL.World.Conversations.Parts
             return false;
         }
 
-        private static bool Matches(string raw)
-        {
-            if (raw.IsNullOrEmpty()) return false;
-
-            string lower = raw.ToLowerInvariant();
-            foreach (string phrase in Phrasings)
-            {
-                if (lower.Contains(phrase)) return true;
-            }
-            return false;
-        }
+        private static bool Matches(string raw) =>
+            !raw.IsNullOrEmpty() && raw.Contains(NameToken);
 
         /// <summary>This fork's own naming choices, which are never "somebody else's".</summary>
         /// <remarks>

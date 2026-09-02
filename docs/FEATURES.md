@@ -7531,12 +7531,22 @@ the XML, and that is not decoration: a conversation-level part registers for the
 perspective by default, and a choice is the player's to speak, so without the override it would
 never see one.
 
-The test is on the **raw text before substitution**. Every introduction contains the literal
-`=name=` token, and across all 2,375 choices in vanilla's `Conversations.xml` the phrasings
-`I am =name=` / `My name is =name=` / `call me =name=` match **32 introductions and nothing else** —
-the six other `=name=` choices are greetings and speeches. A phrasing it misses simply leaves this
-fork's own introduction visible and able to set the marker, so a miss costs a duplicate choice in one
-menu rather than a blocked ritual.
+The test is **the bare `=name=` token in a choice's unsubstituted text**, and it took two rounds of
+testing to arrive at something that simple. A choice is what *you* say and `=name=` is *your* name, so
+a choice carrying it is you naming yourself. Parsed and tested per text exactly as the code does,
+**35 choice texts in vanilla contain the token and all 35 are introductions** — there is no false
+positive to defend against.
+
+I first wrote a list of three phrasings, and it was wrong in both directions at once. The false
+positives it guarded against — *"Live and drink, =name="* and its kin — are `<text>` on **nodes**,
+which is the speaker's words and never reaches this. And it missed `MehmetIntroduce`, whose line is
+*"I am called =name="* and matches none of the three, so the ritual stayed locked for anyone who
+introduced themselves to Mehmet the way the game offers — the exact dead end this part exists to
+prevent. The list had been built by eye off a regex that concatenated sibling elements, instead of by
+parsing at the granularity the runtime uses.
+
+It still fails in the safe direction: a false positive would open the gate early, and a miss leaves
+this fork's own introduction visible and able to set the marker. Neither locks the ritual.
 
 **Both of this fork's own naming choices are excluded from that scan, and forgetting the second one
 broke the entire feature.** `Vixy_AskName`'s pool contains *"I am =name=, … What is your name?"* — it
