@@ -18,6 +18,41 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **The water ritual is a relationship** (#753). Off by default.
+
+  Three changes to one gesture, all of them found by playing the last one rather than by reading.
+
+  **Give your name before you share water.** You could perform the ritual with somebody who had never
+  heard your name — and there was no way to tell them. Asking a name hides itself for anyone who
+  already has one, which is nearly everybody who can perform a ritual, so on that population no
+  naming exchange existed at all. There is one now, and the ritual waits on it.
+
+  **It waits, but it never locks.** Some people cannot be introduced to, and quests run through the
+  ritual, so the choice is hidden only when an introduction is possible and has not happened. Every
+  case I could not decide resolves to showing it: hiding it wrongly strands a questline, showing it
+  wrongly costs a dram.
+
+  **Qud's own introductions count.** Twenty-six conversations already had one written by hand, seven
+  of them on people who can perform the ritual, and at first only mine unlocked the gate — so using
+  theirs would have refused you the ritual for ever, which reads as a bug rather than a rule. Any
+  introduction now counts, whoever wrote it, and where the game already offers one I do not add a
+  second.
+
+  **Come back having done well by them and they will deal with you again.** Their goodwill is renewed
+  once, so I can reach what they still had to offer. Nothing finite is refilled — their secrets and
+  gifts stay as few as they always were — and the gate is that my standing with their people has
+  risen, not that I turned up twice, so there is nothing here to farm.
+
+  **One rough edge, and it is the game's rather than mine.** With some people the ritual will not
+  appear until you end the conversation and start it again — it depends on where their introduction
+  leads, and whether the choice list gets rebuilt on the way back. Nothing in Qud changes a choice's
+  visibility mid-conversation, so nothing exists to force a refresh, and fixing it from my side would
+  mean redeclaring somebody else's dialogue. One keypress, and it reads well enough: you give your
+  name, then start again to share water.
+
+  And sharing water again is otherwise hidden now. It was never free: the dram is charged on every
+  entry, so the shipped behaviour was paying water to open a menu that could not do anything.
+
 - **People I shared water with remember me** (#753). Off by default.
 
   Share water with somebody and, later, they will say what they have heard of me since — but only

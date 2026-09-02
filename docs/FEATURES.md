@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 32 options (§13)
+│   ├── Options.xml             # 33 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 87 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 90 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7487,6 +7487,151 @@ Only the speaking half is gated. The record is one short string on a part that a
 invisible unless something reads it — and gating it would mean switching the option on did nothing
 for anybody I had already shared water with, which is a worse off-switch than a string is a cost.
 Charter rule 6 is satisfied by the half that can be seen.
+
+---
+
+## 57. The water ritual is a relationship (`Vixy_Introduce`, `Vixy_RitualGate`)
+
+Off by default. Give your name before you share water; come back having risen in their people's eyes
+and they will deal with you again. Three changes to one gesture, all of #753, and each of them came
+out of playing §56 rather than reading.
+
+### 57.1 You could share water with someone who never learned your name
+
+And there was no way to tell them. `Vixy_AskName` (§40) hides itself when `speaker.HasProperName` —
+correct, because you can already see what they are called — but the ritual requires `GivesRep`, and
+those populations barely overlap:
+
+| | `GivesRep` | `<xtagGrammar Proper="true" />` |
+|---|---|---|
+| `ElderBob` (Elder Irudad) | yes | **yes** |
+| `Mehmet` | yes | **yes** |
+
+So on exactly the people who offer a water ritual, no naming exchange existed in either direction.
+
+`Vixy_Introduce` is the complement rather than a duplicate: ask-a-name takes the nameless, this takes
+the named, and the two can never both appear. Between them every creature you can hold a conversation
+with has exactly one naming exchange.
+
+**Except that vanilla already had its own, and that nearly shipped as a dead end.** Twenty-six
+conversations carry a hand-written introduction, and **seven of them are on people who can perform a
+water ritual** — Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. Using vanilla's option
+would have left the gate shut for ever, because only this fork's introduction set the marker.
+Introducing yourself and then being refused the ritual is a dead end that looks exactly like a bug.
+
+There was nothing to hook: `GenericAskNameOption` is a template nobody inherits, five of the seven
+route through `GotoID="Name"` but Agyra and Une do not, and none of them carries a part. A list of
+seven conversation IDs would have been exact today and rotted silently as Qud adds people, with
+nothing in the validator able to notice.
+
+So `Vixy_Introductions` **watches from the conversation level instead**. Events bubble upward — a
+choice is handled by parts on itself, then its node, then its conversation — so one part on
+`BaseConversation` sees every choice taken anywhere in the game. It needs `Register="Listener"` in
+the XML, and that is not decoration: a conversation-level part registers for the *Speaker*
+perspective by default, and a choice is the player's to speak, so without the override it would
+never see one.
+
+The test is **the bare `=name=` token in a choice's unsubstituted text**, and it took two rounds of
+testing to arrive at something that simple. A choice is what *you* say and `=name=` is *your* name, so
+a choice carrying it is you naming yourself. Parsed and tested per text exactly as the code does,
+**35 choice texts in vanilla contain the token and all 35 are introductions** — there is no false
+positive to defend against.
+
+I first wrote a list of three phrasings, and it was wrong in both directions at once. The false
+positives it guarded against — *"Live and drink, =name="* and its kin — are `<text>` on **nodes**,
+which is the speaker's words and never reaches this. And it missed `MehmetIntroduce`, whose line is
+*"I am called =name="* and matches none of the three, so the ritual stayed locked for anyone who
+introduced themselves to Mehmet the way the game offers — the exact dead end this part exists to
+prevent. The list had been built by eye off a regex that concatenated sibling elements, instead of by
+parsing at the granularity the runtime uses.
+
+It still fails in the safe direction: a false positive would open the gate early, and a miss leaves
+this fork's own introduction visible and able to set the marker. Neither locks the ritual.
+
+**Both of this fork's own naming choices are excluded from that scan, and forgetting the second one
+broke the entire feature.** `Vixy_AskName`'s pool contains *"I am =name=, … What is your name?"* — it
+is an introduction as well as a question — and it is distributed to the start node of every
+conversation in the game. So the scan found it everywhere, concluded the game already had an
+introduction everywhere, hid this fork's introduction everywhere, and left the ritual gate shut on
+everyone. It presents as the ritual never appearing and no way to introduce yourself, which is what
+testing found.
+
+The scan asks what is **present**, not what is visible: `Elements` holds every choice the node was
+built with, including ones their own parts hide. Three distributed ask-a-name choices had to be
+excluded by ID for exactly that reason — this fork's `Vixy_AskName` and `Vixy_Introduce`, and
+**vanilla's own `AskName`**, which can never render at all because its part opens with
+`if (!GlobalConfig.GetBoolSetting("GeneralAskName")) return false;` and that key exists nowhere under
+`Base/` (§40 is this fork's answer to precisely that). Each is a *question* that happens to carry a
+self-naming variant, and each is invisible exactly where this test matters — which presence cannot
+tell. Left in, they made the scan report an introduction in every conversation in the game, hid this
+fork's introduction everywhere, and held the ritual shut on everyone.
+
+### 57.2 The ritual now waits for it — but the gate falls open, not shut
+
+`Vixy_RitualGate` is added to vanilla's own `WaterRitualChoice` by `Load="Add"`, so the choice keeps
+its text, its `IfSpeakerHavePart="GivesRep"` and its Ordinal of 980; only visibility is answered.
+
+**Every uncertain case resolves to visible**, and that is the load-bearing decision. Some creatures
+can be talked to but cannot be introduced to — tagged `NoAskName`, or reached through a start node
+that does not allow escape. "Hide until introduced" would hide the ritual from them *for ever*, and
+quests route through it. The rule is therefore **hide only when an introduction is possible and has
+not happened**. Hiding this wrongly strands a questline; showing it wrongly costs a dram.
+
+### 57.3 A known limitation: some introductions need the conversation reopened
+
+Introduce yourself and the ritual may not appear until you end the conversation and start it again.
+It depends on where the introduction leads: this fork's own returns with `<choice Target="Start">`,
+which navigates back and rebuilds the choice list, so the ritual is there at once. Mehmet's goes to
+`<node ID="Name" Inherits="Welcome">` — a different node that inherits the start node's choices — and
+that list is not rebuilt, so the change is not seen until the conversation is reopened.
+
+**This is engine behaviour rather than a defect here.** Choice visibility is settled when a node's
+list is composed, and `Modding:Conversations` documents no way to force a refresh — its delegates are
+all predicates evaluated per element. Nothing in vanilla changes a choice's visibility mid-conversation,
+so nothing has needed one. Fixing it from this side would mean redeclaring somebody else's
+conversation, which charter rule 1 refuses for a cosmetic gain.
+
+The workaround is one keypress, and it reads acceptably: you give your name, then start a fresh
+conversation to share water.
+
+### 57.4 Sharing water again cost a dram and did nothing
+
+Re-entering the ritual is vanilla behaviour — `PerformRitual()` is gated on
+`!HasIntProperty("WaterRitualed")`, so a second visit awards nothing. It is **not** free, though, and
+that is easy to miss: `WaterRitualBegin` charges the dram in a branch that sits *outside* the
+first-time check, so every entry pays.
+
+```csharp
+bool flag = false;
+if (!The.Speaker.HasIntProperty("WaterRitualed")) { ... may set flag ... }
+if (flag) { ...Sifrah, no dram... }
+else { if (!Affordable) return false; The.Player.UseDrams(1, WaterRitual.Liquid.ID); }
+```
+
+On a repeat the block that could set `flag` is skipped, so it always falls through and charges. The
+shipped behaviour is that you pay water to open a menu that cannot do anything. The choice is now
+hidden after a completed ritual unless the bond can actually deepen.
+
+### 57.5 Bonds deepen, and cannot be farmed
+
+**The gate is that you came back having done well by them**, not that you came back — measured with
+the same shift §56 computes. That is what makes it unfarmable: the thing you would have to farm is
+reputation with their people, and reputation is capped by how much world there is. "You did it again"
+would have been an infinite tap, because repeats are unlimited.
+
+**It happens once per person**, marked in `WaterRitualRecord.attributes`.
+
+**And it renews nothing that was finite.** Vanilla's rewards are per-creature pools on that same
+record — `secretsRemaining` is 2 or 3, `numGifts` is 1, `canGenerateItem` flips false and stays
+false — and each menu option hides itself when its pool is spent:
+
+```csharp
+public override bool Available => WaterRitual.Record.secretsRemaining > 0;
+WaterRitual.Record.secretsRemaining--;
+```
+
+What is renewed is only `totalFactionAvailable`, the reputation budget you spend *against* those
+pools. So a deepened bond lets you reach what they still had rather than conjuring more of it.
 
 ---
 

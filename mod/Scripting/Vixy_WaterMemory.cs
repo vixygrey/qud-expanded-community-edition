@@ -101,7 +101,58 @@ namespace XRL.World.Parts
         public override bool HandleEvent(WaterRitualStartEvent E)
         {
             if (E.Initial) Record(E.Record);
+            else Deepen(E.SpeakingWith, E.Record);
             return base.HandleEvent(E);
+        }
+
+        /// <summary>Prefix marking that the bond with somebody has already deepened once.</summary>
+        public const string DeepenedKey = "Vixy_RitualDeepened:";
+
+        /// <summary>
+        /// Whether coming back to this person again would be worth the dram.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>The gate is that I came back having done well by them</b>, not that I came back. That
+        /// is what makes this unfarmable: the thing I would have to farm is reputation with their
+        /// people, and reputation is capped by how much of the world there is. Sharing water twice
+        /// is free of any such limit, so "you did it again" would have been an infinite tap.
+        /// </para>
+        /// <para>
+        /// <b>And it happens once per person.</b> Vanilla's rewards are finite per creature and
+        /// tracked on this same record — <c>secretsRemaining</c> is 2 or 3, <c>numGifts</c> is 1,
+        /// <c>canGenerateItem</c> flips false and stays false, and each menu option hides itself when
+        /// its pool is spent. Nothing here refills any of those. What is renewed is only the
+        /// <em>reputation budget</em> to spend against them, so a deepened bond lets me reach what
+        /// they still had rather than conjuring more of it.
+        /// </para>
+        /// </remarks>
+        public static bool CanDeepen(GameObject speaker)
+        {
+            if (!Raven_Options.WaterBond || speaker == null) return false;
+
+            WaterRitualRecord record = speaker.GetPart<WaterRitualRecord>();
+            if (record == null || record.faction.IsNullOrEmpty()) return false;
+            if (record.TryGetAttribute(DeepenedKey, out _)) return false;
+
+            if (!record.TryGetAttribute(Key, out string stored)) return false;
+            if (!int.TryParse(stored, out int then)) return false;
+
+            return The.Game.PlayerReputation.Get(record.faction) - then >= Threshold;
+        }
+
+        /// <summary>Renews their goodwill, once, when I have earned it.</summary>
+        private static void Deepen(GameObject speaker, WaterRitualRecord record)
+        {
+            if (record == null || !CanDeepen(speaker)) return;
+
+            int renewed = speaker.GetPart<GivesRep>()?.repValue ?? (RuleSettings.REPUTATION_BASE_UNIT * 2);
+            record.totalFactionAvailable += renewed;
+            record.attributes.Add(DeepenedKey + renewed);
+
+            IComponent<GameObject>.AddPlayerMessage(
+                "{{G|" + speaker.DisplayNameOnly
+                + "}} has heard what you have done, and is minded to deal with you again.");
         }
 
         /// <summary>Stores my standing with their people, once, on the first ritual.</summary>
