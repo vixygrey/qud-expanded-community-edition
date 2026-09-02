@@ -4251,3 +4251,44 @@ Related: [`a default argument was hiding every named character in the game`](#a-
 and [`writing Level on a creature scales nothing`](#writing-level-on-a-creature-scales-nothing-and-the-number-makes-it-look-like-it-did)
 are the same session's other two — an argument, a field and now a method, each reading like one thing
 and behaving like another. The common defence is the same: read the body before trusting the name.
+
+---
+
+## Conversation events bubble up, and I attached the part to the wrong element
+
+A part on a `<choice>` answered `IsElementVisibleEvent` correctly and never once received
+`PrepareTextEvent`, so the node it led to printed a raw `=Vixy_ritualreport=` token at a player.
+
+**Conversation events do not cascade down the way min events do — they bubble up.**
+`Modding:Conversations` says it plainly:
+
+> an event fired on a choice will first be handled by parts on the choice itself, then its parent
+> node, last the node's conversation
+
+`PrepareTextEvent.Send(Element, …)` is fired on **the element whose text it is**. The token lived in
+the node's text; my part lived on the node's child. Upward propagation never reaches a child, so the
+part was simply never asked.
+
+**The fix is a second copy of the same part on the node**, and the reason that is safe is the second
+half of the mechanism. Propagation is split by perspective — `Listener` for what I say, `Speaker` for
+what they say — and a part registers for the perspective it is placed in unless `Register` overrides
+it (`IConversationPart.Register` maps listener/player to 1, speaker to 2, all to 3). So the copy on
+the choice is a Listener part answering that choice's visibility, and the copy on the node is a
+Speaker part filling the text. **Without that split the node's copy would also receive the bubbled
+visibility events of the node's other choices** — including its two exits — and a part that returns
+false below a threshold would hide them and strand the player in the node.
+
+**The wiki documents both halves, and I read the assembly instead.** This is the second entry on that
+exact habit; the first is [`the index is for reading first`](#the-index-is-for-reading-first-and-i-keep-using-it-to-confirm-afterwards).
+There I established the rule after doing it twice in one session. Here I did it again, on a page
+`docs/WIKI.md` indexes by name, describing the precise mechanism I was guessing at — and the
+maintainer pointed me at it after the symptom appeared in play.
+
+So the operational form, since the general form has not worked: **before writing a conversation part,
+read `Modding:Conversations`.** Not after it misbehaves. The page has a Parts section, an Events
+section explaining bubbling and perspective, and tables of the existing parts and delegates — several
+of which would have made a custom part unnecessary at all.
+
+Related: [`two adjacent methods, one of them inverted`](#two-adjacent-methods-one-of-them-inverted-and-the-broken-one-has-the-friendlier-name)
+came out of the same feature. Both were found by symptom in play rather than by reading, which is the
+expensive order.

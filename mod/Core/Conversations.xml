@@ -127,6 +127,11 @@
         That water still stands between us. Since then there has been =Vixy_ritualreport= of you.~
         I remember the water. And I have heard =Vixy_ritualreport= of you since.
       </text>
+      <!-- The same part again, and it has to be here rather than only on the choice above.
+           PrepareTextEvent.Send(Element, ...) dispatches to the element whose text it is, so a part
+           sitting on the choice never sees the node's text and the token renders raw to the player.
+           On the choice it answers IsElementVisibleEvent; on the node it fills the token. -->
+      <part Name="Vixy_WaterRemembers" />
       <choice Target="End">Until the next time.</choice>
       <choice Target="Start">There is something else.</choice>
     </node>

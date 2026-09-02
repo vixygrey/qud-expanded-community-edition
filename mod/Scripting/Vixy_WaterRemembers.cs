@@ -46,6 +46,26 @@ namespace XRL.World.Conversations.Parts
     /// XML where the prose belongs, and the direction supplied here.
     /// </para>
     /// <para>
+    /// <b>Which is why this part is declared twice — on the choice and on the node.</b>
+    /// Conversation events <em>bubble upward</em>: an event fired on a choice is handled by parts on
+    /// that choice, then its parent node, then the conversation. So a part on the choice never sees
+    /// an event fired on the node. <c>PrepareTextEvent.Send(Element, …)</c> is fired on the element
+    /// whose text it is, and the token lives in the node's text — with a copy only on the choice the
+    /// player is shown a raw <c>=Vixy_ritualreport=</c>, which is exactly what happened.
+    /// </para>
+    /// <para>
+    /// <b>And the two copies do not tread on each other, for a reason worth knowing rather than by
+    /// luck.</b> Propagation is split by perspective — <c>Listener</c> for what I say,
+    /// <c>Speaker</c> for what they say — and a part registers for the perspective it is placed in
+    /// unless <c>Register</c> overrides it (<c>IConversationPart.Register</c> maps listener/player
+    /// to 1, speaker to 2, all to 3). The copy on the choice is a Listener part and answers that
+    /// choice's <c>IsElementVisibleEvent</c>; the copy on the node is a Speaker part and fills the
+    /// text. Without that split the node copy would also receive the bubbled visibility events of
+    /// the node's <em>other</em> choices — the two exits — and could hide them, which would strand
+    /// the player in the node. <c>Modding:Conversations</c> documents this; I found the dispatch
+    /// direction by symptom instead, which <c>docs/LESSONS.md</c> now records for the second time.
+    /// </para>
+    /// <para>
     /// Charter rule 5: no I/O, no network, no reflection, no Harmony.
     /// </para>
     /// </remarks>

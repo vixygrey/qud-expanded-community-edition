@@ -7452,6 +7452,18 @@ direction supplied by the part as `good report` or `ill report`. Every line in t
 `=Vixy_ritualreport=` and has to read correctly with either substituted in — and with `little`, which
 is kept as an unreachable fallback so that no path can render the raw token to a player.
 
+**The part is declared twice — on the choice and on the node — and that is not redundancy.**
+Conversation events *bubble upward*: an event fired on a choice reaches parts on that choice, then
+its parent node, then the conversation. `PrepareTextEvent` is fired on the element whose text it is,
+so a part sitting only on the choice never sees the node's text and the player is shown a raw
+`=Vixy_ritualreport=`. That is exactly what happened in testing.
+
+The two copies do not collide, and not by luck: propagation is split by perspective — `Listener` for
+what you say, `Speaker` for what they say — and a part registers for the perspective it is placed in
+unless `Register` overrides it. The choice's copy answers visibility; the node's copy fills the text.
+Without that split the node's copy would also receive the bubbled visibility events of the node's two
+exit choices and could hide them, stranding you there. `Modding:Conversations` documents all of this.
+
 The choice sits at **Ordinal 9700** — below §51's makers-mark at 9800 and the ask-a-name at 10000,
 well above vanilla's water ritual at 980 and `[begin trade]` at 990. It belongs with the things you
 say to somebody, not with the transactions.
