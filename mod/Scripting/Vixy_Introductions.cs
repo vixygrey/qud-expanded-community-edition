@@ -104,17 +104,31 @@ namespace XRL.World.Conversations.Parts
         private static bool Matches(string raw) =>
             !raw.IsNullOrEmpty() && raw.Contains(NameToken);
 
-        /// <summary>This fork's own naming choices, which are never "somebody else's".</summary>
+        /// <summary>
+        /// Choices that carry <c>=name=</c> and must not count as the conversation already offering
+        /// an introduction.
+        /// </summary>
         /// <remarks>
-        /// <b>Both of them, and forgetting the second one broke the whole feature.</b>
-        /// <c>Vixy_AskName</c>'s pool contains <em>"I am =name=, … What is your name?"</em> — it is
-        /// an introduction as well as a question — and it is distributed to the start node of every
-        /// conversation in the game. So <see cref="AlreadyOffered"/> found it everywhere, concluded
-        /// the game already had an introduction everywhere, hid <c>Vixy_Introduce</c> everywhere,
-        /// and left <see cref="Vixy_RitualGate"/> shut on everyone. Excluding only
-        /// <c>Vixy_Introduce</c> was not enough; a choice of mine is a choice of mine.
+        /// <para>
+        /// <b>All three are ask-a-name choices, and each one had to be found the hard way.</b> They
+        /// are questions that happen to include a self-naming variant — <em>"I am =name=, … What is
+        /// your name?"</em> — and every one of them is distributed to the start node of every
+        /// conversation in the game. Left in, <see cref="AlreadyOffered"/> concluded that the game
+        /// already offered an introduction everywhere, hid <see cref="Vixy_Introduce"/> everywhere,
+        /// and held <see cref="Vixy_RitualGate"/> shut on everyone.
+        /// </para>
+        /// <para>
+        /// <b><c>AskName</c> is vanilla's, and it is the one that proves the test is wrong in
+        /// principle.</b> It can never render at all: its part opens with
+        /// <c>if (!GlobalConfig.GetBoolSetting("GeneralAskName")) return false;</c> and that key
+        /// exists nowhere under <c>Base/</c>, which is the whole reason <c>Vixy_AskName</c> was
+        /// written. So this matched a choice no player has ever seen — because
+        /// <see cref="AlreadyOffered"/> asks what is <em>present</em>, and presence is not
+        /// visibility. That limitation was written into this file's remarks before it caused this,
+        /// which is its own kind of lesson.
+        /// </para>
         /// </remarks>
-        public static readonly string[] Mine = { "Vixy_Introduce", "Vixy_AskName" };
+        public static readonly string[] AskNames = { "AskName", "Vixy_AskName", "Vixy_Introduce" };
 
         /// <summary>
         /// Whether this conversation already offers an introduction that is not one of mine.
@@ -129,9 +143,11 @@ namespace XRL.World.Conversations.Parts
         /// <b>This asks what is <em>present</em>, not what is visible</b>, and the distinction is
         /// worth stating because presence is the cheaper question and the wrong one twice over.
         /// <c>Elements</c> holds every choice the node was built with, including ones hidden by
-        /// their own parts — so a choice that no player will ever see still counts here. That is
-        /// tolerable for vanilla's introductions, which are visible wherever they are declared, and
-        /// it is exactly what made this fork's own distributed choices poison.
+        /// their own parts — so a choice no player will ever see still counts here. That is why
+        /// <see cref="AskNames"/> exists and why it has three entries rather than none: every
+        /// distributed ask-a-name choice in the game is invisible exactly where this matters, and
+        /// presence cannot tell. It is tolerable for the hand-written introductions this is looking
+        /// for, because those are visible wherever they are declared.
         /// </para>
         /// </remarks>
         public static bool AlreadyOffered()
@@ -142,7 +158,7 @@ namespace XRL.World.Conversations.Parts
             foreach (IConversationElement element in start.Elements)
             {
                 if (!(element is Choice)) continue;
-                if (Array.IndexOf(Mine, element.ID) >= 0) continue;
+                if (Array.IndexOf(AskNames, element.ID) >= 0) continue;
                 if (IsIntroduction(element)) return true;
             }
             return false;

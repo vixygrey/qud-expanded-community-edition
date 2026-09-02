@@ -7557,8 +7557,14 @@ everyone. It presents as the ritual never appearing and no way to introduce your
 testing found.
 
 The scan asks what is **present**, not what is visible: `Elements` holds every choice the node was
-built with, including ones their own parts hide. That is fine for vanilla's introductions, which show
-wherever they are declared, and it is precisely what made a distributed choice of this fork's poison.
+built with, including ones their own parts hide. Three distributed ask-a-name choices had to be
+excluded by ID for exactly that reason — this fork's `Vixy_AskName` and `Vixy_Introduce`, and
+**vanilla's own `AskName`**, which can never render at all because its part opens with
+`if (!GlobalConfig.GetBoolSetting("GeneralAskName")) return false;` and that key exists nowhere under
+`Base/` (§40 is this fork's answer to precisely that). Each is a *question* that happens to carry a
+self-naming variant, and each is invisible exactly where this test matters — which presence cannot
+tell. Left in, they made the scan report an introduction in every conversation in the game, hid this
+fork's introduction everywhere, and held the ritual shut on everyone.
 
 ### 57.2 The ritual now waits for it — but the gate falls open, not shut
 
