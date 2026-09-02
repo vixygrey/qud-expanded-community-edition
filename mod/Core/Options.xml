@@ -633,15 +633,17 @@
   >
     <helptext>
             Kill five hundred of one people and they may send somebody after
-            you - named, near your level, and carrying the grudge in his title.
+            you - named, and near your own level. Only peoples who could hear
+            about it; animals send nobody.
 
-            Only peoples who could hear about it. Animals send nobody.
+            Rarely it goes the other way: an envoy from their enemies, come to
+            thank you or to hire you.
 
-            Rarely, somebody comes the other way instead: an envoy from their
-            enemies, who would like to thank you or to hire you.
+            {{R|He comes to kill you, and he can.}} You are told when he picks
+            up your trail, and leaving the area loses him. Mind this on
+            {{R|Classic}}.
 
-            {{y|Off by default.}} Five hundred is a lot of one kind, so expect
-            this a handful of times in a run, not often.
+            {{y|Off by default}}, and a handful of times in a run at most.
 </helptext>
   </option>
 
@@ -654,18 +656,18 @@
     SearchKeywords="qud expanded hoard fortune wealth artifacts raiders trader notoriety"
   >
     <helptext>
-            Carry enough of value and, rarely, somebody takes an interest when
-            you walk somewhere new - raiders who want it off you.
+            Carry a fortune and, rarely, somebody takes an interest when you
+            walk somewhere new: two or three raiders near your own level. About
+            as often it is a trader instead, come to deal.
 
-            About as often, it goes the other way: a trader seeks you out
-            because of what you are carrying, and they come with stock.
+            What the fortune is made of decides who. Ancient tech draws the
+            Templar and the Mechanimists, and gunsmiths; treasure draws raiders,
+            and jewelers.
 
-            Which of them turns up depends on what the fortune is made of.
-            Ancient tech draws the Templar and the Mechanimists, and gunsmiths;
-            treasure draws raiders, and jewelers.
+            {{R|Raiders can kill you for it.}} You are told when they notice
+            you, and leaving the area loses them. Mind this on {{R|Classic}}.
 
-            The decision is whether to carry it or cache it. Anything you leave
-            in a chest stays there.
+            Carry it or cache it - what you leave in a chest stays there.
 
             {{y|Off by default.}}
 </helptext>

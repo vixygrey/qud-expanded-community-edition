@@ -99,6 +99,33 @@ namespace XRL.World.Parts
         /// </remarks>
         public const string RolledProperty = "Vixy_HoardRolled";
 
+        /// <summary>Whether this part has seen a zone yet since the game was loaded.</summary>
+        /// <remarks>
+        /// <c>[NonSerialized]</c> is the whole mechanism: it is false again after every load by
+        /// definition, which is exactly the condition being detected. It also covers the option
+        /// being switched on mid-session, where the zone I am standing in would otherwise roll the
+        /// moment I took a step. #806.
+        /// </remarks>
+        [NonSerialized]
+        private bool Resumed;
+
+        /// <summary>Game-state keys for raiders rolled for but not yet arrived.</summary>
+        /// <remarks>
+        /// <b>In game state, not in fields on this part</b> — the same reason the rest of this
+        /// feature's state is, and `validate_mod.py`'s <c>serializable-shape</c> check enforces it:
+        /// a <c>[Serializable]</c> part's layout is written into every save, and charter rule 5
+        /// treats it as frozen. I thought this was free because nothing has been released yet. The
+        /// check is right and I was wrong — the rule is about the shape being fixed at all, not
+        /// about when it becomes expensive to change.
+        /// </remarks>
+        public const string PendingTurnsKey = "Vixy_HoardPendingTurns";
+
+        /// <summary>The faction on the way. See <see cref="PendingTurnsKey"/>.</summary>
+        public const string PendingFactionKey = "Vixy_HoardPendingFaction";
+
+        /// <summary>The zone it was owed in — leaving cancels it.</summary>
+        public const string PendingZoneKey = "Vixy_HoardPendingZone";
+
         /// <summary>Who comes for a hoard of ancient tech.</summary>
         /// <remarks>
         /// Both named in the issue: the Templar want artifacts destroyed, the Mechanimists want them
@@ -124,7 +151,40 @@ namespace XRL.World.Parts
 
         public override bool WantEvent(int ID, int cascade)
         {
-            return base.WantEvent(ID, cascade) || ID == EnteredCellEvent.ID;
+            return base.WantEvent(ID, cascade)
+                || ID == EnteredCellEvent.ID
+                || ID == SingletonEvent<BeginTakeActionEvent>.ID;
+        }
+
+        /// <summary>Counts down raiders who have been rolled for but have not arrived yet.</summary>
+        public override bool HandleEvent(BeginTakeActionEvent E)
+        {
+            int pending = The.Game.GetIntGameState(PendingTurnsKey);
+            if (pending <= 0) return base.HandleEvent(E);
+
+            // Leaving cancels it. People who set out after me in one place do not follow me across
+            // the world; the next zone gets its own roll.
+            if (ParentObject.CurrentZone?.ZoneID
+                != The.Game.GetStringGameState(PendingZoneKey))
+            {
+                Clear();
+                return base.HandleEvent(E);
+            }
+
+            The.Game.SetIntGameState(PendingTurnsKey, --pending);
+            if (pending > 0) return base.HandleEvent(E);
+
+            string faction = The.Game.GetStringGameState(PendingFactionKey);
+            Clear();
+            if (!faction.IsNullOrEmpty()) SendRaiders(faction);
+            return base.HandleEvent(E);
+        }
+
+        private static void Clear()
+        {
+            The.Game.SetIntGameState(PendingTurnsKey, 0);
+            The.Game.SetStringGameState(PendingFactionKey, null);
+            The.Game.SetStringGameState(PendingZoneKey, null);
         }
 
         public override bool HandleEvent(EnteredCellEvent E)
@@ -144,7 +204,20 @@ namespace XRL.World.Parts
             bool tech = MostlyArtifacts();
             if (Stat.Random(1, 100) <= RaiderChance)
             {
-                SendRaiders(tech);
+                // Noticed now, arriving later. Being killed by something that appeared before I
+                // could act is not a decision, and this fork's players include permadeath ones. The
+                // faction is settled here rather than on arrival so the warning can name it. #806.
+                string faction = Willing(tech ? TechRaiders : WealthRaiders);
+                if (!faction.IsNullOrEmpty())
+                {
+                    The.Game.SetIntGameState(PendingTurnsKey, Vixy_Arrivals.ArrivalDelay);
+                    The.Game.SetStringGameState(PendingFactionKey, faction);
+                    The.Game.SetStringGameState(PendingZoneKey, ParentObject.CurrentZone?.ZoneID);
+                    IComponent<GameObject>.AddPlayerMessage(
+                        "{{R|You are being watched.}} "
+                        + Faction.GetFormattedName(faction)
+                        + " know what you are carrying, and they are not far off.");
+                }
             }
             else if (Stat.Random(1, 100) <= TraderChance)
             {
@@ -167,9 +240,14 @@ namespace XRL.World.Parts
             Zone zone = ParentObject.CurrentZone;
             if (zone == null || zone.IsWorldMap() || zone.ZoneID.IsNullOrEmpty()) return false;
 
+            // Resuming a save is not arriving somewhere. The first zone seen after a load is still
+            // retired, so it cannot fire later either, but nothing is rolled in it. #806.
+            bool resuming = !Resumed;
+            Resumed = true;
+
             if (The.ZoneManager.HasZoneProperty(zone.ZoneID, RolledProperty)) return false;
             The.ZoneManager.SetZoneProperty(zone.ZoneID, RolledProperty, true);
-            return true;
+            return !resuming;
         }
 
         /// <summary>
@@ -198,31 +276,41 @@ namespace XRL.World.Parts
 
         /// <summary>Puts a band of them in the zone, come to take it.</summary>
         /// <remarks>
+        /// <para>
         /// Ordinary members rather than <c>HeroMaker</c> heroes, and that is the difference between
         /// a band and a boss. #190 sends one named champion because one is the whole event there;
-        /// here the fiction is a raiding party, and two or three at my level is a fight I can lose
+        /// here the fiction is a raiding party, and two or three near my level is a fight I can lose
         /// without it being a wall.
+        /// </para>
+        /// <para>
+        /// <b>"Near my level" is chosen, not assigned, and that distinction killed a character.</b>
+        /// This used to take any member of the faction and write my level onto its <c>Level</c>
+        /// stat, which changes an integer and nothing else — the Templar pool runs from 9 to 39 and
+        /// is mostly level-24 knights, so a party of three arrived with ninety hit points, fullerite
+        /// armour and rifles apiece however small the number said they were.
+        /// <see cref="Vixy_Arrivals.NearLevel"/> picks by the blueprint's own authored level and
+        /// returns nothing when the faction has nobody suitable, which is why this can now decline
+        /// to send anyone at all. #806.
+        /// </para>
         /// </remarks>
-        private void SendRaiders(bool tech)
+        private void SendRaiders(string faction)
         {
-            string faction = Willing(tech ? TechRaiders : WealthRaiders);
-            if (faction.IsNullOrEmpty()) return;
-
-            List<GameObjectBlueprint> members = Faction.GetMembers(faction, null, Dynamic: true);
-            if (members.IsNullOrEmpty()) return;
-
             int placed = 0;
             int wanted = Stat.Random(2, 3);
             for (int i = 0; i < wanted; i++)
             {
+                // Drawn per raider rather than once for the band, so a party is not three copies of
+                // one blueprint when the faction has more than one to offer.
+                GameObjectBlueprint pick =
+                    Vixy_Arrivals.NearLevel(faction, ParentObject.Stat("Level"));
+                if (pick == null) return;
+
                 Cell landing = Landing();
                 if (landing == null) break;
 
-                GameObject who = GameObject.Create(members.GetRandomElement().Name);
+                GameObject who = GameObject.Create(pick.Name);
                 if (who == null) continue;
 
-                who.GetStat("Level").BaseValue =
-                    Math.Max(1, ParentObject.Stat("Level") + Stat.Random(-2, 2));
                 landing.AddObject(who);
                 placed++;
             }
