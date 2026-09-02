@@ -43,6 +43,13 @@ recorded because contributors need them, not because subscribers do.
   gifts stay as few as they always were — and the gate is that my standing with their people has
   risen, not that I turned up twice, so there is nothing here to farm.
 
+  **One rough edge, and it is the game's rather than mine.** With some people the ritual will not
+  appear until you end the conversation and start it again — it depends on where their introduction
+  leads, and whether the choice list gets rebuilt on the way back. Nothing in Qud changes a choice's
+  visibility mid-conversation, so nothing exists to force a refresh, and fixing it from my side would
+  mean redeclaring somebody else's dialogue. One keypress, and it reads well enough: you give your
+  name, then start again to share water.
+
   And sharing water again is otherwise hidden now. It was never free: the dram is charged on every
   entry, so the shipped behaviour was paying water to open a menu that could not do anything.
 

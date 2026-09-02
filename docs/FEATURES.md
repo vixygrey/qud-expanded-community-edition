@@ -7577,7 +7577,24 @@ that does not allow escape. "Hide until introduced" would hide the ritual from t
 quests route through it. The rule is therefore **hide only when an introduction is possible and has
 not happened**. Hiding this wrongly strands a questline; showing it wrongly costs a dram.
 
-### 57.3 Sharing water again cost a dram and did nothing
+### 57.3 A known limitation: some introductions need the conversation reopened
+
+Introduce yourself and the ritual may not appear until you end the conversation and start it again.
+It depends on where the introduction leads: this fork's own returns with `<choice Target="Start">`,
+which navigates back and rebuilds the choice list, so the ritual is there at once. Mehmet's goes to
+`<node ID="Name" Inherits="Welcome">` — a different node that inherits the start node's choices — and
+that list is not rebuilt, so the change is not seen until the conversation is reopened.
+
+**This is engine behaviour rather than a defect here.** Choice visibility is settled when a node's
+list is composed, and `Modding:Conversations` documents no way to force a refresh — its delegates are
+all predicates evaluated per element. Nothing in vanilla changes a choice's visibility mid-conversation,
+so nothing has needed one. Fixing it from this side would mean redeclaring somebody else's
+conversation, which charter rule 1 refuses for a cosmetic gain.
+
+The workaround is one keypress, and it reads acceptably: you give your name, then start a fresh
+conversation to share water.
+
+### 57.4 Sharing water again cost a dram and did nothing
 
 Re-entering the ritual is vanilla behaviour — `PerformRitual()` is gated on
 `!HasIntProperty("WaterRitualed")`, so a second visit awards nothing. It is **not** free, though, and
@@ -7595,7 +7612,7 @@ On a repeat the block that could set `flag` is skipped, so it always falls throu
 shipped behaviour is that you pay water to open a menu that cannot do anything. The choice is now
 hidden after a completed ritual unless the bond can actually deepen.
 
-### 57.4 Bonds deepen, and cannot be farmed
+### 57.5 Bonds deepen, and cannot be farmed
 
 **The gate is that you came back having done well by them**, not that you came back — measured with
 the same shift §56 computes. That is what makes it unfarmable: the thing you would have to farm is
