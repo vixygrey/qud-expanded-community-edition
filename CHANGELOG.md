@@ -20,9 +20,10 @@ recorded because contributors need them, not because subscribers do.
 
 - **People I shared water with remember me** (#753). Off by default.
 
-  Share water with somebody and, later, they will say what they have heard of me since — if my
-  standing with their own people has moved much either way. It is only ever a remark: nothing is
-  asked of me and nothing changes hands.
+  Share water with somebody and, later, they will say what they have heard of me since — but only
+  once my standing with their own people has moved by fifty either way. It is only ever a remark:
+  nothing is asked of me and nothing changes hands, and if nothing has happened they have nothing to
+  say and do not offer.
 
   The gap it closes: the water ritual is a one-shot menu, and afterwards the relationship is over.
   Betrayal was modelled; nobody I had shared water with ever mentioned it again, whatever I went on

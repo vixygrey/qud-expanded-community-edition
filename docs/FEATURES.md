@@ -7391,8 +7391,14 @@ treat it as a starting position.
 ## 56. People you shared water with remember you (`Vixy_WaterMemory`)
 
 Off by default. Share water with somebody and, afterwards, they will say what they have heard of you
-since — if your standing with their own people has moved much either way. It is only ever a remark:
-nothing is asked of you and nothing changes hands.
+since — **but only once your standing with their own people has moved by fifty either way**. It is
+only ever a remark: nothing is asked of you and nothing changes hands.
+
+**The choice appearing is itself the signal.** It would have been easier to offer it after every
+ritual and answer *"I have heard little of you"* when nothing had changed, and that is what this did
+first. But it puts a permanent extra line on every legendary you have ever shared water with, and a
+line that is always there tells you nothing by being there. Gated on the movement, its presence means
+there is something to hear.
 
 The first checkbox of #753, carried there from the closed #182. The gap: the water ritual is a
 one-shot menu with a 100-reputation budget, and afterwards the relationship is over permanently.
@@ -7442,8 +7448,9 @@ vanilla's own `=variable=` substitutions, so a token planted in the text can be 
 still goes through normal processing.
 
 That buys one node, one pool of framings in `Conversations.xml` where the prose belongs, and the
-direction supplied by the part as `good report` / `ill report` / `little`. Every line in the pool
-carries `=Vixy_ritualreport=` and has to read correctly with all three substituted in.
+direction supplied by the part as `good report` or `ill report`. Every line in the pool carries
+`=Vixy_ritualreport=` and has to read correctly with either substituted in — and with `little`, which
+is kept as an unreachable fallback so that no path can render the raw token to a player.
 
 The choice sits at **Ordinal 9700** — below §51's makers-mark at 9800 and the ask-a-name at 10000,
 well above vanilla's water ritual at 980 and `[begin trade]` at 990. It belongs with the things you

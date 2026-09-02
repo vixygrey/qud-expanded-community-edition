@@ -10,8 +10,16 @@ namespace XRL.World.Conversations.Parts
     /// <remarks>
     /// <para>
     /// The speaking half of #753's first checkbox; <c>Vixy_WaterMemory</c> is the half that records.
-    /// The choice appears only on somebody I actually completed a ritual with, and their reply turns
-    /// on whether my standing with their own people has risen or fallen since that day.
+    /// The choice appears only on somebody I actually completed a ritual with, <em>and</em> only once
+    /// my standing with their own people has moved by fifty either way since that day. Their reply
+    /// turns on which way it went.
+    /// </para>
+    /// <para>
+    /// <b>The choice appearing is itself the signal.</b> It would have been easier to offer it after
+    /// every ritual and answer "I have heard little of you" when nothing had changed, and that is
+    /// what this did first. But it puts a permanent extra line on every legendary I have ever shared
+    /// water with, and a line that is always there tells me nothing by being there. Gated on the
+    /// movement, its presence means there is something to hear.
     /// </para>
     /// <para>
     /// <b>Their own faction, not their related ones, and that is a design choice rather than the
@@ -56,13 +64,22 @@ namespace XRL.World.Conversations.Parts
 
         public override bool HandleEvent(IsElementVisibleEvent E)
         {
-            return Shift(out _) ? base.HandleEvent(E) : false;
+            // Past the threshold, not merely measurable. The choice appearing at all is the signal
+            // that there is something to hear - offering it after every ritual and answering "little"
+            // would put a permanent extra line on every legendary I have ever shared water with, and
+            // would make its presence mean nothing.
+            return Shift(out int moved) && Math.Abs(moved) >= Vixy_WaterMemory.Threshold
+                ? base.HandleEvent(E)
+                : false;
         }
 
         public override bool HandleEvent(PrepareTextEvent E)
         {
             if (Shift(out int moved))
             {
+                // "little" should be unreachable, because the choice that leads here is hidden
+                // below the threshold. It stays as the fallback so that no path can ever render the
+                // raw token to a player, which is the one failure worth being paranoid about.
                 E.Text.Replace(
                     Token,
                     moved >= Vixy_WaterMemory.Threshold ? "good report"
