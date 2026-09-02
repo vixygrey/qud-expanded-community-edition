@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 89 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 90 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -7511,8 +7511,32 @@ So on exactly the people who offer a water ritual, no naming exchange existed in
 
 `Vixy_Introduce` is the complement rather than a duplicate: ask-a-name takes the nameless, this takes
 the named, and the two can never both appear. Between them every creature you can hold a conversation
-with has exactly one naming exchange. Both set the same marker, so nothing downstream cares which
-happened.
+with has exactly one naming exchange.
+
+**Except that vanilla already had its own, and that nearly shipped as a dead end.** Twenty-six
+conversations carry a hand-written introduction, and **seven of them are on people who can perform a
+water ritual** — Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. Using vanilla's option
+would have left the gate shut for ever, because only this fork's introduction set the marker.
+Introducing yourself and then being refused the ritual is a dead end that looks exactly like a bug.
+
+There was nothing to hook: `GenericAskNameOption` is a template nobody inherits, five of the seven
+route through `GotoID="Name"` but Agyra and Une do not, and none of them carries a part. A list of
+seven conversation IDs would have been exact today and rotted silently as Qud adds people, with
+nothing in the validator able to notice.
+
+So `Vixy_Introductions` **watches from the conversation level instead**. Events bubble upward — a
+choice is handled by parts on itself, then its node, then its conversation — so one part on
+`BaseConversation` sees every choice taken anywhere in the game. It needs `Register="Listener"` in
+the XML, and that is not decoration: a conversation-level part registers for the *Speaker*
+perspective by default, and a choice is the player's to speak, so without the override it would
+never see one.
+
+The test is on the **raw text before substitution**. Every introduction contains the literal
+`=name=` token, and across all 2,375 choices in vanilla's `Conversations.xml` the phrasings
+`I am =name=` / `My name is =name=` / `call me =name=` match **32 introductions and nothing else** —
+the six other `=name=` choices are greetings and speeches. A phrasing it misses simply leaves this
+fork's own introduction visible and able to set the marker, so a miss costs a duplicate choice in one
+menu rather than a blocked ritual.
 
 ### 57.2 The ritual now waits for it — but the gate falls open, not shut
 

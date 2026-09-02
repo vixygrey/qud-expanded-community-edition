@@ -61,6 +61,12 @@ namespace XRL.World.Conversations.Parts
             if (speaker.HasPropertyOrTag("NoAskName")) return false;
             if (ConversationUI.StartNode == null || !ConversationUI.StartNode.AllowEscape) return false;
 
+            // Vanilla's own introduction counts. Vixy_Introductions is what notices one being
+            // used, so a conversation carrying its own can be introduced to whatever this fork
+            // offers - which is what stops the gate dead-ending the seven ritual-capable people
+            // vanilla already wrote one for.
+            if (Vixy_Introductions.AlreadyOffered()) return true;
+
             return speaker.HasProperName ? Raven_Options.WaterBond : Raven_Options.AskName;
         }
 
@@ -87,6 +93,10 @@ namespace XRL.World.Conversations.Parts
 
             if (speaker.HasPropertyOrTag("NoAskName")) return false;
             if (Done(speaker)) return false;
+
+            // Vanilla writes its own introductions into twenty-six conversations. Where one is
+            // already on offer, mine would stand beside it saying the same thing.
+            if (Vixy_Introductions.AlreadyOffered()) return false;
 
             return base.HandleEvent(E);
         }

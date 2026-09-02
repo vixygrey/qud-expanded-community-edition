@@ -32,6 +32,12 @@ recorded because contributors need them, not because subscribers do.
   case I could not decide resolves to showing it: hiding it wrongly strands a questline, showing it
   wrongly costs a dram.
 
+  **Qud's own introductions count.** Twenty-six conversations already had one written by hand, seven
+  of them on people who can perform the ritual, and at first only mine unlocked the gate — so using
+  theirs would have refused you the ritual for ever, which reads as a bug rather than a rule. Any
+  introduction now counts, whoever wrote it, and where the game already offers one I do not add a
+  second.
+
   **Come back having done well by them and they will deal with you again.** Their goodwill is renewed
   once, so I can reach what they still had to offer. Nothing finite is refilled — their secrets and
   gifts stay as few as they always were — and the gate is that my standing with their people has
