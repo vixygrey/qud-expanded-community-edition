@@ -644,4 +644,30 @@
             this a handful of times in a run, not often.
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCECarriedHoard"
+    DisplayText="{{C|Qud Expanded}}: carrying a fortune attracts attention"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded hoard fortune wealth artifacts raiders trader notoriety"
+  >
+    <helptext>
+            Carry enough of value and, rarely, somebody takes an interest when
+            you walk somewhere new - raiders who want it off you.
+
+            About as often, it goes the other way: a trader seeks you out
+            because of what you are carrying, and they come with stock.
+
+            Which of them turns up depends on what the fortune is made of.
+            Ancient tech draws the Templar and the Mechanimists, and gunsmiths;
+            treasure draws raiders, and jewelers.
+
+            The decision is whether to carry it or cache it. Anything you leave
+            in a chest stays there.
+
+            {{y|Off by default.}}
+</helptext>
+  </option>
 </options>
