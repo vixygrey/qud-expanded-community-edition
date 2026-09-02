@@ -101,12 +101,35 @@ namespace XRL.World.Conversations.Parts
             return false;
         }
 
+        /// <summary>This fork's own naming choices, which are never "somebody else's".</summary>
+        /// <remarks>
+        /// <b>Both of them, and forgetting the second one broke the whole feature.</b>
+        /// <c>Vixy_AskName</c>'s pool contains <em>"I am =name=, … What is your name?"</em> — it is
+        /// an introduction as well as a question — and it is distributed to the start node of every
+        /// conversation in the game. So <see cref="AlreadyOffered"/> found it everywhere, concluded
+        /// the game already had an introduction everywhere, hid <c>Vixy_Introduce</c> everywhere,
+        /// and left <see cref="Vixy_RitualGate"/> shut on everyone. Excluding only
+        /// <c>Vixy_Introduce</c> was not enough; a choice of mine is a choice of mine.
+        /// </remarks>
+        public static readonly string[] Mine = { "Vixy_Introduce", "Vixy_AskName" };
+
         /// <summary>
-        /// Whether the conversation I am in already offers an introduction of its own.
+        /// Whether this conversation already offers an introduction that is not one of mine.
         /// </summary>
         /// <remarks>
-        /// Read by <see cref="Vixy_Introduce"/> so it does not stand next to vanilla's version of
-        /// itself. Its own choice is excluded by ID, since it would otherwise always find itself.
+        /// <para>
+        /// Read by <see cref="Vixy_Introduce"/> so it does not stand beside vanilla's version of
+        /// itself, and by <see cref="Vixy_Introduce.Possible"/> so the gate knows a name can pass
+        /// here by some route.
+        /// </para>
+        /// <para>
+        /// <b>This asks what is <em>present</em>, not what is visible</b>, and the distinction is
+        /// worth stating because presence is the cheaper question and the wrong one twice over.
+        /// <c>Elements</c> holds every choice the node was built with, including ones hidden by
+        /// their own parts — so a choice that no player will ever see still counts here. That is
+        /// tolerable for vanilla's introductions, which are visible wherever they are declared, and
+        /// it is exactly what made this fork's own distributed choices poison.
+        /// </para>
         /// </remarks>
         public static bool AlreadyOffered()
         {
@@ -115,10 +138,9 @@ namespace XRL.World.Conversations.Parts
 
             foreach (IConversationElement element in start.Elements)
             {
-                if (element is Choice && element.ID != "Vixy_Introduce" && IsIntroduction(element))
-                {
-                    return true;
-                }
+                if (!(element is Choice)) continue;
+                if (Array.IndexOf(Mine, element.ID) >= 0) continue;
+                if (IsIntroduction(element)) return true;
             }
             return false;
         }

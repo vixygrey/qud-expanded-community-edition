@@ -7538,6 +7538,18 @@ the six other `=name=` choices are greetings and speeches. A phrasing it misses 
 fork's own introduction visible and able to set the marker, so a miss costs a duplicate choice in one
 menu rather than a blocked ritual.
 
+**Both of this fork's own naming choices are excluded from that scan, and forgetting the second one
+broke the entire feature.** `Vixy_AskName`'s pool contains *"I am =name=, … What is your name?"* — it
+is an introduction as well as a question — and it is distributed to the start node of every
+conversation in the game. So the scan found it everywhere, concluded the game already had an
+introduction everywhere, hid this fork's introduction everywhere, and left the ritual gate shut on
+everyone. It presents as the ritual never appearing and no way to introduce yourself, which is what
+testing found.
+
+The scan asks what is **present**, not what is visible: `Elements` holds every choice the node was
+built with, including ones their own parts hide. That is fine for vanilla's introductions, which show
+wherever they are declared, and it is precisely what made a distributed choice of this fork's poison.
+
 ### 57.2 The ritual now waits for it — but the gate falls open, not shut
 
 `Vixy_RitualGate` is added to vanilla's own `WaterRitualChoice` by `Load="Add"`, so the choice keeps
