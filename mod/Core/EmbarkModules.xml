@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <embarkmodules>
   <!-- Declares Vixy_NameFlavourModule to character creation. The game resolves the class by name
        and instantiates it, the same way a blueprint's <part Name="..."> resolves to a class, so
@@ -9,4 +9,15 @@
        default (AbstractEmbarkBuilderModule._enabled starts true), so a windowless one is active
        and receives boot events without appearing anywhere. -->
   <module Class="QudExpandedCE.Vixy_NameFlavourModule" />
+
+  <!-- Reads the sultan history after the game generates it and answers one of its loose ends. #731.
+
+       A SEPARATE module from the one above, and that is the point rather than tidiness.
+       Vixy_NameFlavourModule adds itself to info.modules early so the name re-roll reaches it, and
+       EmbarkBuilder later does embarkInfo.modules.AddRange(...) with no duplicate check - so that
+       module is in the list twice and its handler fires twice per boot event. Its two handlers
+       survive that because one sets a property and the other returns a name. Appending history
+       events does not survive it: run twice, it doubles everything. This module never joins the
+       list early, and carries a game-state guard as well. -->
+  <module Class="QudExpandedCE.Vixy_HistoryModule" />
 </embarkmodules>

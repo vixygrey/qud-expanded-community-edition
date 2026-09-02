@@ -744,4 +744,27 @@
             {{y|Off by default.}}
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCESultanDebts"
+    DisplayText="{{C|Qud Expanded}}: sultans get back what they lost"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded sultan history lore chronicle recovered lost item"
+  >
+    <helptext>
+            A sultan who lost something at a tavern may, years later, get it
+            back - so one line of their history answers another instead of
+            standing alone.
+
+            Once per sultan, and only where there were years left to do it in.
+
+            {{R|Only affects worlds made after you set it.}} History is written
+            once, when a world is created, so this cannot reach a game already
+            in progress.
+
+            {{y|Off by default.}}
+</helptext>
+  </option>
 </options>

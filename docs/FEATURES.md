@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 34 options (§13)
+│   ├── Options.xml             # 35 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 91 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 93 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7691,6 +7691,86 @@ so anything asking what this would cost is told the truth.
 which peoples can hold an opinion would exclude them, and it is not applied here — because in this
 one place it would *soften* the punishment. Tightening that fiction is a separate argument from making
 the sentence bite, and it pulls the other way.
+
+---
+
+## 59. Sultans get back what they lost (`Vixy_HistoryModule`)
+
+Off by default, and **new worlds only**. A sultan who lost something at a tavern may, years later,
+recover it — so one line of their history answers another instead of standing alone.
+
+#731's first slice. That issue's complaint: a sultan's biography reads as a shuffled list. Vanilla
+draws **eight events from a pool of seventeen** for each of five sultans, so a single playthrough
+shows a player most of the pool two or three times over — and because the seventeen are self-contained
+set-pieces, nothing requires a prior cause or demands a consequence, so order conveys no meaning.
+
+### 59.1 The debt is structural, not a prose gesture
+
+`LoseItemAtTavern` calls `RemoveEntityListItem("items", …)`, so the loss is recorded in that event's
+`removedListProperties` — a real, machine-readable fact about that sultan rather than a phrase. This
+reads the item back and returns it with `AddEntityListItem`.
+
+That is what makes the link **verifiable**: the recovered name matches the lost one, so #731's
+causal-chain metric can be measured rather than judged by impression.
+
+### 59.2 The route is an extension point vanilla ships unused
+
+`QudSpecificBootHandlersModule` fires two hooks immediately after generating the history, and assigns
+what they return straight back:
+
+```csharp
+game.sultanHistory = QudHistoryFactory.GenerateNewSultanHistory();
+game.sultanHistory = QudHistoryFactory.GenerateVillageEraHistory(game.sultanHistory);
+game.sultanHistory = info.fireBootEvent(BOOTEVENT_INITIALIZESULTANHISTORY, game, game.sultanHistory);
+game.sultanHistory = info.fireBootEvent(BOOTEVENT_AFTERINITIALIZESULTANHISTORY, game, game.sultanHistory);
+```
+
+**Nothing in vanilla handles either**, checked across all fifteen modules declared in vanilla's
+`EmbarkModules.xml` — the only references to those constants are the definition and the firing site.
+So nothing here replaces `QudHistoryFactory.GenerateNewSultan`, and this is the same use of charter
+rule 5's allowance as §40's naming module rather than a new raise. `HistoricEvent` is likewise a
+public, non-abstract class with a `virtual Generate()`, and vanilla's seventeen are subclasses of it.
+
+Note in passing that vanilla's doc comment on `BOOTEVENT_INITIALIZESULTANHISTORY` says *"has no
+element"*, which is false — the call site passes the history to both hooks.
+
+### 59.3 It cannot orphan a save
+
+The question worth answering first for anything touching worldgen. `HistoricEvent.Load` always
+constructs a plain `new HistoricEvent()` and reads the property dictionaries back into it — **the
+subclass is never restored**. So this type exists only while a world is being made; from the first
+save onward it is an ordinary event carrying its own baked text. Remove the mod and the history still
+loads, with these events intact and inert.
+
+For the same reason the event's two inputs travel in `eventProperties` rather than as fields on the
+class: only `id`, `year`, `duration` and the property dictionaries are ever written, so a field would
+reach no save at all while `validate_mod.py`'s `serializable-shape` check quite reasonably says it
+would. They are written into the dictionary directly rather than through `SetEventProperty`, which
+calls `ExpandString` — an item's name is data, not a template, and expanding it would mangle any name
+containing angle brackets.
+
+### 59.4 The double-fire, closed twice
+
+`Vixy_NameFlavourModule` adds itself to `info.modules` early so the name re-roll reaches it, and
+`EmbarkBuilder` later does `embarkInfo.modules.AddRange(modules.Where(m => m.enabled))` **with no
+duplicate check** — so that module sits in the list twice and its handler fires twice per boot event.
+Its two handlers survive that because one sets a property and the other returns a name: idempotent by
+luck rather than by design.
+
+**Appending history events is not idempotent** — run twice, it doubles everything. So this is a
+separate module that never joins the list early, *and* it carries a game-state guard, because a
+separate module only protects until somebody adds a second handler to it. Game state is available:
+`INITIALIZEGAMESTATESINGLETONS` is step 9 of the boot sequence and `INITIALIZEHISTORY` is step 12.
+
+### 59.5 Scope and failure
+
+**Once per sultan**, not once per loss, so a sultan who lost three things does not spend three of
+their eight events getting them back. The recovery is clamped inside the sultan's own life and skipped
+where there is no room — somebody who lost something in their last years keeps the loss.
+
+**Fail toward vanilla**, per #731's P8: everything is wrapped, and any failure leaves the history
+exactly as generated. There is nothing to roll back, because the only mutation is appending to a list
+vanilla has already finished with.
 
 ---
 

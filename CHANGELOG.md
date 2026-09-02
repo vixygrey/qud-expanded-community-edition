@@ -18,6 +18,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Sultans get back what they lost** (#731). Off by default, and **new worlds only**.
+
+  A sultan who lost something at a tavern may, years later, recover it — so one line of their history
+  answers another instead of standing alone.
+
+  The gap it starts on: Qud draws eight events from a pool of seventeen for each of five sultans, so
+  one playthrough shows me most of the pool two or three times over. And because those seventeen are
+  self-contained, nothing needs a cause and nothing demands a consequence, so the order they fall in
+  says nothing. A biography reads as a shuffled list rather than a life.
+
+  **This is one link, built to prove the shape before any of it is authored at scale.** The debt is a
+  real fact rather than a phrase — the losing event records which item went, so the recovery can give
+  back that exact thing, and the link can be checked rather than taken on trust.
+
+  Once per sultan, always inside the life it belongs to, and skipped where there were no years left
+  to do it in. Somebody who lost something in their last years keeps the loss.
+
+  History is written once when a world is made, so this cannot reach a game already in progress.
+
 - **Killing a water-sibling costs everything** (#753). Off by default.
 
   Qud already curses this heavily, and I want to be exact about how heavily, because what changes is
