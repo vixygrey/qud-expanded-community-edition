@@ -720,4 +720,28 @@
             {{y|Off by default.}}
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEOathbreaker"
+    DisplayText="{{C|Qud Expanded}}: killing a water-sibling costs everything"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded oathbreaker water ritual curse reputation covenant"
+  >
+    <helptext>
+            Kill somebody you shared water with and Qud already curses you,
+            taking about a hundred standing from every people who does not
+            already hate you.
+
+            But it is a flat hundred, so a people who loved you still love you
+            afterward. With this on, anyone who thought well of you falls to
+            nothing first, and then the curse lands. Nobody who hears of it
+            still likes you.
+
+            If you were already disliked, nothing changes.
+
+            {{y|Off by default.}}
+</helptext>
+  </option>
 </options>

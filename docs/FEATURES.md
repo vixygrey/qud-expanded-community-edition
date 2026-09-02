@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 33 options (§13)
+│   ├── Options.xml             # 34 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 90 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 91 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty-three options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7632,6 +7632,65 @@ WaterRitual.Record.secretsRemaining--;
 
 What is renewed is only `totalFactionAvailable`, the reputation budget you spend *against* those
 pools. So a deepened bond lets you reach what they still had rather than conjuring more of it.
+
+---
+
+## 58. Killing a water-sibling costs everything (`Vixy_Oathbreaker`)
+
+Off by default. Kill somebody you shared water with and anyone who thought well of you falls to
+nothing before the curse lands, so nobody who hears of it still likes you.
+
+Part of #753, and the change is smaller than the sentence suggests, because vanilla already punishes
+this hard.
+
+### 58.1 What vanilla already does, accurately
+
+`GivesRep`'s death handler checks `wasParleyed` — set when the ritual is performed — and then walks
+**every visible faction that does not already hate you**:
+
+```csharp
+foreach (Faction item in Factions.Loop())
+    if (item.Visible && !item.HatesPlayer)
+        PlayerReputation.Modify(item, VaryRep(-100), …, "WaterRitualCurse", …);
+```
+
+Seventy visible factions, so roughly **7,000 reputation destroyed in one act**, plus another 200 with
+the victim's own people from the ordinary legendary-kill penalty. It is already among the harshest
+events in the game, and it unlocks an achievement named `VIOLATE_WATER_RITUAL`.
+
+### 58.2 The flaw is that it is flat
+
+Vanilla's bands are **250 for liked** and **600 for loved**. At 700 with a faction the curse takes you
+to 600 — still loved. So the people who knew you best forgive you most easily, which is precisely
+backwards for this crime. A curse that leaves you with friends is not a curse.
+
+### 58.3 What changes
+
+Standing falls to nothing first, and then the curse lands. Anyone above neutral ends at about −100
+however far above they were; anyone at or below neutral takes vanilla's hundred exactly as before.
+
+| standing before | vanilla | here |
+|---:|---:|---:|
+| 700 (loved) | 600 — still loved | **−100** |
+| 300 (liked) | 200 | **−100** |
+| 0 | −100 | −100 |
+| −50 | −150 | −150 |
+
+**One line does it, because the amount is a delta.** Subtracting the current standing makes the result
+land on the penalty itself — `standing + (amount - standing) == amount` — which also preserves the
+variance vanilla rolls into `VaryRep` rather than replacing it with a number of this fork's.
+
+`ReputationChangeEvent` is vanilla's own hook: `Reputation.Modify` routes every change through
+`GetFor` before it lands, and it dispatches to `The.Player`. `CyberneticsSocialCoprocessor` is the
+shipped precedent for reading `E.Type` and scaling `E.Amount`. Prospective queries are answered too,
+so anything asking what this would cost is told the truth.
+
+### 58.4 What was deliberately left alone
+
+**The curse reaches mollusks and fish**, who have no way to hear about it. §54.2's reasoning about
+which peoples can hold an opinion would exclude them, and it is not applied here — because in this
+one place it would *soften* the punishment. Tightening that fiction is a separate argument from making
+the sentence bite, and it pulls the other way.
 
 ---
 
