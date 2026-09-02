@@ -2110,7 +2110,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 31 options (§13)
+│   ├── Options.xml             # 32 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 85 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 87 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -2177,7 +2177,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty-one options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-two options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -7385,6 +7385,82 @@ which is how #806 was found.
 Threshold is **15,000** carried value: about twelve Nullray Pistols, or two and a half Zetachrome
 Lunes, or the Otherpearl by itself. Set from blueprint data rather than from a real character, so
 treat it as a starting position.
+
+---
+
+## 56. People you shared water with remember you (`Vixy_WaterMemory`)
+
+Off by default. Share water with somebody and, afterwards, they will say what they have heard of you
+since — if your standing with their own people has moved much either way. It is only ever a remark:
+nothing is asked of you and nothing changes hands.
+
+The first checkbox of #753, carried there from the closed #182. The gap: the water ritual is a
+one-shot menu with a 100-reputation budget, and afterwards the relationship is over permanently.
+Betrayal is modelled; nobody I shared water with ever refers to it again, whatever I go on to do.
+
+### 56.1 Two halves, because the two moments are far apart
+
+The reputation has to be captured at the ritual and read back in a conversation an unknown time
+later, so this is a player part that records and a conversation part that speaks.
+
+**Nothing had to be built to hold the number.** `WaterRitualRecord` is an `IPart` on the creature
+carrying a `List<string> attributes` with prefix lookup helpers — persisted, per individual,
+travelling with them in the save, and already attached to the ritual.
+
+**Detecting a past ritual costs nothing either.** `WaterRitual.PerformRitual` sets `WaterRitualed` on
+the speaker, and that property is read by **nothing** — zero uses across vanilla's own
+`Conversations.xml`. A canonical marker going spare.
+
+`WaterRitualStartEvent.Send` dispatches to `Actor` and nobody else, and `Actor` is always the player.
+It fires the legacy string event first, gated on `HasRegisteredEvent`, then the `MinEvent` — the same
+shape as `Killed` in §54.5 — so both are registered, and the write is guarded against running twice.
+
+### 56.2 Their own people, not their related factions
+
+§55's neighbour in #753 is that a legendary's related factions are **rolled** — uniform across the
+visible factions at 10% friend, 45% dislike, 45% hate. A line about what the Girsh think of me,
+delivered by a Joppa villager, would read as noise until that half is constrained.
+
+Their own faction is the one relationship the ritual definitely established, so it is the only axis
+that cannot produce a sentence the player finds absurd. The threshold either way is one
+`REPUTATION_BASE_UNIT` — 50, the unit vanilla prices the ritual's own awards in, so "enough to
+notice" means the same here as it does there.
+
+### 56.3 One node, one pool, and why the direction arrives as a token
+
+`IConversationElement` collapses a `~` pool with `GetRandomSubstring('~')` **before**
+`PrepareTextEvent` fires, so a part cannot steer which line was drawn — by the time it is asked, the
+draw is already made. But `PrepareTextEvent` hands over the `StringBuilder` and runs **before**
+vanilla's own `=variable=` substitutions, so a token planted in the text can be filled and the result
+still goes through normal processing.
+
+That buys one node, one pool of framings in `Conversations.xml` where the prose belongs, and the
+direction supplied by the part as `good report` / `ill report` / `little`. Every line in the pool
+carries `=Vixy_ritualreport=` and has to read correctly with all three substituted in.
+
+The choice sits at **Ordinal 9700** — below §51's makers-mark at 9800 and the ask-a-name at 10000,
+well above vanilla's water ritual at 980 and `[begin trade]` at 990. It belongs with the things you
+say to somebody, not with the transactions.
+
+### 56.4 One vanilla defect this has to route around
+
+`WaterRitualRecord.GetAttribute` is inverted:
+
+```csharp
+if (!attribute.StartsWith(Prefix))   // GetAttribute
+if (attribute.StartsWith(Prefix))    // TryGetAttribute, immediately below it
+```
+
+It returns the first attribute that does *not* match the prefix, and can throw on the `Substring`
+when that attribute is shorter than the prefix it was handed. Both halves here use
+`TryGetAttribute`. `docs/LESSONS.md` has it.
+
+### 56.5 The snapshot is taken whether the option is on or off
+
+Only the speaking half is gated. The record is one short string on a part that already exists,
+invisible unless something reads it — and gating it would mean switching the option on did nothing
+for anybody I had already shared water with, which is a worse off-switch than a string is a cost.
+Charter rule 6 is satisfied by the half that can be seen.
 
 ---
 

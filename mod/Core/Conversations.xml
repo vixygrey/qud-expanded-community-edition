@@ -86,6 +86,50 @@
         <part Load="Add" Name="Vixy_RecruitLevel" />
       </choice>
     </node>
+
+    <!-- People I shared water with remember me. #753, first checkbox.
+
+         The water ritual is a one-shot menu and then the relationship is over; nobody ever refers
+         to it again whatever I go on to do. This is the smallest thing that changes that, and it is
+         deliberately only a remark - nothing is asked, nothing changes hands.
+
+         `Vixy_WaterMemory` writes my standing with their people into `WaterRitualRecord.attributes`
+         on the day we share water; `Vixy_WaterRemembers` reads it back and gates this choice on the
+         `WaterRitualed` property vanilla already sets and nothing else reads.
+
+         Ordinal 9700 puts it below Vixy_ShowMakersMark's 9800 and Vixy_AskName's 10000, and well
+         above vanilla's water ritual at 980 and [begin trade] at 990 - it belongs with the things
+         you say to somebody, not with the transactions.
+
+         `=Vixy_ritualreport=` is filled by the part rather than by vanilla's substitution table.
+         The `~` pool is collapsed by GetRandomSubstring *before* PrepareTextEvent fires, so a part
+         cannot pick which line was drawn - but PrepareTextEvent hands over the StringBuilder and
+         runs before the `=variable=` pass, so a token planted here can be filled and still go
+         through normal processing. That is what keeps all the prose in this file and lets one node
+         cover all three directions. Every line must carry the token, and must read correctly with
+         "good report", "ill report" and "little" substituted in. -->
+    <choice ID="Vixy_WaterRemembers" Target="Vixy_WaterRemembered" Ordinal="9700">
+      <text>
+        We shared water once.~
+        Water passed between us, you and I.~
+        You drank with me, once.~
+        There was water between us.~
+        Do you remember the water we shared?
+      </text>
+      <part Name="Vixy_WaterRemembers" />
+    </choice>
+
+    <node ID="Vixy_WaterRemembered">
+      <text>
+        I remember it. Since that day I have heard =Vixy_ritualreport= of you among my people.~
+        The water is not forgotten. Since then there has come =Vixy_ritualreport= of you.~
+        I remember. My people have spoken =Vixy_ritualreport= of you since.~
+        That water still stands between us. Since then there has been =Vixy_ritualreport= of you.~
+        I remember the water. And I have heard =Vixy_ritualreport= of you since.
+      </text>
+      <choice Target="End">Until the next time.</choice>
+      <choice Target="Start">There is something else.</choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every

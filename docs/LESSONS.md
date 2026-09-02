@@ -4205,3 +4205,49 @@ both silently — leaving that faction able to send nothing but chromelings. Tak
 Related: [`a default argument was hiding every named character in the game`](#a-default-argument-was-hiding-every-named-character-in-the-game)
 is the same session and the same shape — a field that reads like a description and behaves like a
 control.
+
+---
+
+## Two adjacent methods, one of them inverted, and the broken one has the friendlier name
+
+`WaterRitualRecord` keeps a `List<string> attributes` and offers two ways to read it. They sit
+directly next to each other in the source and they disagree:
+
+```csharp
+public string GetAttribute(string Prefix, string Default = null)
+{
+    foreach (string attribute in attributes)
+        if (!attribute.StartsWith(Prefix))              // <- negated
+            return attribute.Substring(Prefix.Length);
+    return Default;
+}
+
+public bool TryGetAttribute(string Prefix, out string Value)
+{
+    foreach (string attribute in attributes)
+        if (attribute.StartsWith(Prefix))               // <- correct
+        { Value = attribute.Substring(Prefix.Length); return true; }
+    Value = null; return false;
+}
+```
+
+`GetAttribute` returns the first attribute that does **not** match the prefix it was handed, with
+that prefix's length sliced off the front of it — and throws `ArgumentOutOfRangeException` outright
+when the non-matching attribute is shorter than the prefix. It is wrong in every case except an
+empty list, where it correctly returns the default.
+
+**The trap is not the bug, it is which one you reach for.** `GetAttribute(prefix, default)` is the
+more inviting signature — one line, no `out`, a default already provided — and it is the broken one.
+`TryGetAttribute` is clumsier to call and correct. I would have used the convenient one without
+looking if I had not been reading the class for another reason.
+
+**So: when two overloads of the same idea sit side by side, read both before choosing.** A codebase
+that offers `Get` and `TryGet` has usually written them at different times, and there is no rule
+saying the pleasant one is the maintained one. This is Freehold's code, not a mod's, and it has
+presumably been wrong for a long time without anybody noticing — which is what a method nothing calls
+looks like.
+
+Related: [`a default argument was hiding every named character in the game`](#a-default-argument-was-hiding-every-named-character-in-the-game)
+and [`writing Level on a creature scales nothing`](#writing-level-on-a-creature-scales-nothing-and-the-number-makes-it-look-like-it-did)
+are the same session's other two — an argument, a field and now a method, each reading like one thing
+and behaving like another. The common defence is the same: read the body before trusting the name.

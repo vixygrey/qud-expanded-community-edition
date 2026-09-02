@@ -112,6 +112,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_XPCurve>();
                 player.RequirePart<Vixy_Notoriety>();
                 player.RequirePart<Vixy_Hoard>();
+                player.RequirePart<Vixy_WaterMemory>();
             }
         }
     }

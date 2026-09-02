@@ -16,6 +16,27 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **People I shared water with remember me** (#753). Off by default.
+
+  Share water with somebody and, later, they will say what they have heard of me since — if my
+  standing with their own people has moved much either way. It is only ever a remark: nothing is
+  asked of me and nothing changes hands.
+
+  The gap it closes: the water ritual is a one-shot menu, and afterwards the relationship is over.
+  Betrayal was modelled; nobody I had shared water with ever mentioned it again, whatever I went on
+  to do.
+
+  **Their own people, not the factions they are related to.** Those relations are rolled rather than
+  authored, so a line about what the Girsh think of me, out of the mouth of a Joppa villager, would
+  read as nonsense. Their own faction is the one relationship the ritual actually established.
+
+  My standing is noted on the day we share water, so this reads from that day forward rather than
+  from the start of the game. That note is taken whether or not the option is on — it is one string
+  nothing reads while the option is off, and gating it would have meant switching the option on did
+  nothing for everybody I had already met.
+
 ## [2.13.0] - 2026-09-01
 
 ### Added
