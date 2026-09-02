@@ -6960,9 +6960,9 @@ is `Amount / (gap + 1)` at every positive gap, which never reaches zero, so a hi
 farming trivia would go on earning. That floor is vanilla's anti-grind measure and it stands. What is
 adopted is the middle of the range, where two tiers up pays a third rather than a tenth.
 
-**The bonus is ×1.6 at three tiers up, and Mura's own comment says ×1.3.** His comment describes
-increments of 0.05; his code is `i * -0.1`, giving `1 + (0.1 + 0.2 + 0.3)`. The code is what shipped
-and what he tuned against, so the code is what was ported. It is written down here and in the part's
+**The bonus is ×1.6 at three tiers up, and Mura's own comment says ×1.3.** Their comment describes
+increments of 0.05; their code is `i * -0.1`, giving `1 + (0.1 + 0.2 + 0.3)`. The code is what
+shipped and what they tuned against, so the code is what was ported. It is written down here and in the part's
 docstring because the annotation is the more persuasive of the two and reads as authoritative.
 
 ### 52.2 Why this is a part and not a fork
@@ -7052,7 +7052,7 @@ which is the additive way to have fewer of them.
 **Three of the water vessels join `DynamicObjectsTable:Items`**, and that is Mura's design rather
 than an accident. `Raven_Water Vase`, `Raven_Water Bottle` and `Raven_Water Pitcher` inherit vanilla's
 `Vase`, `Bottle` and `Pitcher`, which carry that membership — so with the option on, a container that
-already holds water can turn up as ordinary loot. The *merchant-owned* copies are the ones he
+already holds water can turn up as ordinary loot. The *merchant-owned* copies are the ones they
 excluded, with `ExcludeFromDynamicEncounters` marked `*noinherit` so the exclusion does not travel to
 children. `dynamic-pools.json` records the three, so a fourth arriving later fails a commit.
 
@@ -7062,7 +7062,7 @@ vanilla declares `Role` as a tag 349 times and as a property never, and `role-fo
 ## 54. Kill enough of one people and they send someone (`Vixy_Notoriety`)
 
 Off by default. Kill five hundred of one faction and, rarely, somebody arrives about it: a named
-champion of theirs, near my level, who says on arrival what he has come for. Far more rarely it goes
+champion of theirs, near my level, who says on arrival what they have come for. Far more rarely it goes
 the other way and an envoy turns up from their enemies — pleased, and interested in me.
 
 Item **A3** of `docs/DESIGN_difficulty_systems.md`, split out as #190. Its §0 governs: it scales with
@@ -7117,8 +7117,8 @@ cannot hear about it.
 
 ### 54.3 The hunter
 
-He is one of the faction's own members, **chosen** because his blueprint's own level is within five
-of mine, and passed through `HeroMaker` so he is named and equipped as one of their heroes.
+They are one of the faction's own members, **chosen** because their blueprint's own level is within
+five of mine, and passed through `HeroMaker` so they are named and equipped as one of their heroes.
 
 **Chosen, not assigned — and the difference is the whole of it.** This used to take any member and
 write my level onto its `Level` stat. That changes an integer and nothing else: hit points, armour,
@@ -7139,10 +7139,10 @@ exactly the characters most likely to have earned it.
 **A faction with nobody suitable sends nobody.** The Issachari have only level-8 blueprints, the
 snapjaws top out around twenty; both go quiet for a late character, and silence is the right failure.
 
-**He does not appear when he is rolled for.** Being told *"you are being followed"* and then having
-ten of my own turns before he finds me is the difference between a threat and an ambush — long enough
-to drink something, take a position, or start for the stairs, and **leaving the zone loses him
-outright**. That is deliberate: the feature is meant to pose a decision, and walking away is one of
+**They do not appear when they are rolled for.** Being told *"you are being followed"* and then
+having ten of my own turns before they find me is the difference between a threat and an ambush —
+long enough to drink something, take a position, or start for the stairs, and **leaving the zone
+loses them outright**. That is deliberate: the feature is meant to pose a decision, and walking away is one of
 the answers. The counter runs on `BeginTakeActionEvent`, which `Vixy_Fatigue` and `Vixy_Bearing`
 already use.
 
@@ -7165,10 +7165,11 @@ plainly belong on it, and because one generic hindren added by a later patch mak
 change here. The Consortium and the Trolls have a single eligible blueprint each, so those two will
 always send the same face.
 
-**Nothing forces him hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
+**Nothing forces them hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
 personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them — five
 hundred of their dead is far past the -10 line on its own. Forcing it would mean
-`Allegiance.Hostile`, which is hostile to *everything* and would set the champion against his own kin.
+`Allegiance.Hostile`, which is hostile to *everything* and would set the champion against their own
+kin.
 
 **The arrival message is the whole explanation, and it has to be**, because hostile creatures attack
 rather than converse — #632 established that the expensive way, so a `ConversationScript` on somebody

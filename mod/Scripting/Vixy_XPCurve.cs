@@ -45,7 +45,7 @@ namespace XRL.World.Parts
     /// <para>
     /// <b>The bonus is x1.6 at three tiers up, and Mura's own comment says x1.3.</b> The comment
     /// describes increments of 0.05; the code is <c>i * -0.1</c>, giving 1 + (0.1 + 0.2 + 0.3). The
-    /// code is what shipped and what he tuned against, so the code is what is ported. Written down
+    /// code is what shipped and what they tuned against, so the code is what is ported. Written down
     /// because the annotation is the more persuasive of the two and reads as authoritative.
     /// </para>
     /// <para>
