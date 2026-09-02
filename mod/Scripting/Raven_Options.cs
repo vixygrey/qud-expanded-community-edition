@@ -114,6 +114,8 @@ namespace QudExpandedCE
 
         public const string WaterBondID = "OptionQudExpandedCEWaterBond";
 
+        public const string OathbreakerID = "OptionQudExpandedCEOathbreaker";
+
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
@@ -781,6 +783,8 @@ namespace QudExpandedCE
         public static bool WaterMemory => Enabled(WaterMemoryID, "No");
 
         public static bool WaterBond => Enabled(WaterBondID, "No");
+
+        public static bool Oathbreaker => Enabled(OathbreakerID, "No");
 
         private static void ApplyChipSlots()
         {

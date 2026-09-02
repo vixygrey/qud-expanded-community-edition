@@ -18,6 +18,23 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Killing a water-sibling costs everything** (#753). Off by default.
+
+  Qud already curses this heavily, and I want to be exact about how heavily, because what changes is
+  smaller than it sounds: it takes about a hundred standing from **every** people who does not
+  already hate me — seventy of them — so roughly seven thousand reputation in one act.
+
+  **But it is a flat hundred, so a people who loved me still love me afterward.** Vanilla's bands are
+  250 for liked and 600 for loved; at 700 I fall to 600 and nothing has really happened. The ones who
+  knew me best forgive me most easily, which is backwards for this of all crimes.
+
+  Now anyone who thought well of me falls to nothing first, and then the curse lands. Anyone at or
+  below neutral is unaffected and takes vanilla's hundred exactly as before. Nobody who hears of it
+  still likes me, which is the whole of the rule.
+
+  The curse still reaches mollusks and fish, who cannot have heard. Excluding them would be more
+  coherent and would make the sentence lighter, and I would rather it bite.
+
 - **The water ritual is a relationship** (#753). Off by default.
 
   Three changes to one gesture, all of them found by playing the last one rather than by reading.
