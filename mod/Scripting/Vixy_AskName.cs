@@ -66,9 +66,17 @@ namespace XRL.World.Conversations.Parts
         }
 
         /// <summary>They answer, and the name sticks.</summary>
+        /// <remarks>
+        /// Also marks that a name has passed between us, which <see cref="Vixy_RitualGate"/> reads
+        /// to decide whether the water ritual should be offered yet. Asking somebody's name and
+        /// giving them mine are the two halves of the same exchange — <see cref="Vixy_Introduce"/>
+        /// covers the other — so both set the one marker and the gate need not care which happened.
+        /// </remarks>
         public override bool HandleEvent(EnteredElementEvent E)
         {
             GameObject speaker = The.Speaker;
+            speaker?.SetIntProperty(Vixy_Introduce.Marker, 1);
+
             if (speaker != null && !speaker.HasProperName)
             {
                 speaker.GiveProperName();

@@ -108,6 +108,54 @@
          through normal processing. That is what keeps all the prose in this file and lets one node
          cover all three directions. Every line must carry the token, and must read correctly with
          "good report", "ill report" and "little" substituted in. -->
+    <!-- Give my name to somebody whose name I already know. #753.
+
+         Vixy_AskName covers the nameless; this covers the named, and the two can never both appear.
+         It had to exist before the ritual could be gated on an introduction at all: ElderBob and
+         Mehmet both carry GivesRep *and* <xtagGrammar Proper="true" />, so on the population that
+         performs the water ritual there was no naming exchange available in either direction.
+
+         Ordinal 9900 puts it above Vixy_ShowMakersMark at 9800 and below Vixy_AskName at 10000 -
+         the two naming exchanges sit together at the top, and only ever one of them is visible. -->
+    <choice ID="Vixy_Introduce" Target="Vixy_Introduced" Ordinal="9900">
+      <text>
+        I am =name=.~
+        My name is =name=, =pronouns.formalAddressTerm=.~
+        You may call me =name=.~
+        I am called =name=. Now you know it.~
+        =name=, =pronouns.formalAddressTerm=. That is my name.
+      </text>
+      <part Name="Vixy_Introduce" />
+    </choice>
+
+    <node ID="Vixy_Introduced">
+      <text>
+        =name=. I will remember it.~
+        Then I know you, =name=.~
+        =name=. The name is heard.~
+        Well met, =name=.~
+        I have it, =name=.
+      </text>
+      <choice Target="Start">Good.~Then we understand each other.~As it should be.</choice>
+    </node>
+
+    <!-- Gate vanilla's own water ritual choice, on both sides of the ritual. #753.
+
+         Load="Add" appends to the existing choice rather than replacing it, the same way
+         Vixy_RecruitLevel is added to JoinPartyChoice below. Vanilla's choice keeps its text, its
+         IfSpeakerHavePart="GivesRep" and its Ordinal of 980; this only answers visibility.
+
+         Before the ritual it hides until a name has passed between us. After it, it hides unless
+         the bond can actually deepen - because WaterRitualBegin charges a dram on *every* entry,
+         the UseDrams branch sitting outside the first-time check, so a repeat that can do nothing
+         still costs water.
+
+         Every uncertain case resolves to visible. Hiding this wrongly would strand a questline;
+         showing it wrongly costs a dram. -->
+    <choice ID="WaterRitualChoice">
+      <part Load="Add" Name="Vixy_RitualGate" />
+    </choice>
+
     <choice ID="Vixy_WaterRemembers" Target="Vixy_WaterRemembered" Ordinal="9700">
       <text>
         We shared water once.~

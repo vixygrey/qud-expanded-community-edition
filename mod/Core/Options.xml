@@ -695,4 +695,29 @@
             {{y|Off by default.}}
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEWaterBond"
+    DisplayText="{{C|Qud Expanded}}: the water ritual is a relationship"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded water ritual bond introduce name relationship deepen"
+  >
+    <helptext>
+            Give your name before you share water. People whose name you
+            already know gain an introduction option, and the ritual waits on
+            it.
+
+            Come back having risen in the eyes of their people and they will
+            deal with you again, their goodwill renewed once so you can reach
+            what they still had. Their secrets and gifts stay as finite as
+            they always were.
+
+            Sharing water again is otherwise hidden - vanilla charges a dram
+            for a menu that can do nothing.
+
+            {{y|Off by default.}}
+</helptext>
+  </option>
 </options>
