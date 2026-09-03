@@ -6508,14 +6508,22 @@ a token in it**, costing no C# at all.
 ### 51.2a Three in-game days, and the spec's day was wrong
 
 `Calendar.TurnsPerDay` is **1200**. The design doc put accrual at 1 per action and called 1,000
-actions *"roughly two in-game days"*; it is **0.83 of one**. Reaching full fatigue in three days means
-3,600 actions, so the baseline is 0.28 per action, carried in hundredths.
+actions *"roughly two in-game days"*; it is **0.83 of one**. Reaching full fatigue in three days meant
+3,600 actions, so the baseline was 0.28 per action, carried in hundredths.
+
+**Play asked for closer to four, and the rate moved rather than the bands (#821).** The step from
+Tired to Weary read as arriving too soon, and the reason is the ladder's shape: the Rested band is
+**400 wide and every band after it is 200 or less**, so the second rung lands at half the pace the
+first one teaches you to expect. That shape is deliberate — the meter is not a clock — so the
+baseline went to **0.22** instead, stretching everything by one proportion. Widening the early bands
+could only have come out of the later ones, and `Exhausted` is where `Vixy_Gutter` and the world-map
+refusal both live.
 
 | activity | per action | actions to full | in-game days |
 |---|---:|---:|---:|
-| unhurried | 0.28 | 3,571 | **2.98** |
-| overland travel, or bleeding | 0.42 | 2,380 | 1.98 |
-| in combat throughout | 0.56 | 1,785 | 1.49 |
+| unhurried | 0.22 | 4,545 | **3.79** |
+| overland travel, or bleeding | 0.33 | 3,030 | 2.53 |
+| in combat throughout | 0.44 | 2,273 | 1.89 |
 
 Three days is the unhurried figure and a character who fights for it arrives in half that, which is
 the lever §3.1 is actually about: fatigue is a consequence of what you did, not of elapsed time.
@@ -6925,7 +6933,7 @@ rate — and the two stamps.
 with the gap between them, answers in one line what watching the bands cannot answer at all.
 
 `wish vixyfatigue:600` sets the meter, and that is what makes the rest of the plan affordable. Several
-checks begin *"reach Exhausted"*, which is about **2,900 actions** of unhurried play — not a test, an
+checks begin *"reach Exhausted"*, which is about **3,600 actions** of unhurried play — not a test, an
 afternoon.
 
 **Wishes reach mods by design.** `WishManager.UpdateCommandCollection` calls

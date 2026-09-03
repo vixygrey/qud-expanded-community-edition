@@ -95,16 +95,22 @@ FatiguePerTurn = 1.0
 
 **`Calendar.TurnsPerDay` is 1200**, which is the number this section needed and did not have. At 1
 point per action, 1000 actions is **0.83 of one day** — not the "roughly two in-game days" claimed
-here. The target is three days unhurried, so the baseline is `1000 / 3600` = **0.28 per action**,
+here. The target was three days unhurried, so the baseline was `1000 / 3600` = **0.28 per action**,
 carried in hundredths so the multipliers stay exact integers.
+
+> **Amended by #821.** Play found the step from Tired to Weary arriving too soon, and measuring it
+> showed the cause: the Rested band is **400 wide and every band after it is 200 or less**, so the
+> second rung lands at half the pace the first one teaches. The ladder's shape is deliberate and
+> stays; the rate moved instead, to **0.22** and a target of **3.79 days**. Widening the early bands
+> could only have come out of the later ones, and `Exhausted` is where the mechanics live.
 
 What that produces:
 
 | activity | per action | actions to full | in-game days |
 |---|---:|---:|---:|
-| unhurried | 0.28 | 3,571 | **2.98** |
-| overland travel, or bleeding | 0.42 | 2,380 | 1.98 |
-| in combat throughout | 0.56 | 1,785 | 1.49 |
+| unhurried | 0.22 | 4,545 | **3.79** |
+| overland travel, or bleeding | 0.33 | 3,030 | 2.53 |
+| in combat throughout | 0.44 | 2,273 | 1.89 |
 
 **Three days is the unhurried figure and a character who fights for it arrives in half that**, which
 is the lever this section is actually about: fatigue is a consequence of what you did, not of elapsed

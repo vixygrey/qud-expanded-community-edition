@@ -79,6 +79,21 @@ recorded because contributors need them, not because subscribers do.
 
   Nothing else moves: being ambushed still costs the dream as well as the rest.
 
+- **Tiredness arrives more slowly** (#821).
+
+  The step from tired to weary felt like it came round quickly, and measuring it showed why: the
+  first band is **400 wide and every band after it is 200 or less**, so the second rung lands at half
+  the pace the first one teaches you to expect.
+
+  That shape is deliberate — the meter is not a clock, and the later bands should crowd — so what
+  moved is the rate. A full meter now takes **3.8 in-game days** unhurried rather than 3.0, tired
+  arrives at 1.5 days rather than 1.2, and everything between stretches by the same proportion.
+  Fighting for it still gets you there in half the time.
+
+  Widening the early bands instead would have had to come out of the later ones, and exhausted is
+  where the meter actually bites — it is where concentration starts slipping and where you can no
+  longer set out across the world map. That boundary has not moved.
+
 ## [2.14.0] - 2026-09-02
 
 ### Added
