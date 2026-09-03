@@ -2619,10 +2619,14 @@
         reason; Horns would have set 100, and Strength is added once per penetration, so that is
         the largest number here.
 
-        HornsProperties supplies the 20% intrinsic attack chance, the to-hit bonus and the bleed
-        on penetration. Its GetHornLevel() looks up GetMutation("Horns") by part name and will not
-        find this mutation, so it falls back to the HornLevel field - which Vixy_Fangs writes on
-        equip and on every rank change.
+        Vixy_FangsProperties supplies the intrinsic attack chance, the to-hit bonus and the bleed
+        on penetration. It replaced vanilla's HornsProperties in #819: that part finalized the
+        chance at a flat 20 and stopped the event, throwing away the +50 the three passive
+        Multiweapon skills contribute - so training the one skill line a bite character would take
+        made the bite relatively worse. The chance now runs 20 untrained to 40 fully trained.
+
+        HornLevel is the same field under the same name, still written by Vixy_Fangs on equip and
+        on every rank change.
 
         NoDefaultBehavior is deliberately absent. Vanilla's Horns blueprint carries it because
         Horns force-equips; this mutation sets the part's DefaultBehavior instead, so that the
@@ -2646,7 +2650,7 @@
       Name="Description"
       Short="Four teeth have grown long and keen, and they meet with the precision of a closing trap."
     />
-    <part Name="HornsProperties" />
+    <part Name="Vixy_FangsProperties" />
     <part Name="NaturalEquipment" />
     <part Name="NoDamage" />
     <part Name="NoBreak" />

@@ -1346,8 +1346,10 @@ Fangs, worked:
 - **Above: `Horns`, 4.** `2d3`→`2d6`, AV `1`→`4`, to-hit `+rank/2+1`, bleeding on penetration, a 20%
   intrinsic attack — and it **occupies the Head slot**, so no helmets.
 
-Fangs keep Horns' attack chance, to-hit and bleed; drop its AV and its damage growth; and cost no
-slot, because they set the part's default behaviour rather than equipping. So: **strictly below
+Fangs keep Horns' to-hit and bleed; drop its AV and its damage growth; and cost no slot, because they
+set the part's default behaviour rather than equipping. Their attack chance was Horns' flat 20 and is
+now 20 rising to 40 with Multiweapon training (#819), which Horns cannot do — but Horns keep
+`MaxStrengthBonus="100"` against fangs' `5`, so Horns still win on a strength build. So: **strictly below
 Horns on two of its four extras, strictly above Beak on all of them, and free to have.** Band 3, the
 "solid, scaling, costs you nothing" tier, next to `Quills` and `Carapace`.
 
