@@ -282,13 +282,31 @@ namespace XRL.World.Parts
         /// Baseline accrual, in hundredths of a fatigue point per action.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// <b>`Calendar.TurnsPerDay` is 1200</b>, which is the number §3.1 needed and did not have.
         /// The spec put accrual at 1 per action and called 1000 actions "roughly two in-game days";
-        /// it is 0.83 of one. Reaching <see cref="Max"/> in three days means 3,600 actions, so the
-        /// baseline is 1000/3600 — 0.28 a turn, carried in hundredths so the multipliers below stay
+        /// it is 0.83 of one. Reaching <see cref="Max"/> in three days meant 3,600 actions, so the
+        /// baseline was 1000/3600 — 0.28 a turn, carried in hundredths so the multipliers below stay
         /// exact integers.
+        /// </para>
+        /// <para>
+        /// <b>Three days was the derived target and play asked for closer to four (#821).</b> The
+        /// step from Tired to Weary read as arriving too soon, and measuring it showed why: the
+        /// Rested band is <b>400 wide and every band after it is 200 or less</b>, so the second rung
+        /// lands at half the pace the first one teaches you to expect. That shape is deliberate and
+        /// stays — the bands are not evenly spaced because the meter is not a clock.
+        /// </para>
+        /// <para>
+        /// <b>So the rate moved rather than the thresholds.</b> Widening the early bands could only
+        /// come out of the later ones, and <see cref="Exhausted"/> is where the mechanics live —
+        /// `Vixy_Gutter` and the world-map refusal both key off it. Slowing accrual stretches
+        /// everything by one proportion and spends nothing: Tired at 1.52 days rather than 1.19,
+        /// Weary at 2.27, and a full meter at <b>3.79</b>. 22 is chosen over 24 or 20 partly because
+        /// it halves and doubles exactly, so <see cref="Strain"/>'s multipliers and the sleep
+        /// suppressor's halving stay integral with no truncation to reason about.
+        /// </para>
         /// </remarks>
-        public const int BaseAccrual = 28;
+        public const int BaseAccrual = 22;
 
         /// <summary>
         /// §3.1's strain multiplier, in hundredths so it stays integer arithmetic.

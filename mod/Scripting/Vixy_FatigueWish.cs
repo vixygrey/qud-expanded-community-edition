@@ -29,7 +29,7 @@ namespace XRL.World
     /// </para>
     /// <para>
     /// <b>And the setter is what makes the rest of the plan affordable.</b> Several checks begin
-    /// "reach Exhausted", which is about 2,900 actions of unhurried play. That is not a test, it is
+    /// "reach Exhausted", which is about 3,600 actions of unhurried play (#821). That is not a test, it is
     /// an afternoon.
     /// </para>
     /// <para>
