@@ -4409,3 +4409,43 @@ was exactly that, a complete mutation with art and a cost sitting in `HiddenMuta
 **Every one of these five was found by a question rather than by a plan** — four of them the
 maintainer's, asked in passing. Reading the assembly answers "how does this work". It does not answer
 "does this happen", and only play or a usage count will.
+
+## A dead pipeline stage answers confidently, and `jq` cannot read `gh project`'s own JSON
+
+This file already prescribes a board-completeness check, under
+[`a capped listing answers a smaller question`](#a-capped-listing-answers-a-smaller-question-and-nothing-in-the-output-says-so):
+pipe `gh project item-list --format json` through `jq` and `comm` it against the open issues. I ran it
+several times in one session and it worked. Then it failed, and it failed by printing a full and
+plausible answer that was the exact inverse of the truth.
+
+```
+jq: parse error: Invalid string: control characters from U+0000 through U+001F must be escaped
+```
+
+`comm` was reading `jq`'s empty stdout as one side of the comparison, so **every open issue came back
+as missing from the board** — seventeen numbers, correctly formatted, in a list I published before
+noticing. The board was complete throughout.
+
+**`gh project item-list --format json` can emit JSON that `jq` refuses.** The cause is a raw newline
+inside a JSON string — an item whose title or body contains one — and nothing about that is exotic: it
+depends only on what somebody typed into an issue. `json.loads(raw, strict=False)` parses it happily
+and `jq` has no equivalent switch, so anything cross-checking the board should parse in Python rather
+than assume the dump is clean.
+
+> **A pipeline is only as honest as its quietest stage.** `jq` wrote to stderr and exited non-zero;
+> `comm` neither knew nor cared, and the pipeline's exit status was `comm`'s. `set -o pipefail` is the
+> cheap guard, and a comparison against a set should assert the set is non-empty before believing a
+> difference.
+
+**My first fix was wrong and looked right, which is the half worth keeping.** I read *control
+characters*, reached for `tr -d '\000-\010\013\014\016-\037'`, and it changed nothing — `tr`
+spares `\n` by construction, so the remedy could not have addressed the cause I had just named. What
+exposed it was putting a sanity check in the same command as the fix: the parse failed again in the
+same breath. Had I run the fix alone and moved on, *"strip the control characters"* would have gone
+into this file as a working answer to a problem it does not touch.
+
+Related: [`a search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
+is the same disease with an empty result rather than a full one, and
+[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member —
+in all three a tool declines to answer and the silence is read as the answer. This one is the worst of
+the family, because there is no silence to notice.
