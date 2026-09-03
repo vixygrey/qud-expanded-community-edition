@@ -94,6 +94,22 @@ recorded because contributors need them, not because subscribers do.
   where the meter actually bites — it is where concentration starts slipping and where you can no
   longer set out across the world map. That boundary has not moved.
 
+- **Being weary costs something now, and being exhausted costs it to everyone** (#822).
+
+  Weary was a word in the status bar. The design always said it should be the point where the world
+  starts getting away from you, and that half was written down and never built — so crossing into it
+  changed nothing at all.
+
+  Now something you were counting on occasionally gutters out: about twice across the whole weary
+  stretch, more often as you get worse. It is never a penalty to your numbers, which is the rule this
+  system is built on — it takes a capability away at a moment you did not choose.
+
+  **And exhaustion used to reach only characters with mental mutations.** A True Kin has none, so the
+  one mechanic waiting at the bottom of the meter had never once fired for them. Tiredness now takes
+  physical mutations, skills and manoeuvres as well. It leaves your implants, tonics and gear alone —
+  a grenade does not care how tired you are.
+
+
 ## [2.14.0] - 2026-09-02
 
 ### Added

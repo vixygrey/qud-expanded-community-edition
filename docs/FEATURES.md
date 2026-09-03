@@ -6811,13 +6811,36 @@ quarter of hard-won dreams into silence to buy a tidiness no player could observ
 The **psychic echo** tier from §4.1 is deliberately not built. A temporary buff or a mutation bump is a
 balance question rather than a prose one and deserves its own look.
 
-### 51.5b Exhaustion makes the mind unreliable (`Vixy_Gutter`)
+### 51.5b Tiredness makes me unreliable (`Vixy_Gutter`)
 
 §3.2.1 of the design doc asks fatigue to make me *unreliable* rather than *weaker*, and this is that
-rule as a mechanism. Past Exhausted, roughly one action in 200 — one in 80 once I am Collapsing — my
-concentration slips and a mental mutation I could have used this turn gutters out for twenty rounds.
-Across the whole exhausted stretch that is about five slips. It costs me a capability I was counting
-on, at a moment I did not pick, which is a sharper thing than two points of Agility.
+rule as a mechanism. Something I could have used this turn gutters out for twenty rounds: a
+capability I was counting on, taken at a moment I did not pick, which is a sharper thing than two
+points of Agility.
+
+| band | actions in it | odds | slips across the band |
+|---|---:|---:|---:|
+| Weary | 909 | 1 in 500 | ~1.8 |
+| Exhausted | 682 | 1 in 200 | ~3.4 |
+| Collapsing | 227 | 1 in 80 | ~2.8 |
+
+**Weary was in §3.2.1 from the start and was never built** — until #822 it cost a message and a word
+in the status bar, nothing else. Its odds are sized against the band rather than picked: at the
+post-#821 rate that stretch is about 909 actions, so 1 in 500 is roughly two slips across the whole
+of it.
+
+**And it used to reach one class of ability out of six.** The filter was `Class.Contains("Mental")`,
+which matches `Mental Mutations` and nothing else — so a **True Kin got nothing from Exhausted** but
+the world-map refusal, having no mutations at all, and neither did a mutant who took only physical
+ones. Vanilla ships 40 mental-mutation abilities, 36 physical, 34 skills, plus cybernetics, items and
+manoeuvres.
+
+It now takes **mental mutations, physical mutations, skills and manoeuvres**. Including skills is what
+reaches everyone, since every character has some. **Cybernetics, items and tonics are left out
+deliberately**: a grenade does not care how tired I am, and an implant guttering because I am sleepy
+reads as a malfunction rather than as fatigue. The line is my own body and my own training — and the
+message follows it, because *"your concentration slips"* is right for a mutation and wrong for a
+charge.
 
 **It does not intercept the activation, and that is the finding.** The obvious build is a true
 misfire — cancel the use, keep the cooldown — and it cannot be done evenly. Mutation commands
@@ -6829,9 +6852,9 @@ time.
 
 Writing the cooldown is vanilla's own idiom instead. `SphynxSalt_Tonic` finds mental abilities with
 `Class.Contains("Mental")` and assigns `entry.Cooldown` directly; the setter registers the countdown
-with `ActivatedAbilities`, so it is the supported path rather than a way around one. It reaches all
-26 activated mental abilities identically, and `NotUsableDescription` — the one gate consulted before
-any command is sent — already refuses the press with the right message.
+with `ActivatedAbilities`, so it is the supported path rather than a way around one. It reaches every
+activated ability identically, and `NotUsableDescription` — the one gate consulted before any command
+is sent — already refuses the press with the right message.
 
 **The companion mechanic is absent on purpose.** §3.2.1 paired this with false sounds, and Qud has
 nothing for a false sound to hide among: eight distinct "You hear" strings in the whole assembly,

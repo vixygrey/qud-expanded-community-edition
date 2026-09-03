@@ -169,6 +169,13 @@ conditioned on **where** you are going has to use a different hook.
 
 ### 3.2.1 Weary borrows `Confused` rather than inventing a hallucination
 
+> **Built in #822**, three releases after this section was written — until then Weary cost a message
+> and nothing else. The recommendation below was followed: the *model* was borrowed and the class was
+> not. `Vixy_Gutter` already implemented that model at Exhausted, so what shipped is that mechanism
+> keyed lower, at 1 in 500. The same issue found it reached only `Mental Mutations` — one class of
+> six — so a True Kin had never felt Exhausted either; it now covers physical mutations, skills and
+> manoeuvres too. See `docs/FEATURES.md` §51.5b.
+
 **There is no hallucination effect in the game to inherit.** The neighbours are `Confused`,
 `FuriouslyConfused` and `Dazed`. `Confused` is the idiomatic shape and the right one here: it makes
 the character *unreliable* rather than *weaker*, which is §1's rule stated as a mechanism.
