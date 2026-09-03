@@ -4328,3 +4328,41 @@ both simpler and more robust than the one I reasoned my way to.
 Related: [`conversation events bubble up`](#conversation-events-bubble-up-and-i-attached-the-part-to-the-wrong-element)
 is the same feature and the same week. Both were found by the maintainer in play rather than by me in
 the data, which is the expensive order twice over.
+
+## `SetFinalizedChance` resets the multiplier, so "finalize" silently overrules other skills
+
+`Vixy_Fangs` is a secondary intrinsic attack, and #819 started as *"the bite hardly ever procs."* The
+number looked defensible in isolation — vanilla's `HornsProperties` sets 20 against an engine base of
+`RuleSettings.BASE_SECONDARY_ATTACK_CHANCE = 15` — and it was wrong in two directions at once, both
+because of one method.
+
+**It throws away every bonus that ran before it.** The three passive Multiweapon skills add `+20`,
+`+15` and `+15` to `GetMeleeAttackChanceEvent` on the *identical* condition
+`E.Intrinsic && !E.Primary`. `HornsProperties` then calls `E.SetFinalizedChance(20)` and returns
+`false`, so the accumulated 65 becomes 20 and the event stops. Training the one skill line a bite
+character would obviously take made the bite *relatively worse* — 20 beside 65 — and nothing said so.
+
+**And it resets `Multiplier` to 1.0, which is how Single Weapon Fighting pays its own cost.** That
+skill is a toggle; while it is on, `SingleWeaponFighting_Ability` sets `E.Multiplier = 0.0` on every
+intrinsic non-primary attack, because switching off your offhand attacks is what buys the extra
+primary one. `GetFinalizedChance()` is `Chance * Multiplier`, so wiping the multiplier hands those
+attacks back. **Vanilla's own Horns still do this**: pay the toggle's cost, keep the horn attack.
+
+**Assigning `E.Chance` does the same job and breaks neither.** The multiplier survives, so the skill's
+suppression still lands.
+
+Three things worth carrying forward:
+
+- **`SetFinalizedChance` is a bigger hammer than its name suggests.** It is not "set my contribution",
+  it is "discard everyone else's, including multiplicative ones". Reach for `E.Chance` unless
+  overruling the rest is genuinely the intent.
+- **Registration order is knowable, not guessable.** `SingleWeaponFighting_Ability` registers at
+  `EventOrder.VERY_EARLY` (`-1000`), and `GameObject.HandleEventInner` dispatches negative-order
+  handlers in a pass *before* the parts loop. Where an interaction depends on order, look for an
+  explicit registration order rather than reasoning about part insertion.
+- **A flat number is only defensible against what else is on the ledger.** 20 against a base of 15 is
+  fine; 20 against a trained character's 65 is a defect. The value was never the problem — comparing
+  it against one neighbour instead of the whole event was.
+
+The Single Weapon Fighting half was found by a player asking whether Fangs cancelled the skill, mid
+way through building the fix for the other half. Neither was visible in the number.

@@ -36,14 +36,15 @@ namespace XRL.World.Parts.Mutation
     /// <b>The bite rides along with the real weapon.</b> <c>Combat.MeleeAttackWithWeapon</c>
     /// collects every body part holding a valid weapon, attacks with the primary at 100%, and
     /// rolls the rest through <c>GetMeleeAttackChanceEvent</c> with <c>Intrinsic</c> set. The
-    /// engine default is 15; <c>HornsProperties</c> raises it to 20, or 100 while Charging. So
+    /// engine default is 15, and <see cref="Vixy_FangsProperties"/> runs it from 20 untrained to 40
+    /// fully trained, or 100 while Charging. So
     /// fangs never compete with a better weapon, which is what keeps them worth having.
     /// </para>
     /// <para>
     /// <b>Damage is flat and the bleed is what scales.</b> <c>1d6</c> is vanilla's own figure for
     /// fangs — <c>BaseFangs</c> and both its variants — and it lives in the blueprint rather than
     /// here, because nothing about it varies. Rank moves the bleed instead, through
-    /// <c>HornsProperties</c>: save difficulty <c>20 + 2 × rank</c>, and bleed damage <c>1</c>
+    /// <see cref="Vixy_FangsProperties"/>: save difficulty <c>20 + 2 × rank</c>, and bleed damage <c>1</c>
     /// rising to <c>1d2</c> and beyond past rank 4.
     /// </para>
     /// <para>
@@ -79,7 +80,7 @@ namespace XRL.World.Parts.Mutation
         {
             string text = "20% chance on melee attack to bite your opponent\n";
             text += "Damage increment: {{rules|1d6}}\n";
-            text += "To-hit bonus: {{rules|" + HornsProperties.GetToHitBonus(Level) + "}}\n";
+            text += "To-hit bonus: {{rules|" + (Level / 2 + 1) + "}}\n";
             text +=
                 (Level == base.Level)
                     ? "Bites may cause bleeding\n"
@@ -137,7 +138,7 @@ namespace XRL.World.Parts.Mutation
         }
 
         /// <summary>
-        /// Tell HornsProperties which rank to bleed at.
+        /// Tell Vixy_FangsProperties which rank to bleed at.
         /// </summary>
         /// <remarks>
         /// Its own GetHornLevel() asks the wearer for a mutation named "Horns" and this one is
@@ -146,10 +147,7 @@ namespace XRL.World.Parts.Mutation
         /// </remarks>
         private static void SyncBleedRank(GameObject fangs, int rank)
         {
-            if (fangs != null && fangs.TryGetPart(out HornsProperties properties))
-            {
-                properties.HornLevel = rank;
-            }
+            Vixy_FangsProperties.SetRank(fangs, rank);
         }
 
         /// <summary>

@@ -2136,7 +2136,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 91 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 92 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -3602,16 +3602,47 @@ would have set 100, and Strength is added once per penetration, so it is the lar
 **No AV.** AV is the half of Horns that pays for the Head slot; fangs cost no slot, so they grant no
 armour.
 
-### 21.5 The bleed is what scales, and it is borrowed whole
+### 21.5 The bleed is what scales, and it is reproduced rather than borrowed
 
-`HornsProperties` stays on the blueprint. It supplies the 20% attack chance, a to-hit bonus of
-`rank / 2 + 1` on the bite, and bleeding on **every penetration** — save difficulty `20 + 2 × rank`,
-damage `1` rising to `1d2` and beyond past rank 4. All already balanced by Freehold, and its
-`GetShortDescriptionEvent` text is generic, so nothing horn-specific leaks into the item.
+`Vixy_FangsProperties` supplies the attack chance, a to-hit bonus of `rank / 2 + 1` on the bite, and
+bleeding on **every penetration** — save difficulty `20 + 2 × rank`, damage `1` rising to `1d2` and
+beyond past rank 4. The bleed curve and the to-hit are Freehold's, reproduced unchanged.
 
-Its `GetHornLevel()` asks the wearer for a mutation named `Horns` and will not find one, so it falls
-back to its `HornLevel` field — which `Vixy_Fangs` writes on equip and on every rank change. Without
-that the bleed would sit at rank 1 forever.
+It replaced vanilla's `HornsProperties` in #819. **That part finalised the attack chance at a flat
+20 and stopped the event**, discarding the `+50` the three passive Multiweapon skills contribute on
+the identical condition — so training the one skill line a bite character would obviously take made
+the bite *relatively* worse, and invisibly. The chance now runs **20 untrained to 40 fully trained**
+(§21.5a).
+
+The rank lives as an int property on the fangs, written by `Vixy_Fangs` on equip and on every rank
+change. Vanilla keeps it in a field on the part; copying that would have made this the mod's first
+`[Serializable]` part with instance state, whose layout freezes into every save on ship — which
+`serializable-shape` refuses. Without the rank the bleed would sit at rank 1 forever.
+
+### 21.5a What training is worth, and what Single Weapon Fighting takes away
+
+The three passive Multiweapon skills are worth `+20`, `+15` and `+15`, scaled into the 20 points
+between the floor and the cap so that every rank is felt and the last lands exactly on it:
+
+| training | bite chance |
+|---|---|
+| none | **20** |
+| Multiweapon Proficiency | 28 |
+| + Expertise | 34 |
+| + Mastery | **40** |
+
+The floor is unchanged, so no existing character got worse. The cap keeps the bite under a real
+offhand weapon's 65, and under `Horns` where `Horns` should win: horns carry
+`MaxStrengthBonus="100"` against these fangs' `5`, so past a Strength modifier of about 10 a
+character prefers 20% of `2d3` plus *all* their Strength to 40% of `1d6` plus 5. **Horns for
+strength builds, fangs for everyone else** — and fangs a point cheaper because they stop scaling.
+
+**Single Weapon Fighting silences the bite, and that is deliberate.** The skill is a toggle, and
+while it is on it sets `E.Multiplier = 0.0` on every intrinsic non-primary attack — the cost it
+charges for a chance at an extra primary attack. Vanilla's `HornsProperties` undid that by accident:
+`SetFinalizedChance` resets `Multiplier` to `1.0`, so a character with the toggle on kept their horn
+attacks after paying to switch them off. Assigning `E.Chance` instead leaves the multiplier alone,
+so the trade is honest in both directions.
 
 **Bleeding is not a new capability.** `ShortBlades.WeaponMadeCriticalHit` applies
 `Bleeding("1d2-1", 20 + Agility mod, Stack: false)` on any short-blade critical hit, and
@@ -3632,7 +3663,7 @@ Fangs grant a smaller share of that without spending either.
 | | slot cost | damage | extras |
 |---|---|---|---|
 | `Beak` — 1 | none | flat `1`, no scaling | +1 Ego |
-| **Fangs — 3** | none | `1d6` flat | 20% extra attack, bleed on penetration, to-hit `+rank/2+1` |
+| **Fangs — 3** | none | `1d6` flat | 20–40% extra attack, bleed on penetration, to-hit `+rank/2+1` |
 | `Horns` — 4 | blocks the Head slot | `2d3`→`2d6` | the same three, plus AV `1`→`4` |
 
 Fangs are Horns minus AV, minus damage growth, minus the slot cost — one step below, at `Quills`,

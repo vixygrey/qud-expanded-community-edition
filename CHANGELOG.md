@@ -36,6 +36,28 @@ recorded because contributors need them, not because subscribers do.
 
   It only affects a new character — the cost is read at character creation.
 
+- **Fangs land more often the more you train for it, and go quiet when you ask them to** (#819).
+
+  Playing it, the bite hardly ever landed. The rate was 20% — defensible against the engine's base of
+  15, and nothing else on the ledger.
+
+  **All three passive Multiweapon skills raise that roll, on exactly the condition the bite matches:
+  +20, +15 and +15.** The part supplying the rate threw every point of it away and stopped the roll
+  there, so a trained character's other offhand attacks landed at 65% while the bite stayed at 20.
+  Training the one skill line a bite character would obviously take made the bite worse, relatively,
+  and nothing on screen said so.
+
+  Now the bite runs **20 untrained to 40 fully trained**, spread so every rank of the line is felt.
+  The floor has not moved, so nobody's character got worse. The ceiling stays under a real offhand
+  weapon, and under horns where horns should win — horns add all of your Strength where fangs add at
+  most 5, so past a Strength modifier of about 10 a strength build still prefers the horns. Horns for
+  strength builds, fangs for everyone else.
+
+  **And Single Weapon Fighting now silences the bite, which it always meant to.** That skill is a
+  toggle, and turning off your offhand attacks is the price it charges for a chance at an extra
+  attack with your main weapon. The old part quietly handed those attacks back, so you paid and kept
+  them anyway. Vanilla's own horns still do this; ours no longer do.
+
 ## [2.14.0] - 2026-09-02
 
 ### Added
