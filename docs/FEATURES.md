@@ -6759,6 +6759,17 @@ exactly one place, when fatigue reaches zero with the sleeper undisturbed. **An 
 dream as well as the rest**, which is what makes where you lie down matter for something beyond
 safety.
 
+**A nap is not a night, and until #818 the game could not tell.** Sleeping is refused only at fatigue
+zero, so you could lie down at 1, wake at 0 and collect a dream — about four turns to accrue the
+point and twenty to sleep it off. **A dream every 24 turns**, against one per 1,500 in ordinary play,
+and in a settlement `AmbushChance` is 0 so it cost nothing but keystrokes.
+
+**A rarer roll could not have fixed that**, which is worth stating because it was my first instinct: a
+chance gate only makes the loop longer, and at one in three it is 72 turns — still twenty times the
+intended rate. What closes it is charging real fatigue. A dream now requires having been at least
+**Tired** when you lay down, and then rolls at **50%**, so it is neither farmable nor a nightly
+fixture.
+
 **Dreams quote rather than generate.** §4 originally asked for text *"Markov-generated from the
 player's recent history"*; both of Qud's generators load `LibraryCorpus.json`, a fixed offline corpus
 with nothing about the player in it, so that was never possible. `JournalAPI.Accomplishments` is the
@@ -6781,8 +6792,13 @@ The stored prose contains `=name=`, pronoun tokens and `<spice.…>` lookups, so
 
 **The portent tier** reveals an unrevealed `JournalMapNote`. `RevealMapNote` takes a `LearnedFrom`
 string, so the dream is recorded as the source the location was learned from rather than the map
-simply changing. It rolls at 30% and falls back to a recollection when there is nothing left to learn,
-so a full sleep is never unrewarded.
+simply changing. It rolls at **25%** of dreams — down from 30 in #818, because it is the half that
+hands over something mechanical, and it already self-limits: every portent spends a location.
+
+It still **falls back to a recollection** when there is nothing left to learn. I had meant to drop
+that once a gate stood in front, so the two tiers would have independent rates — but the portent fails
+whenever every location is known, which is the normal late-game case, so dropping it would turn a
+quarter of hard-won dreams into silence to buy a tidiness no player could observe.
 
 The **psychic echo** tier from §4.1 is deliberately not built. A temporary buff or a mutation bump is a
 balance question rather than a prose one and deserves its own look.
