@@ -16,6 +16,26 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Changed
+
+- **Heightened Smell costs 5 mutation points, up from 3** (#817).
+
+  I priced it at 3 by comparing radius: `5 + 4L` against Heightened Hearing's `3 + 2L` at 2 points,
+  so twice the reach for one more point. Playing it showed the comparison was measuring the smaller
+  half.
+
+  **Both mutations also identify what they detect**, on the same curve with twice the coefficient for
+  smell — and the radius gap is what turns that from incremental into decisive. At rank 1 smell
+  reaches 9 squares and hearing 5, so a creature ten squares out is not harder for hearing to name,
+  it is outside hearing entirely and never named at all. At rank 10 it is 45 against 23. The roll
+  repeats every turn and sticks once it lands, so anything that stays in range gets identified.
+
+  Knowing what is waiting, through walls, before it is in sight is worth more on a character who dies
+  once than a mutation that wins the fight you would not have had to take. That puts it beside
+  Domination and Temporal Fugue rather than beside Precognition.
+
+  It only affects a new character — the cost is read at character creation.
+
 ## [2.14.0] - 2026-09-02
 
 ### Added

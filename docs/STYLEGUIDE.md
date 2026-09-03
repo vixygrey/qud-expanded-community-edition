@@ -296,8 +296,11 @@ possible in practice. Match them when adding anything.
 
   **The test is whether anything has ever paid it.** `Hidden`, `ExcludeFromPool` or the wiki's
   `npconly` all mean no, and a mutation this fork exposes is then costed by §10.2's two-neighbours
-  method like any new content. `Heightened Smell` is the worked case: vanilla says 2, its radius is
-  `5 + 4L` against `Heightened Hearing`'s `3 + 2L` at the same price, and it ships at 3 (#593).
+  method like any new content. `Heightened Smell` is the worked case, and it is worth following all
+  the way: vanilla says 2, its radius is `5 + 4L` against `Heightened Hearing`'s `3 + 2L` at the same
+  price, and it shipped at 3 (#593) — then play raised it to 5 (#817), because the derivation had
+  compared radius and missed that both mutations also *identify* what they detect. **A derived figure
+  is a starting point, not an answer; the number a mutation deserves is the one play gives it.**
   Whether a hidden mutation may be exposed at all is a separate two-part test in
   `docs/DESIGN_balance.md` §10.4.
 - **A subtype starts with its own affinity, whatever that affinity contains** — never a *generic*
