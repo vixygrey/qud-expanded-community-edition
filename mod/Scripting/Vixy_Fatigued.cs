@@ -65,5 +65,59 @@ namespace XRL.World.Effects
                 _ => "{{y|tired}}",
             };
         }
+
+        /// <summary>
+        /// What this band actually costs, for the Show Effects screen.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>Without this the screen printed <c>[effect details]</c></b>, which is
+        /// <c>Effect.GetDetails</c>'s own placeholder. <c>GameObject.ShowActiveEffects</c> lists any
+        /// effect whose <c>GetDescription()</c> is non-null and then prints its details; the base
+        /// description returns <c>DisplayName</c>, so this effect was correctly listed and then
+        /// correctly asked for details it did not have. <c>Vixy_Burdened</c> and <c>Vixy_Wound</c>
+        /// both override it and this one never did.
+        /// </para>
+        /// <para>
+        /// <b>Derived from the band rather than stored</b>, the same way <see cref="Refresh"/> is, so
+        /// nothing here can disagree with the meter.
+        /// </para>
+        /// <para>
+        /// <b>The consequences are read off the code, not summarised from the design.</b> Guttering
+        /// is <c>Vixy_Gutter</c>, which reaches Mental Mutations, Physical Mutations, Skills and
+        /// Maneuvers — so <em>abilities</em>, not <em>concentration</em> — from Weary upward. Travel
+        /// refusal is <c>Vixy_Fatigue.HandleEvent(CanTravelEvent)</c> at Exhausted and above, and it
+        /// is named plainly because it is a hard capability loss rather than a chance of one.
+        /// Collapse is <c>Vixy_Fatigue.Collapse</c>, above Collapsing only.
+        /// </para>
+        /// <para>
+        /// <b>Tired says what it does rather than reading as an oversight.</b> It carries no penalty
+        /// at all — its one mechanical effect is that it is the gate <c>Vixy_Dream.Earned</c> checks,
+        /// so a full uninterrupted sleep from here can dream. Leaving the line empty would look like
+        /// the defect this fixes.
+        /// </para>
+        /// <para>
+        /// <c>Campfire.ProcessEffectDescription</c> runs <c>InitCap</c> and <c>CapAfterNewlines</c>
+        /// over the result, so each line is sentence-cased by the caller.
+        /// </para>
+        /// </remarks>
+        public override string GetDetails()
+        {
+            return Vixy_Fatigue.BandFor(Vixy_Fatigue.Get(Object)) switch
+            {
+                Vixy_Fatigue.Collapsing =>
+                    "Abilities gutter out often.\n"
+                    + "You may collapse where you stand.\n"
+                    + "You cannot travel long distances.",
+                Vixy_Fatigue.Exhausted =>
+                    "Abilities gutter out more often.\n"
+                    + "You cannot travel long distances.",
+                Vixy_Fatigue.Weary =>
+                    "Abilities occasionally gutter out.",
+                _ =>
+                    "No penalty yet.\n"
+                    + "Sleeping through from here may bring a dream.",
+            };
+        }
     }
 }

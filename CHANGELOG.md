@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The tiredness effect had no description, so Show Effects printed a placeholder** (#841).
+
+  Look at yourself while tired, choose **Show Effects**, and the entry read `[effect details]` — which
+  is Qud's own placeholder for an effect that never says what it does. It affected all four bands and
+  every route to that screen, not only the one it was reported from, and it had been there since the
+  readout shipped.
+
+  Each band now says what it costs: nothing yet at tired, beyond making a dream possible if you sleep
+  through; abilities occasionally guttering out at weary, more often at exhausted, often while
+  collapsing; and the world-map travel refusal named plainly from exhausted upward, because that one
+  is a capability you lose rather than a chance of losing it.
+
 ## [2.15.0] - 2026-09-03
 
 ### Added
