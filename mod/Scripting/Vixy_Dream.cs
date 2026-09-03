@@ -39,22 +39,71 @@ namespace XRL.World.Parts
     /// </remarks>
     public static class Vixy_Dream
     {
+        /// <summary>Where the fatigue a sleep began at is kept, so this can read it on waking.</summary>
+        /// <remarks>
+        /// An int property on the player rather than a field on <see cref="Vixy_Fatigue"/>: that part
+        /// is <c>[Serializable]</c> and shipped, so its layout is frozen and <c>serializable-shape</c>
+        /// refuses new instance state. Written on the first turn of a voluntary sleep and cleared on
+        /// the first turn awake, so an interrupted sleep leaves nothing behind for the next one.
+        /// </remarks>
+        public const string SleptFromProperty = "Vixy_DreamSleptFrom";
+
+        /// <summary>How tired I must have been for the night to be worth dreaming about.</summary>
+        /// <remarks>
+        /// <b>This is the whole of the anti-farm, and a rarer roll could not have done it.</b>
+        /// Sleeping is refused only at fatigue zero, so before #818 you could lie down at 1, wake at
+        /// 0 and collect a dream: about four turns to accrue the point and twenty to sleep it off.
+        /// That is <b>a dream every 24 turns</b> against one per 1,500 in ordinary play — and in a
+        /// settlement <c>AmbushChance</c> is 0, so it cost nothing but keystrokes. A chance gate only
+        /// makes the loop longer; at one in three it is 72 turns, still twenty times the intended
+        /// rate. What closes it is charging real fatigue for the roll.
+        /// </remarks>
+        public static readonly int Earned = Vixy_Fatigue.Tired;
+
+        /// <summary>Chance in a hundred that a qualifying sleep dreams at all.</summary>
+        /// <remarks>
+        /// The gate answers the farm; this answers the other half of #818, that something arriving
+        /// every single night stops being an event. Roughly one dream per 3,000 turns of unhurried
+        /// play.
+        /// </remarks>
+        public const int DreamChance = 50;
+
+        /// <summary>Chance in a hundred that a dream is a portent rather than a recollection.</summary>
+        /// <remarks>
+        /// Down from 30. This is the half that hands over something mechanical, and it already
+        /// self-limits: every portent spends a location, and there are only so many.
+        /// </remarks>
+        public const int PortentChance = 25;
+
         /// <summary>
         /// Roll a dream. Called only on a full, uninterrupted sleep.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Uninterrupted is the whole condition: an ambush ends the sleep before fatigue reaches
         /// zero, so being found costs the dream as well as the rest. That is what makes where you lie
         /// down matter for something other than safety.
+        /// </para>
+        /// <para>
+        /// <b>And a nap is not a night.</b> <paramref name="SleptFrom"/> is the fatigue the sleep
+        /// began at, and it must reach <see cref="Earned"/> — the Tired band — before anything is
+        /// rolled. See that field for why the gate is fatigue rather than odds.
+        /// </para>
+        /// <para>
+        /// <b>The portent still falls back to a recollection, deliberately.</b> I had meant to drop
+        /// that once there was a gate in front, so the two tiers would have independent rates. But
+        /// <see cref="Portent"/> fails when every location is already known, and by late game that is
+        /// the normal case — so dropping it would turn a quarter of hard-won dreams into silence, to
+        /// buy a tidiness nobody can observe.
+        /// </para>
         /// </remarks>
-        public static void OnFullSleep(GameObject Player)
+        public static void OnFullSleep(GameObject Player, int SleptFrom)
         {
             if (Player == null || !Player.IsPlayer()) return;
+            if (SleptFrom < Earned) return;
+            if (!DreamChance.in100()) return;
 
-            // A portent is the rarer of the two, and only possible when there is something left to
-            // learn. Falling back to a recollection rather than rolling nothing keeps a full sleep
-            // from ever feeling unrewarded.
-            if (30.in100() && Portent(Player)) return;
+            if (PortentChance.in100() && Portent(Player)) return;
             Recollection(Player);
         }
 

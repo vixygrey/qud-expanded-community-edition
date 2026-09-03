@@ -170,6 +170,10 @@ namespace XRL.World.Parts
             }
             else
             {
+                // Awake, so any record of a sleep in progress is stale - an ambush ends the sleep
+                // without passing through the waking branch, and the next one must start its own.
+                ParentObject.RemoveIntProperty(Vixy_Dream.SleptFromProperty);
+
                 Accrue(Strain());
                 Announce();
                 Vixy_Gutter.Slip(ParentObject);
@@ -347,16 +351,28 @@ namespace XRL.World.Parts
             Asleep asleep = ParentObject.GetEffect<Asleep>();
             if (asleep == null || !asleep.Voluntary) return;
 
+            // How tired this sleep began at, recorded on its first turn and read on waking. A dream
+            // is the reward for a night, not for a nap, and #818 found that sleeping from 1 was a
+            // dream every 24 turns. Captured here rather than in Vixy_Sleep.Attempt so it holds for
+            // any voluntary sleep, whatever route put the player under.
+            if (!ParentObject.HasIntProperty(Vixy_Dream.SleptFromProperty))
+            {
+                ParentObject.SetIntProperty(Vixy_Dream.SleptFromProperty, Get(ParentObject));
+            }
+
             Drain(Vixy_Sleep.DrainHundredths(ParentObject));
 
             if (Get(ParentObject) <= 0)
             {
+                int sleptFrom = ParentObject.GetIntProperty(Vixy_Dream.SleptFromProperty);
+                ParentObject.RemoveIntProperty(Vixy_Dream.SleptFromProperty);
+
                 ParentObject.RemoveEffect(asleep);
                 MessageQueue.AddPlayerMessage("{{G|You wake rested.}}");
                 // Only here. Reaching zero without being woken is what "full and uninterrupted"
                 // means, so an ambush costs the dream as well as the rest - which is the reward half
                 // of where you chose to lie down.
-                Vixy_Dream.OnFullSleep(ParentObject);
+                Vixy_Dream.OnFullSleep(ParentObject, sleptFrom);
                 return;
             }
 

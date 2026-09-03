@@ -58,6 +58,27 @@ recorded because contributors need them, not because subscribers do.
   attack with your main weapon. The old part quietly handed those attacks back, so you paid and kept
   them anyway. Vanilla's own horns still do this; ours no longer do.
 
+- **Dreams are for nights, not naps** (#818).
+
+  A dream arrived after every full sleep. Two things were wrong with that, and they pulled in
+  opposite directions.
+
+  **It was farmable, and cheaply.** You can sleep at one point of fatigue — only being fully rested
+  refuses — so lying down and waking again took about 24 turns, against 1,500 for a night's sleep in
+  ordinary play. A quarter of those dreams hand you the location of somewhere you have not been, and
+  in a settlement nothing can find you while you sleep. Early on, when you have done little worth
+  dreaming about, the location is the *only* dream that shows.
+
+  **And it was wallpaper.** Something that happens every single night stops being an event, which is
+  the opposite problem and the same cause.
+
+  A dream now asks that you were at least **tired** when you lay down, and then happens about half
+  the time. Making it rarer alone would not have fixed the first half — it only makes the loop
+  longer — so the price is fatigue you actually spent living. The portent drops from 30% of dreams to
+  25%.
+
+  Nothing else moves: being ambushed still costs the dream as well as the rest.
+
 ## [2.14.0] - 2026-09-02
 
 ### Added

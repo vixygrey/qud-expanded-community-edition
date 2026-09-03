@@ -271,7 +271,16 @@ authored data with a token in it.
 
 ### 4.1 Dreams as reward — quoting, not generating
 
-On a **full, uninterrupted** sleep (fatigue reaches 0 without being woken), roll for a dream:
+On a **full, uninterrupted** sleep (fatigue reaches 0 without being woken), roll for a dream.
+
+> **Amended by #818.** As written this fires on *every* qualifying sleep, and shipped that way. But
+> sleeping is refused only at fatigue zero, so lying down at 1 and waking at 0 qualifies — about 24
+> turns for a dream, against one per 1,500 in ordinary play, and free of risk in a settlement. A
+> dream now also requires having been at least **Tired** when you lay down, and then rolls at
+> **50%**. The tier split below is unchanged apart from the portent, now 25%.
+>
+> **The gate is fatigue rather than odds, and that distinction is the lesson.** A rarer roll only
+> lengthens a cheap loop; it does not close one. See `docs/FEATURES.md` §51.5a.
 
 - **Common (~60%):** the dream quotes something the character actually did, drawn from
   `JournalAPI.Accomplishments`.
