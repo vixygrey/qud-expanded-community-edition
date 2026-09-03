@@ -85,6 +85,45 @@ Open with the save-compatibility line, because it is the first thing anyone want
 
 > **A 2.4.x character carries over** — no new character needed.
 
+### One piece of prose, two markups — and the second one is not Markdown
+
+The sentence above says *used twice*, which is true of the words and false of the form. GitHub takes
+**Markdown**. Steam's change-note field takes **BBCode**, the same as the description in
+`mod/workshop.json`. Paste one into the other and it renders `**like this**`, asterisks and all, to
+every subscriber who opens the change note.
+
+**Nothing here can catch it.** `workshop-description`, `workshop-figure` and `workshop-version` all
+read `mod/workshop.json`; the change note is typed into Steam's own UI at upload time and never exists
+in this repository. So write both forms here, while the prose is in front of you, rather than converting at
+the uploader with the game already open.
+
+The tag set is small, and the description has never needed anything outside it:
+
+| Markdown | BBCode |
+|---|---|
+| `**bold**` | `[b]bold[/b]` |
+| `*italic*` | `[i]italic[/i]` |
+| `- item` | `[list]` / `[*]item` / `[/list]` |
+| `[text](https://example.com)` | `[url=https://example.com]text[/url]` |
+| `# Heading` | `[h1]Heading[/h1]` |
+
+Two things that differ from the description rather than carrying over from it. **No heading** — Steam
+already prints the version above the field, so an `[h1]` only repeats it. And **an em dash is fine
+here**: the 8,000-byte wall that makes `docs/STYLEGUIDE.md` §7.4 count bytes is the *description's*,
+and a change note has no budget to protect.
+
+The 2.15.1 note is the worked example, trimmed:
+
+```
+[b]A 2.15.x character carries over[/b] - no new character needed, and the fix reaches a character you are already playing.
+
+One fix.
+
+[list]
+[*][b]Tiredness now says what it costs you.[/b] Looking at yourself and choosing Show Effects showed a placeholder where the description should be.
+[/list]
+```
+
 ## 6. Publish to the Workshop
 
 ```bash
@@ -169,7 +208,8 @@ apart (`not planned` against `completed`).
 - [ ] `manifest.json` version bumped
 - [ ] `workshop.json` — **New in X.Y.Z** replaced and the previous one removed, **and** the
       **Version and saves** block's version and save answer updated. Under 8,000 characters
-- [ ] Player-facing notes written, opening with save compatibility
+- [ ] Player-facing notes written, opening with save compatibility — **in both Markdown and
+      BBCode**, because the GitHub body and the Steam change note do not take the same markup
 - [ ] `python3 tools/validate_mod.py` passes
 - [ ] `python3 tools/sync_mod.py --publish`
 - [ ] Uploaded through Caves of Qud's uploader, notes pasted into the change note
