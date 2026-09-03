@@ -6,7 +6,7 @@ using XRL.Rules;
 namespace XRL.World.Parts
 {
     /// <summary>
-    /// Exhaustion makes the mind unreliable: a mental mutation gutters out mid-thought.
+    /// Tiredness makes a character unreliable: something they were counting on gutters out.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -45,6 +45,17 @@ namespace XRL.World.Parts
         /// <summary>Rounds of cooldown a slip costs, in segments — Precognition's own 500 is 50.</summary>
         public const int Cost = 200;
 
+        /// <summary>One action in this many slips, at Weary.</summary>
+        /// <remarks>
+        /// <b>Weary had no mechanical effect at all until #822</b>, though `docs/DESIGN_sleep.md`
+        /// §3.2.1 always said it should — it was written and never built, so crossing 600 cost a
+        /// message and a word in the status bar. Sized against the band rather than by feel: at the
+        /// post-#821 rate the Weary stretch is about 909 actions, so 1 in 500 is roughly
+        /// <b>two slips across the whole of it</b>. Present, not punishing, and consistent with the
+        /// ladder above.
+        /// </remarks>
+        public const int WearyOdds = 500;
+
         /// <summary>One action in this many slips, at Exhausted.</summary>
         public const int ExhaustedOdds = 200;
 
@@ -52,25 +63,57 @@ namespace XRL.World.Parts
         public const int CollapsingOdds = 80;
 
         /// <summary>
+        /// The ability classes tiredness can take away.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>This was <c>Class.Contains("Mental")</c>, and that reached one class out of six.</b>
+        /// Vanilla's activated abilities carry <c>Mental Mutations</c> (40 of them),
+        /// <c>Physical Mutations</c> (36), <c>Skills</c> (34), <c>Cybernetics</c>, <c>Items</c> and
+        /// <c>Maneuvers</c>. So this only ever fired for a character with mental mutations — and a
+        /// True Kin, a genotype this fork ships its own content for, has no mutations at all and got
+        /// nothing from Exhausted but the world-map refusal (#822).
+        /// </para>
+        /// <para>
+        /// <b>Including <c>Skills</c> is what reaches everybody</b>, because every character has
+        /// some. Reaching for Charge and finding it gone is unreliability, which is §1's rule; a stat
+        /// penalty would be the "merely punishing" thing that rule forbids.
+        /// </para>
+        /// <para>
+        /// <b><c>Cybernetics</c>, <c>Items</c> and <c>Tonics</c> are left out deliberately.</b> A
+        /// grenade does not care how tired I am, and an implant guttering because I am sleepy reads
+        /// as a malfunction rather than as fatigue. The line is my own body and my own training.
+        /// </para>
+        /// </remarks>
+        public static readonly string[] Classes =
+        {
+            "Mental Mutations",
+            "Physical Mutations",
+            "Skills",
+            "Maneuvers",
+        };
+
+        /// <summary>
         /// Rolled once per action from <see cref="Vixy_Fatigue"/>, on the event fatigue already
-        /// accrues on. Costs roughly five slips across the whole exhausted stretch.
+        /// accrues on. Roughly two slips across the Weary stretch, three across Exhausted and three
+        /// more across Collapsing — so the meter's last three bands each cost about the same number
+        /// of failures, arriving faster as it fills.
         /// </summary>
         public static void Slip(GameObject Player)
         {
             if (Player == null || !Player.IsPlayer()) return;
 
             int fatigue = Vixy_Fatigue.Get(Player);
-            if (fatigue < Vixy_Fatigue.Exhausted) return;
+            if (fatigue < Vixy_Fatigue.Weary) return;
 
-            int odds = (fatigue >= Vixy_Fatigue.Collapsing) ? CollapsingOdds : ExhaustedOdds;
+            int odds = OddsFor(fatigue);
             if (Stat.Random(1, odds) != 1) return;
 
-            ActivatedAbilityEntry entry = PickReadyMental(Player);
+            ActivatedAbilityEntry entry = PickReady(Player);
             if (entry == null) return;
 
             entry.Cooldown = Cost;
-            MessageQueue.AddPlayerMessage(
-                "{{r|Your concentration slips, and " + entry.DisplayName + " gutters out.}}");
+            MessageQueue.AddPlayerMessage(Slipped(entry));
         }
 
         /// <summary>
@@ -81,7 +124,33 @@ namespace XRL.World.Parts
         /// are skipped: writing a cooldown would not turn one off, so the message would name a
         /// capability the player can still see running.
         /// </remarks>
-        private static ActivatedAbilityEntry PickReadyMental(GameObject Player)
+        /// <summary>How often a slip comes due at this much fatigue.</summary>
+        private static int OddsFor(int Fatigue)
+        {
+            if (Fatigue >= Vixy_Fatigue.Collapsing) return CollapsingOdds;
+            if (Fatigue >= Vixy_Fatigue.Exhausted) return ExhaustedOdds;
+            return WearyOdds;
+        }
+
+        /// <summary>
+        /// What losing this reads like.
+        /// </summary>
+        /// <remarks>
+        /// <b>Concentration is the wrong word for a manoeuvre.</b> The original line was written when
+        /// only mental mutations could gutter, and "your concentration slips" is exactly right for
+        /// one of those. Applied to Charge it says the wrong thing about why the character failed —
+        /// so the body gets its own phrasing, and the mind keeps the one it had.
+        /// </remarks>
+        private static string Slipped(ActivatedAbilityEntry Entry)
+        {
+            bool mental = Entry.Class != null && Entry.Class.Contains("Mental");
+
+            return mental
+                ? "{{r|Your concentration slips, and " + Entry.DisplayName + " gutters out.}}"
+                : "{{r|Your body will not answer, and " + Entry.DisplayName + " comes to nothing.}}";
+        }
+
+        private static ActivatedAbilityEntry PickReady(GameObject Player)
         {
             ActivatedAbilities abilities = Player.GetPart<ActivatedAbilities>();
             if (abilities?.AbilityByGuid == null) return null;
@@ -90,7 +159,7 @@ namespace XRL.World.Parts
             foreach (ActivatedAbilityEntry entry in abilities.AbilityByGuid.Values)
             {
                 if (entry == null || entry.Class == null) continue;
-                if (!entry.Class.Contains("Mental")) continue;
+                if (Array.IndexOf(Classes, entry.Class) < 0) continue;
                 if (!entry.IsUsable) continue;
                 if (entry.ToggleState) continue;
                 ready.Add(entry);
