@@ -2504,7 +2504,7 @@ nothing displays it. `Sidebar`, `AbilityManager`, `AbilityNode` and `ActivatedAb
 reference. The mutation is wired to a switch connected to nothing.
 
 **A whole feature built and hidden.** `HiddenMutations.xml`, a file sitting beside `Mutations.xml`,
-declares **48 complete mutations** — real classes, real art, real costs — under
+declares **50 complete mutations** — real classes, real art, real costs — under
 `<mutations Hidden="true" ExcludeFromPool="true">`. None reaches character creation or the random
 mutation pool. `Heightened Smell` among them is a finished mutation with terrain-attenuated detection
 that this fork wanted and was about to write from scratch (#593).

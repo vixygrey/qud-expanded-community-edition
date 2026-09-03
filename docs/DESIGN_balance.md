@@ -1374,11 +1374,12 @@ which is a band-3 convenience rather than a band-4 power.
 
 ### 10.4 Vanilla's hidden mutations — the test, and what exposing one obliges
 
-`HiddenMutations.xml` sits beside `Mutations.xml` and ships **48 complete mutations** with
+`HiddenMutations.xml` sits beside `Mutations.xml` and ships **50 complete mutations** with
 `Hidden="true" ExcludeFromPool="true"` — real classes, real art, real costs, none of them reaching
-character creation or the random mutation pool. Forty-two `Physical`, six `Mental`. I did not know
-the file existed until #593, which is its own lesson about enumerating one file and calling it the
-set.
+character creation or the random mutation pool. **44** `Physical` and **6** `Mental`. Both flags sit
+on the root `<mutations>` element rather than on each entry, so every mutation in the file inherits
+them — reading a single line suggests otherwise. I did not know the file existed until #593, which is
+its own lesson about enumerating one file and calling it the set.
 
 **This fork may expose one, and the test is two-part. Both halves must hold.**
 
@@ -1389,10 +1390,10 @@ set.
    right — it is a way of building something else. `Heightened Smell` qualifies because the anthro
    set (#471) is a real feature that wants exactly it.
 
-The second half is the load-bearing one. Without it the honest description of this fork becomes *"we
-unhid forty-eight things"*, which is a different mod from the one described in `README.md` — and a
-large silent workload besides, since **30 of the 42 physical entries carry `Cost="1"`** and every one
-would need costing before it could ship.
+The second half is the load-bearing one. Without it the honest description of this fork becomes *"I
+unhid the whole file"*, which is a different mod from the one described in `README.md` — and a large
+silent workload besides, since **34 of the 44 physical entries carry `Cost="1"`** and every one would
+need costing before it could ship.
 
 **Exposing a mutation obliges deriving its cost.** The number in `HiddenMutations.xml` was never paid
 by anything — not a player, not a random mutant — so it is a starting figure rather than a judgement,

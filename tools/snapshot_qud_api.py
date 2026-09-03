@@ -414,6 +414,71 @@ CENSUS_KEYS = (
 ) + tuple(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS)
 
 
+# The four counts collect_hidden_mutations emits, named here for the same reason CENSUS_KEYS is.
+HIDDEN_MUTATION_KEYS = (
+    "hidden-mutations",
+    "hidden-mutations-physical",
+    "hidden-mutations-mental",
+    "hidden-mutations-physical-cost-1",
+)
+
+
+def collect_hidden_mutations(game: Path) -> dict[str, str]:
+    """Count what `HiddenMutations.xml` actually holds, by category and by cost.
+
+    `docs/DESIGN_balance.md` 10.4 is built on these numbers - it is the section deciding whether
+    this fork may expose a hidden mutation, and its argument against exposing them wholesale is
+    the size of the file and how many of its costs were never weighed. So the figures are load
+    bearing rather than decorative.
+
+    They were also wrong. 10.4 and docs/LESSONS.md both said 48 with 42 physical, and 10.4 said
+    30 of the 42 carry `Cost="1"`. Counted against the installed game it is 50, 44 and 34: Qud
+    added two physical entries some time after #593 and nothing noticed, because these were the
+    only figures in either document that no tool could recompute. That is exactly the #242 shape
+    CITED_FIGURES and collect_census exist to prevent, and it reached two documents this time.
+
+    `Hidden` and `ExcludeFromPool` sit on the root `<mutations>` element rather than on each
+    entry, so every mutation in the file inherits both. Nothing here needs to test them - the
+    file *is* the hidden set - but it is worth saying, because reading a single entry suggests
+    the opposite.
+    """
+    path = game / "HiddenMutations.xml"
+    if not path.is_file():
+        raise SystemExit(
+            f"error: {path} not found - the game moved its hidden mutation catalogue"
+        )
+
+    root = parse(path, lenient=True)
+    by_category: dict[str, list] = {}
+    for category in root:
+        if category.tag != "category":
+            continue
+        name = category.get("Name") or "?"
+        by_category.setdefault(name, []).extend(
+            m for m in category if m.tag == "mutation"
+        )
+
+    physical = by_category.get("Physical", [])
+    mental = by_category.get("Mental", [])
+    total = sum(len(v) for v in by_category.values())
+
+    if not physical or not mental:
+        raise SystemExit(
+            "error: HiddenMutations.xml no longer has both a Physical and a Mental category - "
+            "fix collect_hidden_mutations rather than dropping it, or DESIGN_balance 10.4's "
+            "figures stop being checked."
+        )
+
+    return {
+        "hidden-mutations": str(total),
+        "hidden-mutations-physical": str(len(physical)),
+        "hidden-mutations-mental": str(len(mental)),
+        "hidden-mutations-physical-cost-1": str(
+            sum(1 for m in physical if m.get("Cost") == "1")
+        ),
+    }
+
+
 def collect_census(game: Path) -> dict[str, str]:
     """Count vanilla's creature blueprints by what an effect can actually reach.
 
@@ -1350,6 +1415,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
     figures = collect_figures(game)
     mutation_classes = collect_mutation_classes(game)
     figures.update(collect_census(game))
+    figures.update(collect_hidden_mutations(game))
     merged_records = collect_merged_records(game)
     aggregate_descendants = collect_aggregate_descendants(game)
     table_weights = collect_table_weights(game)

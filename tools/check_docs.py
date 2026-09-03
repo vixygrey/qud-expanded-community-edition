@@ -363,6 +363,22 @@ def wrapped(phrase: str) -> str:
 
 
 VANILLA_CLAIMS: list[tuple[str, list[str]]] = [
+    # `HiddenMutations.xml`'s shape (#837). DESIGN_balance 10.4 is the section deciding whether
+    # this fork may expose a hidden mutation, and its argument against doing so wholesale rests on
+    # how large the file is and how many of its costs were never weighed - so these are load
+    # bearing rather than decorative. They were also wrong: 10.4 and LESSONS both said 48 with 42
+    # physical, and 10.4 said 30 of the 42 carry Cost="1", against an actual 50, 44 and 34. Qud
+    # added two physical entries some time after #593 and nothing noticed, because these were the
+    # only figures in either document nothing could recompute. Now they are checked.
+    (r"(\d+) complete mutations", ["hidden-mutations"]),
+    (
+        r"\*\*(\d+)\*\* `Physical` and \*\*(\d+)\*\* `Mental`",
+        ["hidden-mutations-physical", "hidden-mutations-mental"],
+    ),
+    (
+        r'(\d+) of the (\d+) physical entries carry `Cost="1"`',
+        ["hidden-mutations-physical-cost-1", "hidden-mutations-physical"],
+    ),
     # The `:Weight` carrier census (#702). Quoted in STYLEGUIDE 3.2.1 and FEATURES 37.2 to
     # establish that the dial is vanilla's own idiom. It is a *resolved* count -- the tag sits on
     # bases and reaches descendants, so declaring alone gives 41 against 167 -- which is why it
@@ -679,13 +695,20 @@ def check_conflict_markers(f: Findings) -> int:
 
 
 def check_vanilla_figures(f: Findings) -> int:
-    """Hold every quoted vanilla figure to what the game actually says."""
+    """Hold every quoted vanilla figure to what the game actually says.
+
+    `COUNT_EXEMPT` applies here for the same reason it applies to the mod-figure checks, and it
+    did not until #837 caught it: a changelog entry recording that a figure *used to be* 48 is
+    correct precisely because the number has since changed, so recomputing it inverts the check.
+    The exemption existed and was documented; this pass simply never consulted it, which only
+    showed once a claim pattern matched prose the changelog had reason to write.
+    """
     figures = vanilla_figures()
     if not figures:
         return 0
     checked = 0
     for doc in figure_sources():
-        if not doc.is_file():
+        if not doc.is_file() or doc in COUNT_EXEMPT:
             continue
         text = doc.read_text()
         for pattern, names in VANILLA_CLAIMS:

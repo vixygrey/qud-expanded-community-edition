@@ -124,6 +124,20 @@ recorded because contributors need them, not because subscribers do.
   physical mutations, skills and manoeuvres as well. It leaves your implants, tonics and gear alone —
   a grenade does not care how tired you are.
 
+### Fixed
+
+- **(internal)** The hidden-mutation counts in `docs/DESIGN_balance.md` §10.4 and `docs/LESSONS.md`
+  were stale, and nothing could recompute them (#837).
+
+  Both said `HiddenMutations.xml` holds 48 complete mutations; §10.4 added "forty-two Physical" and
+  "30 of the 42 physical entries carry `Cost="1"`". It is **50, 44 and 34** — Qud added two physical
+  entries some time after #593.
+
+  §10.4 is the section deciding whether this fork may expose a hidden mutation, and its argument rests
+  on those numbers, so they were load-bearing rather than decorative. `collect_hidden_mutations` now
+  emits them into the API snapshot and three `VANILLA_CLAIMS` patterns read them back out of the
+  prose, so the next drift fails a build instead of sitting there.
+
 ## [2.14.0] - 2026-09-02
 
 ### Added
