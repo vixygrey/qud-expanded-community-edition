@@ -56,12 +56,18 @@ which is why it is written down here now: a check is the backstop, not the instr
 rather than after you have written the summary:
 
 ```bash
-python3 -c "import json;print(len(json.loads(open('mod/workshop.json',encoding='utf-8-sig').read())['Description']))"
+python3 -c "import json;print(len(json.loads(open('mod/workshop.json',encoding='utf-8-sig').read())['Description'].encode('utf-8')),'bytes')"
 ```
 
+**Count bytes, not characters, and this line used to get that wrong.** The limit is 8,000 *bytes*
+and `validate_mod.py` measures them; `len()` on the string measures characters. The description
+carries 33 em dashes at three bytes each, so the old one-liner under-reported by 66 — enough that
+2.15.0 measured 7,969 "characters", looked like it had 31 to spare, and failed the build at 8,035
+bytes. Every non-ASCII character in the prose widens that gap.
+
 `validate_mod.py` fails the build past 8,000, so this cannot ship broken — but it can block a release
-at the worst possible moment. **Trim as you add.** The description has been within a hundred
-characters of the limit since 2.10.0, so for now that is not advice, it is the step.
+at the worst possible moment. **Trim as you add.** The description has been within a hundred bytes of
+the limit since 2.10.0, so for now that is not advice, it is the step.
 
 `docs/STYLEGUIDE.md` §7.4 has the rules for what belongs there at all.
 
