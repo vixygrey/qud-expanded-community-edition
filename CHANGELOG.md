@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.15.1] - 2026-09-03
+
 ### Fixed
 
 - **The tiredness effect had no description, so Show Effects printed a placeholder** (#841).
