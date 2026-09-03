@@ -47,9 +47,10 @@ namespace QudExpandedCE
 
         /// <summary>
         /// What this fork charges for vanilla's Heightened Smell, which vanilla never priced
-        /// against a player. Derived on #593; see ApplyKeenSmell.
+        /// against a player. Derived on #593, then raised to a played figure on #817; see
+        /// ApplyKeenSmell.
         /// </summary>
-        private const int KeenSmellCost = 3;
+        private const int KeenSmellCost = 5;
         public const string BurdenGradientID = "OptionQudExpandedCEBurdenGradient";
         public const string TrashDiviningDensityID = "OptionQudExpandedCETrashDiviningDensity";
         public const string AskNameID = "OptionQudExpandedCEAskName";
@@ -1036,10 +1037,26 @@ namespace QudExpandedCE
         /// <para>
         /// <b>The cost is this fork's, and that is new.</b> Vanilla says 2. Nothing has ever paid it,
         /// because nothing could select the mutation — so it is a starting figure rather than a
-        /// judgement, which is the distinction <c>docs/STYLEGUIDE.md</c> §3.2 now draws. Its radius is
-        /// <c>5 + 4L</c> against <c>Heightened Hearing</c>'s <c>3 + 2L</c> at the same 2 points, so it
-        /// ships at 3. Set unconditionally rather than toggled: it is a value, not a switch, and
-        /// writing the same number twice is a no-op.
+        /// judgement, which is the distinction <c>docs/STYLEGUIDE.md</c> §3.2 now draws. Set
+        /// unconditionally rather than toggled: it is a value, not a switch, and writing the same
+        /// number twice is a no-op.
+        /// </para>
+        /// <para>
+        /// <b>It was derived at 3 and played at 5, and the gap between those is the point.</b> The
+        /// derivation compared radius alone — <c>5 + 4L</c> against <c>Heightened Hearing</c>'s
+        /// <c>3 + 2L</c> at 2 points — and radius is the smaller half of what this mutation does.
+        /// Both mutations also <em>identify</em> what they detect, on the same curve
+        /// <c>(100 + cL) / (distance + 9)²</c> rolled every turn until it sticks, and smell's
+        /// <c>c</c> is 20 against hearing's 10.
+        /// </para>
+        /// <para>
+        /// <b>The radius is what makes that decisive rather than incremental.</b> At rank 1 smell
+        /// reaches 9 squares and hearing 5, so a creature ten squares out is not merely harder for
+        /// hearing to identify — it is outside hearing entirely, and never identified at all. At rank
+        /// 10 the reach is 45 against 23. Knowing what is coming, through walls, before it is in
+        /// sight, is worth more on a permadeath character than a mutation that wins the fight you
+        /// could have avoided — which is the argument for pricing it beside <c>Domination</c> and
+        /// <c>Temporal Fugue</c> rather than beside <c>Precognition</c> (#817).
         /// </para>
         /// </remarks>
         private static void ApplyKeenSmell(bool on)

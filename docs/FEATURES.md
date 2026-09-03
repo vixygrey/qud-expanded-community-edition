@@ -3670,10 +3670,18 @@ luck, not a pattern, and the other three should expect to need art of their own.
 
 ## 22. Keen Smell (`Raven_Options.ApplyKeenSmell`)
 
-**A 3-point physical mutation that detects creatures by scent — and this fork wrote none of it.**
+**A 5-point physical mutation that detects creatures by scent — and this fork wrote none of it.**
 Vanilla built `HeightenedSmell` complete, with art and a cost, put it in `HiddenMutations.xml` under
 `Hidden="true" ExcludeFromPool="true"`, and never surfaced it. This makes it selectable and sets a
-price (#593).
+price (#593), raised from 3 to 5 after play (#817).
+
+**Why 5, when the derivation said 3.** The first figure compared radius alone. But smell also
+*identifies* what it finds, on the same curve as `Heightened Hearing` with twice the coefficient —
+and the radius gap is what makes that decisive: at rank 1 smell reaches 9 squares against hearing's
+5, so a creature ten squares out is outside hearing altogether and never identified at any odds. At
+rank 10 it is 45 against 23. The roll repeats every turn and sticks once it lands, so anything that
+stays in range is identified. Knowing what is coming, through walls, before it is in sight is worth
+more on a permadeath character than winning the fight that knowledge lets you skip.
 
 **On by default**, under the same `OptionQudExpandedCEAnthroMutations` as Fangs (§21). Read at
 character creation, so the option applies to a **new** character.
