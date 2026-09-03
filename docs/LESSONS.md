@@ -4366,3 +4366,46 @@ Three things worth carrying forward:
 
 The Single Weapon Fighting half was found by a player asking whether Fangs cancelled the skill, mid
 way through building the fix for the other half. Neither was visible in the number.
+
+## "Does the mechanism exist" and "does anything use it" are different questions
+
+I have now hit this five times, from five unrelated directions, and each time I treated finding the
+mechanism as finding the answer. It is not. In this codebase the second question is the one that
+predicts play.
+
+| mechanism | state | found while |
+|---|---|---|
+| `AddIntState` | registered and dispatched, **0 vanilla uses** | #633, conversation state |
+| `ConversationDelegate.Require` | **documented as working**, never registered | #633, looking for a greyed-out choice |
+| `DESIGN_sleep` §3.2.1 | specified in this repo's own design doc, unbuilt for three releases | #821, measuring band timings |
+| `Harvestable.RegenTime` | complete regrowth system, **0 of 33 blueprints set it** | #830, asked whether plants regrow |
+| `AIWorldMapTravel` | complete world-map travel, **0 blueprints carry it**, one runtime user | #832, asked whether warbands travel |
+
+**The failure mode is specific and it is not "the feature is missing".** It is reading a working
+mechanism, concluding the behaviour exists, and building on top of it — or telling the maintainer it
+exists. `ConversationDelegate.Require` is the sharpest case: its own doc comment says it *"greys out
+and prevents navigation instead of visibility"*, `Require` defaults to **true**, and
+`CreatePredicate` never reads the field. Believing the comment would have shipped a discoverability
+fix that does nothing.
+
+**Three checks, in increasing cost:**
+
+- **Count the uses in vanilla's data**, not just the code. `grep -c` over `Base/` answers this in a
+  second and is the single highest-value check in this repository.
+- **Check the registration, not the declaration.** A field can be public, documented and inert —
+  `Require` is read nowhere, and `RegenTime` is only consulted inside an `else if` that an empty
+  string skips.
+- **Be careful about what "unused" implies.** It cuts both ways. Of vanilla's 57 conversation
+  predicates, **29 are never used**, and 16 of 27 actions — so being unexercised is the *default
+  state* of a delegate there, not a warning. I over-alarmed about `AddIntState`'s zero uses on that
+  basis and had to correct it. Unused means untested, not broken.
+
+**And the opposite reading is often the opportunity.** Four of the five above are features that could
+be switched on rather than written: `RegenTime` is one XML attribute per blueprint, `AIWorldMapTravel`
+needs a part attached to something. Freehold built more than it wired up, and the cheapest content in
+this fork has repeatedly been finding the wire rather than the mechanism — `Heightened Smell` (#593)
+was exactly that, a complete mutation with art and a cost sitting in `HiddenMutations.xml`.
+
+**Every one of these five was found by a question rather than by a plan** — four of them the
+maintainer's, asked in passing. Reading the assembly answers "how does this work". It does not answer
+"does this happen", and only play or a usage count will.
