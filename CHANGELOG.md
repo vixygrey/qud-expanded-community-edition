@@ -16,6 +16,21 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** `wish vixychipslot` adds Chip Interface slots to the body you already have (#820).
+
+  A player asked whether any wish could give chip slots to a character who is not humanoid. There
+  was not. Slots come from the anatomy the genotype picks at character creation, so nothing after
+  chargen could change the number — and vanilla's near miss, `rebuildbody:PsionicAdept`, does give
+  you four but replaces your whole body plan to do it, which is the thing the question was trying to
+  avoid.
+
+  `vixychipslot` adds one, `vixychipslot:3` adds three, and `vixychipslot:0` removes the ones this
+  wish added and nothing else. A chip sitting in a slot you remove goes back into your pack.
+
+  Nothing reaches it without being typed, so it changes no character who does not ask for it.
+
 ### Changed
 
 - **Heightened Smell costs 5 mutation points, up from 3** (#817).
@@ -108,7 +123,6 @@ recorded because contributors need them, not because subscribers do.
   one mechanic waiting at the bottom of the meter had never once fired for them. Tiredness now takes
   physical mutations, skills and manoeuvres as well. It leaves your implants, tonics and gear alone —
   a grenade does not care how tired you are.
-
 
 ## [2.14.0] - 2026-09-02
 

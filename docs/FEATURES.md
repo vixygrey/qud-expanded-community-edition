@@ -293,6 +293,39 @@ Back, two Arms with Hands, two Missile Weapon slots, Hands, Feet). Two matching 
 blueprints (`TrueKin`, `PsionicAdept`) in `ObjectBlueprints/Creatures.xml` inherit from `Humanoid`
 and swap the anatomy.
 
+#### 3.1a `wish vixychipslot`, for a body the anatomy did not plan for
+
+**Slots come from the anatomy, so until #820 nothing after chargen could change the number.** A
+player asked whether a wish could give chip slots to a character who is not humanoid, and the answer
+was no — with a near miss that is worse than nothing. `rebuildbody:PsionicAdept` does yield four
+slots, but `Body.Rebuild` replaces the **whole anatomy**, which is precisely what somebody asking
+that question is trying to keep. There is no vanilla wish that adds a single body part either: the
+only `AddPart` call anywhere in the wish surface is hardcoded inside `postgolem`.
+
+| wish | effect |
+|---|---|
+| `vixychipslot` | add one slot |
+| `vixychipslot:3` | add three, up to 8 an invocation |
+| `vixychipslot:0` | remove the slots this wish added, and only those |
+
+Every slot it creates is stamped with a **`Manager`**, so `:0` uses vanilla's own
+`BodyPart.FindByManager(Manager, Type, Store)` and can never take one the anatomy provided. Counting
+would have been the alternative, and counting is exactly what `Raven_ChipSlotPlayerMutator` is
+forced into for want of a manager to go on.
+
+They are **`Dynamic`**, so a slot survives a later `rebuildbody:` — `Body.Rebuild` re-places
+top-level dynamic parts by position hint and discards the rest, and a wished slot quietly vanishing
+on an unrelated wish would read as a bug rather than a rule.
+
+**A chip in a removed slot is not lost.** `RemovePart` calls `UnequipPartAndChildren` first, and that
+prefers the inventory over the drop inventory, so it goes into the pack rather than onto the floor.
+
+> ⚪ **This steps around §3.1's own balance decision, deliberately.** It will hand a Mutated Human
+> chip slots — the thing #352 and #353 removed. That reasoning was about what the *game* gives out;
+> a wish is a dev channel that nothing reaches without being typed, so charter rule 6 is satisfied
+> trivially and no player meets it by accident. Said out loud here rather than left to be discovered,
+> because the decision was made rather than overlooked (#820).
+
 ### 3.2 How chips work
 
 `Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chip Interface slot with 0 AV /
@@ -2136,7 +2169,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 92 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 93 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
