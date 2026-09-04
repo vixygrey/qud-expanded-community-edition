@@ -18,6 +18,27 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Wakebriar — a tonic that keeps you on your feet long enough to walk out** (#843). Tinkerable at
+  one bit and a piece of witchwood bark, and it turns up wherever tonics do.
+
+  Fatigue has one release and it costs a night in a safe place. There was nothing to do about the
+  delve that goes wrong: an unexpected heavy fight two levels down, the meter near the top, and no
+  way back. Once you are that tired you have about **36 actions** before you drop, and fewer than ten
+  once you are nearly out — against a dungeon level that takes eighty moves to cross. You do not make
+  it to the stairs.
+
+  Wakebriar buys **200 rounds** in which you will not collapse, and in which nothing can put you to
+  sleep against your will either — no sleep gas, no cudgel to the back of the head. Roughly two levels
+  of walking.
+
+  It does not make you rested. Tiredness keeps climbing the whole time, so the window ends further up
+  the meter than it started, and abilities still gutter out while you run. You are upright on borrowed
+  time, and the loan comes due.
+
+  A second dose to extend it is a gamble like any other stacked tonic, and losing it ends the window
+  on the spot.
+
+
 - **Take the Measure — a Customs and Folklore power that reads what somebody holds against you**
   (#836). 50 skill points, Intelligence 19.
 
