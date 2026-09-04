@@ -1219,9 +1219,16 @@ Either would have failed real vanilla items, which is worse than having no rule 
 
 ### 9.2 The Arm slot is worn twice
 
-`Bodies.xml` gives a humanoid **two** Arm slots. So an Arm-slot armour piece is equipped twice and
-its AV counts twice, which no finding had accounted for. It changes the arithmetic and it changes
-the recommendation: the vambrace line at AV 3 is worth **6** AV, more than the head, hands or feet.
+> **This section's premise is wrong and the heading is kept only so its anchor survives (#850).** The
+> slot really is worn twice; the AV does **not** count twice. `Armor.RecalculateArmor` averages —
+> `GetTypeArmorInfo` counts every slot of the type, equipped or not, and only the first slot
+> contributes `Math.Round(AV / Count)`. Two AV-1 vambraces are worth 1, and one is worth 0, because
+> `1/2` rounds to even. `NoArmorAveraging="true"` opts a part type out and occurs once in
+> `Bodies.xml`, on `Floating Nearby`. See §9.2c.
+
+`Bodies.xml` gives a humanoid **two** Arm slots. I read that as meaning an Arm-slot armour piece is
+equipped twice and its AV counts twice, and concluded the vambrace line at AV 3 was worth **6** AV,
+more than the head, hands or feet. It is worth **3** — the same as those slots, not more.
 
 ### 9.2b The first version of this section missed shields, and was wrong about #318
 
@@ -1252,6 +1259,48 @@ Shield`, the largest single AV of any ordinary item in the game, beating every b
 [#319](https://github.com/vixygrey/qud-expanded-community-edition/issues/319) reports the zetachrome
 greatshield matching.
 
+### 9.2c Arm AV is averaged, not doubled
+
+Found while tracing #847, and it revises §9.2's premise and §9.2b's totals together.
+
+`Armor.RecalculateArmor` divides where I had it adding:
+
+```csharp
+body.GetTypeArmorInfo(forType, ref First, ref Count, ref AV, ref DV);
+int num3 = ((Count > 0) ? ((Count > 1) ? ((int)Math.Round((double)AV / (double)Count)) : AV) : 0);
+num  = ((ParentObject == First) ? num3 : 0);
+```
+
+`BodyPart.GetTypeArmorInfo` runs `Count++` for **every slot of that type**, equipped or not, while
+`AV += part.AV` only where something is worn. So a single vambrace on one of two arms yields
+`Math.Round(1 / 2)` = **0**: it has to be worn on both to be worth anything at all.
+
+**The reconciliation in §9.2b becomes:**
+
+| | as published | corrected |
+|---|---|---|
+| vanilla | `8, 4, 4, 4, 2, 1 × 2, 1, 7` = **32** | `8, 4, 4, 4, 2, 1, 1, 7` = **31** |
+| the mod | `10, 6, 6, 6, 3, 3 × 2, 1, 10` = **48** | `10, 6, 6, 6, 3, 3, 1, 10` = **45** |
+
+[#318](https://github.com/vixygrey/qud-expanded-community-edition/issues/318) listed the Arm slot as
+`Arm × 2`, so its headline pair carries the same doubling. The *gap* it reported is barely touched —
+16 against 14 — and every conclusion drawn from it stands.
+
+**Nothing mechanical read any of this.** `armor-curve` compares one item against a per-slot ceiling,
+and `"Arm": 1` is vanilla's best ordinary arm item either way, so the check was always right. It is
+the prose totals, which nothing recomputes, that drifted.
+
+**And it survived a correction pass**, which is the part worth keeping. §9.2b is itself a correction
+to §9.2, and it records the reason this kind of error persists: *"I verified the extraction against a
+number I had already computed the same wrong way."* It then rechecked the arithmetic against itself
+rather than against `Armor.cs`, and the doubling went straight through. `docs/LESSONS.md` has this as
+*a number that agrees because both sides share the error is not a cross-check*; the second pass needed
+a source, not a recount.
+
+**Attacks are not affected, and the distinction matters.** `BodyPart.ScanForWeapon` walks every part
+and each yields an attempt, so two arms and two hands really is four attacks a round. **AV averages;
+attacks do not.**
+
 ### 9.3 Cloaks stay, vambraces go back to flavour
 
 Vanilla makes Back and Arm **not** armour slots: ordinary cloaks are AV 1, and the Arm slot holds
@@ -1259,14 +1308,22 @@ bracelets at AV 0 or 1. This fork turned both into full nine-tier armour lines r
 is most of why best-in-slot climbed — a structural change to how much armour a character can wear,
 not a tuning drift.
 
-Settled: **the cloaks stay, capped at AV 2; the vambraces go back to flavour at AV 1.** The split is
-priced. Keeping cloaks costs **+1 AV** against vanilla's best loadout. Extending the same courtesy to
-vambraces would cost **4 more**, because the slot is worn twice — and unlike cloaks, vanilla offers
-nothing to point at: there is no vanilla Arm item above AV 1 at any tier.
+Settled: **the cloaks stay, capped at AV 2; the vambraces go back to flavour at AV 1.** The split
+rests on precedent rather than on price. Vanilla has something to point at for cloaks — the
+`Sail from the Great Machine` reaches AV 2 — and **nothing at all for arms: there is no vanilla Arm
+item above AV 1 at any tier**. Keeping the cloak line costs **+1 AV** against vanilla's best loadout,
+and that is a price worth paying for a line vanilla itself gestures at.
 
-*(An earlier draft priced this as 26 becoming 27. Those figures predate §9.2b and omit the shield
-slot; with shields counted the pair is 33 and 34. The +1 is unchanged, because it was always the
-cloak line and never the arithmetic around it.)*
+> **This used to be priced as well as argued, and the pricing leg is gone (#850).** It read
+> *"extending the same courtesy to vambraces would cost 4 more, because the slot is worn twice."* Arm
+> AV is averaged rather than doubled, so vambraces at AV 2 would cost **the same +1** the cloaks do.
+> The settlement is unchanged and now stands on one leg instead of two — deliberately, because the
+> precedent leg is the one that was doing the work.
+
+*(An earlier draft priced this as 26 becoming 27, and a later one as 33 and 34 with shields counted.
+Both doubled the Arm term. Without the doubling the pair is **25 and 26** excluding shields and
+**32 and 33** including them — the same figures, seven apart, which is the shield. The +1 is unchanged
+throughout, because it was always the cloak line and never the arithmetic around it.)*
 
 ### 9.4 The drift is one defect wearing three hats
 
