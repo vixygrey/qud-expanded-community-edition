@@ -478,17 +478,28 @@ ImprovedBlock)` percent, plus 25 for `Shield_Block` and 25 for `Shield_DeftBlock
 75% fully skilled, 100% under Shield Wall. Compare a shield against other shields, and treat any
 best-in-slot total that adds it to armour AV as an upper bound rather than a figure.
 
-**Count the slot, not the item.** A humanoid has **two** Arm slots, so Arm AV counts twice toward a
-loadout. That is why Arm is the tightest cap in the table, and why vanilla puts bracelets there
-rather than armour. `Bodies.xml` is the authority: Body, Head, Hands, Feet, Back and Face are one
-each; Arm and Hand are two.
+**AV is averaged across same-type slots, not summed — and this section said the opposite until
+#850.** A humanoid has **two** Arm slots, and `Armor.RecalculateArmor` divides rather than adds:
+`GetTypeArmorInfo` counts every slot of the type, equipped or not, and only the *first* slot then
+contributes `Math.Round(AV / Count)`. Two AV-1 vambraces are worth **1**, and **one** vambrace is
+worth **0**, because `1/2` rounds to even. Exactly one part type opts out — `NoArmorAveraging="true"`
+occurs once in `Bodies.xml`, on `Floating Nearby` — and Arm is not it.
+
+So Arm is the tightest cap because vanilla put bracelets there, not because the slot doubles.
+`Bodies.xml` remains the authority on the counts themselves: Body, Head, Hands, Feet, Back and Face
+are one each; Arm and Hand are two.
+
+**Attacks are the opposite, and both are true at once.** `BodyPart.ScanForWeapon` walks every part
+and each yields an attempt, so two arms and two hands really is four attacks a round. **AV averages;
+attacks do not** — do not let a correction to one reach the other.
 
 **Back is the one deliberate stretch.** Vanilla's ordinary cloaks are AV 1 and only the
 `Sail from the Great Machine` reaches 2. This fork allows 2 at the top tiers so the weave-cloak line
 has somewhere to go. Measured against vanilla's best full loadout it costs **+1 AV and nothing
-else** — 26 becomes 27. That is the whole price of keeping the line, and it is why the concession
-stops at cloaks: extending the same courtesy to vambraces would cost 4 more, because the slot is
-worn twice.
+else** — 25 becomes 26. That is the whole price of keeping the line. The concession stops at cloaks
+because vanilla offers nothing to point at in the Arm slot — there is no vanilla Arm item above AV 1
+at any tier — and not because vambraces would cost more: under averaging they would cost the same +1
+(#850).
 
 **The Arm slot carries no DV penalty and weighs a pound.** Vanilla puts 28 armour items in that
 slot and **not one** of them has negative DV — the values are 0, 1 and 2, and the median weight is 1.
