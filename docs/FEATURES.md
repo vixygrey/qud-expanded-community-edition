@@ -2169,7 +2169,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 93 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 94 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -7812,6 +7812,106 @@ one place it would *soften* the punishment. Tightening that fiction is a separat
 the sentence bite, and it pulls the other way.
 
 ---
+
+## 59. Take the Measure (`Core/Skills.xml`, `Vixy_CustomsRegard`)
+
+A Customs and Folklore power, **cost 50, Intelligence 19**: examining a creature tells you how their
+faction regards you, and what they hold against you personally (#836).
+
+### 59.1 The gap is resolution, not absence
+
+I filed this believing nothing in Qud reports regard. It does — `Description.GetFeelingDescription`
+renders `Friendly` / `Neutral` / `Hostile` off the full `Brain.GetFeelingLevel`, and Look shows it on
+both UIs. I had read `Brain`'s own `GetShortDescriptionEvent` handler, found the `Hostile`/`Calm`
+blueprint flags, and stopped one class short.
+
+What is actually wrong is the resolution, and it is wrong by construction:
+
+| reputation | faction feeling | Look says |
+|---|---:|---|
+| ≤ −250 | −100 / −50 | Hostile |
+| −249 … +249 | 0 | **Neutral** |
+| ≥ +250 | +50 / +100 | Allied |
+
+`Reputation.GetFeeling` is a five-value step function — −100, −50, 0, +50, +100 — applied before
+`Brain` ever sees a number, and `GetFeelingLevel` then bands at −10 and +50. So the entire ±249 band,
+where ordinary play lives, is one word. And it is asymmetric: from feeling 0 a single
+`OpinionTrespass` (−25) or `OpinionThief` (−20) crosses into Hostile at once, while
+`OpinionProselytize` (+25) shows nothing and only `OpinionSummon` (+50) reaches Allied. **Being
+wronged is legible; being liked is not.**
+
+### 59.2 Freehold wrote the readout and left it behind a debug flag
+
+`Brain.BuildChronology` is complete — the party leader with their feeling, every allegiance dated by
+the in-world calendar, then per-observer opinions with authored prose and value. All 22 `IOpinion`
+classes and all 18 `Ally*` reasons override `GetText(GameObject)`: *"Killed Kesil."*, *"Poked around
+where they shouldn't."*, *"Rebuked me."*
+
+It is reached by a **Show Attitude** inventory action gated on
+`Options.DebugInternals || Options.DebugAttitude`, and `OptionDebugAttitude` is
+`Category="Debug" Requires="OptionShowAdvancedOptions==Yes"` — double-gated out of ordinary play.
+`IOpinion`'s own doc comment says what it is: *"As of yet only for hostility debugging purposes, may
+be leveraged somewhere player-facing in the future."*
+
+### 59.3 Not `BuildChronology` verbatim, which would be wrong twice
+
+It dumps opinions about **everyone** the creature has an opinion of — a lore leak — with raw values
+and calendar dates, which is a debug panel wearing a skill's name. This filters to the player and
+keeps only the authored text, so what you read is Freehold's prose about you and nothing else.
+
+### 59.4 The hook reaches the player, not an owner
+
+`Description.GetDescription` builds an object's short description and then runs
+
+```csharp
+OE.Process(IComponent<GameObject>.ThePlayer, E);
+```
+
+for **any** object, not just equipment. `IShortDescriptionEvent.Process` calls
+`ParentEvent.ApplyTo(this)` before dispatching — which copies `E.Object`, so the handler knows what
+is being examined — and its `finally` copies the builders back, so appending to `Postfix` reaches the
+description. One passive `BaseSkill` on the player, zero vanilla records, and it lands in the place a
+player already looks.
+
+Both existing Customs powers are passive `BaseSkill` subclasses and neither is an activated ability,
+so this matches its tree. Both also add `scholarship` on `GetItemElementsEvent`; so does this.
+
+### 59.5 `TryGetOpinions` writes, so it is not used
+
+`Brain.TryGetOpinions` looks like the accessor for this and is not:
+
+```csharp
+if (!Opinions.TryGetValue(Subject.BaseID, out List)) { Opinions[Subject.BaseID] = (List = new OpinionList()); }
+```
+
+It creates the list when none exists, so a readout calling it would add an empty `OpinionList` to
+every creature examined — mutating save state from a look. `Opinions` is a public field and
+`Dictionary.TryGetValue` creates nothing.
+
+### 59.6 A follower defers, and says so
+
+`Brain.GetFeeling` early-returns `GetFinalLeaderBrain().GetFeeling(Target)` before it reads any
+opinion map, so a bodyguard's feeling **is** their captain's and its own `Opinions` are never
+consulted. Reporting the captain's view as the bodyguard's would be a quiet lie, so this names the
+leader and stops there.
+
+### 59.7 Decay is in the description rather than per creature
+
+Grudges lapse after 16,800 turns and kindnesses never do — `IOpinion.Duration` returns 0 for
+`BaseValue >= 0`, which nothing overrides. A per-creature countdown would be the debug precision this
+power exists to avoid, so the power's own description carries the rule instead.
+
+### 59.8 Cost, derived
+
+Vanilla prices pure-information powers at 0–50 — `Gadget Inspector` 0, `Mind's Compass` 0, the seven
+`Wilderness Lore` powers 25–50 — and charges more where a power yields something: Trash Divining is
+150 because its secrets trade for reputation. This grants no resource, so it sits in the information
+band, above Tactful's free because it applies to every creature rather than one terrain. Intelligence
+19 matches Tactful's gate and keeps the tree's entry requirement flat.
+
+### 59.9 Off-switch
+
+None, per §46.6: a skill power you choose to buy holds no state and does nothing until purchased.
 
 ## Appendix A — every merged vanilla melee weapon
 

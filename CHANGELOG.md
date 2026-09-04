@@ -16,6 +16,27 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Take the Measure — a Customs and Folklore power that reads what somebody holds against you**
+  (#836). 50 skill points, Intelligence 19.
+
+  Qud tells you whether a creature is friendly, neutral or hostile, and that is the whole of it. The
+  bands sit at −10 and +50 on a scale where reputation only ever contributes −100, −50, 0, +50 or
+  +100 — so everything between disliked and favoured is one word, and it is lopsided: one theft or
+  one trespass tips a stranger into hostile, while nothing short of summoning somebody registers as
+  warmth.
+
+  Buy this and examining a creature tells you how their people regard you, and then, in the game's
+  own words, what that particular creature remembers of you — *"Killed Kesil."*, *"Poked around where
+  they shouldn't."* Somebody who follows another names their leader instead, because their regard is
+  their leader's and it would be a lie to report it as their own.
+
+  Freehold wrote all of that text and left it behind a debug option. This is the same readout,
+  narrowed to what concerns you and stripped of the numbers and dates.
+
+  Grudges fade after a couple of game weeks. Kindnesses never do.
+
 ## [2.15.1] - 2026-09-03
 
 ### Fixed

@@ -264,4 +264,42 @@ While the Qud Expanded bearings option is on, you know which of a parasang's nin
       Detail="B"
     />
   </skill>
+
+  <!-- Take the Measure. Reading a person's regard, which Qud reports at three bands and no finer.
+
+       Description.GetFeelingDescription does render Friendly/Neutral/Hostile off the full
+       Brain.GetFeelingLevel, and Look shows it - so the gap is resolution rather than absence.
+       Reputation.GetFeeling collapses the +/-600 reputation scale to five values (-100, -50, 0,
+       +50, +100) before Brain sees it, and GetFeelingLevel then bands at -10 and +50, so the whole
+       +/-249 range where ordinary play lives is one word. See #836.
+
+       Freehold wrote the finer readout and left it behind a debug flag: Brain.BuildChronology,
+       reached by a Show Attitude inventory action gated on DebugInternals or DebugAttitude, both
+       Category="Debug" behind ShowAdvancedOptions. IOpinion's own doc comment calls itself "only
+       for hostility debugging purposes, may be leveraged somewhere player-facing in the future".
+
+       Not BuildChronology verbatim: that dumps opinions about everyone the creature has an opinion
+       of, with raw values and calendar dates. This filters to the player and keeps the authored
+       text.
+
+       Cost 50 and Intelligence 19. Vanilla prices pure-information powers at 0-50 - Gadget
+       Inspector 0, Mind's Compass 0, the seven Wilderness Lore powers 25-50 - and charges more
+       where a power yields something: Trash Divining is 150 because its secrets trade for
+       reputation. This grants no resource, so it sits in the information band, above Tactful's free
+       because it applies to every creature rather than one terrain. Intelligence 19 matches
+       Tactful's gate and keeps the tree's entry requirement flat. -->
+  <skill Name="Customs and Folklore" Load="Merge">
+    <power
+      Name="Take the Measure"
+      Cost="50"
+      Attribute="Intelligence"
+      Minimum="19"
+      Class="Vixy_CustomsRegard"
+      Snippet="taking the measure"
+      Description="You can read a person the way you read a people. Examining a creature tells you how their faction regards you, and what that creature holds against you personally. A creature who follows somebody else defers to their leader, and says so. Grudges fade with time; kindnesses do not."
+      Tile="Abilities/sw_skill_customs_and_folklore.png"
+      Foreground="y"
+      Detail="B"
+    />
+  </skill>
 </skills>
