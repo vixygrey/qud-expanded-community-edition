@@ -3197,9 +3197,21 @@ of these takes a named neighbour rather than a guess, and only where the default
 | cragwort | twine | thatch | thatch | slime grass — the same grass idiom |
 | brinereed | rope | fibre | bundle | brinestalk, the saltmarsh's own reed |
 | sweetfrond | *(inherited `strip`)* | fibre | frond | `frond` is Yempuris's word |
+| rimeburr | blade | grass | thatch | Primal Grass — the grass idiom again |
+| shadetooth | *(inherited `strip`)* | fibre | strip | Fracti, the nearest desert succulent |
+| broadglove | *(inherited `strip`)* | *(inherited `bark`)* | mass | Fungus — `mass` is the only one vanilla gives a fungus |
 
 `stag` rather than `tag`, which is what vanilla uses for all three: 26 of 26 for `Plank`, 14 of 14
 for `FiberMaterial`.
+
+**Broadglove still yields bark, and that is this section's own defect surviving in the last row.**
+It is a shelf fungus and it inherits `Plant`, so it takes `FiberMaterial="bark"` — the exact value
+this section opens by calling wrong on a reed. Vanilla never has the problem because its `Fungus`
+inherits `PhysicalObject`, not `Plant`, and carries `Plank="mass"` and nothing else; there is no
+fungal `FiberMaterial` in the game to borrow. The blueprint comment reads as though leaving it
+inherited were a decision, and it was not — it was the default going unexamined one more time. The
+parent is the defect and the `FiberMaterial` only the symptom, so the fix is scoped in
+[#860](https://github.com/vixygrey/qud-expanded-community-edition/issues/860) rather than here.
 
 This is the charter's "know the blast radius" in miniature. The blast radius of `Inherits="Plant"`
 is three tags nobody wrote, and **only the game showed them** — every static check passed. Nothing
@@ -3212,6 +3224,9 @@ checks these values.
 | cragwort | Mountains | cragwort sprig | dried cragwort | `regenLowtier` |
 | brinereed | Saltmarsh | brinereed shoot | salted brinereed | `plantMinor` |
 | sweetfrond | BananaGrove | sweetfrond heart | candied sweetfrond | `starch` |
+| rimeburr | Hills | rimeburr head | pickled rimeburr | `tastyMinor` |
+| shadetooth | DesertCanyon | shadetooth pad | cured shadetooth | `thirst` |
+| broadglove | Jungle | broadglove cap | pressed broadglove | `medicinal` |
 
 ### 18.6b They can be a village's plant, which needed a tag
 
@@ -3227,11 +3242,25 @@ witchwood and yuckwheat are and these are not.
 
 | plant | pool | vanilla entries before | after |
 |---|---|---:|---:|
-| cragwort | `Mountains_Plants` | 4 | 5 |
-| brinereed | `Saltmarsh_Plants` | 2 | 3 |
+| cragwort | `Mountains_Plants` | 5 | 6 |
+| brinereed | `Saltmarsh_Plants` | 3 | 4 |
 | sweetfrond | `BananaGrove_Plants` | 2 | 3 |
+| rimeburr | `Hills_Plants` | 5 | 6 |
+| shadetooth | `DesertCanyon_Plants` | 5 | 6 |
+| broadglove | `Jungle_Plants` | 12 | 13 |
 
-`tools/dynamic-pools.json` pins all three, so a fourth arriving unnoticed fails a commit.
+**The first two rows were each one low**, and had been since they were written. Counted by hand at
+the time; counted now by `report_dynamic_tables.eligible`, which is
+`EncountersAPI.IsEligibleForDynamicEncounters` as the game computes it — no `BaseObject`, a `Render`
+part, no `ExcludeFromDynamicEncounters`. That admits `Holographic Dogthorn Tree` and
+`Watervine Barathrumite`, which a hand count skips as obviously-not-a-plant and the game does not.
+The `shares` already pinned in `tools/dynamic-pools.json` agree with the corrected column at every
+row, so the pins were right the whole time and only the prose was wrong.
+
+Hills, DesertCanyon and Mountains hold the same five — dogthorn, starapple, the Barathrumite
+starapple, witchwood and the holographic dogthorn — which is why three biomes read alike.
+
+`tools/dynamic-pools.json` pins all six, so a new entry arriving unnoticed fails a commit.
 
 ### 18.7 The ingredient pools are village pools, not loot pools
 
