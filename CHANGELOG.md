@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Changed
+
+- **Tiredness now tells you where in a band you are, not just which one** (#853).
+
+  The word on the effects line changes four times over an entire meter, and the bands are wide —
+  *tired* and *weary* are about nine hundred actions each at an unhurried pace, which is most of a
+  game day reading the same thing. The message that told you when you crossed scrolled away hours ago.
+
+  Show Effects now adds a line: *not far into this*, *well into this*, *on the edge of weariness* — and
+  *about to drop*, once what comes next is the floor rather than another band.
+
+  Still words rather than a number. Fatigue is meant to be read rather than counted, and a percentage
+  would offer a precision the rest of it does not.
+
 ### Added
 
 - **Wakebriar — a tonic that keeps you on your feet long enough to walk out** (#843). Tinkerable at

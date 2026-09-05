@@ -103,7 +103,8 @@ namespace XRL.World.Effects
         /// </remarks>
         public override string GetDetails()
         {
-            return Vixy_Fatigue.BandFor(Vixy_Fatigue.Get(Object)) switch
+            int fatigue = Vixy_Fatigue.Get(Object);
+            string cost = Vixy_Fatigue.BandFor(fatigue) switch
             {
                 Vixy_Fatigue.Collapsing =>
                     "Abilities gutter out often.\n"
@@ -118,6 +119,71 @@ namespace XRL.World.Effects
                     "No penalty yet.\n"
                     + "Sleeping through from here may bring a dream.",
             };
+            return cost + "\n" + Position(fatigue);
+        }
+
+        /// <summary>
+        /// Where in the current band the meter is sitting, in words.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>The band alone is a very slow readout.</b> `Accrue` takes hundredths and `BaseAccrual`
+        /// is 22, so unhurried play is 0.22 fatigue an action — which makes `tired` and `weary`
+        /// **909 actions** each, `exhausted` 682 and `collapsing` 227. Nine hundred actions reading
+        /// one unchanging word is most of a game day, and the band-crossing message that would have
+        /// placed me scrolled away long before. #853.
+        /// </para>
+        /// <para>
+        /// <b>Words rather than a number or a percentage.</b> The meter's imprecision is deliberate
+        /// — §51.5d puts a word on the effects line rather than a figure precisely so fatigue is
+        /// read rather than counted — and a percentage here would promise a resolution the rest of
+        /// the design declines to offer.
+        /// </para>
+        /// <para>
+        /// <b>Thirds, computed rather than tabulated</b>, because the bands are not the same width:
+        /// 200, 200, 150 and 50. A fixed table of cut points would have to be corrected every time
+        /// one moved, and #821 moved them all once already.
+        /// </para>
+        /// <para>
+        /// <b>The multiply comes before the divide, and that is load-bearing.</b>
+        /// `(fatigue - floor) * 3 / span` in that order keeps the thirds honest; dividing first
+        /// truncates to zero for the whole band and the reading would never move — the integer trap
+        /// `docs/LESSONS.md` records from `4 * RestQuality / 10`, which cost a design tier. The
+        /// `Math.Min` catches the one value that lands exactly on the ceiling, `Max` itself.
+        /// </para>
+        /// </remarks>
+        private static string Position(int Fatigue)
+        {
+            int band = Vixy_Fatigue.BandFor(Fatigue);
+            int ceiling;
+            string next;
+            switch (band)
+            {
+                case Vixy_Fatigue.Collapsing:
+                    ceiling = Vixy_Fatigue.Max;
+                    next = null;
+                    break;
+                case Vixy_Fatigue.Exhausted:
+                    ceiling = Vixy_Fatigue.Collapsing;
+                    next = "collapse";
+                    break;
+                case Vixy_Fatigue.Weary:
+                    ceiling = Vixy_Fatigue.Exhausted;
+                    next = "exhaustion";
+                    break;
+                default:
+                    band = Vixy_Fatigue.Tired;
+                    ceiling = Vixy_Fatigue.Weary;
+                    next = "weariness";
+                    break;
+            }
+
+            int third = Math.Min(2, (Fatigue - band) * 3 / (ceiling - band));
+            if (third == 0) return "You are not far into this.";
+            if (third == 1) return "You are well into this.";
+            return next == null
+                ? "You are about to drop."
+                : "You are on the edge of " + next + ".";
         }
     }
 }
