@@ -292,6 +292,16 @@
     />
     <part Name="PreservableItem" Result="Vixy_Pressed Broadglove" Number="3" />
     <part Name="Description" Short="A cap the width of a palm, cut where it shelves away from the wood." />
+    <!--
+      The only raw yield here that carries a tag, because it is the only fungal one. A Carnivorous
+      player's ingredients are filtered on !HasTag("Plant") and !HasTag("Fungus") in two places -
+      CookingGameState.cs:39 and Campfire.cs:813 - and vanilla splits its raw food the same way:
+      Plump Mushroom carries Fungus, Banana and Starapple carry neither. So the five fruit and veg
+      yields beside this one are right to carry nothing, and this one was wrong to. #860.
+
+      Declared rather than inherited: this comes from Snack, so nothing reaches it from the plant.
+    -->
+    <tag Name="Fungus" />
   </object>
 
   <object Name="Vixy_Pressed Broadglove" Inherits="Preservable">
@@ -310,7 +320,14 @@
       Name="Description"
       Short="Pressed flat between boards and hung, which concentrates the bitterness rather than curing it. That is what it is kept for."
     />
-    <tag Name="Plant" />
+    <!--
+      Fungus where the other five preserved forms take Plant, which is vanilla's own split across
+      its 81 prepared ingredients: 20 plant-derived carry Plant - Sun-Dried Banana, Starapple
+      Preserves, Pickles, Dried Lah Petals - 5 fungal carry Fungus, and the animal and mineral ones
+      carry neither. This had Plant, so a carnivore was already refused it; the tag was simply the
+      wrong one of the pair. #860.
+    -->
+    <tag Name="Fungus" />
     <tag Name="DynamicObjectsTable:Jungle_Ingredients" />
   </object>
 </objects>

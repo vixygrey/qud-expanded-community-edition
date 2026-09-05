@@ -18,6 +18,16 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Broadglove was a mushroom pretending to be a plant** (#860). The jungle harvestable is a shelf
+  fungus — the description says so and the tile is a mushroom cap — but it was built on the game's
+  plant base rather than its fungus one, and a handful of small things followed from that.
+
+  A village that built its walls out of broadglove described them as made of **bark**. Templars set
+  fire to it on a raid, the way they do to crops. And a carnivore could eat it, while being refused
+  every other mushroom in the game.
+
+  All of it now behaves the way the game's own mushrooms do.
+
 - **Collapsing from exhaustion was resting you almost as well as going to bed** (#854). If you
   dropped at the top of the meter you could wake up *tired* — on a bed or in a settlement, a collapse
   handed back nearly half the meter for falling over.
