@@ -262,14 +262,21 @@
     <tag Name="WeaponUnarmed" />
     <tag Name="NoSparkingQuest" />
   </object>
-  <!-- Ships its own sprite, `mod/Textures/Items/vixy_sleep_suppressor.png`, because the tile it
+  <!-- Ships its own sprite, `mod/Textures/items/Vixy_SleepSuppressor.png`, because the tile it
        used - `Items/sw_nanoinjector.bmp` - does not exist and never did, so this rendered as a
        solid coloured block from the day it shipped (#865). Nothing static could catch it: a tile
        name is a string with no referent in the game data.
 
-       16x24 RGBA with exactly three values, which is the convention all 40 sprites already in
-       mod/Textures follow: transparent for ground, white for the ColorString, black for the
-       DetailColor. So this reads white with dark detail, matching &Y / K below.
+       16x24 RGBA with exactly three values, which all 40 sprites in mod/Textures follow without
+       exception: transparent for ground, white for the ColorString, black for the DetailColor. So
+       this reads white with dark detail, matching &Y / K below.
+
+       Named and referenced like the 22 item sprites already beside it - `items/Vixy_PascalCase.png`,
+       lowercase directory, and the extension in the reference matching the file. The 18 under
+       Subtypes/ do it differently, writing `.bmp` against a `.png`, and generalising from those was
+       how this first shipped as `Items/vixy_sleep_suppressor.bmp`: wrong directory case, wrong name
+       shape, wrong extension. Qud resolves all of that, so nothing broke and nothing would have
+       said so.
 
        A woven cap with filaments trailing from it, which is what the description says the thing is
        rather than a device that would look like any other implant. -->
@@ -282,7 +289,7 @@
     <part
       Name="Render"
       DisplayName="&amp;Ysleep suppressor"
-      Tile="Items/vixy_sleep_suppressor.bmp"
+      Tile="items/Vixy_SleepSuppressor.png"
       ColorString="&amp;Y"
       DetailColor="K"
     />
