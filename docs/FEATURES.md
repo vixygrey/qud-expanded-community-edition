@@ -3259,17 +3259,53 @@ raw cap carried nothing at all, so a carnivore could eat the one mushroom in the
 refused every mushroom in the game. Both are tagged `Fungus` now, declared rather than inherited,
 because they come from `Snack` and `Preservable` and nothing reaches them from the plant.
 
-### 18.6b They can be a village's plant, which needed a tag
+### 18.6b Villages build with these, and grow them
 
 Each plant carries `DynamicObjectsTable:<Biome>_Plants`. That pool is rolled by procedural village
 generation — `VillageBase.cs:1430` picks a region's plant, and §18.5's `Plank`, `Fiber` and
-`FiberMaterial` words are what name it in the wall description. Without the tag these three could
-only ever be picked by already standing in the zone the village was built in, never through the pool
+`FiberMaterial` words are what name it in the wall description. Without the tag these six could only
+ever be picked by already standing in the zone the village was built in, never through the pool
 vanilla uses.
 
 **Wild flora carries `_Plants` alone.** Brinestalk is the model, with `Saltmarsh_Plants` and nothing
-else. `_FarmablePlants` is deliberately absent: that pool is for crops villagers *grow*, which
-witchwood and yuckwheat are and these are not.
+else. `_FarmablePlants` is absent, and that is still right — but for a narrower reason than this
+section used to give (#862).
+
+#### The `_Plants` tag grows them too, and that was not decided
+
+This section used to say `_FarmablePlants` was *"deliberately absent: that pool is for crops villagers
+grow, which witchwood and yuckwheat are and these are not."* **True of the pool, false of the
+outcome.** `getARegionalPlant` has two branches and only one of them reads `_FarmablePlants`:
+
+```csharp
+if (isVillageZero)
+    RollOneFrom("DynamicObjectsTable:" + region + "_FarmablePlants")   // none of mine
+else
+    RollOneFrom("DynamicObjectsTable:" + region + "_Plants")           // all six
+```
+
+`VillageBase.cs:1407`, and `getAFarmablePlant` routes ~98% of non-village-zero villages straight
+through it — `VillageRegionalFarmPlantChance` defaults to 98. So a saltmarsh village farms brinereed
+and a jungle village farms broadglove, in plots, and it has done since the tag was added.
+
+**It stays, because it is what vanilla does and it costs nothing.** Of the 29 blueprints in
+`FarmablePlants`, a dozen carry `Harvestable` — Banana Tree, Dreadroot, Lagroot, Luminous Hoarshroom,
+Noisegrass, Starapple Tree, Urberry Bush and the Fracti and Bop Sponge families. Watervine is the
+archetypal village crop and you pick it freely. A plot of pickable plants beside a village is the
+baseline, not a hole.
+
+**And a farmed one is not a different object.** `setVillageDomesticatedProperties` clears a `Brain`'s
+allegiance, removes `AIPilgrim` and `ConversationScript`, and sets `VillageDomesticated` — a plant has
+none of the first three, and the property is **write-only**, set in two places and read nowhere in the
+assembly or the game's data. `Harvestable` is never touched.
+
+**`NoVillageFarming` was the obvious fix and would have been the wrong tool.** Its 37 carriers are
+overwhelmingly lichens, plus lagroot, lurking beth and young ivory: it keeps hazards and absurdities
+out of crop plots, not gatherables out of an economy.
+
+So the regional character is the feature — a village that grows its biome's plant — and it arrived by
+accident. This is the charter's *know the blast radius* failing in the ordinary way: not a wrong claim
+about a mechanism, but a right claim about a **pool** mistaken for a claim about an **outcome**.
 
 | plant | pool | vanilla entries before | after |
 |---|---|---:|---:|

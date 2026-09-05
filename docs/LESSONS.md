@@ -4449,3 +4449,34 @@ is the same disease with an empty result rather than a full one, and
 [`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member —
 in all three a tool declines to answer and the silence is read as the answer. This one is the worst of
 the family, because there is no silence to notice.
+
+## A flag that is plainly set is not a flag that is read
+
+Three in one week, and each cost real time before the grep that settled it in seconds:
+
+| flag | set at | read at |
+|---|---|---|
+| `Asleep.quicksleep` | one field, two constructors, four call sites | **nowhere** |
+| `EncountersAPI.GetAPlant()` | one caller, whose one caller is `GetAPlant()` | **nothing calls it** |
+| `VillageDomesticated` | `VillageBase.cs:279`, `VillageCodaBase.cs:287` | **nowhere** |
+
+Each looked load-bearing at the point I met it, because each was *named* for the thing I was
+investigating. `quicksleep` sat in a call I had written myself, passed alongside `forced` and
+`Voluntary`, which do work — so a collapse that seemed too short had an obvious explanation sitting
+right there in my own code, and I went looking for how it compressed the turns. It compresses
+nothing. The real answer was that `Asleep` prints *"You are asleep."* only when it is not already the
+last line, so an entire sleep leaves one message behind (#854).
+
+`GetAPlant()` was the one I nearly let block a whole change: I flagged it as the risk in #860 and
+wrote *"confirm it before building"*, which was right, and the confirmation took one command.
+`VillageDomesticated` was going to be a design argument about what happens to a farmed `Harvestable`,
+until it turned out that nothing happens to anything (#862).
+
+**So: before reasoning about what a flag does, grep for who reads it.** In this repo that is
+`rg -n "<name>" dump/` over an `ilspycmd -p` dump, plus the same over
+`StreamingAssets/Base` — a public API can be reached from XML as well as from code, and checking one
+is not checking both. It is thirty seconds against a hypothesis that can absorb an afternoon.
+
+Related: [`Discovery attributes fail by doing nothing`](#discovery-attributes-fail-by-doing-nothing)
+is the mirror image — there, a marker that is *absent* silently does nothing; here, a value that is
+*present* silently does nothing. Both read as working code.
