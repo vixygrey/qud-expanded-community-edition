@@ -4480,3 +4480,72 @@ is not checking both. It is thirty seconds against a hypothesis that can absorb 
 Related: [`Discovery attributes fail by doing nothing`](#discovery-attributes-fail-by-doing-nothing)
 is the mirror image — there, a marker that is *absent* silently does nothing; here, a value that is
 *present* silently does nothing. Both read as working code.
+
+## A ratio ceiling forbids everything where the denominator is nearly zero
+
+`scatter-share` caps this fork at half a vanilla table's expected objects, and that is right in every
+table it was written against. `SaltDesertZoneGlobals` holds **1.80** expected objects — against 43 in
+the hills and 282 in the saltmarsh, because the salt flats are deliberately the emptiest zone in the
+game — so the ceiling there was 0.9 objects, and no findable plant can fit under it.
+
+The check reported 81.7%. **I obeyed the number instead of reading it**, cut dunelace six-fold to 1.35
+plants a zone against the mod's next-sparsest at 6.3, and shipped it. A playtest crossed eighteen salt
+dune zones without seeing one. The check was correct about the ratio and I was wrong about what the
+ratio meant.
+
+**What the ceiling is actually for is stated in `docs/STYLEGUIDE.md` §3.2.1**: at the low tiers most of
+what a player *meets* should still be the game they bought. In a zone of 80×25 cells holding 1.80
+scattered objects, there is nothing to drown out and what the player meets is terrain. So the fix was
+an absolute floor beneath the ratio — ten expected objects, half a percent of a zone's cells — and not
+a smaller number.
+
+**The general shape: a proportional guard needs a floor wherever its denominator can approach zero.**
+Half of almost nothing is a prohibition, and a prohibition dressed as a percentage does not read like
+one. It arrives as a specific, plausible figure with a specific, plausible fix attached, and the fix
+makes the content worse in a way nothing downstream measures — `validate_mod.py` went green,
+`check_docs.py` went green, 692 tool tests passed, and the plant was invisible.
+
+Ask what a check is protecting before you satisfy it. If satisfying it costs the feature the check
+exists to let you ship, the check has found its own edge rather than yours.
+
+Related: [`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
+is the same boundary from the other side — there the checks could not see the problem, here they
+created it. Both end in the same place: the game is the only oracle for whether content is *there*.
+
+## A name the game rebuilds is not a name you may choose
+
+`IngredientMapping` blueprints carry a `CookingDomain` tag, and it genuinely settles which domain a
+blueprint declares — `GetRandomTypeListInternal` reads the tag and falls back to `Split('_')[^1]` only
+when it is absent. Having read that, I named mine `Vixy_ProceduralCookingIngredient_Rested` to satisfy
+`docs/STYLEGUIDE.md` §3.1's prefix rule, and considered the naming question closed.
+
+**The mapping runs the other way too, and that direction has no tag in it:**
+
+```csharp
+// PreparedCookingIngredient.HandleEvent(ObjectCreatedEvent)
+GameObjectFactory.Factory.Blueprints["ProceduralCookingIngredient_" + item].GetTag("Description")
+```
+
+An unguarded dictionary index on a name rebuilt by string concatenation. So `KeyNotFoundException` on
+every single ingredient carrying the domain, thrown inside `GameObjectFactory.CreateObject`, whose
+`catch` turns it into a `PhysicalObject` named `[invalid blueprint:Vixy_Dried Dunelace]` with a `?`
+glyph.
+
+**Three things made it survive to a playtest.** The message names the blueprint that is *fine* — the
+missing one is never mentioned. The exception is swallowed into an item's own description rather than
+logged where anyone would look. And every static check passed, correctly: the reference really was to
+a blueprint this mod really does define.
+
+**The general shape: a tag that controls a lookup does not control a reconstruction.** Reading the
+resolver is not the same as reading every consumer, and a configurable name is only configurable in
+the direction you read. Before treating a name as free, grep the *string* — `"Prefix_" +`
+concatenation is invisible to a search for the blueprint name, which is exactly why it is worth
+searching for the prefix instead.
+
+The fix was to spell it the way the game rebuilds it and move the fork's identity into the domain
+string, which nothing reconstructs: `ProceduralCookingIngredient_vixyRested`, allowlisted in
+`NEW_UNPREFIXED` beside `TrueKin` and `PsionicAdept` for the same reason those are there.
+
+Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
+is the mirror — there a value had no consumers, here a name had one more than I looked for. Both are
+answered by grepping consumers rather than reasoning from the definition.

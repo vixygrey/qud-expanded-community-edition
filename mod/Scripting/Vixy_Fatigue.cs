@@ -49,6 +49,16 @@ namespace XRL.World.Parts
         public const string FatigueProperty = "Vixy_Fatigue";
         public const string OnMapSinceProperty = "Vixy_FatigueOnWorldMapSince";
         public const string ChargedTurnProperty = "Vixy_FatigueChargedTurn";
+
+        /// <summary>Set while a dunelace meal is metabolising, and read by <see cref="Strain"/>.</summary>
+        /// <remarks>
+        /// A property rather than a call, because <see cref="Strain"/> is private and the unit that
+        /// sets this is an `Effect` unit rather than a part - it has no handle on this class. The
+        /// dish writes it in `Apply` and clears it in `Remove`, and
+        /// `ProceduralCookingEffect` zeroes itself on `BecameHungry`, `BecameFamished` and
+        /// `ApplyWellFed`, so nothing here has to own the lifetime. #858.
+        /// </remarks>
+        public const string RestedProperty = "Vixy_FatigueRested";
         public const string SleepCommand = "Vixy_CommandSleep";
 
         public const int Max = 1000;
@@ -327,10 +337,19 @@ namespace XRL.World.Parts
                 rate += BaseAccrual / 2;
             }
 
-            // Halved last, so the implant is worth the same proportion of a hard day as an easy one.
+            // Halved last, so the lever is worth the same proportion of a hard day as an easy one.
             // Applying it to the base before the multipliers would make it quietly weaker in exactly
             // the fights it is bought for. #771.
-            if (ParentObject.HasInstalledCybernetics("Vixy_SleepSuppressor"))
+            //
+            // One halving, never two, and that is a design decision rather than an accident of
+            // where the `if` sits. `BaseAccrual` is 22 hundredths, so halving twice is 5 - a meter
+            // that takes 20,000 actions to fill, which is the system switched off. Two investments
+            // should not disable a system, and 5e's same-effect rule and Qud's own tonic capacity
+            // both say the same thing. It also means the truncation never arises: 22 -> 11 -> 5
+            // loses the half twice, which is the shape of the `4 * RestQuality / 10` defect
+            // `docs/LESSONS.md` records. #858.
+            if (ParentObject.HasInstalledCybernetics("Vixy_SleepSuppressor")
+                || ParentObject.HasIntProperty(RestedProperty))
             {
                 rate /= 2;
             }
