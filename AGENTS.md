@@ -42,6 +42,9 @@ in them applies to a contribution you're helping someone else write.
   black for the `DetailColor`). Name it the way its neighbours are named — `items/` holds
   `Vixy_PascalCase.png` and references it with the same extension, while `Subtypes/` writes `.bmp`
   against a `.png`. Qud resolves either, so nothing tells you when you have picked the wrong one.
+  **Build sprites with `tools/make_tile.py`** from an ASCII map in `tools/tiles/`, which refuses a
+  wrong size or a fourth colour — both of which the game accepts and renders wrong. The maps live
+  outside `mod/` because everything inside it ships to subscribers.
 - **`command -v` finding nothing does not mean a tool is missing.** The .NET installer puts the
   literal `~/.dotnet/tools` in `/etc/paths.d/dotnet-cli-tools` and `path_helper` never expands the
   `~`, so `ilspycmd` and friends are invisible while `$PATH` looks correct. `export
