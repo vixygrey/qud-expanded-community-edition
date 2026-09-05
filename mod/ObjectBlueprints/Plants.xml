@@ -301,16 +301,25 @@
     />
     <tag Name="DynamicObjectsTable:Jungle_Plants" />
   </object>
-  <!-- Saltdunes: a low, fine-cut plant on the salt flats, dark blue going white as it ripens.
+  <!-- Saltdunes: a low, fine-cut plant on the salt flats, purple going white as it ripens.
 
-       &b against a ground that is &Y, &y and &c across SaltDune, HighSaltDuneWhite and
-       HighSaltDuneCyan, and against Fracti's &g - the biome's only other plant. Dark on pale is the
-       inverse of every other plant here, and deliberate: §18.4b's lesson is that a plant you cannot
-       see is a plant that is not there, and on a white flat the visible thing is the dark one.
+       &m, and it was &b for two commits. Dark blue reasoned well on paper - dark on pale, against a
+       ground of &Y, &y and &c - and failed in play: the salt dunes are already so full of blue and
+       white that an unripe one could not be picked out of them, even at eight to a zone. §18.4b's
+       rule is about a plant you cannot see, and "cannot see" includes "does not separate from its
+       background", which is a thing only the eye settles.
 
-       Ripe is &b to &W, a hue change rather than a brightness bump, and it is the plant's own
+       Purple is the one hue the biome does not already spend. It also reads as what this is: a
+       flowering desert plant, the family Fracti already belongs to.
+
+       Ripe is &m to &W, a hue change rather than a brightness bump, and it is the plant's own
        biology rather than a colour picked to be legible: halophytes push salt out through their
-       leaves, so a ripe one wears a crust. Fracti ripens &g to &M and is not mistakable for it.
+       leaves, so a ripe one wears a crust. The white ones were the half that already worked.
+
+       Fracti is the one to watch rather than the ground. It runs &g to &M, so ripe Fracti is bright
+       magenta against this dark magenta - the nearest pair in the zone. They stay apart three ways:
+       unripe Fracti is green, Fracti's StartRipeChance is 1:50 so a ripe one is rare, and the two
+       ripen in opposite directions - Fracti toward magenta, dunelace away from it.
 
        Fracti's stag set, the salt flats' only named neighbour: strip / fibre / strip. Fiber is left
        inherited because 'strip' is already the default.
@@ -330,9 +339,9 @@
       Name="Render"
       DisplayName="dunelace"
       RenderString="171"
-      ColorString="&amp;b"
-      TileColor="&amp;b"
-      DetailColor="c"
+      ColorString="&amp;m"
+      TileColor="&amp;m"
+      DetailColor="M"
       Occluding="false"
       Tile="Terrain/sw_flowers_bunched_1.bmp"
     />
@@ -346,10 +355,10 @@
       StartRipeChance="1:4"
       RipeColor="&amp;W"
       RipeTileColor="&amp;W"
-      RipeDetailColor="c"
-      UnripeColor="&amp;b"
-      UnripeTileColor="&amp;b"
-      UnripeDetailColor="c"
+      RipeDetailColor="M"
+      UnripeColor="&amp;m"
+      UnripeTileColor="&amp;m"
+      UnripeDetailColor="M"
     />
     <part
       Name="Description"

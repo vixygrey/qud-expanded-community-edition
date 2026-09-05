@@ -333,10 +333,10 @@
   <object Name="Vixy_Dunelace Frill" Inherits="Snack">
     <part
       Name="Render"
-      DisplayName="{{b|dunelace frill}}"
+      DisplayName="{{m|dunelace frill}}"
       Tile="Items/sw_wheat_stem.bmp"
-      ColorString="&amp;b"
-      DetailColor="c"
+      ColorString="&amp;m"
+      DetailColor="M"
       RenderString="'"
       RenderLayer="5"
     />
@@ -354,10 +354,10 @@
   <object Name="Vixy_Dried Dunelace" Inherits="Preservable">
     <part
       Name="Render"
-      DisplayName="dried {{b|dunelace}}"
+      DisplayName="dried {{m|dunelace}}"
       Tile="Items/sw_grass_bundle.bmp"
       RenderString="%"
-      ColorString="&amp;b"
+      ColorString="&amp;m"
       DetailColor="W"
       RenderLayer="5"
     />

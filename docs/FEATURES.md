@@ -3206,6 +3206,24 @@ distance. Ripe now lifts the whole tile.
 
 Brinereed (`&g`) and sweetfrond (`&G`) were already in the visible range and are unchanged.
 
+**And dunelace proves the rule holds for hue as well as brightness (#858).** It shipped `&b`, dark
+blue, chosen the way cragwort's fix was — dark against a pale ground of `&Y`, `&y` and `&c`, and clear
+of Fracti's `&g`. The reasoning was sound and the result was not: the salt dunes are so full of blue
+and white already that an unripe one would not separate from the flats even at eight to a zone. The
+ripe `&W` ones stood out fine, so half of it worked, which is the half that made the other half easy
+to miss.
+
+It is `&m` now — purple is the one hue the biome does not already spend, and it reads as what this is,
+a flowering desert plant of the family Fracti already belongs to. Ripe stays `&W`.
+
+**The pair to watch is Fracti, not the ground.** It runs `&g` to `&M`, so a ripe fractus is bright
+magenta beside this dark magenta — the nearest two colours in the zone. Three things keep them apart:
+unripe Fracti is green, its `StartRipeChance` is 1:50 so a ripe one is rare, and the two ripen in
+opposite directions, Fracti *toward* magenta and dunelace away from it.
+
+**Neither of these was findable without playing.** Both passed every check, and both are the same
+question — *does this separate from what is behind it* — which only the eye settles.
+
 ### 18.5 Three tags that came with the base, and had to be corrected
 
 Inheriting from vanilla's `Plant` carries `Fiber="strip"`, `FiberMaterial="bark"` and
