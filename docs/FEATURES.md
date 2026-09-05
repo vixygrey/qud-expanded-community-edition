@@ -6642,7 +6642,7 @@ The stamp still updates in both directions, so climbing back into a band announc
 said coming down: §51.5d's readout already shows the improvement, and a survival timer that congratulates
 me is a different feature.
 
-### 51.4 Only voluntary sleep rests you
+### 51.4 Voluntary sleep rests you properly, involuntary sleep barely
 
 `Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,
 `Slumberling` and the two lair sleepers pass `true`; `GasSleep`, `Narcolepsy`, `CrungleGaze`,
@@ -6652,6 +6652,68 @@ before it can open.
 
 Note `forced: true` does *not* mean involuntary. It bypasses the `CanApplySleep` refusals, and `Bed`
 passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to read backwards.
+
+| how I went under | fatigue per action | where the rate comes from |
+|---|---:|---|
+| lay down on purpose | 4.00–6.00 | `Vixy_Sleep.DrainHundredths`, tiered by §51.5's table |
+| gas, narcolepsy, a conk, my own collapse | **0.50** | `Vixy_Sleep.InvoluntaryDrainHundredths`, flat |
+
+**The second row is §3.3's own number, and for a long time it was zero (#854).** The design doc has
+always said involuntary sleep recovers 0.5/turn — *"better than nothing, never a substitute"* — and
+#179 did not build that tier. It built an early return, because reading `Voluntary` closed the exploit
+on one field and the tier was never the point; the doc's release checklist recorded the gap under
+Narcolepsy and marked it *"Tracked separately"*.
+
+**The exploit needed parity to break, not a nonzero rate.** At 0.5 this is 8–12× worse than simply
+lying down for the same turns, and it still costs a grenade and leaves me prone at −12 DV with +4 to
+every attacker's penetration roll. Carrying sleep gas is not a way to skip a night.
+
+**Flat, where the voluntary rate is tiered.** `RestQuality` and `BurdenFactor` price a decision —
+where I chose to lie down, what I chose to carry. Nothing about being gassed is a choice, so there is
+no decision to price. For the same reason the involuntary branch takes no dream stamp and rolls no
+ambush: §51.5a's dream is the reward for a night, and §51.5's ambush table prices where I chose to
+put myself.
+
+#### The collapse was claiming to be voluntary, and cost half the meter for it
+
+`Vixy_Fatigue.Collapse` passed `Voluntary: true` for one reason: `Rest` early-returned on anything
+else, so a collapse that told the truth recovered nothing. But vanilla reads that flag in four places
+and three of them were wrong.
+
+| what the flag decided | with `Voluntary: true` | with the truth |
+|---|---|---|
+| recovery rate | 4.00–6.00/action, so **160–480 back** over 40–80 turns | 20–40 back |
+| the message, via `Prone.Apply` | *"You lie down."* | *"You are knocked prone!"* |
+| `Wakeful(3–5)` on waking, via `Asleep.Remove` | skipped | applied |
+| `MovementModeChanged`'s involuntary flag | false | true |
+
+Found in play: I collapsed at 990 and woke in **Tired**. On a bed or in a settlement the top of that
+range is 480 points — nearly half the meter, for falling over.
+
+`Rest` now tiers by the flag instead of gating on it, so the collapse can be what it is. The log reads:
+
+```
+You collapse from exhaustion.
+You are knocked prone!
+You fall asleep!
+```
+
+**Waking still inside Collapsing is the point.** At 0.5/action a collapse returns 20–40, so I come up
+around 960 and the roll resumes at ~10% per action. §6 of the design doc already said as much about
+resting to heal — *"rest long enough and you eventually collapse into real sleep"* — and the way out
+is one keypress, because `Vixy_Sleep.Attempt` passes `forced: true` and `Wakeful` cannot refuse it.
+
+#### `quicksleep` is write-only and I had been passing it
+
+`Asleep.quicksleep` is a public field with **zero reads anywhere in the assembly** — the declaration,
+two constructors, four call sites, and nothing that ever looks at it. `Vixy_Fatigue.Collapse` and
+`Vixy_Sleep.Attempt` both passed it, copied from `Bed.cs` along with the rest of the call. It
+compresses nothing and never has. Neither passes it now.
+
+That flag is why the collapse read as lasting about ten turns when it lasted forty to eighty: I went
+looking for a fast-forward, and the real answer is that `Asleep.HandleEvent(BeginTakeActionEvent)`
+prints *"You are asleep."* only when it is not already the last line, so an entire sleep leaves one
+message behind. The turns passed. The log flattened them.
 
 ### 51.4a How long I sleep is mine to choose (#776)
 
