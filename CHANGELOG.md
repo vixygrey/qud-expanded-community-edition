@@ -25,6 +25,13 @@ recorded because contributors need them, not because subscribers do.
   The sleep suppressor has a sprite of its own now, and the steel fist uses the same one every other
   metal-hand-bone fist in the game does.
 
+- **(internal)** `tools/make_tile.py` builds a Qud sprite from an ASCII map in `tools/tiles/`, and
+  refuses a wrong size or a fourth colour — a tile is 16x24 with exactly three values, where white
+  takes the `ColorString` and black the `DetailColor`, and the game renders anything else wrong
+  without complaint. Pure Python, so changing a sprite needs no image tooling, and a test asserts the
+  shipped sleep suppressor still matches the map it came from. The maps sit outside `mod/`, which
+  ships verbatim to subscribers.
+
 - **(internal)** `tools/check_tile_names.py` reads the game's own texture list out of
   `Data/resources.assets` — 27,461 names — and refuses a commit that points at anything else. A tile
   name is a string with no referent anywhere in the game's data files, so nothing in this repo could
