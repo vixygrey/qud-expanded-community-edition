@@ -6972,6 +6972,38 @@ serialisable class and no per-band churn. It carries no state: the band is deriv
 on every refresh, so the word cannot disagree with the meter. Turning the option off removes it, rather
 than leaving *"exhausted"* on screen for a system that is no longer running.
 
+### 51.5d-ii Where in the band, because the word alone moves once every nine hundred actions
+
+The chip names the band and nothing else, and the bands are wide. `Accrue` takes hundredths and
+`BaseAccrual` is 22, so unhurried play is **0.22 fatigue an action**:
+
+| band | span | actions at the base rate |
+|---|---|---:|
+| tired | 400–599 | **909** |
+| weary | 600–799 | **909** |
+| exhausted | 800–949 | 682 |
+| collapsing | 950–1000 | 227 |
+
+Nine hundred actions reading one unchanging word is most of a game day, and the crossing message that
+would have placed me scrolled away long before. So `GetDetails()` — which the Show Effects screen
+already renders, one keypress from the line — now carries position as well as cost: *not far into
+this*, *well into this*, *on the edge of weariness*, and *about to drop* at the top, where what comes
+next is the floor rather than another band (#853).
+
+**Words rather than a percentage**, because §51.5d puts a word on the effects line rather than a
+figure precisely so fatigue is read and not counted. A percentage here would promise a resolution the
+rest of the design declines to offer.
+
+**Thirds computed rather than tabulated**, because the bands are 200, 200, 150 and 50 wide — a table
+of cut points would need correcting every time one moved, and #821 moved all of them once already.
+The multiply comes before the divide for the reason `docs/LESSONS.md` records under *integer division
+is where a design tier goes to die*: dividing first truncates to zero across the whole band and the
+reading would never move at all.
+
+**Not a status-bar meter, still.** §51.5d's finding holds — `PlayerStatusBar` fetches `Stomach` by
+name into a slot of a **private** enum and fires no events at all, so there is nothing to register
+for. This is the readout that was reachable, not the one I would have chosen.
+
 ### 51.5e `wish vixyfatigue`, because the test plan could not be carried out
 
 **I wrote checks nobody could perform.** Three of the fatigue regression checks are claims about a
