@@ -313,7 +313,18 @@
        leaves, so a ripe one wears a crust. Fracti ripens &g to &M and is not mistakable for it.
 
        Fracti's stag set, the salt flats' only named neighbour: strip / fibre / strip. Fiber is left
-       inherited because 'strip' is already the default. -->
+       inherited because 'strip' is already the default.
+
+       The tile is sw_flowers_bunched, and the first draft was `sw_brush_2.bmp`, which does not
+       exist - I invented a plausible name rather than taking one the game already uses, and Qud
+       renders a missing tile as a solid coloured block. Nothing static caught it: a tile name is a
+       string nothing validates, and it only showed up by walking the salt flats. §18.4b is the
+       neighbouring lesson - a plant that renders wrong is a plant that is not there.
+
+       sw_flowers_bunched has four variants and exactly one user in vanilla, the `Flowers` item you
+       carry. So nothing *growing* in any biome looks like this, which is what makes it safe to
+       borrow: finger-root belongs to Nails of Jy, a unique, and sw_coral_branching to Finger
+       Coral. -->
   <object Name="Vixy_Dunelace" Inherits="Plant">
     <part
       Name="Render"
@@ -323,9 +334,12 @@
       TileColor="&amp;b"
       DetailColor="c"
       Occluding="false"
-      Tile="Terrain/sw_brush_2.bmp"
+      Tile="Terrain/sw_flowers_bunched_1.bmp"
     />
-    <builder Name="RandomTile" Tiles="Terrain/sw_brush_2.bmp,Terrain/sw_brush_3.bmp,Terrain/sw_brush_4.bmp" />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_flowers_bunched_1.bmp,Terrain/sw_flowers_bunched_2.bmp,Terrain/sw_flowers_bunched_3.bmp,Terrain/sw_flowers_bunched_4.bmp"
+    />
     <part
       Name="Harvestable"
       OnSuccess="Vixy_Dunelace Frill"
