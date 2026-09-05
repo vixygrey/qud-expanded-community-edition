@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.16.0] - 2026-09-05
+
 ### Fixed
 
 - **Two items were rendering as solid coloured blocks** (#865). The sleep suppressor and the steel
