@@ -3199,19 +3199,37 @@ of these takes a named neighbour rather than a guess, and only where the default
 | sweetfrond | *(inherited `strip`)* | fibre | frond | `frond` is Yempuris's word |
 | rimeburr | blade | grass | thatch | Primal Grass — the grass idiom again |
 | shadetooth | *(inherited `strip`)* | fibre | strip | Fracti, the nearest desert succulent |
-| broadglove | *(inherited `strip`)* | *(inherited `bark`)* | mass | Fungus — `mass` is the only one vanilla gives a fungus |
+| broadglove | — | — | mass | `Fungus`, which is its parent — it declares none of the three |
 
 `stag` rather than `tag`, which is what vanilla uses for all three: 26 of 26 for `Plank`, 14 of 14
 for `FiberMaterial`.
 
-**Broadglove still yields bark, and that is this section's own defect surviving in the last row.**
-It is a shelf fungus and it inherits `Plant`, so it takes `FiberMaterial="bark"` — the exact value
-this section opens by calling wrong on a reed. Vanilla never has the problem because its `Fungus`
-inherits `PhysicalObject`, not `Plant`, and carries `Plank="mass"` and nothing else; there is no
-fungal `FiberMaterial` in the game to borrow. The blueprint comment reads as though leaving it
-inherited were a decision, and it was not — it was the default going unexamined one more time. The
-parent is the defect and the `FiberMaterial` only the symptom, so the fix is scoped in
-[#860](https://github.com/vixygrey/qud-expanded-community-edition/issues/860) rather than here.
+**Broadglove is the row that answers the question by not having it (#860).** It used to yield
+**bark**, because it is a shelf fungus that inherited `Plant` — the exact value this section opens by
+calling wrong on a reed. Vanilla never has the problem: its `Fungus` inherits `PhysicalObject` rather
+than `Plant`, so it never picks up a default that needs overriding, and it carries `Plank="mass"` and
+nothing else. There is no fungal `FiberMaterial` in the game to borrow because the game declines to
+have one.
+
+So broadglove inherits `Fungus` now and declares none of the three. **The parent was the defect and
+the `FiberMaterial` only the symptom** — `Physics Category="Plants"`, `PlantProperties`,
+`BodyType="Bush"` and the plant damage and death sounds were all equally wrong on it, and one line
+fixes the set. `Plank="mass"` came off with it: it had been restating what `Fungus` already gives.
+
+**What that costs, checked rather than assumed.** Every reader of `Plant`, `LivePlant` and
+`PlantLike` in the assembly: the `_Plants` roll at `VillageBase.cs:1430` is unaffected because it
+rolls the tag broadglove declares itself; the carnivore filter is unaffected because
+`CookingGameState.cs:39` and `Campfire.cs:813` both test `Plant` **or** `Fungus`; the
+`NonCombatPlantlife` object-finder lists `Fungus` too; and `StrideMason` cannot reach it, because a
+plant is `Solid="false"` and so never `IsWall()`. What changes is that Templars stop burning it
+(`ScriptCallToArms`), a greater voider counts it as a blocker, its kinetic resistance falls from
+`+300`/`+200%` to `+200`/`+100%`, and it drops out of `getARandomPlantNearTier` — a ~1% farming
+fallback. Every one of those matches what vanilla does with its own 41 fungi.
+
+`EncountersAPI.GetAPlant()` gates on `Plant || PlantLike` and looked like the real cost. It is
+unreachable: one caller, `GetAPlantBlueprint()`, whose one caller is `GetAPlant()`, which nothing
+calls, and the name appears nowhere in the game's data either. A public API surface for mods, dead in
+vanilla.
 
 This is the charter's "know the blast radius" in miniature. The blast radius of `Inherits="Plant"`
 is three tags nobody wrote, and **only the game showed them** — every static check passed. Nothing
@@ -3227,6 +3245,19 @@ checks these values.
 | rimeburr | Hills | rimeburr head | pickled rimeburr | `tastyMinor` |
 | shadetooth | DesertCanyon | shadetooth pad | cured shadetooth | `thirst` |
 | broadglove | Jungle | broadglove cap | pressed broadglove | `medicinal` |
+
+**Only broadglove carries a `Fungus` tag on its food, and that is vanilla's own split.** Across the
+game's 81 prepared cooking ingredients, 20 plant-derived carry `Plant` — Sun-Dried Banana, Starapple
+Preserves, Pickles, Dried Lah Petals — 5 fungal carry `Fungus`, and the 56 animal and mineral ones
+carry neither. Raw food splits the same way: Plump Mushroom carries `Fungus`, Banana and Starapple
+carry nothing. It matters because a `Carnivorous` player's ingredients are filtered on
+`!HasTag("Plant") && !HasTag("Fungus")` in two places.
+
+The five preserved forms were already on the correct side. Broadglove's was on the wrong one — it
+carried `Plant`, so a carnivore was refused it for the right reason under the wrong name — and its
+raw cap carried nothing at all, so a carnivore could eat the one mushroom in the mod while being
+refused every mushroom in the game. Both are tagged `Fungus` now, declared rather than inherited,
+because they come from `Snack` and `Preservable` and nothing reaches them from the plant.
 
 ### 18.6b They can be a village's plant, which needed a tag
 

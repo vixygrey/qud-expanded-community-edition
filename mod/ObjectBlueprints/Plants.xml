@@ -257,9 +257,19 @@
        is the largest hue jump of the three, which a jungle floor needs. Brightshroom shares the
        tile at &Y and is not mistakable for it.
 
-       Fungus's Plank value, `mass`, is the only stag vanilla gives a fungus; Fiber and
-       FiberMaterial stay inherited. -->
-  <object Name="Vixy_Broadglove" Inherits="Plant">
+       Inherits Fungus, not Plant, and that is the whole of #860. The two are siblings under
+       PhysicalObject and near-identical, so inheriting the wrong one is invisible until something
+       reads a value: Category="Plants" on the Physics part, PlantProperties instead of
+       FungusProperties, the Plant/LivePlant tags, BodyType="Bush", plant damage and death sounds,
+       and FiberMaterial="bark" - a shelf fungus building a village wall out of bark, which is the
+       exact defect FEATURES §18.5 opens by describing on a reed. Vanilla never hits it because
+       Fungus inherits PhysicalObject and carries Plank="mass" and nothing else, so there is no
+       fungal FiberMaterial in the game to override with. It declines the question; the fix is to
+       stop asking it.
+
+       The Plank="mass" override is gone with the parent change: Fungus already gives exactly that,
+       so restating it would be a value nobody could tell was inherited. -->
+  <object Name="Vixy_Broadglove" Inherits="Fungus">
     <part
       Name="Render"
       DisplayName="broadglove"
@@ -290,7 +300,6 @@
       Short="It shelves out from anything that has stopped growing, in caps wide enough to turn rain off a hand held under them. The flesh is bitter raw and keeps that bitterness through drying, which is the point of it."
     />
     <tag Name="DynamicObjectsTable:Jungle_Plants" />
-    <stag Name="Plank" Value="mass" />
   </object>
   <!-- Ruins overgrowth (#173). Decoration only: no Harvestable, nothing to gather, nothing to
        spend. These are the first two blueprints in this file that give a player nothing at all,
