@@ -363,11 +363,22 @@ namespace XRL.World.Parts
 
         private void Rest()
         {
-            // Only voluntary sleep rests. Asleep.Voluntary is false at every involuntary call site -
-            // GasSleep, Narcolepsy, CrungleGaze, ModFatecaller, PaxKlanqMadness - and true at every
-            // voluntary one, so the gas-grenade exploit closes on one field read. #179.
+            // Asleep.Voluntary is false at every involuntary call site - GasSleep, Narcolepsy,
+            // CrungleGaze, ModFatecaller, PaxKlanqMadness - and true at every voluntary one, so the
+            // gas-grenade exploit closes on one field read. #179.
             Asleep asleep = ParentObject.GetEffect<Asleep>();
-            if (asleep == null || !asleep.Voluntary) return;
+            if (asleep == null) return;
+
+            // This used to be an early return, which was #179 over-correcting: the exploit needed
+            // parity to break, and zero is not the only thing that is not parity. §3.3 has always
+            // specified 0.5/turn here - "better than nothing, never a substitute" - and nothing
+            // built it. No dream stamp and no ambush roll below, because both of those price a
+            // decision and being gassed is not one. #854.
+            if (!asleep.Voluntary)
+            {
+                Drain(Vixy_Sleep.InvoluntaryDrainHundredths);
+                return;
+            }
 
             // How tired this sleep began at, recorded on its first turn and read on waking. A dream
             // is the reward for a night, not for a nap, and #818 found that sleeping from 1 was a
@@ -439,11 +450,33 @@ namespace XRL.World.Parts
 
         /// <summary>At Collapsing, a rising per-turn chance of dropping where you stand.</summary>
         /// <remarks>
+        /// <para>
+        /// <b>This is involuntary, and used to claim it was not.</b> The call passed
+        /// <c>Voluntary: true</c> for one reason — `Rest` early-returned on anything else, so a
+        /// collapse that told the truth recovered nothing. But vanilla reads that flag in four
+        /// places, and three of them were wrong. It set the recovery rate, so a collapse drained at
+        /// the full deliberate-sleep rate: 4.00/turn on bare ground and 6.00 in a settlement, over
+        /// 40–80 turns, which is <b>160–480 points</b> — up to half the meter back for falling over.
+        /// It picked the message, because `Prone.Apply` branches on it and prints *"You lie down."*
+        /// for a voluntary one. And it skipped `Wakeful(3–5)`, which `Asleep.Remove` applies only to
+        /// an involuntary sleep. `Rest` now tiers by the flag instead of gating on it, so the truth
+        /// costs nothing to tell. #854.
+        /// </para>
+        /// <para>
+        /// <b>Waking still inside Collapsing is the point, not an oversight.</b> At
+        /// `Vixy_Sleep.InvoluntaryDrainHundredths` a collapse returns 20–40, so I come up around 960
+        /// and the roll resumes at ~10%/turn. §6 of the design doc already said as much about resting
+        /// to heal — *"rest long enough and you eventually collapse into real sleep"* — and the way
+        /// out is one keypress, because `Vixy_Sleep.Attempt` passes `forced: true` and `Wakeful`
+        /// cannot refuse it.
+        /// </para>
+        /// <para>
         /// <b>Wakebriar defers this and nothing else.</b> The guard is here rather than on the
         /// effect because `Asleep.Apply` ends its refusal chain with `|| forced` and this passes
         /// `forced: true`, so no effect vanilla offers can refuse it — but `Collapse` is mine.
         /// `Accrue` keeps running above, so the meter climbs through the whole window and the roll
         /// resumes at a higher rate when it lapses. See `Vixy_Wakebriar` and #843.
+        /// </para>
         /// </remarks>
         private void Collapse()
         {
@@ -454,8 +487,8 @@ namespace XRL.World.Parts
             int chance = 1 + (fatigue - Collapsing) * 24 / (Max - Collapsing);
             if (chance.in100())
             {
-                MessageQueue.AddPlayerMessage("{{R|You collapse.}}");
-                ParentObject.ForceApplyEffect(new Asleep(Stat.Random(40, 80), forced: true, quicksleep: true, Voluntary: true));
+                MessageQueue.AddPlayerMessage("{{R|You collapse from exhaustion.}}");
+                ParentObject.ForceApplyEffect(new Asleep(Stat.Random(40, 80), forced: true));
             }
         }
 

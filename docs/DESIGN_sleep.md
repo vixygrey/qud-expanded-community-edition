@@ -251,6 +251,13 @@ decides whether the dice come out.
 Involuntary sleep (gas, narcolepsy, conk) recovers fatigue at **0.5/turn** — better
 than nothing, never a substitute.
 
+> **Built in #854, and until then it was zero.** #179 read `Asleep.Voluntary` to close the sleep-gas
+> exploit and implemented the guard as an early return, so involuntary sleep recovered nothing at all
+> rather than this. `Vixy_Fatigue.Collapse` then routed around its own guard by passing
+> `Voluntary: true`, which put the *collapse* on the full deliberate-sleep rate — 160–480 points back
+> over 40–80 turns. `Rest` now tiers on the flag instead of gating on it, and this line is the
+> involuntary tier. See `docs/FEATURES.md` §51.4.
+
 ---
 
 ## 4. The part that makes it worth playing
@@ -387,7 +394,8 @@ is a way the mod breaks or becomes exploitable.
       `new Asleep(Stat.Random(20, 29), forced: true)` with `Voluntary` defaulting false, so narcoleptic
       sleep would not clear fatigue either. What remains is a tuning question — whether involuntary
       sleep should rest the character *at all*, or whether narcolepsy plus fatigue means being knocked
-      down repeatedly and never rested. Tracked separately.
+      down repeatedly and never rested. **Answered in #854:** it rests, at the 0.5/turn this document
+      already specified in §3.3 and nothing had built.
 - [x] **Wakeful** — **already vanilla behaviour, nothing to build.** `Wakeful` registers for and
       refuses only `CanApplyInvoluntarySleep` and `ApplyInvoluntarySleep`. `GasSleep` fires the check;
       `Bed` never goes near it.

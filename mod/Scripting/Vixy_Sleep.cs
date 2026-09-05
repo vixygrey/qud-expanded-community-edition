@@ -252,7 +252,12 @@ namespace XRL.World.Parts
                         : "with so much strapped to you.") + "}}");
             }
 
-            Player.ForceApplyEffect(new Asleep(duration, forced: true, quicksleep: true, Voluntary: true));
+            // `quicksleep` is not passed, and used to be. It is write-only across the whole
+            // assembly - one field, two constructors, four call sites, zero reads - so it compresses
+            // nothing and never has. It was copied from `Bed.cs` along with the rest of this call,
+            // and a flag that reads as meaningful while doing nothing is how I spent an evening
+            // looking for a fast-forward that did not exist. #854.
+            Player.ForceApplyEffect(new Asleep(duration, forced: true, Voluntary: true));
         }
 
         /// <summary>Rounds of sleep the player chose, or 0 if they backed out.</summary>
@@ -345,6 +350,32 @@ namespace XRL.World.Parts
         {
             return Math.Max(1, 40 * RestQuality(Player) * BurdenFactor(Player) / 100);
         }
+
+        /// <summary>
+        /// Fatigue removed per action of *involuntary* sleep, in hundredths of a point.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>§3.3's own number, finally built.</b> The design doc has always said involuntary sleep
+        /// — gas, narcolepsy, a conk to the head — recovers <b>0.5/turn</b>, *"better than nothing,
+        /// never a substitute"*. #179 did not build that tier. It built **zero**, as an early return
+        /// in `Vixy_Fatigue.Rest`, because reading `Asleep.Voluntary` closed the sleep-gas exploit on
+        /// one field and the tier was never the point. The doc's release checklist recorded the gap
+        /// under Narcolepsy and marked it *"Tracked separately"*. This is that. #854.
+        /// </para>
+        /// <para>
+        /// <b>The exploit needed parity to break, not a nonzero rate.</b> At 50 hundredths this is
+        /// 8–12× worse than simply lying down for the same turns, and it still costs a grenade and
+        /// leaves the player prone at −12 DV with +4 to every attacker's penetration roll. Carrying
+        /// sleep gas is not a way to skip a night.
+        /// </para>
+        /// <para>
+        /// <b>Flat, where <see cref="DrainHundredths"/> is tiered.</b> `RestQuality` and
+        /// `BurdenFactor` price a *decision* — where I chose to lie down and what I chose to carry.
+        /// Nothing about a collapse or a gas grenade is a choice, so there is no decision to price.
+        /// </para>
+        /// </remarks>
+        public const int InvoluntaryDrainHundredths = 50;
 
         /// <summary>
         /// What fraction of normal rest I get, as a percentage, for what I am carrying.

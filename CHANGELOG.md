@@ -16,7 +16,33 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Collapsing from exhaustion was resting you almost as well as going to bed** (#854). If you
+  dropped at the top of the meter you could wake up *tired* — on a bed or in a settlement, a collapse
+  handed back nearly half the meter for falling over.
+
+  It was one flag. To recover anything at all, the collapse had to tell the game it was a voluntary
+  sleep, and the game reads that flag for more than the recovery rate — which is also why the log
+  said *"You lie down."* about you passing out, and why you never got the brief grace period the game
+  gives anyone who wakes from a sleep they did not choose.
+
+  A collapse is now an involuntary sleep and recovers like one. You will usually come round still in
+  the collapsing band, and go down again unless you stop and sleep properly. That is what the band is
+  for. Sleeping on purpose is unchanged.
+
+  The log now reads *"You collapse from exhaustion."*
+
 ### Changed
+
+- **Sleep you did not choose now gives a little back, where it used to give nothing** (#854). Sleep
+  gas, narcolepsy and a cudgel to the back of the head recover fatigue at a tenth of the rate of
+  lying down on purpose.
+
+  This was always the design and was never built: the guard that stops you clearing the meter with a
+  sleep grenade was written as all-or-nothing. A tenth is not a shortcut — the same turns spent
+  sleeping properly are worth eight to twelve times as much, and you spend them prone — but waking
+  from a gas cloud no more rested than you went in was never the intent.
 
 - **Tiredness now tells you where in a band you are, not just which one** (#853).
 
