@@ -39,7 +39,9 @@ in them applies to a contribution you're helping someone else write.
   `Data/resources.assets`, so `tools/check_tile_names.py` reads them from there; three broken tiles
   had shipped before it existed. Take a name the game already uses, or ship a sprite under
   `mod/Textures/` (16x24 RGBA, and exactly three values: transparent, white for the `ColorString`,
-  black for the `DetailColor`).
+  black for the `DetailColor`). Name it the way its neighbours are named — `items/` holds
+  `Vixy_PascalCase.png` and references it with the same extension, while `Subtypes/` writes `.bmp`
+  against a `.png`. Qud resolves either, so nothing tells you when you have picked the wrong one.
 - **`command -v` finding nothing does not mean a tool is missing.** The .NET installer puts the
   literal `~/.dotnet/tools` in `/etc/paths.d/dotnet-cli-tools` and `path_helper` never expands the
   `~`, so `ilspycmd` and friends are invisible while `$PATH` looks correct. `export
