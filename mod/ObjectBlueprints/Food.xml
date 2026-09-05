@@ -330,4 +330,67 @@
     <tag Name="Fungus" />
     <tag Name="DynamicObjectsTable:Jungle_Ingredients" />
   </object>
+  <object Name="Vixy_Dunelace Frill" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{b|dunelace frill}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;b"
+      DetailColor="c"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <!--
+      4, anchored to spine fruit jam - the salt flats' own preserved food, off Fracti, the only
+      other plant in the biome. §18.3's rule is a named vanilla neighbour rather than a number that
+      feels right, and the nearest neighbour is the one growing beside it.
+    -->
+    <part Name="Commerce" Value="4" />
+    <part Name="Food" Satiation="Snack" Thirst="0" Healing="0" Message="It is salt first and green a long way after." />
+    <part Name="PreservableItem" Result="Vixy_Dried Dunelace" Number="3" />
+    <part Name="Description" Short="A handful of flat threads, still gritty where they lay against the crust." />
+  </object>
+
+  <object Name="Vixy_Dried Dunelace" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="dried {{b|dunelace}}"
+      Tile="Items/sw_grass_bundle.bmp"
+      RenderString="%"
+      ColorString="&amp;b"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part Name="PreparedCookingIngredient" type="vixyRested" charges="1" />
+    <part
+      Name="Description"
+      Short="Rinsed of its salt and dried until the threads go brittle. Cooks who work the salt road keep a twist of it against the crossing."
+    />
+    <tag Name="Plant" />
+    <tag Name="DynamicObjectsTable:Saltdunes_Ingredients" />
+  </object>
+
+  <!--
+    The domain the dish is built on (#858). Pure data: `PreparedCookingIngredient` builds its pool
+    from every blueprint inheriting `IngredientMapping` - 66 in vanilla - and `Units` resolves
+    through `ModManager.ResolveType("XRL.World.Effects." + name)`, which is the XML-names-the-type
+    shape charter rule 5 asks for.
+
+    `RandomWeight="0"` keeps it out of vanilla's random cooking table: `GetRandomTypeListInternal`
+    runs `while (num > 0)`, so a zero weight is never added. The domain is reachable only through
+    dried dunelace - no distribution consequence and no share question.
+
+    `CookingDomain` is set explicitly and must be. With none it falls back to the *mapping
+    blueprint's* name via `Split('_')[^1]`, which is what vanilla's `ProceduralCookingIngredient_HP`
+    convention is for; a `Vixy_`-prefixed name would resolve to the wrong half.
+
+    One unit, not two. `Units` is `Split(',').GetRandomElement()`, so a second name here would be an
+    alternative rather than an addition.
+  -->
+  <object Name="Vixy_ProceduralCookingIngredient_Rested" Inherits="IngredientMapping">
+    <tag Name="CookingDomain" Value="vixyRested" />
+    <tag Name="Units" Value="Vixy_CookingDomainRested_UnitStrain" />
+    <tag Name="RandomWeight" Value="0" />
+  </object>
 </objects>

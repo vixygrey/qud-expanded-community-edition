@@ -30,6 +30,10 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
 
+# Vanilla's base for a cooking-domain data record. Blueprints inheriting it are a registry read by
+# `PreparedCookingIngredient`, never spawned, so `check_reachability` exempts them.
+INGREDIENT_MAPPING = "IngredientMapping"
+
 # Prefixes the mod owns. Raven_ is Mura's attribution, carried by everything inherited from CoQE;
 # Vixy_ marks content added to this fork. docs/STYLEGUIDE.md §3.1 has the reasoning - it is a credit
 # line, not namespace hygiene. Every check below needs only one thing from a prefix: "ours, not
@@ -3381,6 +3385,14 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             ):
                 continue
             if any(m in name for m in ABSTRACT_MARKERS):
+                continue
+            # An `IngredientMapping` is a data record, not a spawnable. `PreparedCookingIngredient`
+            # reads every blueprint inheriting it as a registry of cooking domains and never
+            # creates one, so "obtainable" is not a question that applies - and the answer this
+            # check would otherwise demand, a population entry, would put a non-object in the
+            # world. Vanilla keeps all 66 of them in `ObjectBlueprints/Data.xml`, which is where
+            # the game files put things that are read rather than placed. #858.
+            if obj.get("Inherits") == INGREDIENT_MAPPING:
                 continue
             defined[name] = path
             if any(p.get("Name") == "TinkerItem" for p in obj.iter("part")):

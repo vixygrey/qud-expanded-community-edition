@@ -68,6 +68,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Dunelace, and a dish that keeps you walking** (#858). A new plant on the salt flats, and the
+  first thing in this mod added because a recipe needed it rather than because foraging wanted more
+  to find.
+
+  Eat a meal made with dried dunelace and you tire half as fast until you are hungry again. That is
+  the counterpart to wakebriar: the tonic is what you drink when the meter is already at the top and
+  you need to reach the stairs, and this is what you eat before setting out so it climbs slower all
+  day. They do not interfere with each other — a meal never counts against your tonic capacity, so
+  preparing does not cost you the emergency dose.
+
+  It does not stack with the sleep suppressor. Whichever you have, you tire at half rate, not a
+  quarter — two of them would take twenty thousand steps to tire you, which is the timer switched
+  off rather than eased.
+
+  Dunelace is scarce where it grows: the salt flats are the emptiest ground in Qud and it is scarce
+  even by that standard, though the few you find are usually ready to pick. **Half the apothecaries
+  in the world stock the dried form**, which is the reliable way to get it — Joppa's included.
+
+  With fatigue turned off the meal does nothing, and says so when you look at it.
+
 - **Wakebriar — a tonic that keeps you on your feet long enough to walk out** (#843). Tinkerable at
   one bit and a piece of witchwood bark, and it turns up wherever tonics do.
 

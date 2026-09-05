@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **522** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **526** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -26,7 +26,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
 | **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **128** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Loot tables** | **139** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
@@ -618,12 +618,12 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
 | `Creatures.xml` | 46 | 3 |
-| `Food.xml` | 12 | 2 |
-| `Plants.xml` | 9 | 0 |
+| `Food.xml` | 15 | 2 |
+| `Plants.xml` | 10 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **522 active** | **283** |
+| **Total** | **526 active** | **283** |
 
 ### 6.2 Melee weapons
 
@@ -1858,7 +1858,7 @@ inherits a parent's parts before the object's own, and `AddPartInternals` orders
 
 ## 7. Population / loot tables (`PopulationTables.xml`)
 
-154 table definitions: **128 merged** into vanilla, **26 declared fresh**. The 48/28 split this
+165 table definitions: **139 merged** into vanilla, **26 declared fresh**. The 48/28 split this
 line used to give was from before #34 converted `Artifact 3`–`8` from replacements to merges; §0
 was corrected in #95 and this line was missed. `Ammo 2` and `Ammo 3` were added in #144 to give
 the effect arrows a drop route alongside the cells already merged into `Ammo 4`–`8`.
@@ -2149,7 +2149,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
-│   └── PopulationTables.xml    # 154 tables (128 merge / 26 new)
+│   └── PopulationTables.xml    # 165 tables (139 merge / 26 new)
 │
 ├── Optional/
 │   └── JoppaBuilding/          # loaded only while its option is Yes
@@ -2169,7 +2169,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 96 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 97 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -3135,11 +3135,23 @@ band runs 0.07 (witchwood tree) to 8.1 (watervine), and it is dense between 0.6 
 | urberry bush | 1.04 | | rimeburr | 0.73 |
 | dreadroot | 0.84 | | cragwort | 0.72 |
 | banana tree | 0.81 | | shadetooth | 0.63 |
-| witchwood tree | 0.07 | | | |
+| witchwood tree | 0.07 | | dunelace | 0.34 |
 
-All six land in the dense part of vanilla's band, and the highest is brinereed — whose yield is
-also the cheapest of the six. Cheap staples sitting commoner than valuable ones is vanilla's own
-shape. The lowest is shadetooth, in the biome with the least of everything.
+Six of the seven land in the dense part of vanilla's band, and the highest is brinereed — whose yield
+is also the cheapest of them. Cheap staples sitting commoner than valuable ones is vanilla's own
+shape.
+
+**Dunelace sits below the band on purpose, and `scatter-share` is why I know where (#858).** The salt
+flats are the emptiest zone in the game: vanilla scatters **1.80 expected objects** into
+`SaltDesertZoneGlobals`, against 43 in the hills, 60 in the banana grove, 63 in the desert canyon and
+282 in the saltmarsh. The first draft put dunelace at the same density as the other six — 8.0 expected
+objects — and the check called it at **81.7%**, more than four times the entire rest of the zone put
+together. §3.2.1's ceiling is half and it was right to hold.
+
+So dunelace is scarce where it grows and reliable where it is sold: `StartRipeChance` is 1:4 rather
+than the 1:10–1:24 the others use, so the few there are usually reward stopping, and §18.9's
+apothecary shelf carries the availability instead. A plant that eases the crossing should be scarce
+*on* the crossing.
 
 **Three files hold the inputs**, so changing a `Number` in `PopulationTables.xml` without
 recomputing against `StartRipeChance` moves a figure this section states. Nothing checks it.
@@ -3160,6 +3172,8 @@ So each price is anchored to a named vanilla neighbour instead:
 | salted brinereed | 2 | pickles, 2 |
 | sweetfrond heart | 8 | the banana, 8 — from the same grove |
 | candied sweetfrond | 8 | sun-dried banana, 8 — likewise |
+| dunelace frill | 4 | spine fruit jam, 4 — the salt flats' own preserve, off Fracti |
+| dried dunelace | 4 | likewise; the nearest neighbour is the one growing beside it |
 
 ### 18.4b A plant you cannot see is a plant that is not there
 
@@ -3200,6 +3214,7 @@ of these takes a named neighbour rather than a guess, and only where the default
 | rimeburr | blade | grass | thatch | Primal Grass — the grass idiom again |
 | shadetooth | *(inherited `strip`)* | fibre | strip | Fracti, the nearest desert succulent |
 | broadglove | — | — | mass | `Fungus`, which is its parent — it declares none of the three |
+| dunelace | *(inherited `strip`)* | fibre | strip | Fracti, the salt flats' only named neighbour |
 
 `stag` rather than `tag`, which is what vanilla uses for all three: 26 of 26 for `Plank`, 14 of 14
 for `FiberMaterial`.
@@ -3245,6 +3260,7 @@ checks these values.
 | rimeburr | Hills | rimeburr head | pickled rimeburr | `tastyMinor` |
 | shadetooth | DesertCanyon | shadetooth pad | cured shadetooth | `thirst` |
 | broadglove | Jungle | broadglove cap | pressed broadglove | `medicinal` |
+| dunelace | Saltdunes | dunelace frill | dried dunelace | `vixyRested` — mine, §18.8 |
 
 **Only broadglove carries a `Fungus` tag on its food, and that is vanilla's own split.** Across the
 game's 81 prepared cooking ingredients, 20 plant-derived carry `Plant` — Sun-Dried Banana, Starapple
@@ -3315,6 +3331,7 @@ about a mechanism, but a right claim about a **pool** mistaken for a claim about
 | rimeburr | `Hills_Plants` | 5 | 6 |
 | shadetooth | `DesertCanyon_Plants` | 5 | 6 |
 | broadglove | `Jungle_Plants` | 12 | 13 |
+| dunelace | `Saltdunes_Plants` | 3 | 4 |
 
 **The first two rows were each one low**, and had been since they were written. Counted by hand at
 the time; counted now by `report_dynamic_tables.eligible`, which is
@@ -3383,6 +3400,86 @@ from vanilla's `Item` base by inheritance, and every vanilla food is in it on th
 `Bundle of Noisegrass`, `Vinewafer Sheaf` and `Urberry` included. It is recorded in
 `tools/dynamic-pools.json` rather than stripped with `*delete`, because matching vanilla is the
 correct behaviour here rather than something to tidy away.
+
+### 18.8 Dunelace and the dish it is for (#858)
+
+The seventh plant is the first one added *for* something. The other six were foraging with cooking
+domains vanilla already ships; dunelace exists to carry a domain of my own, and it is the proactive
+half of #843 — where wakebriar is the reactive half.
+
+**Eat it before setting out, and you tire half as fast.** `Vixy_CookingDomainRested_UnitStrain` sets
+a property in `Apply` and clears it in `Remove`, and `Vixy_Fatigue.Strain` reads it beside the sleep
+suppressor's `HasInstalledCybernetics` check.
+
+**It does not stack with the sleep suppressor, and that is a decision.** `BaseAccrual` is 22
+hundredths, so halving twice gives 5 — a meter that takes **20,000 actions** to fill, which is the
+system switched off. Two investments should not disable a system, and both 5e's same-effect rule and
+Qud's own tonic capacity say so. It also means the truncation never arises: 22 → 11 → 5 loses the
+half twice, which is the shape of the `4 * RestQuality / 10` defect `docs/LESSONS.md` records.
+
+**The bound is also the cost.** `ProceduralCookingEffect` zeroes itself on `BecameHungry`,
+`BecameFamished` and `ApplyWellFed`, so the dish lasts until I am hungry again and any other meal
+ends it. Carrying this means giving up the regeneration or strength dish.
+
+**It cannot collide with wakebriar.** `ProceduralCookingEffect` does not override `IsTonic()`, so a
+meal never counts toward tonic capacity. Preparing and then needing the emergency dose would
+otherwise have fired an overdose save on exactly the player who prepared.
+
+#### The domain is data, and three details are load-bearing
+
+```xml
+<object Name="Vixy_ProceduralCookingIngredient_Rested" Inherits="IngredientMapping">
+  <tag Name="CookingDomain" Value="vixyRested" />
+  <tag Name="Units" Value="Vixy_CookingDomainRested_UnitStrain" />
+  <tag Name="RandomWeight" Value="0" />
+</object>
+```
+
+`RandomWeight="0"` keeps it out of vanilla's random cooking table — `GetRandomTypeListInternal` runs
+`while (num > 0)`, so a zero weight is never added — which means the domain is reachable only through
+dried dunelace. `CookingDomain` is set explicitly because with none it falls back to the *mapping
+blueprint's* name via `Split('_')[^1]`, and a `Vixy_`-prefixed name would resolve to the wrong half.
+And `Units` names **one** class, because it is read as
+`Split(',').GetRandomElement()` — a second name there would be an alternative, not an addition.
+
+**`check_reachability` learned about this family in the same change.** An `IngredientMapping` is a
+registry `PreparedCookingIngredient` reads and never spawns, so "obtainable" is not a question that
+applies to it — and the population entry the check would otherwise demand would put a non-object in
+the world. Vanilla keeps all 66 of its own in `ObjectBlueprints/Data.xml`.
+
+#### With fatigue off it does nothing, and it says so
+
+`Vixy_SleepSuppressor` had to answer this differently: it sits in **three vanilla implant tables**, so
+with fatigue off it displaces something useful for most players. This domain carries
+`RandomWeight="0"` and is reachable only through my own ingredient, so **nothing is displaced**. A dud
+meal is not a stolen slot, and buying it out with a second unrelated effect would have cost more than
+it bought. The unit's own description reads *"Nothing, while fatigue is switched off"* rather than
+promising something it will not do.
+
+### 18.9 Apothecaries stock it, everywhere
+
+Foraging is the flavourful route and the sparse one — §18.3 puts dunelace at 0.34 ripe per zone,
+below the band the other six sit in. **The apothecary shelf is the route that carries availability**,
+and it is the shelf the ingredient belongs on: vanilla already stocks Witchwood Bark, Yuckwheat Stem
+and Vinewafer there, and `Vinewafer` is itself a `PreparedCookingIngredient`.
+
+Ten tables cover every apothecary in the game, in two families:
+
+| blueprint | table | which apothecaries |
+|---|---|---|
+| `Apothecary` | `ApothecaryInventory` | the static ones — Joppa's among them, through a `GenericInventoryRestocker` at `Chance="71"` |
+| `HumanApothecary_Village0`…`_Village8` | `Village Apothecary 0`…`8` | the procedural ones, tiered by village level |
+
+**`Chance="50"`, `Number="1-3"`.** Half the apothecaries in the world carry it, and the ones that do
+carry enough for a meal or two rather than a stockpile — between Witchwood Bark, always present at
+4–8, and Hoarshroom at `Number="1"` `Chance="50,50,40"`. `Village Apothecary 0` takes a flat 1,
+following Witchwood Bark's own step down to `0-1` at that tier and back to `2-5` from tier 1 up.
+
+**The `Chance` is load-bearing, and §47.2 is why.** These groups are `Style="pickeach"`, where
+`PopulationList.Generate` iterates every child and never reads `Weight` — so an entry with no
+`Chance` is generated **once, unconditionally**. Dropping it would put dried dunelace in every
+apothecary in the world, every time. The merged group is `Load="Merge"` and does not restate
+`Style`, because restating it replaces vanilla's group rather than joining it.
 
 ## 19. Ruins overgrowth (`ObjectBlueprints/Plants.xml`)
 

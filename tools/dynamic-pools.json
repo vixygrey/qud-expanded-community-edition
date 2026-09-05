@@ -475,7 +475,9 @@
       "Vixy_Crysteel Spear",
       "Vixy_Cured Shadetooth",
       "Vixy_Dried Cragwort",
+      "Vixy_Dried Dunelace",
       "Vixy_Dried Lavender",
+      "Vixy_Dunelace Frill",
       "Vixy_EtaAndTheEarthling2",
       "Vixy_Feather",
       "Vixy_Flawless Crysteel Glaive",
@@ -747,6 +749,24 @@
     ],
     "shares": {
       "untiered": 23
+    }
+  },
+  "DynamicObjectsTable:Saltdunes_Ingredients": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Dried Dunelace"
+    ],
+    "shares": {
+      "untiered": 33
+    }
+  },
+  "DynamicObjectsTable:Saltdunes_Plants": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Dunelace"
+    ],
+    "shares": {
+      "untiered": 25
     }
   },
   "DynamicObjectsTable:Saltmarsh_Creatures": {

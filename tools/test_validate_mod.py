@@ -180,6 +180,42 @@ class PrefixRecognition(unittest.TestCase):
                 )
                 self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
 
+    def test_ingredient_mapping_is_a_data_record_not_a_spawnable(self) -> None:
+        """#858: `PreparedCookingIngredient` reads these as a registry and never creates one.
+
+        The check would otherwise demand a population entry, and satisfying it would put a
+        non-object in the world. Vanilla keeps all 66 in `ObjectBlueprints/Data.xml`.
+        """
+        for prefix in COVERED_PREFIXES:
+            with self.subTest(prefix=prefix):
+                tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+                write_mod(
+                    tmp,
+                    f'  <object Name="{prefix}ProceduralCookingIngredient_Thing" '
+                    'Inherits="IngredientMapping">\n'
+                    '    <tag Name="CookingDomain" Value="thing" />\n'
+                    '    <tag Name="RandomWeight" Value="0" />\n'
+                    "  </object>",
+                )
+                self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
+
+    def test_non_mapping_blueprint_is_still_checked(self) -> None:
+        """The direction that would make the exemption vacuous: only the mapping base is exempt."""
+        for prefix in COVERED_PREFIXES:
+            with self.subTest(prefix=prefix):
+                tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+                write_mod(
+                    tmp,
+                    f'  <object Name="{prefix}Orphan" Inherits="Snack">\n'
+                    '    <part Name="Commerce" Value="1" />\n'
+                    "  </object>",
+                )
+                items = findings_for(validate_mod.check_reachability, tmp)
+                self.assertTrue(
+                    any(f"{prefix}Orphan" in detail for _, detail in items),
+                    "the exemption is too wide - it reached a blueprint that is not a mapping",
+                )
+
     def test_dynamic_table_tag_that_only_removes_is_not_reachable(self) -> None:
         """The direction that would have made the fix vacuous.
 

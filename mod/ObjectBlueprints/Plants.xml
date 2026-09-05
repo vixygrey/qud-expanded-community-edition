@@ -301,6 +301,51 @@
     />
     <tag Name="DynamicObjectsTable:Jungle_Plants" />
   </object>
+  <!-- Saltdunes: a low, fine-cut plant on the salt flats, dark blue going white as it ripens.
+
+       &b against a ground that is &Y, &y and &c across SaltDune, HighSaltDuneWhite and
+       HighSaltDuneCyan, and against Fracti's &g - the biome's only other plant. Dark on pale is the
+       inverse of every other plant here, and deliberate: §18.4b's lesson is that a plant you cannot
+       see is a plant that is not there, and on a white flat the visible thing is the dark one.
+
+       Ripe is &b to &W, a hue change rather than a brightness bump, and it is the plant's own
+       biology rather than a colour picked to be legible: halophytes push salt out through their
+       leaves, so a ripe one wears a crust. Fracti ripens &g to &M and is not mistakable for it.
+
+       Fracti's stag set, the salt flats' only named neighbour: strip / fibre / strip. Fiber is left
+       inherited because 'strip' is already the default. -->
+  <object Name="Vixy_Dunelace" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="dunelace"
+      RenderString="171"
+      ColorString="&amp;b"
+      TileColor="&amp;b"
+      DetailColor="c"
+      Occluding="false"
+      Tile="Terrain/sw_brush_2.bmp"
+    />
+    <builder Name="RandomTile" Tiles="Terrain/sw_brush_2.bmp,Terrain/sw_brush_3.bmp,Terrain/sw_brush_4.bmp" />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Dunelace Frill"
+      StartRipeChance="1:4"
+      RipeColor="&amp;W"
+      RipeTileColor="&amp;W"
+      RipeDetailColor="c"
+      UnripeColor="&amp;b"
+      UnripeTileColor="&amp;b"
+      UnripeDetailColor="c"
+    />
+    <part
+      Name="Description"
+      Short="It cuts itself into threads to keep what little it drinks, and lays them flat against the crust so the wind has nothing to take hold of. A ripe one wears the salt it has pushed back out, and shows white from a long way off."
+    />
+    <tag Name="DynamicObjectsTable:Saltdunes_Plants" />
+    <stag Name="FiberMaterial" Value="fibre" />
+    <stag Name="Plank" Value="strip" />
+  </object>
+
   <!-- Ruins overgrowth (#173). Decoration only: no Harvestable, nothing to gather, nothing to
        spend. These are the first two blueprints in this file that give a player nothing at all,
        and that is the point - the whole issue is scoped so that no number a player can act on
