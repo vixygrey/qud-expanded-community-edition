@@ -85,7 +85,11 @@ recorded because contributors need them, not because subscribers do.
   Dunelace grows on the salt flats and nowhere else, and about a quarter of what you find is ready to
   pick — a better rate than anything else you can forage, because crossing the salt to get it is the
   most expensive travel in the game. **Half the apothecaries in the world stock the dried form** if
-  you would rather not make the trip, Joppa's included.
+  you would rather not make the trip, and **Nima Ruda in Joppa keeps some on the shelf** — so a new
+  character can buy it before ever seeing the salt.
+
+  If you are partway through a run, note that merchants restock on a timer rather than on load, so
+  it may be a few in-world days before it turns up on anyone who is not Nima.
 
   With fatigue turned off the meal does nothing, and says so when you look at it.
 

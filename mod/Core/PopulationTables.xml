@@ -1526,9 +1526,11 @@
        The group is Load="Merge" and does NOT restate Style: restating it on a merge replaces
        vanilla's group rather than joining it.
 
-       Village Apothecary 0 takes a flat 1 rather than 1-3, following Witchwood Bark's own step down
-       to 0-1 at that tier and back to 2-5 from tier 1 up. The poorest village stocks less of
-       everything. -->
+       Every tier takes the same 1-3, including Village Apothecary 0. That tier briefly took a flat
+       1, following Witchwood Bark's own step down to 0-1 there and back to 2-5 from tier 1 up - a
+       reasonable read of a poor village, and the wrong one here. `Village Apothecary 0` is not only
+       the poorest procedural tier: it is also Nima Ruda's table, and she is the apothecary in Joppa
+       that every player meets first. Softening the tier softened the reference case. -->
   <population Name="ApothecaryInventory" Load="Merge">
     <group Name="Items" Load="Merge">
       <object Blueprint="Vixy_Dried Dunelace" Number="1-3" Chance="50" />
@@ -1537,7 +1539,7 @@
 
   <population Name="Village Apothecary 0" Load="Merge">
     <group Name="Items" Load="Merge">
-      <object Blueprint="Vixy_Dried Dunelace" Number="1" Chance="50" />
+      <object Blueprint="Vixy_Dried Dunelace" Number="1-3" Chance="50" />
     </group>
   </population>
 

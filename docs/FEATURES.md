@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **526** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -617,13 +617,13 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 4 | 9 |
-| `Creatures.xml` | 46 | 3 |
+| `Creatures.xml` | 46 | 4 |
 | `Food.xml` | 15 | 2 |
 | `Plants.xml` | 10 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **526 active** | **283** |
+| **Total** | **526 active** | **284** |
 
 ### 6.2 Melee weapons
 
@@ -3499,8 +3499,23 @@ Ten tables cover every apothecary in the game, in two families:
 
 **`Chance="50"`, `Number="1-3"`.** Half the apothecaries in the world carry it, and the ones that do
 carry enough for a meal or two rather than a stockpile — between Witchwood Bark, always present at
-4–8, and Hoarshroom at `Number="1"` `Chance="50,50,40"`. `Village Apothecary 0` takes a flat 1,
-following Witchwood Bark's own step down to `0-1` at that tier and back to `2-5` from tier 1 up.
+4–8, and Hoarshroom at `Number="1"` `Chance="50,50,40"`. Every tier takes the same `1-3`.
+
+**Nima Ruda carries some outright, because a timer is not availability.** She is the apothecary in
+Joppa that most players meet first — hand-placed in `Joppa.rpm` at cell 45,2 beside the Alchemist
+Table — and the population merges reach her only through `Village Apothecary 0`, her restocker's
+table. That is enough in principle and not in practice:
+`GenericInventoryRestocker` rolls the table once on the first `StartTradeEvent`, while
+`LastRestockTick` is still 0, and after that only every **6,000 turns** with the player in her zone,
+at a `Chance`-scaled roll. On a save that has already traded with her, dunelace could not appear for
+five in-world days — and then on half of those rolls. So a `Load="Merge"` on her blueprint adds
+`1-2` outright, and the table roll still applies on top. `<inventoryobject>` is an Unnamed node and
+Unnamed merging is `Unnamed.AddRange(other.Unnamed)`, so everything Freehold gives her survives
+beside it.
+
+`Village Apothecary 0` also takes the same `1-3` as the other nine, having briefly taken a flat `1`.
+Stepping the poorest tier down follows Witchwood Bark's own `0-1` there — a fair read of a poor
+village, and the wrong one here, because that tier is *also* the reference case.
 
 **The `Chance` is load-bearing, and §47.2 is why.** These groups are `Style="pickeach"`, where
 `PopulationList.Generate` iterates every child and never reads `Weight` — so an entry with no
