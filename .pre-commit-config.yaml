@@ -104,6 +104,18 @@ repos:
         pass_filenames: false
         files: ^mod/(Scripting/.*\.cs|manifest\.json)$
 
+      # Needs the game and not a launch, like compile-scripting above, and skips with a notice
+      # where there is none - a contributor without Qud cannot act on a red hook. The texture names
+      # live in Data/resources.assets and there are 27,461 of them, which is why they are read from
+      # the install rather than pinned into tools/qud-api.json: embedding them would roughly double
+      # that file, and CI has no game to compare against in any case. #865.
+      - id: check-tile-names
+        name: every Tile= names a texture the game has (skips without Qud)
+        entry: python3 tools/check_tile_names.py
+        language: system
+        pass_filenames: false
+        files: ^mod/
+
       # always_run, not a files pattern, and that is the whole point. What this catches is a Qud
       # UPDATE, which correlates with nothing in the diff - the case that matters most is "Qud
       # updated last night and today's commit is a docs change", which any files pattern misses.

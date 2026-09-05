@@ -33,6 +33,13 @@ in them applies to a contribution you're helping someone else write.
   can't cover the C#, and nothing on a runner ever compiles it. There's still no `.csproj` — the
   compile needs four DLLs from a Qud install and nothing else. If you changed C# and couldn't compile
   it, say so in the pull request.
+- **A tile name is checked against the installed game, not against the data files.** Qud renders a
+  missing `Tile=` as a solid coloured block — content that looks finished in the diff and is only
+  wrong to somebody standing in front of it. The texture names are packed into
+  `Data/resources.assets`, so `tools/check_tile_names.py` reads them from there; three broken tiles
+  had shipped before it existed. Take a name the game already uses, or ship a sprite under
+  `mod/Textures/` (16x24 RGBA, and exactly three values: transparent, white for the `ColorString`,
+  black for the `DetailColor`).
 - **`command -v` finding nothing does not mean a tool is missing.** The .NET installer puts the
   literal `~/.dotnet/tools` in `/etc/paths.d/dotnet-cli-tools` and `path_helper` never expands the
   `~`, so `ilspycmd` and friends are invisible while `$PATH` looks correct. `export

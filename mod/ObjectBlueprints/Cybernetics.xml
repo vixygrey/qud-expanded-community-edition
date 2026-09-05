@@ -196,11 +196,17 @@
     <part Name="CyberneticsFistReplacement" FistObject="Raven_SteelFist" />
     <tag Name="Gender" Value="plural" />
   </object>
+  <!-- The tile was `Items/sw_nightvcyber.bmp`, which does not exist, so this rendered as a solid
+       coloured block - since before this fork, and unnoticed because it is the weapon steel hand
+       bones grant and those cannot be taken at chargen (#867), so almost nobody has held one.
+       `sw_carbidehand.bmp` is what every other hand-bone fist uses: CarbideFist, CrysteelFist,
+       FulleriteFist, and this mod's own Raven_ZetachromeFist. This was the only one of the family
+       not pointing at it. #865. -->
   <object Name="Raven_SteelFist" Inherits="BaseCudgel">
     <part
       Name="Render"
       DisplayName="&amp;Ysteel &amp;yfist"
-      Tile="Items/sw_nightvcyber.bmp"
+      Tile="Items/sw_carbidehand.bmp"
       ColorString="&amp;Y"
       DetailColor="K"
       RenderString="\"
@@ -256,6 +262,17 @@
     <tag Name="WeaponUnarmed" />
     <tag Name="NoSparkingQuest" />
   </object>
+  <!-- Ships its own sprite, `mod/Textures/Items/vixy_sleep_suppressor.png`, because the tile it
+       used - `Items/sw_nanoinjector.bmp` - does not exist and never did, so this rendered as a
+       solid coloured block from the day it shipped (#865). Nothing static could catch it: a tile
+       name is a string with no referent in the game data.
+
+       16x24 RGBA with exactly three values, which is the convention all 40 sprites already in
+       mod/Textures follow: transparent for ground, white for the ColorString, black for the
+       DetailColor. So this reads white with dark detail, matching &Y / K below.
+
+       A woven cap with filaments trailing from it, which is what the description says the thing is
+       rather than a device that would look like any other implant. -->
   <object Name="Vixy_SleepSuppressor" Inherits="BaseCyberneticsEquipment_2point">
     <part Name="Physics" Weight="1" />
     <part
@@ -265,7 +282,7 @@
     <part
       Name="Render"
       DisplayName="&amp;Ysleep suppressor"
-      Tile="Items/sw_nanoinjector.bmp"
+      Tile="Items/vixy_sleep_suppressor.bmp"
       ColorString="&amp;Y"
       DetailColor="K"
     />
