@@ -51,6 +51,30 @@
     <inventoryobject Blueprint="Steel Arrow" Number="15-25" />
   </object>
 
+  <!-- Nima Ruda keeps dunelace on the shelf, rather than on a timer (#858).
+
+       She is the apothecary the dish was described against - hand-placed in Joppa.rpm at cell 45,2
+       beside the Alchemist Table, and the first apothecary most players ever meet - and the ten
+       population merges reach her only through `Village Apothecary 0`, her restocker's table. That
+       is enough in principle and not in practice, because `GenericInventoryRestocker` rolls the
+       table once on the first StartTradeEvent, when LastRestockTick is still 0, and after that only
+       every 6000 turns with the player in her zone at a Chance-scaled roll. On a save that has
+       already traded with her, dunelace could not appear for five in-world days - and then on half
+       of those rolls, because Chance is 50.
+
+       "The shop route carries availability" does not hold if the reference shop is a coin flip five
+       days out. So she carries some outright, and the table roll still applies on top.
+
+       Merge appends rather than replaces: <inventoryobject> is an Unnamed node in
+       ObjectBlueprintLoader and Unnamed merging is `Unnamed.AddRange(other.Unnamed)`, so everything
+       Freehold gives her survives alongside this. Charter rule 1.
+
+       Not retroactive, and nothing can make it so - a Nima already built into a save keeps the
+       inventory she was built with. A new character has it from the first trade. -->
+  <object Name="Nima Ruda" Load="Merge">
+    <inventoryobject Blueprint="Vixy_Dried Dunelace" Number="1-2" />
+  </object>
+
   <!-- Custom Bodies -->
 
   <object Name="TrueKin" Inherits="Humanoid">

@@ -301,6 +301,74 @@
     />
     <tag Name="DynamicObjectsTable:Jungle_Plants" />
   </object>
+  <!-- Saltdunes: a low, fine-cut plant on the salt flats, purple going white as it ripens.
+
+       &m, and it was &b for two commits. Dark blue reasoned well on paper - dark on pale, against a
+       ground of &Y, &y and &c - and failed in play: the salt dunes are already so full of blue and
+       white that an unripe one could not be picked out of them, even at eight to a zone. §18.4b's
+       rule is about a plant you cannot see, and "cannot see" includes "does not separate from its
+       background", which is a thing only the eye settles.
+
+       Purple is the one hue the biome does not already spend. It also reads as what this is: a
+       flowering desert plant, the family Fracti already belongs to.
+
+       Ripe is &m to &W, a hue change rather than a brightness bump, and it is the plant's own
+       biology rather than a colour picked to be legible: halophytes push salt out through their
+       leaves, so a ripe one wears a crust. The white ones were the half that already worked.
+
+       Fracti is the one to watch rather than the ground. It runs &g to &M, so ripe Fracti is bright
+       magenta against this dark magenta - the nearest pair in the zone. They stay apart three ways:
+       unripe Fracti is green, Fracti's StartRipeChance is 1:50 so a ripe one is rare, and the two
+       ripen in opposite directions - Fracti toward magenta, dunelace away from it.
+
+       Fracti's stag set, the salt flats' only named neighbour: strip / fibre / strip. Fiber is left
+       inherited because 'strip' is already the default.
+
+       The tile is sw_flowers_bunched, and the first draft was `sw_brush_2.bmp`, which does not
+       exist - I invented a plausible name rather than taking one the game already uses, and Qud
+       renders a missing tile as a solid coloured block. Nothing static caught it: a tile name is a
+       string nothing validates, and it only showed up by walking the salt flats. §18.4b is the
+       neighbouring lesson - a plant that renders wrong is a plant that is not there.
+
+       sw_flowers_bunched has four variants and exactly one user in vanilla, the `Flowers` item you
+       carry. So nothing *growing* in any biome looks like this, which is what makes it safe to
+       borrow: finger-root belongs to Nails of Jy, a unique, and sw_coral_branching to Finger
+       Coral. -->
+  <object Name="Vixy_Dunelace" Inherits="Plant">
+    <part
+      Name="Render"
+      DisplayName="dunelace"
+      RenderString="171"
+      ColorString="&amp;m"
+      TileColor="&amp;m"
+      DetailColor="M"
+      Occluding="false"
+      Tile="Terrain/sw_flowers_bunched_1.bmp"
+    />
+    <builder
+      Name="RandomTile"
+      Tiles="Terrain/sw_flowers_bunched_1.bmp,Terrain/sw_flowers_bunched_2.bmp,Terrain/sw_flowers_bunched_3.bmp,Terrain/sw_flowers_bunched_4.bmp"
+    />
+    <part
+      Name="Harvestable"
+      OnSuccess="Vixy_Dunelace Frill"
+      StartRipeChance="1:4"
+      RipeColor="&amp;W"
+      RipeTileColor="&amp;W"
+      RipeDetailColor="M"
+      UnripeColor="&amp;m"
+      UnripeTileColor="&amp;m"
+      UnripeDetailColor="M"
+    />
+    <part
+      Name="Description"
+      Short="It cuts itself into threads to keep what little it drinks, and lays them flat against the crust so the wind has nothing to take hold of. A ripe one wears the salt it has pushed back out, and shows white from a long way off."
+    />
+    <tag Name="DynamicObjectsTable:Saltdunes_Plants" />
+    <stag Name="FiberMaterial" Value="fibre" />
+    <stag Name="Plank" Value="strip" />
+  </object>
+
   <!-- Ruins overgrowth (#173). Decoration only: no Harvestable, nothing to gather, nothing to
        spend. These are the first two blueprints in this file that give a player nothing at all,
        and that is the point - the whole issue is scoped so that no number a player can act on

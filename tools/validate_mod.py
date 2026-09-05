@@ -30,6 +30,25 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
 
+# Expected objects this fork may scatter into a vanilla table regardless of ratio.
+#
+# **A ratio ceiling is the wrong instrument for a table vanilla leaves nearly empty**, and #858 is
+# where that showed. `SaltDesertZoneGlobals` scatters 1.80 expected objects, against 43 in the hills
+# and 282 in the saltmarsh - the salt flats are deliberately the emptiest zone in the game. Half of
+# 1.80 is 0.9, so the ratio forbade any findable content at all: dunelace shipped at 1.35 plants per
+# zone against the mod's next-sparsest at 6.3, and a playtest crossed eighteen zones without seeing
+# one. Optimising the check cost the feature, which is the opposite of what a check is for.
+#
+# The ceiling's purpose is that at the low tiers most of what a player *meets* should still be the
+# game they bought - docs/STYLEGUIDE.md 3.2.1. In a zone of 80x25 cells, ten expected objects is half
+# a percent of the floor and meets nothing out of the way. Where vanilla scatters plenty the ratio
+# still binds and binds first; this only lifts the ratio where there is nothing to drown out.
+SCATTER_ABSOLUTE_FLOOR = 10.0
+
+# Vanilla's base for a cooking-domain data record. Blueprints inheriting it are a registry read by
+# `PreparedCookingIngredient`, never spawned, so `check_reachability` exempts them.
+INGREDIENT_MAPPING = "IngredientMapping"
+
 # Prefixes the mod owns. Raven_ is Mura's attribution, carried by everything inherited from CoQE;
 # Vixy_ marks content added to this fork. docs/STYLEGUIDE.md §3.1 has the reasoning - it is a credit
 # line, not namespace hygiene. Every check below needs only one thing from a prefix: "ours, not
@@ -59,6 +78,12 @@ OPTION_GATE_TAG = "ExcludeFromDynamicEncountersOption"
 NEW_UNPREFIXED = {
     "TrueKin",
     "PsionicAdept",
+    # The game rebuilds this name rather than looking it up:
+    # `PreparedCookingIngredient.HandleEvent(ObjectCreatedEvent)` indexes
+    # `Blueprints["ProceduralCookingIngredient_" + type]`, so the spelling is dictated and a
+    # `Vixy_` prefix makes every ingredient carrying the domain throw on creation. The identity
+    # lives in the domain instead - `vixyRested` is unmistakably this fork's. #858.
+    "ProceduralCookingIngredient_vixyRested",
 }
 
 # Tier -> material, from docs/STYLEGUIDE.md 3.2. Longest first so "flawless crysteel"
@@ -3008,13 +3033,13 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
             continue
         vanilla = quantities[name]
-        if ours > vanilla:
+        if ours > vanilla and ours > SCATTER_ABSOLUTE_FLOOR:
             share = ours / (ours + vanilla) * 100
             f.add(
                 "scatter-share",
                 f"{POPULATION_TABLES}: {name} is {share:.1f}% this fork's scattered "
                 f"content ({ours:.1f} expected against vanilla's {vanilla:.1f}) - "
-                f"the ceiling is half",
+                f"the ceiling is half, above a floor of {SCATTER_ABSOLUTE_FLOOR:.0f}",
             )
 
 
@@ -3381,6 +3406,14 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             ):
                 continue
             if any(m in name for m in ABSTRACT_MARKERS):
+                continue
+            # An `IngredientMapping` is a data record, not a spawnable. `PreparedCookingIngredient`
+            # reads every blueprint inheriting it as a registry of cooking domains and never
+            # creates one, so "obtainable" is not a question that applies - and the answer this
+            # check would otherwise demand, a population entry, would put a non-object in the
+            # world. Vanilla keeps all 66 of them in `ObjectBlueprints/Data.xml`, which is where
+            # the game files put things that are read rather than placed. #858.
+            if obj.get("Inherits") == INGREDIENT_MAPPING:
                 continue
             defined[name] = path
             if any(p.get("Name") == "TinkerItem" for p in obj.iter("part")):

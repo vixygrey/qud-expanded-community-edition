@@ -330,4 +330,94 @@
     <tag Name="Fungus" />
     <tag Name="DynamicObjectsTable:Jungle_Ingredients" />
   </object>
+  <object Name="Vixy_Dunelace Frill" Inherits="Snack">
+    <part
+      Name="Render"
+      DisplayName="{{m|dunelace frill}}"
+      Tile="Items/sw_wheat_stem.bmp"
+      ColorString="&amp;m"
+      DetailColor="M"
+      RenderString="'"
+      RenderLayer="5"
+    />
+    <!--
+      4, anchored to spine fruit jam - the salt flats' own preserved food, off Fracti, the only
+      other plant in the biome. §18.3's rule is a named vanilla neighbour rather than a number that
+      feels right, and the nearest neighbour is the one growing beside it.
+    -->
+    <part Name="Commerce" Value="4" />
+    <part Name="Food" Satiation="Snack" Thirst="0" Healing="0" Message="It is salt first and green a long way after." />
+    <part Name="PreservableItem" Result="Vixy_Dried Dunelace" Number="3" />
+    <part Name="Description" Short="A handful of flat threads, still gritty where they lay against the crust." />
+  </object>
+
+  <object Name="Vixy_Dried Dunelace" Inherits="Preservable">
+    <part
+      Name="Render"
+      DisplayName="dried {{m|dunelace}}"
+      Tile="Items/sw_grass_bundle.bmp"
+      RenderString="%"
+      ColorString="&amp;m"
+      DetailColor="W"
+      RenderLayer="5"
+    />
+    <part Name="Commerce" Value="4" />
+    <part Name="PreparedCookingIngredient" type="vixyRested" charges="1" />
+    <part
+      Name="Description"
+      Short="Rinsed of its salt and dried until the threads go brittle. Cooks who work the salt road keep a twist of it against the crossing."
+    />
+    <tag Name="Plant" />
+    <tag Name="DynamicObjectsTable:Saltdunes_Ingredients" />
+  </object>
+
+  <!--
+    The domain the dish is built on (#858). Pure data: `PreparedCookingIngredient` builds its pool
+    from every blueprint inheriting `IngredientMapping` - 66 in vanilla - and `Units` resolves
+    through `ModManager.ResolveType("XRL.World.Effects." + name)`, which is the XML-names-the-type
+    shape charter rule 5 asks for.
+
+    `RandomWeight="0"` keeps it out of vanilla's random cooking table: `GetRandomTypeListInternal`
+    runs `while (num > 0)`, so a zero weight is never added. The domain is reachable only through
+    dried dunelace - no distribution consequence and no share question.
+
+    THE NAME IS NOT FREE, and `CookingDomain` does not make it free. This was
+    `Vixy_ProceduralCookingIngredient_Rested`, on the reading that the tag settles which domain the
+    blueprint declares - which it does, in `GetRandomTypeListInternal`. But the mapping runs the
+    other way too, and that direction is string concatenation with no tag in it:
+    `PreparedCookingIngredient.HandleEvent(ObjectCreatedEvent)` indexes
+    `Blueprints["ProceduralCookingIngredient_" + type]` directly. A name the game rebuilds rather
+    than looks up must be spelled the way the game rebuilds it, so this is
+    `ProceduralCookingIngredient_vixyRested` and the `type` on dried dunelace is `vixyRested`.
+
+    The failure was total and silent until it was in a hand: the dictionary index threw
+    KeyNotFoundException inside `GameObjectFactory.CreateObject`, whose catch swallows it into a
+    `PhysicalObject` named `[invalid blueprint:Vixy_Dried Dunelace]`. Nothing logged where I would
+    see it, and every static check passed - the blueprint the message named was perfectly valid, and
+    the one that was missing was never mentioned.
+
+    So the identity lives in the *domain* rather than the prefix: `vixyRested` is unmistakably mine
+    and cannot collide. The blueprint name is in `NEW_UNPREFIXED` in tools/validate_mod.py, beside
+    `TrueKin` and `PsionicAdept`, for the same reason they are - the game dictates the spelling.
+
+    `CookingDomain` stays, and is now belt and braces: without it the fallback is
+    `Split('_')[^1]`, which on this name yields `vixyRested` anyway. Explicit beats derived when a
+    rename would silently change the answer.
+
+    One unit, not two. `Units` is `Split(',').GetRandomElement()`, so a second name here would be an
+    alternative rather than an addition.
+  -->
+  <object Name="ProceduralCookingIngredient_vixyRested" Inherits="IngredientMapping">
+    <tag Name="CookingDomain" Value="vixyRested" />
+    <tag Name="Units" Value="Vixy_CookingDomainRested_UnitStrain" />
+    <tag Name="RandomWeight" Value="0" />
+    <tag Name="RandomHighTierWeight" Value="0" />
+    <!--
+      All 66 of vanilla's mappings carry this and the idiom is "<thing>-based" - artifact-based,
+      water and thirst-based, darkness-based. `PreparedCookingIngredient` reads it on creation and
+      builds "Adds <list> effects to cooked meals." An absent one is not fatal, the null is guarded,
+      but the *blueprint* must exist: the lookup around it is an unguarded dictionary index.
+    -->
+    <tag Name="Description" Value="endurance-based" />
+  </object>
 </objects>
