@@ -529,6 +529,7 @@
       "Vixy_Vibro Glaive",
       "Vixy_Vibro Quarterstaff",
       "Vixy_Vibro Spear",
+      "Vixy_Wakebriar Tonic",
       "Vixy_Zetachrome Glaive",
       "Vixy_Zetachrome Quarterstaff",
       "Vixy_Zetachrome Spear"
@@ -536,7 +537,7 @@
     "shares": {
       "Tier0": 53,
       "Tier1": 34,
-      "Tier2": 21,
+      "Tier2": 22,
       "Tier3": 33,
       "Tier4": 26,
       "Tier5": 40,
@@ -779,6 +780,15 @@
     ],
     "shares": {
       "untiered": 25
+    }
+  },
+  "DynamicObjectsTable:Tonics_NonRare": {
+    "conditional": [],
+    "reaches": [
+      "Vixy_Wakebriar Tonic"
+    ],
+    "shares": {
+      "untiered": 12
     }
   },
   "DynamicObjectsTable:Trinkets": {

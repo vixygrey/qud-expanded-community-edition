@@ -438,10 +438,18 @@ namespace XRL.World.Parts
         }
 
         /// <summary>At Collapsing, a rising per-turn chance of dropping where you stand.</summary>
+        /// <remarks>
+        /// <b>Wakebriar defers this and nothing else.</b> The guard is here rather than on the
+        /// effect because `Asleep.Apply` ends its refusal chain with `|| forced` and this passes
+        /// `forced: true`, so no effect vanilla offers can refuse it — but `Collapse` is mine.
+        /// `Accrue` keeps running above, so the meter climbs through the whole window and the roll
+        /// resumes at a higher rate when it lapses. See `Vixy_Wakebriar` and #843.
+        /// </remarks>
         private void Collapse()
         {
             int fatigue = Get(ParentObject);
             if (fatigue < Collapsing) return;
+            if (ParentObject.HasEffect<Vixy_Wakebriar>()) return;
             // 1% at 950 climbing to 25% at 1000, per §3.2.
             int chance = 1 + (fatigue - Collapsing) * 24 / (Max - Collapsing);
             if (chance.in100())
