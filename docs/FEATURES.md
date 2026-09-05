@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **521** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **522** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **283** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -621,9 +621,9 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Food.xml` | 12 | 2 |
 | `Plants.xml` | 9 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
-| `Items.xml` | 17 | 9 |
+| `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **521 active** | **283** |
+| **Total** | **522 active** | **283** |
 
 ### 6.2 Melee weapons
 
@@ -2163,13 +2163,13 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Cybernetics.xml         # 10 new / 14 merged
 │   ├── OtherEquipment.xml      # 9 new / 16 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
-│   ├── Items.xml               # 17 new (§47, §49), 9 merged (§30)
+│   ├── Items.xml               # 18 new (§47, §49, §60), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 94 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 96 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, and four Finesse powers
@@ -7912,6 +7912,93 @@ band, above Tactful's free because it applies to every creature rather than one 
 ### 59.9 Off-switch
 
 None, per §46.6: a skill power you choose to buy holds no state and does nothing until purchased.
+
+## 60. Wakebriar (`ObjectBlueprints/Items.xml`, `Vixy_Wakebriar`)
+
+A tonic, **Bits `01`, one Witchwood Bark, Tier 2**: for **200 rounds** you do not collapse from
+exhaustion, and you cannot be put to sleep against your will. The meter keeps climbing the whole
+time (#843).
+
+### 60.1 The case it exists for, and why nothing else covers it
+
+An unexpected heavy fight deep in a dungeon, the meter near the top, and a level and a half between
+you and anywhere safe to lie down. Measured against `Vixy_Fatigue`'s own numbers, that is not a close
+call — it is unsurvivable. Once fatigue reaches `Collapsing` the per-action drop chance runs 1% at 950
+to 25% at 1000 while the meter is still rising, so the race lasts:
+
+| fatigue | walking | fighting |
+|---:|---:|---:|
+| 950 | 36 actions | 26 |
+| 970 | 9 | 9 |
+| 990 | 5 | 5 |
+
+A Qud zone is 80×25, so a crossing is about 80 moves at best. **Unaided you cannot cross one.**
+
+### 60.2 200 rounds is derived, not picked
+
+It buys roughly two crossings — out of a shallow delve, not a deep one. That is a sixth of a game day
+and the same order as `Vixy_Gutter.Cost`. Anything much shorter does not reach the stairs; anything
+much longer stops being a rescue and becomes a way to live at the top of the meter.
+
+### 60.3 It defers the collapse and never touches the meter
+
+`Accrue(Strain())` runs throughout, so the debt is not merely still owed — it *grows while it is
+being spent*. The window lapses further up the meter than it started, and the collapse roll resumes
+at the higher rate. That is the whole balance argument and it needs no number beyond stating it.
+
+**Guttering is deliberately left alone.** Suppressing `Vixy_Gutter.Slip` as well would make the tonic
+strictly better and hide the cost. Abilities failing while you run for the stairs is the tell that you
+are upright on borrowed time rather than actually well.
+
+### 60.4 The guard is in this fork's own code, because vanilla cannot express it
+
+`Wakeful` cannot stop a fatigue collapse: `Asleep.Apply` ends its refusal chain with `|| forced`, and
+`Vixy_Fatigue.Collapse` passes `forced: true`. But `Collapse()` is mine, sitting in one handler beside
+`Accrue`, `Announce` and `Vixy_Gutter.Slip`, so gating it is a conditional in a file this fork owns.
+An earlier reading of mine had this shape ruled out on the strength of the vanilla effect alone, which
+confused *"the vanilla effect cannot express this"* with *"this cannot be built"*.
+
+### 60.5 It refreshes rather than accumulating, unlike vanilla's own `Wakeful`
+
+`Wakeful.Apply` does `Effect.Duration += Duration` and returns false, uncapped — ten doses would be
+ten windows. Building on it would have inherited an unbounded window by construction. `Vixy_Wakebriar`
+takes the longer of the two instead.
+
+### 60.6 The rebound is vanilla's, and it is free
+
+`Tonic.CausesOverdose` defaults **true** and base tonic capacity is **1**, so a second concurrent tonic
+effect triggers a Toughness save at `16 + 3 × (count − capacity)`, escalating, with mutants carrying a
+flat 5% on top and 33% under `TonicAllergy`. The `Overdose` event fires on every effect that fails and
+**does nothing unless the effect registers for it** — so this one ends. Reaching for a second dose to
+extend the window closes it instead, with the meter wherever it has climbed to.
+
+### 60.7 It is worth carrying with fatigue switched off
+
+`Vixy_SleepSuppressor`'s docstring names the trap: an item whose only effect is fatigue-shaped sits in
+the loot tables doing nothing for most players, because fatigue is off by default. So this also
+refuses `CanApplyInvoluntarySleep` and `ApplyInvoluntarySleep` — the same two string events
+`Vixy_Sleepless` refuses, and the only two fired. That covers sleep gas, a cudgel to the head, crungle
+gaze, Pax Klanq's madness, the fatecaller and `DeepDream`.
+
+### 60.8 Priced and distributed as vanilla does a tonic
+
+`Bits="01"`, one ingredient, Tier 2, TechTier 4, and `DynamicObjectsTable:Tonics_NonRare`, which
+takes that pool from seven members to eight — a 12% share. Witchwood Bark is the ingredient because it
+is a harvested plant product at value 4, the same band as `SalveTonic`'s Dreadroot Tuber at 5, and it
+grows where cragwort does (§18).
+
+### 60.9 Off-switch
+
+None. It rides the existing sleep option — with fatigue off the collapse it defers cannot happen — and
+rule 6's #663 test says nobody turns off a consumable they can decline to drink.
+
+### 60.10 The other half is not built
+
+#843 describes two consumables: this one, and a cooked dish that halves `Strain` to be taken *before*
+a delve. The dish is deferred, and with it three questions that do not arise for a tonic which never
+touches `Strain` — whether two halvings stack (`BaseAccrual` is 22, so implant plus dish would be
+22 → 11 → **5**, truncating twice), what the dish does with fatigue off, and where its ingredient
+comes from.
 
 ## Appendix A — every merged vanilla melee weapon
 

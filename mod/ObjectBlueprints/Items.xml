@@ -396,4 +396,36 @@
     <part Name="Book" ID="Vixy_AConcordanceOfLoss" />
     <part Name="Commerce" Value="50" />
   </object>
+
+  <!-- Wakebriar. The reactive half of #843: for a short window you do not fall down, however tired
+       you are, and the meter keeps climbing the whole time.
+
+       200 rounds is derived rather than picked. Once fatigue reaches Vixy_Fatigue.Collapsing the
+       per-action drop chance runs 1% at 950 to 25% at 1000 while the meter is still rising, so the
+       race lasts about 36 actions from 950 and four to nine past 970. A zone is 80x25, so unaided
+       you cannot cross one. 200 buys roughly two crossings - out of a shallow delve, not a deep one
+       - and is a sixth of a game day.
+
+       Priced and distributed as vanilla prices and distributes a tonic: Bits 01, one ingredient,
+       Tier 2, TechTier 4, and the Tonics_NonRare pool, which nine of vanilla's twelve tonics carry.
+       Witchwood Bark is the ingredient because it is a harvested plant product at value 4, the same
+       band as SalveTonic's Dreadroot Tuber at 5, and it grows where cragwort does.
+
+       The overdose rebound is vanilla's own and needs nothing here: Tonic.CausesOverdose defaults
+       true and tonic capacity is 1, so a second concurrent tonic effect is a Toughness save at
+       16 + 3 x (count - capacity). Vixy_Wakebriar registers Overdose and ends on it. -->
+  <object Name="Vixy_Wakebriar Tonic" Inherits="Tonic">
+    <part Name="Render" DisplayName="{{W|wakebriar}} injector" />
+    <part Name="Vixy_WakebriarApplicator" />
+    <part
+      Name="RulesDescription"
+      Text="Duration: 200 rounds You will not collapse from exhaustion. You cannot be put to sleep against your will. Tiredness still climbs, and abilities still gutter out."
+    />
+    <part Name="TinkerItem" Bits="01" Ingredient="Witchwood Bark" />
+    <tag Name="Gift" Value="*noinherit" />
+    <tag Name="Tier" Value="2" />
+    <tag Name="TechTier" Value="4" />
+    <tag Name="ChooseToPreserve" />
+    <tag Name="DynamicObjectsTable:Tonics_NonRare" />
+  </object>
 </objects>

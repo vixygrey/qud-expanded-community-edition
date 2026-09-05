@@ -778,6 +778,7 @@
       "Vixy_Vibro Glaive",
       "Vixy_Vibro Quarterstaff",
       "Vixy_Vibro Spear",
+      "Vixy_Wakebriar Tonic",
       "Vixy_Zetachrome Glaive",
       "Vixy_Zetachrome Quarterstaff",
       "Vixy_Zetachrome Spear"
@@ -1283,13 +1284,14 @@
       "Vixy_Vibro Glaive",
       "Vixy_Vibro Quarterstaff",
       "Vixy_Vibro Spear",
+      "Vixy_Wakebriar Tonic",
       "Vixy_Zetachrome Glaive",
       "Vixy_Zetachrome Quarterstaff",
       "Vixy_Zetachrome Spear"
     ],
     "shares": {
       "Tier1": 28,
-      "Tier2": 16,
+      "Tier2": 17,
       "Tier3": 21,
       "Tier4": 12,
       "Tier5": 18,
