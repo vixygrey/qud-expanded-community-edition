@@ -4587,3 +4587,34 @@ taste rather than a mechanic.
 Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
 is the same instrument pointed at a value with *no* readers. Here the value had readers, and I found
 the wrong one.
+
+## An identifier with no referent in the data can still be checked — against the game
+
+`Tile="Terrain/sw_brush_2.bmp"` is a string. Nothing in the game's XML defines it, nothing points at
+it, and every static check in this repo passed a blueprint carrying it. Qud renders a missing tile as
+a solid coloured block, so the failure is invisible until somebody is standing in front of it — and
+three had shipped by the time anyone was: two of dunelace's three names (#858), the sleep
+suppressor's, and the steel fist's, that last one from before this fork existed.
+
+**I twice concluded the set was not enumerable, and twice that was wrong.** The textures are packed
+into Unity assets rather than sitting on disk, and `find` over `StreamingAssets` returns no `Terrain`
+directory at all. From that I reasoned to a proxy — "is this name referenced by vanilla's own XML" —
+which reports a perfectly real sprite as missing whenever no blueprint happens to use one, and I
+wrote that limitation into an issue as though it were a property of the problem. The second attempt
+was worse: I took a sighting in the character-creation UI as confirmation, without checking that the
+thing on screen could even be the sprite in question.
+
+**Unity stores each asset's name as a plain string.** `Data/resources.assets` holds 27,461 of them in
+the form `Assets_Content_Textures_Terrain_sw_flowers_bunched_1.bmp`, recoverable with one regex. The
+check is exact, needs no allowlist, and cannot false-positive.
+
+**The shape: "the data does not define it" is a fact about the data, not about the world.** A
+compiled binary, a packed asset bundle and a save file are all readable, and this repo already reads
+the first for part names. Before recording that something cannot be verified, ask which artefact
+would know — and validate the method on a case whose answer you already have, which is what finally
+separated a working extraction from two confident wrong ones.
+
+Related: [`The vanilla game data is readable — check it`](#the-vanilla-game-data-is-readable--check-it)
+is the same instrument one artefact earlier, and
+[`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
+is the boundary this moved: three of these needed the game to *see*, and now none of them does.

@@ -18,6 +18,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Two items were rendering as solid coloured blocks** (#865). The sleep suppressor and the steel
+  fist — the fists you get from steel hand bones — both pointed at artwork that does not exist. The
+  suppressor has been wrong since it shipped; the fist since before this fork.
+
+  The sleep suppressor has a sprite of its own now, and the steel fist uses the same one every other
+  metal-hand-bone fist in the game does.
+
+- **(internal)** `tools/check_tile_names.py` reads the game's own texture list out of
+  `Data/resources.assets` — 27,461 names — and refuses a commit that points at anything else. A tile
+  name is a string with no referent anywhere in the game's data files, so nothing in this repo could
+  check one, and three broken ones had shipped: two of dunelace's, plus the two above. It skips with
+  a notice where Qud is not installed, like the compile hook.
+
 - **Broadglove was a mushroom pretending to be a plant** (#860). The jungle harvestable is a shelf
   fungus — the description says so and the tile is a mushroom cap — but it was built on the game's
   plant base rather than its fungus one, and a handful of small things followed from that.
