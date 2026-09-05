@@ -3455,19 +3455,48 @@ otherwise have fired an overdose save on exactly the player who prepared.
 #### The domain is data, and three details are load-bearing
 
 ```xml
-<object Name="Vixy_ProceduralCookingIngredient_Rested" Inherits="IngredientMapping">
+<object Name="ProceduralCookingIngredient_vixyRested" Inherits="IngredientMapping">
   <tag Name="CookingDomain" Value="vixyRested" />
   <tag Name="Units" Value="Vixy_CookingDomainRested_UnitStrain" />
   <tag Name="RandomWeight" Value="0" />
+  <tag Name="RandomHighTierWeight" Value="0" />
+  <tag Name="Description" Value="endurance-based" />
 </object>
 ```
 
 `RandomWeight="0"` keeps it out of vanilla's random cooking table — `GetRandomTypeListInternal` runs
 `while (num > 0)`, so a zero weight is never added — which means the domain is reachable only through
-dried dunelace. `CookingDomain` is set explicitly because with none it falls back to the *mapping
-blueprint's* name via `Split('_')[^1]`, and a `Vixy_`-prefixed name would resolve to the wrong half.
-And `Units` names **one** class, because it is read as
-`Split(',').GetRandomElement()` — a second name there would be an alternative, not an addition.
+dried dunelace. `Units` names **one** class, because it is read as `Split(',').GetRandomElement()`:
+a second name there would be an alternative, not an addition. `Description` follows the idiom all 66
+of vanilla's mappings use, `"<thing>-based"`, and renders as *"Adds endurance-based effects to cooked
+meals."*
+
+#### The blueprint's **name** is dictated by the game, and that cost a playtest
+
+This was `Vixy_ProceduralCookingIngredient_Rested`, because `docs/STYLEGUIDE.md` §3.1 requires the
+`Vixy_` prefix on new content and `CookingDomain` looked like it settled which domain the blueprint
+declared. It does — in `GetRandomTypeListInternal`, which reads the tag and falls back to
+`Split('_')[^1]`. **But the mapping runs the other way too, and that direction has no tag in it:**
+
+```csharp
+// PreparedCookingIngredient.HandleEvent(ObjectCreatedEvent)
+GameObjectFactory.Factory.Blueprints["ProceduralCookingIngredient_" + item].GetTag("Description")
+```
+
+An unguarded dictionary index on a name rebuilt by concatenation. With `type="vixyRested"` it looked
+for `ProceduralCookingIngredient_vixyRested`, found nothing, and threw `KeyNotFoundException` —
+inside `GameObjectFactory.CreateObject`, whose `catch` swallows it into a `PhysicalObject` named
+`[invalid blueprint:Vixy_Dried Dunelace]` with a `?` glyph. **Every dried dunelace in the game was
+that placeholder**, from any source, and it surfaced in Nima Ruda's inventory because hers is the one
+guaranteed copy.
+
+The message names the blueprint that is *fine*. The one that was missing is never mentioned, nothing
+is logged where a player would see it, and every static check passed — the reference was to a
+blueprint this mod really does define. So the name is `ProceduralCookingIngredient_vixyRested` and
+sits in `NEW_UNPREFIXED` in `tools/validate_mod.py`, beside `TrueKin` and `PsionicAdept`, for the
+reason they are there: the game dictates the spelling. **The fork's identity lives in the domain
+instead** — `vixyRested` is unmistakably mine and cannot collide. `CookingDomain` stays as belt and
+braces, since `Split('_')[^1]` on this name yields the same answer.
 
 **`check_reachability` learned about this family in the same change.** An `IngredientMapping` is a
 registry `PreparedCookingIngredient` reads and never spawns, so "obtainable" is not a question that

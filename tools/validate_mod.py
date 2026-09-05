@@ -78,6 +78,12 @@ OPTION_GATE_TAG = "ExcludeFromDynamicEncountersOption"
 NEW_UNPREFIXED = {
     "TrueKin",
     "PsionicAdept",
+    # The game rebuilds this name rather than looking it up:
+    # `PreparedCookingIngredient.HandleEvent(ObjectCreatedEvent)` indexes
+    # `Blueprints["ProceduralCookingIngredient_" + type]`, so the spelling is dictated and a
+    # `Vixy_` prefix makes every ingredient carrying the domain throw on creation. The identity
+    # lives in the domain instead - `vixyRested` is unmistakably this fork's. #858.
+    "ProceduralCookingIngredient_vixyRested",
 }
 
 # Tier -> material, from docs/STYLEGUIDE.md 3.2. Longest first so "flawless crysteel"
