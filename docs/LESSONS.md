@@ -4480,3 +4480,34 @@ is not checking both. It is thirty seconds against a hypothesis that can absorb 
 Related: [`Discovery attributes fail by doing nothing`](#discovery-attributes-fail-by-doing-nothing)
 is the mirror image — there, a marker that is *absent* silently does nothing; here, a value that is
 *present* silently does nothing. Both read as working code.
+
+## A ratio ceiling forbids everything where the denominator is nearly zero
+
+`scatter-share` caps this fork at half a vanilla table's expected objects, and that is right in every
+table it was written against. `SaltDesertZoneGlobals` holds **1.80** expected objects — against 43 in
+the hills and 282 in the saltmarsh, because the salt flats are deliberately the emptiest zone in the
+game — so the ceiling there was 0.9 objects, and no findable plant can fit under it.
+
+The check reported 81.7%. **I obeyed the number instead of reading it**, cut dunelace six-fold to 1.35
+plants a zone against the mod's next-sparsest at 6.3, and shipped it. A playtest crossed eighteen salt
+dune zones without seeing one. The check was correct about the ratio and I was wrong about what the
+ratio meant.
+
+**What the ceiling is actually for is stated in `docs/STYLEGUIDE.md` §3.2.1**: at the low tiers most of
+what a player *meets* should still be the game they bought. In a zone of 80×25 cells holding 1.80
+scattered objects, there is nothing to drown out and what the player meets is terrain. So the fix was
+an absolute floor beneath the ratio — ten expected objects, half a percent of a zone's cells — and not
+a smaller number.
+
+**The general shape: a proportional guard needs a floor wherever its denominator can approach zero.**
+Half of almost nothing is a prohibition, and a prohibition dressed as a percentage does not read like
+one. It arrives as a specific, plausible figure with a specific, plausible fix attached, and the fix
+makes the content worse in a way nothing downstream measures — `validate_mod.py` went green,
+`check_docs.py` went green, 692 tool tests passed, and the plant was invisible.
+
+Ask what a check is protecting before you satisfy it. If satisfying it costs the feature the check
+exists to let you ship, the check has found its own edge rather than yours.
+
+Related: [`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
+is the same boundary from the other side — there the checks could not see the problem, here they
+created it. Both end in the same place: the game is the only oracle for whether content is *there*.

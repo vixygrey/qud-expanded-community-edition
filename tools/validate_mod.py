@@ -30,6 +30,21 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # Objects that exist to be inherited from, not to be spawned.
 ABSTRACT_MARKERS = ("Base", "Projectile")
 
+# Expected objects this fork may scatter into a vanilla table regardless of ratio.
+#
+# **A ratio ceiling is the wrong instrument for a table vanilla leaves nearly empty**, and #858 is
+# where that showed. `SaltDesertZoneGlobals` scatters 1.80 expected objects, against 43 in the hills
+# and 282 in the saltmarsh - the salt flats are deliberately the emptiest zone in the game. Half of
+# 1.80 is 0.9, so the ratio forbade any findable content at all: dunelace shipped at 1.35 plants per
+# zone against the mod's next-sparsest at 6.3, and a playtest crossed eighteen zones without seeing
+# one. Optimising the check cost the feature, which is the opposite of what a check is for.
+#
+# The ceiling's purpose is that at the low tiers most of what a player *meets* should still be the
+# game they bought - docs/STYLEGUIDE.md 3.2.1. In a zone of 80x25 cells, ten expected objects is half
+# a percent of the floor and meets nothing out of the way. Where vanilla scatters plenty the ratio
+# still binds and binds first; this only lifts the ratio where there is nothing to drown out.
+SCATTER_ABSOLUTE_FLOOR = 10.0
+
 # Vanilla's base for a cooking-domain data record. Blueprints inheriting it are a registry read by
 # `PreparedCookingIngredient`, never spawned, so `check_reachability` exempts them.
 INGREDIENT_MAPPING = "IngredientMapping"
@@ -3012,13 +3027,13 @@ def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
             continue
         vanilla = quantities[name]
-        if ours > vanilla:
+        if ours > vanilla and ours > SCATTER_ABSOLUTE_FLOOR:
             share = ours / (ours + vanilla) * 100
             f.add(
                 "scatter-share",
                 f"{POPULATION_TABLES}: {name} is {share:.1f}% this fork's scattered "
                 f"content ({ours:.1f} expected against vanilla's {vanilla:.1f}) - "
-                f"the ceiling is half",
+                f"the ceiling is half, above a floor of {SCATTER_ABSOLUTE_FLOOR:.0f}",
             )
 
 

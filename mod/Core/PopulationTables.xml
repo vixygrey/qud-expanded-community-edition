@@ -1481,23 +1481,26 @@
        SaltDesert, and only the game reconciles them. Saltwurm, the Issachari party and the dromad
        traders are its other entries, which is the company dunelace keeps. #858.
 
-       Far fewer plants than the other six, because the salt flats are far emptier than any biome
-       they grow in. Vanilla scatters 1.80 expected objects here against 43 in the hills, 60 in the
-       banana grove, 63 in the desert canyon and 282 in the saltmarsh - it is the emptiest zone in
-       the game, deliberately. The first draft was Chance="40" Number="14-26" for 8.0 expected,
-       which `scatter-share` correctly called at 81.7%: more than four times the entire rest of the
-       zone put together. §3.2.1's ceiling is half and it was right to hold.
+       0.40 x 20 = 8.0 plants per zone, between sweetfrond's 7.0 and rimeburr's 8.8 - the sparse
+       end of what this mod already ships, for the sparsest ground in the game.
 
-       So 0.30 x 4.5 = 1.35 expected, a 43% share. Density falls out at 1.35 / 4 = 0.34 ripe per
-       zone, below the 0.63-1.50 band the other six sit in - and that is the correct answer rather
-       than a compromise. A plant that eases the crossing should be scarce on the crossing; the
-       apothecary shelf is the route that carries availability, which is why StartRipeChance is
-       1:4 rather than the 1:10-1:24 the others use. Few, but usually worth stopping for.
+       This was 0.30 x 4.5 = 1.35 for one commit, and that was a mistake worth recording. Vanilla
+       scatters only 1.80 expected objects here, against 43 in the hills and 282 in the saltmarsh,
+       so `scatter-share` called 8.0 at 81.7% and I cut the count six-fold to satisfy it. A
+       playtest then crossed eighteen zones without seeing a single plant: 1.35 objects in a zone
+       of 80x25 cells is invisible, and §18.4b's rule is that a plant you cannot see is a plant that
+       is not there. The ratio was the wrong instrument, not the count - half of almost nothing
+       forbids any findable content at all - so the check gained an absolute floor and this went
+       back to where it started. See SCATTER_ABSOLUTE_FLOOR in tools/validate_mod.py.
+
+       StartRipeChance stays 1:4 rather than the 1:10-1:24 the others use, which puts the density at
+       8.0 / 4 = 2.0 ripe per zone. Above the band on purpose: this is the one plant a player comes
+       looking for rather than finds, and the crossing that makes them want it is 2,500 segments.
 
        FEATURES §18.4 states the density figure and nothing checks it, so `Chance`, `Number` and
        `StartRipeChance` move together or not at all. -->
   <population Name="SaltDesertZoneGlobals" Load="Merge">
-    <object Chance="30" Number="3-6" Blueprint="Vixy_Dunelace" Hint="Any" />
+    <object Chance="40" Number="14-26" Blueprint="Vixy_Dunelace" Hint="Any" />
   </population>
 
   <!-- Dried dunelace on the apothecary's shelf (#858). Foraging it is the other route; this is the

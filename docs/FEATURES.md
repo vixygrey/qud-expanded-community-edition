@@ -3135,23 +3135,32 @@ band runs 0.07 (witchwood tree) to 8.1 (watervine), and it is dense between 0.6 
 | urberry bush | 1.04 | | rimeburr | 0.73 |
 | dreadroot | 0.84 | | cragwort | 0.72 |
 | banana tree | 0.81 | | shadetooth | 0.63 |
-| witchwood tree | 0.07 | | dunelace | 0.34 |
+| witchwood tree | 0.07 | | dunelace | 2.00 |
 
 Six of the seven land in the dense part of vanilla's band, and the highest is brinereed — whose yield
 is also the cheapest of them. Cheap staples sitting commoner than valuable ones is vanilla's own
 shape.
 
-**Dunelace sits below the band on purpose, and `scatter-share` is why I know where (#858).** The salt
-flats are the emptiest zone in the game: vanilla scatters **1.80 expected objects** into
-`SaltDesertZoneGlobals`, against 43 in the hills, 60 in the banana grove, 63 in the desert canyon and
-282 in the saltmarsh. The first draft put dunelace at the same density as the other six — 8.0 expected
-objects — and the check called it at **81.7%**, more than four times the entire rest of the zone put
-together. §3.2.1's ceiling is half and it was right to hold.
+**Dunelace sits above the band, and getting there cost a validator change (#858).** It is the one
+plant here a player comes *looking* for rather than finds, and the crossing that makes them want it is
+2,500 segments — the most expensive ground in the game. `StartRipeChance` is 1:4 rather than the
+1:10–1:24 the others use, so 8.0 plants a zone give 2.0 ripe.
 
-So dunelace is scarce where it grows and reliable where it is sold: `StartRipeChance` is 1:4 rather
-than the 1:10–1:24 the others use, so the few there are usually reward stopping, and §18.9's
-apothecary shelf carries the availability instead. A plant that eases the crossing should be scarce
-*on* the crossing.
+**The route there is worth recording, because the check was right and my response to it was wrong.**
+The salt flats are the emptiest zone in the game: vanilla scatters **1.80 expected objects** into
+`SaltDesertZoneGlobals`, against 43 in the hills, 60 in the banana grove, 63 in the desert canyon and
+282 in the saltmarsh. `scatter-share` called my 8.0 at **81.7%** and I cut the count six-fold to
+satisfy it — down to 1.35 plants a zone, against the mod's next-sparsest at 6.3. A playtest then
+crossed **eighteen zones without seeing one**. In a zone of 80×25 cells that is invisible, and §18.4b's
+rule is that a plant you cannot see is a plant that is not there.
+
+**The ratio was the wrong instrument, not the count.** Half of almost nothing forbids any findable
+content at all, and the ceiling exists so this fork does not drown out vanilla at the low tiers — in a
+zone holding 1.80 objects across 2,000 cells there is nothing to drown out, and what a player meets
+there is terrain. So `scatter-share` gained `SCATTER_ABSOLUTE_FLOOR`: ten expected objects, half a
+percent of a zone's floor, below which the ratio does not bind. Where vanilla scatters plenty the
+ratio still binds and binds first. Dunelace went back to 8.0 — between sweetfrond's 7.0 and rimeburr's
+8.8, still the second-sparsest plant in the mod.
 
 **Three files hold the inputs**, so changing a `Number` in `PopulationTables.xml` without
 recomputing against `StartRipeChance` moves a figure this section states. Nothing checks it.
@@ -3458,8 +3467,8 @@ promising something it will not do.
 
 ### 18.9 Apothecaries stock it, everywhere
 
-Foraging is the flavourful route and the sparse one — §18.3 puts dunelace at 0.34 ripe per zone,
-below the band the other six sit in. **The apothecary shelf is the route that carries availability**,
+Foraging is the flavourful route and it costs a trip across the worst ground in Qud. **The
+apothecary shelf is the route that carries availability**,
 and it is the shelf the ingredient belongs on: vanilla already stocks Witchwood Bark, Yuckwheat Stem
 and Vinewafer there, and `Vinewafer` is itself a `PreparedCookingIngredient`.
 

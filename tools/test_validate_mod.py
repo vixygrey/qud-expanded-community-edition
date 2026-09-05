@@ -2757,6 +2757,42 @@ class SnapshotBackedChecks(unittest.TestCase):
             [],
         )
 
+    def test_a_small_absolute_amount_clears_a_nearly_empty_table(self) -> None:
+        """#858: a ratio ceiling forbids all content where vanilla scatters almost none.
+
+        `SaltDesertZoneGlobals` holds 1.80 expected objects, so half of it is 0.9 - and dunelace at
+        1.35 per zone was invisible across eighteen zones of playtest. Below the floor the ratio
+        does not bind.
+        """
+        self.assertEqual(
+            self._scatter(
+                '    <object Blueprint="Vixy_Thing" Chance="40" Number="20" />\n',
+                snapshot={"scatter_quantities": {"SaltMarshZoneGlobals": 1.8}},
+            ),
+            [],
+        )
+
+    def test_the_floor_is_not_a_blanket_exemption(self) -> None:
+        """The direction that would make the floor vacuous: past it, the ratio bites again."""
+        items = self._scatter(
+            '    <object Blueprint="Vixy_Thing" Chance="100" Number="40" />\n',
+            snapshot={"scatter_quantities": {"SaltMarshZoneGlobals": 1.8}},
+        )
+        self.assertTrue(
+            items, "40 expected objects in a table holding 1.8 must still report"
+        )
+        self.assertEqual(items[0][0], "scatter-share")
+
+    def test_the_ratio_still_binds_where_vanilla_scatters_plenty(self) -> None:
+        """The floor lifts nothing in a populated table - 20 beats vanilla's 10 and still fires."""
+        items = self._scatter(
+            '    <object Blueprint="Vixy_Thing" Chance="100" Number="20" />\n'
+        )
+        self.assertTrue(
+            items, "the floor must not raise the ceiling where there is content"
+        )
+        self.assertIn("20.0 expected", items[0][1])
+
     def test_a_weighted_entry_is_left_to_table_share(self) -> None:
         """The half this check must not touch, or #474's fix regresses 13 working tables.
 

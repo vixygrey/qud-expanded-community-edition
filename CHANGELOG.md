@@ -82,9 +82,10 @@ recorded because contributors need them, not because subscribers do.
   quarter — two of them would take twenty thousand steps to tire you, which is the timer switched
   off rather than eased.
 
-  Dunelace is scarce where it grows: the salt flats are the emptiest ground in Qud and it is scarce
-  even by that standard, though the few you find are usually ready to pick. **Half the apothecaries
-  in the world stock the dried form**, which is the reliable way to get it — Joppa's included.
+  Dunelace grows on the salt flats and nowhere else, and about a quarter of what you find is ready to
+  pick — a better rate than anything else you can forage, because crossing the salt to get it is the
+  most expensive travel in the game. **Half the apothecaries in the world stock the dried form** if
+  you would rather not make the trip, Joppa's included.
 
   With fatigue turned off the meal does nothing, and says so when you look at it.
 
