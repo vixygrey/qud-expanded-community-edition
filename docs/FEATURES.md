@@ -1156,17 +1156,64 @@ Nine elemental variants of each:
 
 #### New implants
 
-| Implant | Cost | Slots | Effect | Weight |
-|---|---|---|---|---|
-| **Air filtration system** | 3 | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
-| **Steel dermal plating** | 1 | Body | +1 AV | 6 |
-| **Crysteel dermal plating** | 6 | Body, Head, Back | +2 AV | 12 |
-| **Zetachrome dermal plating** | 9 | Body, Head, Back | +3 AV | 16 |
-| **Omni pass** | 2 | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`). Tagged `StartingCybernetic:General` | 0 |
-| **Steel hand bones** | 1 | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
-| **Zetachrome hand bones** | 8 | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
+| Implant | Cost | Chargen | Slots | Effect | Weight |
+|---|---|---|---|---|---|
+| **Steel dermal plating** | 1 | — | Body | +1 AV | 6 |
+| **Steel hand bones** | 1 | — | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
+| **Omni pass** | 2 | ✅ | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`) | 0 |
+| **Sleep suppressor** | 2 | — | Body | **Cannot be put to sleep against your will**, and fatigue accrues at half rate — §51.5c | 1 |
+| **Air filtration system** | 3 | — | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
+| **Crysteel dermal plating** | 6 | — | Body, Head, Back | +2 AV | 12 |
+| **Zetachrome hand bones** | 8 | — | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
+| **Zetachrome dermal plating** | 9 | — | Body, Head, Back | +3 AV | 16 |
 
 Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`), both `MaxStrengthBonus="999"`.
+
+#### The chargen column exists because the answers used to be silence (#867)
+
+Only the Omni pass is offered at character creation, and until #867 nothing recorded why the others
+were not. The column is here so the next implant added has to answer the question rather than inherit
+the omission.
+
+**Character creation reads a tag, not a table.** `QudCyberneticsModule` builds its list from
+`GetBlueprintsWithTag("StartingCybernetic:General")` plus the subtype and genotype variants, then
+expands it **once per slot** — which is why the Omni pass, at seven slots, occupies seven rows of that
+list. `Implants_1and2Pointers` and its siblings have exactly one reader in the whole assembly,
+`CyberneticsHasRandomImplants`, which stocks **NPCs**; being in them has never had anything to do with
+chargen.
+
+**And the pick is free.** `handleBootEvent` implants the choice and deducts nothing:
+
+```csharp
+if (text == null) {                                   // "none"
+    gameObject.SetIntProperty("CyberneticsLicenses", 0);
+    gameObject.Statistics["Toughness"].BaseValue++;
+}
+else {
+    part.GetRandomElement().Implant(gameObject2);      // no deduction, anywhere
+}
+```
+
+Genotype and subtype each *add* to `CyberneticsLicenses`, `CyberneticsTerminal` spends it later in
+play, and the chargen module only ever writes it on the decline branch — which zeroes the pool
+outright in exchange for +1 Toughness. So declining is not saving the points, it is forfeiting them,
+and nearly every True Kin takes something. **`Cost` is never read at chargen and never shown there.**
+
+That is what settles the question, and it is not the question I first asked. It is not *is the price
+right* — nothing is paid. It is **does this belong on a free one-pick list beside night vision, dermal
+insulation, translucent skin, carbide hand bones and pentaceps.**
+
+| implant | why it is not offered |
+|---|---|
+| **Steel hand bones** | `CarbideHandBones` is on the same free list and gives 2d3 against steel's 1d5. With nothing paid there is no cheaper tier, only a strictly dominated option — a trap rather than a budget pick |
+| **Steel dermal plating** | vanilla keeps its own `DermalPlating` off the list, so +1 AV is something the game declines to give away here, whatever it charges for it elsewhere |
+| **Sleep suppressor** | a blanket refusal of involuntary sleep is a hard immunity, and this list is deliberately made of small conveniences. Already free to *find*; free from turn one is a different proposition |
+| the four above cost 2 | every chargen-eligible implant in vanilla costs 1 or 2. Not because cost is spent here — it is not — but because Freehold evidently treats it as a proxy for how much to give away, and these are past it |
+
+**The nine merged vanilla implants keep their own tags.** This mod writes `StartingCybernetic` exactly
+once, on the Omni pass, and never `*delete`s one; `Load="Merge"` adds tags rather than replacing them,
+so `CherubicVisage` and `HyperElasticAnkleTendons` stay chargen-eligible exactly as vanilla has them.
+That was the one way this could have been a regression rather than an omission.
 
 #### Merged vanilla implants
 
@@ -7228,7 +7275,15 @@ OmniPass. **I cannot be put to sleep against my will, and I tire half as quickly
 
 **The second clause is the one that makes it worth shipping.** Fatigue is off by default under rule 6,
 so an item whose only effect were fatigue-shaped would sit in three vanilla implant tables doing
-nothing for most players — worse than not shipping it. Refusing involuntary sleep stands on its own,
+nothing for most players — worse than not shipping it.
+
+**Those three tables are an NPC route, and character creation is a separate one this does not join
+(#867).** `Implants_1and2Pointers` and its siblings have one reader in the whole assembly,
+`CyberneticsHasRandomImplants`, which stocks NPCs. Chargen instead reads `StartingCybernetic:General`
+off the blueprint and hands you the pick for free — no licence cost, at chargen or after. So the
+question there is not what this is worth but whether a **blanket** refusal of involuntary sleep
+belongs on a list otherwise made of small conveniences, from turn one, at no cost. It does not, and
+§6.5 carries the reasoning. Finding one remains the way to have one. Refusing involuntary sleep stands on its own,
 and **nothing in vanilla grants it**: `Wakeful` is applied from exactly one place, `Asleep` line 180,
 as a three-to-five turn grace after waking. It is never a standing state.
 

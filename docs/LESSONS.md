@@ -4549,3 +4549,41 @@ string, which nothing reconstructs: `ProceduralCookingIngredient_vixyRested`, al
 Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
 is the mirror — there a value had no consumers, here a name had one more than I looked for. Both are
 answered by grepping consumers rather than reasoning from the definition.
+
+## Reading how a list is built is not reading what happens when you pick from it
+
+Chargen's cybernetics list is built by `QudCyberneticsModule` from
+`GetBlueprintsWithTag("StartingCybernetic:General")`. I read that, found this fork's implants absent
+from the list, and wrote a whole issue arguing which of them belonged there **in terms of licence
+cost** — vanilla's chargen implants are all cost 1 or 2, is 1 point for +1 AV fair against vanilla's
+3, does 1 point for 1d5 make a budget tier under carbide's 2 points for 2d3.
+
+Chargen never charges licence points. Twenty lines further down the same file:
+
+```csharp
+// handleBootEvent
+if (text == null) { SetIntProperty("CyberneticsLicenses", 0); Toughness.BaseValue++; }
+else              { part.GetRandomElement().Implant(gameObject2); }   // no deduction
+```
+
+The pick is free and leaves the pool intact; the only write is the *decline* branch, which forfeits
+the pool for +1 Toughness. So every argument I had made was about a price nobody pays, and two of my
+three conclusions inverted once that was corrected — a strictly weaker implant is a **trap** on a free
+list where it had looked like a budget option.
+
+**The shape: I read the producer and stopped.** The list-building code answered "what appears", which
+was the question I came with, and the consuming code answered "what it costs to take one", which was
+the question I was actually reasoning about. Nothing warns you when those are different functions.
+
+This is the second instance in a week. #858's cooking domain was the same: `CookingDomain` genuinely
+controls the resolver I read, and a *different* consumer rebuilds the blueprint name by concatenation,
+so the name I chose threw on every object that carried it.
+
+**Before reasoning about a value, find every place it is read** — not the one that answered the
+question you arrived with. `Cost` is real and does matter, at the cybernetics terminal in play; it
+just says nothing about chargen, and the correlation vanilla shows there is evidence about Freehold's
+taste rather than a mechanic.
+
+Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
+is the same instrument pointed at a value with *no* readers. Here the value had readers, and I found
+the wrong one.
