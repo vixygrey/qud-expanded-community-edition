@@ -25,6 +25,19 @@ knownRecipies = "knownRecipies"
 # of an actor that keeps taking turns off-screen. `typos` reads the leading Otho as a misspelling of
 # Otoh. #701.
 OthoWander1 = "OthoWander1"
+# "Mak" - a founder of Yd Freehold, and a name in player-facing text since #633's fourth cast gave
+# him a conversation. Three entries because `typos` splits compounds into words before matching, so
+# the choice and node IDs need listing alongside the bare name.
+#
+# An *identifier* rather than a word, and unlike Otho below that distinction is load-bearing.
+# `extend-words` matches case-insensitively - verified - so `Mak = "Mak"` would also stop `mak` being
+# corrected to `make` or `mask` anywhere in the repo, and those are common enough words that a real
+# typo would slip through. `extend-identifiers` is case-sensitive, so this exempts `Mak` while
+# leaving `mak` and `MAK` checked. Otho could take the looser form because "Otoh" appears nowhere;
+# this cannot. #633.
+Mak = "Mak"
+Vixy_MakFamiliar = "Vixy_MakFamiliar"
+Vixy_MakFamiliarReply = "Vixy_MakFamiliarReply"
 
 [default.extend-words]
 # "Otho" - Barathrum's steward at Grit Gate, and a name in player-facing text since #633's third cast

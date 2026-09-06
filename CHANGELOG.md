@@ -55,6 +55,26 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **Yd Freehold knows your face** (#633). Mak, Une and Goek each gain a question you can only ask
+  once you have given your name, answered in their own voice. Mak reclassifies you from *whelp* to a
+  different order of nuisance and declines to say which. Une keeps a private tally of who stops
+  calling her warden and starts calling her Une, and lets slip that you changed columns some visits
+  ago. Goek tells Mak your name, Mak grumbles, and Goek tells it again.
+
+  Une already had the other half of this written for her: refuse to give her your name and she calls
+  you *O Nameless One* from then on.
+
+  The Freehold's four shopkeepers — Rokhas, Bep, Krka and Tillifergaewicz — keep the shopkeeper's
+  question rather than gaining a second one. So does Argyve, who has had one since merchants gained
+  theirs; he inherits the merchant part rather than declaring it, which is why he looked like an
+  omission and never was.
+
+  Geeub is left out on purpose, and for a reason none of the others share. He is written as somebody
+  who forgets you the moment you turn around — ask if you have already spoken and he tells you *but
+  seconds ago, as only yesterday* — so a line about him remembering your name would argue with
+  content the game already has. Many Eyes is left out too: it deals in a title it gave you rather
+  than a name.
+
 - **Everyone in this group has more to say** (#633). Tam, Elder Irudad, Warden Yrame and Mehmet each
   answer four or five different ways now, and can be asked four different ways, drawn fresh each
   time. This is a line you see on every visit to somebody you visit often, and one fixed answer would

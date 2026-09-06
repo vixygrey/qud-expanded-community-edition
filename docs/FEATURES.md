@@ -8697,6 +8697,80 @@ Leaving Jacobo and Mafeo to the merchant voice is also what resolves the overlap
 the same problem that cost the dromad-specific voice in §61.5b, handled by choosing rather than by
 inventing a predicate to exclude them.
 
+### 61.5g The fourth cast is Yd Freehold, and resolving one part cut it from nine to three
+
+Nine named residents of the Freehold have a conversation of their own, and **four of them already had
+a familiarity line before I wrote a word.** `GenericInventoryRestocker` is inherited, not declared per
+blueprint: Rokhas takes it from `PigFarmer`, and Bep, Krka and Tillifergaewicz declare it themselves.
+So §61.5a's merchant question already reaches all four, and a second would double up — the same rule
+that left Jacobo and Mafeo to the merchant voice at Grit Gate, applied by checking the chain rather
+than by eye.
+
+**The same check answered a question I had been carrying since the first cast.** Argyve inherits the
+restocker part from `HumanTinker_Village0`, so the person you talk to most in the opening hours has
+had a familiarity line since §61.5a shipped. He looked like the conspicuous omission of §61 and he
+was never an omission at all. Nima Ruda, Erah and Yurl are covered the same way, in Joppa and
+Kyakukya respectively.
+
+That leaves **Mak, Une and Goek**, four ways to ask and four answers each, per §61.5c.
+
+| | the register it had to be written in | route to the marker |
+|---|---|---|
+| **Mak** | a millennium of grievance; calls me *whelp* and will not waste the honey of his mouth on idle inquiries | `Vixy_Introduce` |
+| **Une** | dry and courtly behind a mask, wearing a warden's authority like a coat she can take off | **free** — her `Whomst` node's answer carries the bare `=name=` token |
+| **Goek** | delighted by nearly everything, speaks of himself as *rrk*, safe and free as woodsmoke | `Vixy_Introduce` |
+
+They share a reef and not a register, which is §61.2 again: Mak and Goek are both svardym, both
+founders of the same settlement, and are opposites in every way the writing cares about.
+
+**Une gives the feature its best vanilla anchor so far.** Refuse to give her your name and her `Snub`
+node calls you *"O Nameless One"* — so the fiction that naming yourself changes how somebody deals
+with you is hers before it is this fork's. §61.3 found that beat keyed to errands; this is the first
+place vanilla keys it to naming directly.
+
+Declared at conversation level per §61.5e. All three have a single start node, so the placement buys
+nothing here but consistency — and writing it the other way would make the next cast's exception look
+like a special case rather than the rule.
+
+### 61.5h Geeub is excluded by his characterisation, and he is the first who is
+
+Every exclusion in §61.5f is about register or overlap — procedural babble, deliberate muteness, a
+merchant already covered. Geeub is a different kind of no, and worth recording separately because the
+test it implies is one I had not been applying.
+
+His start node already carries `GeeubFamiliarChoice`:
+
+> *"Sorry, have we already spoken?"*
+
+answered at a node vanilla itself named `Familiar`:
+
+> *"Ayup. But seconds ago. As only yesterday, no? Hoh hoh hoh."*
+
+And his `Introduce` node answers being given a name with *"Congratulation, condolence, which ever.
+Mind and name slip by another."*
+
+**Geeub is written as somebody who cannot hold on to having met me, and the joke is written twice so
+it cannot be missed.** A line that turns on him remembering my name would not sit alongside that
+content; it would contradict it.
+
+This is the mirror of §61.3 and it is why §61.3 matters. That section reads vanilla already writing
+this beat as the licence for the whole feature — the register was demonstrated on each of the four
+before I wrote them. The same reading has to be able to come back negative. Everywhere else in §61 I
+am extending something vanilla established; on Geeub I would be overwriting a characterisation vanilla
+built deliberately.
+
+So the question to ask of each new candidate is not only *can this person be written* but *has vanilla
+already decided this person cannot be*. Geeub is the only one of the sixty-seven named NPCs surveyed
+so far where the answer is yes.
+
+**Many Eyes is out for a related but separate reason.** It is hand-written rather than Euclid's
+`=MARKOVPARAGRAPH=`, so §61.5f's first exclusion does not catch it. But it deals in a title it
+assigned me — `NON MOLOCH` — and uses no name and no player-address term anywhere in its eight nodes.
+Familiarity keyed to naming has nothing to attach to on something that does not use names. That is an
+exclusion on the axis rather than on the voice, and it would be answered by a different key rather
+than by better writing.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
