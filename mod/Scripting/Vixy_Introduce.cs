@@ -72,7 +72,7 @@ namespace XRL.World.Conversations.Parts
             // carries a proper name while its conversation is still {{emote|*soft growling*}}.
             // Checked after AlreadyOffered because a conversation vanilla wrote an introduction
             // into is a person whatever its start node looks like.
-            if (Vixy_AskName.SaysNothing(ConversationUI.StartNode)) return false;
+            if (Vixy_AskName.SaysNothing(ConversationUI.CurrentConversation)) return false;
 
             // Giving my name is flavour and changes no mechanic, so charter rule 6 says it does not
             // earn an option and it is always on - #633. The named are reachable through this part
@@ -115,7 +115,7 @@ namespace XRL.World.Conversations.Parts
             // Animals conversation, and "Rex. I will remember it." from something that answers
             // {{emote|*soft growling*}} is worse than no feature, which is §40's own reasoning
             // about the question this mirrors.
-            if (Vixy_AskName.SaysNothing(ConversationUI.StartNode)) return false;
+            if (Vixy_AskName.SaysNothing(ConversationUI.CurrentConversation)) return false;
 
             // Vanilla writes its own introductions into twenty-six conversations. Where one is
             // already on offer, mine would stand beside it saying the same thing.
