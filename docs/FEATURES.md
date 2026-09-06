@@ -8809,6 +8809,63 @@ Irudad, Otho, Nuntu and Goek, so it is the slynth-settlement quest boilerplate a
 stays correct.
 
 
+### 61.5j The sixth cast is Bey Lah, where the one-voice question finally got a fair test
+
+Grit Gate refused a single Barathrumite voice because §61.5d found a collection of eccentrics rather
+than a culture. The hindren are a genuine culture — six people sharing a name-suffix, a village and a
+questline — so this is the first cast where a shared register was actually plausible.
+
+**It is not close.** Angohind studies Willow Shakesprig and models himself on the Great Plant
+Detective, Hemlock Cones. Keh answers a refusal with *"then I overestimated your intellect further
+than I realized. Get out."* Kesehind manages *"you may not."* Neelahind is half-absent with grief for
+Eskhind. Isahind wants to know if you are buying. They share a suffix, not a mouth — so §61.2's
+finding survives the one case built to break it.
+
+**Isahind is a gap §61.5a could not reach.** Her dialogue is *"Shall we trade?"* and *"Care to buy a
+souvenir?"*, and she carries no `GenericInventoryRestocker` anywhere in her inheritance chain, so the
+merchant question never reaches her. She trades and was never covered.
+
+### 61.5k The selection rule, stated at last: write where vanilla has already asserted the standing
+
+Four casts running, the strongest line in each turned out to be the one answering something vanilla
+had already said about my standing and given me no way to reply to:
+
+| | what vanilla asserts | what the line does |
+|---|---|---|
+| **Une** (§61.5g) | her `Snub` node calls me *"O Nameless One"* if I refuse to name myself | naming is already the axis; the line is the other end of it |
+| **Warden Esthers** (§61.5i) | *"You think I keep a tally of every shopkeeper that steps foot on the Stiltgrounds?"* | she concedes she keeps one, of me |
+| **Lulihart** (§61.5i) | the slynth *"stop by my tent from time to time to visit and smoke with me, **as you do**"* | answers a friendship the game already granted |
+| **the hindren** (here) | `kendren` — `Books.xml` says it is *"their word for non-hostile sentients"*, 91 uses in vanilla | being named is what makes me more than one |
+
+**So the criterion is not "does this person have a distinct register" but "has vanilla already stated
+something about my standing that I cannot currently answer".** The first question decides whether a
+line *can* be written; this one decides whether it is worth writing. `kendren` is the clearest case
+yet, because it is a word for an outsider who merely is not attacking — a low bar, as Keh says, and
+never meant as a compliment.
+
+### 61.5l The first cast whose answers depend on how things are going
+
+Every previous cast was tonally static. Bey Lah has village states — `HindrenVillageRavaged`,
+`Doomed`, `Prospers` and `QuestFullyResolved` — a leadership change, and an Eskhind who can be killed.
+Neelahind alone carries **20 conditional start nodes**, the most of anyone written for §61.
+
+The sharp case is Isahind, whose greeting in the ravaged village is *"I'd rather not talk. Sorry."*
+The question is asked in every state anyway, and the answers carry the weight: being asked how you
+fare after your village was destroyed, and answering, is worth more than the question quietly
+vanishing. Her ravaged answer is that she said it to the door and I happened to be standing in it.
+
+**The conditional text is vanilla's own shape, and there are two of them.** Mehmet's `Welcome` node
+carries two mutually exclusive `<text>` elements — that is §61.3's example. Thah marks his catch-all
+`Priority="-1"` so it loses to any conditional that matches, which is the only fallback idiom in the
+game and is used five times.
+
+I use Thah's, and **the design does not depend on settling how the engine breaks a tie between two
+matching texts.** Only one state condition can hold at a time, and the fallback sits strictly below a
+match rather than tied with it, so the conditional wins whether the engine takes the single
+highest-priority text or picks at random among those tied at the top. That ambiguity is real and
+unresolved here; it is simply not load-bearing.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes

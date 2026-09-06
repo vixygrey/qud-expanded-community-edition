@@ -52,6 +52,12 @@ Vixy_OthoFamiliarReply = "Vixy_OthoFamiliarReply"
 Mak = "Mak"
 Vixy_MakFamiliar = "Vixy_MakFamiliar"
 Vixy_MakFamiliarReply = "Vixy_MakFamiliarReply"
+# "Thah" - a vanilla NPC at the Hydropon, cited in docs/FEATURES.md and mod/Core/Conversations.xml as
+# the only conversation in the game that marks a catch-all `<text>` with `Priority="-1"`. An
+# identifier for the same reason as Mak above, and more urgently: the correction is "than", so the
+# case-insensitive `extend-words` form would stop one of the commonest words in English being checked
+# anywhere in the repo. #633.
+Thah = "Thah"
 
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables
