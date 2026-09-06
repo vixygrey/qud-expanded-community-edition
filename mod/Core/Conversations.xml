@@ -1211,4 +1211,215 @@
       </choice>
     </node>
   </conversation>
+  <!-- The seventh cast finishes the seven people this whole mechanism was built for. #633.
+
+       §57.1 found seven creatures who can perform a water ritual *and* carry a hand-written
+       introduction in vanilla: Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. That set is
+       the reason `Vixy_Introductions` watches from the conversation level at all, and the reason the
+       ritual gate falls open rather than shut. Une was written with Yd Freehold in §61.5g. These are
+       the other six, and **every one of them reaches the marker for free**, because vanilla wrote
+       each of them a naming exchange. No cast has had better coverage, and that is not a coincidence:
+       they are the population the marker was designed around.
+
+       **Naming is their subject, not just their mechanism, which is why they were worth saving for a
+       cast of their own.** Thicksalt's `Name` node answers with "the naming act is imponderable. So
+       Tau called me Thicksalt, one brickword in a towerful poem whose everyshape I forget." Tammuz is
+       "Who becomes. Who is Twofirm even in -then." Tikva will not say "I" at all and calls itself
+       "it, low and humble". A feature about giving somebody your name has no better subjects.
+
+       **And each of them has already given me a name that is not my name**, which is §61.5k's
+       criterion in its clearest form yet. Tammuz calls me madhand and moon king. Tzedech calls me
+       Entity. Miryam calls me -elser once the -elseing is done. Thicksalt knows me as the one who
+       thumps his crystal arms and kicksofts him at windfall. `kendren` was one word shared by a
+       culture; this is six epithets, one each, and every answer here trades its epithet for the name.
+
+       Five voices and not one register, again. Miryam mourns in low tones and keeps Shiva for seven
+       thousand years. Tzedech rings a bone-shaking alarm and will not be calmed. Tikva speaks of
+       itself in the third person and looks into the light so it need not look at anything else.
+       Thicksalt has a whole tactile vocabulary of his own - kicksoft, allway, touchlost, hardflats.
+       Tammuz stammers and asks me to agree with him.
+
+       Agyra is the sixth and is not at Chavvah at all but watching the Tomb of the Eaters, so ey gets
+       no chime and no gyredream. Ey uses ey/em/eir, which ey explains unprompted, and speaks in
+       thee-and-thou through `=ifplayerplural:=`. Ey is the one member of the seven whose answer is
+       simply hospitality, which is what ey is for.
+
+       The five at Chavvah answer differently once the -elseing is done, keyed on
+       `IfHaveState="ElseingComplete"` with Thah's `Priority="-1"` catch-all beneath it, exactly as
+       §61.5l set out. Agyra gets the catch-all alone: eir states are about which of the eaters was
+       given a voice, and inventing a grief for em that vanilla does not write would be worse than
+       leaving em one good answer. -->
+
+  <!-- Miryam. Mourning in deep and low tones, keeping kriah and a Shiva of seven thousand years for
+       all life that must die. Gentle, and the only one of the five who says "I see you". -->
+  <conversation ID="Miryam">
+    <choice ID="Vixy_MiryamFamiliar" Target="Vixy_MiryamFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Miryam?~
+        Do you still keep the mourning?~
+        Is there comfort to be had?~
+        And you? How are you?
+      </text>
+    </choice>
+    <node ID="Vixy_MiryamFamiliarReply">
+      <text IfHaveState="ElseingComplete">
+        {{emote|*Miryam chimes in low, settled tones.*}} I grieve properly now, =name=, which I could not do before. That is your doing. I do not say thank you again; I say your name instead, which is the larger thing.~
+        I keep it. But I keep it as Miryam and not only as a chime in mourning, and the difference is that somebody comes who knows which is which.~
+        There is comfort. You are some of it, -elser. I had not expected to be able to name the comfort when it came.
+      </text>
+      <text Priority="-1">
+        {{emote|*Miryam chimes in deep tones.*}} I see you, =name=. I have said that to many travelers. I notice I mean a different thing by it now, and I have not found the word for the difference.~
+        I keep it, friend. Seven thousand years is a long lament and a short one, depending. It is shorter when somebody comes back.~
+        Some. Not much. Enough that when I chime low, I chime low at somebody rather than into the dark.~
+        Oh? I am as I was. But you asked, and you asked me and not the tree, and that is rarer here than you would think.
+      </text>
+      <choice Target="Start">
+        <text>I'll come back.~Live and drink, Miryam.~I see you, too.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Tzedech. Compass, judgment, motivation; rings a bone-shaking alarm and will not be calmed.
+       Once Tikva's lover, sundered after gyredream. Calls me Entity. Any warmth must arrive as a
+       verdict rather than as softening. -->
+  <conversation ID="Tzedech">
+    <choice ID="Vixy_TzedechFamiliar" Target="Vixy_TzedechFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Tzedech?~
+        Are you calmed?~
+        What is your judgment of me?~
+        And you? How do you weigh?
+      </text>
+    </choice>
+    <node ID="Vixy_TzedechFamiliarReply">
+      <text IfHaveState="ElseingComplete">
+        {{emote|*the chime rings a single clear tone, and holds it.*}} I am not calmed. I am answered, which is different and rarer. You did the weighing thing and did not flinch. Entity no longer serves. =name=.~
+        My judgment is revised. That is not a small sentence from a compass. Do not ask me to repeat it.~
+        I weigh heavy and I weigh true, and one of the things on the scale now has your name on it. Ask if asking.
+      </text>
+      <text Priority="-1">
+        {{emote|*the chime rings sharp.*}} I will not be calmed. But I have stopped calling you Entity in my own hearing, which I did not decide to do and cannot undo. Ask if asking.~
+        My judgment is that you are terribly small, and that you come back anyway, and that the second thing complicates the first. I have not finished with it.~
+        I weigh. It is the office. You are the only one who asks the compass how the compass fares, and I have no framework for it, and I permit it.~
+        Badly, =name=. Loudly. As always. You asked knowing the answer, which means you asked for my sake and not for the answer's. I notice such things. It is what I am for.
+      </text>
+      <choice Target="Start">
+        <text>Then I'll ask again.~Understood.~Live and drink, Tzedech.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Tikva. Low and humble, and will not say "I" - "it is called Tikva", "it looks into the light
+       with you." Grieving Tzedech and refusing to. The warmth has to stay in the third person or it
+       is not Tikva's. -->
+  <conversation ID="Tikva">
+    <choice ID="Vixy_TikvaFamiliar" Target="Vixy_TikvaFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Tikva?~
+        Is the light still bright?~
+        Are you well?~
+        And you? How is it with you?
+      </text>
+    </choice>
+    <node ID="Vixy_TikvaFamiliarReply">
+      <text IfHaveState="ElseingComplete">
+        {{emote|*the chime rings a long, clear tone.*}} It fares. It watched you do a hard kindness and it has been turning that over. It says =name= now, where before it said the light.~
+        The light is bright. It looked away from the light for a moment, at you, and the looking away did not hurt as it feared. It is considering this.~
+        It is well. It is surprised to find that true, and it wishes to say so to somebody it can name.
+      </text>
+      <text Priority="-1">
+        {{emote|*the chime rings a clarion tone.*}} It fares in the light. It knows your name and holds it carefully, the way it holds all bright things, which is to say too tightly.~
+        The light is bright and it will burn away the sorrow, it will burn it away. It says this less often when you are here. It has not decided what that means.~
+        It is well. It is always well. It is well and you keep asking anyway, and it has begun to look forward to being asked.~
+        You are a world to be orbited, =name=, and it orbits at a respectful distance, and it would like it noted that it knows the distance is its own choosing.
+      </text>
+      <choice Target="Start">
+        <text>Noted.~Look away from the light more often.~Live and drink, Tikva.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Thicksalt. Feels rather than sees, and has a vocabulary of his own for it - kicksoft, crystal
+       arms, allway, touchlost, windfall, hardflats. His `Name` node is the best statement of this
+       whole feature's subject that vanilla contains. -->
+  <conversation ID="Thicksalt">
+    <choice ID="Vixy_ThicksaltFamiliar" Target="Vixy_ThicksaltFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Thicksalt?~
+        Do you feel me here?~
+        Am I still touchlost to you?~
+        And you? How is the allway?
+      </text>
+    </choice>
+    <node ID="Vixy_ThicksaltFamiliarReply">
+      <text IfHaveState="ElseingComplete">
+        {{emote|*Thicksalt chimes in bright, settled tones.*}} I feel you here, =name=. You hardlifted and backbore the chime of bright Tau, and the afterfeel of it is in my allway still.~
+        Not touchlost. Never were, I think. You thumped my crystal arms before you knew what thumping was for, and that is its own kind of speech.~
+        The allway is warmer. One brickword changed in the towerful poem and the whole of it reads different. Yours was the brickword.
+      </text>
+      <text Priority="-1">
+        {{emote|*Thicksalt chimes a single, outstretched tone.*}} I feel you here, friend. The naming act is imponderable, and yet I have your name, and I turn it over like a smooth thing found at windfall.~
+        I feel you. Who else thumps my crystal arms and kicksofts me at windfall? Nobody else. Only the one whose name I have.~
+        Touchlost, no. You press on the hardflats and you wait to be felt, which most wildlimbed things never learn to do.~
+        The allway is the allway. Bat the air with your wildlimbs and I will feel it, =name=, and know which of the passing shapes you are.
+      </text>
+      <choice Target="Start">
+        <text>Then I'll thump them again.~Live and drink, Thicksalt.~I'll press the hardflats.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Tammuz. Stammers, quivers, and asks me to agree with him - "Would you please agree with that?"
+       Calls me madhand and moon king. Who becomes, and who is Twofirm even in -then. -->
+  <conversation ID="Tammuz">
+    <choice ID="Vixy_TammuzFamiliar" Target="Vixy_TammuzFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Tammuz?~
+        Still becoming?~
+        Am I still the madhand?~
+        And you? Are you all right?
+      </text>
+    </choice>
+    <node ID="Vixy_TammuzFamiliarReply">
+      <text IfHaveState="ElseingComplete">
+        {{emote|*Tammuz chimes a small, steadier tone.*}} You. You d-did the thing. The elseing hand. I w-was frightened and you were not, and, and I would like to have been you for a m-moment. Would you agree with that? Please agree.~
+        S-still becoming. B-but becoming toward, now, and not just away. That is d-different. Th-that is your doing, =name=.~
+        Not madhand. N-not any more. I have to c-call you something and your name is, is the smallest and h-heaviest thing to call you. So. =name=.
+      </text>
+      <text Priority="-1">
+        {{emote|*Tammuz chimes a broad, wavering tone.*}} You! P-purpose-driven. You came b-back, which madhands do not usually, do they? W-would you please agree with that?~
+        Becoming, becoming. Alw-ways becoming and never b-become. It is t-tiring. It is less tiring when s-somebody asks after the becoming.~
+        M-madhand, yes. But a m-madhand with a name is, is a n-nearly ordinary thing, and I find I am, I am l-less afraid of ordinary things.~
+        A-all right? Oh. Oh, n-nobody asks Tammuz that. I do not have a-an answer prepared. C-could you ask me again next time, and I will h-have one?
+      </text>
+      <choice Target="Start">
+        <text>I'll ask again next time.~I agree.~Live and drink, Tammuz.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Agyra. A watcher of the Tomb of the Eaters, mopango, and the one of the seven who is not at
+       Chavvah. Ey uses ey/em/eir and explains it unprompted; ey speaks in thee-and-thou; ey holds
+       that answering questions giveth em satisfaction. Hospitality is the whole of eir answer. -->
+  <conversation ID="Agyra">
+    <choice ID="Vixy_AgyraFamiliar" Target="Vixy_AgyraFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How dost thou fare, Agyra?~
+        Is the tomb well watched?~
+        Hast thou need of anything?~
+        And thee? How art thou?
+      </text>
+    </choice>
+    <node ID="Vixy_AgyraFamiliarReply">
+      <text Priority="-1">
+        {{emote|*Agyra glows softly.*}} I fare well, =name=. Thou art no longer a bare acquaintance, and I find the word for what thou art instead is simply thy name. Our tongue hath others; none of them fit.~
+        The tomb is watched, as ever. Twelve strata and ten, and a coterie who love close quarters. Thou hast walked them and come back, which few do, and fewer twice.~
+        I have need of nothing, and I thank thee for the asking. Answering thy questions giveth me satisfaction; being asked one in return giveth me something I have no credo for yet.~
+        I am well. We mopango are witnesses of the past, and it pleaseth me to witness somebody arrive who was a stranger and is not. Sit, an thou wilt. The light is kind here.
+      </text>
+      <choice Target="Start">
+        <text>I'll sit a while.~Live and drink, Agyra.~The light is kind.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>

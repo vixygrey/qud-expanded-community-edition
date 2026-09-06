@@ -8866,6 +8866,49 @@ highest-priority text or picks at random among those tied at the top. That ambig
 unresolved here; it is simply not load-bearing.
 
 
+### 61.5m The seventh cast finishes the seven this mechanism was built for
+
+§57.1 identified seven creatures who can perform a water ritual **and** carry a hand-written
+introduction in vanilla: Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. That set is why
+`Vixy_Introductions` watches from the conversation level instead of hooking a list of IDs, and why
+§57.2's gate falls open rather than shut. Une was written with Yd Freehold in §61.5g. These are the
+other six.
+
+**Every one of them reaches the marker for free** — the best coverage of any cast, and not a
+coincidence: they are the population `Vixy_Introduced` was designed around. Vanilla wrote each of them
+a naming exchange, which is exactly what §57.1's scan detects.
+
+**Naming is their subject and not merely their mechanism**, which is why they were worth saving for a
+cast of their own rather than being split across two geographies. Thicksalt's `Name` node is the best
+statement of this feature's premise that vanilla contains:
+
+> *"The naming act is imponderable. So Tau called me Thicksalt, one brickword in a towerful poem whose
+> everyshape I forget, but whose flushing of Soft in afterfeel I am in allway."*
+
+Tammuz is *"Who becomes. Who is Twofirm even in -then."* Tikva will not say *I* at all, and calls
+itself *"it, low and humble."*
+
+**And each has already given me a name that is not my name**, which is §61.5k's criterion in its
+sharpest form. Tammuz calls me *madhand* and *moon king*. Tzedech calls me *Entity*. Miryam calls me
+*-elser* once the -elseing is done. Thicksalt knows me as the one who thumps his crystal arms and
+kicksofts him at windfall. `kendren` was one word shared by a culture; this is six epithets, one
+apiece, and every answer here trades its epithet for the name.
+
+Five chime-voices and no shared register, again — Miryam mourns in low tones, Tzedech rings a
+bone-shaking alarm and will not be calmed, Tikva looks into the light so it need not look at anything
+else, Thicksalt has a tactile vocabulary of his own, Tammuz stammers and asks me to agree with him.
+
+**Agyra is the sixth and is not at Chavvah**, but watching the Tomb of the Eaters. Ey uses ey/em/eir,
+which ey explains unprompted — *"Ey, em, eir, eirs, emself. Thusly do we call ourselves and one
+another"* — and speaks in thee-and-thou through `=ifplayerplural:=`. Eir answer is hospitality, which is what ey is for.
+
+The five at Chavvah answer differently once the -elseing is done, keyed on
+`IfHaveState="ElseingComplete"` over Thah's `Priority="-1"` catch-all, exactly as §61.5l set out.
+**Agyra gets the catch-all alone**, and that is a decision rather than an omission: eir states are
+about which of the eaters was given a voice, and writing em a grief vanilla does not write would be
+worse than leaving em one good answer.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes

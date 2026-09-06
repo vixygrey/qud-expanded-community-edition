@@ -55,6 +55,20 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **The people you can share water with know your face** (#633). Miryam, Tzedech, Tikva, Thicksalt,
+  Tammuz and Agyra each gain a question you can only ask once you have given your name.
+
+  These six and Warden Une are the only creatures in Qud who will share water with you *and* were
+  written a way to tell you their names — which is the group this whole idea started from. Une was
+  done with Yd Freehold; this finishes the set.
+
+  Naming is their subject as much as their mechanism. Thicksalt will tell you the naming act is
+  imponderable, and that Tau called him Thicksalt, one brickword in a towerful poem. Each of them had
+  already made up a name for you — madhand, Entity, the one who thumps my crystal arms — and each
+  now trades it for yours.
+
+  The five at Chavvah answer differently once you have done the last kindness for Tau.
+
 - **Bey Lah knows your face** (#633). Angohind, Isahind, Kesehind, Warden Neelahind, Hindriarch Keh
   and Eskhind each gain a question you can only ask once you have given your name — and this is the
   first group whose answers change with how the village is doing.
