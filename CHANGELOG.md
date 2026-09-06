@@ -36,6 +36,19 @@ recorded because contributors need them, not because subscribers do.
   not suit a snapjaw, and nothing in the game separates the two — the ordinary villagers most worth
   deepening are built exactly like the beasts.
 
+### Fixed
+
+- **You could introduce yourself to something that only growls** (#881). Name a companion animal and
+  it gained a proper name, which was all the introduction asked for — so you could tell your name to
+  a dog whose entire conversation is *\*soft growling\**, and it answered you in words.
+
+  It now uses the same test the ask-a-name question has always used: if the conversation says nothing
+  that is not an emote, nobody is speaking, and neither half of a naming exchange is offered. People
+  who deliberately stay silent — Sparafucile, Oboroqoru — were already covered by it.
+
+  Sharing water is never hidden by this. Where a name cannot pass, the ritual simply stops waiting
+  for one.
+
 ### Changed
 
 - **Introducing yourself no longer waits on the water-ritual option** (#633). Saying your name

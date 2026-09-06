@@ -67,6 +67,13 @@ namespace XRL.World.Conversations.Parts
             // vanilla already wrote one for.
             if (Vixy_Introductions.AlreadyOffered()) return true;
 
+            // Nothing that only growls. #881, and the same test §40 applies to the question - the
+            // companion rename flow calls GiveProperName(Force: true), so a dog you have named
+            // carries a proper name while its conversation is still {{emote|*soft growling*}}.
+            // Checked after AlreadyOffered because a conversation vanilla wrote an introduction
+            // into is a person whatever its start node looks like.
+            if (Vixy_AskName.SaysNothing(ConversationUI.StartNode)) return false;
+
             // Giving my name is flavour and changes no mechanic, so charter rule 6 says it does not
             // earn an option and it is always on - #633. The named are reachable through this part
             // unconditionally; the nameless are reachable through Vixy_AskName, which has its own
@@ -103,6 +110,12 @@ namespace XRL.World.Conversations.Parts
 
             if (speaker.HasPropertyOrTag("NoAskName")) return false;
             if (Done(speaker)) return false;
+
+            // Nothing that only growls - #881. A renamed companion has a proper name and the
+            // Animals conversation, and "Rex. I will remember it." from something that answers
+            // {{emote|*soft growling*}} is worse than no feature, which is §40's own reasoning
+            // about the question this mirrors.
+            if (Vixy_AskName.SaysNothing(ConversationUI.StartNode)) return false;
 
             // Vanilla writes its own introductions into twenty-six conversations. Where one is
             // already on offer, mine would stand beside it saying the same thing.
