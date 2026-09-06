@@ -67,7 +67,12 @@ namespace XRL.World.Conversations.Parts
             // vanilla already wrote one for.
             if (Vixy_Introductions.AlreadyOffered()) return true;
 
-            return speaker.HasProperName ? Raven_Options.WaterBond : Raven_Options.AskName;
+            // Giving my name is flavour and changes no mechanic, so charter rule 6 says it does not
+            // earn an option and it is always on - #633. The named are reachable through this part
+            // unconditionally; the nameless are reachable through Vixy_AskName, which has its own
+            // option, so if that is off an unnamed creature genuinely cannot be introduced to and
+            // the ritual gate must fall open.
+            return speaker.HasProperName || Raven_Options.AskName;
         }
 
         /// <summary>Whether a name has already passed between us.</summary>
@@ -85,7 +90,12 @@ namespace XRL.World.Conversations.Parts
         {
             GameObject speaker = The.Speaker;
 
-            if (!Raven_Options.WaterBond || speaker == null) return false;
+            // No option check. Giving somebody my name changes no mechanic, so rule 6 leaves it
+            // always on - #633 needs the marker on Elder Irudad and Warden Yrame, neither of whom
+            // vanilla wrote an introduction for, and gating it behind the water-ritual option would
+            // have put half that cast behind a switch that has nothing to do with them.
+            // OptionQudExpandedCEWaterBond still gates the ritual consequence in Vixy_RitualGate.
+            if (speaker == null) return false;
             if (ConversationUI.StartNode == null || !ConversationUI.StartNode.AllowEscape) return false;
 
             // The mirror of Vixy_AskName's test: it takes the nameless, this takes the named.

@@ -353,4 +353,118 @@
       </choice>
     </node>
   </conversation>
+  <!-- People who know my name talk to me differently. #633.
+
+       The issue asked for dialogue that opens up over repeat visits, and the counter vanilla keeps
+       for that - `ConversationCount`, incremented at ConversationScript.cs:160 - cannot be read from
+       XML at all: `IfSpeakerHaveProperty` is an existence test, and the increment fires in
+       `BeginConversationEvent` before any choice list is composed, so it is already set on the first
+       meeting. `docs/LESSONS.md` has the full account. Counting is also the wrong key: nothing can
+       tell a player they are being tallied, so "come back later" stays unguessable, which is the
+       failure the issue itself warns about. Giving somebody my name is an act I choose and remember,
+       and `Vixy_Introduced` already records it per-creature.
+
+       These are written per NPC rather than distributed from BaseConversation, and the register is
+       why. A snapjaw says "libm drin. ehehehe" and a dromad says "our chests are drawn"; one line
+       cannot be true in both mouths. There is no test that separates them either - 102 of vanilla's
+       200 conversations are a single node with no live choice, and that set holds Snapjaw and
+       Goatfolk *and* JoppaFarmer, GenericMerchant and MerchantGuard, so any cut sharp enough to
+       exclude a beast excludes the thin villagers this exists to deepen. #881 tracks the same
+       problem in `Vixy_Introduce`.
+
+       Vanilla already writes this exact beat, keyed to errands: Mehmet's Welcome carries
+       `<text IfFinishedQuest="What's Eating the Watervine?">` full of `=name=` against an
+       `IfNotHaveQuest` line that calls me "traveller". What it never does is key it to a
+       relationship, which is the whole of what these four add.
+
+       No Ordinal, deliberately. `IConversationElement.Ordinal` sets `Priority = -Ordinal` and the
+       list sorts by descending Priority, so an absent Ordinal is Priority 0 and sits with the NPC's
+       own choices - ahead of the distributed ones at 980 and above, and after the questions vanilla
+       wrote. A merged choice is appended, and the sort is stable, so each lands at the foot of that
+       person's own list.
+
+       No option. Charter rule 6 as settled in #663: this is flavour that changes no mechanic, and an
+       option nobody would turn off costs a menu line, a helptext and a branch forever. -->
+
+  <!-- Tam. Dromad caravaneer, formal and warm, inverted syntax - "We are greeted!", "It is a
+       pleasure to know this". His own `I am =name=. Who are you?` sets the marker through
+       Vixy_Introductions, so this needs nothing else from him. -->
+  <conversation ID="Tam">
+    <start ID="Welcome">
+      <choice ID="Vixy_TamFamiliar" Target="Vixy_TamFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+        <text>
+          How does the trade find you, Tam?~
+          How do you fare, Tam?
+        </text>
+      </choice>
+    </start>
+    <node ID="Vixy_TamFamiliarReply" Inherits="Welcome">
+      <text>
+        It is not the trade, =name=. It is that you return, and the returning is the thing. My people count a road by those who walk it twice.~
+        Well enough, =name=, and better for the asking. The salt teaches us to mark who comes back.
+      </text>
+    </node>
+  </conversation>
+
+  <!-- Elder Irudad. Elliptical, leading dashes, expansive - "-mm. Mmm?", "-this? The oasis-hamlet."
+       He has no introduction of his own, so the marker reaches him through Vixy_Introduce, which
+       #633 took off the water-ritual option for exactly this reason. His nodes inherit Start. -->
+  <conversation ID="Irudad">
+    <start ID="Welcome">
+      <choice ID="Vixy_IrudadFamiliar" Target="Vixy_IrudadFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+        <text>
+          How are you keeping, Elder?~
+          And how is it with you, Elder?
+        </text>
+      </choice>
+    </start>
+    <node ID="Vixy_IrudadFamiliarReply" Inherits="Start">
+      <text>
+        -mm. You again, =name=. The village counts strangers, and I count faces. Yours has become a face.~
+        -me? Old, and sat in the cool. But you come back, =name=, and a thing that comes back is a thing the hamlet learns to expect.
+      </text>
+    </node>
+  </conversation>
+
+  <!-- Warden Yrame. Clipped, a-prefixed, friendly the way a threat is friendly - "Stay peacelike,
+       and we stay friends, hyeh?" She is the best case in the game for this, because she says to my
+       face that she will not do it: "I en't here for chat." Like Irudad she has no introduction of
+       her own. Her start is a node rather than a start element, and her nodes inherit Start. -->
+  <conversation ID="WardenYrame">
+    <node ID="Start">
+      <choice ID="Vixy_YrameFamiliar" Target="Vixy_YrameFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+        <text>
+          Anything worth knowing, Warden?~
+          Anything I should watch for?
+        </text>
+      </choice>
+    </node>
+    <node ID="Vixy_YrameFamiliarReply" Inherits="Start">
+      <text>
+        Hm. Suppose you en't trouble, so I'll spend the breath. Keep off the marsh a-night - croc don't care whose name I know.~
+        I'll say this once. Them as come back a-Joppa twice, I learn their names. Them as come back thrice, I worry when they don't.~
+        You still upright, so someone's doing it right. Keep at that.
+      </text>
+    </node>
+  </conversation>
+
+  <!-- Mehmet. Waterhand, tastes the wind - "A tongue can taste a hundred kinds of wind, y'know?",
+       "Anywhile". His own `MehmetIntroduce` sets the marker. His reply node inherits Welcome, as
+       his `Name` node does. -->
+  <conversation ID="Mehmet">
+    <start ID="Welcome">
+      <choice ID="Vixy_MehmetFamiliar" Target="Vixy_MehmetFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+        <text>
+          What does the wind taste like today?~
+          Anything on the wind, Mehmet?
+        </text>
+      </choice>
+    </start>
+    <node ID="Vixy_MehmetFamiliarReply" Inherits="Welcome">
+      <text>
+        Aye, I know your step now, =name=. Tastes different when a stranger comes down the path - sharper, like. Yours has gone soft as the vine.~
+        Salt and a little green. Same as ever. But I taste you coming these days, =name=, and that's new.
+      </text>
+    </node>
+  </conversation>
 </conversations>
