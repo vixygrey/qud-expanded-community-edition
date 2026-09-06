@@ -55,6 +55,14 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **The Six Day Stilt knows your face** (#633). Warden Esthers, Lulihart and Tszappur each gain a
+  question you can only ask once you have given your name, answered in their own voice.
+
+  Warden Esthers will tell you flatly that she does not keep a tally of who comes and goes on the
+  Stiltgrounds. Ask her once she knows you and she admits she has started keeping one, of you, and
+  would rather it did not go to your head. Lulihart already said the slynth stop by his tent to smoke
+  with him *as you do*, so his answer is to a friendship the game had already granted you.
+
 - **Yd Freehold knows your face** (#633). Mak, Une and Goek each gain a question you can only ask
   once you have given your name, answered in their own voice. Mak reclassifies you from *whelp* to a
   different order of nuisance and declines to say which. Une keeps a private tally of who stops

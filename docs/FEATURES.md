@@ -8771,6 +8771,44 @@ exclusion on the axis rather than on the voice, and it would be answered by a di
 than by better writing.
 
 
+### 61.5i The fifth cast is the Six Day Stilt, and one of them nearly went unwritten
+
+Three people — **Warden Esthers, Lulihart and Tszappur** — and the smallest cast so far, but the
+Stilt is the place in Qud you pass through most often, so the ratio of writing to visits is the best
+of any of them.
+
+**Warden Esthers was very nearly excluded as mute.** My screen implemented §26's test by reading each
+conversation's `node/text` elements, and hers keeps its words in the two shapes it did not read: bare
+character content on the node, and a `<start>` element rather than `<node ID="Start">`. She scored
+zero words. She has a full greeting and six choices, and she stands at the gate of the busiest
+settlement in the game. `docs/LESSONS.md` records why a test that disagrees with the truth about
+exactly one conversation in the file is worse than that rate makes it sound — the failure removes
+somebody, and a removal makes no noise.
+
+**Two of the three had my half of the exchange written for them already.** Asked what is in the
+tents, Warden Esthers snaps:
+
+> *"Are you mad? You think I keep a tally of every shopkeeper that steps foot on the Stiltgrounds?
+> They come and go as they please."*
+
+So the line to write is the one where she concedes she has started keeping a tally after all, of one
+person, and dislikes the precedent. And Lulihart's `SlynthSettled` node says the slynth *"stop by my
+tent from time to time to visit and smoke with me, **as you do**"* — vanilla has already written me as
+a repeat visitor to his tent, so this answers a relationship the game asserts rather than inventing
+one. Une's `Snub` node in §61.5g was the first of these; there are now three, and they are the best
+material the feature has found.
+
+Tszappur needs no anchor and gets none. He offers to brood on the life of Resheph with any pilgrim
+who will stand still for it, so his shift is simply that he stops pitching and talks.
+
+Two incidental corrections to my own reading, neither of which changed the cast. **Lulihart inherits
+`BaseHindren`**, not the slynth line his quest nodes imply — he is a hindren drifter at the Stilt
+whose kin are at Bey Lah, which is where this feature goes next. And his conversation's
+`Inherits="BaseSlynthMayor"` is not a mayor's voice: twelve conversations inherit it, including
+Irudad, Otho, Nuntu and Goek, so it is the slynth-settlement quest boilerplate and per-person merging
+stays correct.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes

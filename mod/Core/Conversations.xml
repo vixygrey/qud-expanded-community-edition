@@ -890,4 +890,107 @@
       </choice>
     </node>
   </conversation>
+  <!-- The fifth cast is the Six Day Stilt. #633.
+
+       Three people, and the smallest cast yet, but the Stilt is the place in Qud you pass through
+       most, so the ratio of writing to visits is the best of any of them. Warden Esthers greets me at
+       the gate every single time.
+
+       She nearly did not get written at all. My screen for §26's mute test read each conversation's
+       `node/text` elements, and hers keeps its words in the two shapes I had not implemented - bare
+       character content on the node, and a `<start>` element rather than `<node ID="Start">`. She
+       scored zero words and I wrote her down as mute. She has a full greeting and six choices. The
+       two tests disagree about exactly one conversation in the whole file and it was this one;
+       `docs/LESSONS.md` carries why that is worse than a low error rate sounds.
+
+       **Two of the three come with vanilla having written my half of the exchange already.** Warden
+       Esthers, asked about the tents, snaps "Are you mad? You think I keep a tally of every shopkeeper
+       that steps foot on the Stiltgrounds?" - so the line to write is the one where she admits she has
+       started keeping one, of me, and is not pleased about the precedent. Lulihart's `SlynthSettled`
+       node says the slynth "stop by my tent from time to time to visit and smoke with me, as you do."
+       Vanilla has already established me as a repeat visitor to his tent, so this answers a
+       relationship the game asserts rather than inventing one.
+
+       Tszappur is the quiet one and needs no anchor. He offers to brood on the life of Resheph with
+       any pilgrim who will stand still for it; the shift is that he stops pitching and simply talks.
+
+       Lulihart inherits `BaseHindren`, not the slynth line his quest nodes suggest - a hindren
+       drifter at the Stilt whose kin are at Bey Lah. His conversation inherits `BaseSlynthMayor`,
+       which turns out to be shared by twelve conversations including Irudad, Otho, Nuntu and Goek, so
+       it is the slynth-settlement quest boilerplate rather than a mayor's voice. Per-person merging
+       stays correct. -->
+
+  <!-- Warden Esthers. Plain, funny, and pointedly not devout for somebody guarding a cathedral -
+       "Then you're not of the faith yourself, huh? Me neither." Her refrain to everyone who walks in
+       is *stay peaceful*, so the warmth has to arrive without displacing the job. -->
+  <conversation ID="WardenEsthers">
+    <choice ID="Vixy_EsthersFamiliar" Target="Vixy_EsthersFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Still keeping the peace?~
+        How do you fare, warden?~
+        Anything I should know before I go in?~
+        Busy day on the Stiltgrounds?
+      </text>
+    </choice>
+    <node ID="Vixy_EsthersFamiliarReply">
+      <text>
+        Keeping it. Easier some days than others. You're one of the easy ones now, =name=, which I'll thank you not to spoil.~
+        I told you I don't keep a tally of who comes and goes. Turns out I keep one of you. Don't let it go to your head.~
+        Nothing you don't know. Stay peaceful, mind - I say that to everyone, and I've noticed I say it to you out of habit rather than warning.~
+        Busy. Always busy. Pilgrims all day and not one of them knows my name. Then there's you, and I find I don't mind the door so much.
+      </text>
+      <choice Target="Start">
+        <text>I'll stay peaceful.~I won't spoil it.~Good to see you, warden.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Lulihart. A hindren drifter who calls himself a pariah and speaks in wind and breath - "the
+       wind will blow at their backs", "new voices carry on the salt breeze." Warm, but from a
+       distance he keeps on purpose. -->
+  <conversation ID="Lulihart">
+    <choice ID="Vixy_LulihartFamiliar" Target="Vixy_LulihartFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Lulihart?~
+        Is the wind kind lately?~
+        Room by the tent for one more?~
+        And you? How are you keeping?
+      </text>
+    </choice>
+    <node ID="Vixy_LulihartFamiliarReply">
+      <text>
+        Well enough. The drifters have no hierarchy and no roll of names, so I keep my own, quietly. Yours has been on it a while, =name=.~
+        Kind enough. It carries little now but salt and the smell of the tents. Sit and smoke a while, if you like. You have before.~
+        There is always room. That is nearly the whole of what a pariah has to offer, and I offer it gladly to the ones who come back.~
+        I am a drifter, =name=. I am kept by whoever thinks to ask, and lately that has been you more often than anyone.
+      </text>
+      <choice Target="Start">
+        <text>I'll sit a while.~The wind is kind, then.~Live and drink, Lulihart.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Tszappur. A priest of Resheph outside the marble, tending a centuries-old shrine to the Coiled
+       Lamb. Gentle, unhurried, devotional without pressing. -->
+  <conversation ID="Tszappur">
+    <choice ID="Vixy_TszappurFamiliar" Target="Vixy_TszappurFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, priest?~
+        Peace and health, Tszappur.~
+        Is the shrine well kept?~
+        Have you been well?
+      </text>
+    </choice>
+    <node ID="Vixy_TszappurFamiliarReply">
+      <text>
+        Peace and health, =name=. I ask pilgrims to brood with me and most walk on, which is their right. You stopped. I have not forgotten it.~
+        The shrine is old and small and mine to keep, and it asks little. I am well. It is a kindness to be asked by somebody whose name I know.~
+        Well, and better for the asking. Resheph was a healer before he was a sultan. I try to remember which of those is worth imitating.~
+        I have been well. Sit, if you have the time - and if you have not, that is no sin either. You will come by again.
+      </text>
+      <choice Target="Start">
+        <text>Peace and health.~I will, at that.~Live and drink, priest.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
