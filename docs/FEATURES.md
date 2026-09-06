@@ -4548,7 +4548,8 @@ to be told a name, sitting under that and answered in words, would be worse than
 This is very likely why `GeneralAskName` ships off.
 
 So the choice also asks whether anything is being *said*: strip every `{{emote|…}}` span from the
-conversation's start node, and if nothing but whitespace is left, hide the question.
+conversation, and if nothing but whitespace is left anywhere the speaker's own words appear, hide
+the question.
 
 **Asked of the conversation, not the creature**, which is what keeps it from rotting. It needs no
 blueprint data, a future Qud patch that adds a chittering thing gets the right answer without this
@@ -4572,7 +4573,21 @@ whose closing braces are not the emote's.
 Birds come out as speaking, which is the right answer on the evidence: `Birds` and `WaterBirds`
 caw and then emit `=MARKOVCORVIDSENTENCE=`. Qud gives them sentences, so they can be asked.
 
-A start node with no text at all reads as *not* silent, deliberately — emptiness means the text is
+**It reads the whole conversation, not the greeting, and #885 is why.** Four of vanilla's
+characters open on an emote and then talk at length — Lebah, Tammuz, Neek and the Chavvah chimes —
+so a start-node test called them mute. It was right about the other 28 and wrong about those four,
+and once #881 extended it to `Vixy_Introduce` it hid the introduction from Neek outright.
+
+**The catch is that every conversation carries `BaseConversation`'s nodes**, so asking whether a
+conversation says anything anywhere finds `Vixy_Introduced` — *"=name=. I will remember it."* — in a
+growling animal's and lets it through. An XML conversation inherits those nodes; a runtime-built one
+is handed them by `AddDynamicShim`'s `Conversation.Children.AddRange(BaseConversation.Children)`.
+So the test skips every node ID `BaseConversation` contributed, read from the game's own registry
+rather than listed — a node Qud adds excludes itself, and so do this fork's, since all of its shared
+replies are declared inside `BaseConversation`. Measured against every vanilla conversation: 28
+silent, 4 speaking, no change to the animals.
+
+A node with no text at all reads as *not* silent, deliberately — emptiness means the text is
 built somewhere this cannot see, and hiding the question on a vacuous truth would suppress it
 wherever a conversation is assembled at runtime.
 
@@ -8117,8 +8132,8 @@ not happened**. Hiding this wrongly strands a questline; showing it wrongly cost
 
 ### 57.2a Nothing that only growls, and one thing vanilla settles rather than this
 
-`Vixy_Introduce` reuses §40's `SaysNothing` — strip every `{{emote|…}}` span from the start node,
-and if nothing but whitespace remains, offer nothing. #881.
+`Vixy_Introduce` reuses §40's `SaysNothing` — strip every `{{emote|…}}` span from the speaker's own
+nodes, and if nothing but whitespace remains, offer nothing. #881, corrected in #885.
 
 **The way in was the companion rename flow**, which calls `GiveProperName(name, Force: true)` and
 sets `Renamed`. So a dog you have named carries a proper name while its conversation is still
@@ -8130,14 +8145,12 @@ never got the mirror of its test.
 The test is `internal` on `Vixy_AskName` rather than copied, because the reasoning and the
 measurement live there.
 
-**Ordering saves two people who greet you with an emote and then talk.** Run across vanilla the test
-silences 32 conversations, and two of them are not animals: `Tammuz`, one of the seven
-ritual-capable people §57.1 lists, and `Lebah`, whose *"I am =name=. What is your name?"* is quoted
-in #572. Both open on an emote and both carry a hand-written introduction — the test reads the
-**start node's text**, and a person can greet you wordlessly and still speak. `Possible()` checks
-`AlreadyOffered()` *before* the emote test for exactly that reason, so a conversation vanilla wrote
-an introduction into is a person whatever its greeting looks like, and the ritual gate is unaffected
-for them.
+**Two people used to be saved by ordering alone, and now they are correct outright.** `Tammuz`,
+one of the seven ritual-capable people §57.1 lists, and `Lebah`, whose *"I am =name=. What is your
+name?"* is quoted in #572, both open on an emote and then talk. A start-node test called them mute
+and only `Possible()`'s `AlreadyOffered()` check — which runs first — kept the ritual gate right for
+them. #885 fixed the test itself, so they no longer depend on that luck; the ordering stays because
+a conversation vanilla wrote an introduction into is a person whatever its greeting looks like.
 
 **The other half of #881 turned out not to be a defect.** A legendary snapjaw does carry a proper
 name — `HeroMaker` calls `GiveProperName` and only swaps the conversation when a `HeroConversation`

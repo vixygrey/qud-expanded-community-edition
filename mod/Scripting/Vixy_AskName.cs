@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using QudExpandedCE;
 using XRL.UI;
@@ -56,8 +57,67 @@ namespace XRL.World.Conversations.Parts
     /// Harmony.
     /// </para>
     /// </remarks>
+    [HasModSensitiveStaticCache]
     public class Vixy_AskName : IConversationPart
     {
+        /// <summary>
+        /// The node IDs <c>BaseConversation</c> puts into every conversation in the game.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b><see cref="SaysNothing"/> has to skip these or it answers the wrong question</b> —
+        /// #885. Every built conversation carries <c>BaseConversation</c>'s nodes: an XML one
+        /// inherits them, because <c>ConversationLoader</c> sets <c>Inherits="BaseConversation"</c>
+        /// on everything it reads and <c>Bake</c> merges the children in; a runtime-built one is
+        /// handed them outright by <c>AddDynamicShim</c>, which ends with
+        /// <c>Conversation.Children.AddRange(BaseConversation.Children)</c>.
+        /// </para>
+        /// <para>
+        /// So a growling animal's conversation contains <c>Vixy_Introduced</c> — <em>"=name=. I
+        /// will remember it."</em> — and asking whether the conversation says anything anywhere
+        /// finds words and lets it through, undoing #881.
+        /// </para>
+        /// <para>
+        /// <b>Read from the game's own registry rather than listed, which is what makes it age.</b>
+        /// A node Qud adds to <c>BaseConversation</c> excludes itself, and so do this fork's, since
+        /// <c>Vixy_Introduced</c>, <c>Vixy_MerchantFamiliarReply</c>,
+        /// <c>Vixy_MakersMarkAcknowledged</c> and <c>Vixy_WaterRemembered</c> are all declared
+        /// inside it. §61's per-NPC replies live in Tam's and Warden Yrame's own conversations and
+        /// so still count as those speakers' words, which is correct.
+        /// </para>
+        /// <para>
+        /// Cleared when the enabled mod set changes, the same way vanilla holds
+        /// <c>Conversation._Blueprints</c> — this is derived from that dictionary and must not
+        /// outlive it.
+        /// </para>
+        /// </remarks>
+        [ModSensitiveStaticCache]
+        private static HashSet<string> BaseConversationNodes;
+
+        /// <summary>The cached set, built on first use.</summary>
+        private static HashSet<string> ContributedNodes()
+        {
+            if (BaseConversationNodes != null)
+            {
+                return BaseConversationNodes;
+            }
+
+            HashSet<string> ids = new HashSet<string>();
+            if (Conversation.Blueprints != null
+                && Conversation.Blueprints.TryGetValue("BaseConversation", out var Base)
+                && Base?.Children != null)
+            {
+                foreach (ConversationXMLBlueprint child in Base.Children)
+                {
+                    if (!child.ID.IsNullOrEmpty())
+                    {
+                        ids.Add(child.ID);
+                    }
+                }
+            }
+            return BaseConversationNodes = ids;
+        }
+
         public override bool WantEvent(int ID, int Propagation)
         {
             return base.WantEvent(ID, Propagation)
@@ -116,7 +176,7 @@ namespace XRL.World.Conversations.Parts
                 return false;
             }
 
-            if (SaysNothing(ConversationUI.StartNode))
+            if (SaysNothing(ConversationUI.CurrentConversation))
             {
                 return false;
             }
@@ -163,34 +223,54 @@ namespace XRL.World.Conversations.Parts
         /// reasoning and the measurement are, rather than copied.
         /// </para>
         /// </remarks>
-        internal static bool SaysNothing(Node Start)
+        internal static bool SaysNothing(Conversation Current)
         {
-            if (Start?.Texts == null)
+            if (Current?.Elements == null)
             {
                 return false;
             }
 
+            HashSet<string> contributed = ContributedNodes();
             bool said = false;
 
-            foreach (ConversationText text in Start.Texts)
+            foreach (IConversationElement element in Current.Elements)
             {
-                string raw = text?.Text;
-                if (raw.IsNullOrEmpty())
+                if (!(element is Node node))
                 {
                     continue;
                 }
 
-                foreach (string fragment in raw.Split('~'))
+                // Not the speaker's words. See BaseConversationNodes.
+                if (!node.ID.IsNullOrEmpty() && contributed.Contains(node.ID))
                 {
-                    if (fragment.Trim().Length == 0)
+                    continue;
+                }
+
+                if (node.Texts == null)
+                {
+                    continue;
+                }
+
+                foreach (ConversationText text in node.Texts)
+                {
+                    string raw = text?.Text;
+                    if (raw.IsNullOrEmpty())
                     {
                         continue;
                     }
 
-                    said = true;
-                    if (WithoutEmotes(fragment).Trim().Length > 0)
+                    foreach (string fragment in raw.Split('~'))
                     {
-                        return false;
+                        if (fragment.Trim().Length == 0)
+                        {
+                            continue;
+                        }
+
+                        said = true;
+                        if (WithoutEmotes(fragment).Trim().Length > 0)
+                        {
+                            return false;
+                        }
                     }
                 }
             }

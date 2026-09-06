@@ -52,6 +52,15 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Neek would not let you introduce yourself** (#885). Nor would the Chavvah chimes, and the reason
+  was a test of mine rather than anything about them: it decided whether somebody speaks by looking at
+  their greeting, and those two greet you with a gesture and then talk at length. Lebah and Tammuz
+  were in the same position and only escaped by accident.
+
+  It now asks what somebody says across the whole conversation rather than at hello. Animals are
+  unaffected — the shared lines every conversation carries are excluded, so a dog that growls is
+  still a dog that growls.
+
 - **You could introduce yourself to something that only growls** (#881). Name a companion animal and
   it gained a proper name, which was all the introduction asked for — so you could tell your name to
   a dog whose entire conversation is *\*soft growling\**, and it answered you in words.
