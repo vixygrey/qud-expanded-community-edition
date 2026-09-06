@@ -55,6 +55,19 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **The watchers of the tomb know your face** (#633). Lebah, Doyoba, Gyamyo, Yona, Dadogom and
+  Vivira each gain a question you can only ask once you have given your name.
+
+  Every mopango keeps a personal credo and none of them will tell you what it means — asking is
+  rude, and they will say so with varying degrees of patience. Yona informs you that only a fool
+  asks. So none of these answers explains a credo. They are what you get instead of an explanation,
+  which is the thing they were never going to give a stranger.
+
+  Free one of the children and its watcher answers differently. Only one can ever be freed, so only
+  one of them ever will.
+
+  Lebah, who has barely spoken since communing with the repulsive device, does not curl up.
+
 - **The people you can share water with know your face** (#633). Miryam, Tzedech, Tikva, Thicksalt,
   Tammuz and Agyra each gain a question you can only ask once you have given your name.
 

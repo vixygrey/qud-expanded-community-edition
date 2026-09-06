@@ -8909,6 +8909,55 @@ about which of the eaters was given a voice, and writing em a grief vanilla does
 worse than leaving em one good answer.
 
 
+### 61.5n The eighth cast is a culture that wrote the boundary down
+
+Lebah, Doyoba, Gyamyo, Yona, Dadogom and Vivira — the rest of Agyra's coterie at the Tomb of the
+Eaters. Agyra was written with the water-siblings in §61.5m because ey is one of §57.1's seven; these
+are the other six watchers.
+
+**Their culture forbids the obvious question, and that is the anchor.** Vivira states it outright:
+*"asking the meaning of a credo is considered impolite among mopango."* Every watcher has a credo and
+every one refuses to explain it, in character:
+
+| | credo | how the refusal sounds |
+|---|---|---|
+| **Doyoba** | *"Suffering breedeth in still water."* | *"Wouldst I shall chew your food for you as well?"* — then apologises for the sharpness |
+| **Gyamyo** | *"Reconciliation without understanding is a salt poultice."* | *"Oh dear."* |
+| **Yona** | *"Anyone may strike a slumberling once."* | *"Only a fool asketh after the meaning of a credo."* |
+| **Dadogom** | *"Be still and know."* | *"I cannot think on thy behalf."* |
+| **Vivira** | *"Form needeth not follow function."* | states the taboo itself |
+| **Lebah** | *"An thou art swallowed by the Gyre, sing thee to the last."* | explains it plainly — refusing would take more words than ey has |
+
+Agyra tells me I am *"inexperienced in our ways"*, and vanilla gives me no route out of being that.
+So the answer here is never an explanation — that would break the very thing it answers — but what a
+friend is given **instead** of one. The same constraint settles the asks: not one of them may ask
+what a credo means, because having learned not to is the whole of what has changed.
+
+This is §61.5k's criterion meeting a culture that wrote its boundary down. `kendren` was a word for
+an outsider; a credo is a door held shut, politely and on purpose.
+
+### 61.5o The per-person rule is theirs here, not mine
+
+§61.2 concluded that Qud's mouths do not share a register, and §61.5j had to prove it against Bey Lah,
+where a real family was the strongest case for a single voice. The mopango simply say so. Agyra:
+
+> *"We nonetheless eschew conformity, and each of us seeketh a personal credo by which we livest our
+> lives."*
+
+A culture whose stated organising principle is that each member must differ is the one place where
+writing six voices needs no defence at all.
+
+**The state split is the cleanest any cast has had.** Each watcher has exactly one charge and exactly
+one state meaning I freed it — `ChoseNacham` for Doyoba, `ChoseKah` for Gyamyo, `ChoseDagasha` for
+Yona, `ChoseVaam` for Dadogom. Only one child can ever be freed, as Lebah says: *"An ye free one,
+three remaineth forever."* So at most one of the four gets that answer and the other three cannot,
+without any predicate of mine enforcing it. Over Thah's `Priority="-1"` catch-all per §61.5l. Lebah
+and Vivira take the catch-all alone, because neither watches a child.
+
+Every ask is plain modern English, which #895 established the hard way: the thee-and-thou belongs to
+the mopango and the player does not catch it from them.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
