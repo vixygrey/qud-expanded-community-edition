@@ -8115,6 +8115,54 @@ that does not allow escape. "Hide until introduced" would hide the ritual from t
 quests route through it. The rule is therefore **hide only when an introduction is possible and has
 not happened**. Hiding this wrongly strands a questline; showing it wrongly costs a dram.
 
+### 57.2a Nothing that only growls, and one thing vanilla settles rather than this
+
+`Vixy_Introduce` reuses §40's `SaysNothing` — strip every `{{emote|…}}` span from the start node,
+and if nothing but whitespace remains, offer nothing. #881.
+
+**The way in was the companion rename flow**, which calls `GiveProperName(name, Force: true)` and
+sets `Renamed`. So a dog you have named carries a proper name while its conversation is still
+`Animals` — `{{emote|*soft growling*}}` — and the introduction answered *"Rex. I will remember it."*
+§40 already refused exactly this for the question, and said why: a choice offering to be told a name,
+sitting under an emote and answered in words, is worse than no feature. The mirror of that question
+never got the mirror of its test.
+
+The test is `internal` on `Vixy_AskName` rather than copied, because the reasoning and the
+measurement live there.
+
+**Ordering saves two people who greet you with an emote and then talk.** Run across vanilla the test
+silences 32 conversations, and two of them are not animals: `Tammuz`, one of the seven
+ritual-capable people §57.1 lists, and `Lebah`, whose *"I am =name=. What is your name?"* is quoted
+in #572. Both open on an emote and both carry a hand-written introduction — the test reads the
+**start node's text**, and a person can greet you wordlessly and still speak. `Possible()` checks
+`AlreadyOffered()` *before* the emote test for exactly that reason, so a conversation vanilla wrote
+an introduction into is a person whatever its greeting looks like, and the ritual gate is unaffected
+for them.
+
+**The other half of #881 turned out not to be a defect.** A legendary snapjaw does carry a proper
+name — `HeroMaker` calls `GiveProperName` and only swaps the conversation when a `HeroConversation`
+template tag resolves, which vanilla uses **zero** times — and its conversation is `ehehehehehe`,
+`you food?`, `libm drin`. An introduction there reads wrong.
+
+But **vanilla already does the same thing, deliberately.** `WaterRitualChoice` is distributed from
+`BaseConversation` to every `GivesRep` creature, its node reads *"Live and drink,
+=subject.waterRitualLiquid=-=player.siblingTerm=."*, and `HeroMaker` adds `GivesRep` to every hero
+unless `HeroNoWaterRitual` is set. So Freehold already has a legendary snapjaw speak formal ritual
+language — and wrote `live and drink, ehehe` and `lipum dronk!` into that same snapjaw's own
+conversation, so it knew. Matching that treatment is consistent rather than broken, and the
+alternative was worse: the only durable signal is `HeroMaker`'s `Hero` property, and hiding on it
+would take the naming exchange away from the water ritual's *core* population to fix a case vanilla
+does not consider broken.
+
+**There is no register test, and #881 records the search.** Player-address tokens fail — Warden Yrame
+uses none and `Humanoids` uses them. `Species` and `Role` are free-form, and Tam is
+`Role="Unspecified"` exactly like Snapjaw. No sapience tag exists in the blueprint data. Structural
+depth fails hardest, since 102 of vanilla's 200 conversations are a single node with no live choice
+and that set holds `Snapjaw` beside `JoppaFarmer`.
+
+**It falls open**, as everything on this gate must. `Possible()` returning false makes
+`Vixy_RitualGate` *show* the ritual, so silencing an introduction can never strand one.
+
 ### 57.3 A known limitation: some introductions need the conversation reopened
 
 Introduce yourself and the ritual may not appear until you end the conversation and start it again.

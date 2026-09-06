@@ -156,8 +156,14 @@ namespace XRL.World.Conversations.Parts
         /// means the text is built somewhere this cannot see, and hiding the question on a vacuous
         /// truth would suppress it wherever a conversation is assembled at runtime.
         /// </para>
+        /// <para>
+        /// <b><c>internal</c> because <see cref="Vixy_Introduce"/> needs the same test</b> — #881.
+        /// Giving my name to something that only growls is the same mistake as offering to be told
+        /// its name, and the reply is in words either way. The test belongs here, where the
+        /// reasoning and the measurement are, rather than copied.
+        /// </para>
         /// </remarks>
-        private static bool SaysNothing(Node Start)
+        internal static bool SaysNothing(Node Start)
         {
             if (Start?.Texts == null)
             {
