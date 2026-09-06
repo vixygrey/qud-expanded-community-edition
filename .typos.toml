@@ -21,10 +21,24 @@ PNGs = "PNGs"
 # in docs/LESSONS.md because the entry is about what that field's comparison actually does. Correcting
 # the spelling would make the quotation wrong. #678.
 knownRecipies = "knownRecipies"
-# "OthoWander1" - a vanilla blueprint name, quoted verbatim in docs/LESSONS.md as the worked example
-# of an actor that keeps taking turns off-screen. `typos` reads the leading Otho as a misspelling of
-# Otoh. #701.
+# "Otho" - Barathrum's steward at Grit Gate, a name in player-facing text since #633's third cast
+# gave him a conversation, and a vanilla blueprint name quoted in docs/LESSONS.md. `typos` reads the
+# leading Otho as a misspelling of Otoh. #701 allowlisted `OthoWander1` alone; #633's third cast added
+# the bare name to extend-words instead, and #633's fourth moved it here.
+#
+# Identifiers rather than a word, which costs one line per compound because `typos` splits compounds
+# into words before matching. The looser `extend-words` form does work for this name - "Otoh" is an
+# abbreviation for "on the other hand" and appears nowhere in this repository - but it matches
+# case-insensitively, and the policy above is that an entry should exempt what actually fired and
+# nothing else. `Mak` below cannot take the looser form at all, and having the two names allowlisted
+# by different mechanisms invited the question every time. #633.
+Otho = "Otho"
+OthoCopy = "OthoCopy"
 OthoWander1 = "OthoWander1"
+MoveOtho = "MoveOtho"
+PlayerOthoWander1Safeguard = "PlayerOthoWander1Safeguard"
+Vixy_OthoFamiliar = "Vixy_OthoFamiliar"
+Vixy_OthoFamiliarReply = "Vixy_OthoFamiliarReply"
 # "Mak" - a founder of Yd Freehold, and a name in player-facing text since #633's fourth cast gave
 # him a conversation. Three entries because `typos` splits compounds into words before matching, so
 # the choice and node IDs need listing alongside the bare name.
@@ -40,16 +54,6 @@ Vixy_MakFamiliar = "Vixy_MakFamiliar"
 Vixy_MakFamiliarReply = "Vixy_MakFamiliarReply"
 
 [default.extend-words]
-# "Otho" - Barathrum's steward at Grit Gate, and a name in player-facing text since #633's third cast
-# gave him a conversation. #701 allowlisted only `OthoWander1` as an identifier and deliberately left
-# the bare name checked, because nothing then needed it; that stopped being true here, and the policy
-# above says to add an entry once a false positive appears rather than before.
-#
-# A *word* rather than an identifier, and that is forced: the part IDs are `Vixy_OthoFamiliarReply`
-# and its kin, which `typos` splits into words before matching, so an identifier entry would have to
-# list every compound one by one. The exemption is safe because "Otoh" is an abbreviation for "on the
-# other hand" and appears nowhere in this repository, so nothing real stops being checked. #633.
-Otho = "Otho"
 # Stat abbreviations in docs/FEATURES.md tables
 TOU = "TOU"
 WIL = "WIL"

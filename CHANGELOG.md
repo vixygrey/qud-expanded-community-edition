@@ -113,6 +113,15 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **Two name exemptions in the spell check stopped covering more than their names**
+  (#633). `Otho` and `Mak` both have to be exempted, and in `typos`' `extend-words` form the
+  exemption is case-insensitive — so it also lifted the check from the lowercase and all-caps
+  spellings, which are real corrections for both names.
+
+  Both now use `extend-identifiers`, which is case-sensitive, with each compound ID on its own line.
+  Verified rather than assumed: under the old entry every casing passed, under the new one only the
+  capitalised name does.
+
 
 ## [2.16.0] - 2026-09-05
 
