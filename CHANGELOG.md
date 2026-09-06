@@ -55,6 +55,20 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **Bey Lah knows your face** (#633). Angohind, Isahind, Kesehind, Warden Neelahind, Hindriarch Keh
+  and Eskhind each gain a question you can only ask once you have given your name — and this is the
+  first group whose answers change with how the village is doing.
+
+  The hindren call you *kendren*, which their own books explain is their word for a sentient who is
+  not attacking them. Keh will tell you plainly that it is a low bar and was never meant as a
+  compliment, and that you have made it insufficient, which he finds a nuisance.
+
+  Ask them after the village has been ravaged and they answer that too. Isahind said she would rather
+  not talk; she will tell you she said it to the door and you happened to be standing in it.
+
+  Isahind had been missed entirely — she trades, but carries none of the merchant machinery, so the
+  shopkeeper's question never reached her.
+
 - **The Six Day Stilt knows your face** (#633). Warden Esthers, Lulihart and Tszappur each gain a
   question you can only ask once you have given your name, answered in their own voice.
 

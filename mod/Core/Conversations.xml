@@ -993,4 +993,222 @@
       </choice>
     </node>
   </conversation>
+  <!-- The sixth cast is Bey Lah, and it is the first that answers differently depending on how the
+       village is doing. #633.
+
+       **The one-voice question got asked properly here and the data killed it.** Grit Gate refused a
+       single Barathrumite voice because it is a collection of eccentrics rather than a culture. The
+       hindren *are* a culture, six of them sharing a name-suffix and a village, so this was the first
+       cast where a shared register was genuinely plausible. It is not close. Angohind studies the
+       works of Willow Shakesprig and models himself on the Great Plant Detective, Hemlock Cones. Keh
+       says "then I overestimated your intellect further than I realized. Get out." Kesehind manages
+       "you may not." Neelahind is half-absent with grief. They share a suffix, not a mouth.
+
+       **What they do share is a word, and it is the anchor.** All six call me `kendren`, and
+       `Books.xml` says what it means: the hindren use it "a great deal, as it is their word for
+       non-hostile sentients." It is what they call an outsider who is not attacking - 91 uses across
+       vanilla - so being named is exactly the thing that makes me more than one. Every answer here
+       plays against that word.
+
+       That is the fourth cast running where vanilla has already stated my standing and given me no
+       way to answer it, after Une's `Snub` node, Warden Esthers on her tally and Lulihart's "as you
+       do." Four is a pattern rather than luck, and §61.5j promotes it to a stated criterion.
+
+       **Isahind is a gap the merchant cast could not reach.** She asks "shall we trade?" and sells
+       souvenirs, and carries no `GenericInventoryRestocker` anywhere in her chain, so §61.5a's
+       merchant question never reaches her. She trades and was never covered.
+
+       **And this is the first cast whose people are not tonally static.** Bey Lah has village states -
+       `HindrenVillageRavaged`, `Doomed`, `Prospers`, `QuestFullyResolved` - a leadership change, and
+       an Eskhind who can be killed. Isahind's own greeting in the ravaged village is "I'd rather not
+       talk. Sorry." So the question is asked in every state and the answers carry the weight, because
+       asking somebody how they fare after their village was destroyed and being answered is worth
+       more than the question quietly disappearing.
+
+       The conditional text is vanilla's own shape twice over: Mehmet's `Welcome` node carries two
+       mutually exclusive `<text>` elements, and Thah marks his catch-all `Priority="-1"` so it loses
+       to any conditional that matches. I use Thah's, and the design does not depend on settling how
+       the engine breaks a tie between two matching texts, because the fallback is strictly lower
+       priority than a match rather than tied with it. -->
+
+  <!-- Angohind. A young scholar of Willow Shakesprig and aspiring investigator, ebullient and
+       verbose, forbidden by his grandhind from looking into anything interesting. -->
+  <conversation ID="Angohind">
+    <choice ID="Vixy_AngohindFamiliar" Target="Vixy_AngohindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Angohind?~
+        Any new deductions?~
+        How goes the study of the bard?~
+        And you? Are you well?
+      </text>
+    </choice>
+    <node ID="Vixy_AngohindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        Deductions. Yes. I have deduced that I was reading about detectives while my village burned, and that Hemlock Cones has nothing to say about the after.~
+        I am not well, =name=. I do not think I will be for a while. Thank you for asking me and not the Warden. Everyone asks the Warden.~
+        The bard wrote a great deal about grief and I skipped those parts, because I was young and they were slow. I have gone back to them.
+      </text>
+      <text Priority="-1">
+        Splendidly, kendren! Although - I notice I have stopped calling you kendren in my head. There is no word in hindren for what you are instead, so I am obliged to use your name, =name=, which is a poor substitute but the only one available.~
+        A small one. You always ask me a question before you ask for anything, and most people do it the other way round. Hemlock Cones would call that character evidence.~
+        The study proceeds! I have nobody to discuss it with, which the great bard would say is the tragedy of the scholar. You are not nobody, so consider yourself conscripted.~
+        Very well indeed. Best dressed hindren in Bey Lah, and now the one with the most interesting acquaintance. Both are achievements, kendren. I am counting them.
+      </text>
+      <choice Target="Start">
+        <text>Consider me conscripted.~That is well said.~Live and drink, Angohind.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Isahind. Brisk and commercial - "shall we trade?", "care to buy a souvenir?" - and carrying no
+       merchant part, so §61.5a never reached her. In the ravaged village her greeting is "I'd rather
+       not talk. Sorry," which is the sharpest case this cast has. -->
+  <conversation ID="Isahind">
+    <choice ID="Vixy_IsahindFamiliar" Target="Vixy_IsahindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Isahind?~
+        How is business?~
+        Are you keeping well?~
+        Anything you need?
+      </text>
+    </choice>
+    <node ID="Vixy_IsahindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        I said I'd rather not talk. I did not say that to you, exactly. I said it to the door and you happened to be in it.~
+        There is no business. There is a heap where the business was. Ask me again in a season, =name=, and mean it, and I will try to have an answer.~
+        Not well. But you asked, and you used my name, and I have been called kendren by everyone else all week. So. Not well, and slightly better for the asking.
+      </text>
+      <text IfHaveState="HindrenVillageProspers">
+        Business is very good, and I would like it on the record that I was cordial to you before it was, when you were still just some kendren asking after my stock.~
+        Extremely well! I have new goods, a prosperous village and a customer whose name I know. Two of those are your doing and I am not too proud to say which.~
+        Nothing I need, =name=. That is a rarer sentence than you might think, and I wanted to say it out loud to somebody who would notice.
+      </text>
+      <text Priority="-1">
+        Well enough. You are the only kendren who asks after me before asking after the stock, which I have noticed and priced accordingly. Downward. Don't tell anyone.~
+        Business is business. Slow, then sudden, then slow. You are a small reliable part of the sudden.~
+        Keeping well, thank you. It is a strange thing to be asked by name in a village where I have known everyone since I was a fawn and none of them ask.~
+        Nothing I need. Come back anyway, =name=. Half of trade is who walks in twice.
+      </text>
+      <choice Target="Start">
+        <text>I'll come back.~Good to hear.~Live and drink, Isahind.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Kesehind. Hindriarch Keh's protector, and four words at a time - "why are you talking to me?",
+       "I am watching you", "you may not." The thaw must not become chat or it stops being hers. -->
+  <conversation ID="Kesehind">
+    <choice ID="Vixy_KesehindFamiliar" Target="Vixy_KesehindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Still watching me?~
+        How do you fare, Kesehind?~
+        Am I still a concern?~
+        Anything to report?
+      </text>
+    </choice>
+    <node ID="Vixy_KesehindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        I was watching. That is the whole of the report and I will be carrying it a long time.~
+        I fare as a guard fares when there is less left to guard. Do not make me say more than that.~
+        You are not a concern, =name=. You were never the one I should have been watching. Go on.
+      </text>
+      <text Priority="-1">
+        Watching. Always watching. Differently, though. I do not know a word for the difference and I am not going to look for one.~
+        I fare. You are the third person to ask me this year and the other two were obliged to.~
+        A concern, no. A known quantity. In my work those are almost the same thing and the almost is the whole of it, kendren.~
+        Nothing to report. =name=. There. I have used it. Do not make anything of it.
+      </text>
+      <choice Target="Start">
+        <text>I won't.~Understood.~Then I'll move along.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Neelahind. Warden of Bey Lah, formal and half-absent with grief for Eskhind - the start node
+       is "{{emote|*The warden's gaze is distant.*}} Esk..." Twenty conditional starts, the most of
+       anyone written for this feature. -->
+  <conversation ID="Neelahind">
+    <choice ID="Vixy_NeelahindFamiliar" Target="Vixy_NeelahindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Warden?~
+        Is the village quiet?~
+        Are you keeping well?~
+        And you, Neelahind? How are you?
+      </text>
+    </choice>
+    <node ID="Vixy_NeelahindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        I was Warden of Bey Lah. The words still fit in my mouth and nowhere else. Ask me something easier, =name=, and I will answer that instead.~
+        Quiet, yes. It is very quiet. I had wanted it quiet for years and I would like to withdraw the wish.~
+        Not well. You know that. You asked anyway, by name, which is not nothing. Most people have started speaking about me rather than to me.
+      </text>
+      <text Priority="-1">
+        {{emote|*The warden's gaze settles, for once.*}} Better, when somebody says my name and means me rather than the office. Thank you, =name=.~
+        Quiet. I walk it twice a night and I have started listening for your step among the others, which is a foolish habit for a warden and I am keeping it.~
+        Well enough. I am not much practised at the question. Bey Lah asks its Warden what has happened, never what she is.~
+        I am tired and I am here and both of those are ordinary. You are the only kendren who ever asked after the second one.
+      </text>
+      <choice Target="Start">
+        <text>I'll ask again.~Rest, if you can.~Live and drink, Warden.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Hindriarch Keh. Imperious and contemptuous - "then I overestimated your intellect further than
+       I realized. Get out." The concession has to stay small or it is not his. -->
+  <conversation ID="Keh">
+    <choice ID="Vixy_KehFamiliar" Target="Vixy_KehFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Hindriarch?~
+        Is Bey Lah well?~
+        Am I still tolerated here?~
+        And you? How do you keep?
+      </text>
+    </choice>
+    <node ID="Vixy_KehFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        I fare as the head of a thing that no longer has a body. Do not offer me sympathy, kendren. Offer me silence and I will count it a courtesy.~
+        Bey Lah is not well. I said our safety depended on our solidarity and I was right, which is the most useless way to be right that I know.~
+        You are tolerated. You are more than tolerated and I have not the appetite to say the rest of it today.
+      </text>
+      <text Priority="-1">
+        I keep. Hindriarchs keep; it is nearly the whole of the office. You are the first outsider in some years to ask after the man rather than the position, and I have decided not to hold it against you.~
+        Bey Lah is well, no thanks to my scouts, who let you past them so regularly I have stopped asking how.~
+        Tolerated is the wrong word and you know it is, which is why you chose it. Yes, =name=. You may keep coming.~
+        We call your kind kendren because you are not attacking us. It is a low bar and it was never meant to be a compliment. You have made it insufficient, which is a nuisance, and I have no better word to hand.
+      </text>
+      <choice Target="Start">
+        <text>I'll take tolerated.~Understood, Hindriarch.~Live and drink.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Eskhind. The exile who comes back, and who may end up Hindriarch and put a democracy to the
+       village. Opens as "Hold there! Who are you? What do you want?" so the warmth is earned late. -->
+  <conversation ID="Eskhind">
+    <choice ID="Vixy_EskhindFamiliar" Target="Vixy_EskhindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Esk?~
+        Is all well with you?~
+        Still glad I found you?~
+        And you? How are you keeping?
+      </text>
+    </choice>
+    <node ID="Vixy_EskhindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        Badly. I came home and this is what home is now, and I have not worked out yet how much of that is mine to carry.~
+        Ask me anything but that, =name=. I will answer anything but that.~
+        Glad you found me. Not glad about the after. Both of those are true at once and nobody warned me they could be.
+      </text>
+      <text Priority="-1">
+        Well! Better than well. I spent a long time being nobody's kendren and nobody's kin, and you are the one who came looking, so you may ask me that as often as you like.~
+        All is well. I have a village that will have me back and a name I did not have to hide, and you know both halves of that story, =name=. Not many do.~
+        Glad. I said "hold there, who are you" the first time, which I think about more than I should. You told me. That was the whole of it, in the end.~
+        Keeping well. Come and find me when you pass through - you are good at that.
+      </text>
+      <choice Target="Start">
+        <text>I will.~I'm glad, Esk.~Live and drink.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
