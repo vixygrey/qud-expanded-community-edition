@@ -16,6 +16,37 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **People who know my name talk to me differently** (#633). Introduce yourself to Tam, Elder
+  Irudad, Warden Yrame or Mehmet and each gains a question you can only ask once a name has passed
+  between you, answered in their own voice. Warden Yrame tells you to your face that she is not
+  there for chat; ask her twice and she spends the breath anyway.
+
+  Vanilla already writes this beat — Mehmet calls you *traveller* before the watervine quest and
+  *=name=* after — but it is always keyed to errands you have run, never to a relationship.
+
+  The issue was filed against the counter Qud keeps for it, and that counter turns out to be
+  unreadable: `IfSpeakerHaveProperty` only tests existence, and the count is already set on the first
+  meeting because it increments before any choice is drawn. It would also be the wrong key, since
+  nothing in Qud can tell you that you are being counted. Giving somebody your name is a thing you
+  choose and remember.
+
+  Written per NPC rather than offered to everyone, because a line that suits a dromad caravaneer does
+  not suit a snapjaw, and nothing in the game separates the two — the ordinary villagers most worth
+  deepening are built exactly like the beasts.
+
+### Changed
+
+- **Introducing yourself no longer waits on the water-ritual option** (#633). Saying your name
+  changes nothing on its own, so it is always offered now. Elder Irudad and Warden Yrame have no
+  introduction of vanilla's own, and gating theirs behind a switch about the water ritual would have
+  left half the above behind a setting that has nothing to do with it.
+
+  *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
+  which is the part somebody might genuinely want off. Names you have already given are kept.
+
+
 ## [2.16.0] - 2026-09-05
 
 ### Fixed

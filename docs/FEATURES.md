@@ -8024,9 +8024,15 @@ Charter rule 6 is satisfied by the half that can be seen.
 
 ## 57. The water ritual is a relationship (`Vixy_Introduce`, `Vixy_RitualGate`)
 
-Off by default. Give your name before you share water; come back having risen in their people's eyes
-and they will deal with you again. Three changes to one gesture, all of #753, and each of them came
-out of playing §56 rather than reading.
+Give your name before you share water; come back having risen in their people's eyes and they will
+deal with you again. Three changes to one gesture, all of #753, and each of them came out of playing
+§56 rather than reading.
+
+**The option covers the ritual half only.** `Vixy_Introduce` shipped behind it and came out again in
+#633 — giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
+§61 needs the marker on two people vanilla wrote no introduction for. What
+`OptionQudExpandedCEWaterBond` still decides, off by default, is whether the *ritual* waits on an
+introduction and whether a repeat is offered. §57.2 and §57.4 are the halves it gates.
 
 ### 57.1 You could share water with someone who never learned your name
 
@@ -8412,6 +8418,119 @@ a delve. The dish is deferred, and with it three questions that do not arise for
 touches `Strain` — whether two halvings stack (`BaseAccrual` is 22, so implant plus dish would be
 22 → 11 → **5**, truncating twice), what the dish does with fatigue off, and where its ingredient
 comes from.
+
+## 61. People who know my name talk to me differently (`Conversations.xml`)
+
+Introduce yourself to Tam, Elder Irudad, Warden Yrame or Mehmet and each gains a question you can
+only ask once a name has passed between you, answered in their own voice. All of #633, and no C# —
+the whole feature is four `Load="Merge"` conversation blocks.
+
+### 61.1 The counter the issue was named for cannot be read, and would be the wrong key anyway
+
+#633 was filed as *"NPCs count your visits and no conversation can read the number"*. Vanilla does
+count: `ConversationScript.cs:160` runs `ModIntProperty("ConversationCount", 1)` on every
+conversation with every NPC, nothing reads it but the `== 1` pronoun check on the next line, and no
+predicate exposes it.
+
+**It cannot be read from XML, and the naive read is off by one.** `IfSpeakerHaveProperty` is an
+existence test — `HasProperty` checks the `IntProperty` dictionary as well as `Property`, so it sees
+an int property but cannot compare one. And the increment fires inside `BeginConversationEvent`,
+reached at `ConversationUI.InternalConversation` line 410, while choice visibility is not decided
+until `choice.IsVisible()` at line 505, inside the loop that starts after it. So the key already
+exists on the first meeting and the predicate is true of every NPC in the game from the first line.
+`docs/LESSONS.md` has the full account.
+
+**Per-NPC counting is closed in XML in both directions.** The action list has no `AddIntProperty` and
+no `ModIntProperty`; `SetIntProperty` sets rather than increments, and `AddIntState` increments into
+global game state. Vanilla's own `AskedKithKin` pair is the shape that is available, and it is
+boolean on purpose.
+
+**And a count is the wrong key for the thing the issue said would decide it.** #633 argued that a
+quest gated behind repeat visits is a quest nobody finds, and it is right. Nothing can tell a player
+they are being tallied — `ConversationDelegate.Require`, documented as grey-out-and-prevent, is
+tagged `<todo>` and never registered, so there is no shown-but-unselectable choice in Qud. Giving
+somebody my name is an act I choose and remember, and `Vixy_Introduced` (§57) already records it per
+creature. So the ladder is keyed to naming rather than to counting, which also means the issue's
+title describes something this deliberately does not build.
+
+### 61.2 Written per NPC, because Qud's mouths do not share a register
+
+The obvious shape was one choice distributed from `BaseConversation`, the way §40's ask-a-name and
+§56's water memory reach the whole game. It does not work here, and the reason is not fixable by
+writing more carefully.
+
+A snapjaw's entire conversation is `ehehehehehe`, `you food?`, `libm drin. ehehehe. lipum dronk!` A
+dromad says *"our chests are drawn"*. No single line is true in both mouths, and a legendary snapjaw
+carries a proper name, because `HeroMaker` calls `GiveProperName` and only swaps the conversation
+when a `HeroConversation` template tag resolves — a tag vanilla uses **zero** times.
+
+**No test separates them.** §40's emote test asks whether anything is being *said*, and a snapjaw
+says plenty. `IfUnderstood` is a false friend — it reads `Examiner.UnderstandingTable`, the
+medication identification table. `ConversationScript.Filter` has 9 vanilla uses and no beast among
+them. `NoAskName` resolves onto exactly **four** blueprints across all 5,202, none of them a beast.
+
+And the structural cut fails worst of all: **102 of vanilla's 200 conversations are a single node
+with no live choice**, and that set holds `Snapjaw` and `Goatfolk` *and* `JoppaFarmer`,
+`GenericMerchant`, `DefaultTrader`, `AmoebaFarmer` and `MerchantGuard`. The thin villagers this
+feature exists to deepen are structurally identical to the beasts, so any cut sharp enough to exclude
+one excludes the other. #881 tracks the same exposure in `Vixy_Introduce`, which predates this.
+
+Four NPCs written properly, then, as `docs/DESIGN_conversations.md` §4 scopes it.
+
+### 61.3 Vanilla already writes this beat, keyed to errands
+
+Mehmet's `Welcome` node carries two texts:
+
+```xml
+<text IfFinishedQuest="What's Eating the Watervine?">Live and drink, =name=.~ …</text>
+<text IfNotHaveQuest="What's Eating the Watervine?">A waterhand? Aye. Live and drink, traveller.</text>
+```
+
+*Traveller* before, *=name=* after. Elder Irudad's start node has the same split. So "this person
+talks differently once they know you" is shipped, established, and keyed to **what you have done for
+them** — never to a relationship. That is the whole of what these four add, and it is why the
+register to write in was already demonstrated on each of them.
+
+### 61.4 The marker reaches two of them for free and two only because #633 ungated it
+
+`Vixy_Introductions` (§57.1) sets `Vixy_Introduced` on anyone whose conversation offers a choice
+carrying the bare `=name=` token. Two of the cast have one already:
+
+| | vanilla's own introduction | route to the marker |
+|---|---|---|
+| Tam | `I am =name=. Who are you?` | `Vixy_Introductions` |
+| Mehmet | `MehmetIntroduce` — `I am called =name=.` | `Vixy_Introductions` |
+| Elder Irudad | none | `Vixy_Introduce` |
+| Warden Yrame | none | `Vixy_Introduce` |
+
+All four carry `<xtagGrammar Proper="true" />`, so `Vixy_Introduce` is the route for the two vanilla
+never wrote one for — and **it used to be hidden unless `OptionQudExpandedCEWaterBond` was on**, which
+is `Default="No"`. That would have left half this cast dark, split on a line no player can see.
+
+So the naming exchange came off the option. **Giving somebody my name changes no mechanic**, and rule
+6 as settled in #663 says flavour that changes no mechanic does not earn an option — a switch nobody
+would use costs a menu line, a helptext and a branch forever. What `WaterBond` still decides is
+whether the *ritual* waits on an introduction, which is the opinionated half and the half somebody
+might genuinely refuse. `Vixy_RitualGate` and §56's snapshot are untouched.
+
+**The marker is now recorded whatever the options say**, on §56.5's reasoning exactly: gating a
+*record* makes the off-switch worse, because switching an option on later would do nothing for
+anybody you had already met, the moment it needed to notice having passed.
+
+### 61.5 No Ordinal, and that is the correct placement rather than an omission
+
+`IConversationElement.Ordinal` is a setter for `Priority = -Ordinal`, and `CompareTo` orders by
+descending `Priority`. An absent Ordinal is Priority 0, which sorts ahead of everything the mod
+distributes at 9700 and above and ahead of vanilla's water ritual at 980 and `[begin trade]` at 990.
+A merged choice is appended to `Elements` and `Algorithms.StableSortInPlace` preserves insertion
+order among equals, so each question lands at the foot of that person's own list — where a thing you
+ask somebody belongs, rather than among the transactions.
+
+### 61.6 Off-switch
+
+None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
+nothing away, and nobody would turn it off. Every line is additive `Load="Merge"` content on four
+conversations, so removing the mod restores vanilla exactly.
 
 ## Appendix A — every merged vanilla melee weapon
 
