@@ -771,4 +771,123 @@
       </choice>
     </node>
   </conversation>
+  <!-- The fourth cast is Yd Freehold, and it is three people rather than five. #633.
+
+       The Freehold looked like the largest cast left - nine named residents with conversations of
+       their own - until I resolved `GenericInventoryRestocker` through the inheritance chain rather
+       than reading it off each blueprint. Rokhas takes it from `PigFarmer`, and Bep, Krka and
+       Tillifergaewicz declare it themselves, so all four already have a familiarity line from
+       §61.5a's merchant question and a second one would double up. That is the same rule that left
+       Jacobo and Mafeo to the merchant voice at Grit Gate.
+
+       The same resolution settles a question I had carried since the first cast. **Argyve inherits
+       the restocker part from `HumanTinker_Village0`**, so the most revisited person in the opening
+       hours has had a familiarity line since §61.5a shipped. He was never the omission he looked
+       like, and Nima Ruda, Erah and Yurl are covered the same way.
+
+       Mak, Une and Goek are what remains, and they share a reef rather than a register. Mak is a
+       millennium of grievance who calls me whelp and will not waste the honey of his mouth on idle
+       inquiries. Une is dry and courtly behind a mask, and keeps a warden's authority on like a coat
+       she can take off. Goek is delighted by nearly everything and speaks of himself as rrk. One
+       voice across the three would have been wrong for all of them, exactly as it was at Grit Gate.
+
+       Une reaches the marker for free - her `Whomst` node asks my name and the answer carries the
+       bare `=name=` token, so §57.1's scan sets `Vixy_Introduced` without this fork doing anything.
+       Mak and Goek reach it through `Vixy_Introduce`. Une also gives the feature its best vanilla
+       anchor: refuse to name yourself and her `Snub` node calls me "O Nameless One" ever after, so
+       the fiction that giving a name changes how she deals with me is hers before it is mine.
+
+       Declared at conversation level, per §61.5e. These three have one start node apiece, so the
+       placement buys nothing here beyond consistency with the eight at Grit Gate - but writing it
+       the other way would make the next cast's exception look like a special case.
+
+       **Geeub is excluded, and he is the first person here excluded by his characterisation rather
+       than by his register.** His start node already carries `GeeubFamiliarChoice` - "Sorry, have we
+       already spoken?" - answered at his `Familiar` node with "Ayup. But seconds ago. As only
+       yesterday, no? Hoh hoh hoh." His `Introduce` node answers a naming with "Congratulation,
+       condolence, which ever. Mind and name slip by another." Vanilla wrote him as a man who cannot
+       hold on to having met me, and wrote the joke twice to be sure of it. Everywhere else in §61 I
+       am extending a beat vanilla established; here I would be contradicting one. §61.3 is the
+       reason this feature is safe to write, and Geeub is the reason it is not safe to write
+       everywhere.
+
+       **Many Eyes is out on the axis rather than the voice.** It is hand-written and not Euclid's
+       procedural babble, but it deals in a title it assigned me - NON MOLOCH - and never uses a name
+       or a player-address term anywhere in its eight nodes. Familiarity keyed to naming has nothing
+       to attach to on a thing that does not use names. -->
+
+  <!-- Mak. Svardym, ancient, and openly sick of everyone - "What indignity have you come to heap
+       upon the mound, whelp?" The thaw is grudging and must stay grudging, the way Dardi's does, or
+       it stops being his. -->
+  <conversation ID="Mak">
+    <choice ID="Vixy_MakFamiliar" Target="Vixy_MakFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Still a whelp, am I?~
+        How goes the brooding?~
+        Am I still an indignity?~
+        How do you fare, Mak?
+      </text>
+    </choice>
+    <node ID="Vixy_MakFamiliarReply">
+      <text>
+        A whelp yet. But a whelp with a name is a different order of nuisance, and I have reclassified you accordingly. Do not ask what into.~
+        The brooding is excellent. It is the one thing on this pond that has never disappointed me, and I will thank you not to interrupt it. Often.~
+        An indignity, aye. A familiar one. There is a difference and you shall not have it explained to you.~
+        I have outlived every creature that ever learned my name, =name=. Do not take that for an honour. Take it for advice about how often you come by.
+      </text>
+      <choice Target="Start">
+        <text>I'll take it.~Understood.~Then I'll leave you to brood.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Une. Warden by necessity rather than temperament, dry, masked, and given to philosophy about
+       dying animals. Her `Snub` node calls me "O Nameless One" if I refuse to give a name, so she
+       already treats naming as the thing that changes how she deals with me. -->
+  <conversation ID="Une">
+    <choice ID="Vixy_UneFamiliar" Target="Vixy_UneFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Moon and Sun, Une.~
+        How do you fare, warden?~
+        Is all well in the Freehold?~
+        And you? How are you keeping?
+      </text>
+    </choice>
+    <node ID="Vixy_UneFamiliarReply">
+      <text>
+        Moon and Sun, =name=. I keep a private tally of who stops calling me warden and starts calling me Une. You changed columns some visits ago and I did not mention it, which is how you know it is a real tally.~
+        Well, and busy, and neither of those is news. The news is that I no longer have to decide what to call you. It saves me a moment each time. I have been counting the moments.~
+        The Freehold keeps. Free folk arrive, make their racket, and stay - you among them, near enough. I have stopped introducing you to people who already know you.~
+        I am a dying animal, =name=, and so are you, and today neither of us is any deader than yesterday. In this house that counts as good news, and I have learned to take the good news offered.
+      </text>
+      <choice Target="Start">
+        <text>Moon and Sun.~That is good news.~I'll let you get back to the hurdy-gurdy.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Goek. Svardym too, and Mak's opposite in every way that matters - "Live and drink, friend. rrk
+       come to the Yd, shared together." He speaks of himself as rrk and is delighted by nearly
+       everything, so his line is the only one in this cast that gets to be plainly glad. -->
+  <conversation ID="Goek">
+    <choice ID="Vixy_GoekFamiliar" Target="Vixy_GoekFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Live and drink, Goek.~
+        How does rrk fare?~
+        Is all well at the Yd?~
+        How are you keeping, friend?
+      </text>
+    </choice>
+    <node ID="Vixy_GoekFamiliarReply">
+      <text>
+        {{emote|*reeeeeps joyfully*}} =name=! rrk is well, rrk is warm, rrk has a friend whose name rrk knows. Saying it is the joy of it!~
+        All is well! The Yd is loud and full and there is slime yet to pool below. Friends come and friends go, but a named friend comes back, and rrk is glad in the waiting.~
+        rrk keeps! rrk kept hundreds of years in the sponge with lice for supper, so keeping is easy work now. Easier with a =name= in it.~
+        Safe and free as woodsmoke, friend! rrk tells Mak your name and Mak grumbles at the telling. rrk tells it again. Joyful!
+      </text>
+      <choice Target="Start">
+        <text>Live and drink.~That is good to hear.~Joyful, then.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
