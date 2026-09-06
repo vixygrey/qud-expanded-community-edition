@@ -4671,3 +4671,50 @@ Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-
 is the same instrument on a value with no readers; here the value had a reader and the reader was
 too early. [`A dispatch list is a snapshot, so *when* a call runs decides who is in it`](#a-dispatch-list-is-a-snapshot-so-when-a-call-runs-decides-who-is-in-it)
 is the same ordering question asked about membership rather than about a threshold.
+
+## My screen was wrong about exactly one conversation, and it was the one I was looking for
+
+Screening candidates for #633's fifth cast, I needed to skip anyone who only emotes — §26's test,
+which asks whether a speaker says anything once every `{{emote|…}}` span is stripped. My screen read
+each conversation's `node/text` elements, stripped the emotes, and called the remainder mute if
+nothing was left.
+
+Vanilla writes a speaker's words at least three ways, and I had implemented one:
+
+```xml
+<node ID="Huh"><text>Then you're not of the faith yourself, huh?</text></node>
+<node ID="Praise" Inherits="Welcome">You are among friends here, pilgrim.</node>
+<start ID="Welcome"><text>Live and drink, traveler. Welcome to the Stilt.</text></start>
+```
+
+The second puts the text in the node's own character content with no `<text>` wrapper. The third uses
+a `<start>` element rather than `<node ID="Start">` — the same pair `DistributeChildren` matches, and
+which §61.5e already relies on from the other direction.
+
+**Neither shape is rare.** 45 elements carry their speaker text as bare content, across 16
+conversations, and 38 conversations use a `<start>` element. Against 1,297 elements using a `<text>`
+child, though, they are almost always *accompanied* — a conversation that puts one node's words in
+bare content usually wraps another's, so the naive test finds something and reports a talker.
+
+So the two tests disagree about **exactly one conversation in the whole file**. That sounds like a
+tolerable error rate and it is not, because the one is `WardenEsthers` — who greets you at the
+entrance to the Six Day Stilt, every visit, in a feature explicitly about people you go back to. Her
+conversation uses only the two shapes I had not implemented, so she scored zero words and I wrote her
+down as mute. She has a full greeting and six choices.
+
+**The trap is the direction the failure runs.** A mute test that is wrong in this direction *removes*
+somebody, and a removal makes no noise. Nothing fails, no check fires, the cast is one person smaller,
+and the write-up explains — with counts, in confident prose — why that person cannot be written. Had
+the test been wrong the other way I would have found out immediately, because I would have sat down to
+write somebody and found nothing to write against.
+
+**So a screen whose failure mode is "quietly produce less" has to be verified against what it
+rejects, not what it admits.** I had checked the test by reading conversations it passed, which is
+the useless half. Reading the two it rejected took two minutes and changed the cast. The general
+form: when a filter's output is content, audit the discard pile — it is the only place its mistakes
+are visible.
+
+Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
+is the same file and nearly the same mistake, one feature earlier — there I ran sibling elements
+together and tuned a rule to fit the artefact; here I read one of three encodings and trusted the
+silence from the other two. Both are cases of testing my own parse instead of the data.
