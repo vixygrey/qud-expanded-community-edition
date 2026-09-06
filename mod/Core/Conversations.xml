@@ -1400,14 +1400,21 @@
 
   <!-- Agyra. A watcher of the Tomb of the Eaters, mopango, and the one of the seven who is not at
        Chavvah. Ey uses ey/em/eir and explains it unprompted; ey speaks in thee-and-thou; ey holds
-       that answering questions giveth em satisfaction. Hospitality is the whole of eir answer. -->
+       that answering questions giveth em satisfaction. Hospitality is the whole of eir answer.
+
+       **The asks are plain modern English, because that is how the player speaks here.** The
+       archaism is the mopango's own and is not caught from them: every player choice vanilla writes
+       for this settlement is plain - "I am =name=. Who are you?", "Have you a credo?", "Live and
+       drink, watcher." I first wrote these asks in thee-and-thou, matching the speaker instead of
+       the speaker's interlocutor, and it was wrong in the direction that reads as the player
+       affecting an accent. -->
   <conversation ID="Agyra">
     <choice ID="Vixy_AgyraFamiliar" Target="Vixy_AgyraFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
       <text>
-        How dost thou fare, Agyra?~
+        How do you fare, Agyra?~
         Is the tomb well watched?~
-        Hast thou need of anything?~
-        And thee? How art thou?
+        Have you need of anything?~
+        And you? How are you?
       </text>
     </choice>
     <node ID="Vixy_AgyraFamiliarReply">

@@ -119,6 +119,12 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **You spoke to Agyra in an accent that isn't yours** (#633). The question you can ask Agyra once
+  you have given your name was written in thee-and-thou, matching how ey speaks rather than how you
+  do. Every line vanilla writes for you at the Tomb of the Eaters is plain — *"Have you a credo?"*,
+  *"Live and drink, watcher."* — so the archaism is the mopango's own and you were affecting it.
+  Your side reads plainly now. Agyra still speaks as ey always did.
+
 - **Neek would not let you introduce yourself** (#885). Nor would the Chavvah chimes, and the reason
   was a test of mine rather than anything about them: it decided whether somebody speaks by looking at
   their greeting, and those two greet you with a gesture and then talk at length. Lebah and Tammuz
