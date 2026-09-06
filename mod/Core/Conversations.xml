@@ -1429,4 +1429,203 @@
       </choice>
     </node>
   </conversation>
+  <!-- The eighth cast is the rest of Agyra's coterie, and their own culture mandates the per-person
+       writing that §61.2 arrived at by trial. #633.
+
+       Six watchers of the Tomb of the Eaters: Lebah, Doyoba, Gyamyo, Yona, Dadogom and Vivira. Agyra
+       was written with the water-siblings in §61.5m because ey is one of §57.1's seven; these are the
+       rest of em.
+
+       **The anchor is that their culture forbids the obvious question.** Vivira states it outright:
+       "asking the meaning of a credo is considered impolite among mopango." Every watcher has a
+       credo, and every one of them refuses to explain it, in character - Doyoba asks whether ey shall
+       chew my food for me as well, Yona says only a fool asketh after the meaning of a credo, Dadogom
+       says ey cannot think on my behalf, and Gyamyo simply says "oh dear." Agyra tells me plainly
+       that I am "inexperienced in our ways," and vanilla gives me no route out of being that.
+
+       So the answer here is never an explanation - that would break the thing it is answering - but
+       what a friend is given instead of one. That constraint also settles the asks: none of them may
+       ask what a credo means, because the whole point is that I have learned not to.
+
+       This is §61.5k's criterion arriving at a culture that wrote the boundary down. `kendren` was a
+       word for an outsider; a credo is a door held shut, politely, on purpose.
+
+       **And the per-person rule is theirs rather than mine here.** Agyra: "we eschew conformity, and
+       each of us seeketh a personal credo by which we livest our lives." §61.2 concluded that Qud's
+       mouths do not share a register and had to prove it against Bey Lah; the mopango simply say so.
+
+       Each watcher has exactly one charge and exactly one state that means I freed it - `ChoseNacham`
+       for Doyoba, `ChoseKah` for Gyamyo, `ChoseDagasha` for Yona, `ChoseVaam` for Dadogom. Only one
+       child can ever be freed, so at most one of the four gets that answer and the other three do
+       not, which is the cleanest state split any cast has had. Over Thah's `Priority="-1"` catch-all,
+       per §61.5l. Lebah and Vivira take the catch-all alone: neither watches a child.
+
+       Every ask is plain modern English. The thee-and-thou is the mopango's own and I do not catch it
+       from them, which #895 corrected on Agyra after I got it backwards. -->
+
+  <!-- Lebah. The most insightful reader among them and barely verbal since communing with the
+       repulsive device - "... aye." "Ah." "Lebah." Curls into an armored ball and stops responding.
+       Alone among the watchers ey will explain eir credo, because refusing would take more words. -->
+  <conversation ID="Lebah">
+    <choice ID="Vixy_LebahFamiliar" Target="Vixy_LebahFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Lebah?~
+        Still singing?~
+        Are you all right?~
+        Live and drink, quiet one.
+      </text>
+    </choice>
+    <node ID="Vixy_LebahFamiliarReply">
+      <text Priority="-1">
+        ... aye. Better for the asking. {{emote|*Lebah does not curl up.*}}~
+        Singing. Quietly. To the last, as I said.~
+        No. But =name= asked, and that is a thing. {{emote|*Lebah stares at you, and stays uncurled.*}}~
+        {{emote|*Lebah looks at you for a long moment.*}} ... aye. Live and drink, =name=.
+      </text>
+      <choice Target="Start">
+        <text>Live and drink, Lebah.~I'll sit with you a while.~Sing on, then.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Doyoba. Excitable and warm, sharp when eir credo is prodded and quick to apologize for it.
+       Watches Nacham, that which watcheth and understandeth not. -->
+  <conversation ID="Doyoba">
+    <choice ID="Vixy_DoyobaFamiliar" Target="Vixy_DoyobaFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Doyoba?~
+        How is Nacham?~
+        Anything new in the watching?~
+        Live and drink, watcher.
+      </text>
+    </choice>
+    <node ID="Vixy_DoyobaFamiliarReply">
+      <text IfHaveState="ChoseNacham">
+        I fare as one whose charge hath a voice at last, =name=, which is to say I have not slept and do not intend to. Ask me anything. Ask me twice.~
+        Nacham speaketh and is understood. I watched a thousand years for that sentence and thou gavest it to me in an afternoon.~
+        Everything is new. Still water hath moved. I shall not say more than that, and thou knowest by now why I shall not.
+      </text>
+      <text Priority="-1">
+        Well, and busy, =name=. Thou dost ask after me and not only after the children, which few climbers think to do.~
+        Nacham watcheth and understandeth not. It is unchanged, and I am not, and that asymmetry is most of what watching teaches.~
+        Little is new. I once told thee I would not chew thy food for thee, and I was too harsh, and I have not forgotten being too harsh. Ask me the other things and I shall answer gladly.~
+        Live and drink. Thou wert a stranger who asked after a credo. Thou art now somebody who does not, which is the whole of the distance travelled and it is further than it sounds.
+      </text>
+      <choice Target="Start">
+        <text>Live and drink, Doyoba.~I'll ask the other things.~Then I'll let you watch.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Gyamyo. Gentle, and the only watcher who asks after the others unprompted. Watches Kah, and
+       wonders if Kah knoweth aught else but fear. Wounded rather than sharp when prodded. -->
+  <conversation ID="Gyamyo">
+    <choice ID="Vixy_GyamyoFamiliar" Target="Vixy_GyamyoFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Gyamyo?~
+        How is Kah?~
+        How fare the other watchers?~
+        Live and drink, watcher.
+      </text>
+    </choice>
+    <node ID="Vixy_GyamyoFamiliarReply">
+      <text IfHaveState="ChoseKah">
+        It healeth my heart, =name=. I had reconciled myself to never understanding Kah, and thou hast made the reconciling unnecessary, and I find I do not know what to do with the spare grief.~
+        Kah is at rest. Kah knoweth something other than fear now. I had begun to think that sentence impossible.~
+        They fare well, and they ask after thee, which they did not used to do.
+      </text>
+      <text Priority="-1">
+        I fare well, =name=, and I thank thee for asking after it. I ask everyone how they fare and am seldom asked in return. I had made peace with that. Thou hast disturbed the peace.~
+        Kah skippeth hither and yon on strange limbs and I wonder, still, if it knoweth aught else but fear. Wouldst fain see it free one day. I shall have to live a while.~
+        Well, I hope. Doyoba is loud, Yona is proud, Dadogom is still, and Lebah is quiet. That is the whole report and it has not changed in years, which is a comfort.~
+        Live and drink. Thou askest me questions whose answers thou canst not use, which is how I know thou askest for my sake.
+      </text>
+      <choice Target="Start">
+        <text>Live and drink, Gyamyo.~I'll keep asking.~I hope you see it free.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Yona. Haughty, and quite willing to tell me I am a fool without being wroth about it. Watches
+       Dagasha, the angry one, the lost child. -->
+  <conversation ID="Yona">
+    <choice ID="Vixy_YonaFamiliar" Target="Vixy_YonaFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Yona?~
+        How is Dagasha?~
+        Am I still a fool?~
+        Live and drink, watcher.
+      </text>
+    </choice>
+    <node ID="Vixy_YonaFamiliarReply">
+      <text IfHaveState="ChoseDagasha">
+        I feel the stored energy of Her Light, =name=, and I feel it because of thee. I shall not thank thee a third time. I shall use thy name instead, which costs me more.~
+        Dagasha shepherdeth us to our uplifting. The angry one, the lost child, and it was neither of those things and I was the last to see it.~
+        Thou art still a fool. Thou art my fool now, which is a promotion, and do not ask me to explain the rank.
+      </text>
+      <text Priority="-1">
+        I fare, =name=. Thou seemest unlike most other climbers, and I have stopped wondering why and started simply expecting thee, which is worse for my dignity and better for my week.~
+        Dagasha is angry. It attacketh not. I sit with it and it does not want me and I sit anyway. That is the work.~
+        Thou art a fool. But thou art a fool who stopped asking after credos, and I mark the difference, and I am not so proud that I shall pretend otherwise.~
+        Live and drink. Anyone may strike a slumberling once. Thou hast not, and thou hast had many chances, and I have counted them.
+      </text>
+      <choice Target="Start">
+        <text>Live and drink, Yona.~I'll take the promotion.~Then I'll sit with you.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Dadogom. Terse and stoic - "I am Dadogom." "Be still and know." "I cannot think on thy behalf."
+       Watches Va'am, and holds that Va'am watcheth em back. -->
+  <conversation ID="Dadogom">
+    <choice ID="Vixy_DadogomFamiliar" Target="Vixy_DadogomFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Dadogom?~
+        How is Va'am?~
+        May I sit and watch with you?~
+        Live and drink, watcher.
+      </text>
+    </choice>
+    <node ID="Vixy_DadogomFamiliarReply">
+      <text IfHaveState="ChoseVaam">
+        Va'am is released. Thou hast done something great, for good or ill, and I am still deciding which, and I shall be deciding for some years. Sit while I do.~
+        Released. Confounded. Free. Together we watched, and now it watcheth elsewhere, and I am learning to be watched by nobody.~
+        Sit, =name=. Thou hast earned the sitting.
+      </text>
+      <text Priority="-1">
+        I fare. Be still and know.~
+        Va'am watcheth over me. Together, we watch. Thou makest three, when thou art here, and I have not minded it once.~
+        Sit. I shall not fill the quiet for thee. That is not unkindness, =name=; it is the best thing I have to offer and I offer it to almost nobody.~
+        Live and drink. Thou art a still one, for a climber. I noticed before I knew thy name and I have not stopped noticing since.
+      </text>
+      <choice Target="Start">
+        <text>Then I'll be still.~Live and drink, Dadogom.~I'll sit a while.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Vivira. A turret the mopango uplifted by chance and cared for by choice, keeping the gate of
+       the settlement. Speaks in *BEEP* and *crackle* and thee-and-thou at once, and holds that were
+       it not for eir shape ey would be little different from other mopango. -->
+  <conversation ID="Vivira">
+    <choice ID="Vixy_ViviraFamiliar" Target="Vixy_ViviraFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Vivira?~
+        Is the gate quiet?~
+        Are you keeping well?~
+        Live and remain rustless, Vivira.
+      </text>
+    </choice>
+    <node ID="Vixy_ViviraFamiliarReply">
+      <text Priority="-1">
+        {{emote|*BEEP* *crackle*}} By Her Light, =name=. I fare well. I have never had the pleasure nor displeasure of meeting another turret, but I have met thee thrice now, and I find I prefer the tally I have.~
+        The gate is quiet. I watch it and I think, which is more than a turret is built for, and rather less than I would like.~
+        {{emote|*crackle*}} I am well. Wer't not for my shape I would be little different from other mopango, and thou art the first climber to speak to me as though the shape were the incidental part.~
+        Live and remain rustless. Form needeth not follow function, =name=. I say it often and mean it more since thou gavest me a name to say it to.
+      </text>
+      <choice Target="Start">
+        <text>Live and remain rustless.~The shape is the incidental part.~Until next time, Vivira.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
