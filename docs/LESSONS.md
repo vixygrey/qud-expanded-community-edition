@@ -4618,3 +4618,56 @@ Related: [`The vanilla game data is readable — check it`](#the-vanilla-game-da
 is the same instrument one artefact earlier, and
 [`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
 is the boundary this moved: three of these needed the game to *see*, and now none of them does.
+
+## An existence test on a counter cannot exclude the occasion that created it
+
+#633 wants NPCs who open up over repeat visits, and vanilla already counts them. Every conversation
+with every NPC runs `ParentObject.ModIntProperty("ConversationCount", 1)` at `ConversationScript.cs:160`.
+Nothing reads it but the `== 1` pronoun check on the next line, and no conversation predicate exposes
+it — which is the whole of what the issue asks for.
+
+Investigating it, I found the counter free after all. `IfHaveProperty` carries `Speaker = true`, so
+`IfSpeakerHaveProperty` exists without being declared; `HasProperty` checks the `IntProperty`
+dictionary as well as `Property`, so it can see an int property even though it cannot compare one.
+The key is created by the first conversation. Therefore `IfSpeakerHaveProperty="ConversationCount"`
+already means *have I met this person before*, in pure XML, with no C# at all — and I wrote that up
+as the recommended first step, on the strength of it being free.
+
+It is true of every NPC in the game, from the first line of the first conversation.
+
+`ConversationUI.InternalConversation` settles it:
+
+```csharp
+StartNode = (CurrentNode = CurrentConversation.GetStart());
+if (StartNode == null || !StartNode.Enter()
+    || !BeginConversationEvent.Check(...)   // 410 - reaches the increment
+    ...) return;
+...
+while (CurrentNode != null) { Prepare(); ... }   // Prepare() at 491
+
+// inside Prepare()
+if (element is Choice choice && choice.IsVisible() && ...)   // 505 - visibility decided here
+```
+
+The increment lands before any choice list is ever composed. So the property exists, and the
+predicate fires, and it fires always — it answers *is a conversation open*, which nothing needed to ask.
+
+**The shape: I confirmed that the value is written and that the predicate reads it, and treated the
+pair as a mechanism.** Whether it can answer the question depends on a third fact that neither file
+states — which of the two runs first. A write and a read that are each correct still compose into
+nothing when the write cannot be observed from before itself.
+
+Two things fall out of the correction, and both are worth keeping:
+
+- **The threshold is off by one, permanently.** `>= 2` is *have I met this person before*, because
+  the current conversation is already counted when the question is asked. `>= 1` is unconditional.
+- **Per-NPC counting is closed in XML in both directions.** The action list has `SetIntProperty`
+  (sets, and carries `Speaker = true`) and `AddIntState` (increments, but into global game state).
+  There is no `AddIntProperty` and no `ModIntProperty`, and `IfSpeakerHaveProperty` is existence-only
+  — so a per-NPC counter can be neither incremented nor compared without C#. Vanilla's own
+  `AskedKithKin` pair is the shape that *is* available, and it is deliberately boolean.
+
+Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
+is the same instrument on a value with no readers; here the value had a reader and the reader was
+too early. [`A dispatch list is a snapshot, so *when* a call runs decides who is in it`](#a-dispatch-list-is-a-snapshot-so-when-a-call-runs-decides-who-is-in-it)
+is the same ordering question asked about membership rather than about a threshold.
