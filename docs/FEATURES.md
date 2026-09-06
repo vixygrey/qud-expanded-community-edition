@@ -8574,6 +8574,64 @@ A merged choice is appended to `Elements` and `Algorithms.StableSortInPlace` pre
 order among equals, so each question lands at the foot of that person's own list — where a thing you
 ask somebody belongs, rather than among the transactions.
 
+### 61.5a The second cast is one merchant voice, and the first attempt could never have worked
+
+Every shopkeeper in the game gains a question once a name has passed between you, gated on
+`IfSpeakerHaveProperty="Vixy_Introduced"` and `IfSpeakerHavePart="GenericInventoryRestocker"` — the
+merchant test, the same shape as vanilla's own `IfSpeakerHavePart="GivesRep"` on the water ritual. A
+part rather than a blueprint list, so nothing rots when Qud adds a shopkeeper.
+
+**One voice for all of them earns its place only because the shared thing is the trade.** An
+apothecary, a tinker and a dromad stallholder do not share a register in general — that is §61.2's
+whole finding — but they do share what a returning customer means, and every line is about that and
+nothing else. None promises anything set aside, because no mechanic backs that up and a promise the
+game does not keep is worse than no line.
+
+### 61.5b What the first attempt got wrong, which is worth more than the fix
+
+I first wrote this as three merges into the `DromadTrader`, `tinker` and `herbalist` conversations,
+having checked 30 blueprints, their inheritance, their factions and that none of them wander. **Two
+of the three could never fire, and play found it in minutes.**
+
+**Village shopkeepers do not use those conversation blueprints.** `VillageCoda` calls
+`RemovePart<ConversationScript>()` and then `ConversationsAPI.addSimpleConversationToObject` with the
+same lines pasted inline, and `AddConversation` gives the creature a per-object blueprint with
+`ID = "CustomConversation::" + Object.ID`. The text is identical to the blueprint conversations
+because it was copied into the builder, which is exactly what made them look like the same thing.
+
+**And those blueprints have no other home.** `HumanTinker*` and `HumanApothecary*` have **zero**
+placement references anywhere in `Base/*.xml` — village builders are their only source. So the
+`tinker` and `herbalist` conversations are unreachable content, and a merge into them is dead on
+arrival. Only `DromadTrader1`–`8` are placed by population tables, 32 references, and those keep
+their blueprint conversation.
+
+**The shape: I verified what the blueprints declare and never asked what the game does when it
+places one.** `docs/LESSONS.md` already carries that lesson twice over, and I had added a third
+instance of it the same morning.
+
+The fix is this file's existing route rather than a new one. `ConversationsAPI.AddDynamicShim` ends
+with `Conversation.Children.AddRange(BaseConversation.Children)`, appending every choice **and node**
+of `BaseConversation` into the dynamic conversation — which is why `Vixy_Introduce` works on a
+village apothecary, and why the reply's `Target` resolves, since `ConversationUI.GetTargetNode`
+searches only the current conversation's own elements and would otherwise log *"Invalid target"* and
+end the conversation.
+
+**The dromad-specific voice went with it.** `DromadTrader1`–`8` all carry
+`GenericInventoryRestocker`, so a conversation-specific question would have stood beside the generic
+one — two familiarity questions on the same trader. Excluding them needed a predicate that does not
+exist: `IfSpeakerHaveTag` is existence-only, so `Species="dromad"` is not testable, and a blueprint
+list rots. One voice, and the loss is a line about counting a road by those who walk it twice.
+
+### 61.5c The pools are wide because the feature is repetition
+
+Each of §61's four carries four ways to ask and four or five answers, and the merchant question five
+of each. `IConversationElement.Prepare` calls `GetRandomSubstring('~')`, so one is drawn per showing.
+
+This is not decoration. The whole feature is a line you see on every visit to somebody you visit
+often, and vanilla sizes its pools accordingly — Warden Yrame's own greeting has eight variants and a
+snapjaw's has thirty-five. A single fixed line would read well once and become wallpaper by the
+fifth time, which is the failure mode this feature is most exposed to.
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
