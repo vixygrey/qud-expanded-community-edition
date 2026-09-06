@@ -336,6 +336,28 @@
        Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
        bases sit at. -->
   <conversation ID="Barathrum">
+    <!-- And the familiarity question. #633, third cast. Declared at conversation level so it
+         reaches all three of his start variants - Early, Recame and Welcome. His register is the
+         one §723's teaching node already uses: a maker who thinks in centuries. -->
+    <choice ID="Vixy_BarathrumFamiliar" Target="Vixy_BarathrumFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, master?~
+        How is the work?~
+        Are you well?~
+        And you - how do you find the years?
+      </text>
+    </choice>
+    <node ID="Vixy_BarathrumFamiliarReply">
+      <text>
+        I am old, child, and the work is longer than I am. That was true before you came. It is less heavy said aloud to someone who comes back.~
+        The work is well. I have set a thing down and picked it up again more times than you have been alive - and lately I set it down when you arrive, which is new.~
+        Well enough. I have outlasted my own certainties and most of my friends. You are neither, yet.~
+        The years are a material like any other, =name=. They yield if you are patient. I have been very patient.
+      </text>
+      <choice Target="Start">
+        <text>Thank you, =pronouns.formalAddressTerm=.~I'll come back.~That is worth hearing.</text>
+      </choice>
+    </node>
     <start>
       <choice ID="Vixy_TeachModLegendary" Target="Vixy_TaughtModLegendary" Ordinal="9700">
         <text>Master, teach me to make something that outlasts me.</text>
@@ -400,6 +422,28 @@
        Tinkering rank its tier requires - Tinker II for all four, one rank above the Tinker I their
        bases sit at. -->
   <conversation ID="Q Girl">
+    <!-- And the familiarity question. #633, third cast. Her register is §723's teaching node:
+         delighted by a machine pushed past its rating, and impatient with the plate that says
+         otherwise. -->
+    <choice ID="Vixy_QGirlFamiliar" Target="Vixy_QGirlFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How's the work?~
+        How do you fare?~
+        Building anything good?~
+        And you - how are you keeping?
+      </text>
+    </choice>
+    <node ID="Vixy_QGirlFamiliarReply">
+      <text>
+        Good! Loud, mostly. I have three things half-built and one of them is arguing with me. Come back and I'll show you which.~
+        Keeping? I keep forgetting to. But you turn up and ask, and then I remember I have a body. That's useful, actually.~
+        Something is always building. The interesting question is whether it agrees. Ask me again in a week, =name=, the answer changes.~
+        Well! Better than the regulator, worse than the cell. Somewhere in there.
+      </text>
+      <choice Target="Start">
+        <text>I'll come back.~I'd like to see it.~Good.</text>
+      </choice>
+    </node>
     <start>
       <choice ID="Vixy_TeachModMassivelyOverloaded" Target="Vixy_TaughtModMassivelyOverloaded" Ordinal="9700">
         <text>How far past its rating can a cell actually be pushed?</text>
@@ -546,6 +590,185 @@
         Same wind, =name=. Different tongue tasting it, mayhaps. You've a way of turning up on the good days.~
         Dust. Always dust. But you en't dust, and that's worth the saying.
       </text>
+    </node>
+  </conversation>
+  <!-- Grit Gate knows your face. #633, third cast.
+
+       The first cast is four individuals in Joppa, the second one voice for every shopkeeper. This
+       is eight of Grit Gate's own, written one at a time, and the reason is that they have no shared
+       register to write in. I went looking for one - the plan was a faction predicate and a single
+       Barathrumite voice - and the conversations refuse it. Otho is a formal steward, Hortensa calls
+       me `=player.OffspringTerm=`, Dardi opens with "Get out of my work space!", Aloysius offers an
+       accord in which he refrains from having Ereshkigal reduce me to my component atoms, Iseppa
+       asks if I am lost, and Shem whispers. They are a collection of eccentrics, not a culture.
+
+       **And a predicate was never needed.** Named NPCs almost all have their own conversation - 105
+       named blueprints across 89 distinct conversations - so per-person writing is a per-conversation
+       merge and no C# at all. A faction test would only serve the unnamed rank-and-file, who are not
+       people you have a relationship with.
+
+       **The best material here is the thaw.** Half of Grit Gate is hostile or dismissive on meeting
+       you, so a question that appears only once a name has passed, answered less coldly, does more
+       work here than anywhere in Joppa. Warden Yrame was the one arc of that shape in §61; this has
+       four.
+
+       Each choice is declared at conversation level rather than inside a start node, and that is
+       load-bearing rather than tidy. These conversations have several start nodes apiece - Dardi,
+       Hortensa, Aloysius and Iseppa carry `Recame`, `Post Arms` and `Greetings`, and Otho has five
+       separate `<node ID="Start">` variants - so merging into "the start node" has no single
+       referent. `ConversationXMLBlueprint.Read` assigns `Distribute="Start"` to any choice whose
+       parent is a conversation, and `DistributeChildren` matches both `<start>` elements and
+       `<node ID="Start">`, so one declaration reaches every variant.
+
+       Left out, each for a reason. **Euclid** speaks `=MARKOVPARAGRAPH=` between `*thip thip thip*`,
+       which is procedural babble rather than a person. **Sparafucile** is 23 emote lines and
+       deliberately mute, correctly hidden by §26's test. **Jacobo** and **Mafeo** both carry
+       `GenericInventoryRestocker`, so §61.5a's merchant question already covers them and a second
+       one would double up. **PaxKlanq2** and **Neek** have registers of their own - fungal and
+       whispered - and deserve doing properly rather than quickly. The rank-and-file Barathrumite,
+       Arconaut and Tinker all use `Humanoids` and are not named individuals. -->
+
+  <!-- Otho, Barathrum's steward. Formal, verbose, faintly apologetic, and precise about his own
+       judgement - "I apologize for the manner of our introduction, but we must take precautions." -->
+  <conversation ID="Otho">
+    <choice ID="Vixy_OthoFamiliar" Target="Vixy_OthoFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How does Grit Gate keep?~
+        How do you fare, steward?~
+        Is all well here?~
+        And you, Otho - how do you find things?
+      </text>
+    </choice>
+    <node ID="Vixy_OthoFamiliarReply">
+      <text>
+        The Gate keeps. We keep. You keep returning, which I confess I did not predict, and I am not often wrong in that direction.~
+        Well enough that I have stopped counting the doors twice. That is not nothing, =name=.~
+        There is always something. But I find I no longer brace when the lift descends, which I attribute largely to knowing who is on it.~
+        I am steward of a hole in a hill full of difficult people, =name=. I am precisely as well as that sounds, and no less content for it.
+      </text>
+      <choice Target="Start">
+        <text>Good.~That is well said, =pronouns.formalAddressTerm=.~I will let you get on.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Hortensa. Brusque, and calls me `=player.OffspringTerm=` on first meeting - "child, who are
+       you?" The warmth has to stay clipped or it is not hers. -->
+  <conversation ID="Hortensa">
+    <choice ID="Vixy_HortensaFamiliar" Target="Vixy_HortensaFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare?~
+        Are you well?~
+        And you - how are you keeping?~
+        Anything troubling you?
+      </text>
+    </choice>
+    <node ID="Vixy_HortensaFamiliarReply">
+      <text>
+        Better for being asked, =name=, which is not a thing I say twice. You may keep calling on me. Sparingly.~
+        I am old and busy and neither is going to change. Ask anyway. It costs me nothing to answer you.~
+        Nothing is troubling me that you could lift. But you asked, and I have noted it.~
+        Well enough. You have stopped being a stranger, and I have stopped bracing for the noise. Both are improvements.
+      </text>
+      <choice Target="Start">
+        <text>Good.~I will leave you to it.~Sparingly, then.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Dardi. Territorial - "Who are you? Get out of my work space!" - so the thaw is grudging and
+       must not become friendly, or it stops being a thaw. -->
+  <conversation ID="Dardi">
+    <choice ID="Vixy_DardiFamiliar" Target="Vixy_DardiFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Still in your way?~
+        Am I still in your work space?~
+        Should I go?~
+        How is the work?
+      </text>
+    </choice>
+    <node ID="Vixy_DardiFamiliarReply">
+      <text>
+        You are in my work space. ...You are in it less than you were. That is the whole of the compliment, don't fish for more.~
+        The work is the work. You have not broken anything in some while, which I have noticed, which I did not intend to mention.~
+        Go, stay. You are quiet, at least. Quiet is most of what I want from people.~
+        Hm. I know your step on the grating now and I do not look up. Make of that what you like, =name=.
+      </text>
+      <choice Target="Start">
+        <text>I'll take it.~Understood.~Then I'll be quiet.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Aloysius. Grandiose and threatening in the most formal possible register - he proposes accords
+       and invokes Ereshkigal. The warmth has to arrive as a treaty clause. -->
+  <conversation ID="Aloysius">
+    <choice ID="Vixy_AloysiusFamiliar" Target="Vixy_AloysiusFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Have you asked Ereshkigal about me lately?~
+        Does our accord still hold?~
+        How do you fare?~
+        Am I still to be reduced to my component atoms?
+      </text>
+    </choice>
+    <node ID="Vixy_AloysiusFamiliarReply">
+      <text>
+        I have not troubled her with the question. Consider that an accord of a kind, and do not consider it further.~
+        It holds. I have amended one clause: you may remain in my sight. The amendment is not open to celebration.~
+        I fare as one does. You are no longer an interruption, =name=, which in my accounting is a promotion of some magnitude.~
+        Your atoms are, for the present, arranged to my satisfaction. Do not test the arrangement.
+      </text>
+      <choice Target="Start">
+        <text>I won't.~Noted, =pronouns.formalAddressTerm=.~A generous clause.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Iseppa. Gentle and apologetic, surprised to have company at all - "I don't mind that you're
+       here, but I was not expecting anyone." -->
+  <conversation ID="Iseppa">
+    <choice ID="Vixy_IseppaFamiliar" Target="Vixy_IseppaFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How are you keeping?~
+        Are you well down here?~
+        And you - how do you fare?~
+        Is there anything you need?
+      </text>
+    </choice>
+    <node ID="Vixy_IseppaFamiliarReply">
+      <text>
+        Oh - well, yes. Better since I stopped being surprised to see you. I had grown used to not expecting anyone at all.~
+        I am quite well, =name=. It is kind of you to ask. Nobody down here asks; they simply arrive and want something.~
+        Nothing I need. Though I find I listen for the lift now, which I did not used to do.~
+        Well enough, thank you. You may come and sit a while if you like. You needn't want anything.
+      </text>
+      <choice Target="Start">
+        <text>I might, at that.~I'm glad.~Thank you, =pronouns.formalAddressTerm=.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Shem -1. Whispers, and is conspiratorially on my side from the first line - "You're not
+       supposed to be here. But I won't tell." The emote is his and has to stay. -->
+  <conversation ID="Shem">
+    <choice ID="Vixy_ShemFamiliar" Target="Vixy_ShemFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        Still not telling?~
+        How are you keeping, Shem?~
+        Are you all right?~
+        Anything I should know?
+      </text>
+    </choice>
+    <node ID="Vixy_ShemFamiliarReply">
+      <text>
+        {{emote|*Shem whispers*}} Still not telling. I never was going to. But it is better now that you know I wasn't.~
+        {{emote|*Shem whispers*}} I am all right. Nobody asks me that. You did, so now it is a thing that happens.~
+        {{emote|*Shem whispers*}} You are still not supposed to be here, =name=. I have decided that is my favourite part.~
+        {{emote|*Shem whispers*}} Nothing you should know. Something I should say: I am glad when it is you.
+      </text>
+      <choice Target="Start">
+        <text>Good.~Keep it that way.~Thank you, Shem.</text>
+      </choice>
     </node>
   </conversation>
 </conversations>

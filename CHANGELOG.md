@@ -44,6 +44,17 @@ recorded because contributors need them, not because subscribers do.
   their own count of you. One voice rather than four, because what an apothecary, a tinker and a
   dromad trader share is not a way of speaking — it is what a returning customer means.
 
+- **Grit Gate knows your face** (#633). Otho, Hortensa, Dardi, Aloysius, Iseppa, Shem, Barathrum and
+  Q Girl each gain a question you can only ask once you have given your name, answered in their own
+  voice.
+
+  Half of Grit Gate is hostile or dismissive when you arrive, and that turns out to be the best
+  material this idea has had. Dardi still tells you that you are in his work space — just that you
+  are in it less than you were, and not to fish for more than that.
+
+  Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
+  shopkeeper's question rather than gaining a second one.
+
 - **Everyone in this group has more to say** (#633). Tam, Elder Irudad, Warden Yrame and Mehmet each
   answer four or five different ways now, and can be asked four different ways, drawn fresh each
   time. This is a line you see on every visit to somebody you visit often, and one fixed answer would

@@ -8645,6 +8645,58 @@ often, and vanilla sizes its pools accordingly — Warden Yrame's own greeting h
 snapjaw's has thirty-five. A single fixed line would read well once and become wallpaper by the
 fifth time, which is the failure mode this feature is most exposed to.
 
+### 61.5d The third cast is Grit Gate, written one at a time
+
+Eight of Grit Gate's own — **Otho, Hortensa, Dardi, Aloysius, Iseppa, Shem, Barathrum and Q Girl** —
+each with four ways to ask and four answers in their own voice.
+
+**I planned a faction predicate and a single Barathrumite voice, and the conversations refused it.**
+Otho is a formal steward; Hortensa calls me `=player.OffspringTerm=`; Dardi opens with *"Get out of
+my work space!"*; Aloysius proposes an accord in which he refrains from having Ereshkigal reduce me
+to my component atoms; Iseppa asks if I am lost; Shem whispers. They are a collection of eccentrics
+rather than a culture, and one voice would have been wrong for every one of them.
+
+**And the predicate was never needed.** Named NPCs almost all have a conversation of their own — 105
+named blueprints across 89 distinct conversations — so per-person writing is a per-conversation merge
+and no C# at all. A faction test would serve only the unnamed rank-and-file, who are not people you
+have a relationship with. That is the whole of what an `IfFaction` predicate would have bought, and
+it is why this cast ships without one.
+
+**The best material here is the thaw.** Half of Grit Gate is hostile or dismissive on meeting you, so
+a question that appears only once a name has passed, answered less coldly, does more work here than
+anywhere in Joppa. Warden Yrame was the one arc of that shape in §61; this has four.
+
+### 61.5e Declared at conversation level, because "the start node" has no single referent here
+
+Each choice sits directly under `<conversation>` rather than inside a start node, and that is
+load-bearing. Dardi, Hortensa, Aloysius and Iseppa each carry three conditional starts — `Recame`,
+`Post Arms` and `Greetings` — and **Otho has five separate `<node ID="Start">` variants**. Merging
+into "the start node" would have had to pick one.
+
+`ConversationXMLBlueprint.Read` assigns `Distribute="Start"` to any choice whose parent is a
+conversation, and `DistributeChildren` matches both `<start>` elements **and** `<node ID="Start">`:
+
+```csharp
+else if (self.Contains(child.Name) || (flag2 && child.Name == "Node" && child.ID == "Start"))
+```
+
+So one declaration reaches every variant, which is the same mechanism `BaseConversation` uses to
+distribute the water ritual and `[begin trade]` to the whole game.
+
+### 61.5f Who is left out of Grit Gate, and why
+
+| | why |
+|---|---|
+| **Euclid** | speaks `=MARKOVPARAGRAPH=` between `*thip thip thip*` — procedural babble, not a person |
+| **Sparafucile** | 23 emote lines and deliberately mute; correctly hidden by §26's test |
+| **Jacobo**, **Mafeo** | both carry `GenericInventoryRestocker`, so §61.5a's merchant question already covers them and a second would double up |
+| **PaxKlanq2**, **Neek** | fungal and whispered registers of their own, worth doing properly rather than quickly |
+| rank-and-file Barathrumite / Arconaut / Tinker | all use `Humanoids`; not named individuals |
+
+Leaving Jacobo and Mafeo to the merchant voice is also what resolves the overlap without machinery —
+the same problem that cost the dromad-specific voice in §61.5b, handled by choosing rather than by
+inventing a predicate to exclude them.
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
