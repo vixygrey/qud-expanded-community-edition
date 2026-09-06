@@ -171,6 +171,67 @@
       <part Load="Add" Name="Vixy_RitualGate" />
     </choice>
 
+    <!-- Shopkeepers who know your face. #633, second cast.
+
+         The first cast is four written individuals. This is one voice for every merchant in the
+         game, and it earns that only because the shared thing is the *trade*: an apothecary, a
+         tinker and a dromad stallholder do not share a register in general, but they do share what
+         a returning customer means. Every line here is about that and nothing else - and none of
+         them promises anything set aside, because no mechanic backs that up and a promise the game
+         does not keep is worse than no line.
+
+         `IfSpeakerHavePart="GenericInventoryRestocker"` is the merchant test, the same shape as
+         vanilla's own `IfSpeakerHavePart="GivesRep"` on the water ritual. It is a part rather than a
+         blueprint list, so nothing here rots when Qud adds a shopkeeper.
+
+         **This has to live in `BaseConversation` rather than on the merchants' own conversations,
+         and finding that out cost a rewrite.** Village shopkeepers do not use the `tinker` and
+         `herbalist` conversation blueprints at all: `VillageCoda` calls `RemovePart<ConversationScript>()`
+         and then `ConversationsAPI.addSimpleConversationToObject` with the same lines pasted inline,
+         which builds a per-creature conversation with `ID = "CustomConversation::" + Object.ID`. The
+         text matches those blueprints exactly, which is what made them look like the same thing.
+         `HumanTinker*` and `HumanApothecary*` have **zero** placement references anywhere in
+         `Base/*.xml`, so those two conversation blueprints are unreachable content and a merge into
+         them can never fire.
+
+         What does reach them is this file's existing route. `ConversationsAPI.AddDynamicShim` ends
+         with `Conversation.Children.AddRange(BaseConversation.Children)`, appending every choice
+         *and node* of `BaseConversation` into the dynamic conversation - which is why
+         `Vixy_Introduce` works on a village apothecary, and why `Target` resolves, since
+         `ConversationUI.GetTargetNode` searches only the current conversation's own elements.
+
+         Ordinal 9600: `Ordinal` sets `Priority = -Ordinal` and the list sorts by descending
+         Priority, so this sits after the speaker's own choices at Priority 0 and at the head of this
+         file's distributed block, just before Vixy_WaterRemembers at 9700. -->
+    <choice
+      ID="Vixy_MerchantFamiliar"
+      Target="Vixy_MerchantFamiliarReply"
+      Ordinal="9600"
+      IfSpeakerHaveProperty="Vixy_Introduced"
+      IfSpeakerHavePart="GenericInventoryRestocker"
+    >
+      <text>
+        Do you know me by now?~
+        Am I a familiar face here?~
+        You have seen me before, I think.~
+        Do you remember my face, or only my water?~
+        Do you know me, or just my trade?
+      </text>
+    </choice>
+
+    <node ID="Vixy_MerchantFamiliarReply">
+      <text>
+        I know the faces that come back, and yours is one. That is most of what trade is, out here.~
+        I remember the ones who return. Out here that is worth more than a good haggle.~
+        Your face, your water, and what you last carried off. A trader keeps all three.~
+        You I know. Half my custom I never see twice - that is the salt for you.~
+        Well enough. A stranger is a price; somebody who comes back is a living.
+      </text>
+      <choice Target="Start">
+        <text>Good.~That is worth something.~Then we understand each other.</text>
+      </choice>
+    </node>
+
     <choice ID="Vixy_WaterRemembers" Target="Vixy_WaterRemembered" Ordinal="9700">
       <text>
         We shared water once.~
@@ -394,14 +455,19 @@
       <choice ID="Vixy_TamFamiliar" Target="Vixy_TamFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
         <text>
           How does the trade find you, Tam?~
-          How do you fare, Tam?
+          How do you fare, Tam?~
+          Is it well with you, Tam?~
+          And you - how are your days here?
         </text>
       </choice>
     </start>
     <node ID="Vixy_TamFamiliarReply" Inherits="Welcome">
       <text>
         It is not the trade, =name=. It is that you return, and the returning is the thing. My people count a road by those who walk it twice.~
-        Well enough, =name=, and better for the asking. The salt teaches us to mark who comes back.
+        Well enough, =name=, and better for the asking. The salt teaches us to mark who comes back.~
+        We are settled, and settled is strange to me still. But a face I know twice makes a place feel less like a stop.~
+        My chests are heavy and my legs are idle, =name=. It is a good trade. Ask me again in a season.~
+        I am far from Moghra'yi and not sorry for it. You are the second thing here I did not have to learn twice.
       </text>
     </node>
   </conversation>
@@ -414,14 +480,19 @@
       <choice ID="Vixy_IrudadFamiliar" Target="Vixy_IrudadFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
         <text>
           How are you keeping, Elder?~
-          And how is it with you, Elder?
+          And how is it with you, Elder?~
+          How do you fare, Elder?~
+          Is there ease with you today?
         </text>
       </choice>
     </start>
     <node ID="Vixy_IrudadFamiliarReply" Inherits="Start">
       <text>
         -mm. You again, =name=. The village counts strangers, and I count faces. Yours has become a face.~
-        -me? Old, and sat in the cool. But you come back, =name=, and a thing that comes back is a thing the hamlet learns to expect.
+        -me? Old, and sat in the cool. But you come back, =name=, and a thing that comes back is a thing the hamlet learns to expect.~
+        -well enough. The vine grows, the salt blows, and you walk in out of it. Three things I can rely on, =name=.~
+        -mm, ask the pillows. They know more of me than I do. ...Sit. It is good you asked.~
+        -I keep. That is the whole of it at my age. But there is a difference between quiet and alone, =name=, and you are the difference.
       </text>
     </node>
   </conversation>
@@ -435,7 +506,9 @@
       <choice ID="Vixy_YrameFamiliar" Target="Vixy_YrameFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
         <text>
           Anything worth knowing, Warden?~
-          Anything I should watch for?
+          Anything I should watch for?~
+          Trouble about, Warden?~
+          Anything I ought to know before I go?
         </text>
       </choice>
     </node>
@@ -443,7 +516,10 @@
       <text>
         Hm. Suppose you en't trouble, so I'll spend the breath. Keep off the marsh a-night - croc don't care whose name I know.~
         I'll say this once. Them as come back a-Joppa twice, I learn their names. Them as come back thrice, I worry when they don't.~
-        You still upright, so someone's doing it right. Keep at that.
+        You still upright, so someone's doing it right. Keep at that.~
+        Nothing new. That's the job done, hyeh? A quiet Warden's a good one.~
+        Watch the water when it goes still. En't the noise kills folk here.~
+        You'll do. I've buried better and worse, and I'd rather not dig for you.
       </text>
     </node>
   </conversation>
@@ -456,14 +532,19 @@
       <choice ID="Vixy_MehmetFamiliar" Target="Vixy_MehmetFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
         <text>
           What does the wind taste like today?~
-          Anything on the wind, Mehmet?
+          Anything on the wind, Mehmet?~
+          How's the taste today?~
+          How do you fare, Mehmet?
         </text>
       </choice>
     </start>
     <node ID="Vixy_MehmetFamiliarReply" Inherits="Welcome">
       <text>
         Aye, I know your step now, =name=. Tastes different when a stranger comes down the path - sharper, like. Yours has gone soft as the vine.~
-        Salt and a little green. Same as ever. But I taste you coming these days, =name=, and that's new.
+        Salt and a little green. Same as ever. But I taste you coming these days, =name=, and that's new.~
+        Copper off the marsh, and rain a long way off that won't reach us. Anywhile - good you asked.~
+        Same wind, =name=. Different tongue tasting it, mayhaps. You've a way of turning up on the good days.~
+        Dust. Always dust. But you en't dust, and that's worth the saying.
       </text>
     </node>
   </conversation>

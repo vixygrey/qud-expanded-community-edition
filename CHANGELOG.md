@@ -36,6 +36,20 @@ recorded because contributors need them, not because subscribers do.
   not suit a snapjaw, and nothing in the game separates the two — the ordinary villagers most worth
   deepening are built exactly like the beasts.
 
+- **Merchants you come back to know you too** (#633). Ask a shopkeeper their name, give them yours,
+  and every merchant in the game gains a question you can only ask once that has happened — the same
+  thing Tam and Warden Yrame gained, now on the people you actually revisit.
+
+  Each of them remembers you separately, so this is one voice and every stallholder in Qud keeping
+  their own count of you. One voice rather than four, because what an apothecary, a tinker and a
+  dromad trader share is not a way of speaking — it is what a returning customer means.
+
+- **Everyone in this group has more to say** (#633). Tam, Elder Irudad, Warden Yrame and Mehmet each
+  answer four or five different ways now, and can be asked four different ways, drawn fresh each
+  time. This is a line you see on every visit to somebody you visit often, and one fixed answer would
+  have been wallpaper by the fifth time — vanilla gives Yrame's own greeting eight variants for the
+  same reason.
+
 ### Fixed
 
 - **You could introduce yourself to something that only growls** (#881). Name a companion animal and
