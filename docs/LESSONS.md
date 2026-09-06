@@ -4718,3 +4718,60 @@ Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heu
 is the same file and nearly the same mistake, one feature earlier — there I ran sibling elements
 together and tuned a rule to fit the artefact; here I read one of three encodings and trusted the
 silence from the other two. Both are cases of testing my own parse instead of the data.
+
+## Three goes at one test, and each fix opened the door the previous one had shut
+
+`SaysNothing` decides whether a creature says anything that is not an emote, and it gates both naming
+exchanges. It has now been wrong three times, in a pattern worth naming.
+
+**#881 read the greeting.** A conversation whose start node is emote-only was silent. That silenced
+everyone who opens with a gesture and then talks — Neek, the Chavvah chimes, Lebah, Tammuz.
+
+**#885 widened it to the whole conversation.** Does this speaker say a non-emote word *anywhere*? That
+fixed the four above, and admitted the mirror case: somebody silent **now** whose words are behind a
+quest. Nacham, Dagasha, Kah and Va'am are bound machines that cannot speak — Nacham *"gives no
+indication of understanding"* — and every word they will ever say sits behind one choice gated
+`IfHaveBlueprint="Repulsive Device"`. So the game offered to let me introduce myself to a bound,
+incomprehensible machine, and answered *"=name=. I will remember it."*
+
+**#633 asks what is reachable.** Walk from the unconditional start nodes through unconditional choices
+and see whether any word is found. Measured before writing: 7 of 193 vanilla conversations change
+verdict, all correctly or inertly, and nobody who talks is silenced.
+
+### The shape
+
+Each fix was correct about the case in front of it and wrong about its complement, because the
+question kept being asked at the wrong scope:
+
+| | asks | misses |
+|---|---|---|
+| #881 | is this speaker talking **at hello** | anyone who warms up |
+| #885 | does this speaker talk **ever, anywhere** | anyone who talks only later |
+| #633 | can this speaker talk **without a condition being met** | — |
+
+**"Now" and "ever" are both wrong, and the right question was "reachable".** A conversation is a graph
+and I twice answered a graph question with a flat scan — first over one node, then over all of them.
+Neither scan could express *the words exist but you cannot get to them*, which is the only sentence
+that separates Lebah from Nacham.
+
+### Two things that made the third attempt tractable
+
+**Predicates are data, not just behaviour.** `IConversationElement.Predicates` is a
+`Dictionary<string, string>` of the parsed `If*` attributes. Asking whether a predicate *exists* needs
+no game state, so the walk is static. That matters beyond convenience: `DelegateContext` is a static
+singleton whose `Set` mutates `Instance` in place, and this test runs from inside `Possible()`, which
+is itself inside predicate evaluation. Calling `IsVisible()` during the walk would have overwritten
+the context the caller was standing in. **The semantically ideal test was the unsafe one**, and the
+cheaper approximation is also the only safe one.
+
+**Measure the rule against the whole corpus before writing it.** Running both rules over all 193
+conversations took minutes and caught two errors in my own probe: Nacham has *two* `<node ID="Start">`
+and the one carrying words is the conditional one, so seeding on all starts hides the bug entirely;
+and `ChavvahPrime` has a completely empty `<start ID="Welcome">` built at runtime, so a rule without
+the empty-node hatch would have silenced Dyvvrach. Both would have shipped.
+
+Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
+and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-about-exactly-one-conversation-and-it-was-the-one-i-was-looking-for)
+are the same file and the same failing: reasoning about conversation data from a scan whose shape did
+not match the runtime's. All three were found by reading for the next piece of work, never by playing,
+which is cheap but late.
