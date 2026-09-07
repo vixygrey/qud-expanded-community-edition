@@ -233,6 +233,23 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **The security rules are on, and they report nothing — which is the point.** `S`
+  (bandit) reports 69 findings here, and reading all five groups shows every one of them firing
+  outside the threat model bandit is written for: `S603` flags the *argument-list* form of
+  `subprocess.run`, which is the safe pattern it exists to recommend; `S607` wants absolute paths for
+  `git` and `dotnet`, which must be found on PATH; `S314` guards XML parsing against network input
+  when what is parsed is the game's own files on the developer's disk; `S311` objects to `random` in
+  the tool whose subject *is* the game's name generator; and `S101` objects to five asserts, three in
+  tests and two deliberate layout guards that carry a comment saying so.
+
+  So those five are ignored as rules rather than suppressed 69 times at the call sites — 69 `noqa`s
+  is the padding `.typos.toml`'s policy warns about, transplanted to a different tool.
+
+  **What is left is worth having and costs nothing.** With those five subtracted, `S` reports zero
+  findings today and still catches `shell=True`, `eval`, `pickle.loads`, md5, a request with no
+  timeout or with `verify=False`, and a hardcoded password. Verified against a probe file containing
+  all seven, rather than assumed from the rule list.
+
 - **(internal)** **Four docstring rules, not the 178 findings I proposed.** Tier 2 of the ruff work
   started from "narrow `D` to formatting only — 178 findings, 162 auto-fixable, nearly free." Reading
   the sites rather than the count reversed most of it: `D209` (158 of those 162) moves every
