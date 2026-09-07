@@ -178,7 +178,7 @@ def warn_about_preprocessor(sources: list[Path]) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument(
         "--managed-dir",
         help=f"Qud's Managed directory (default: ${MANAGED_DIR_ENV}, else {DEFAULT_MANAGED_DIR})",

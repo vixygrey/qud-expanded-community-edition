@@ -905,7 +905,7 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     declared: set[str] = set()
     for path, root in all_roots.items():
         if "option" in path.name.lower():
-            declared |= {el.get("ID") for el in root.iter("option") if el.get("ID")}
+            declared |= {i for el in root.iter("option") if (i := el.get("ID"))}
     if not declared:
         return
 
@@ -2290,6 +2290,10 @@ def check_damage_ceiling(f: Findings, all_roots: dict[Path, ET.Element]) -> None
                 declared is None and bool(fact.get("two_handed"))
             )
 
+            if tier is None or skill is None:
+                # No tier, or no skill family - either way there is no row in DAMAGE_CEILING this
+                # weapon could be measured against, which is the same outcome the lookup gave.
+                continue
             ceiling = DAMAGE_CEILING.get((skill, two), {}).get(tier)
             if ceiling is None:
                 continue  # a family, tier or handedness vanilla does not ship
@@ -2760,12 +2764,13 @@ def declares_plant(name: str, all_roots: dict[Path, ET.Element]) -> bool:
     """
     seen: set[str] = set()
     roots = blueprint_sources(all_roots)
-    while name and name not in seen:
-        seen.add(name)
+    current: str | None = name
+    while current and current not in seen:
+        seen.add(current)
         obj = None
         for root in roots.values():
             for candidate in root.iter("object"):
-                if candidate.get("Name") == name:
+                if candidate.get("Name") == current:
                     obj = candidate
                     break
             if obj is not None:
@@ -2775,7 +2780,7 @@ def declares_plant(name: str, all_roots: dict[Path, ET.Element]) -> bool:
         parent = obj.get("Inherits")
         if parent in PLANT_ROOTS:
             return True
-        name = parent
+        current = parent
     return False
 
 
@@ -2895,12 +2900,16 @@ def display_name(name: str, all_roots: dict[Path, ET.Element]) -> str | None:
     """
     seen: set[str] = set()
     roots = blueprint_sources(all_roots)
-    while name and name not in seen:
-        seen.add(name)
+    current: str | None = name
+    while current and current not in seen:
+        seen.add(current)
         obj = None
         for root in roots.values():
             for candidate in root.iter("object"):
-                if candidate.get("Name") == name and candidate.get("Load") != "Merge":
+                if (
+                    candidate.get("Name") == current
+                    and candidate.get("Load") != "Merge"
+                ):
                     obj = candidate
                     break
             if obj is not None:
@@ -2908,9 +2917,10 @@ def display_name(name: str, all_roots: dict[Path, ET.Element]) -> str | None:
         if obj is None:
             return None
         for part in obj.findall("part"):
-            if part.get("Name") == "Render" and part.get("DisplayName"):
-                return part.get("DisplayName")
-        name = obj.get("Inherits")
+            display = part.get("DisplayName")
+            if part.get("Name") == "Render" and display:
+                return display
+        current = obj.get("Inherits")
     return None
 
 
@@ -2941,10 +2951,10 @@ def check_name_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> None
         return  # check_wellformed owns this
 
     scattered: set[str] = {
-        obj.get("Blueprint")
+        bp
         for pop in root.iter("population")
         for obj in pop.iter("object")
-        if obj.get("Blueprint") and obj.get("Weight") is None
+        if (bp := obj.get("Blueprint")) and obj.get("Weight") is None
     }
 
     seen: dict[str, list[str]] = {}

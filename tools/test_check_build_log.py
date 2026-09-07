@@ -110,11 +110,11 @@ class BuildLogCheck(unittest.TestCase):
             mods = save / "Mods"
             mods.mkdir()
             deployed_cs: list[Path] = []
+            deployed = mods / "some-installed-folder"
 
             if deploy:
                 # A folder name deliberately unlike the manifest id: the script must find the mod
                 # by reading manifests, since the installed folder is named however it arrived.
-                deployed = mods / "some-installed-folder"
                 (deployed / "Scripting").mkdir(parents=True)
                 for cs in SCRIPTING.glob("*.cs"):
                     target = deployed / "Scripting" / cs.name

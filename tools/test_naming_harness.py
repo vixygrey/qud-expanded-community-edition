@@ -69,7 +69,7 @@ class HarnessTest(unittest.TestCase):
         return styles, order
 
     def ctx(self, **kw):
-        c = dict.fromkeys(nh.SCOPE_FILTERS)
+        c: dict[str, str | None] = dict.fromkeys(nh.SCOPE_FILTERS)
         c.update(kw)
         return c
 

@@ -549,10 +549,10 @@ def collect_census(game: Path) -> dict[str, str]:
         """Sort one population into the buckets and check the result partitions it."""
         for name in names:
             carried = [
-                e.get("Blueprint")
+                bp
                 for o in chain(name)
                 for e in o.findall("inventoryobject")
-                if e.get("Blueprint")
+                if (bp := e.get("Blueprint"))
             ]
             if not carried:
                 tally[f"{prefix}-inventory-none"] += 1
