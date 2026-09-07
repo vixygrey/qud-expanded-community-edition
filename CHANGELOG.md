@@ -18,6 +18,19 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** **A place remembers who held it** (#923). Nothing in Caves of Qud knows who lives
+  anywhere — across all 284 zone declarations there is no owner and no site type, and
+  `FactionEncounters` places a whole war party and records nothing about having done so. So *"who
+  holds this place, and did that change?"* could not be asked.
+
+  Now it can. Invisible in play and changing no behaviour on its own: it is the substrate the
+  travelling bands of #832 need, and the answer #830 was reaching for when it leaned toward
+  reclamation over respawning.
+
+  **Only people hold ground.** 445 of 957 creature blueprints qualify — snapjaws, merchants,
+  mopango, Templar — and bats, spiders, fish and insects do not. Awakened machines hold and ordinary
+  robots do not, which falls out of the same test rather than being special-cased.
+
 - **Somebody you fought for remembers it** (#921). Kill something that was hunting somebody else and
   they think better of you. Five defences on five separate days brings a person to **Allied** — the
   other half of the gift's mechanism, and the mirror vanilla only ever built one side of.

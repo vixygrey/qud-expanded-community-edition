@@ -2216,11 +2216,12 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 102 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 103 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
-│                               # their opinions, and four Finesse powers
+│                               # their opinions, the territory record, and four
+│                               # Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -9446,6 +9447,105 @@ same constructor `ConversationUI.HaveConversation` uses.
 None, per §63.4. The uninstall cost is §62.7's and unchanged in kind: this is the second of this
 fork's own types to go into a vanilla collection, so a creature holding either one forgets its whole
 ledger if the mod is removed, and nothing else changes.
+
+---
+
+## 64. A place remembers who held it (`Vixy_Territory`)
+
+Invisible in play, and deliberately so — this records a fact and changes no behaviour. It is the
+substrate #832's travelling bands need and the answer #830 was reaching for. All of #923.
+
+### 64.1 Nothing in the game knows who lives anywhere
+
+Across all **284** zone declarations in `Worlds.xml` the complete attribute set is `Level`, `x`, `y`,
+`Name`, `NameContext`, `Tier`, weather and audio. **No owner, no site type.** A lair is a lair because
+a builder rolled creatures into it, and nothing records that afterwards.
+
+The one builder that would know says nothing. `FactionEncounters.BuildFactionEncounter` takes a
+faction, draws its leader from `BaseFactionHeroTemplate_<Faction>`, its members from
+`GetFactionMembers(Faction)` and its props from `FactionEncounterPartyObjects_<Faction>`, places all
+of it — and **sets no zone property at all**. The faction that populated a zone is known for the
+length of one method call.
+
+So *"who holds this place, and did that change?"* could not be asked.
+
+### 64.2 One system, because the zone events dispatch centrally
+
+`AfterZoneBuiltEvent` and `ZoneDeactivatedEvent` both send to the game before the zone:
+
+```csharp
+The.Game.HandleEvent(E);
+Zone.HandleEvent(E);
+```
+
+So one registered listener hears every zone. That is the cheap tier of `docs/LESSONS.md`'s *ask what
+dispatches per-object and what dispatches centrally*; the alternative was a part on every zone.
+`XRL.PsychicHunterSystem` is vanilla's precedent and registers identically.
+
+**This is the fork's first `IGameSystem`.** §57's notoriety considered one and chose a part, for a
+reason that does not apply here — it needed the player placed first, and this does not care where the
+player is. It is installed from `Vixy_PlayerParts` all the same, because that class already owns the
+two moments that matter: chargen for a new character, `CallAfterGameLoaded` for an existing save.
+
+Occupancy is computed **from the creatures present rather than from the builder**, which is broader:
+a creature carries `Brain.GetPrimaryFaction()` however it arrived, so an ordinary population-table
+lair is covered exactly as well as a faction encounter, and no vanilla builder is touched.
+
+### 64.3 Only people hold ground
+
+`Vixy_Regard.CanHold` decides — the same test §63.7 uses for who can think better of you, because
+both questions are *is this a person*. Measured over the game: **445 of 957** creature blueprints
+pass.
+
+| holds | excluded entirely |
+|---|---|
+| Snapjaws 36/36 · Merchants 50/50 · Mopango 18/18 · Templar 14/15 · Mechanimists 27/28 · Dromad 14/15 | Robots 0/53 · Unshelled Reptiles 0/32 · Arachnids 0/22 · Insects 0/21 · Fish 0/16 · Winged Mammals 0/15 |
+
+A bat does not hold a cave.
+
+**Awakened machines hold and ordinary ones do not, and that falls out for free.** The Slynth, Thah
+and the newly sentient pass on their own conversations — `Slynth`, `SlynthWanderer`, `Thah`,
+`NewlySentientBeings` — while base `Robots` fails the emote-only test. The distinction the game
+already draws between a machine and an awakened one is the distinction this makes, with no special
+case to drift.
+
+### 64.4 Held and vacated are asymmetric on purpose
+
+A faction **holds** a zone with **3+** living members and the plurality. A zone is **vacated** when
+the recorded holder has **none** left.
+
+Those two tests do not meet, and that is the point: it avoids having to pick a middle number for the
+one wounded snapjaw left in a lair, which is neither a garrison nor an opening. Corpses are skipped —
+zones keep their dead, so it has to be asked — and so is anyone the player is leading, who is not the
+local population.
+
+Recorded on leaving rather than entering, because leaving is when the answer has changed. Qud has no
+*cleared* signal at all (#830), so emptiness is computed, and `Zone.Deactivated` only sends the event
+— the cells and their occupants are still walkable at that moment.
+
+### 64.5 Zone properties, and what they cost
+
+`ZoneManager.ZoneProperties` is keyed by `ZoneID` and serialised with the main save, so a record
+survives its zone freezing to disk and — the point of the exercise — **can be read for a zone that is
+not loaded**. #832's bands need to find a vacancy without thawing half the map.
+
+The cost was measured rather than estimated. A real save at turn 3,285 holds **18** frozen zones and
+**486,586 bytes** of zone data — about **27 KB per zone**, one zone per ~180 turns. A record is a
+tokenised property name and faction against a `ZoneID`: at worst ~41 bytes, realistically under 10,
+since `WriteOptimized` puts repeated strings in the token table once.
+
+> **Roughly 0.1% of what the zone it describes already costs.** A 250,000-turn run would carry ~1,400
+> records for ~57 KB uncompressed, against ~38 MB of zone data.
+
+### 64.6 Known limit
+
+**A zone that has never been built has no record.** Occupancy cannot be known before a zone exists,
+so anything reading this sees only places the player has visited — whether or not they emptied them.
+#832 inherits that and it cannot be fixed here.
+
+### 64.7 Off-switch
+
+None. This records a fact and changes no behaviour; whatever acts on it carries the switch.
 
 ## Appendix A — every merged vanilla melee weapon
 
