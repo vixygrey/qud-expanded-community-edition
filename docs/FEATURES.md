@@ -8958,6 +8958,63 @@ Every ask is plain modern English, which #895 established the hard way: the thee
 the mopango and the player does not catch it from them.
 
 
+### 61.5p The ninth cast is Kyakukya, where the criterion is stated outright
+
+Mayor Nuntu, Warden Indrix and Crowsong — an ape who deserted his own people to become mayor of a
+mushroom village, a goatfolk warrior who sends me to kill his elder brother, and whatever Crowsong is.
+
+**Nuntu says §61.5k's criterion out loud**, which no previous anchor quite managed. Ask him to take
+in the slynth:
+
+> *"Coming from anyone else, =name=, I might refuse outright."*
+
+And refuse it, and he adds *"perhaps if you were a more renowned figure among my people, I would
+reconsider."* Vanilla states in as many words that what he will do for me depends on who I am to him,
+and then offers no way to ask who that is. Every previous anchor had to be inferred from an epithet or
+a refusal; this one is the thesis, in the speaker's own mouth.
+
+**Indrix's wandering was a caveat and is not one, and Nuntu is the one who settles it.** He carries
+`Wanders="true"`, which I had flagged as disqualifying — somebody you cannot find again cannot become
+familiar. Nuntu: *"You'll find him patrolling the village."* A patrol, not a migrant, and the same
+zone holds him. Worth recording because the blueprint flag alone said the opposite, and reading one
+line of somebody else's dialogue was what corrected it.
+
+**Indrix is also the first person written here with no unconditional start at all.** All four of his
+are gated — on wearing the Cyclopean Prism, on the quest being untaken, active, or finished. §61.5l's
+walk falls back to every start when none is unconditional rather than answering on a guess, so he
+reads as speaking. That fallback existed from the moment #897 was written and this is the first thing
+to lean on it.
+
+Only Indrix takes a state variant, keyed `IfFinishedQuest="Raising Indrix"` — the one state in this
+cast that changes what we are to each other, since I killed his brother at his asking. Nuntu's states
+are about the slynth rather than about me, and Crowsong has none, so both take the catch-all alone.
+
+### 61.5q The children of the tomb are excluded by arc shape, which is a fourth kind of no
+
+Nacham, Dagasha, Kah and Va'am are the biomechanical children the mopango of §61.5n spend their lives
+watching. Writing the watchers and not the watched leaves that arc visibly half-built, so the case for
+including them was real. They are excluded anyway.
+
+- **While bound they cannot speak.** Every start node is pure emote. Nacham *"gives no indication of
+  understanding"*, Kah *"lacks any means to make sound"*, Dagasha has no mouth.
+- **Only one can ever be freed.** Lebah: *"An ye free one, three remaineth forever."*
+- **After freeing, the conversation is one farewell line** — *"Learn well."* *"Stay safe."*
+
+So there is no second visit to be familiar across. §61's other exclusions are about **register**
+(Euclid's procedural babble), **characterisation** (Geeub, written to forget me) and **axis** (Many
+Eyes, which deals in a title rather than a name). This is a fourth: **arc shape.** Somebody you meet
+once cannot become familiar, however good the material is.
+
+And the material is very good, which is worth saying plainly so the exclusion is not mistaken for a
+judgement on the writing. Not one of the four remembers their own name, and each was named by the
+watchers: *"The mopango have cared for me whilst I could not care for myself, giving me the only name
+I now know."* A feature about what names do between people has something to say there. It is not this
+feature, which is about return.
+
+Checking whether the marker could reach them is what found the defect #897 fixed: the game was
+offering to introduce me to a bound, incomprehensible machine.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
