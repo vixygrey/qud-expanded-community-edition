@@ -1046,10 +1046,10 @@ PRECOMMIT_CONFIG = Path(".pre-commit-config.yaml")
 # prefix reports drift that is not there - and docs/LESSONS.md is clear that a guard firing on a
 # correct action teaches people to reach for the bypass.
 PIN_PAIRS = {
-    "ruff": (
-        "https://github.com/astral-sh/ruff-pre-commit",
-        r"pipx install ruff==([0-9][\w.]*)",
-    ),
+    # `ruff` used to be here and is deliberately not any more - #912. ci.yml now reads its version
+    # out of .pre-commit-config.yaml instead of pinning it a second time, so the two cannot disagree
+    # and comparing them would be a check that can never fail. `check_ruff_is_derived` below is what
+    # replaces it: a check that CAN fail, on the derivation going away.
     "typos": (
         "https://github.com/crate-ci/typos",
         r"uses:\s*crate-ci/typos@[0-9a-f]{40}\s*#\s*v?([0-9][\w.]*)",
@@ -1061,6 +1061,10 @@ PIN_PAIRS = {
 PIN_UNPAIRED = {
     "https://github.com/pre-commit/pre-commit-hooks": (
         "no CI counterpart - these hooks run only locally"
+    ),
+    "https://github.com/astral-sh/ruff-pre-commit": (
+        "ci.yml derives its version from this rev rather than pinning it again - #912. Checked by "
+        "check_ruff_is_derived, not by comparing two numbers"
     ),
     "https://github.com/gitleaks/gitleaks": (
         "ci.yml uses gitleaks/gitleaks-action, a different repository on its own version line - "
@@ -1091,6 +1095,39 @@ def precommit_pins() -> dict[str, str]:
             pins[repo] = m.group(1)
             repo = None
     return pins
+
+
+def check_ruff_is_derived(f: Findings) -> None:
+    """CI must read ruff's version out of .pre-commit-config.yaml, not pin it again.
+
+    This replaces the ruff half of `check_pin_parity` - #912. While ruff was pinned in both files,
+    Dependabot could see only one of them, so every bump arrived as a pull request that failed the
+    parity gate until somebody edited the workflow by hand. Deriving the version removes the second
+    pin and the hand-edit with it.
+
+    **What is checked is that the derivation is still there**, because the parity check it replaces
+    can no longer fail: two values read from one source always agree. A check that cannot fail is
+    the failure this file keeps recording, so it is not enough to delete the old pair and stop.
+
+    Two findings, and they are different mistakes. A reintroduced `pipx install ruff==1.2.3` is
+    somebody undoing this on purpose or by merge; a missing reference to the config file is the
+    derivation being reworded into something that no longer reads it.
+    """
+    ci = "\n".join(w.read_text() for w in CI_WORKFLOWS if w.is_file())
+    if not ci:
+        return
+    if re.search(r"pipx install ruff==[0-9]", ci):
+        f.add(
+            "pin-parity",
+            "a CI workflow pins ruff with a literal `pipx install ruff==` again - that is the "
+            "second source of truth #912 removed, and Dependabot cannot see it",
+        )
+    if "ruff-pre-commit" not in ci:
+        f.add(
+            "pin-parity",
+            "no CI workflow mentions ruff-pre-commit - the step that reads ruff's version out of "
+            f"{PRECOMMIT_CONFIG} has been reworded or removed, so nothing now ties the two together",
+        )
 
 
 def check_pin_parity(f: Findings) -> int:
@@ -2103,6 +2140,7 @@ def main() -> int:
     check_check_names(f)
     check_required_checks(f)
     pins = check_pin_parity(f)
+    check_ruff_is_derived(f)
     check_preserved(f)
     markers = check_conflict_markers(f)
 

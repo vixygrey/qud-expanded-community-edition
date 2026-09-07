@@ -1341,15 +1341,63 @@ def hook_block(repo: str, rev: str, comment: bool = False) -> str:
 BOTH_HOOKS = hook_block(
     "https://github.com/astral-sh/ruff-pre-commit", "v0.16.5"
 ) + hook_block("https://github.com/crate-ci/typos", "v1.50.0")
+# ci.yml as it is since #912: ruff's version is read out of the ruff-pre-commit rev rather than
+# pinned a second time, and only typos is still written down twice.
 BOTH_CI = (
     "jobs:\n"
     "  python:\n"
     "    steps:\n"
-    "      - run: pipx install ruff==0.16.5\n"
+    "      - run: |\n"
+    "          version=$(read the ruff-pre-commit rev)\n"
+    '          pipx install "ruff==$version"\n'
     "  spelling:\n"
     "    steps:\n"
     "      - uses: crate-ci/typos@4d9c206a77c041268485162b8e2579ad7a5cb9a3 # v1.50.0\n"
 )
+
+
+def derived_findings(ci: str) -> list[tuple[str, str]]:
+    """Run check_ruff_is_derived over a synthetic ci.yml."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        Path(root, ".github", "workflows").mkdir(parents=True)
+        Path(root, ".github", "workflows", "ci.yml").write_text(ci, encoding="utf-8")
+        with chdir(root):
+            f = check_docs.Findings()
+            check_docs.check_ruff_is_derived(f)
+            return f.items
+
+
+class RuffIsDerived(unittest.TestCase):
+    """#912: ci.yml reads ruff's version out of .pre-commit-config.yaml instead of pinning it.
+
+    The parity check this replaced compared two numbers. Two numbers read from one source always
+    agree, so keeping that comparison would have left a check that cannot fail - which is the
+    failure `check_docs.py` exists to prevent. What is checked instead is that the derivation is
+    still there, and both ways it can go missing are separate findings.
+    """
+
+    def test_the_derivation_is_quiet(self) -> None:
+        self.assertEqual(derived_findings(BOTH_CI), [])
+
+    def test_a_reintroduced_literal_pin_is_reported(self) -> None:
+        """Somebody undoing #912, by hand or by a bad merge resolution."""
+        found = derived_findings(BOTH_CI + "      - run: pipx install ruff==0.16.5\n")
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0][0], "pin-parity")
+        self.assertIn("second source of truth", found[0][1])
+
+    def test_losing_the_reference_to_the_config_is_reported(self) -> None:
+        """The step reworded into something that no longer reads the rev."""
+        found = derived_findings(BOTH_CI.replace("ruff-pre-commit", "somewhere else"))
+        self.assertEqual(len(found), 1)
+        self.assertIn("no CI workflow mentions ruff-pre-commit", found[0][1])
+
+    def test_both_at_once_are_two_findings(self) -> None:
+        """They are different mistakes and neither should mask the other."""
+        ci = BOTH_CI.replace("ruff-pre-commit", "somewhere else")
+        found = derived_findings(ci + "      - run: pipx install ruff==0.16.5\n")
+        self.assertEqual(len(found), 2)
 
 
 class PinParity(unittest.TestCase):
@@ -1358,17 +1406,7 @@ class PinParity(unittest.TestCase):
     def test_matching_pins_are_quiet(self) -> None:
         found, checked = pin_findings(BOTH_HOOKS, BOTH_CI)
         self.assertEqual(found, [])
-        self.assertEqual(checked, 2)
-
-    def test_a_drifted_pair_is_reported(self) -> None:
-        """The negative. This is #714 exactly: the hook moved and ci.yml did not."""
-        found, _ = pin_findings(
-            BOTH_HOOKS, BOTH_CI.replace("ruff==0.16.5", "ruff==0.16.4")
-        )
-        self.assertEqual(len(found), 1)
-        self.assertEqual(found[0][0], "pin-parity")
-        self.assertIn("0.16.4", found[0][1])
-        self.assertIn("0.16.5", found[0][1])
+        self.assertEqual(checked, 1, "typos is the only two-place pin left since #912")
 
     def test_the_typos_half_drifts_the_same_way(self) -> None:
         """#786, which moved the hook to v1.50.0 and left the action at v1.49.1."""
@@ -1387,7 +1425,7 @@ class PinParity(unittest.TestCase):
         ) + hook_block("https://github.com/crate-ci/typos", "v1.50.0", comment=True)
         found, checked = pin_findings(hooks, BOTH_CI)
         self.assertEqual(found, [])
-        self.assertEqual(checked, 2)
+        self.assertEqual(checked, 1)
 
     def test_an_unreadable_ci_pin_is_a_finding_not_a_skip(self) -> None:
         """A reworded pin must fail. A skip here is indistinguishable from a pass."""
@@ -1397,14 +1435,16 @@ class PinParity(unittest.TestCase):
 
     def test_ci_pinning_one_tool_twice_at_odds_is_reported(self) -> None:
         found, _ = pin_findings(
-            BOTH_HOOKS, BOTH_CI + "      - run: pipx install ruff==0.16.4\n"
+            BOTH_HOOKS,
+            BOTH_CI + "      - uses: crate-ci/typos@" + "0" * 40 + " # v1.49.1\n",
         )
         self.assertEqual(len(found), 1)
         self.assertIn("more than one version", found[0][1])
 
     def test_a_hook_that_lost_its_pin_is_reported(self) -> None:
         found, _ = pin_findings(
-            hook_block("https://github.com/crate-ci/typos", "v1.50.0"), BOTH_CI
+            hook_block("https://github.com/astral-sh/ruff-pre-commit", "v0.16.5"),
+            BOTH_CI,
         )
         self.assertEqual(len(found), 1)
         self.assertIn("no longer pins", found[0][1])

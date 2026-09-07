@@ -233,6 +233,30 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **ruff's version is written in one place now** (#912). It was pinned twice — the
+  `rev:` in `.pre-commit-config.yaml` and a `pipx install ruff==` in `ci.yml` — and Dependabot can
+  only see the first, so every bump arrived as a pull request that failed the pin-parity gate until
+  somebody edited the workflow by hand. That happened again in #902, exactly as the comments in both
+  files predicted.
+
+  CI now reads the version out of the hook rev. Reading a string from a file in this repository adds
+  no dependency, so the reason for installing with `pipx` rather than a third-party action — *one
+  fewer dependency to trust* — survives intact.
+
+  **`typos` is deliberately not done this way.** Its CI pin is a full commit SHA and its hook pin is
+  a tag, and resolving a mutable tag to a SHA at run time is the exact thing SHA-pinning exists to
+  prevent. So it keeps two pins and keeps the parity check, and the split between the two tools is
+  now written down in both files.
+
+  **The check changed with the code.** Comparing ruff's two pins can no longer fail, and a check that
+  cannot fail is the failure `check_docs.py` exists to catch — so the pair was replaced rather than
+  deleted, by a check that the derivation is still there. Reintroducing a literal `ruff==` pin, and
+  rewording the step so it no longer reads the config, are separate findings with their own tests.
+
+  Testing the new step is what caught the one real defect in it: the first version printed its error
+  and carried on, because a failed command substitution inside an assignment does not stop an
+  unflagged shell. It would have installed the newest ruff and said nothing.
+
 - **(internal)** **The tools carry type annotations now — and a warning about what that does not
   buy.** `ANN` is selected for `tools/`, with the test files exempt: 185 of its 222 findings were
   `def test_x(self) -> None:`, which is ceremony, and the 37 in the tools proper are the ones worth
