@@ -3372,27 +3372,19 @@ def check_skill_option_coverage(f: Findings) -> None:
         )
 
 
-def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every new blueprint must be obtainable: in a population table, tagged, or tinkerable.
+def _reachability_candidates(
+    roots: dict[Path, ET.Element],
+) -> tuple[dict[str, Path], set[str], set[str]]:
+    """This fork's own spawnable blueprints, and which of them are tinkerable or table-tagged.
 
-    This is the check that surfaces #6 (72 unreachable chips) and #7 (9 unreachable armor
-    pieces).
-
-    A `DynamicObjectsTable:` tag is the third route, and it took #171 to notice: creature
-    variants self-register into spawn tables with a tag and appear in no `PopulationTables.xml`
-    entry at all, so checking only `Blueprint=` called all 32 of them unobtainable while they
-    spawned perfectly well. For the tiered pools it is not merely *a* route but the only additive
-    one - `PopulationManager.RequireTable` returns early when a table of that name already exists,
-    so declaring one replaces vanilla's whole fabricated pool instead of joining it.
-
-    What this deliberately does NOT check is whether the table name is one vanilla defines.
-    Emitting `Baboons_Creatures` when the real table is `Baboons` fabricates a pool nothing draws
-    from, and the variant never spawns with no error anywhere - but answering that needs the game,
-    and this script runs in CI without it. `tools/report_dynamic_tables.py` owns that question: a
-    bogus name shows up as a pool new to this mod in the snapshot diff, and the `dynamic-pools`
-    pre-commit hook blocks on it.
+    Four things are excluded, and each exclusion is a separate argument rather than a filter:
+    a `Load="Merge"` edit is vanilla's object, not one of this fork's; an abstract base is never
+    placed; and an `IngredientMapping` is a data record that `PreparedCookingIngredient` reads as
+    a registry of cooking domains and never creates - so "obtainable" is not a question that
+    applies to it, and the population entry this check would otherwise demand would put a
+    non-object in the world. Vanilla keeps all 66 of them in `ObjectBlueprints/Data.xml`, which is
+    where the game files put things that are read rather than placed. #858.
     """
-    roots = blueprint_sources(all_roots)
     defined: dict[str, Path] = {}
     tinkerable: set[str] = set()
     tagged: set[str] = set()
@@ -3407,12 +3399,6 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 continue
             if any(m in name for m in ABSTRACT_MARKERS):
                 continue
-            # An `IngredientMapping` is a data record, not a spawnable. `PreparedCookingIngredient`
-            # reads every blueprint inheriting it as a registry of cooking domains and never
-            # creates one, so "obtainable" is not a question that applies - and the answer this
-            # check would otherwise demand, a population entry, would put a non-object in the
-            # world. Vanilla keeps all 66 of them in `ObjectBlueprints/Data.xml`, which is where
-            # the game files put things that are read rather than placed. #858.
             if obj.get("Inherits") == INGREDIENT_MAPPING:
                 continue
             defined[name] = path
@@ -3430,19 +3416,24 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 if tag.get("Value") in ("*delete", "{{{remove}}}"):
                     continue
                 tagged.add(name)
+    return defined, tinkerable, tagged
 
-    # A fourth route, and the one that is invisible from the XML: mutation equipment. A blueprint
-    # tagged `MutationEquipment` is collected by `Mutations.GetVariants` and offered in the chargen
-    # variant picker, so it reaches a player without any table, tag or reference naming it. The tag
-    # is inherited in vanilla's own idiom - `Stinger Confusion` gets it from `Stinger` - so the
-    # walk up `Inherits` is required rather than tidy.
-    #
-    # Asks RESOLVED (#702), which the sentence above already argues: the tag reaching the blueprint
-    # is the question. Mixin-blind like the others, and latent for the same reason.
-    #
-    # Until #590 this fork had exactly one piece of mutation equipment and it passed by accident,
-    # because `Vixy_Fangs` happens to be named as a `Variant=` on its own mutation node. A second
-    # variant of anything would have tripped it, and four of five tails duly did.
+
+def _mutation_equipment(roots: dict[Path, ET.Element]) -> set[str]:
+    """Blueprints reachable through the chargen variant picker rather than through any table.
+
+    The route invisible from the XML: a blueprint tagged `MutationEquipment` is collected by
+    `Mutations.GetVariants` and offered at chargen, so it reaches a player with no table, tag or
+    reference naming it. The tag is inherited in vanilla's own idiom - `Stinger Confusion` gets it
+    from `Stinger` - so the walk up `Inherits` is required rather than tidy.
+
+    Asks RESOLVED (#702), which the sentence above already argues: the tag reaching the blueprint
+    is the question. Mixin-blind like the others, and latent for the same reason.
+
+    Until #590 this fork had exactly one piece of mutation equipment and it passed by accident,
+    because `Vixy_Fangs` happens to be named as a `Variant=` on its own mutation node. A second
+    variant of anything would have tripped it, and four of five tails duly did.
+    """
     mutation_equipment: set[str] = set()
     declared: dict[str, ET.Element] = {}
     for root in roots.values():
@@ -3463,22 +3454,61 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                 break
             seen.add(parent)
             node = declared.get(parent)
+    return mutation_equipment
 
-    # An object is reachable if ANYTHING references it: a population table (Blueprint=), a map
-    # file placing it into a cell, or another object pointing at it (e.g. a cybernetic's
-    # FistObject=). Checking only Blueprint= reported Joppa's furniture and the cybernetic fist
-    # replacements as unobtainable, which they are not.
+
+def _referenced_names(all_roots: dict[Path, ET.Element]) -> set[str]:
+    """Every name any attribute anywhere points at.
+
+    An object is reachable if ANYTHING references it: a population table (`Blueprint=`), a map file
+    placing it into a cell, or another object pointing at it - a cybernetic's `FistObject=`, say.
+    Checking only `Blueprint=` reported Joppa's furniture and the cybernetic fist replacements as
+    unobtainable, which they are not.
+
+    Deliberately every attribute rather than a list of the ones that matter. A list would be exact
+    today and would quietly stop covering the next attribute that names a blueprint.
+    """
     referenced: set[str] = set()
     for path, root in all_roots.items():
         for el in root.iter():
-            declares = (
-                path.suffix == ".xml"
-            )  # in a .rpm, <object Name="X"> PLACES X, it does
-            for key, value in el.attrib.items():  # not declare it
+            # In a .rpm, <object Name="X"> PLACES X; it does not declare it.
+            declares = path.suffix == ".xml"
+            for key, value in el.attrib.items():
                 if declares and key == "Name" and el.tag in ("object", "population"):
                     continue  # a declaration is not a reference to itself
                 referenced.add(value)
-    in_tables = referenced
+    return referenced
+
+
+def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Every new blueprint must be obtainable: in a population table, tagged, or tinkerable.
+
+    This is the check that surfaces #6 (72 unreachable chips) and #7 (9 unreachable armor
+    pieces).
+
+    A `DynamicObjectsTable:` tag is the third route, and it took #171 to notice: creature
+    variants self-register into spawn tables with a tag and appear in no `PopulationTables.xml`
+    entry at all, so checking only `Blueprint=` called all 32 of them unobtainable while they
+    spawned perfectly well. For the tiered pools it is not merely *a* route but the only additive
+    one - `PopulationManager.RequireTable` returns early when a table of that name already exists,
+    so declaring one replaces vanilla's whole fabricated pool instead of joining it.
+
+    What this deliberately does NOT check is whether the table name is one vanilla defines.
+    Emitting `Baboons_Creatures` when the real table is `Baboons` fabricates a pool nothing draws
+    from, and the variant never spawns with no error anywhere - but answering that needs the game,
+    and this script runs in CI without it. `tools/report_dynamic_tables.py` owns that question: a
+    bogus name shows up as a pool new to this mod in the snapshot diff, and the `dynamic-pools`
+    pre-commit hook blocks on it.
+
+    **Four routes, four helpers, and the join is this function** - #908. Each route was argued for
+    separately and in a different issue, and each carried its own essay inside one body; splitting
+    on those seams put every argument beside the code it justifies. The helpers are the four
+    questions this check asks, not four slices of one.
+    """
+    roots = blueprint_sources(all_roots)
+    defined, tinkerable, tagged = _reachability_candidates(roots)
+    mutation_equipment = _mutation_equipment(roots)
+    in_tables = _referenced_names(all_roots)
 
     for name, path in sorted(defined.items()):
         if (
