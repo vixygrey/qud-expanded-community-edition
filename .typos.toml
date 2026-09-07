@@ -58,6 +58,8 @@ Vixy_MakFamiliarReply = "Vixy_MakFamiliarReply"
 # case-insensitive `extend-words` form would stop one of the commonest words in English being checked
 # anywhere in the repo. #633.
 Thah = "Thah"
+Vixy_ThahFamiliar = "Vixy_ThahFamiliar"
+Vixy_ThahFamiliarReply = "Vixy_ThahFamiliarReply"
 
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables

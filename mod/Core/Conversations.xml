@@ -1748,4 +1748,69 @@
       </choice>
     </node>
   </conversation>
+  <!-- The tenth cast is one person, and he is the one this feature has been walking toward. #633.
+
+       Thah keeps the slynth cradle at the hydropon: a people grown one at a time from a cutting of
+       water lily, a handful of generations old, who kept no written history until he was grown. He
+       reads and tinkers. He hesitates constantly - "the, ah, austerity of our cradle" - and the tic
+       is most of the voice.
+
+       **His quest is this feature's own premise, written by Freehold.** He asks me to be an
+       ambassador: to go to the settlements where I have "likely ingratiated" myself and ask them to
+       take his people in. Every conversation that answers that request inherits `BaseSlynthMayor`,
+       and eight of the twelve who do are people written across the nine casts before this one -
+       Elder Irudad, Otho, Goek, Lulihart, Keh, Eskhind, Agyra and Nuntu. The slynth quest and this
+       feature have been walking the same road in opposite directions: it asks whether those places
+       know me well enough to say yes, and §61 has been writing what that knowing sounds like.
+
+       **And he does not go.** `SlynthLeave`: "it's not that I wouldn't enjoy a life of farming. But
+       the thought of leaving the cradle after decades of watching it... I couldn't." He finds his
+       whole people a home and stays behind alone in the emptied hydropon, and the last thing he says
+       is "you're welcome to rest here." A man alone in a place his people have left, inviting me to
+       come back, is the plainest statement of what this feature is for that vanilla contains
+       anywhere - and it sits at the end of a quest chain most players finish and never return from.
+
+       So the state split is his: `IfFinishedQuest="Landing Pads"` is after they have gone. Over
+       Thah's own `Priority="-1"` catch-all, which is a small pleasure - §61.5l took the fallback
+       idiom from this conversation's `LandingPadsCommentary` node, and this is the first time this
+       fork has written one back into it.
+
+       Like Warden Indrix in §61.5p he has **no unconditional start** - all four are gated on the
+       Landing Pads quest being untaken, active, ready or finished - so he is the second speaker to
+       depend on #897's fallback to every start when none is unconditional.
+
+       The marker is free: his own greeting choice is "Moon and Sun, Thah. I am =name=." -->
+
+  <!-- Thah. Keeper of the slynth cradle, scholar by inclination and ambassador by necessity. The
+       "ah," is his and must stay in every line; it is a man thinking faster than he speaks and
+       correcting himself in public. -->
+  <conversation ID="Thah">
+    <choice ID="Vixy_ThahFamiliar" Target="Vixy_ThahFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Thah?~
+        Moon and Sun. How are you keeping?~
+        How is the cradle?~
+        Is there anything you need?
+      </text>
+    </choice>
+    <node ID="Vixy_ThahFamiliarReply">
+      <text IfFinishedQuest="Landing Pads">
+        Moon and Sun, =name=. I fare... quietly. That is the honest word. I sent a whole people to a home and kept the, ah, the one job that could not travel, and most days I think I chose well.~
+        Keeping. Yes. I said you were welcome to rest here and I have thought about that sentence a great deal since, because you are the only one who has taken me up on it.~
+        The cradle is well. It is the same as it ever was, which was rather the trouble with it, and is now the comfort. I tend it and I read and I wait for someone to say my name aloud.~
+        I need nothing. Ah - that is not true, is it. I need very little, and you keep bringing some of it, and I have not worked out how to say thank you for a thing nobody was asked to do.~
+        I have decided I am not lonely, =name=. I have decided it several times. It holds better on the days you come.
+      </text>
+      <text Priority="-1">
+        Well enough! We drink the sun's rays, eat what we scavenge, and it is. Enough. Ah - I say "enough" a great deal. You may have noticed. I am working on meaning it.~
+        Keeping, yes. Thank you for asking after the keeper and not only the, ah, the project. Few do. Fewer twice.~
+        The cradle is the cradle. One by one, as ever. I have counted every one of them and I know all their names, and until recently I would have said that was, ah, that was simply what a keeper does.~
+        Nothing I need. You are already carrying more of my hopes than is entirely fair, =name=, and I would rather not add to the load by asking after my own.~
+        {{emote|*Thah sets down what he is reading.*}} Moon and Sun. You know, I told you we had kept no written history until I was grown. I have started one. You are in it.
+      </text>
+      <choice Target="Start">
+        <text>Moon and Sun, Thah.~I'll come back.~Then I'll let you read.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
