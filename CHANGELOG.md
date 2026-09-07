@@ -132,6 +132,18 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **You could introduce yourself to something that cannot hear you** (#633). Nacham, Dagasha, Kah
+  and Va'am are bound in the Tomb of the Eaters and cannot speak — Nacham gives no indication of
+  understanding you at all — and yet you were offered the chance to give one of them your name, and
+  told *"I will remember it."*
+
+  The test for whether somebody speaks looked at everything they might say, and those four do speak,
+  once you free them. It now asks whether they can say anything to you *now*, without some condition
+  first being met. The people this test was widened for last time — Neek, Lebah, the Chavvah chimes,
+  Tammuz, everyone who greets you with a gesture and then talks — are unaffected.
+
+  The Grit Gate comm panel also stops offering, which is right: outside its one quest it emits static.
+
 - **You spoke to Agyra in an accent that isn't yours** (#633). The question you can ask Agyra once
   you have given your name was written in thee-and-thou, matching how ey speaks rather than how you
   do. Every line vanilla writes for you at the Tomb of the Eaters is plain — *"Have you a credo?"*,

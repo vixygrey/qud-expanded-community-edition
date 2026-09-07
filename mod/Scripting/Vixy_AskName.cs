@@ -212,9 +212,37 @@ namespace XRL.World.Conversations.Parts
         /// that inherit from tagged bases — correct today and wrong at the next patch.
         /// </para>
         /// <para>
+        /// <b>It asks what can be reached, not what exists anywhere in the file</b> — #633, and the
+        /// third revision of this test. #881 read the greeting alone and silenced anyone who opens
+        /// with a gesture; #885 widened it to the whole conversation and let through the opposite
+        /// case, somebody silent <em>now</em> whose words are behind a quest. The four bound
+        /// children of the tomb are that case: Nacham "gives no indication of understanding", and
+        /// every path to a word it will ever say runs through one choice gated
+        /// <c>IfHaveBlueprint="Repulsive Device"</c>. Offering to introduce myself there, and being
+        /// answered "I will remember it", is exactly the failure the whole test exists to prevent.
+        /// </para>
+        /// <para>
+        /// So the walk starts at the unconditional start nodes and follows only unconditional
+        /// choices into unconditional nodes. A predicate is read, never evaluated — see
+        /// <see cref="Unconditional"/> for why that distinction is load-bearing rather than
+        /// fastidious.
+        /// </para>
+        /// <para>
+        /// <b>Measured over vanilla before it was written: 7 of 193 conversations change hands.</b>
+        /// The four children fall silent, which is the fix. <c>Gritgate Mainframe Intercom</c> falls
+        /// silent too and should — outside its quest it says <c>{{emote|*loud static*}}</c>.
+        /// <c>GenericAskNameOption</c> is a template §57.1 established nobody inherits, and
+        /// <c>BaseDynamicShim</c> is likewise never the live conversation. Nobody who talks is
+        /// silenced: Lebah, ChavvahPrime, ChavvahFrontChime, Neek and Tammuz all keep an
+        /// unconditional route from hello to a spoken word, which is precisely what #885 was for.
+        /// </para>
+        /// <para>
         /// A node with no text at all reads as <em>not</em> silent, deliberately: emptiness here
         /// means the text is built somewhere this cannot see, and hiding the question on a vacuous
-        /// truth would suppress it wherever a conversation is assembled at runtime.
+        /// truth would suppress it wherever a conversation is assembled at runtime. That hatch is
+        /// load-bearing and is kept by construction rather than by a special case — <c>ChavvahPrime</c>
+        /// carries an entirely empty <c>&lt;start ID="Welcome"&gt;</c> and is assembled at runtime,
+        /// so the walk finds no text, reports none, and leaves Dyvvrach speaking.
         /// </para>
         /// <para>
         /// <b><c>internal</c> because <see cref="Vixy_Introduce"/> needs the same test</b> — #881.
@@ -231,11 +259,35 @@ namespace XRL.World.Conversations.Parts
             }
 
             HashSet<string> contributed = ContributedNodes();
-            bool said = false;
+            Dictionary<string, List<Node>> byID = new Dictionary<string, List<Node>>();
 
             foreach (IConversationElement element in Current.Elements)
             {
-                if (!(element is Node node))
+                if (element is Node node && !node.ID.IsNullOrEmpty())
+                {
+                    if (!byID.TryGetValue(node.ID, out List<Node> named))
+                    {
+                        byID[node.ID] = named = new List<Node>();
+                    }
+                    named.Add(node);
+                }
+            }
+
+            List<Node> pending = Seed(Current);
+            if (pending.Count == 0)
+            {
+                return false;
+            }
+
+            HashSet<Node> seen = new HashSet<Node>();
+            bool said = false;
+
+            while (pending.Count > 0)
+            {
+                Node node = pending[pending.Count - 1];
+                pending.RemoveAt(pending.Count - 1);
+
+                if (!seen.Add(node))
                 {
                     continue;
                 }
@@ -246,36 +298,107 @@ namespace XRL.World.Conversations.Parts
                     continue;
                 }
 
-                if (node.Texts == null)
+                if (node.Texts != null)
                 {
-                    continue;
-                }
-
-                foreach (ConversationText text in node.Texts)
-                {
-                    string raw = text?.Text;
-                    if (raw.IsNullOrEmpty())
+                    foreach (ConversationText text in node.Texts)
                     {
-                        continue;
-                    }
-
-                    foreach (string fragment in raw.Split('~'))
-                    {
-                        if (fragment.Trim().Length == 0)
+                        string raw = text?.Text;
+                        if (raw.IsNullOrEmpty())
                         {
                             continue;
                         }
 
-                        said = true;
-                        if (WithoutEmotes(fragment).Trim().Length > 0)
+                        foreach (string fragment in raw.Split('~'))
                         {
-                            return false;
+                            if (fragment.Trim().Length == 0)
+                            {
+                                continue;
+                            }
+
+                            said = true;
+                            if (WithoutEmotes(fragment).Trim().Length > 0)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if (node.Elements == null)
+                {
+                    continue;
+                }
+
+                foreach (IConversationElement element in node.Elements)
+                {
+                    if (!(element is Choice choice)
+                        || !Unconditional(choice)
+                        || choice.Target.IsNullOrEmpty()
+                        || !byID.TryGetValue(choice.Target, out List<Node> targets))
+                    {
+                        continue;
+                    }
+
+                    foreach (Node target in targets)
+                    {
+                        if (Unconditional(target))
+                        {
+                            pending.Add(target);
                         }
                     }
                 }
             }
 
             return said;
+        }
+
+        /// <summary>
+        /// Where to start looking for speech: the start nodes that are always available.
+        /// </summary>
+        /// <remarks>
+        /// A conversation whose every start is conditional cannot be answered from the data alone,
+        /// so it hands back all of them rather than guessing. That errs toward <em>speaks</em>,
+        /// which is the safe direction here — see <see cref="SaysNothing"/>.
+        /// </remarks>
+        private static List<Node> Seed(Conversation Current)
+        {
+            List<Node> seed = new List<Node>();
+            if (Current.Starts.IsNullOrEmpty())
+            {
+                return seed;
+            }
+
+            foreach (Node start in Current.Starts)
+            {
+                if (Unconditional(start))
+                {
+                    seed.Add(start);
+                }
+            }
+
+            if (seed.Count == 0)
+            {
+                seed.AddRange(Current.Starts);
+            }
+
+            return seed;
+        }
+
+        /// <summary>
+        /// True when this element carries no predicate, so it is available without qualification.
+        /// </summary>
+        /// <remarks>
+        /// <c>IConversationElement.Predicates</c> is the parsed <c>If*</c> attributes, kept as data.
+        /// **Read rather than evaluated, and that is the point.** <c>DelegateContext</c> is a static
+        /// singleton whose <c>Set</c> mutates <c>Instance</c> in place, and this test runs from
+        /// inside <c>Possible()</c> — itself inside predicate evaluation. Calling
+        /// <c>IsVisible()</c> here would re-enter that evaluation and overwrite the context the
+        /// caller is standing in. Asking only whether a predicate <em>exists</em> needs no context
+        /// at all.
+        /// </remarks>
+        private static bool Unconditional(IConversationElement Element)
+        {
+            return Element.Predicates == null || Element.Predicates.Count == 0;
         }
 
         /// <summary>
