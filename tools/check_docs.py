@@ -1529,7 +1529,7 @@ def check_links(f: Findings) -> None:
             # Markdown allows <angle brackets> around a target, which is how a URL containing
             # parentheses is written - docs/WIKI.md has three. The capture keeps the leading "<",
             # so stripping it is what lets the scheme test see a scheme.
-            target = target.strip("<>")
+            target = target.strip("<>")  # noqa: PLW2901 - the stripped form is the subject from here on
             if target.startswith(("http://", "https://", "mailto:")):
                 continue
             if not (doc.parent / target).resolve().exists():
@@ -1627,7 +1627,7 @@ def check_prose_doc_links(f: Findings) -> int:
                 # ours could be before calling it dead.
                 if any(
                     (base / target).exists()
-                    for base in (Path("."), Path("docs"), doc.parent)
+                    for base in (Path(), Path("docs"), doc.parent)
                 ):
                     continue
                 f.add(

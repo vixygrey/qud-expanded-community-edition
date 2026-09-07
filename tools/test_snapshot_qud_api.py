@@ -273,7 +273,7 @@ def stub(**attrs):
 def run_main(argv: list[str]) -> tuple[int, str]:
     out, err = io.StringIO(), io.StringIO()
     argv_previous = sys.argv
-    sys.argv = ["snapshot_qud_api.py"] + argv
+    sys.argv = ["snapshot_qud_api.py", *argv]
     try:
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = snapshot_qud_api.main()
@@ -529,7 +529,7 @@ class StaleIsNotASkip(unittest.TestCase):
             stub(
                 find_game=lambda _: Path("/fake/Base"),
                 find_assembly=lambda _: fake,
-                build=lambda *a, **k: built,
+                build=lambda *_a, **_k: built,
             ),
             mock.patch.object(
                 snapshot_qud_api.shutil, "which", lambda _: "/fake/ilspycmd"

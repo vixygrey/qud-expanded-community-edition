@@ -40,7 +40,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -64,27 +63,27 @@ DEST_NAME = "qud-expanded-community-edition"
 SKIP_NAMES = {".DS_Store"}
 
 
-class Problem(Exception):
+class SyncError(Exception):
     """A refusal. The message is written for the person who has to act on it."""
 
 
 def git(*args: str) -> str:
-    """Run git and return stdout, stripped. Raises Problem when git itself fails."""
+    """Run git and return stdout, stripped. Raises SyncError when git itself fails."""
     result = subprocess.run(["git", *args], capture_output=True, text=True, check=False)
     if result.returncode != 0:
-        raise Problem(f"git {' '.join(args)} failed: {result.stderr.strip()}")
+        raise SyncError(f"git {' '.join(args)} failed: {result.stderr.strip()}")
     return result.stdout.strip()
 
 
 def find_mods_dir(explicit: str | None) -> Path:
     """Locate the Mods directory. An explicit path is taken as the destination itself."""
     if explicit:
-        return Path(os.path.expanduser(explicit))
+        return Path(explicit).expanduser()
     for candidate in DEFAULT_MODS_DIRS:
-        p = Path(os.path.expanduser(candidate))
+        p = Path(candidate).expanduser()
         if p.is_dir():
             return p / DEST_NAME
-    raise Problem(
+    raise SyncError(
         "Could not find the Caves of Qud Mods directory. Looked in:\n  "
         + "\n  ".join(DEFAULT_MODS_DIRS)
         + "\nPass --dest with the install path if it lives somewhere else."
@@ -101,14 +100,14 @@ def check_publish_state(fetch: bool) -> None:
     """
     branch = git("rev-parse", "--abbrev-ref", "HEAD")
     if branch != "main":
-        raise Problem(
+        raise SyncError(
             f"On branch {branch!r}, not 'main'. A publish build is main and nothing else.\n"
             f"Use --dev to test this branch instead."
         )
 
     dirty = git("status", "--porcelain")
     if dirty:
-        raise Problem(
+        raise SyncError(
             "Working tree is not clean, so the build would carry edits that are in no commit:\n"
             + "\n".join(f"  {line}" for line in dirty.splitlines()[:10])
         )
@@ -116,8 +115,8 @@ def check_publish_state(fetch: bool) -> None:
     if fetch:
         try:
             git("fetch", "--quiet", "origin", "main")
-        except Problem as exc:
-            raise Problem(
+        except SyncError as exc:
+            raise SyncError(
                 f"{exc}\nPass --no-fetch to skip this and trust the local ref, but then the "
                 f"'level with origin' check below is only as fresh as your last fetch."
             ) from exc
@@ -125,13 +124,13 @@ def check_publish_state(fetch: bool) -> None:
     local = git("rev-parse", "main")
     try:
         remote = git("rev-parse", "origin/main")
-    except Problem as exc:
-        raise Problem(f"No origin/main to compare against: {exc}") from exc
+    except SyncError as exc:
+        raise SyncError(f"No origin/main to compare against: {exc}") from exc
 
     if local != remote:
         ahead = git("rev-list", "--count", "origin/main..main")
         behind = git("rev-list", "--count", "main..origin/main")
-        raise Problem(
+        raise SyncError(
             f"Local main is {ahead} ahead and {behind} behind origin/main.\n"
             f"Publishing an unpulled main ships a state you have not seen; publishing an "
             f"unpushed one ships a state nobody else has.\nPull, push, then try again."
@@ -150,7 +149,7 @@ def run_validator() -> None:
     sys.stdout.write(result.stdout)
     sys.stdout.write(result.stderr)
     if result.returncode != 0:
-        raise Problem("validate_mod.py failed. Nothing was copied.")
+        raise SyncError("validate_mod.py failed. Nothing was copied.")
 
 
 def guard_destination(dest: Path) -> None:
@@ -162,22 +161,22 @@ def guard_destination(dest: Path) -> None:
     if not dest.exists():
         return
     if not dest.is_dir():
-        raise Problem(f"{dest} exists and is not a directory.")
+        raise SyncError(f"{dest} exists and is not a directory.")
     contents = [p for p in dest.iterdir() if p.name not in SKIP_NAMES]
     if not contents:
         return
     manifest = dest / "manifest.json"
     if not manifest.is_file():
-        raise Problem(
+        raise SyncError(
             f"{dest} is not empty and has no manifest.json, so it is not an install of this "
             f"mod. Refusing to delete it. Check --dest."
         )
     try:
         found = json.loads(manifest.read_text(encoding="utf-8-sig")).get("id")
     except json.JSONDecodeError as exc:
-        raise Problem(f"{manifest} is not valid JSON: {exc}") from exc
+        raise SyncError(f"{manifest} is not valid JSON: {exc}") from exc
     if found != MANIFEST_ID:
-        raise Problem(
+        raise SyncError(
             f"{dest} holds a mod with id {found!r}, not {MANIFEST_ID!r}. Refusing to delete "
             f"somebody else's mod. Check --dest."
         )
@@ -213,10 +212,10 @@ def manifest_field(name: str) -> str:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise Problem(f"cannot read {path}: {exc}") from exc
+        raise SyncError(f"cannot read {path}: {exc}") from exc
     value = data.get(name)
     if not isinstance(value, str) or not value.strip():
-        raise Problem(f"{path} has no usable {name!r}")
+        raise SyncError(f"{path} has no usable {name!r}")
     return value.strip()
 
 
@@ -228,7 +227,7 @@ def check_tag_matches(tag: str, version: str) -> None:
     """
     wanted = tag.removeprefix("v")
     if wanted != version:
-        raise Problem(
+        raise SyncError(
             f"Tag {tag!r} is version {wanted!r}, but mod/manifest.json says {version!r}.\n"
             f"One of them is wrong, and the zip would be named after the manifest either way."
         )
@@ -345,7 +344,7 @@ def main() -> int:
             run_validator()
             out_dir = Path(args.out).expanduser() if args.out else Path.cwd()
             if not out_dir.is_dir():
-                raise Problem(f"--out {out_dir} is not a directory")
+                raise SyncError(f"--out {out_dir} is not a directory")
             archive, written = build_zip(out_dir, args.tag)
             print(f"\nRELEASE asset built: {written} files -> {archive}")
             print(f"  from branch main at {git('rev-parse', '--short', 'HEAD')}")
@@ -363,7 +362,7 @@ def main() -> int:
         guard_destination(dest)
         written = copy_tree(MOD, dest)
         notes = mark_as_dev(dest) if args.dev else []
-    except Problem as exc:
+    except SyncError as exc:
         print(f"\nRefused: {exc}", file=sys.stderr)
         return 1
 

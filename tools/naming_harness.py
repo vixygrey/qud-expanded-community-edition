@@ -37,7 +37,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import os
 import random
 import sys
 import xml.etree.ElementTree as ET
@@ -47,7 +46,7 @@ from pathlib import Path
 # Steam on macOS. The game data is under CoQ.app/Contents/Resources/Data — NOT under
 # CoQ_Data/StreamingAssets, which contains only DLC and is an easy wrong turn.
 DEFAULT_GAME_PATHS = [
-    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base",
+    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base",  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
     "~/.steam/steam/steamapps/common/Caves of Qud/CoQ_Data/StreamingAssets/Base",
     "C:/Program Files (x86)/Steam/steamapps/common/Caves of Qud/CoQ_Data/StreamingAssets/Base",
 ]
@@ -93,7 +92,7 @@ def find_game(explicit: str | None) -> Path | None:
     for candidate in ([explicit] if explicit else []) + DEFAULT_GAME_PATHS:
         if not candidate:
             continue
-        p = Path(os.path.expanduser(candidate))
+        p = Path(candidate).expanduser()
         if (p / "Naming.xml").is_file():
             return p
     return None
@@ -362,7 +361,7 @@ def roll(amount: str, rng: random.Random) -> int:
     return int(amount)
 
 
-class BaseCycle(Exception):
+class BaseCycleError(Exception):
     """A `Base=` chain that returns to a style already in it.
 
     Raised rather than returned because it is a defect in the fragment, not a name - every caller
@@ -391,7 +390,7 @@ def draw(
       the failure in the output rather than in a log.
     - `Base="*"` re-enters selection for a fresh style, excluding everything already in the chain -
       the game's `Skip` / `SkipList`, which this models as `_seen`.
-    - A repeat raises `BaseCycle`.
+    - A repeat raises `BaseCycleError`.
 
     **The cycle refusal is a deliberate divergence and the only one here.** The game accumulates
     `Skip` and `SkipList` on both paths but reads them in exactly one place, `NameStyles.Generate`'s
@@ -402,8 +401,8 @@ def draw(
     """
     if style.base:
         if style.name in _seen:
-            raise BaseCycle(" -> ".join(_seen + (style.name,)))
-        _seen = _seen + (style.name,)
+            raise BaseCycleError(" -> ".join((*_seen, style.name)))
+        _seen = (*_seen, style.name)
         if style.base == "*":
             if styles is None or order is None or ctx is None:
                 return ""
@@ -438,7 +437,7 @@ def draw(
 
 
 def parse_ctx(spec: str) -> dict[str, str | None]:
-    ctx: dict[str, str | None] = {k: None for k in SCOPE_FILTERS}
+    ctx: dict[str, str | None] = dict.fromkeys(SCOPE_FILTERS)
     for pair in filter(None, (p.strip() for p in spec.split(","))):
         key, _, value = pair.partition("=")
         key = key.strip()
@@ -544,7 +543,7 @@ def pools_of(style: Style) -> tuple[int, int, int]:
     return len(style.prefixes), len(style.infixes), len(style.postfixes)
 
 
-def report_pools(styles, base_pools, fragment: bool) -> list[str]:
+def report_pools(styles, base_pools, fragment: bool) -> list[str]:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
     lines, problems = [], []
     watch = sorted(
         set(list(VANILLA_POOLS) + [n for n in styles if n.startswith("Vixy_")])
@@ -609,7 +608,7 @@ FORMS = (
 )
 
 
-def load_genders(path: Path, genders: dict[str, dict], is_mod: bool) -> bool | None:
+def load_genders(path: Path, genders: dict[str, dict], is_mod: bool) -> bool | None:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
     """Mirror of Gender.LoadGendersNode. Returns the file's EnableSelection, if it states one.
 
     There is no Load attribute anywhere in this loader: it looks the name up, reuses the existing
@@ -833,7 +832,7 @@ def main() -> int:
                 names = ", ".join(
                     draw(styles[name], rng, styles, order, ctx) for _ in range(8)
                 )
-            except BaseCycle as cycle:
+            except BaseCycleError as cycle:
                 names = f"BASE CYCLE: {cycle}"
                 failures.append(f"{name}: Base= cycle, {cycle}")
             print(f"  {name:28} {share:>5.0%}  {names}")

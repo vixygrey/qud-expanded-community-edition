@@ -1,0 +1,67 @@
+# Ruff configuration for `tools/`. The mod itself contains no Python.
+#
+# WHY THIS FILE EXISTS. There was no ruff configuration at all until #633's dependency bump went
+# looking for one, which meant ruff ran its default rule set — `E4`, `E7`, `E9`, `F`: syntax errors,
+# undefined names, unused imports. That is a reasonable floor for a script and a thin one for 25
+# files and 14,000 lines carrying every check CI depends on. Reading the v0.16.6 release notes made
+# it plain: every bug fix in it landed on a rule this repository had not selected.
+#
+# WHAT IS SELECTED. The default set, kept explicitly so a future ruff cannot widen or narrow it
+# without this file changing, plus the groups that were measured to cost 49 findings in total across
+# `tools/`. Cheap to adopt, and each one catches something this project already says it cares about —
+# `PTH` most of all, since "prefer pathlib over os.path" was already the standard and nothing was
+# enforcing it.
+#
+# WHAT IS DELIBERATELY ABSENT, so nobody re-litigates it from scratch:
+#
+#   COM812  conflicts with the formatter, by ruff's own documentation. 530 findings.
+#   PT      1010 findings, 991 of them PT009 — the tests use `unittest` assertions on purpose.
+#   T201    144 findings. These are command-line tools; printing is the job.
+#   D       959. Narrowing to formatting-only rules is 178 and is worth doing, separately.
+#   ANN     222. Worth doing, separately.
+#   S       69, mostly inherent — parsing the game's own XML, shelling out to git. Each wants a
+#           justified `noqa` rather than a fix, which is review work rather than a config change.
+#   C90/PLR 91. Better as a ratchet with thresholds set at today's worst than as a cleanup.
+#   PERF    14, and dropped after reading every one of them rather than on the count. PERF203 fires
+#           on four loops that parse a file per iteration and record the failure — the try/except is
+#           the error isolation, and the only way to satisfy the rule is to move it into a helper,
+#           which hides it from the linter and changes nothing else. PERF401 fires on ten loops that
+#           append a formatted diagnostic string; four of those carry multi-line f-strings inside a
+#           condition and read worse as comprehensions. It is performance advice about code with no
+#           hot path, so it buys nothing and costs readability. Selected on a count, dropped on
+#           reading the sites — which is the right order but was nearly not.
+#
+# LINE LENGTH IS TWO SETTINGS AND THEY ARE DELIBERATELY DIFFERENT. `line-length` is the formatter's
+# width and stays at ruff's default 88, so adopting this file reflows nothing. `E501` is a lint on
+# runaway lines and reads `lint.pycodestyle.max-line-length` instead. The code is written to roughly
+# 100 columns — the 99th percentile line is 99 characters — so measuring E501 against 88 reports
+# 2,871 lines that are almost entirely comments and docstrings the formatter cannot split. At 110 it
+# reports 7, which is the number of genuinely runaway lines.
+
+line-length = 88
+
+[lint]
+select = [
+  # ruff's default set, pinned explicitly rather than inherited
+  "E4",
+  "E7",
+  "E9",
+  "F",
+  # added in #633, measured at 49 findings across tools/
+  "ARG",  # unused arguments
+  "C4",   # comprehension rewrites
+  "E501", # runaway lines, at the width below
+  "ERA",  # commented-out code
+  "FURB", # modernisations
+  "N",    # pep8 naming
+  "PTH",  # pathlib over os.path — already the house standard
+  "PLC0415", # imports inside functions
+  "PLW",  # pylint warnings
+  "RUF",  # ruff's own rules
+  "SIM",  # simplifications
+  "SLF",  # private member access
+]
+
+[lint.pycodestyle]
+# The lint width, not the formatter's. See the note above.
+max-line-length = 110

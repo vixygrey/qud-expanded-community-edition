@@ -233,6 +233,39 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **ruff was checking almost nothing, and now checks something.** There was no ruff
+  configuration in this repository at all, so it ran its default rule set — syntax errors, undefined
+  names, unused imports — across 25 files and 14,000 lines of tooling. The dependency bump above is
+  what exposed it: every bug fix in the ruff release landed on a rule that was not selected.
+
+  `ruff.toml` now selects the default set explicitly, so a future ruff cannot widen or narrow it
+  silently, plus the groups that were measured to cost 56 findings in total: `ARG`, `C4`, `E501`,
+  `ERA`, `FURB`, `N`, `PTH`, `PLC0415`, `PLW`, `RUF`, `SIM`, `SLF`. All 56 are resolved.
+
+  **`PTH` is the one that should have been on from the start** — "prefer pathlib over `os.path`" was
+  already the standard here and nothing was enforcing it. Eight findings, all converted.
+
+  **Line length is now two settings on purpose.** The formatter stays at 88, so adopting this file
+  reflows nothing — all 25 files were already formatted. `E501` reads a separate width and is set to
+  110. The code is written to roughly 100 columns, so measuring it against 88 reported 2,871 lines
+  that were almost entirely comments the formatter cannot split; at 110 it reported seven, every one
+  a path or a test fixture that is worse for being wrapped.
+
+  **`PERF` was selected on its count and dropped after reading the sites**, which is recorded in
+  `ruff.toml` rather than quietly omitted. Its four `PERF203` findings are loops that parse one file
+  per iteration and record the failure — the `try`/`except` *is* the error isolation, and the only
+  way to satisfy the rule is to hide it in a helper. It is performance advice about code with no hot
+  path.
+
+  Deliberately still absent, each with its reason in the file: `COM812` (conflicts with the
+  formatter), `PT` (1010 findings, 991 of them because the tests use `unittest` assertions on
+  purpose), `T201` (these are command-line tools), `D`, `ANN`, `S` and the complexity rules — the
+  last four all worth doing, and none of them a config change.
+
+  The rules found one thing worth keeping: three functions accept a parameter they never read. Those
+  are suppressed pointing at #903 rather than deleted, because removing a parameter and deciding it
+  was vestigial are different acts.
+
 - **(internal)** `ruff` v0.16.5 → v0.16.6 and `typos` v1.50.0 → v1.50.1, each in both places it is
   pinned. Dependabot raised two of the three: #890 moved the `crate-ci/typos` action, #891 moved both
   pre-commit revs, and nothing moved `ci.yml`'s `pipx install ruff==` pin, which is the gap both

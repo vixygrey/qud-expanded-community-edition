@@ -81,13 +81,13 @@ class PublishGuards(unittest.TestCase):
 
     def test_refuses_a_feature_branch(self) -> None:
         run("git", "switch", "--quiet", "-c", "feature/x", cwd=self.work)
-        with chdir(self.work), self.assertRaises(sync_mod.Problem) as cm:
+        with chdir(self.work), self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.check_publish_state(fetch=False)
         self.assertIn("feature/x", str(cm.exception))
 
     def test_refuses_a_dirty_tree(self) -> None:
         (self.work / "mod" / "scratch.xml").write_text("<objects />", encoding="utf-8")
-        with chdir(self.work), self.assertRaises(sync_mod.Problem) as cm:
+        with chdir(self.work), self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.check_publish_state(fetch=False)
         self.assertIn("not clean", str(cm.exception))
 
@@ -95,7 +95,7 @@ class PublishGuards(unittest.TestCase):
         (self.work / "mod" / "extra.xml").write_text("<objects />", encoding="utf-8")
         run("git", "add", "-A", cwd=self.work)
         run("git", "commit", "--quiet", "-m", "unpushed", cwd=self.work)
-        with chdir(self.work), self.assertRaises(sync_mod.Problem) as cm:
+        with chdir(self.work), self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.check_publish_state(fetch=False)
         self.assertIn("origin/main", str(cm.exception))
 
@@ -118,7 +118,7 @@ class PublishGuards(unittest.TestCase):
         run("git", "commit", "--quiet", "-m", "later", cwd=other)
         run("git", "push", "--quiet", cwd=other)
 
-        with chdir(self.work), self.assertRaises(sync_mod.Problem) as cm:
+        with chdir(self.work), self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.check_publish_state(fetch=True)
         self.assertIn("behind", str(cm.exception))
 
@@ -198,14 +198,14 @@ class DestinationGuard(unittest.TestCase):
         (self.dest / "manifest.json").write_text(
             json.dumps({"id": "SomebodyElsesMod"}), encoding="utf-8"
         )
-        with self.assertRaises(sync_mod.Problem) as cm:
+        with self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.guard_destination(self.dest)
         self.assertIn("SomebodyElsesMod", str(cm.exception))
 
     def test_refuses_a_directory_that_is_not_a_mod(self) -> None:
         self.dest.mkdir()
         (self.dest / "taxes.pdf").write_text("", encoding="utf-8")
-        with self.assertRaises(sync_mod.Problem) as cm:
+        with self.assertRaises(sync_mod.SyncError) as cm:
             sync_mod.guard_destination(self.dest)
         self.assertIn("no manifest.json", str(cm.exception))
 
@@ -315,7 +315,7 @@ class BuildZip(unittest.TestCase):
         """The check that would have caught a release changing from 2.6.0 to 2.5.1 across three
         files - validate_mod ties the manifest to the changelog, this ties it to the tag."""
         with self._mod() as root:
-            with self.assertRaises(sync_mod.Problem) as caught:
+            with self.assertRaises(sync_mod.SyncError) as caught:
                 sync_mod.build_zip(root, "v9.9.8")
             self.assertIn("9.9.8", str(caught.exception))
             self.assertIn("9.9.9", str(caught.exception))
@@ -323,7 +323,7 @@ class BuildZip(unittest.TestCase):
     def test_a_manifest_without_a_version_is_refused(self) -> None:
         with (
             self._mod({"id": "TestModId"}) as root,
-            self.assertRaises(sync_mod.Problem),
+            self.assertRaises(sync_mod.SyncError),
         ):
             sync_mod.build_zip(root, None)
 
@@ -332,14 +332,14 @@ class BuildZip(unittest.TestCase):
         file at the archive root - plausible, and wrong."""
         with (
             self._mod({"id": "   ", "version": "9.9.9"}) as root,
-            self.assertRaises(sync_mod.Problem),
+            self.assertRaises(sync_mod.SyncError),
         ):
             sync_mod.build_zip(root, None)
 
     def test_an_unreadable_manifest_is_refused(self) -> None:
         with self._mod() as root:
             (sync_mod.MOD / "manifest.json").write_text("{not json", encoding="utf-8")
-            with self.assertRaises(sync_mod.Problem):
+            with self.assertRaises(sync_mod.SyncError):
                 sync_mod.build_zip(root, None)
 
 

@@ -18,7 +18,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -29,7 +28,7 @@ MOD = Path("mod")
 # Steam on macOS. The game data is under CoQ.app/Contents/Resources/Data — NOT under
 # CoQ_Data/StreamingAssets, which contains only DLC and is an easy wrong turn.
 DEFAULT_GAME_PATHS = [
-    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base",
+    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base",  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
     "~/.steam/steam/steamapps/common/Caves of Qud/CoQ_Data/StreamingAssets/Base",
     "C:/Program Files (x86)/Steam/steamapps/common/Caves of Qud/CoQ_Data/StreamingAssets/Base",
 ]
@@ -46,7 +45,7 @@ def find_game(explicit: str | None) -> Path | None:
     for candidate in ([explicit] if explicit else []) + DEFAULT_GAME_PATHS:
         if not candidate:
             continue
-        p = Path(os.path.expanduser(candidate))
+        p = Path(candidate).expanduser()
         if (p / "Bodies.xml").is_file():
             return p
     return None
