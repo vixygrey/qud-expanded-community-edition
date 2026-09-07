@@ -55,6 +55,21 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **Thah knows your face** (#633). The keeper of the slynth cradle gains a question you can only ask
+  once you have given your name — and a different set of answers once his people have gone.
+
+  Thah is the one who sends you out to be an ambassador, on the grounds that you have likely
+  ingratiated yourself to some settlements already. Eight of the people who can answer that request
+  are people this feature has written. Then he finds his whole species a home and stays behind alone
+  at the cradle, because he could not leave the thing he has watched for decades, and tells you that
+  you are welcome to rest there.
+
+  Ask him afterward and he will tell you he has decided he is not lonely. He has decided it several
+  times.
+
+  He also mentions that the slynth kept no written history until he was grown, and that he has
+  started one, and that you are in it.
+
 - **Kyakukya knows your face** (#633). Mayor Nuntu, Warden Indrix and Crowsong each gain a question
   you can only ask once you have given your name.
 

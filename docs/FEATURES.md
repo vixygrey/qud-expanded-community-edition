@@ -9015,6 +9015,48 @@ Checking whether the marker could reach them is what found the defect #897 fixed
 offering to introduce me to a bound, incomprehensible machine.
 
 
+### 61.5r The tenth cast is one man, and his quest is this feature's own premise
+
+Thah keeps the slynth cradle at the hydropon — a people grown one at a time from a cutting of water
+lily, a handful of generations old, who kept no written history until he was grown. He reads and
+tinkers, and he hesitates constantly: *"the, ah, austerity of our cradle."* The tic is most of the
+voice and it is a man thinking faster than he speaks and correcting himself in public.
+
+**Freehold wrote this feature's premise as a quest, and gave it to him.** Thah asks me to be an
+ambassador: to go to the settlements where I have *"likely ingratiated"* myself and ask them to take
+his people in. Every conversation that can answer that request inherits `BaseSlynthMayor`, and **eight
+of the twelve that do are people written in the nine casts before this one** — Elder Irudad, Otho,
+Goek, Lulihart, Keh, Eskhind, Agyra and Nuntu.
+
+So the slynth quest and §61 have been walking the same road from opposite ends. The quest asks whether
+those places know me well enough to say yes; this feature has spent nine casts writing what that
+knowing sounds like. Thah is where the two meet, and he was worth saving for last for that reason
+rather than for his word count.
+
+**And he does not go.** From `SlynthLeave`:
+
+> *"It's not that, ah, it's not that I wouldn't enjoy a life of farming. But the thought of leaving
+> the cradle after decades of watching it... I couldn't. The hydropon is even less a village now, but
+> you're welcome to rest here."*
+
+He finds his whole people a home and stays behind alone in the emptied hydropon, and the last thing he
+says is an invitation to come back. **That is the plainest statement of what this feature exists for
+that vanilla contains anywhere**, and it sits at the end of a quest chain most players finish and
+never return from. §61.5k's criterion asks where vanilla has asserted my standing and given me no way
+to answer; here it has asserted the whole thesis and left the door open.
+
+The state split is therefore his: `IfFinishedQuest="Landing Pads"` is after they have gone, over a
+`Priority="-1"` catch-all. That last part is a small pleasure — §61.5l took the fallback idiom from
+*this conversation's* `LandingPadsCommentary` node, the only place in the game that uses it, and this
+is the first time the fork has written one back into it.
+
+Like Warden Indrix in §61.5p, Thah has **no unconditional start** — all four are gated on the Landing
+Pads quest being untaken, active, ready or finished — so he is the second speaker to depend on #897's
+fallback to every start when none is unconditional.
+
+The marker is free: his own greeting choice is *"Moon and Sun, Thah. I am =name=."*
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
