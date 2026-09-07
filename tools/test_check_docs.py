@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -193,7 +194,7 @@ class AppendixB(unittest.TestCase):
 
     def test_colour_markup_is_stripped_before_matching(self) -> None:
         """The document writes plain names; the blueprint writes {{K|markup}}."""
-        self.assertEqual(check_docs._plain("basic {{K|test}} chip"), "basic test chip")
+        self.assertEqual(check_docs._plain("basic {{K|test}} chip"), "basic test chip")  # noqa: SLF001 - the private helper is the unit under test
 
 
 ITEM_BLUEPRINTS = """<objects>
@@ -532,7 +533,7 @@ class ChangelogSections(unittest.TestCase):
 
     def test_headings_before_any_release_are_ignored(self) -> None:
         """The document's own preamble has prose headings that are not release sections."""
-        body = "# Changelog\n\n### Notes\n\nSome preamble.\n\n## [1.0.0] - 2026-01-01\n\n### Added\n\n- entry\n"
+        body = "# Changelog\n\n### Notes\n\nSome preamble.\n\n## [1.0.0] - 2026-01-01\n\n### Added\n\n- entry\n"  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
         self.assertEqual(findings_for(body), [])
 
     def test_a_missing_changelog_is_not_an_error(self) -> None:
@@ -645,8 +646,6 @@ class CheckNameSources(unittest.TestCase):
     comment warns about, and #242 walked into it."""
 
     def test_this_scripts_own_check_names_are_known(self) -> None:
-        import re
-
         emitted = set(
             re.findall(
                 r'f\.add\(\s*"([a-z-]+)"',
@@ -791,7 +790,7 @@ class WrappedClaims(unittest.TestCase):
     unbound in `docs/FEATURES.md` for this reason before `wrapped` existed."""
 
     def test_a_claim_survives_a_line_break(self) -> None:
-        wrapped_text = "**134 of 340 humanoid creature blueprints have\na rustable item**, against 202 that do not."
+        wrapped_text = "**134 of 340 humanoid creature blueprints have\na rustable item**, against 202 that do not."  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
         self.assertEqual(figure_findings({"docs/FEATURES.md": wrapped_text}), [])
 
     def test_a_wrong_figure_is_still_caught_across_a_line_break(self) -> None:
@@ -1002,7 +1001,7 @@ class ConflictMarkers(unittest.TestCase):
         (self.tmp / "doc.md").write_text(body, encoding="utf-8")
         subprocess.run(["git", "add", "-A"], cwd=self.tmp, check=True)
         f = check_docs.Findings()
-        cwd = os.getcwd()
+        cwd = Path.cwd()
         os.chdir(self.tmp)
         try:
             check_docs.check_conflict_markers(f)

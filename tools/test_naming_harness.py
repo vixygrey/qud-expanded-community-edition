@@ -69,7 +69,7 @@ class HarnessTest(unittest.TestCase):
         return styles, order
 
     def ctx(self, **kw):
-        c = {k: None for k in nh.SCOPE_FILTERS}
+        c = dict.fromkeys(nh.SCOPE_FILTERS)
         c.update(kw)
         return c
 
@@ -320,7 +320,7 @@ class HarnessTest(unittest.TestCase):
             '<namestyle Name="Vixy_B" Base="Vixy_A" />'
             "</namestyles></naming>"
         )
-        with self.assertRaises(nh.BaseCycle) as caught:
+        with self.assertRaises(nh.BaseCycleError) as caught:
             nh.draw(styles["Vixy_A"], random.Random(1), styles, order, self.ctx())
         self.assertIn("Vixy_A", str(caught.exception))
         self.assertIn("Vixy_B", str(caught.exception))
@@ -331,7 +331,7 @@ class HarnessTest(unittest.TestCase):
             '<namestyle Name="Vixy_Self" Base="Vixy_Self" />'
             "</namestyles></naming>"
         )
-        with self.assertRaises(nh.BaseCycle):
+        with self.assertRaises(nh.BaseCycleError):
             nh.draw(styles["Vixy_Self"], random.Random(1), styles, order, self.ctx())
 
     def test_star_base_re_enters_selection_and_skips_the_delegator(self):

@@ -157,7 +157,7 @@ class BuildLogCheck(unittest.TestCase):
             )
         return result.returncode, result.stdout + result.stderr
 
-    def assertFinding(self, output: str, check: str) -> None:
+    def assertFinding(self, output: str, check: str) -> None:  # noqa: N802 - matches unittest's own assertIn/assertEqual casing, which this sits beside
         self.assertIn(f"[{check}]", output, f"expected a {check!r} finding:\n{output}")
 
     # -- the control ------------------------------------------------------------------

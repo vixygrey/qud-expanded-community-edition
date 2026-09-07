@@ -219,7 +219,7 @@ class CollectIgnoresModifierTags(unittest.TestCase):
     blueprint-shaped fictions in the snapshot."""
 
     def collected(self, tag: str):
-        xml = f'<objects><object Name="Vixy_Cell"><part Name="Render" /><tag Name="{tag}" /></object></objects>'
+        xml = f'<objects><object Name="Vixy_Cell"><part Name="Render" /><tag Name="{tag}" /></object></objects>'  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
         index = BlueprintIndex(roots(xml))
         return collect(index, {"Vixy_Cell"}, {tag: {"Vixy_Cell"}})
 

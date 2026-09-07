@@ -175,7 +175,7 @@ CITED_FIGURES = (
 )
 
 DEFAULT_ASSEMBLIES = [
-    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll",
+    "~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll",  # noqa: E501 - one literal; wrapping a path or a fixture makes it harder to grep than to read
     "~/.steam/steam/steamapps/common/Caves of Qud/CoQ_Data/Managed/Assembly-CSharp.dll",
     "C:/Program Files (x86)/Steam/steamapps/common/Caves of Qud/CoQ_Data/Managed/Assembly-CSharp.dll",
 ]
@@ -229,7 +229,7 @@ def find_assembly(explicit: str | None) -> Path | None:
     for candidate in ([explicit] if explicit else []) + DEFAULT_ASSEMBLIES:
         if not candidate:
             continue
-        p = Path(os.path.expanduser(candidate))
+        p = Path(candidate).expanduser()
         if p.is_file():
             return p
     return None
@@ -238,7 +238,7 @@ def find_assembly(explicit: str | None) -> Path | None:
 def steam_build_id() -> str:
     """Best-effort. The snapshot is still valid without it; the digest is the real identity."""
     for candidate in STEAM_MANIFESTS:
-        p = Path(os.path.expanduser(candidate))
+        p = Path(candidate).expanduser()
         if p.is_file():
             m = re.search(r'"buildid"\s*"(\d+)"', p.read_text(errors="replace"))
             if m:
@@ -266,8 +266,8 @@ def collect_parts(assembly: Path) -> list[str]:
         raise SystemExit(f"error: ilspycmd failed:\n{proc.stderr.strip()}")
     prefix = PART_NAMESPACE + "."
     names = set()
-    for line in proc.stdout.splitlines():
-        line = line.strip()
+    for raw in proc.stdout.splitlines():
+        line = raw.strip()
         if not line.startswith("Class "):
             continue
         fq = line[len("Class ") :].split("`")[0]
@@ -411,7 +411,8 @@ CENSUS_KEYS = (
     "creature-blueprints-bleeding",
     "humanoid-blueprints",
     "weight-tag-carriers",
-) + tuple(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS)
+    *(f"{p}-{b}" for p in CENSUS_POPULATIONS for b in BUCKETS),
+)
 
 
 # The four counts collect_hidden_mutations emits, named here for the same reason CENSUS_KEYS is.
@@ -907,7 +908,7 @@ def collect_scatter_quantities(game: Path) -> dict[str, float]:
     formula is a defect waiting for one copy to be edited, which is exactly how the weight version
     came to measure zero on both sides without anyone noticing.
     """
-    from validate_mod import scatter_quantity
+    from validate_mod import scatter_quantity  # noqa: PLC0415 - deliberate: importing at module level would make the two scripts import each other
 
     _, wanted = merged_record_names()
 
@@ -990,7 +991,7 @@ def collect_variant_parent_quantities(game: Path) -> dict[str, list[float]]:
     per-blueprint figure `check_variant_density` needs, and it cannot be derived from the table
     total.
     """
-    from validate_mod import number_midpoint
+    from validate_mod import number_midpoint  # noqa: PLC0415 - deliberate: importing at module level would make the two scripts import each other
 
     wanted = variant_parents()
     totals: dict[str, tuple[float, float]] = {}
@@ -1197,7 +1198,7 @@ def collect_table_weights(game: Path) -> dict[str, int]:
     docs/STYLEGUIDE.md 3.2.1 caps this fork's share of a vanilla table at half. Share is a ratio,
     so the check cannot compute it without vanilla's side, and CI has no game.
     """
-    from validate_mod import table_weight
+    from validate_mod import table_weight  # noqa: PLC0415 - deliberate: importing at module level would make the two scripts import each other
 
     _, wanted = merged_record_names()
     totals: dict[str, int] = {}
@@ -1640,7 +1641,7 @@ def main() -> int:
         return 2
 
     print(f"game:     {game}")
-    print(f"parts:    {assembly if assembly else 'vanilla XML usage (no decompiler)'}")
+    print(f"parts:    {assembly or 'vanilla XML usage (no decompiler)'}")
     print(f"members:  {member_assembly}\n")
     fresh = build(game, assembly, member_assembly)
 

@@ -259,7 +259,8 @@ def requested_dynamic_slices(game: Path) -> dict[str, set[tuple[int, int] | None
     reports every pool as consumed, which is how a first pass here made `MeleeWeapon`'s pool look
     live when nothing in the game draws from it at all.
 
-    The `@` form is the one easy to miss - `<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />`
+    The `@` form is the one easy to miss:
+    `<inventoryobject Blueprint="@DynamicObjectsTable:Daggers:Tier2" />`
     is the only consumer of the daggers pool, and a scan looking only at `Name=` finds none.
 
     Comment-stripped for the reason `requested_inherits_slices` gives, and the runtime-built biome

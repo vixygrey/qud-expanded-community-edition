@@ -17,6 +17,7 @@ The baseline is a ledger, not an excuse: it only shrinks. See docs/CHARTER.md, r
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import re
 import sys
@@ -158,7 +159,7 @@ def is_base_object(obj: ET.Element) -> bool:
 CHIP_BASE = "Raven_Base Psionic Chip"
 
 
-def is_chip(obj: ET.Element, name: str) -> bool:
+def is_chip(obj: ET.Element, name: str) -> bool:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
     """True for a psionic chip, by inheritance rather than by name.
 
     Deliberately not a name match. Matching "chip" in the blueprint name is the same class of
@@ -2544,8 +2545,8 @@ def chance_multiplier(chance: str | None) -> float:
     if not chance:
         return 1.0
     total = 0.0
-    for part in str(chance).split(","):
-        part = part.strip()
+    for raw in str(chance).split(","):
+        part = raw.strip()
         if part:
             total += float(part) / 100
     return total
@@ -2961,7 +2962,7 @@ def check_name_collision(f: Findings, all_roots: dict[Path, ET.Element]) -> None
             )
 
 
-def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+def check_scatter_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:  # noqa: ARG001 - uniform check(f, all_roots) signature; the dispatcher at the bottom calls every check the same way
     """This fork's share of a vanilla table's *scattered* content stops at half.
 
     The same ceiling as `table-share` and the same reasoning - docs/STYLEGUIDE.md 3.2.1 - applied
@@ -3191,7 +3192,7 @@ def check_variant_density(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
             )
 
 
-def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+def check_table_share(f: Findings, all_roots: dict[Path, ET.Element]) -> None:  # noqa: ARG001 - uniform check(f, all_roots) signature; the dispatcher calls every check the same way
     """This fork's share of a vanilla loot table stops at half.
 
     docs/STYLEGUIDE.md 3.2.1, and the one curve there that is a chosen number rather than a
@@ -3261,10 +3262,8 @@ def check_implant_table_cost(f: Findings, all_roots: dict[Path, ET.Element]) -> 
                 continue
             for part in obj.iter("part"):
                 if part.get("Name") == "CyberneticsBaseItem" and part.get("Cost"):
-                    try:
+                    with contextlib.suppress(ValueError):
                         costs[name] = int(part.get("Cost"))
-                    except ValueError:
-                        pass
 
     for pop in root.iter("population"):
         bracket = IMPLANT_TABLE_COSTS.get(pop.get("Name") or "")

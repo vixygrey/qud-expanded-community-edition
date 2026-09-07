@@ -3292,7 +3292,7 @@ class SnapshotBackedChecks(unittest.TestCase):
             msg="unresolved it is one draw at the reference's chance, not the patch's "
             "whole footprint - which is what #544 was about and #798 does not undo",
         )
-        # 0.30 * (1.00 * 16 + 0.50 * 16)
+        # 7.2 is 0.30 of: 16 at full weight plus 16 at half
         self.assertAlmostEqual(resolved, 7.2)
 
     def test_vanillas_sub_table_is_still_not_followed(self) -> None:
