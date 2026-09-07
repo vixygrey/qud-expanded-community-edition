@@ -8690,7 +8690,7 @@ distribute the water ritual and `[begin trade]` to the whole game.
 | **Euclid** | speaks `=MARKOVPARAGRAPH=` between `*thip thip thip*` — procedural babble, not a person |
 | **Sparafucile** | 23 emote lines and deliberately mute; correctly hidden by §26's test |
 | **Jacobo**, **Mafeo** | both carry `GenericInventoryRestocker`, so §61.5a's merchant question already covers them and a second would double up |
-| **PaxKlanq2**, **Neek** | fungal and whispered registers of their own, worth doing properly rather than quickly |
+| **PaxKlanq2**, **Neek** | registers of their own, worth doing properly rather than quickly. *Corrected in §61.5s: this said "fungal and whispered", and Neek is not whispered — that is Shem -1, written in this same cast* |
 | rank-and-file Barathrumite / Arconaut / Tinker | all use `Humanoids`; not named individuals |
 
 Leaving Jacobo and Mafeo to the merchant voice is also what resolves the overlap without machinery —
@@ -9055,6 +9055,42 @@ Pads quest being untaken, active, ready or finished — so he is the second spea
 fallback to every start when none is unconditional.
 
 The marker is free: his own greeting choice is *"Moon and Sun, Thah. I am =name=."*
+
+
+### 61.5s The eleventh cast is six who at least belong somewhere, and two corrections
+
+The clusters ran out at Kyakukya, so what remains of §61 is a tail of individuals. These six have
+somewhere to stand: **Neek** is the deferral §61.5f named at Grit Gate, **Dyvvrach** is Chavvah
+itself, **Meyehind** and **Liihart** are the Hollow Tree and therefore Bey Lah's kin, and **Haddas**
+and **Zothom** are Ezra.
+
+Meyehind and Liihart carry Bey Lah's states, so they answer differently in the ravaged village per
+§61.5l. The rest take the catch-all alone.
+
+**Liihart is the hardest thing written for this feature**, which is not obvious from 88 words. He
+speaks almost entirely in ellipsis — *"................................"*, *"...."*, and once
+*"this sucks. ...but you're not so bad."* The whole of him is what he will not quite say, so a warm
+answer would destroy him. His familiarity line had to be warmer *and* still mostly dots.
+
+#### Two corrections to things I wrote earlier
+
+**§61.5f is wrong about Neek.** Its table says he and PaxKlanq2 have *"fungal and whispered registers
+of their own."* The whisperer is **Shem -1**, written in that same cast, and the only occurrence of
+the word in Neek's entire conversation is inside a line *about* Shem. I wrote that row while thinking
+about somebody else. Neek opens on *"Aaahhhhhhhhh!"*, chants RECTANGLE HAIR, and explains everything
+twice beginning *"it's sort of like."* Deferring him was right; the reason given was not.
+
+**§61.5l is wrong about Dyvvrach**, found while checking that his choice would render at all.
+`<start ID="Welcome" Inherits="WelcomeNoPhysiology">` is empty in the file, and I wrote that #897's
+empty-node hatch is what keeps him speaking. It is not.
+`ConversationXMLBlueprint` resolves `Inherits` at bake through `ResolveBlueprint`, so by the time
+anything walks that conversation the start carries the inherited text and choices outright, and the
+walk finds his words the ordinary way.
+
+The hatch is still real and still needed for conversations genuinely assembled by code. And #897's
+measurement, taken on unresolved XML, errs in the safe direction — inheritance only ever *adds* text,
+so a conversation the probe called silent may speak at runtime, and none that it called speaking can
+fall silent. The fix stands; one sentence of its explanation did not.
 
 
 ### 61.6 Off-switch

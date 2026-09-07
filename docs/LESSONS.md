@@ -4767,8 +4767,17 @@ cheaper approximation is also the only safe one.
 **Measure the rule against the whole corpus before writing it.** Running both rules over all 193
 conversations took minutes and caught two errors in my own probe: Nacham has *two* `<node ID="Start">`
 and the one carrying words is the conditional one, so seeding on all starts hides the bug entirely;
-and `ChavvahPrime` has a completely empty `<start ID="Welcome">` built at runtime, so a rule without
-the empty-node hatch would have silenced Dyvvrach. Both would have shipped.
+and `ChavvahPrime` has an empty `<start ID="Welcome">`, so a rule without the empty-node hatch would
+have reported it silent. Both would have shipped.
+
+**A footnote added later, because the second half of that was half wrong.** `ChavvahPrime`'s start is
+`Inherits="WelcomeNoPhysiology"`, and `ConversationXMLBlueprint` resolves `Inherits` at bake, so at
+runtime it carries the inherited text outright and is found speaking the ordinary way — the hatch is
+not what saves it. The probe was reading unresolved XML. That direction is safe (inheritance only
+adds text, so nothing the probe called speaking can fall silent at runtime) but it means **a
+measurement taken on the data files is not a measurement of the thing the code sees**, and I stated a
+mechanism I had inferred from my own tooling rather than read. The same failing as the two entries
+below, one layer further out.
 
 Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
 and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-about-exactly-one-conversation-and-it-was-the-one-i-was-looking-for)
