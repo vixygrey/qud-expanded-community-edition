@@ -2216,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 103 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 104 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -9543,7 +9543,24 @@ since `WriteOptimized` puts repeated strings in the token table once.
 so anything reading this sees only places the player has visited — whether or not they emptied them.
 #832 inherits that and it cannot be fixed here.
 
-### 64.7 Off-switch
+### 64.7 `vixyterritory`, because a silent system cannot be checked
+
+The record produces no output at any point, which is right for a record and awkward for a test. The
+wish reports what is held, what is vacated, and — the line that matters — **whether the system is
+installed at all**.
+
+That first line exists because this fork had never installed an `IGameSystem` before, and
+`RequireSystem` on an *existing save* is the step with no in-repo precedent: `RequirePart` is
+well-trodden, this is not. If the system never took, every zone reads as unrecorded for a reason that
+has nothing to do with zones. Reporting it separately rather than leaving it to be inferred from an
+empty list is `docs/LESSONS.md`'s *a search that finds nothing has two explanations*, built into the
+tool.
+
+It reads `ZoneProperties` directly rather than zone by zone, since the whole point of the record is
+being queryable for zones that are not loaded — and asking per zone would need a list of zones, which
+is the thing under test. Long lists truncate and say how many they dropped.
+
+### 64.8 Off-switch
 
 None. This records a fact and changes no behaviour; whatever acts on it carries the switch.
 
