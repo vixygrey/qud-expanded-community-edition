@@ -34,7 +34,7 @@ recorded because contributors need them, not because subscribers do.
   **And a bat is not grateful.** Kill a dog harrying a bat in a cave and the bat does not care; kill a
   snapjaw harrying a villager and the villager does. Twenty-nine of vanilla's 199 conversations say
   nothing but emotes, which is the cave — and the water ritual rescues the handful of people who are
-  silent on purpose. Sparafucile is a known and deliberate miss; `docs/FEATURES.md` §63.6 says why
+  silent on purpose. Sparafucile is a known and deliberate miss; `docs/FEATURES.md` §63.7 says why
   rescuing them would let legendary vermin form opinions.
 
 - **A gift somebody remembers** (#634). Introduce yourself to someone you know by name and a

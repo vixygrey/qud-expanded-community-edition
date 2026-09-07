@@ -111,6 +111,44 @@ namespace XRL.World.Parts
             if (holder == ParentObject) return;
 
             holder.Brain?.AddOpinion<Vixy_OpinionDefended>(ParentObject);
+            Announce(holder, defended);
+        }
+
+        /// <summary>
+        /// Say that it landed, because nothing else does.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>Without this the feature is invisible in play.</b> The gift has
+        /// <i>"Tam takes the waterskin"</i> and a reply node; a defence happens mid-fight with no
+        /// conversation to put anything in, so the only way to learn it worked would be to suspect
+        /// it and go examine somebody. That is <c>docs/LESSONS.md</c>'s <i>an effect that reports
+        /// nothing</i>, and it is the same failure that moved §62's ceiling from +40 to +50 —
+        /// a number nobody can see is not a feature.
+        /// </para>
+        /// <para>
+        /// <b>A log line rather than a popup</b>, per <c>Vixy_Trinket</c>: this fires in combat, and
+        /// a popup mid-fight would be an interruption rather than a notice.
+        /// </para>
+        /// <para>
+        /// <b>It names the holder, not the creature I defended</b>, on the rare occasion they
+        /// differ. A led creature's regard *is* its leader's, so naming the follower would report a
+        /// feeling that nothing will ever show. Saving somebody's bodyguard and being told their
+        /// captain noticed is the honest version, and it teaches the rule.
+        /// </para>
+        /// <para>
+        /// Gated on the rescue having been visible rather than on the holder being visible, because
+        /// the message is about a thing I watched happen. A leader across the zone can still be the
+        /// one who remembers it.
+        /// </para>
+        /// </remarks>
+        private static void Announce(GameObject Holder, GameObject Defended)
+        {
+            if (!Defended.IsVisible()) return;
+
+            IComponent<GameObject>.AddPlayerMessage(
+                "{{G|" + Holder.DisplayNameOnly + "}} will remember that."
+            );
         }
     }
 }

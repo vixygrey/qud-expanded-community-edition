@@ -9329,7 +9329,7 @@ it heavily. Kill the thing that was *hunting* them and nothing is recorded at al
 **A grievance in Qud is witnessed, not private.** `AIHelpBroadcastEvent.Send(Actor, Target, …)` —
 `Actor` the victim, `Target` the wrongdoer — floods **visibility radius 20** for everything carrying
 a `Brain`, dispatches to the victim's final leader first, then every witness. This fork does not use
-the witness half yet; see §63.5.
+the witness half yet; see §63.6.
 
 ### 63.2 One part on the player, because the dying creature is still readable
 
@@ -9376,7 +9376,7 @@ broadly by accident would be a difficulty change. So the trigger is narrow inste
 | the dying creature is not temporary | the summon farm — conjure something hostile, let it pick a fight, kill it |
 | it had a target, and that target is not me | the natural narrowing: **in ordinary combat hostiles target you**, so something targeting an NPC means you intervened in someone else's fight |
 | the target is not temporary | |
-| the target can hold a regard at all | §63.6 |
+| the target can hold a regard at all | §63.7 |
 | a led creature resolves to its final leader | `GetFeeling` reads the leader's map, so an opinion on a bodyguard could never be observed |
 
 The `IsTemporary` test catches summons and not every creature a player made — a clone or a
@@ -9387,14 +9387,31 @@ charmed-and-released creature is not temporary. Recorded rather than closed, sin
 of an `Initialize` override. The inherited 1200-turn cooldown means defending the same person twice
 in one fight counts once.
 
-### 63.5 What is deliberately not built
+### 63.5 It says so, because nothing else would
+
+*"{{G|Mehmet}} will remember that."* in the message log, the moment it lands.
+
+The gift does not need this — it has *"Tam takes the waterskin"* and a reply node. A defence happens
+mid-fight with no conversation to put anything in, so without a line the only way to learn it worked
+would be to suspect it and go examine somebody. That is `docs/LESSONS.md`'s *an effect that reports
+nothing*, and the same failure that moved §62's ceiling from +40 to +50: a number nobody can see is
+not a feature.
+
+A log line rather than a popup, per `Vixy_Trinket` — this fires in combat, and a popup would be an
+interruption rather than a notice. It names the **holder** rather than the creature defended on the
+rare occasion they differ, because a led creature's regard *is* its leader's, so naming the follower
+would report a feeling nothing will ever show. Gated on the rescue having been visible rather than on
+the holder being visible: the message is about something you watched happen, and a leader across the
+zone can still be the one who remembers it.
+
+### 63.6 What is deliberately not built
 
 **Witnesses.** The flood hands over everyone who saw it, for free, and vanilla gates its own
 `OpinionKilledAlly` behind `feeling >= 50` — it forms the grievance only for those who already cared
 about the victim. Mirroring that is the obvious next step and is deferred on purpose: it is the piece
 that broadens the rate, and the rate is what decides whether §63.4's narrowing was enough.
 
-### 63.6 A bat is not grateful
+### 63.7 A bat is not grateful
 
 Kill a dog harrying a bat in a cave and the bat does not become your friend; kill a snapjaw harrying
 a villager and the villager thinks better of you. `Vixy_Regard.CanHold` is what separates them, and
@@ -9424,7 +9441,7 @@ everybody, and errs toward "speaks" for runtime-built conversations, four pieces
 none is open when somebody dies, so one is built from the blueprint with `new Conversation(bp)` — the
 same constructor `ConversationUI.HaveConversation` uses.
 
-### 63.7 Off-switch
+### 63.8 Off-switch
 
 None, per §63.4. The uninstall cost is §62.7's and unchanged in kind: this is the second of this
 fork's own types to go into a vanilla collection, so a creature holding either one forgets its whole
