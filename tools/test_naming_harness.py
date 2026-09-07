@@ -465,11 +465,9 @@ class GenderTest(unittest.TestCase):
 
     def load(self, *fragments: str):
         genders: dict[str, dict] = {}
-        nh.load_genders(
-            write(self.tmp, "g.xml", VANILLA_GENDERS), genders, is_mod=False
-        )
+        nh.load_genders(write(self.tmp, "g.xml", VANILLA_GENDERS), genders)
         for i, frag in enumerate(fragments):
-            nh.load_genders(write(self.tmp, f"m{i}.xml", frag), genders, is_mod=True)
+            nh.load_genders(write(self.tmp, f"m{i}.xml", frag), genders)
         return genders
 
     # -- the loader ----------------------------------------------------------------------------
@@ -537,13 +535,13 @@ class GenderTest(unittest.TestCase):
         genders: dict[str, dict] = {}
         base = write(self.tmp, "v.xml", VANILLA_GENDERS)
         mod = write(self.tmp, "m.xml", '<genders EnableSelection="true"></genders>')
-        self.assertIs(nh.load_genders(base, genders, is_mod=False), False)
-        self.assertIs(nh.load_genders(mod, genders, is_mod=True), True)
+        self.assertIs(nh.load_genders(base, genders), False)
+        self.assertIs(nh.load_genders(mod, genders), True)
 
     def test_a_fragment_stating_nothing_leaves_selection_alone(self):
         genders: dict[str, dict] = {}
         mod = write(self.tmp, "m.xml", '<genders><gender Name="fae" /></genders>')
-        self.assertIsNone(nh.load_genders(mod, genders, is_mod=True))
+        self.assertIsNone(nh.load_genders(mod, genders))
 
 
 if __name__ == "__main__":

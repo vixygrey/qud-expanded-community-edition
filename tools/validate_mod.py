@@ -159,7 +159,7 @@ def is_base_object(obj: ET.Element) -> bool:
 CHIP_BASE = "Raven_Base Psionic Chip"
 
 
-def is_chip(obj: ET.Element, name: str) -> bool:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
+def is_chip(obj: ET.Element) -> bool:
     """True for a psionic chip, by inheritance rather than by name.
 
     Deliberately not a name match. Matching "chip" in the blueprint name is the same class of
@@ -1906,7 +1906,7 @@ def check_item_curves(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             )
             base = VALUE_BASE_DEFAULT
             curve = "value curve"
-            if is_chip(obj, name):
+            if is_chip(obj):
                 base = VALUE_BASE_CHIP
                 curve = "chip curve"
             elif "vambrace" in low:

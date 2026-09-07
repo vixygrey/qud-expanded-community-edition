@@ -233,6 +233,29 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **Three parameters that were accepted and never read are gone** (#903). `ARG`
+  surfaced them when it was switched on; each was left suppressed rather than deleted, because a
+  linter is not what should decide whether a parameter is dead weight or a branch nobody finished.
+  Read against their call sites, all three are dead weight — and each says so in a different way:
+
+  - `is_chip(obj, name)` was **born** with the unused parameter, in #374, which is the commit that
+    replaced name-matching with an inheritance test. Its docstring already explains why matching on
+    the name was abandoned; the parameter is what the abandoned approach left behind.
+  - `load_genders(path, genders, is_mod)` **contradicts its own docstring**, which says of the
+    loader it mirrors that *"merge is not a mode you opt into, it is the only behaviour."* A
+    parameter distinguishing a mod file from a vanilla one cannot matter in a loader with no modes,
+    and the call sites passing `is_mod=False` and `is_mod=True` implied a distinction that does not
+    exist.
+  - `report_pools(styles, base_pools, fragment)` has **one call site and one possible value**, and
+    that call site is already inside the `if args.fragment:` branch the parameter would have
+    selected.
+
+  `report_pools` also turned out to be annotated `-> list[str]` while returning a tuple of two
+  lists, which is fixed here — found only because removing the parameter meant reading the signature.
+
+  Two `ARG001` suppressions remain and are correct: `check_scatter_share` and `check_table_share`
+  accept `all_roots` to keep the uniform `check(f, all_roots)` signature their dispatcher relies on.
+
 - **(internal)** **ruff was checking almost nothing, and now checks something.** There was no ruff
   configuration in this repository at all, so it ran its default rule set — syntax errors, undefined
   names, unused imports — across 25 files and 14,000 lines of tooling. The dependency bump above is

@@ -543,7 +543,7 @@ def pools_of(style: Style) -> tuple[int, int, int]:
     return len(style.prefixes), len(style.infixes), len(style.postfixes)
 
 
-def report_pools(styles, base_pools, fragment: bool) -> list[str]:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
+def report_pools(styles, base_pools) -> tuple[list[str], list[str]]:
     lines, problems = [], []
     watch = sorted(
         set(list(VANILLA_POOLS) + [n for n in styles if n.startswith("Vixy_")])
@@ -608,7 +608,7 @@ FORMS = (
 )
 
 
-def load_genders(path: Path, genders: dict[str, dict], is_mod: bool) -> bool | None:  # noqa: ARG001 - accepted and not read; #903 decides whether it is vestigial or an unfinished branch
+def load_genders(path: Path, genders: dict[str, dict]) -> bool | None:
     """Mirror of Gender.LoadGendersNode. Returns the file's EnableSelection, if it states one.
 
     There is no Load attribute anywhere in this loader: it looks the name up, reuses the existing
@@ -678,14 +678,14 @@ def chargen_pronoun_sets(
 
 def report_genders(game: Path, fragment: str | None) -> list[str]:
     genders: dict[str, dict] = {}
-    selection = load_genders(game / "Genders.xml", genders, is_mod=False)
+    selection = load_genders(game / "Genders.xml", genders)
     handwritten = [
         dict(ps.attrib)
         for ps in ET.parse(game / "PronounSets.xml").getroot().iter("pronounset")
     ]
     before = chargen_genders(genders), chargen_pronoun_sets(genders, handwritten)
     if fragment:
-        override = load_genders(Path(fragment), genders, is_mod=True)
+        override = load_genders(Path(fragment), genders)
         if override is not None:
             selection = override
     after = chargen_genders(genders), chargen_pronoun_sets(genders, handwritten)
@@ -781,7 +781,7 @@ def main() -> int:
     if args.fragment:
         load_naming(Path(args.fragment), styles, order, is_mod=True)
         print(f"\nafter {args.fragment}:")
-        lines, problems = report_pools(styles, base_pools, fragment=True)
+        lines, problems = report_pools(styles, base_pools)
         print("\n".join(lines))
         problems += vanilla_collisions(vanilla_styles, Path(args.fragment))
     else:
