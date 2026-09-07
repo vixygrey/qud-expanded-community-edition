@@ -88,7 +88,7 @@ jobs:
         # Must match the ruff-pre-commit rev in .pre-commit-config.yaml. Dependabot updates that
         # file and cannot see this pin, so bumping ruff is always a two-file change - and if the
         # two drift, CI's `ruff format --check` can disagree with the hook a contributor just ran.
-        run: pipx install ruff==0.16.5
+        run: pipx install ruff==0.16.6
 
       - name: ruff check
         run: ruff check tools/
@@ -141,7 +141,7 @@ jobs:
         # Drift means this job's dictionary disagrees with the hook a contributor just ran. #715
         # found the drift; #786 is where this comment earned itself, when Dependabot raised the
         # hook to v1.50.0 an hour later and left this pin sitting at v1.49.1.
-        uses: crate-ci/typos@4d9c206a77c041268485162b8e2579ad7a5cb9a3 # v1.50.0
+        uses: crate-ci/typos@d43b6c087ac471e2ea7b8af622ff15f05c0c365b # v1.50.1
         with:
           config: .typos.toml
 
