@@ -1994,4 +1994,119 @@
       </choice>
     </node>
   </conversation>
+  <!-- The twelfth cast is the last of them, and it is three. #633.
+
+       Six people remained. Three are written here: **Herododicus** the imperial biographer, waiting
+       in the Sultan's tomb to carve deeds for a Godhead who is long gone; **Asphodel**, who declared
+       xemself Earl of Omonporch on the grounds that no Earl was present to object; and **Rainwater
+       Shomer**, who keeps the high gate to Brightsheol and begins every sentence with "Saad,".
+
+       **Shomer gives the last anchor, and it is the same shape as the first.** Saad is what he calls
+       everyone who comes to the gate - "Saad, welcom", "No Saad Resheph residen her" - a word for
+       anybody at all standing where I am standing. `kendren` in §61.5j was a word for an outsider
+       who is not attacking; this is a word for whoever is at the door. Twelve casts and the last of
+       them closes on the same finding: vanilla keeps giving me a name for my position and never one
+       for me.
+
+       **Asphodel is the only person in §61 vanilla had already written the answer for.** Xis `Loved`
+       node - "Oh... oh! It's you! You are a dear friend, indeed" - fires on faction love rather than
+       on anything I said, so it is standing warmth with no door into it. This adds the door.
+
+       ### Three excluded, and the taxonomy closes
+
+       **AgateSeveranceStar** and **Phinae Hoshaiah** are each one node with one choice, and that
+       choice is the exit. There is no conversation to be familiar *in* - the whole exchange is a
+       greeting and a door. That is not §61.5q's arc shape, which is about meeting somebody once; it
+       is thinner than that, and it is why the two smallest entries on the survey were always going
+       to be the two that could not be written.
+
+       **AoygNoLonger trips three of the four exclusion grounds at once**, which no one else has
+       managed. It dismisses me permanently once the -elseing is done - "store yourself until Fate
+       reshapes you. The end." - which is §61.5q's arc shape. It calls me *utensil* and *stardimmer*
+       and never a name, which is §61.5f's axis, the Many Eyes case. And it holds that "words are
+       bricks. Each spoken is laid in bond and builds your prison. There is no understanding", which
+       is Geeub's characterisation case: an entity whose stated position is that conversation is a
+       prison cannot be given a warm word about being known without contradicting it.
+
+       So the four grounds this feature accumulated - register, characterisation, axis, arc shape -
+       close on a single entity that answers to three of them. -->
+
+  <!-- Herododicus. Lapidary, lithographer, sculptor, calciminer and biographer to the Coiled Lamb,
+       waiting in the tomb to carve the deeds of a Godhead who died an age ago. Courteous, hesitant
+       - "...oh..." - and gently certain that the sultanate still stands. He calls me Moloch. -->
+  <conversation ID="ImperialBiographer">
+    <choice
+      ID="Vixy_HerododicusFamiliar"
+      Target="Vixy_HerododicusFamiliarReply"
+      IfSpeakerHaveProperty="Vixy_Introduced"
+    >
+      <text>
+        How do you fare, Herododicus?~
+        Is the engraving going well?~
+        Have you waited long?~
+        Peace to all who canter here.
+      </text>
+    </choice>
+    <node ID="Vixy_HerododicusFamiliarReply">
+      <text Priority="-1">
+        .....oh... oh! Well, I think. I have carved a great many names into a great deal of stone, =name=, and I find I have been saying yours to myself while I work, which is not a thing I do with the commissioned ones.~
+        The engraving goes. It always goes. {{emote|*Herododicus sets down the chisel.*}} It is nearly done, and has been nearly done for rather a long while, and you are the first to visit twice without asking when.~
+        ...oh. Long? I will tarry here until the Godhead passes on. That is the arrangement. I had not thought of it as waiting until somebody started arriving, and now there is a before and an after, and I mind the before less.~
+        Peace to you also. You know, I am a biographer, and biography is simply the deeds of a person set down by another who was there. I have been here a very long time and nobody has been there. Then you.
+      </text>
+      <choice Target="Start">
+        <text>I'll be there.~Peace, Herododicus.~Carve on, then.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Asphodel, self-proclaimed Earl of Omonporch. Grandiose and entirely unembarrassed - "there was
+       no Earl to tell me otherwise." Xe uses xe/xem. Vanilla already writes xis warmth in the
+       `Loved` node; it simply fires on faction standing and has no door into it. -->
+  <conversation ID="Asphodel">
+    <choice ID="Vixy_AsphodelFamiliar" Target="Vixy_AsphodelFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Earl?~
+        How is the earldom?~
+        Is the Spindle glorious today?~
+        Live and drink, Asphodel.
+      </text>
+    </choice>
+    <node ID="Vixy_AsphodelFamiliarReply">
+      <text Priority="-1">
+        Splendidly! I proclaimed myself Earl because no Earl was present to object, =name=, and I have lately noticed that you have never once objected either, which I choose to record as an endorsement.~
+        The earldom flourishes. It consists of one Spindle, a quantity of roasted musa, and now a visitor who comes back. That last is the newest holding and I am inordinately pleased with it.~
+        The Spindle is glorious. It is always glorious. But you have looked up at it beside me more than once now, and a glory nobody stands under is merely tall.~
+        Live and drink! Oh - I say that to travelers. You are not quite that any more and I have no title for what you are instead, which is embarrassing for an Earl, so I shall simply use your name.
+      </text>
+      <choice Target="Start">
+        <text>Use it freely.~Live and drink, Earl.~It is a fine Spindle.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Rainwater Shomer, keeper of the high gate to Brightsheol. Every sentence opens "Saad," - his
+       word for whoever is standing at the gate - and the whole register is archaic and ritual. He
+       must not slip out of it; the warmth has to arrive inside the liturgy. -->
+  <conversation ID="Shomer">
+    <choice ID="Vixy_ShomerFamiliar" Target="Vixy_ShomerFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Shomer?~
+        Is the gate well kept?~
+        Do many come this way?~
+        Live and drink.
+      </text>
+    </choice>
+    <node ID="Vixy_ShomerFamiliarReply">
+      <text Priority="-1">
+        Saad, I fare. Saad, I callen thee Saad as I callen everich other at the gate, for at the gate they been the same. =name=, thu art not the same. I haven no worde for hit and so I usen thyn owene.~
+        Saad, the gate stonden and I stonden by hit. Saad, that is the whole of my labour. Saad - =name= - hit is lighter labour sith thu comen.~
+        Saad, manye comen. Saad, noon comen twyes. Thu comen twyes, and thries, and I have begonne to listen for the wet and olde lif shaken from thyn heres.~
+        Saad, live and drinken. Saad, crossen thu the heigh gate whenne thu wilt. And whenne thu comen back thurgh hit, I wol be her, and I wol knowe thee.
+      </text>
+      <choice Target="Start">
+        <text>I'll come back through.~Live and drink, Shomer.~Keep the gate well.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>

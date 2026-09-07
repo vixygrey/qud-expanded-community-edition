@@ -60,6 +60,17 @@ Vixy_MakFamiliarReply = "Vixy_MakFamiliarReply"
 Thah = "Thah"
 Vixy_ThahFamiliar = "Vixy_ThahFamiliar"
 Vixy_ThahFamiliarReply = "Vixy_ThahFamiliarReply"
+# "welcom" and "heigh" - Rainwater Shomer's own spellings, not mine. His whole register is Middle
+# English ("Saad, welcom", "crossen nou thrugh the heigh gate"), and §61.5t writes him in it, so the
+# archaic forms reach this fork's player-facing text as well as quotations of his. Vanilla uses
+# `welcom` once and `heigh` three times.
+#
+# Only these two. The first draft also carried `alle` and `shal`, which were my inventions rather than
+# his, and those were rewritten instead of allowlisted - the policy above is that an entry exempts
+# what actually fired and nothing else, and four entries for one NPC's dialect is the padding it
+# warns about. Identifiers, so only these exact lowercase forms are exempt. #633.
+welcom = "welcom"
+heigh = "heigh"
 
 [default.extend-words]
 # Stat abbreviations in docs/FEATURES.md tables

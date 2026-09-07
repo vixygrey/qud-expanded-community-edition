@@ -55,6 +55,19 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **The last three know your face** (#633). Herododicus the imperial biographer, Earl Asphodel of
+  Omonporch, and Rainwater Shomer at the gate to Brightsheol each gain a question you can only ask
+  once you have given your name.
+
+  Herododicus has been carving names into stone for an age, and has started saying yours to himself
+  while he works, which he does not do with the commissioned ones. Asphodel proclaimed xemself Earl
+  because nobody objected, and notes that you have never objected either. Shomer calls everyone at
+  the gate *Saad*, because everyone at the gate is the same — and tells you that you are not, and
+  that he has no word for it, so he will use yours.
+
+  Three others are deliberately left alone: two whose entire conversation is a greeting and a door,
+  and one that calls you a utensil and holds that words are bricks that build a prison.
+
 - **Six more know your face** (#633). Neek at Grit Gate, Dyvvrach who is Chavvah, Meyehind and
   Liihart at the Hollow Tree, and Haddas and Zothom at Ezra each gain a question you can only ask
   once you have given your name.
