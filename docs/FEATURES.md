@@ -2216,11 +2216,11 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 99 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 102 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
-│                               # ammo payload, the gift and its opinion, and
-│                               # four Finesse powers
+│                               # ammo payload, the gift and the defence with
+│                               # their opinions, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -9311,6 +9311,141 @@ which both check. But the blast is contained one level up: `Brain.Read` reaches 
 `ReadComposite<OpinionMap>()`, which opens its own length-prefixed block and catches, and `SkipBlock`
 repositions the stream cleanly. So a creature that remembered a gift forgets its ledger — gratitude
 and grudges alike — while its Brain, faction, AI and conversation all survive.
+
+---
+
+## 63. Somebody you fought for remembers it (`Vixy_Defends`, `Vixy_OpinionDefended`)
+
+Kill something that was hunting somebody else and they think better of you. Five defences on five
+separate days brings a person to **Allied**. All of #921, and the other half of §62's mechanism.
+
+### 63.1 Vanilla built one side of this mirror and not the other
+
+`Brain.HandleEvent(AIHelpBroadcastEvent)` is where every social grievance in the game is formed —
+`OpinionAttackAlly` at −75, `OpinionKilledAlly` at **−200**, `OpinionThief`, `OpinionTrespass`. So
+the game already believes that what you do to somebody a person cares about is personal, and prices
+it heavily. Kill the thing that was *hunting* them and nothing is recorded at all.
+
+**A grievance in Qud is witnessed, not private.** `AIHelpBroadcastEvent.Send(Actor, Target, …)` —
+`Actor` the victim, `Target` the wrongdoer — floods **visibility radius 20** for everything carrying
+a `Brain`, dispatches to the victim's final leader first, then every witness. This fork does not use
+the witness half yet; see §63.6.
+
+### 63.2 One part on the player, because the dying creature is still readable
+
+The obvious objection is that intent has already ended: `Brain.Target` should be gone by the time
+something is dead. It is not, and three things line up to make this the cheap tier rather than a part
+on all 957 creature blueprints:
+
+- `Brain.HandleEvent(BeforeDeathRemovalEvent)` is what *sends* the broadcast, and it runs while the
+  dying creature still exists — `GameObject.Die` calls `Destroy` only after every death event
+- `Brain.Target` is cleared solely by `StopFighting`, which is not on that path
+- the player has a `Brain` and is not the `Actor`, so it is in the flood
+
+So `E.Actor.Brain.Target` names who the dying thing was fighting, at the one moment it can be asked.
+
+### 63.3 `WantEvent` would have silently received nothing
+
+`AIHelpBroadcastEvent` declares `Cascade = 64`, which is `CASCADE_STOP_AT_REGISTRY`, and
+`GameObject.HandleEventInner` opens with:
+
+```csharp
+if (MinEvent.CascadeTo(cascadeLevel, 64))
+    return RegisteredEvents?.Dispatch(E) ?? true;   // early return
+```
+
+`64 & 64` is non-zero, so it takes that return and **never walks `PartsList`** — `WantEvent` is not
+called at all. A part written the way the other ten in `mod/Scripting/` are written would compile,
+load, validate clean and do nothing. It has to `Registrar.Register(AIHelpBroadcastEvent.ID)`, which
+is this fork's first `MinEvent`-by-ID registration; the ten existing `Registrar.Register` calls are
+all the *string* overload for legacy events.
+
+**`Brain` is not the model to copy**, and that is the second half of the trap: it handles this event
+without registering, because `Send` calls `item2.Brain.HandleEvent(E)` directly after the
+object-level dispatch. `docs/LESSONS.md` records both halves.
+
+### 63.4 Narrowed rather than optioned
+
+Rule 6 asks whether anybody would turn a thing off, and here that depended entirely on how often it
+fires. Defending is not opt-in the way giving is — you kill things constantly — and reaching Allied
+broadly by accident would be a difficulty change. So the trigger is narrow instead:
+
+| condition | why |
+|---|---|
+| I did the killing, and the cause is `Killed` or `Murder` | not theft, trespass or assault |
+| the dying creature is not temporary | the summon farm — conjure something hostile, let it pick a fight, kill it |
+| it had a target, and that target is not me | the natural narrowing: **in ordinary combat hostiles target you**, so something targeting an NPC means you intervened in someone else's fight |
+| the target is not temporary | |
+| the target can hold a regard at all | §63.7 |
+| a led creature resolves to its final leader | `GetFeeling` reads the leader's map, so an opinion on a bodyguard could never be observed |
+
+The `IsTemporary` test catches summons and not every creature a player made — a clone or a
+charmed-and-released creature is not temporary. Recorded rather than closed, since nobody has run it.
+
+`Vixy_OpinionDefended` is `BaseValue` 10 and `Limit` 5 — **+50 over five defences**, the same ceiling
+§62 reaches at twice the rate per act, on the same `OpinionBeguile` shape and with the same absence
+of an `Initialize` override. The inherited 1200-turn cooldown means defending the same person twice
+in one fight counts once.
+
+### 63.5 It says so, because nothing else would
+
+*"{{G|Mehmet}} will remember that."* in the message log, the moment it lands.
+
+The gift does not need this — it has *"Tam takes the waterskin"* and a reply node. A defence happens
+mid-fight with no conversation to put anything in, so without a line the only way to learn it worked
+would be to suspect it and go examine somebody. That is `docs/LESSONS.md`'s *an effect that reports
+nothing*, and the same failure that moved §62's ceiling from +40 to +50: a number nobody can see is
+not a feature.
+
+A log line rather than a popup, per `Vixy_Trinket` — this fires in combat, and a popup would be an
+interruption rather than a notice. It names the **holder** rather than the creature defended on the
+rare occasion they differ, because a led creature's regard *is* its leader's, so naming the follower
+would report a feeling nothing will ever show. Gated on the rescue having been visible rather than on
+the holder being visible: the message is about something you watched happen, and a leader across the
+zone can still be the one who remembers it.
+
+### 63.6 What is deliberately not built
+
+**Witnesses.** The flood hands over everyone who saw it, for free, and vanilla gates its own
+`OpinionKilledAlly` behind `feeling >= 50` — it forms the grievance only for those who already cared
+about the victim. Mirroring that is the obvious next step and is deferred on purpose: it is the piece
+that broadens the rate, and the rate is what decides whether §63.4's narrowing was enough.
+
+### 63.7 A bat is not grateful
+
+Kill a dog harrying a bat in a cave and the bat does not become your friend; kill a snapjaw harrying
+a villager and the villager thinks better of you. `Vixy_Regard.CanHold` is what separates them, and
+it is **not** the question §61.2 could not answer — that one was about spoken *register*, and it has
+no answer. This one is about whether a creature is a person, and it does partition.
+
+Two tests, unioned:
+
+- **Speaking.** Strip `{{emote|…}}` from every line a conversation owns and **29 of vanilla's 199
+  fall silent** — `Animals`, `Antelopes`, `Apes`, `Clams`, `Crabs`, `Fish`, `Frogs`, `Goats`,
+  `Insects`, `Oozes`, `Reptiles`, `Spiders`, `Tortoises`, `Worms`, `Fungi`, `Plants`, `Crystals`,
+  `Robots` among them. The 170 that speak include `Snapjaw` — *"you food?"*
+- **`GivesRep`.** Speaking alone loses characters who are silent on purpose. This rescues
+  `Oboroqoru`, `Dreamer` and `Warden 1-FF`, and admits no animal: `Bat`, `Dog` and `Glowfish` are all
+  `GivesRep=False`.
+
+**`Sparafucile` is a known miss.** Twenty-three emote lines, mute by characterisation, and
+`GivesRep=False`, so this says no to a real person; `AppleFarmerDaughter`, `TauChime` and `Star` are
+the same shape. The union that would rescue them is `HasProperName`, and it cannot be used —
+`HeroMaker` hands proper names to legendary beasts, so it would admit a legendary bat, the same leak
+that forced §62.6's reply to go wordless. One mute assassin is cheaper than vermin with opinions.
+
+The speaking test **is** `Vixy_AskName.SaysNothing` rather than a copy of it — that method walks
+reachable nodes, resolves `Inherits` at bake, excludes what `BaseConversation` contributes to
+everybody, and errs toward "speaks" for runtime-built conversations, four pieces of reasoning from
+#881 and #885 a second implementation would get wrong differently. It wants a live `Conversation` and
+none is open when somebody dies, so one is built from the blueprint with `new Conversation(bp)` — the
+same constructor `ConversationUI.HaveConversation` uses.
+
+### 63.8 Off-switch
+
+None, per §63.4. The uninstall cost is §62.7's and unchanged in kind: this is the second of this
+fork's own types to go into a vanilla collection, so a creature holding either one forgets its whole
+ledger if the mod is removed, and nothing else changes.
 
 ## Appendix A — every merged vanilla melee weapon
 

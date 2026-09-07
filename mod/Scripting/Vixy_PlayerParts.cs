@@ -114,6 +114,7 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Hoard>();
                 player.RequirePart<Vixy_WaterMemory>();
                 player.RequirePart<Vixy_Oathbreaker>();
+                player.RequirePart<Vixy_Defends>();
             }
         }
     }
