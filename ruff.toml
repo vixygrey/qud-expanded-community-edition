@@ -73,6 +73,37 @@ select = [
   "D400", # first line ends with a period
   "D403", # first word capitalised
   "D415", # first line ends with a period, question mark or exclamation
+  "S",    # bandit, minus the five below
+]
+
+# The five bandit rules that fire on this repository, every one of them outside the threat model
+# bandit is written for. Ignored as rules rather than suppressed 69 times at the call sites, because
+# 69 `noqa`s is the padding `.typos.toml`'s policy warns about, transplanted to a different tool.
+#
+# Selecting `S` and subtracting these leaves **zero findings today** and still catches the things
+# that would actually be dangerous here: `shell=True` (S602), `eval` (S307), `pickle.loads` (S301),
+# md5 (S324), a request with no timeout (S113) or with `verify=False` (S501), and a hardcoded
+# password (S105). Verified against a probe file containing all seven.
+ignore = [
+  # S603 flags every `subprocess.run([...])` — the argument-list form, which is the safe pattern the
+  # rule exists to steer people towards. Every call here uses it; none uses a shell string. S602
+  # stays selected and is the one that matters.
+  "S603",
+  # S607 wants absolute executable paths. This tooling must find `git`, `gh`, `dotnet` and `ilspycmd`
+  # on PATH, because they live somewhere different on every machine that runs it — homebrew, mise,
+  # a runner image. Hardcoding /usr/bin/git would break the tools to satisfy a linter.
+  "S607",
+  # S314 flags `xml.etree` parsing, whose risk is XXE and entity expansion from untrusted input. What
+  # is parsed here is the game's own files and this repository's own mod XML, both on the developer's
+  # disk. Nothing here reads XML off a network.
+  "S314",
+  # S311 flags `random` where a cryptographic generator might be meant. `naming_harness.py` exists to
+  # model the game's name generator; randomness is its subject, not its security.
+  "S311",
+  # S101 flags `assert`. Three are in tests. The other two are deliberate layout guards in
+  # `build_preview.py`, each carrying a comment saying so — "nothing falls off the page: assert it
+  # rather than trusting the eye".
+  "S101",
 ]
 
 [lint.pycodestyle]
