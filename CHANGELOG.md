@@ -233,6 +233,25 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **Complexity has a ceiling now, set at what the code already is.** `C901` and four
+  `PLR09xx` rules are selected as a **ratchet**: each threshold is exactly the worst score in
+  `tools/` today — complexity 24, 23 branches, 9 returns, 67 statements, 10 arguments, 6 of them
+  positional — so everything passes and nothing may get worse without a deliberate edit to
+  `ruff.toml`. Proved by a probe one over each limit rather than assumed.
+
+  At ruff's default of 10, 41 functions would fail. Only six exceed 15, and reading them is what
+  settled the design: two are a CLI `main`, one is a character-level C# comment stripper, and three
+  are validator checks that walk XML. Those are the shape their job implies, and none is improved by
+  being divided to satisfy a number.
+
+  `check_reachability` scores 24 and holds the ceiling up by itself — the next worst is 19. That is
+  #908 rather than this entry, because splitting a function and adopting a linter are different
+  changes. When these numbers go down, the ratchet is working.
+
+  `PLR2004` is declined: it objects to comparing against a small integer, so satisfying its 25
+  findings means inventing 25 module-level constants for things like *is this list two long* in
+  layout arithmetic. The names would carry less meaning than the numerals.
+
 - **(internal)** **The security rules are on, and they report nothing — which is the point.** `S`
   (bandit) reports 69 findings here, and reading all five groups shows every one of them firing
   outside the threat model bandit is written for: `S603` flags the *argument-list* form of

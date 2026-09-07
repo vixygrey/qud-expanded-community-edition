@@ -29,7 +29,9 @@
 #   ANN     222. Worth doing, separately.
 #   S       69, mostly inherent — parsing the game's own XML, shelling out to git. Each wants a
 #           justified `noqa` rather than a fix, which is review work rather than a config change.
-#   C90/PLR 91. Better as a ratchet with thresholds set at today's worst than as a cleanup.
+#   PLR2004 25, and declined. It objects to comparing against a small integer, so satisfying it means
+#           inventing 25 module-level constants for things like "is this list two long" in layout
+#           arithmetic and parsers. The names would carry less meaning than the numerals.
 #   PERF    14, and dropped after reading every one of them rather than on the count. PERF203 fires
 #           on four loops that parse a file per iteration and record the failure — the try/except is
 #           the error isolation, and the only way to satisfy the rule is to move it into a helper,
@@ -74,6 +76,12 @@ select = [
   "D403", # first word capitalised
   "D415", # first line ends with a period, question mark or exclamation
   "S",    # bandit, minus the five below
+  "C90",  # cyclomatic complexity, as a ratchet - see [lint.mccabe]
+  "PLR0911", # too many returns          } all four are ratchets too,
+  "PLR0912", # too many branches         } set at what this tree already
+  "PLR0913", # too many arguments        } contains rather than at an
+  "PLR0915", # too many statements       } aspiration - see [lint.pylint]
+  "PLR0917", # too many positional arguments
 ]
 
 # The five bandit rules that fire on this repository, every one of them outside the threat model
@@ -105,6 +113,28 @@ ignore = [
   # rather than trusting the eye".
   "S101",
 ]
+
+# THE COMPLEXITY LIMITS ARE A RATCHET, NOT A TARGET. Each is set to exactly what the worst function
+# in `tools/` already scores, so everything passes today and nothing may get worse without a
+# deliberate edit to this file. That is the whole of what they are for: at the default of 10, 41
+# functions would fail, and the six that exceed 15 are a CLI `main` twice over, a character-level C#
+# comment stripper, and three validator checks that walk XML - all the shape their job implies, none
+# of them improved by being split to satisfy a number.
+#
+# `check_reachability` scores 24 and is the single outlier; #908 is where that gets looked at rather
+# than here, because splitting a function and adopting a linter are different changes.
+#
+# When one of these numbers goes *down*, that is the ratchet working. It should never go up without
+# the commit saying why.
+[lint.mccabe]
+max-complexity = 24
+
+[lint.pylint]
+max-branches = 23
+max-returns = 9
+max-statements = 67
+max-args = 10
+max-positional-args = 6
 
 [lint.pycodestyle]
 # The lint width, not the formatter's. See the note above.
