@@ -37,8 +37,10 @@ repos:
   # Python lint + format for tools/. Scoped: mod/ contains no Python, and the exclusion keeps
   # the hook from ever reformatting shipped mod files. Pinned to the same version CI runs.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Must match the `pipx install ruff==` pin in .github/workflows/ci.yml — see the note there.
-    # Dependabot updates this rev and cannot see that one, so it moves one without the other.
+    # THIS REV IS THE ONLY PLACE ruff's VERSION IS WRITTEN — #912. `.github/workflows/ci.yml` reads
+    # it out of here rather than pinning it again, so Dependabot's bump merges on its own and there
+    # is no second file to remember. `check_ruff_is_derived` in tools/check_docs.py fails if that
+    # step is ever reworded back into a literal pin.
     rev: v0.16.6
     hooks:
       - id: ruff-check

@@ -83,12 +83,46 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Installed explicitly rather than via a third-party action: one fewer dependency to
-      # trust, and the pinned version is the one pre-commit and contributors run locally.
+      # trust, and the version is the one pre-commit and contributors run locally.
       - name: Install ruff
-        # Must match the ruff-pre-commit rev in .pre-commit-config.yaml. Dependabot updates that
-        # file and cannot see this pin, so bumping ruff is always a two-file change - and if the
-        # two drift, CI's `ruff format --check` can disagree with the hook a contributor just ran.
-        run: pipx install ruff==0.16.6
+        # READ OUT OF .pre-commit-config.yaml, NOT PINNED AGAIN HERE - #912. This used to be a
+        # second `ruff==` pin that had to be edited by hand every time Dependabot raised the hook,
+        # because Dependabot cannot see this file. Now there is one source of truth and its pull
+        # request merges on its own.
+        #
+        # Reading a version string out of a file in this repository adds no dependency, so the
+        # reason for installing with pipx rather than through an action still holds. `typos` below
+        # is deliberately NOT done this way: its pin here is a full commit SHA, and resolving a
+        # mutable tag to a SHA at run time is the exact thing SHA-pinning exists to prevent.
+        #
+        # It fails loudly when the rev cannot be read. Falling back to "whatever pipx installs"
+        # would put CI on a different ruff than the contributor and say nothing.
+        run: |
+          version=$(python3 - <<'PY'
+          import pathlib
+          import re
+          import sys
+
+          config = pathlib.Path(".pre-commit-config.yaml").read_text()
+          match = re.search(
+              r"-\s*repo:\s*https://github\.com/astral-sh/ruff-pre-commit\b.*?^\s*rev:\s*v?([0-9][\w.]*)",
+              config,
+              re.S | re.M,
+          )
+          if not match:
+              sys.exit("could not read the ruff rev out of .pre-commit-config.yaml")
+          print(match.group(1))
+          PY
+          )
+          # Checked explicitly rather than left to `set -e`. A failed command substitution inside an
+          # assignment does abort under bash's -e, but relying on that put an empty version one shell
+          # flag away from `pipx install ruff==`, which installs the newest release and says nothing.
+          if [ -z "$version" ]; then
+            echo "could not read the ruff rev out of .pre-commit-config.yaml" >&2
+            exit 1
+          fi
+          echo "ruff $version, read from .pre-commit-config.yaml"
+          pipx install "ruff==$version"
 
       - name: ruff check
         run: ruff check tools/
