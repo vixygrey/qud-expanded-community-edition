@@ -26,7 +26,8 @@
 #           (107) wants imperative mood and would object to "True for a psionic chip" and "Mirror of
 #           Gender.LoadGendersNode". D404 (8) objects to the word "This". None of those is a defect.
 #           What is left, and is selected below, is ten findings across four rules.
-#   ANN     222. Worth doing, separately.
+#   ANN401  the only ANN rule still off: `Any` as an explicit annotation, which this tree does not
+#           write and does not need a rule about.
 #   S       69, mostly inherent — parsing the game's own XML, shelling out to git. Each wants a
 #           justified `noqa` rather than a fix, which is review work rather than a config change.
 #   PLR2004 25, and declined. It objects to comparing against a small integer, so satisfying it means
@@ -82,6 +83,7 @@ select = [
   "PLR0913", # too many arguments        } contains rather than at an
   "PLR0915", # too many statements       } aspiration - see [lint.pylint]
   "PLR0917", # too many positional arguments
+  "ANN",  # missing annotations, on the tools but not the tests
 ]
 
 # The five bandit rules that fire on this repository, every one of them outside the threat model
@@ -139,3 +141,14 @@ max-positional-args = 6
 [lint.pycodestyle]
 # The lint width, not the formatter's. See the note above.
 max-line-length = 110
+
+# The tests are exempt from ANN. 185 of the 222 findings are `def test_x(self) -> None:`, which is
+# ceremony rather than information - a test method returns None and everybody knows it. The 37 in
+# the tools proper are the ones worth having, and they are written out.
+#
+# A WARNING FOR WHOEVER READS THIS NEXT: `ANN` finds *missing* annotations. It does not check that an
+# annotation is *true*. `report_pools` in #903 was declared `-> list[str]` while returning a tuple of
+# two lists, and ANN reports nothing on it - only the missing argument types beside it. Annotations
+# nothing verifies are half the job; #910 is where the other half lives.
+[lint.per-file-ignores]
+"tools/test_*.py" = ["ANN"]

@@ -70,6 +70,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from check_vanilla_drift import BlueprintIndex, find_game, load_all, parse
+from collections.abc import Iterator
 
 SNAPSHOT_PATH = Path("tools/qud-api.json")
 
@@ -213,7 +214,7 @@ BLUEPRINT_ATTRS = (
 BLUEPRINT_CONTEXTS = ("part", "inventoryobject", "widget", "removeinventoryobject")
 
 
-def object_parts(root):
+def object_parts(root: ET.Element) -> Iterator[ET.Element]:
     """Yield only `<part>` elements belonging to an object blueprint.
 
     Conversations use `<part Name="…">` too — AskName, EndGame, GiveArtifact, the KithAndKin
@@ -651,7 +652,7 @@ def merged_record_names() -> tuple[list[str], list[str]]:
     return sorted(blueprints), sorted(tables)
 
 
-def _chain_attr(chain, part: str, key: str) -> str | None:
+def _chain_attr(chain: list[ET.Element], part: str, key: str) -> str | None:
     """The nearest ancestor's value for one part attribute. Takes the chain explicitly rather
     than closing over it - a nested function would capture the loop variable by reference, which
     is correct only for as long as every call stays inside the iteration that made it."""
@@ -662,7 +663,7 @@ def _chain_attr(chain, part: str, key: str) -> str | None:
     return None
 
 
-def _chain_tag(chain, key: str) -> str | None:
+def _chain_tag(chain: list[ET.Element], key: str) -> str | None:
     """The nearest ancestor's value for one tag."""
     for ancestor in chain:
         for el in ancestor.findall("tag"):

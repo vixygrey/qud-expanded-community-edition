@@ -146,10 +146,16 @@ def label(img: Image.Image) -> Image.Image:
     sub = ImageFont.truetype(str(FONTS / "GeistMono-Regular.ttf"), 16)
     fine = ImageFont.truetype(str(FONTS / "GeistMono-Regular.ttf"), 11)
 
-    def width(text, font, track):
+    def width(text: str, font: ImageFont.FreeTypeFont, track: float) -> float:
         return sum(d.textlength(c, font=font) for c in text) + track * (len(text) - 1)
 
-    def spaced(text, font, fill, track, y):
+    def spaced(
+        text: str,
+        font: ImageFont.FreeTypeFont,
+        fill: tuple[int, int, int],
+        track: float,
+        y: float,
+    ) -> None:
         x = (W - width(text, font, track)) / 2
         for ch in text:
             d.text((x, y), ch, font=font, fill=fill)

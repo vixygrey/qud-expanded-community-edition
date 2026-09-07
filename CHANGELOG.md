@@ -233,6 +233,22 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **The tools carry type annotations now — and a warning about what that does not
+  buy.** `ANN` is selected for `tools/`, with the test files exempt: 185 of its 222 findings were
+  `def test_x(self) -> None:`, which is ceremony, and the 37 in the tools proper are the ones worth
+  having. All 37 written.
+
+  **I pitched this on the wrong evidence and it is worth recording.** I argued `ANN` would have
+  caught #903's `report_pools`, declared `-> list[str]` while returning a tuple. It would not:
+  `ANN` finds *missing* annotations and says nothing about a wrong one. What catches that is a type
+  checker, which this repository does not run — #910.
+
+  Writing the 37 made the point twice more. Two were wrong on the first attempt and both were caught
+  by running `basedpyright`, not by review: `select` was annotated as returning `str` where a path
+  returns `None`, and `spaced(fill: str)` takes an RGB tuple from every caller. Annotating also
+  exposed four latent type mismatches in code that was not otherwise touched, which is annotation
+  doing its job.
+
 - **(internal)** **Complexity has a ceiling now, set at what the code already is.** `C901` and four
   `PLR09xx` rules are selected as a **ratchet**: each threshold is exactly the worst score in
   `tools/` today — complexity 24, 23 branches, 9 returns, 67 statements, 10 arguments, 6 of them

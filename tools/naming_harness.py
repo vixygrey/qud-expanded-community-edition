@@ -81,7 +81,7 @@ class _Always:
     """An rng whose rolls always succeed, for asking whether a Chance would have matched."""
 
     @staticmethod
-    def randrange(_n):
+    def randrange(_n: int) -> int:
         return 0
 
 
@@ -205,7 +205,13 @@ def load_naming(
             )
 
 
-def _load_style(node, styles, order, is_mod, mode) -> None:
+def _load_style(
+    node: ET.Element,
+    styles: dict[str, Style],
+    order: list[str],
+    is_mod: bool,
+    mode: str | None,
+) -> None:
     name = node.get("Name")
     if name is None:
         raise SystemExit("namestyle tag had no Name attribute")
@@ -264,7 +270,7 @@ def _load_style(node, styles, order, is_mod, mode) -> None:
                 )
 
 
-def _load_element(el, pool: list, is_mod: bool, mode: str | None) -> None:
+def _load_element(el: ET.Element, pool: list, is_mod: bool, mode: str | None) -> None:
     """Mirror of LoadNameStylePrefixNode. A merged element already present is updated, not re-added."""
     name = el.get("Name")
     if name is None:
@@ -290,7 +296,7 @@ def select(
     ctx: dict[str, str | None],
     rng: random.Random | None = None,
     skip: set[str] | None = None,
-):
+) -> tuple[list[tuple[Style, Scope]], str | None, list[tuple[str, Scope]]]:
     """Mirror of NameStyles.Generate's style selection. Returns (candidates, winner, chancy).
 
     `skip` is the game's `Skip` / `SkipList`, which it consults here and nowhere else:
@@ -415,7 +421,7 @@ def draw(
             return "InvalidBase:" + style.base
         return draw(target, rng, styles, order, ctx, _seen)
 
-    def pick(pool):
+    def pick(pool: list[list]) -> str:
         live = [e for e in pool if e[1] > 0]
         if not live:
             return ""
@@ -543,7 +549,9 @@ def pools_of(style: Style) -> tuple[int, int, int]:
     return len(style.prefixes), len(style.infixes), len(style.postfixes)
 
 
-def report_pools(styles, base_pools) -> tuple[list[str], list[str]]:
+def report_pools(
+    styles: dict[str, Style], base_pools: dict[str, tuple[int, int, int]]
+) -> tuple[list[str], list[str]]:
     lines, problems = [], []
     watch = sorted(
         set(list(VANILLA_POOLS) + [n for n in styles if n.startswith("Vixy_")])

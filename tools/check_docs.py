@@ -187,7 +187,7 @@ def figure_sources() -> list[Path]:
 COUNT_EXEMPT = {Path("CHANGELOG.md"), Path("docs/DESIGN_options.md")}
 
 
-def parse(path: Path):
+def parse(path: Path) -> ET.Element:
     return ET.fromstring(path.read_text(encoding="utf-8-sig"))
 
 
