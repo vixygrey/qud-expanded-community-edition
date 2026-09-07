@@ -2216,10 +2216,11 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 97 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 99 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
-│                               # ammo payload, and four Finesse powers
+│                               # ammo payload, the gift and its opinion, and
+│                               # four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -9136,6 +9137,147 @@ being known without contradicting it. So the four grounds this feature accumulat
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
 nothing away, and nobody would turn it off. Every line is additive `Load="Merge"` content on four
 conversations, so removing the mod restores vanilla exactly.
+
+---
+
+## 62. A gift somebody remembers (`Vixy_Gift`, `Vixy_OpinionGift`)
+
+Introduce yourself to somebody you know by name and a `[give]` choice appears. Hand them something
+and they remember it — ten gifts on ten separate days brings a person from indifference to
+**Allied**. All of #634.
+
+### 62.1 The ledger is twenty-two entries and seventeen are grievances
+
+`Brain.Opinions` is a real, serialised, per-creature memory of what you did to somebody. The five
+positives are `OpinionSummon` (+50), `OpinionProselytize` (+25), `OpinionBeguile` (+5),
+`OpinionMollify` (+1) and `OpinionRebuke` — earned by summoning, converting, beguiling or calming.
+
+**So the only reliable way to be thought well of by an individual in Qud is to override their will.**
+Everything else in the ledger is a complaint. Qud's central social mechanic *is* a gift — the water
+ritual is sharing water — but it grants faction reputation, not personal regard, so the game already
+knows generosity should mean something and applies it only at the scale of a people.
+
+Giving was already possible and already unremembered. `GiveArtifact`, `LibrarianGiveBook` and
+`GiveReshephSecret` are the only conversation routes for handing over an item and none touches
+`Opinion`; nor does trade. `CompanionGiveItems` calls `TradeUI.ShowTradeScreen(target, 0f)`, a free
+transfer, and **no trade-completion event exists** — the five that do all fire before items move. You
+can hand a companion your whole inventory and their regard is unchanged.
+
+### 62.2 5 × 10, and why the tenth gift is the one that matters
+
+`Vixy_OpinionGift` is `BaseValue` 5 and `Limit` 10. `Brain.AddOpinion` starts `Magnitude` at 1 and
+renews it as `Magnitude = min(Limit, Magnitude + 1)` behind the inherited `Cooldown` of 1200 turns —
+one game day — with `Value = BaseValue × Magnitude`. So a second gift inside a day counts for
+nothing, and the tenth on the tenth day reaches **+50**.
+
+That number is `Brain.GetFeelingLevel`'s Allied threshold, and it is the whole point of the value.
+Personal and faction feeling **sum** into one figure, and from #188 faction feeling takes five values:
+
+| faction feeling | what a full course of gifts does |
+|---:|---|
+| +100, +50 | already Allied |
+| 0 | reaches **Allied** |
+| −50 | reaches **Neutral** — off hostility |
+| −100 | still hostile |
+
+An earlier proposal capped at +40 to stay deliberately short of Allied. It would have changed what a
+player can observe in **one** of those five cases; +50 changes two, both visible in vanilla's own
+Look line with no dependency on anything else.
+
+**Allied is substantial and is not recruitment.** `IsAlliedTowards` has 28 call sites across twenty
+files — your mines and impaler traps spare them, AI declines to catch them in area effects, they can
+be bandaged, they path around you rather than blocking — and exactly one is in `XRL.World.AI`, which
+is `Step`'s pathing courtesy. Nothing makes an Allied creature fight for you or follow you; that is
+`IsLedBy`, a separate concept.
+
+### 62.3 The faucet was never open, and gratitude does not fade
+
+Two things #634 asked for turn out to be vanilla's defaults, in opposite directions.
+
+**Diminishing returns are not needed.** `AddOpinion` keeps one opinion of each type per subject, and
+the default `Limit` is `1f` — so out of the box a hundred waterskins are worth exactly one. The work
+was deciding how much stacking to *permit*, against `OpinionBeguile`'s 20 and `OpinionThief`'s 10.
+
+**Positive opinions never expire.** `IOpinion.Duration` returns 0 for a non-negative `BaseValue` and
+16,800 turns otherwise, and **nothing overrides it** — so the ledger is asymmetric a second way
+beyond the 17-to-5 count: the grievances are the ones that heal, after 14 game days. Left alone
+deliberately. `Limit` already bounds the total, so permanence creates no faucet, and requiring a
+player to top a friendship up would turn a gesture into a chore.
+
+### 62.4 `OpinionBeguile` is the template, and `OpinionMollify` is the trap
+
+Mollify looks like the model — it is the most sophisticated opinion in the game, computing exactly
+enough magnitude to cancel the target's current negative feeling, with `Limit` 1000. Routing a gift
+through it would have been a disaster: **`AddOpinion` calls `Initialize` again on every renewal**, so
+one waterskin handed to somebody whose faction sits at −100 would wipe the whole deficit in a single
+act — precisely the *murder becomes an accounting problem* failure the feature exists to avoid.
+
+`OpinionBeguile` is the same shape with that trap already absent: `IOpinionSubject`, a small
+`BaseValue`, a raised `Limit`, no `Initialize`. Copied, with 20 changed to 10.
+
+Its serialiser is copied too. Vanilla's opinions carry `[GenerateSerializationPartial]` and have
+`Write`/`Read` generated for them, which a mod cannot use, so the two-line pair is written out by
+hand and `WantFieldReflection` is turned off to match.
+
+### 62.5 Who can be given something, and who cannot
+
+| | why |
+|---|---|
+| **Somebody you know by name, who knows yours** | `HasProperName` and `Vixy_Introduced` (§57.1). A gift is a gesture between two people; handing one to a stranger you cannot address is a transaction |
+| **Not your own followers** | vanilla's `Give Items` already covers them, moves a whole inventory at once, and the opinion would be inert anyway |
+| **Not somebody else's follower** | refused by name. `Brain.GetFeeling` early-returns `GetFinalLeaderBrain().GetFeeling(Target)` before it reads any opinion map, so an opinion on a bodyguard can never be observed — and `AddOpinion` has no such guard, so it would look like it worked |
+| **Not a creature you are controlling** | `Brain.TryGetOpinions` returns false for `IsPlayer()`, so the gift would silently vanish |
+
+**What counts as giftable** is tradeable, non-temporary, not a quest item, and worth something. The
+value floor is what stops ten pebbles buying the same regard as ten carbines: the opinion is flat by
+design — #634 asks it to scale against the grievances rather than against value — and flat with no
+floor makes the gesture free. `CanBeTradedEvent` is re-checked, which the free-give path skips
+(`TradeUI` gates it on `CostMultiple > 0f`), so items that refuse ordinary trade cannot slip through
+as gifts.
+
+Water settles itself: a waterskin is an object with a value and is offered, while an individual dram
+is not an object at all — drams live in a `LiquidVolume` inside a container, so nothing in an
+inventory walk can reach one. The water ritual is the faction-scale version of this and §57 owns it.
+
+### 62.6 The transfer is `TakeItem`'s, and the reply is wordless
+
+Vanilla has both halves of this and they never meet. `GiveArtifact` picks and does not record;
+`TakeItem` performs a proper player-to-speaker transfer but matches inventory against a fixed
+`Blueprints`/`IDs` list, so it can only take *named* things and cannot offer a choice.
+
+The transfer follows `TakeItem.Execute` step for step, and three of its steps are not obvious: hand
+the item back if the receiver refuses it, say so with `Does("take")` so the sentence conjugates for
+the speaker, and set **`WontSell`** — without which a merchant puts your gift straight back on the
+shelf at their markup. `ReceiveObject` is `TakeObject(…, Silent: true)` and does the whole move, so
+nothing is removed first; removing it would drop a failed give on the floor.
+
+**The reply is an emote**, and that is §61.2 applied rather than forgotten. The choice is distributed
+from `BaseConversation`, so it reaches every mouth in the game, and no spoken line is true in all of
+them — a legendary snapjaw carries a proper name because `HeroMaker` calls `GiveProperName` while its
+conversation is still `you food?`. Written replies for a named cast are #919. The acknowledgement a
+player actually reads is `Popup.Show`'s *"Tam takes the waterskin."*, in Qud's own conjugation.
+
+Ordinal 9600 puts the choice directly below the two naming exchanges at 10000 and 9900, which is also
+the order the gate needs: the way to unlock it is the choice immediately above it.
+
+### 62.7 Off-switch, and the one thing uninstalling costs
+
+No option, on rule 6's #663 test: the feature is opt-in at the point of use, since nothing happens to
+a player who does not introduce themselves and then choose to give, ten times over ten days.
+
+**Uninstalling the mod costs the ledger of any creature holding a gift opinion, and nothing else.**
+This is the first time this fork puts a type of its own into a vanilla collection, so it was traced
+end to end. While installed it round-trips correctly: `SerializationWriter.WriteDirect(Type)` writes
+`Type.FullName` for any type whose assembly is in `LocalAssemblies` — which `Init` populates with
+every mod assembly — and `ModManager.ResolveType` finds it again through `modAssembly.GetType`.
+*(Which also means the class's namespace is now part of the save format and must never change.)*
+
+On removal, `ReadTokenizedType` throws, `DeserializeComposite` catches and returns null, and
+`OpinionList.Read` dereferences it with **no guard** — unlike `GameObject.Load` and `Effect.Load`,
+which both check. But the blast is contained one level up: `Brain.Read` reaches it through
+`ReadComposite<OpinionMap>()`, which opens its own length-prefixed block and catches, and `SkipBlock`
+repositions the stream cleanly. So a creature that remembered a gift forgets its ledger — gratitude
+and grudges alike — while its Brain, faction, AI and conversation all survive.
 
 ## Appendix A — every merged vanilla melee weapon
 

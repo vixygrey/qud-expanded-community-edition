@@ -4827,3 +4827,37 @@ Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heu
 and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-about-exactly-one-conversation-and-it-was-the-one-i-was-looking-for)
 are the same failing about data rather than about rules — trusting a number my own tooling produced
 without looking at what it counted.
+
+## A search that finds nothing has two explanations, and I hit the same one three times in a row
+
+Counting how many creatures carry `GivesRep`, to size a possible gate for #634. Three attempts, three
+zeroes, and every zero was my tooling rather than the game:
+
+1. Hand-parsed `ObjectBlueprints.xml` with `ElementTree` and asked for `<part Name="GivesRep">`
+   directly. **0** — because parts are inherited, and almost nobody declares it on themselves.
+2. Switched to the repo's own `BlueprintIndex`, which resolves `Inherits`. Still **0** — because
+   `load_all` defaults to `lenient=False`, five vanilla files fail to parse on an invalid character
+   reference, and `Creatures.xml` is one of them. It printed a warning saying so and I read past it.
+3. Passed `lenient=True` to `parse` per file and rebuilt the index by hand. Still **0** — because
+   `BlueprintIndex` wanted the roots `load_all` returns and I had reimplemented the loading badly.
+
+The answer is **50 of 957**, and it arrived the moment I called `load_all(base, lenient=True)` — the
+one-line form that was available at attempt 2.
+
+This file already has an entry for this exact failure, about `IsEligibleForDynamicEncounters`
+resolving 0 of 20 until `*noinherit` was honoured. That entry is *cited in `BlueprintIndex`'s own
+docstring*, which I read while writing attempt 2, and I still shipped attempt 3.
+
+> **A zero from a census is a claim about my query until I have proved it is a claim about the data.**
+> The cheapest proof is a positive control: ask the same query for something whose answer I already
+> know. `"Tam" in idx.objects` would have returned `False` at attempts 2 and 3 and cost one line.
+
+The near miss is what makes it worth writing down. I was about to put "GivesRep: 0" into a design
+comparison offered to the maintainer as the evidence for choosing between three options — a number
+that would have argued convincingly against a gate that is in fact the second-largest of the three.
+`docs/CHARTER.md` rule 4's *"keep new checks in the script"* has no equivalent for one-off analysis,
+so the discipline has to be the positive control.
+
+Related: [`A finding count is not a measure of value`](#a-finding-count-is-not-a-measure-of-value-and-i-used-it-as-one-twice-in-a-day)
+is the same failing pointed at a number that was real but meant something else; this one is about a
+number that was not real at all.

@@ -18,6 +18,32 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **A gift somebody remembers** (#634). Introduce yourself to someone you know by name and a
+  {{g|[give]}} choice appears. Hand them something and they remember it — ten gifts on ten separate
+  days brings a person from indifference to **Allied**, which is the first way in the game to earn
+  somebody's regard without overriding their will.
+
+  Twenty-two opinion types exist and seventeen are grievances. The five positives are earned by
+  summoning, converting, beguiling or calming — so being thought well of has meant taking someone's
+  mind. Qud's own central social mechanic is a gift, but the water ritual grants faction reputation
+  rather than personal regard, so the game already knows generosity should mean something and
+  applies it only at the scale of a people.
+
+  The value is deliberately slow and deliberately visible: a second gift inside a day counts for
+  nothing, and the tenth reaches exactly the +50 that Qud calls Allied. Allied is 28 real
+  consequences — your traps spare them, they can be bandaged, they path around you — and it is not
+  recruitment. Nothing makes an Allied creature fight for you.
+
+  The reply is wordless, because the choice reaches every mouth in the game and no spoken line is
+  true in all of them; a legendary snapjaw carries a proper name while its conversation is still
+  *you food?*. Written replies for a named cast are #919.
+
+  No option, per rule 6: nothing happens to a player who does not introduce themselves and then
+  choose to give, ten times over. **Uninstalling the mod makes any creature that remembered a gift
+  forget its ledger** — gratitude and grudges alike — and changes nothing else; `docs/FEATURES.md`
+  §62.7 has the full trace, since this is the first time this fork puts a type of its own into one
+  of Caves of Qud's own collections.
+
 - **(internal)** **Conversation parts are checked against the namespace they come from** (#917).
   `check_part_names` has always been scoped to `<object>`, because a `<part Name="Trade">` inside a
   conversation resolves from `XRL.World.Conversations.Parts` and checking every `<part>` against one

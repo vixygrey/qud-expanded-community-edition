@@ -259,6 +259,57 @@
       <choice Target="End">Until the next time.</choice>
       <choice Target="Start">There is something else.</choice>
     </node>
+
+    <!-- Hand somebody something, and have them remember it. #634.
+
+         Twenty-two opinion types exist and seventeen are grievances. The five positives are earned
+         by summoning, converting, beguiling or calming - so the only reliable way to be thought
+         well of by a person in Qud is to override their will. This is the entry that is neither a
+         grievance nor a compulsion, and Vixy_OpinionGift carries the value: 5 x 10, ten gifts on
+         ten separate days, ending at exactly the +50 that Brain.GetFeelingLevel calls Allied.
+
+         Ordinal 9600 puts it directly below the two naming exchanges at 10000 and 9900, which is
+         also the order the gate needs: the part hides this choice until a name has passed between
+         us both ways, so the way to unlock it is the choice immediately above it.
+
+         The reply is wordless, and that is §61.2's finding applied rather than forgotten. A choice
+         distributed from BaseConversation reaches every mouth in the game, and no spoken line is
+         true in all of them: a legendary snapjaw carries a proper name because HeroMaker calls
+         GiveProperName, its conversation is still "you food?", and 102 of vanilla's 200
+         conversations are a single node holding Snapjaw and Goatfolk alongside JoppaFarmer and
+         GenericMerchant - so no cut excludes the beasts without excluding the villagers this is
+         for. An emote has no register to be wrong in. Written replies for a named cast are #919,
+         on the same order #633 shipped in: the mechanism to everyone, the voices afterwards.
+
+         =pronouns.Subjective= and =pronouns.possessive= are vanilla's own substitutions, used in
+         its own generic emotes - "{{emote|*=pronouns.Subjective= nods slowly, smirking.*}}".
+
+         Nothing here names the item, for two reasons. GetRandomSubstring collapses the ~ pool
+         before any event fires, so the part cannot know which line was drawn - and it does not need
+         to, because Vixy_Gift.Hand already says "Tam takes the waterskin." through Popup.Show, in
+         Does("take")'s conjugation. The emote carries the reaction, not the transaction. -->
+    <choice ID="Vixy_Gift" Target="Vixy_Gifted" Ordinal="9600">
+      <text>
+        I have something for you.~
+        Take this, =pronouns.formalAddressTerm=.~
+        I would like you to have something.~
+        Here - this should be yours.~
+        A gift, if you will take it.
+      </text>
+      <part Name="Vixy_Gift" />
+    </choice>
+
+    <node ID="Vixy_Gifted">
+      <text>
+        {{emote|*=pronouns.Subjective= looks at you a moment longer than before.*}}~
+        {{emote|*=pronouns.Subjective= nods once, and puts it away.*}}~
+        {{emote|*=pronouns.Subjective= turns it over in =pronouns.possessive= hands, then stows it.*}}~
+        {{emote|*=pronouns.Subjective= inclines =pronouns.possessive= head.*}}~
+        {{emote|*=pronouns.Subjective= holds it a moment before putting it away.*}}
+      </text>
+      <choice Target="Start">There is something else.</choice>
+      <choice Target="End">Live and drink.</choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
