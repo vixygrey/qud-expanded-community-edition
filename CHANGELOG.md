@@ -55,6 +55,18 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **Kyakukya knows your face** (#633). Mayor Nuntu, Warden Indrix and Crowsong each gain a question
+  you can only ask once you have given your name.
+
+  Nuntu already tells you that coming from anyone else he might have refused outright — so his answer
+  is about how short that list is, and how much shorter than a mayor's ought to be. Indrix, who
+  greets strangers as impudent swine, concedes you have not been one for some time and asks you not
+  to press him on when it stopped. Crowsong keeps the part that knows your name separate from the
+  ants.
+
+  Kill Mamon for Indrix and he answers differently afterward. He is the only one here for whom a
+  state changes what you are to each other.
+
 - **The watchers of the tomb know your face** (#633). Lebah, Doyoba, Gyamyo, Yona, Dadogom and
   Vivira each gain a question you can only ask once you have given your name.
 

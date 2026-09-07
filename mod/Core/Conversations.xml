@@ -1628,4 +1628,124 @@
       </choice>
     </node>
   </conversation>
+  <!-- The ninth cast is Kyakukya. #633.
+
+       Three, and they could not be less alike: an ape who deserted his own people and became mayor
+       of a mushroom village, a goatfolk warrior who sends me to kill his elder brother, and whatever
+       Crowsong is.
+
+       **Nuntu states §61.5k's criterion outright**, which no previous anchor has quite done. Ask him
+       to take in the slynth and he answers "coming from anyone else, =name=, I might refuse
+       outright" - and refuse it and he says "perhaps if you were a more renowned figure among my
+       people, I would reconsider." Vanilla says in as many words that what he will do for me depends
+       on who I am to him, and then gives me no way to ask who that is.
+
+       **Indrix's wandering turned out not to be a problem, and Nuntu is the one who says so.** He is
+       `Wanders="true"`, which I had flagged as a caveat because a person you cannot find again cannot
+       become familiar. Nuntu: "you will find him patrolling the village." He is a patrol, not a
+       migrant, and the same zone holds him.
+
+       **Indrix has no unconditional start at all** - all four are gated, on wearing the Cyclopean
+       Prism, on the quest not being taken, on it being active, and on it being finished. §61.5l's
+       walk falls back to every start when none is unconditional, rather than answering on a guess,
+       so he reads as speaking. He is the first person written here who relies on that fallback,
+       which is worth knowing it exists for.
+
+       Only Indrix gets a state variant, keyed `IfFinishedQuest="Raising Indrix"`. It is the one
+       state in this cast that changes what we are to each other: I killed his brother for him.
+       Nuntu's states are about the slynth rather than about me, and Crowsong has none, so both take
+       the catch-all alone.
+
+       **The four bound children of the tomb are excluded, on a ground none of §61's other exclusions
+       share.** Nacham, Dagasha, Kah and Va'am cannot speak while bound, only one can ever be freed,
+       and after freeing the whole conversation is a single farewell line - "Learn well", "Stay safe".
+       There is no second visit to be familiar across. Euclid is excluded by register, Geeub by
+       characterisation, Many Eyes by axis; these four by **arc shape**, and somebody you meet once
+       cannot become familiar however good the material is. Their material is very good: not one of
+       them remembers their own name, and each was named by the mopango who watched them. That
+       belongs to a different feature than this one. #897 stopped the game offering to introduce me
+       to them while they are still bound. -->
+
+  <!-- Mayor Nuntu. An ape who left his people because they wished only to bludgeon, and was taken in
+       by mushroom-farmers twenty years ago. Wordy, warm, and openly working on himself - he catches
+       himself calling Kyakukya "my village" and apologizes for the possessive. -->
+  <conversation ID="Nuntu">
+    <choice ID="Vixy_NuntuFamiliar" Target="Vixy_NuntuFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Mayor?~
+        Is the village well?~
+        Are you keeping well yourself?~
+        Be ape-still and muse, Nuntu.
+      </text>
+    </choice>
+    <node ID="Vixy_NuntuFamiliarReply">
+      <text Priority="-1">
+        Ape-still and musing, =name=, thank you. Do you know, I told you once that coming from anyone else I might refuse outright. I have been turning over how few people that sentence applies to, and it is a shorter list than a mayor ought to have.~
+        The village is well. My village. There - I have done it again. Twenty years and I have not scrubbed the possessive out of myself, and I have stopped believing I will.~
+        Well enough! I deserted my people because they wished only to bludgeon, and I have spent twenty years among a people who whittle and brood, and most days that still strikes me as an extraordinary piece of luck.~
+        I am well. You ask after the mayor often and after Nuntu rarely, and today you asked after Nuntu, and I notice such things. Have some mulled mushroom cider.
+      </text>
+      <choice Target="Start">
+        <text>I'll take the cider.~Be ape-still and muse.~Live and drink, Nuntu.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Warden Indrix. Goatfolk, ferocious, and hostile in the mouth even when he is not - "Impudent
+       swine!", "Grrrraaaah!", "I will ravage your nubile heart!" Sends me to kill Mamon Souldrinker,
+       who is his elder brother. After that is done he greets me with "live and drink" and vanilla
+       leaves the thaw there. -->
+  <conversation ID="Indrix">
+    <choice ID="Vixy_IndrixFamiliar" Target="Vixy_IndrixFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Warden?~
+        Is the village quiet?~
+        Am I still a swine to you?~
+        Live and drink, Indrix.
+      </text>
+    </choice>
+    <node ID="Vixy_IndrixFamiliarReply">
+      <text IfFinishedQuest="Raising Indrix">
+        Grrrah. I fare as one whose brother is dead by a hand he asked to do it. That is not a complaint, =name=. It is simply the whole of the answer and nobody else has asked for it.~
+        Quiet. I patrol it and it stays quiet. You walk it and it stays quiet. Between the two of us the thing is nearly overstaffed.~
+        Not a swine. You were never a swine; you were a stranger, and I have only the one voice for those. You are neither now, and I have had to find another voice, and it is coming slowly.~
+        Live and drink. I say that to you and mean it, which I did not use to, and I would thank you not to remark upon it further.
+      </text>
+      <text Priority="-1">
+        Grrrraaaah! I fare as a warden fares. Make haste, traveller - though I notice I say that to you and you do not make haste, and I have stopped expecting you to.~
+        Quiet, and I keep it so. You will find me patrolling. You always do find me, which is more than most manage.~
+        {{emote|*Indrix's nostrils flare.*}} Swine, no. Not for some time. Do not press me on when it stopped.~
+        Live and drink. Hrmph. You have a name and you gave it to me and I have not forgotten it, which I find inconvenient.
+      </text>
+      <choice Target="Start">
+        <text>I won't press.~Then I'll make haste.~Live and drink, Warden.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Crowsong. Deathwonder. Speaks in fragments that are not quite answers - "being grass, the
+       feeling of animate being, radiate inward like a turned out star." Opens with "..." and will
+       answer "......" if I say nothing back. The one register here that must not resolve into
+       ordinary warmth, because the whole of Crowsong is that nothing resolves. -->
+  <conversation ID="Crowsong">
+    <choice ID="Vixy_CrowsongFamiliar" Target="Vixy_CrowsongFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Crowsong?~
+        ......~
+        Is the light still bright ribbons?~
+        Live and drink, Deathwonder.
+      </text>
+    </choice>
+    <node ID="Vixy_CrowsongFamiliarReply">
+      <text Priority="-1">
+        Fare. Faring. A word for going and a word for staying and you meant the second. I am the ants and the leaves and the light, and lately also a sound that is =name= arriving.~
+        ...... {{emote|*Crowsong's gaze does not move, but something in the grass settles.*}}~
+        Bright ribbons, yes. Death is the color of everything. But the ribbons come where a thing returns, and things do not often return, and you do.~
+        Deathwonder, Crowsong, a colony of ants eating me, and one small part that is only the part that knows your name. I keep it separate. It does not eat.
+      </text>
+      <choice Target="Start">
+        <text>......~Then I'll return.~Live and drink, Crowsong.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
