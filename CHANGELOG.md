@@ -16,6 +16,25 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **(internal)** **Conversation parts are checked against the namespace they come from** (#917).
+  `check_part_names` has always been scoped to `<object>`, because a `<part Name="Trade">` inside a
+  conversation resolves from `XRL.World.Conversations.Parts` and checking every `<part>` against one
+  list would report 52 of vanilla's own as broken. That scoping was right; it just left the other
+  half undone, and this mod has been shipping ten unchecked conversation parts since #753.
+
+  Qud ignores a conversation part it cannot resolve. The object loads, the conversation runs, the
+  mod validates clean, and the thing I wrote does not happen — which is exactly the failure
+  `check_part_names` exists to catch, one namespace over.
+
+  `unknown-conversation-part` now resolves them against a `conversation_parts` list read out of
+  `Assembly-CSharp.dll`: **61** classes, of which vanilla exercises **52** in 110 places. Every one
+  of those resolves, so the check had a corpus to prove itself against before it ever saw one of
+  mine. The half deliberately not built is `<part ID="…" Load="Remove" />`, which addresses an
+  existing part rather than naming a class — catching a typo there needs vanilla's conversation
+  contents, not its class list.
+
 ## [2.17.0] - 2026-09-07
 
 ### Added

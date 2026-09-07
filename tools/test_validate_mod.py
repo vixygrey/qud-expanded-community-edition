@@ -50,7 +50,9 @@ def chdir(path: Path):
 API_SNAPSHOT = Path(__file__).resolve().parent / "qud-api.json"
 
 
-def write_mod(tmp: Path, blueprints: str = "", tables: str = "") -> Path:
+def write_mod(
+    tmp: Path, blueprints: str = "", tables: str = "", conversations: str = ""
+) -> Path:
     """A minimal mod/ tree containing only what a check needs to read."""
     tools = tmp / "tools"
     tools.mkdir(exist_ok=True)
@@ -65,6 +67,13 @@ def write_mod(tmp: Path, blueprints: str = "", tables: str = "") -> Path:
         (mod / "Core").mkdir(exist_ok=True)
         (mod / "Core" / "PopulationTables.xml").write_text(
             f'<?xml version="1.0" encoding="utf-8" ?>\n<population>\n{tables}\n</population>\n',
+            encoding="utf-8",
+        )
+    if conversations:
+        (mod / "Core").mkdir(exist_ok=True)
+        (mod / "Core" / "Conversations.xml").write_text(
+            f'<?xml version="1.0" encoding="utf-8" ?>\n<conversations>\n'
+            f"{conversations}\n</conversations>\n",
             encoding="utf-8",
         )
     return mod
@@ -358,6 +367,119 @@ class PrefixRecognition(unittest.TestCase):
         self.assertTrue(
             any("NoSuchPartClass" in detail for _, detail in items),
             "an unknown part name was not reported — the check is not running",
+        )
+
+    # -------------------------------------------------- conversation part names (#917)
+
+    def test_unknown_conversation_part_name_is_reported(self) -> None:
+        """The silent failure this check exists for: Qud ignores a conversation part it cannot
+        resolve, and everything else about the mod still works."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            conversations='  <conversation ID="Tam">\n'
+            '    <node ID="Start"><part Name="NoSuchConversationPart" /></node>\n'
+            "  </conversation>",
+        )
+        items = findings_for(validate_mod.check_conversation_part_names, tmp)
+        self.assertFalse(
+            any(check == "qud-api-snapshot" for check, _ in items),
+            "conversation_parts was missing from the snapshot, so the check never ran",
+        )
+        self.assertTrue(
+            any("NoSuchConversationPart" in detail for _, detail in items),
+            "an unknown conversation part was not reported — the check is not running",
+        )
+
+    def test_vanilla_conversation_part_name_is_accepted(self) -> None:
+        """GiveArtifact and Trade are real classes in XRL.World.Conversations.Parts. Reporting
+        them would be the false positive that made scoping check_part_names to `<object>` the
+        right call in the first place — this check must not reintroduce it one namespace over."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            conversations='  <conversation ID="Argyve">\n'
+            '    <choice Target="Give"><part Name="GiveArtifact" /></choice>\n'
+            '    <node ID="Shop"><part Name="Trade" /></node>\n'
+            "  </conversation>",
+        )
+        self.assertEqual(
+            findings_for(validate_mod.check_conversation_part_names, tmp), []
+        )
+
+    def test_object_part_name_is_not_checked_against_the_conversation_namespace(
+        self,
+    ) -> None:
+        """The two namespaces are separate lists and the check must not cross them. `Render` is a
+        real object part and no conversation part at all; a check reading every `<part>` rather
+        than only the ones inside a `<conversation>` would report it."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            '  <object Name="Raven_Thing">\n    <part Name="Render" />\n  </object>',
+        )
+        self.assertEqual(
+            findings_for(validate_mod.check_conversation_part_names, tmp), []
+        )
+
+    def test_mod_conversation_part_name_is_not_reported_as_unknown(self) -> None:
+        """Mod-owned conversation parts are check_scripting_parts' business — it walks every .xml
+        root, not only blueprints, so it already reaches these."""
+        for prefix in COVERED_PREFIXES:
+            with self.subTest(prefix=prefix):
+                tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+                write_mod(
+                    tmp,
+                    conversations='  <conversation ID="Tam">\n'
+                    f'    <node ID="Start"><part Name="{prefix}Greeting" /></node>\n'
+                    "  </conversation>",
+                )
+                items = findings_for(validate_mod.check_conversation_part_names, tmp)
+                self.assertFalse(
+                    any("Greeting" in detail for _, detail in items),
+                    f"{prefix} conversation part was reported as unknown",
+                )
+
+    def test_a_removal_by_id_carries_no_name_and_is_not_reported(self) -> None:
+        """`<part ID="GiveArtifact" Load="Remove" />` addresses an existing part rather than
+        naming a class, and mod/Core/Conversations.xml uses exactly this to swap vanilla's picker
+        for its own. Reading `ID` as a class reference would report every such removal."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            conversations='  <conversation ID="Argyve">\n'
+            '    <choice Target="Give">\n'
+            '      <part ID="NoSuchThing" Load="Remove" />\n'
+            "    </choice>\n"
+            "  </conversation>",
+        )
+        self.assertEqual(
+            findings_for(validate_mod.check_conversation_part_names, tmp), []
+        )
+
+    def test_a_part_nested_in_a_choice_is_reached(self) -> None:
+        """Depth is not fixed. A conversation part sits on the conversation, on a `<node>` or on a
+        `<choice>` inside one, and mod/Core/Conversations.xml uses all three — so a check walking
+        only direct children would miss most of the mod's own."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(
+            tmp,
+            conversations='  <conversation ID="BaseConversation">\n'
+            '    <part Name="OnTheConversation" />\n'
+            '    <node ID="Start">\n'
+            '      <choice Target="X"><part Name="DeepInAChoice" /></choice>\n'
+            "    </node>\n"
+            "  </conversation>",
+        )
+        items = findings_for(validate_mod.check_conversation_part_names, tmp)
+        reported = {d for _, d in items}
+        self.assertTrue(
+            any("OnTheConversation" in d for d in reported),
+            "a part on the conversation itself was not reached",
+        )
+        self.assertTrue(
+            any("DeepInAChoice" in d for d in reported),
+            "a part nested inside a choice was not reached",
         )
 
 
