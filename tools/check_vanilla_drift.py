@@ -22,6 +22,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from collections.abc import Callable
 
 MOD = Path("mod")
 
@@ -274,7 +275,9 @@ class BlueprintIndex:
                 break
         return found
 
-    def carriers_matching(self, kind: str, predicate) -> set[str]:
+    def carriers_matching(
+        self, kind: str, predicate: Callable[[str], bool]
+    ) -> set[str]:
         """`carriers`, for a family of names rather than one — e.g. every tag ending `:Weight`.
 
         Same resolution and the same two directives. Split out rather than folded in because a
@@ -404,7 +407,9 @@ def signature(el: ET.Element, depth: int = 0) -> list[tuple]:
     return out
 
 
-def check_anatomy_drift(mod_roots, van_roots) -> list[str]:
+def check_anatomy_drift(
+    mod_roots: list[ET.Element], van_roots: list[ET.Element]
+) -> list[str]:
     problems = []
     for copy_name, (vanilla_name, added) in ANATOMY_COPIES.items():
         mine = anatomy(mod_roots, copy_name)
@@ -427,7 +432,9 @@ def check_anatomy_drift(mod_roots, van_roots) -> list[str]:
     return problems
 
 
-def check_merge_targets(mod_roots, van_roots) -> list[str]:
+def check_merge_targets(
+    mod_roots: list[ET.Element], van_roots: list[ET.Element]
+) -> list[str]:
     """Every Load="Merge" must name a record vanilla still defines."""
     van_objects, van_tables, van_anatomies, van_genotypes = set(), set(), set(), set()
     for r in van_roots:

@@ -23,6 +23,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from collections.abc import Iterator
 
 MOD = Path("mod")
 BASELINE_PATH = Path("tools/validation-baseline.json")
@@ -392,7 +393,7 @@ def xml_files() -> list[Path]:
     return sorted([*MOD.rglob("*.xml"), *MOD.rglob("*.rpm")])
 
 
-def parse(path: Path):
+def parse(path: Path) -> ET.Element:
     """Parse, tolerating the UTF-8 BOM the mod's files carry."""
     return ET.fromstring(path.read_text(encoding="utf-8-sig"))
 
@@ -940,7 +941,7 @@ def check_filenames(f: Findings) -> None:
             f.add("filename-space", str(path))
 
 
-def blueprint_sources(roots: dict[Path, ET.Element]):
+def blueprint_sources(roots: dict[Path, ET.Element]) -> dict[Path, ET.Element]:
     """Only .xml declares blueprints. A .rpm places already-declared objects into map cells, so
     its <object Name="Bed"> is a reference, not a redeclaration."""
     return {p: r for p, r in roots.items() if p.suffix == ".xml"}
@@ -2783,7 +2784,7 @@ def scatter_entries(
     own_tables: dict[str, list[ET.Element]],
     hint: str,
     seen: frozenset[str],
-):
+) -> Iterator[tuple[str | None, str]]:
     """Every scatter entry reachable from `pop`, with the hint that actually reaches it.
 
     A merge block that pulls a patch table holds no `<object>` of its own, so reading only its
@@ -3796,7 +3797,7 @@ def load_qud_api() -> dict | None:
         return None
 
 
-def object_parts(root: ET.Element):
+def object_parts(root: ET.Element) -> Iterator[ET.Element]:
     """Only `<part>` elements belonging to an object blueprint.
 
     Conversations use `<part Name="…">` for a different system in a different namespace — vanilla
