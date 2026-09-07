@@ -4861,3 +4861,47 @@ so the discipline has to be the positive control.
 Related: [`A finding count is not a measure of value`](#a-finding-count-is-not-a-measure-of-value-and-i-used-it-as-one-twice-in-a-day)
 is the same failing pointed at a number that was real but meant something else; this one is about a
 number that was not real at all.
+
+## A cascade level can route an event past every part on the object
+
+`AIHelpBroadcastEvent` is how every social grievance in Qud is formed, and a part on the player that
+answered `WantEvent` for it would have received nothing at all. `GameObject.HandleEventInner`, on its
+first four lines:
+
+```csharp
+int cascadeLevel = E.GetCascadeLevel();
+if (MinEvent.CascadeTo(cascadeLevel, 64))
+{
+    return RegisteredEvents?.Dispatch(E) ?? true;   // early return
+}
+// only below here does it walk PartsList and call part.WantEvent
+```
+
+`64` is `CASCADE_STOP_AT_REGISTRY` and `CascadeTo(Cascade, Level)` is `(Cascade & Level) != 0`, so
+this is true for every event declaring that cascade. The dispatch goes **only** through
+`RegisteredEvents`. `PartsList` is never walked and `WantEvent` is never called.
+
+The fix is one line — `Registrar.Register(AIHelpBroadcastEvent.ID)`, the `int` overload on
+`IEventRegistrar` — but nothing points at it. The part compiles, loads, validates clean under every
+check this repository has, and silently does nothing.
+
+> **`WantEvent` is not how a part subscribes; it is how a part is *filtered* once the object has
+> decided to walk its parts at all.** For an event with `CASCADE_STOP_AT_REGISTRY` the object never
+> makes that decision. Read `HandleEventInner` against the event's own `Cascade` before writing the
+> handler.
+
+**Reading the vanilla part that handles it teaches the wrong lesson**, which is what makes this
+expensive rather than merely obscure. `Brain` has a `HandleEvent(AIHelpBroadcastEvent)` and does
+*not* register for it, and its `WantEvent` list does not mention it either — so copying `Brain` gives
+you the silent version. It works for `Brain` because `AIHelpBroadcastEvent.Send` calls
+`item2.Brain.HandleEvent(E)` **directly**, by name, after the object-level dispatch. That is a
+courtesy extended to one part, not a pattern.
+
+Worth knowing what the ten existing `Registrar.Register` calls in `mod/Scripting/` are: every one is
+the *string* overload for a legacy event — `"Killed"`, `"Healing"`, `"CanTrade"`. So there was no
+in-repo example of the `int` form to copy, and no reason to suspect one was needed.
+
+Related: [`Containment is not dispatch — check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-check-the-cascade-level-before-assuming-a-part-is-reached)
+is the same failing one step out — there the part was inside a container and outside the cascade,
+here it is on the object itself and outside the registry. Both are *reachability at the moment of the
+call*, and neither is visible from the handler's side.

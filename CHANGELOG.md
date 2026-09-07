@@ -18,6 +18,25 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Somebody you fought for remembers it** (#921). Kill something that was hunting somebody else and
+  they think better of you. Five defences on five separate days brings a person to **Allied** — the
+  other half of the gift's mechanism, and the mirror vanilla only ever built one side of.
+
+  `OpinionKilledAlly` is −200 and `OpinionAttackAlly` −75, so Caves of Qud already believes that what
+  you do to somebody a person cares about is personal. Kill the thing that was *hunting* them and
+  nothing was recorded at all.
+
+  No option, because the trigger is narrow instead: it has to be your kill, the thing has to have
+  been fighting somebody who is not you, and neither of you can be temporary — which rules out
+  conjuring something hostile and killing it for credit. In ordinary combat hostiles target *you*, so
+  something targeting an NPC when you kill it means you stepped into someone else's fight.
+
+  **And a bat is not grateful.** Kill a dog harrying a bat in a cave and the bat does not care; kill a
+  snapjaw harrying a villager and the villager does. Twenty-nine of vanilla's 199 conversations say
+  nothing but emotes, which is the cave — and the water ritual rescues the handful of people who are
+  silent on purpose. Sparafucile is a known and deliberate miss; `docs/FEATURES.md` §63.6 says why
+  rescuing them would let legendary vermin form opinions.
+
 - **A gift somebody remembers** (#634). Introduce yourself to someone you know by name and a
   {{g|[give]}} choice appears. Hand them something and they remember it — ten gifts on ten separate
   days brings a person from indifference to **Allied**, which is the first way in the game to earn
