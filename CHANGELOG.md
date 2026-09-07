@@ -233,6 +233,26 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **`check_reachability` is four functions, and the complexity ceiling came down with
+  it** (#908). It scored 24 where the next worst scores 19, so it held the ratchet added in #909 up
+  by itself. `max-complexity` is 19 now.
+
+  It split on seams that were already drawn: the check asks four independent questions — which of
+  this fork's blueprints are spawnable and tinkerable or table-tagged, which are mutation equipment,
+  what every attribute anywhere points at, and which of the first are in none of the rest. Each route
+  was argued for in a different issue and each carried its own essay inside one body. `_reachability_
+  candidates`, `_mutation_equipment` and `_referenced_names` now hold those arguments beside the code
+  they justify, and the worst of them scores 11.
+
+  **This was a division, not a cut.** The test for that was whether each piece answers a question you
+  could ask on its own, and each does. Behaviour is unchanged and checked as such: `validate_mod.py`
+  and `validate_mod.py --all` produce byte-identical output to before, and the eight existing tests
+  that call `check_reachability` directly pass untouched — they test the public behaviour, which is
+  the thing that had to survive.
+
+  The ceiling is now held by `naming_harness.main` at 19, which is argument dispatch and is not
+  obviously better for being divided.
+
 - **(internal)** **ruff's version is written in one place now** (#912). It was pinned twice — the
   `rev:` in `.pre-commit-config.yaml` and a `pipx install ruff==` in `ci.yml` — and Dependabot can
   only see the first, so every bump arrived as a pull request that failed the pin-parity gate until

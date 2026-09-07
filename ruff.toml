@@ -123,13 +123,16 @@ ignore = [
 # comment stripper, and three validator checks that walk XML - all the shape their job implies, none
 # of them improved by being split to satisfy a number.
 #
-# `check_reachability` scores 24 and is the single outlier; #908 is where that gets looked at rather
-# than here, because splitting a function and adopting a linter are different changes.
+# It came down once already. `check_reachability` scored 24 and held this ceiling up on its own;
+# #908 split it on the four seams its own comments had drawn - candidates, mutation equipment,
+# referenced names, and the join - and the worst of those is 11. The limit moved 24 -> 19 with it,
+# and is now held by `naming_harness.main`, which is argument dispatch and is not obviously better
+# for being divided.
 #
 # When one of these numbers goes *down*, that is the ratchet working. It should never go up without
 # the commit saying why.
 [lint.mccabe]
-max-complexity = 24
+max-complexity = 19
 
 [lint.pylint]
 max-branches = 23
