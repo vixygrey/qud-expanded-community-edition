@@ -483,7 +483,7 @@ class GenderTest(unittest.TestCase):
         self.assertEqual(genders["elverson"]["ParentTerm"], "parent")
 
     def test_a_new_gender_defaults_to_generic(self):
-        """new Gender(name, _Generic: true) -- an addition reaches chargen without saying so."""
+        """New Gender(name, _Generic: true) -- an addition reaches chargen without saying so."""
         genders = self.load('<genders><gender Name="fae" Subjective="fae" /></genders>')
         self.assertIn("fae", nh.chargen_genders(genders))
 

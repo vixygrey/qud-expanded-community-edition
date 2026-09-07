@@ -428,7 +428,7 @@ def check_anatomy_drift(mod_roots, van_roots) -> list[str]:
 
 
 def check_merge_targets(mod_roots, van_roots) -> list[str]:
-    """Every Load=\"Merge\" must name a record vanilla still defines."""
+    """Every Load="Merge" must name a record vanilla still defines."""
     van_objects, van_tables, van_anatomies, van_genotypes = set(), set(), set(), set()
     for r in van_roots:
         for el in r.iter("object"):

@@ -233,6 +233,22 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **Four docstring rules, not the 178 findings I proposed.** Tier 2 of the ruff work
+  started from "narrow `D` to formatting only — 178 findings, 162 auto-fixable, nearly free." Reading
+  the sites rather than the count reversed most of it: `D209` (158 of those 162) moves every
+  multi-line docstring's closing quotes onto their own line, which inverts a style this repository
+  applies consistently and fixes nothing, and `D205` (168) wants a blank line after a summary line
+  when most of these docstrings open with a sentence that wraps rather than a summary.
+
+  What is selected is `D301`, `D400`, `D403` and `D415` — ten findings. `D301` is the one worth
+  having permanently: it catches a backslash in a docstring that is not raw. None of the four here
+  was a live bug, but the next one could be `\d`, which Python already warns about and will
+  eventually refuse.
+
+  `docs/LESSONS.md` records the underlying mistake, which is now on its second instance in a day: a
+  finding count measures a rule's *cost* and says nothing about its *benefit*, and "auto-fixable"
+  measures how free the diff is, not whether the diff is an improvement.
+
 - **(internal)** **Three parameters that were accepted and never read are gone** (#903). `ARG`
   surfaced them when it was switched on; each was left suppressed rather than deleted, because a
   linter is not what should decide whether a parameter is dead weight or a branch nobody finished.

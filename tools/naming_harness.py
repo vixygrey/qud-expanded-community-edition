@@ -78,7 +78,7 @@ NAMEGENFAIL = "<NameGenFail>"
 
 
 class _Always:
-    """An rng whose rolls always succeed, for asking 'would this match if Chance passed?'"""
+    """An rng whose rolls always succeed, for asking whether a Chance would have matched."""
 
     @staticmethod
     def randrange(_n):

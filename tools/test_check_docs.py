@@ -758,7 +758,7 @@ class HumanoidCensusClaims(unittest.TestCase):
         self.assertIn("340", items[0][1])
 
     def test_the_creature_pattern_does_not_swallow_a_humanoid_sentence(self) -> None:
-        """`(\\d+) creature blueprints` requires the digits adjacent to `creature`, so the word
+        r"""`(\d+) creature blueprints` requires the digits adjacent to `creature`, so the word
         `humanoid` in between keeps the two claims apart. If that ever stops holding, 134 would be
         compared against creature-rustable (169) and this goes red."""
         self.assertEqual(
@@ -1030,7 +1030,7 @@ class ConflictMarkers(unittest.TestCase):
         self.assertEqual(self.findings("Heading\n===\n"), [])
 
     def test_a_marker_without_its_trailing_space_is_not_one(self):
-        """git always writes a space after the name markers; requiring it is what keeps this from
+        """Git always writes a space after the name markers; requiring it is what keeps this from
         firing on prose that happens to start with angle brackets."""
         self.assertEqual(self.findings("a\n<<<<<<<not-a-marker\nb\n"), [])
 
@@ -1417,7 +1417,7 @@ class PinParity(unittest.TestCase):
         self.assertIn("example/newtool", found[0][1])
 
     def test_a_deliberately_unpaired_hook_is_not_reported(self) -> None:
-        """gitleaks is the reason the map is explicit. The hook is gitleaks/gitleaks at v8 and
+        """Gitleaks is the reason the map is explicit. The hook is gitleaks/gitleaks at v8 and
         the workflow uses gitleaks/gitleaks-action at v3 - different repositories, independent
         version lines. Pairing them by owner reports drift that is not there, for ever."""
         hooks = BOTH_HOOKS + hook_block(

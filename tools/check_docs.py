@@ -352,12 +352,12 @@ QUD_API_PATH = Path("tools/qud-api.json")
 # matches is not checked. Numbers are compared with thousands separators stripped, because the
 # prose writes 1,200 where the XML says 1200 and the comma is the document's to keep.
 def wrapped(phrase: str) -> str:
-    """A claim pattern that survives being reflowed.
+    r"""A claim pattern that survives being reflowed.
 
     Prose wraps, by prettier and by hand, and a pattern with a literal space stops matching the
     moment a sentence moves across a line. It then reports nothing - which is the same silence
     this whole check exists to break, arriving through the check itself. Every space becomes
-    `\\s+` so where the line happens to break stops mattering.
+    `\s+` so where the line happens to break stops mattering.
     """
     return r"\s+".join(phrase.split(" "))
 
@@ -535,7 +535,7 @@ def workshop_description() -> str:
 
 
 def claim_text(doc: Path) -> str:
-    """The text a claim pattern is matched against.
+    r"""The text a claim pattern is matched against.
 
     Every source is read through here so `check_workshop_counts` and `check_claim_coverage` see the
     *same* string. Matching the raw JSON in one and the decoded description in the other would work

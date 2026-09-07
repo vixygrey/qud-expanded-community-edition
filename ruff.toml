@@ -17,7 +17,15 @@
 #   COM812  conflicts with the formatter, by ruff's own documentation. 530 findings.
 #   PT      1010 findings, 991 of them PT009 — the tests use `unittest` assertions on purpose.
 #   T201    144 findings. These are command-line tools; printing is the job.
-#   D       959. Narrowing to formatting-only rules is 178 and is worth doing, separately.
+#   D       959, and the narrowing I first proposed - "formatting only, 178 findings, 162 of them
+#           auto-fixable" - was wrong, in the same way the PERF note below is wrong: counted, not
+#           read. D209 (158) moves every multi-line docstring's closing quotes onto their own line,
+#           which inverts a style this repository applies consistently and fixes no defect. D205
+#           (168) wants a blank line after a summary line, and most of these docstrings open with a
+#           sentence that wraps rather than a summary, so satisfying it means rewriting prose. D401
+#           (107) wants imperative mood and would object to "True for a psionic chip" and "Mirror of
+#           Gender.LoadGendersNode". D404 (8) objects to the word "This". None of those is a defect.
+#           What is left, and is selected below, is ten findings across four rules.
 #   ANN     222. Worth doing, separately.
 #   S       69, mostly inherent — parsing the game's own XML, shelling out to git. Each wants a
 #           justified `noqa` rather than a fix, which is review work rather than a config change.
@@ -60,6 +68,11 @@ select = [
   "RUF",  # ruff's own rules
   "SIM",  # simplifications
   "SLF",  # private member access
+  # added in #633 Tier 2, after reading every site rather than counting them
+  "D301", # a backslash in a docstring that is not raw
+  "D400", # first line ends with a period
+  "D403", # first word capitalised
+  "D415", # first line ends with a period, question mark or exclamation
 ]
 
 [lint.pycodestyle]

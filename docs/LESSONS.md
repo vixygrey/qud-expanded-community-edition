@@ -4784,3 +4784,46 @@ and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-
 are the same file and the same failing: reasoning about conversation data from a scan whose shape did
 not match the runtime's. All three were found by reading for the next piece of work, never by playing,
 which is cheap but late.
+
+## A finding count is not a measure of value, and I used it as one twice in a day
+
+Adopting ruff rules, I costed each candidate group by running it and counting what it reported, then
+recommended the cheap ones. Twice that produced the wrong recommendation, and both times the
+correction came from reading the actual sites rather than from any new measurement.
+
+**`PERF`, at 14 findings, looked like an easy yes.** Reading them: four `PERF203` fire on loops that
+parse one file per iteration and record the failure, where the `try`/`except` *is* the error
+isolation and the only way to satisfy the rule is to move it into a helper called from the loop —
+which hides it from the linter and changes nothing else. Ten `PERF401` fire on loops appending a
+formatted diagnostic string, four of them multi-line f-strings inside a condition that read worse as
+comprehensions. It is performance advice about code with no hot path.
+
+**`D`, narrowed to "formatting only, 178 findings, 162 auto-fixable", looked cheaper still.** Reading
+them: `D209` (158 of the 162) moves every multi-line docstring's closing quotes onto their own line,
+inverting a style this repository applies consistently and fixing no defect. `D205` (168) wants a
+blank line after a summary line, and most of these docstrings open with a sentence that wraps rather
+than a summary, so satisfying it means rewriting prose. What survived was **ten findings across four
+rules**, one of which — `D301` — is the only one with any defect-prevention in it.
+
+### Why the count is such a convincing wrong answer
+
+It is genuinely evidence — about **cost**. A rule reporting 900 findings will be expensive whatever it
+says. The mistake is reading it as evidence about **benefit**, and the two are unrelated: `D301`
+reports four and is worth having permanently, `D209` reports 158 and is worth nothing here.
+
+Worse, a *low* count reads as a recommendation. "Only 14 findings" sounds like a rule the codebase
+almost satisfies already, and therefore one it agrees with. It can equally mean the rule almost never
+applies, which is what both of these turned out to be.
+
+**"Auto-fixable" compounds it.** 162 of 178 auto-fixable sounds like the change is nearly free, and
+it is — the *diff* is free. Whether the diff is an improvement is a separate question the fixability
+count says nothing about, and 158 of those 162 were an unimprovement.
+
+The habit that fixes it costs about two minutes: before adopting a rule, read five of its findings.
+Not the count, the findings. Both reversals here came from doing that, and both would have been
+avoided by doing it before recommending rather than after.
+
+Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
+and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-about-exactly-one-conversation-and-it-was-the-one-i-was-looking-for)
+are the same failing about data rather than about rules — trusting a number my own tooling produced
+without looking at what it counted.
