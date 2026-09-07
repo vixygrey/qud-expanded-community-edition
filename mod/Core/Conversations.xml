@@ -282,7 +282,19 @@
          on the same order #633 shipped in: the mechanism to everyone, the voices afterwards.
 
          =pronouns.Subjective= and =pronouns.possessive= are vanilla's own substitutions, used in
-         its own generic emotes - "{{emote|*=pronouns.Subjective= nods slowly, smirking.*}}".
+         its own generic emotes - "{{emote|*=pronouns.Subjective= nods slowly, smirking.*}}". They
+         are what lets one line serve every gender: a they/them speaker reads "They incline their
+         head" without a second line existing.
+
+         Ten lines rather than five, and the second five lean away from anatomy on purpose. The
+         first five assume hands and a head, which most of the people you can introduce yourself to
+         have and not all of them do - vanilla takes the same liberty in its own generic emotes, so
+         this is a lean rather than a rule. Five that assume only presence widen who the pool reads
+         correctly for, and they also spread the *kind* of beat: the original set was four
+         variations on putting the thing away.
+
+         Drawn per giving, not per creature. Prepare calls GetRandomSubstring('~') each time the
+         node is displayed, so ten gifts to one person draw ten times.
 
          Nothing here names the item, for two reasons. GetRandomSubstring collapses the ~ pool
          before any event fires, so the part cannot know which line was drawn - and it does not need
@@ -305,7 +317,12 @@
         {{emote|*=pronouns.Subjective= nods once, and puts it away.*}}~
         {{emote|*=pronouns.Subjective= turns it over in =pronouns.possessive= hands, then stows it.*}}~
         {{emote|*=pronouns.Subjective= inclines =pronouns.possessive= head.*}}~
-        {{emote|*=pronouns.Subjective= holds it a moment before putting it away.*}}
+        {{emote|*=pronouns.Subjective= holds it a moment before putting it away.*}}~
+        {{emote|*=pronouns.Subjective= says nothing for a moment.*}}~
+        {{emote|*=pronouns.Subjective= looks at it, then at you.*}}~
+        {{emote|*=pronouns.Subjective= is quiet, and does not offer it back.*}}~
+        {{emote|*=pronouns.Subjective= takes a moment over it before it is put away.*}}~
+        {{emote|*Something in =pronouns.possessive= manner eases.*}}
       </text>
       <choice Target="Start">There is something else.</choice>
       <choice Target="End">Live and drink.</choice>
