@@ -81,7 +81,46 @@ namespace XRL.World.Conversations.Parts
             return base.WantEvent(ID, Propagation)
                 || ID == GetChoiceTagEvent.ID
                 || ID == IsElementVisibleEvent.ID
-                || ID == EnterElementEvent.ID;
+                || ID == EnterElementEvent.ID
+                || ID == GetTargetElementEvent.ID;
+        }
+
+        /// <summary>The node a familiar giver is sent to instead of <c>Vixy_Gifted</c>.</summary>
+        public const string WarmNode = "Vixy_GiftedWarm";
+
+        /// <summary>
+        /// Send the reply somewhere warmer once giving has stopped being remarkable.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>The ordering is what makes this read correctly, and it is
+        /// <c>ConversationUI.SelectChoice</c>'s rather than mine.</b> It runs <c>choice.Enter()</c>
+        /// — where <see cref="HandleEvent(EnterElementEvent)" /> hands the item over and records the
+        /// opinion — and only then calls <c>GetTargetNode</c>, which sends
+        /// <c>GetTargetElementEvent</c>. So the magnitude read here already includes the gift just
+        /// given, and the seventh gift is the one that first sees the warmer node rather than the
+        /// eighth. A failed or escaped give returns false from <c>Enter()</c> and never reaches this
+        /// at all.
+        /// </para>
+        /// <para>
+        /// This is vanilla's own mechanism: <c>ChangeTarget</c> is an <c>IPredicatePart</c> that
+        /// does exactly this, assigning <c>E.Target</c> when its predicates match. It cannot be
+        /// reused directly only because no conversation predicate reaches <c>Brain.Opinions</c> —
+        /// the 58 <c>If*</c> delegates cover quests, state, time, reputation and genotype, and
+        /// there is no <c>IfOpinionAtLeast</c> to write.
+        /// </para>
+        /// <para>
+        /// The threshold belongs to <c>Vixy_OpinionGift.Familiar</c> rather than being written
+        /// here, so it cannot drift from the band <c>GetText</c> reports on the examine screen.
+        /// </para>
+        /// </remarks>
+        public override bool HandleEvent(GetTargetElementEvent E)
+        {
+            if (Vixy_OpinionGift.Familiar(The.Speaker, The.Player))
+            {
+                E.Target = WarmNode;
+            }
+            return base.HandleEvent(E);
         }
 
         /// <summary>Vanilla's own tag colour for a choice that hands something over.</summary>

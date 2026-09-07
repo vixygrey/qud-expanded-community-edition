@@ -36,7 +36,10 @@ recorded because contributors need them, not because subscribers do.
 
   The reply is wordless, because the choice reaches every mouth in the game and no spoken line is
   true in all of them; a legendary snapjaw carries a proper name while its conversation is still
-  *you food?*. Written replies for a named cast are #919.
+  *you food?*. Ten emotes, drawn per giving — and from the seventh gift a different set of five,
+  because by then the warm thing is not being thanked but the giving having stopped being
+  remarkable. That cut is the same one the examine screen uses to say *"Has given me much."*, so
+  both surfaces change together. Written replies for a named cast are #919.
 
   No option, per rule 6: nothing happens to a player who does not introduce themselves and then
   choose to give, ten times over. **Uninstalling the mod makes any creature that remembered a gift

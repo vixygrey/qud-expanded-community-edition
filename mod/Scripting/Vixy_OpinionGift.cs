@@ -1,4 +1,5 @@
 using XRL.World;
+using XRL.World.Parts;
 
 namespace XRL.World.AI
 {
@@ -80,9 +81,19 @@ namespace XRL.World.AI
     {
         public override bool WantFieldReflection => false;
 
+        /// <summary>
+        /// The most gifts that can ever count, and the one place the ceiling is written.
+        /// </summary>
+        /// <remarks>
+        /// A constant rather than a literal on <see cref="Limit" />, because
+        /// <see cref="Familiar" /> needs the same number and a static cannot read an instance
+        /// property without allocating an opinion to ask.
+        /// </remarks>
+        public const float Ceiling = 10f;
+
         public override int BaseValue => 5;
 
-        public override float Limit => 10f;
+        public override float Limit => Ceiling;
 
         public override void Write(SerializationWriter Writer)
         {
@@ -112,6 +123,46 @@ namespace XRL.World.AI
             if (Magnitude >= Limit * 2f / 3f) return "Has given me much.";
             if (Magnitude >= Limit / 3f) return "Has been generous with me.";
             return "Gave me something.";
+        }
+
+        /// <summary>
+        /// How much <paramref name="Speaker" /> has been given by <paramref name="Subject" />, as a
+        /// count of gifts that counted. Zero when there is no such opinion.
+        /// </summary>
+        /// <remarks>
+        /// <b><c>Brain.TryGetOpinions</c> is deliberately not used.</b> It is not a read-only
+        /// accessor — where no list exists it writes one,
+        /// <c>Opinions[Subject.BaseID] = (List = new OpinionList())</c> — so asking this question
+        /// through it would add an empty <c>OpinionList</c> to every creature asked about, mutating
+        /// save state from a read. <c>Opinions</c> is a public field and
+        /// <c>Dictionary.TryGetValue</c> creates nothing. <c>Vixy_CustomsRegard</c> avoids the same
+        /// trap for the same reason.
+        /// </remarks>
+        public static float Given(GameObject Speaker, GameObject Subject)
+        {
+            Brain brain = Speaker?.Brain;
+            if (brain == null || Subject == null || !Subject.HasID) return 0f;
+            if (!brain.Opinions.TryGetValue(Subject.BaseID, out OpinionList held)) return 0f;
+            for (int i = 0; i < held.Count; i++)
+            {
+                if (held[i] is Vixy_OpinionGift gift) return gift.Magnitude;
+            }
+            return 0f;
+        }
+
+        /// <summary>
+        /// Whether giving has gone on long enough to stop being remarkable.
+        /// </summary>
+        /// <remarks>
+        /// <b>The same cut as <see cref="GetText" />'s top band, and that is the point.</b> The
+        /// examine line reads <i>"Has given me much."</i> from exactly here, so the two surfaces a
+        /// player can see — the ledger and the reply in the moment — change together rather than at
+        /// two thresholds nobody could line up. One number, expressed once: two thirds of
+        /// <c>Limit</c>, which is the seventh gift of ten and moves if the ceiling ever does.
+        /// </remarks>
+        public static bool Familiar(GameObject Speaker, GameObject Subject)
+        {
+            return Given(Speaker, Subject) >= Ceiling * 2f / 3f;
         }
     }
 }

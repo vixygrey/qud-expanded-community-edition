@@ -9257,6 +9257,39 @@ them — a legendary snapjaw carries a proper name because `HeroMaker` calls `Gi
 conversation is still `you food?`. Written replies for a named cast are #919. The acknowledgement a
 player actually reads is `Popup.Show`'s *"Tam takes the waterskin."*, in Qud's own conjugation.
 
+`=pronouns.Subjective=` and `=pronouns.possessive=` are vanilla's own substitutions, so one line
+serves every gender — a they/them speaker reads *"They incline their head"* with no second line
+written.
+
+### 62.6a The emote changes once giving stops being remarkable
+
+Ten lines in the ordinary pool, drawn per giving rather than per creature: `Prepare` calls
+`GetRandomSubstring('~')` each time the node is displayed, so ten gifts to one person draw ten times.
+
+**From the seventh gift the reply comes from a different node of five.** The warmth is *familiarity*,
+not gratitude — being thanked for the tenth time is what a stranger does, so those lines are about
+the giving having become unremarkable rather than about appreciation:
+
+> *They take it without hesitating.* · *They do not ask why.* · *They look at you rather than at what
+> you gave.* · *They accept it as though it were expected.* · *There is no surprise in their manner at
+> all.*
+
+The cut is `Vixy_OpinionGift.Familiar`, which is **the same two-thirds-of-`Limit` band `GetText`
+reports as *"Has given me much."*** on the examine screen. One number, written once, so the two
+surfaces a player can see change together rather than at two thresholds nobody could line up.
+
+The redirect is vanilla's own mechanism. `ChangeTarget` is an `IPredicatePart` that assigns
+`E.Target` on `GetTargetElementEvent` when its predicates match; it cannot be reused directly only
+because **no conversation predicate reaches `Brain.Opinions`** — the 58 `If*` delegates cover quests,
+state, time, reputation and genotype, and there is no `IfOpinionAtLeast` to write. So `Vixy_Gift`
+answers that event itself.
+
+Ordering makes it read correctly, and it is `ConversationUI.SelectChoice`'s rather than the mod's:
+`choice.Enter()` runs first — where the item changes hands and the opinion is recorded — and
+`GetTargetNode` sends `GetTargetElementEvent` after it. So the magnitude read there already includes
+the gift just given, and the seventh gift is the one that first sees the warmer node rather than the
+eighth. A failed or escaped give returns false from `Enter()` and never reaches the node at all.
+
 Ordinal 9600 puts the choice directly below the two naming exchanges at 10000 and 9900, which is also
 the order the gate needs: the way to unlock it is the choice immediately above it.
 

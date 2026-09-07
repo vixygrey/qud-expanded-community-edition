@@ -327,6 +327,33 @@
       <choice Target="Start">There is something else.</choice>
       <choice Target="End">Live and drink.</choice>
     </node>
+
+    <!-- The same moment, once giving has stopped being remarkable. #634.
+
+         Reached instead of Vixy_Gifted from the seventh gift of ten, redirected by Vixy_Gift on
+         GetTargetElementEvent - vanilla's own ChangeTarget mechanism, which cannot be used directly
+         only because no conversation predicate reaches Brain.Opinions.
+
+         The cut is Vixy_OpinionGift.Familiar, which is the same two-thirds-of-Limit band GetText
+         reports as "Has given me much." on the examine screen. One number, so the two things a
+         player can see change together instead of at two thresholds nobody could line up.
+
+         The warmth is *familiarity*, not gratitude. A tenth gift being received with thanks would
+         be worse than the flat pool, because thanking somebody for the tenth time is what a
+         stranger does - these lines are about the giving having become unremarkable, which is the
+         thing that actually changed. Five rather than ten: this is the tail of the curve, and a
+         player reaching it has already seen the wide pool. None assume anatomy. -->
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        {{emote|*=pronouns.Subjective= takes it without hesitating.*}}~
+        {{emote|*=pronouns.Subjective= does not ask why.*}}~
+        {{emote|*=pronouns.Subjective= looks at you rather than at what you gave.*}}~
+        {{emote|*=pronouns.Subjective= accepts it as though it were expected.*}}~
+        {{emote|*There is no surprise in =pronouns.possessive= manner at all.*}}
+      </text>
+      <choice Target="Start">There is something else.</choice>
+      <choice Target="End">Live and drink.</choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
