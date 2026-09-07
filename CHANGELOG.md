@@ -233,6 +233,32 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** `ruff` v0.16.5 → v0.16.6 and `typos` v1.50.0 → v1.50.1, each in both places it is
+  pinned. Dependabot raised two of the three: #890 moved the `crate-ci/typos` action, #891 moved both
+  pre-commit revs, and nothing moved `ci.yml`'s `pipx install ruff==` pin, which is the gap both
+  comments in `.pre-commit-config.yaml` predict. Merging #891 on its own fails `check_docs` on
+  **both** tools, which is the gate working.
+
+  **typos v1.50.1 is the safe direction.** Its single change withdraws one correction on an
+  async-iterator method name, and only inside Python code — a correction being taken away rather than
+  a dictionary being widened, so it can only turn a red tree green. v1.50.0 was 315 words added and
+  needed real testing; this one cannot fail that way.
+
+  The scoping is narrower than it first looks, and this entry proved it by accident: naming that
+  method here, in Markdown, still trips the check, because the exemption applies to Python files
+  alone. Worth knowing before anyone reads the release note as "that word is allowed now."
+
+  **ruff v0.16.6 is almost entirely inert here**, and the reason is worth writing down: this
+  repository has no ruff configuration at all — no `pyproject.toml`, no `ruff.toml` — so it runs the
+  default rule set with preview off. Every preview item in the release is therefore disabled, and
+  every bug fix in it lands on a rule outside the default set: `ASYNC230`, `PLW1514`, `B031`,
+  `DTZ901`, `PT017`, `RUF102` and `PTH208` are none of them selected. What is left that can reach
+  `tools/` is the parser: unary expressions are now validated while parsing, and unary plus is
+  allowed in match patterns.
+
+  Verified rather than reasoned about: every hook run against the whole tree on the new versions,
+  `ruff check` and `ruff format` clean, `typos` clean, and the pin-parity check back in step.
+
 - **(internal)** **Two name exemptions in the spell check stopped covering more than their names**
   (#633). `Otho` and `Mak` both have to be exempted, and in `typos`' `extend-words` form the
   exemption is case-insensitive — so it also lifted the check from the lowercase and all-caps
