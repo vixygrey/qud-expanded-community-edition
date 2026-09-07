@@ -55,6 +55,19 @@ recorded because contributors need them, not because subscribers do.
   Euclid, Sparafucile and the rank-and-file are left out on purpose, and Jacobo and Mafeo keep the
   shopkeeper's question rather than gaining a second one.
 
+- **Six more know your face** (#633). Neek at Grit Gate, Dyvvrach who is Chavvah, Meyehind and
+  Liihart at the Hollow Tree, and Haddas and Zothom at Ezra each gain a question you can only ask
+  once you have given your name.
+
+  Neek has practised saying your name correctly and will not tell you how much. Dyvvrach chimes in
+  dozens and every one of them has learned to make the same shape for it. Haddas points out that
+  everything which walks, goes — and that you go and then the going undoes itself. Zothom suspects
+  the credo he has been waiting years to find will have your name somewhere in it, and is alarmed.
+
+  Liihart says almost nothing, as ever, and does not take back that you're not so bad.
+
+  Meyehind and Liihart answer differently if Bey Lah was ravaged.
+
 - **Thah knows your face** (#633). The keeper of the slynth cradle gains a question you can only ask
   once you have given your name — and a different set of answers once his people have gone.
 

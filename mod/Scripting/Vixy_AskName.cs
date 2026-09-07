@@ -240,9 +240,18 @@ namespace XRL.World.Conversations.Parts
         /// A node with no text at all reads as <em>not</em> silent, deliberately: emptiness here
         /// means the text is built somewhere this cannot see, and hiding the question on a vacuous
         /// truth would suppress it wherever a conversation is assembled at runtime. That hatch is
-        /// load-bearing and is kept by construction rather than by a special case — <c>ChavvahPrime</c>
-        /// carries an entirely empty <c>&lt;start ID="Welcome"&gt;</c> and is assembled at runtime,
-        /// so the walk finds no text, reports none, and leaves Dyvvrach speaking.
+        /// load-bearing for conversations genuinely built by code, and is kept by construction rather
+        /// than as a special case.
+        /// </para>
+        /// <para>
+        /// <b>It is not what saves <c>ChavvahPrime</c>, though I first wrote that it was</b> — #633.
+        /// Its <c>&lt;start ID="Welcome" Inherits="WelcomeNoPhysiology"&gt;</c> is empty in the file,
+        /// but <c>ConversationXMLBlueprint</c> resolves <c>Inherits</c> at bake through
+        /// <c>ResolveBlueprint</c>, so the start carries the inherited text and choices long before
+        /// anything walks it and Dyvvrach is found speaking the ordinary way. The corpus measurement
+        /// was taken on unresolved XML, which errs safely: inheritance only ever adds text, so a
+        /// conversation the probe called silent may speak at runtime and none it called speaking can
+        /// fall silent.
         /// </para>
         /// <para>
         /// <b><c>internal</c> because <see cref="Vixy_Introduce"/> needs the same test</b> — #881.

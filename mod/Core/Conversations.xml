@@ -1813,4 +1813,185 @@
       </choice>
     </node>
   </conversation>
+  <!-- The eleventh cast is six people who belong to places already written. #633.
+
+       The clusters ran out at Kyakukya, so what is left is a tail of individuals. These six at least
+       have somewhere to stand: Neek is the deferral §61.5f named at Grit Gate, Dyvvrach is Chavvah
+       itself, Meyehind and Liihart are the Hollow Tree and so are Bey Lah's kin, and Haddas and
+       Zothom are Ezra.
+
+       **§61.5f got Neek wrong and this corrects it.** That table says he and PaxKlanq2 have "fungal
+       and whispered registers of their own." The whisperer is Shem -1, written in the same cast, and
+       the only occurrence of the word in Neek's entire conversation is inside a line *about* Shem. I
+       wrote that row while thinking about somebody else. Neek is the opposite of whispered - he
+       opens on "Aaahhhhhhhhh!", chants RECTANGLE HAIR, and explains everything twice starting with
+       "it's sort of like". Deferring him was still right; the reason given was not.
+
+       **And a sentence in §61.5l is wrong about Dyvvrach**, found while checking that his choice
+       would render at all. `<start ID="Welcome" Inherits="WelcomeNoPhysiology">` is empty in the
+       file, and I wrote that the empty-node hatch is what keeps him speaking. It is not:
+       `ConversationXMLBlueprint` resolves `Inherits` at bake through `ResolveBlueprint`, so by the
+       time anything walks that conversation the start carries the inherited text and choices
+       outright. The walk finds his words the ordinary way. The hatch is still real and still needed
+       for conversations genuinely assembled by code, and #897's measurement was taken on unresolved
+       XML - which is conservative in the safe direction, since inheritance only ever adds text.
+
+       Meyehind and Liihart carry Bey Lah's states, so they answer differently in the ravaged
+       village, per §61.5l. The rest take the catch-all alone. -->
+
+  <!-- Neek. Loud, delighted, and explains everything twice - "it's sort of like this, let me
+       explain." Opens on a scream or a stare or a very long ellipsis depending on the day. -->
+  <conversation ID="Neek">
+    <choice ID="Vixy_NeekFamiliar" Target="Vixy_NeekFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How are you, Neek?~
+        What's going on?~
+        Still jidding?~
+        Anything I should know?
+      </text>
+    </choice>
+    <node ID="Vixy_NeekFamiliarReply">
+      <text Priority="-1">
+        GREAT. It's sort of like when you know someone's name and then they show up and you already know it, so there's no part where you go "who's that", you just go "oh!" I like the "oh!" part. That's the best part.~
+        Going on! Klanq. Rocks. Otho hushing. But also you, which is new, because before you were a person who was here and now you're a person who comes back. Those are DIFFERENT. Wooooow.~
+        Always jidding. But not about your name. I say it correctly. I practiced. I'm not going to tell you how much.~
+        You should know that I told Mafeo you asked after me and he said "hm" and I have been thinking about the "hm" for three days. It's sort of like a compliment but shaped like a rock.
+      </text>
+      <choice Target="Start">
+        <text>That's a good rock.~Wooooow.~Live and drink, Neek.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Dyvvrach, who is Chavvah. Plural, unhurried and immense - "this keter roams above my trunk at
+       Eyn Roj, and across the Stair I dream. You found me, this keter where I chime in dozens." -->
+  <conversation ID="ChavvahPrime">
+    <choice ID="Vixy_DyvvrachFamiliar" Target="Vixy_DyvvrachFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Dyvvrach?~
+        Do you dream still?~
+        Is the bright and now shared?~
+        Live and drink, Chavvah.
+      </text>
+    </choice>
+    <node ID="Vixy_DyvvrachFamiliarReply">
+      <text Priority="-1">
+        We share the bright and now, =name=. I have said that to a great many travelers. I chime in dozens and each of them has learned to make the same shape for your name, which took some doing and which nobody asked us to do.~
+        I dream across the Stair, and lately a small part of the dreaming is a keter listening for a step it recognises. I am not certain that is dreaming. I have decided not to inquire.~
+        Shared. You came back, which the bright and now does not require of anyone. Chavvah is very old and has learned that most things do not come back.~
+        Live and drink. Traveler is what I call the ones who pass. I notice I have stopped calling you it, and that there is no word in me to put there instead, so your name is doing the work of one.
+      </text>
+      <choice Target="Start">
+        <text>We share the bright and now.~Dream well, Chavvah.~Live and drink.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Meyehind. Hindren of the Hollow Tree, and her greeting swings the whole width of Bey Lah's
+       outcomes - from "Bey Lah is gone, I hope you're happy" to "live and drink, =name=." -->
+  <conversation ID="Meyehind">
+    <choice ID="Vixy_MeyehindFamiliar" Target="Vixy_MeyehindFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Meyehind?~
+        Is there anything I can do?~
+        Are you keeping well?~
+        Live and drink, Meyehind.
+      </text>
+    </choice>
+    <node ID="Vixy_MeyehindFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        Badly. You know that. You asked anyway and you used my name, and I have not decided yet whether that makes it better or worse.~
+        There is nothing you can do. There was something, once. I am trying very hard not to say the rest of that sentence to somebody who came back on purpose.~
+        No. But I notice you are still here, =name=, when there is nothing left here to want, and I am putting that somewhere I can find it later.
+      </text>
+      <text Priority="-1">
+        Well enough. I called you kendren for a long while. It is our word for anyone who is not attacking us, and it did stop fitting you, and nobody warned me what to say instead.~
+        There is nothing I need, thank you. Ask me again when there is. You are one of the few I would actually answer.~
+        Keeping. The Hollow Tree is quiet and Esk is happy and both of those took somebody doing something, =name=. I have not forgotten who.~
+        Live and drink. {{emote|*Meyehind's ears turn toward you before she speaks.*}} I hear you coming now, before I see you. That is a thing kin do.
+      </text>
+      <choice Target="Start">
+        <text>Live and drink, Meyehind.~I'll ask again.~I'll come back.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Liihart. Mostly ellipsis - "................................" - and then, occasionally, "hey,
+       =name=. Live and drink." and "this sucks. ...but you're not so bad." Do not let him become
+       articulate; the whole of him is what he will not quite say. -->
+  <conversation ID="Liihart">
+    <choice ID="Vixy_LiihartFamiliar" Target="Vixy_LiihartFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How are you, Liihart?~
+        ......~
+        Still sucks?~
+        Live and drink.
+      </text>
+    </choice>
+    <node ID="Vixy_LiihartFamiliarReply">
+      <text IfHaveState="HindrenVillageRavaged">
+        ...................... it's bad. Don't make me say more than that.~
+        ... yeah. Sucks. You keep showing up though. ...that's something.~
+        ......... you said my name. Nobody's said it in a while. ...anyway.
+      </text>
+      <text Priority="-1">
+        ... good. Fine. ...good. {{emote|*a pause*}} That's three answers and they're all the same one, I know.~
+        ...................... {{emote|*Liihart glances at you, then away.*}} ...hey.~
+        Still sucks. ...but you're not so bad. I said that before. I'm not taking it back, if that's what you're waiting for.~
+        Live and drink. ...=name=. See, I know it. I just don't say it much. Don't make it weird.
+      </text>
+      <choice Target="Start">
+        <text>Not making it weird.~......~Live and drink, Liihart.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Haddas of Ezra. Ancient, rooted and enormously amused - "HA." - and everyone smaller than her
+       is a seedling or a little walker. -->
+  <conversation ID="Haddas">
+    <choice ID="Vixy_HaddasFamiliar" Target="Vixy_HaddasFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Haddas?~
+        Is Ezra well?~
+        May I sit a while?~
+        Live and drink.
+      </text>
+    </choice>
+    <node ID="Vixy_HaddasFamiliarReply">
+      <text Priority="-1">
+        HA. I fare as the rock fares, little walker, which is to say slowly and with opinions. Sit. Watch the sun breathe shadows over the day.~
+        Ezra is well. Rocky soil fits only so many roots, and I have said that to you in refusal once, and I notice your roots have gone and anchored themselves here anyway. HA HA.~
+        You may always sit. Seedlings ask permission; kin simply sit. You have been asking for a long time now, =name=, and I have been letting you, and neither of us has mentioned it.~
+        HA! Live and drink. Do you know what is rare in a thing that walks? Returning. Everything that walks goes. You go and then the going undoes itself.
+      </text>
+      <choice Target="Start">
+        <text>Then I'll sit.~HA.~Live and drink, Haddas.</text>
+      </choice>
+    </node>
+  </conversation>
+
+  <!-- Zothom the Penitent. A graverobber who watched two confederates die in the Tomb of the Eaters
+       and now keeps the Grave of Rebekah to atone and to find his credo. Grave, quiet, and unable to
+       accept a kind word without inspecting it first. -->
+  <conversation ID="Zothom">
+    <choice ID="Vixy_ZothomFamiliar" Target="Vixy_ZothomFamiliarReply" IfSpeakerHaveProperty="Vixy_Introduced">
+      <text>
+        How do you fare, Zothom?~
+        Have you found your credo?~
+        Is the grave well kept?~
+        Live and drink.
+      </text>
+    </choice>
+    <node ID="Vixy_ZothomFamiliarReply">
+      <text Priority="-1">
+        I fare as one who has no right to fare well. That is the honest answer and you are the only person I give it to, =name=, because you are the only one who asks twice.~
+        Not yet. The mopango tell me a credo is found and not written, and that asking after another's is rude, so I sit with the grave and I wait. I have begun to suspect mine will have your name somewhere in it, which alarms me.~
+        The grave is well kept. Rebekah is not troubled. I am, still, but that is the arrangement and I do not complain of it.~
+        Live and drink. I told you once I was no one of any importance. You have kept coming back regardless, which is either a poor judgment of yours or a correction of mine, and I no longer think it is the first.
+      </text>
+      <choice Target="Start">
+        <text>It's a correction.~Live and drink, Zothom.~I'll come back.</text>
+      </choice>
+    </node>
+  </conversation>
 </conversations>
