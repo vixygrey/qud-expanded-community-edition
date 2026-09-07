@@ -238,8 +238,9 @@ def _load_style(
 
     if node.get("Base"):
         style.base = node.get("Base")
-    if node.get("Format"):
-        style.fmt = node.get("Format")
+    fmt = node.get("Format")
+    if fmt:
+        style.fmt = fmt
 
     for child in node:
         child_mode = (child.get("Load") if is_mod else None) or mode
@@ -807,7 +808,7 @@ def main() -> int:
             chosen, winner, chancy = select(styles, order, ctx)
             split = shares(chosen)
             if winner is None and split:
-                winner = max(split, key=split.get)
+                winner = max(split, key=lambda k: split[k])
             got = winner or "(none)"
             ok = len(split) == 3 if expected is None else got == expected
             detail = ""

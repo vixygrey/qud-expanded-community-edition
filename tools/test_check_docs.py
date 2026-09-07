@@ -1320,7 +1320,7 @@ class FileRows(unittest.TestCase):
         self.assertIn("heading not found", min(f.items)[1])
 
 
-def pin_findings(precommit: str, ci: str) -> list[tuple[str, str]]:
+def pin_findings(precommit: str, ci: str) -> tuple[list[tuple[str, str]], int]:
     """Run check_pin_parity over a synthetic pair of config files."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)

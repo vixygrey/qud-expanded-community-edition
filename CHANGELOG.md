@@ -233,6 +233,32 @@ recorded because contributors need them, not because subscribers do.
   *the water ritual is a relationship* still decides whether the ritual waits on an introduction,
   which is the part somebody might genuinely want off. Names you have already given are kept.
 
+- **(internal)** **A type checker, and it found the second instance of the bug it was filed for**
+  (#910). `ANN` makes sure an annotation is *present*; nothing was checking that one is *true*.
+  `report_pools` was declared as returning a list while returning a tuple, found by accident in #903
+  — and `pin_findings` in the test suite had exactly the same defect, wrong since #789, found by
+  turning this on. Neither ruff, the 723 tests, nor review caught either.
+
+  `basedpyright` runs in CI against `pyrightconfig.json`, which starts from `typeCheckingMode: off`
+  and turns fifteen rules back on one at a time rather than starting from a mode and subtracting.
+  What is selected describes things going wrong at run time: a return that does not match its
+  annotation, a None reaching a subscript or an attribute, a name used where it may be unbound, a
+  call whose arguments fit no overload.
+
+  **Eighteen findings, all fixed, and it reports zero** — so the gate arrives green rather than
+  training people to ignore it. Most were the same idiom: `if el.get(X): f(el.get(X))`, where the
+  narrowing cannot carry across two calls, now a bound local that also stops calling `.get` twice.
+  Two walks up `Inherits` reassigned their own `str` parameter to `str | None`. One deliberately
+  handed a `dict[int, …]` a `None` key to take the fallback, which now says so outright.
+
+  What is deliberately left: `reportArgumentType`, 93 more of the double-`get` idiom, and three
+  strictness rules that are style rather than defect. `pyrightconfig.json` carries the count and the
+  reasoning for each.
+
+  Not required to merge yet, and `tools/required-checks.json` says why: GitHub's ruleset is the
+  authority, and marking it required here while the ruleset lacks it would recreate exactly the
+  documented-but-unenforced drift #152 exists to prevent.
+
 - **(internal)** **`check_reachability` is four functions, and the complexity ceiling came down with
   it** (#908). It scored 24 where the next worst scores 19, so it held the ratchet added in #909 up
   by itself. `max-complexity` is 19 now.

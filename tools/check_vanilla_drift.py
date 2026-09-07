@@ -146,10 +146,11 @@ class BlueprintIndex:
         """
         seen: set[str] = set()
         out: list[ET.Element] = []
-        while name and name in self.objects and name not in seen:
-            seen.add(name)
-            out.append(self.objects[name])
-            name = self.objects[name].get("Inherits")
+        current: str | None = name
+        while current and current in self.objects and current not in seen:
+            seen.add(current)
+            out.append(self.objects[current])
+            current = self.objects[current].get("Inherits")
         return out
 
     def lookup_chain(self, name: str, kind: str) -> list[ET.Element]:

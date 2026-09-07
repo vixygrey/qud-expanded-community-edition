@@ -516,7 +516,11 @@ def slice_weight(
     else:
         low, high = window
         delta = 0 if low <= tier <= high else abs(low - tier)
-    weight = TIER_DELTA_WEIGHTS.get(delta, DEFAULT_TIER_WEIGHT)
+    weight = (
+        DEFAULT_TIER_WEIGHT
+        if delta is None
+        else TIER_DELTA_WEIGHTS.get(delta, DEFAULT_TIER_WEIGHT)
+    )
     multiplier = ROLE_WEIGHT_MULTIPLIERS.get(role or "")
     if multiplier is not None:
         weight = math.ceil(weight * multiplier)

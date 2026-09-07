@@ -130,6 +130,29 @@ jobs:
       - name: ruff format --check
         run: ruff format --check tools/
 
+  typecheck:
+    name: Type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # `ANN` in ruff.toml checks that an annotation is PRESENT. Nothing was checking that one is
+      # TRUE, and two were not: `report_pools` and `pin_findings` were both declared as returning a
+      # list while returning a tuple, and neither ruff, the tests nor review found either. #910.
+      #
+      # Pinned here and nowhere else, so #912's two-sources-of-truth problem does not come back with
+      # a second tool. There is no pre-commit hook for it: the rule selection lives in
+      # pyrightconfig.json, which a contributor's editor already reads, and a hook that fails when
+      # the tool is absent would block people who have not installed it.
+      - name: Install basedpyright
+        run: pipx install basedpyright==1.39.10
+
+      # Configuration is pyrightconfig.json, which says what is selected and what is deliberately
+      # not. It reports zero, so this gate arrives green rather than training people to ignore it.
+      - name: basedpyright
+        run: basedpyright tools/
+
   tests:
     name: Tests
     runs-on: ubuntu-latest

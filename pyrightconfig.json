@@ -1,0 +1,40 @@
+// Type checking for tools/ - #910. `ANN` (ruff) makes sure an annotation is PRESENT; nothing was
+// checking that one is TRUE. Two functions were declared as returning a list while returning a
+// tuple - `report_pools`, found by accident in #903, and `pin_findings`, which had been wrong
+// since #789 and was found by this config. Neither ruff, the 723 tests, nor review caught either.
+//
+// typeCheckingMode is off and the rules below are turned back on one at a time, rather than
+// starting from a mode and subtracting. At `basic`, this tree reports 247 errors, of which 130
+// are three rules about style rather than defects - reportMissingTypeArgument (a bare `dict`),
+// reportUninitializedInstanceVariable, reportImplicitRelativeImport (tools/ is not a package) -
+// and 93 more are reportArgumentType, almost all of it one idiom: `if el.get(X): f(el.get(X))`,
+// where the narrowing cannot carry across two calls. Those are worth fixing and are not defects.
+//
+// What is selected is the set that describes things going wrong at run time: a return that does
+// not match its annotation, a None reaching a subscript or an attribute, a name used on a path
+// where it may be unbound, a call whose arguments fit no overload. It reports zero today.
+//
+// reportArgumentType is the obvious next one. It wants the double-get idiom cleaned up first,
+// which is a change to about 90 call sites and belongs in its own pull request.
+{
+  "include": [
+    "tools"
+  ],
+  "typeCheckingMode": "off",
+
+  "reportAssignmentType": "error",
+  "reportAttributeAccessIssue": "error",
+  "reportCallIssue": "error",
+  "reportGeneralTypeIssues": "error",
+  "reportIndexIssue": "error",
+  "reportOperatorIssue": "error",
+  "reportOptionalCall": "error",
+  "reportOptionalContextManager": "error",
+  "reportOptionalIterable": "error",
+  "reportOptionalMemberAccess": "error",
+  "reportOptionalOperand": "error",
+  "reportOptionalSubscript": "error",
+  "reportPossiblyUnboundVariable": "error",
+  "reportRedeclaration": "error",
+  "reportReturnType": "error"
+}

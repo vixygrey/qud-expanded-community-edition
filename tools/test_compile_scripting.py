@@ -73,7 +73,10 @@ class Discovery(unittest.TestCase):
     @needs_sdk
     def test_the_discovered_host_actually_runs_the_compiler(self):
         """Catches a host paired with the wrong root, which a None check would not."""
-        host, csc = target.find_compiler(None)
+        found = target.find_compiler(None)
+        if found is None:
+            self.fail("@needs_sdk guarantees an SDK, so discovery must succeed")
+        host, csc = found
         result = subprocess.run(
             [str(host), str(csc), "-version"],
             capture_output=True,
