@@ -9093,6 +9093,44 @@ so a conversation the probe called silent may speak at runtime, and none that it
 fall silent. The fix stands; one sentence of its explanation did not.
 
 
+### 61.5t The twelfth cast is the last, and it is three of the remaining six
+
+**Herododicus**, imperial biographer, waiting in the Sultan's tomb to carve the deeds of a Godhead who
+died an age ago and gently certain the sultanate still stands. **Asphodel**, who declared xemself Earl
+of Omonporch on the grounds that no Earl was present to object. **Rainwater Shomer**, who keeps the
+high gate to Brightsheol and opens every sentence with *"Saad,"*.
+
+**Shomer gives the last anchor and it is the same shape as the first.** *Saad* is what he calls
+everybody at the gate — *"Saad, welcom"*, *"No Saad Resheph residen her"* — a word for whoever happens
+to be standing where I stand. `kendren` in §61.5j was a word for an outsider who is not attacking.
+Twelve casts, and the last closes on the same finding the middle ones did: **vanilla keeps giving me a
+name for my position and never one for me.** That is §61.5k stated as plainly as it can be.
+
+**Asphodel is the only person in §61 for whom vanilla had already written the answer.** Xis `Loved`
+node — *"Oh... oh! It's you! You are a dear friend, indeed"* — fires on faction standing rather than
+on anything I did or said. Warmth already there, with no door into it. This adds the door.
+
+### 61.5u Three excluded, and the exclusion taxonomy closes on one entity
+
+**AgateSeveranceStar** and **Phinae Hoshaiah** are each **one node with one choice, and that choice is
+the exit.** There is no conversation to be familiar *in* — the whole exchange is a greeting and a
+door. That is not §61.5q's arc shape, which is about meeting somebody once; it is thinner. The two
+smallest entries on the survey, at 20 and 23 words, were always going to be the two that could not be
+written, and it is worth saying that the limit is structural rather than a matter of effort.
+
+**AoygNoLonger trips three of the four grounds at once**, which nothing else in the survey managed:
+
+| ground | how it applies |
+|---|---|
+| **arc shape** (§61.5q) | dismisses me permanently once the -elseing is done — *"store yourself until Fate reshapes you. The end."* |
+| **axis** (§61.5f, Many Eyes) | calls me *utensil* and *stardimmer*, and never a name |
+| **characterisation** (§61.5h, Geeub) | holds that *"words are bricks. Each spoken is laid in bond and builds your prison. There is no understanding"* |
+
+An entity whose stated position is that conversation is a prison cannot be handed a warm line about
+being known without contradicting it. So the four grounds this feature accumulated across twelve casts
+— **register, characterisation, axis, arc shape** — close on a single creature that answers to three.
+
+
 ### 61.6 Off-switch
 
 None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
