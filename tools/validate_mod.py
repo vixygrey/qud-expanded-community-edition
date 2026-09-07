@@ -3841,11 +3841,28 @@ def object_parts(root: ET.Element) -> Iterator[ET.Element]:
     """Only `<part>` elements belonging to an object blueprint.
 
     Conversations use `<part Name="…">` for a different system in a different namespace — vanilla
-    has 55 of them, AskName and EndGame and the KithAndKin handlers. Scoping to objects is what
-    keeps this check honest; an allowlist would rot.
+    writes 52 distinct ones, AskName and EndGame and the KithAndKin handlers among them. Scoping
+    to objects is what keeps this check honest; an allowlist would rot.
+
+    They are no longer unchecked, they are checked somewhere else:
+    check_conversation_part_names resolves them against XRL.World.Conversations.Parts, which is
+    the namespace they actually come from (#917).
     """
     for obj in root.iter("object"):
         yield from obj.iter("part")
+
+
+def conversation_parts(root: ET.Element) -> Iterator[tuple[str, ET.Element]]:
+    """Every `<part>` inside a `<conversation>`, with the conversation's ID for the message.
+
+    `iter` rather than a fixed depth on purpose: a conversation part can sit on the conversation
+    itself, on a `<node>`, or on a `<choice>` nested inside one, and all three resolve the same
+    way. mod/Core/Conversations.xml uses all three.
+    """
+    for conversation in root.iter("conversation"):
+        owner = conversation.get("ID") or "<unnamed>"
+        for part in conversation.iter("part"):
+            yield owner, part
 
 
 def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
@@ -3879,6 +3896,52 @@ def check_part_names(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
                         f"provides - it will be ignored silently (snapshot source: {source}; "
                         f"if the part is real but unused by vanilla, regenerate with --assembly)",
                     )
+
+
+def check_conversation_part_names(
+    f: Findings, all_roots: dict[Path, ET.Element]
+) -> None:
+    """Every `<part Name="…">` inside a `<conversation>` must resolve to a real class.
+
+    The same silent failure check_part_names exists for, one namespace over. A conversation part
+    Qud cannot resolve is ignored: the object still loads, the conversation still runs, the mod
+    still validates clean, and the thing written just does not happen.
+
+    **`ID` is not `Name`, and both matter.** A `<part ID="GiveArtifact" Load="Remove" />` addresses
+    an existing part for removal and carries no `Name`; a `<part Name="…" />` declares one. Only
+    the second is a class reference, so only the second is checked here — but the first is how this
+    mod swaps vanilla's picker for its own, and a typo there fails just as quietly in the other
+    direction, leaving vanilla's part in place beside the replacement. Checking it needs vanilla's
+    conversation *contents* rather than its class list, which the snapshot does not carry; #917
+    records that as the half deliberately not built.
+
+    Mod-prefixed names are check_scripting_parts' business, which walks every `.xml` root rather
+    than only blueprints and so already reaches conversations.
+    """
+    api = load_qud_api()
+    if api is None:
+        return  # check_part_names already reported the missing snapshot
+    known = api.get("conversation_parts")
+    if not known:
+        f.add(
+            "qud-api-snapshot",
+            f"{QUD_API_PATH} has no conversation_parts - regenerate with "
+            "tools/snapshot_qud_api.py --assembly",
+        )
+        return
+    known = set(known)
+    for path, root in all_roots.items():
+        for owner, part in conversation_parts(root):
+            name = part.get("Name")
+            if not name or name.startswith(MOD_PREFIXES):
+                continue
+            if name not in known:
+                f.add(
+                    "unknown-conversation-part",
+                    f'{path}: conversation {owner} uses <part Name="{name}">, which is not a '
+                    "class in XRL.World.Conversations.Parts - Qud ignores it silently and the "
+                    "conversation runs without it",
+                )
 
 
 def check_mutation_type_arguments(f: Findings) -> None:
@@ -4207,6 +4270,7 @@ def run() -> Findings:
     check_aggregate_sweep(f, roots)
     check_table_targets(f, roots)
     check_part_names(f, roots)
+    check_conversation_part_names(f, roots)
     check_blueprint_refs(f, roots)
     check_part_attributes(f, roots)
     check_bit_letters(f, roots)

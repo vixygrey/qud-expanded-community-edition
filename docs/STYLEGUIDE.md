@@ -1453,6 +1453,7 @@ seconds rather than after a round trip.
 | Option help text wrapping and length | `helptext-shape` |
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
+| Conversation part names resolving to a real class in `XRL.World.Conversations.Parts` | `unknown-conversation-part`, against the same snapshot's `conversation_parts` list |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
 | `<part Builder="…">` naming a class in `XRL.World.PartBuilders` | `part-builder`, against the snapshot's `part_builders` list |
@@ -1604,6 +1605,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `inherits-share` | `report_dynamic_tables.py` | this fork's share of an inherited pool, per tier (needs the game) |
 | `unknown-mutation` | `validate_mod.py` | `ModImprovedMutationBase<T>` naming a mutation the game grants |
 | `unknown-part` | `validate_mod.py` | part names resolving to a real class |
+| `unknown-conversation-part` | `validate_mod.py` | conversation part names resolving to a real class, in their own namespace |
 | `unreachable` | `validate_mod.py` | blueprint reachability |
 | `vanilla-figure` | `check_docs.py` | figures the documents quote from vanilla |
 | `weight-curve` | `validate_mod.py` | a merge never making a vanilla item heavier |

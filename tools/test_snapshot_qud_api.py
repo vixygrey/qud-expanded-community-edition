@@ -589,5 +589,77 @@ class TagFormsAbsent(unittest.TestCase):
         )
 
 
+class ConversationParts(unittest.TestCase):
+    """#917. Conversation parts resolve from their own namespace, so they need their own list."""
+
+    SNAPSHOT = Path(__file__).resolve().parent / "qud-api.json"
+
+    def api(self) -> dict:
+        return json.loads(self.SNAPSHOT.read_text())
+
+    def test_the_committed_snapshot_carries_it(self) -> None:
+        api = self.api()
+        names = api["conversation_parts"]
+        self.assertEqual(api["counts"]["conversation_parts"], len(names))
+        self.assertEqual(names, sorted(names))
+
+    def test_it_covers_every_conversation_part_vanilla_writes(self) -> None:
+        """The corpus that proves the check before it ever sees one of mine: vanilla writes 52
+        distinct conversation parts across Conversations.xml and HiddenConversations.xml, and
+        every one must resolve or the check is unusable."""
+        base = snapshot_qud_api.find_game(None)
+        if base is None:
+            self.skipTest("Caves of Qud is not installed")
+        known = set(self.api()["conversation_parts"])
+        used = {
+            part.get("Name")
+            for name in ("Conversations.xml", "HiddenConversations.xml")
+            for conversation in snapshot_qud_api.parse(base / name, lenient=True).iter(
+                "conversation"
+            )
+            for part in conversation.iter("part")
+            if part.get("Name")
+        }
+        self.assertEqual(
+            used - known, set(), "vanilla writes a name the list does not carry"
+        )
+        self.assertEqual(len(used), 52)
+
+    def test_the_two_namespaces_are_separate_lists(self) -> None:
+        """Not a subset either way, which is the whole reason for a second list. `Trade` is a
+        conversation part and no object part; `Render` is an object part and no conversation
+        part. Merging them would let a typo land across the boundary and pass."""
+        api = self.api()
+        parts, conversation = set(api["parts"]), set(api["conversation_parts"])
+        self.assertIn("Trade", conversation)
+        self.assertNotIn("Trade", parts)
+        self.assertIn("Render", parts)
+        self.assertNotIn("Render", conversation)
+
+    def test_child_namespaces_are_excluded(self) -> None:
+        """classes_directly_in is exact, not a prefix match. A leaf name from a child namespace
+        would let a typo resolve against an unrelated class."""
+        lines = (
+            "Class XRL.World.Conversations.Parts.Trade",
+            "Class XRL.World.Conversations.Parts.Deeper.Trap",
+            "Class XRL.World.Parts.Render",
+        )
+        self.assertEqual(
+            snapshot_qud_api.classes_directly_in(
+                lines, snapshot_qud_api.CONVERSATION_PART_NAMESPACE
+            ),
+            ["Trade"],
+        )
+
+    def test_an_empty_namespace_refuses_rather_than_writing_nothing(self) -> None:
+        """A silent empty list would make every conversation part in the mod report as unknown on
+        the next run, which reads as 11 broken parts rather than as a bad snapshot."""
+        with self.assertRaises(SystemExit):
+            snapshot_qud_api.classes_directly_in(
+                ("Class XRL.World.Parts.Render",),
+                snapshot_qud_api.CONVERSATION_PART_NAMESPACE,
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

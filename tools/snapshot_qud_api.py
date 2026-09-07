@@ -56,6 +56,7 @@ a snapshot silently missing its `members` map would disable `part-attribute` in 
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -79,6 +80,13 @@ SNAPSHOT_PATH = Path("tools/qud-api.json")
 # XRL.Collections.Container and XRL.World.Parts.Container. Widening the scope would let a typo
 # land on an unrelated class and pass.
 PART_NAMESPACE = "XRL.World.Parts"
+
+# Where a `<part Name="…">` inside a `<conversation>` resolves. A different system in a different
+# namespace from PART_NAMESPACE, which is why validate_mod scopes its object-part check to
+# `<object>` rather than checking every `<part>` against one list - vanilla's own conversation
+# parts would read as 52 broken names. Exactly this namespace, not its children, for the same
+# reason PART_NAMESPACE is exact. See #917.
+CONVERSATION_PART_NAMESPACE = "XRL.World.Conversations.Parts"
 
 # Where a `<part Builder="…">` value resolves. Exactly this namespace, not its children - the same
 # rule PART_NAMESPACE follows and for the same reason.
@@ -219,8 +227,9 @@ def object_parts(root: ET.Element) -> Iterator[ET.Element]:
 
     Conversations use `<part Name="…">` too — AskName, EndGame, GiveArtifact, the KithAndKin
     handlers — and those resolve from a different namespace entirely. Checking every `<part>` in
-    every file reports 55 of vanilla's own conversation parts as broken. Scope is the fix, not a
-    longer allowlist.
+    every file reports the 52 distinct conversation parts vanilla writes as broken. Scope is the
+    fix, not a longer allowlist — and the other half of the fix is CONVERSATION_PART_NAMESPACE,
+    which gives them a list of their own to resolve against (#917).
     """
     for obj in root.iter("object"):
         yield from obj.iter("part")
@@ -247,7 +256,13 @@ def steam_build_id() -> str:
     return "unknown"
 
 
-def collect_parts(assembly: Path) -> list[str]:
+@functools.lru_cache(maxsize=None)
+def ilspy_class_lines(assembly: Path) -> tuple[str, ...]:
+    """Every `Class …` line `ilspycmd -l c` prints for this assembly.
+
+    Cached because two namespaces are read out of one dump — parts and conversation parts — and
+    the run takes seconds. The cache key is the path, which is what a caller varies.
+    """
     if not shutil.which("ilspycmd"):
         raise SystemExit(
             "error: ilspycmd not found on PATH.\n"
@@ -265,20 +280,55 @@ def collect_parts(assembly: Path) -> list[str]:
     )
     if proc.returncode != 0:
         raise SystemExit(f"error: ilspycmd failed:\n{proc.stderr.strip()}")
-    prefix = PART_NAMESPACE + "."
-    names = set()
-    for raw in proc.stdout.splitlines():
-        line = raw.strip()
-        if not line.startswith("Class "):
-            continue
-        fq = line[len("Class ") :].split("`")[0]
-        if fq.startswith(prefix) and "." not in fq[len(prefix) :]:
-            names.add(fq[len(prefix) :])
+    return tuple(
+        line
+        for line in (raw.strip() for raw in proc.stdout.splitlines())
+        if line.startswith("Class ")
+    )
+
+
+def classes_directly_in(lines: tuple[str, ...], namespace: str) -> list[str]:
+    """The leaf names declared directly in `namespace`, excluding its child namespaces.
+
+    Exactness is the point: XRL.World.Parts.Skill.Shield and XRL.World.Parts.Shield are different
+    types with the same leaf name, so widening to children would let a typo land on an unrelated
+    class and pass.
+
+    Compiler-generated nested types arrive as `Owner+<>c` and are kept rather than filtered. They
+    are unwritable — no `<part Name="Owner+<>c">` can exist — so they cost a little noise in the
+    snapshot and nothing in the checks, and dropping them would change `parts` and its digest for
+    no gain.
+    """
+    prefix = namespace + "."
+    names = {
+        leaf
+        for line in lines
+        for fq in [line[len("Class ") :].split("`")[0]]
+        if fq.startswith(prefix)
+        for leaf in [fq[len(prefix) :]]
+        if "." not in leaf
+    }
     if not names:
         raise SystemExit(
-            f"error: no classes found in {PART_NAMESPACE}. Did the assembly layout change?"
+            f"error: no classes found in {namespace}. Did the assembly layout change?"
         )
     return sorted(names)
+
+
+def collect_parts(assembly: Path) -> list[str]:
+    return classes_directly_in(ilspy_class_lines(assembly), PART_NAMESPACE)
+
+
+def collect_conversation_parts(assembly: Path) -> list[str]:
+    """The classes a `<part Name="…">` inside a `<conversation>` can name.
+
+    Assembly-only, with no XML-derived fallback of the kind collect_parts_from_xml gives object
+    parts. Deriving the list from vanilla's own usage would seed it with the 52 names vanilla
+    happens to write and report the other nine as unknown — and the nine unused ones are exactly
+    where a mod goes looking. An absent key is handled by validate_mod, which says to regenerate
+    with --assembly rather than checking against a list it knows is short.
+    """
+    return classes_directly_in(ilspy_class_lines(assembly), CONVERSATION_PART_NAMESPACE)
 
 
 MUTATION_NAMESPACE = "XRL.World.Parts.Mutation"
@@ -1412,6 +1462,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         if assembly is not None
         else collect_parts_from_xml(game)
     )
+    conversation_parts = collect_conversation_parts(assembly) if assembly else []
     blueprints = collect_blueprints(game)
     members, part_builders, non_leveling = collect_members(member_assembly)
     figures = collect_figures(game)
@@ -1490,6 +1541,8 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
             + json.dumps(skill_powers, sort_keys=True)
             + "\0"
             + json.dumps(aggregate_descendants, sort_keys=True)
+            + "\0"
+            + "\n".join(conversation_parts)
         ).encode()
     ).hexdigest()[:16]
     return {
@@ -1514,6 +1567,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "element_attributes": list(ELEMENT_ATTRS),
         "counts": {
             "parts": len(parts),
+            "conversation_parts": len(conversation_parts),
             "blueprints": len(blueprints),
             "member_types": len(members),
             "members": sum(len(v) for v in members.values()),
@@ -1538,6 +1592,7 @@ def build(game: Path, assembly: Path | None, member_assembly: Path) -> dict:
         "mutation_classes": mutation_classes,
         "non_leveling_mutations": non_leveling,
         "parts": parts,
+        "conversation_parts": conversation_parts,
         "blueprints": blueprints,
         "members": members,
         "part_builders": part_builders,
