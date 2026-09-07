@@ -1850,7 +1850,7 @@ class DirectoryCoverage(unittest.TestCase):
         self.assertEqual(self.coverage(self.TREE, None), [])
 
     def test_a_path_wrong_only_in_case_is_reported(self) -> None:
-        """macOS accepts it and Linux does not, so `Path.exists()` cannot be the test - the
+        """MacOS accepts it and Linux does not, so `Path.exists()` cannot be the test - the
         comparison has to be against real directory entries."""
         found = self.coverage(self.TREE, [{"Paths": ["core"]}, self.GOOD[1]])
         self.assertEqual(len(found), 1)
@@ -3167,7 +3167,7 @@ class SnapshotBackedChecks(unittest.TestCase):
         self.assertAlmostEqual(self._merged(body, self.INHERITED), 0.20)
 
     def test_inheritance_is_per_attribute_not_per_group(self) -> None:
-        """PopulationGroup.MergeFrom copies each attribute only when it is set:
+        """PopulationGroup.MergeFrom copies each attribute only when it is set.
 
             if (populationGroup.Number != null) Number = populationGroup.Number;
             if (populationGroup.Chance != null) Chance = populationGroup.Chance;
