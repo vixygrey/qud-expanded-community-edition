@@ -259,6 +259,101 @@
       <choice Target="End">Until the next time.</choice>
       <choice Target="Start">There is something else.</choice>
     </node>
+
+    <!-- Hand somebody something, and have them remember it. #634.
+
+         Twenty-two opinion types exist and seventeen are grievances. The five positives are earned
+         by summoning, converting, beguiling or calming - so the only reliable way to be thought
+         well of by a person in Qud is to override their will. This is the entry that is neither a
+         grievance nor a compulsion, and Vixy_OpinionGift carries the value: 5 x 10, ten gifts on
+         ten separate days, ending at exactly the +50 that Brain.GetFeelingLevel calls Allied.
+
+         Ordinal 9600 puts it directly below the two naming exchanges at 10000 and 9900, which is
+         also the order the gate needs: the part hides this choice until a name has passed between
+         us both ways, so the way to unlock it is the choice immediately above it.
+
+         The reply is wordless, and that is §61.2's finding applied rather than forgotten. A choice
+         distributed from BaseConversation reaches every mouth in the game, and no spoken line is
+         true in all of them: a legendary snapjaw carries a proper name because HeroMaker calls
+         GiveProperName, its conversation is still "you food?", and 102 of vanilla's 200
+         conversations are a single node holding Snapjaw and Goatfolk alongside JoppaFarmer and
+         GenericMerchant - so no cut excludes the beasts without excluding the villagers this is
+         for. An emote has no register to be wrong in. Written replies for a named cast are #919,
+         on the same order #633 shipped in: the mechanism to everyone, the voices afterwards.
+
+         =pronouns.Subjective= and =pronouns.possessive= are vanilla's own substitutions, used in
+         its own generic emotes - "{{emote|*=pronouns.Subjective= nods slowly, smirking.*}}". They
+         are what lets one line serve every gender: a they/them speaker reads "They incline their
+         head" without a second line existing.
+
+         Ten lines rather than five, and the second five lean away from anatomy on purpose. The
+         first five assume hands and a head, which most of the people you can introduce yourself to
+         have and not all of them do - vanilla takes the same liberty in its own generic emotes, so
+         this is a lean rather than a rule. Five that assume only presence widen who the pool reads
+         correctly for, and they also spread the *kind* of beat: the original set was four
+         variations on putting the thing away.
+
+         Drawn per giving, not per creature. Prepare calls GetRandomSubstring('~') each time the
+         node is displayed, so ten gifts to one person draw ten times.
+
+         Nothing here names the item, for two reasons. GetRandomSubstring collapses the ~ pool
+         before any event fires, so the part cannot know which line was drawn - and it does not need
+         to, because Vixy_Gift.Hand already says "Tam takes the waterskin." through Popup.Show, in
+         Does("take")'s conjugation. The emote carries the reaction, not the transaction. -->
+    <choice ID="Vixy_Gift" Target="Vixy_Gifted" Ordinal="9600">
+      <text>
+        I have something for you.~
+        Take this, =pronouns.formalAddressTerm=.~
+        I would like you to have something.~
+        Here - this should be yours.~
+        A gift, if you will take it.
+      </text>
+      <part Name="Vixy_Gift" />
+    </choice>
+
+    <node ID="Vixy_Gifted">
+      <text>
+        {{emote|*=pronouns.Subjective= looks at you a moment longer than before.*}}~
+        {{emote|*=pronouns.Subjective= nods once, and puts it away.*}}~
+        {{emote|*=pronouns.Subjective= turns it over in =pronouns.possessive= hands, then stows it.*}}~
+        {{emote|*=pronouns.Subjective= inclines =pronouns.possessive= head.*}}~
+        {{emote|*=pronouns.Subjective= holds it a moment before putting it away.*}}~
+        {{emote|*=pronouns.Subjective= says nothing for a moment.*}}~
+        {{emote|*=pronouns.Subjective= looks at it, then at you.*}}~
+        {{emote|*=pronouns.Subjective= is quiet, and does not offer it back.*}}~
+        {{emote|*=pronouns.Subjective= takes a moment over it before it is put away.*}}~
+        {{emote|*Something in =pronouns.possessive= manner eases.*}}
+      </text>
+      <choice Target="Start">There is something else.</choice>
+      <choice Target="End">Live and drink.</choice>
+    </node>
+
+    <!-- The same moment, once giving has stopped being remarkable. #634.
+
+         Reached instead of Vixy_Gifted from the seventh gift of ten, redirected by Vixy_Gift on
+         GetTargetElementEvent - vanilla's own ChangeTarget mechanism, which cannot be used directly
+         only because no conversation predicate reaches Brain.Opinions.
+
+         The cut is Vixy_OpinionGift.Familiar, which is the same two-thirds-of-Limit band GetText
+         reports as "Has given me much." on the examine screen. One number, so the two things a
+         player can see change together instead of at two thresholds nobody could line up.
+
+         The warmth is *familiarity*, not gratitude. A tenth gift being received with thanks would
+         be worse than the flat pool, because thanking somebody for the tenth time is what a
+         stranger does - these lines are about the giving having become unremarkable, which is the
+         thing that actually changed. Five rather than ten: this is the tail of the curve, and a
+         player reaching it has already seen the wide pool. None assume anatomy. -->
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        {{emote|*=pronouns.Subjective= takes it without hesitating.*}}~
+        {{emote|*=pronouns.Subjective= does not ask why.*}}~
+        {{emote|*=pronouns.Subjective= looks at you rather than at what you gave.*}}~
+        {{emote|*=pronouns.Subjective= accepts it as though it were expected.*}}~
+        {{emote|*There is no surprise in =pronouns.possessive= manner at all.*}}
+      </text>
+      <choice Target="Start">There is something else.</choice>
+      <choice Target="End">Live and drink.</choice>
+    </node>
   </conversation>
 
   <!-- Argyve's knickknack quest, both stages. Vanilla's <part Name="GiveArtifact" /> lists every
