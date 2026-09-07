@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-09-07
+
 ### Added
 
 - **People who know my name talk to me differently** (#633). Introduce yourself to Tam, Elder
