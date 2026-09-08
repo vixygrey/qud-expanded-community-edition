@@ -69,7 +69,14 @@ namespace XRL
                     vacancies.Add(zone.Key + "  {{K|" + was + "}} gone");
                 }
             }
-            sb.Append("\n{{Y|unanswered vacancies}}  ").Append(vacancies.Count).Append('\n');
+            // "Recorded", not "unanswered". Every vacancy a dispatch considered is spent by it,
+            // so with the option on this list is empty and a name in it is a defect worth chasing.
+            // With the option off nothing considers them, and #929 is why they will stay here.
+            sb.Append("\n{{Y|recorded vacancies}}  ").Append(vacancies.Count).Append('\n');
+            if (vacancies.Count > 0 && !Raven_Options.TravellingBands)
+            {
+                sb.Append("  {{K|recorded with bands off, and inert - see FEATURES 65.8}}\n");
+            }
             int shown = vacancies.Count < 8 ? vacancies.Count : 8;
             for (int i = 0; i < shown; i++)
             {
@@ -82,8 +89,11 @@ namespace XRL
 
             if (flight.Count == 0 && vacancies.Count == 0)
             {
-                sb.Append("\nNothing to answer and nothing walking. A vacancy needs a zone that was\n")
-                  .Append("held, cleared to the last of them, and left - see {{Y|vixyterritory}}.");
+                sb.Append("\nNothing walking, and nothing recorded. An empty list is the resting\n")
+                  .Append("state rather than a queue that ran dry: every vacancy is spent by the\n")
+                  .Append("dispatch that considered it, answered or not. A new one needs a zone\n")
+                  .Append("that was held, cleared to the last of them, and left - see\n")
+                  .Append("{{Y|vixyterritory}}.");
             }
 
             Popup.Show(sb.ToString());
@@ -95,9 +105,15 @@ namespace XRL
         /// </summary>
         /// <remarks>
         /// Deliberately uses the ordinary dispatch path rather than a shortcut, so what this
-        /// produces is what play produces. If there is no recorded vacancy it says so rather than
-        /// inventing a destination, because a band sent somewhere arbitrary would not be testing the
-        /// thing that matters.
+        /// produces is what play produces.
+        /// <para>
+        /// <b>It falls back to wherever I am standing, and says so.</b> Recorded vacancies used to
+        /// accumulate, so there was nearly always one lying about to aim at; since #929 spends every
+        /// vacancy on the dispatch that considered it, there is usually none. Refusing on that
+        /// ground would leave the only instrument for #832's two unverified questions unable to
+        /// fire. Sending a band to my own zone is also the better test of the pair — arrival is the
+        /// half that builds a party, and this is the one way to be standing in it when that happens.
+        /// </para>
         /// </remarks>
         [WishCommand("vixyband", null)]
         public static void Send(string Faction)
@@ -113,10 +129,22 @@ namespace XRL
                 }
             }
 
+            bool here = false;
             if (destination == null)
             {
-                Popup.Show("No recorded vacancy to send anybody to. Empty a lair and leave it first.");
-                return;
+                // No recorded opening, so aim at my own zone instead. Not from the world map: the
+                // destination is parsed as a parasang and a zone, and the map itself is neither.
+                Zone mine = The.ActiveZone;
+                if (mine == null || mine.IsWorldMap())
+                {
+                    Popup.Show(
+                        "No recorded vacancy, and no zone to fall back on - step off the world map\n"
+                            + "and try again, or empty a lair and leave it first."
+                    );
+                    return;
+                }
+                destination = mine.ZoneID;
+                here = true;
             }
 
             string from = null;
@@ -141,6 +169,7 @@ namespace XRL
             bool sent = Vixy_BandDispatch.Send(Faction, from, destination);
             Popup.Show(sent
                 ? "{{G|" + Faction + "}} set out from " + from + "\nfor " + destination + "."
+                    + (here ? "\n\n{{K|No recorded vacancy, so they are bound for where I stand.}}" : "")
                 : "{{R|Could not send.}} No world-map cell for " + from + ", or no route.");
         }
     }

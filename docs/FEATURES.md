@@ -9656,19 +9656,34 @@ invented to decide it. Site types, sacred places and a model of what each factio
 The band sets out from a parasang its faction actually holds, so the distance walked is the real
 distance between two places, paced by `TerrainTravel`.
 
-**Once per vacancy, and one in four.** The vacancy property is removed as the band is sent, because a
-place that can be answered twice is a faucet — #802's lesson, already paid for once. The roll on top
-is what keeps this at the edge of attention rather than around you.
+**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it —
+answered or not — because a place that can be answered twice is a faucet, which is #802's lesson
+already paid for once. The roll on top is what keeps this at the edge of attention rather than
+around you.
+
+**Spent on the decision rather than on the outcome, which took a correction.** The record was
+originally cleared only when a band actually set out, and that read as though a vacancy nobody
+answered were still queued for one. It never was: §64 removes a zone's holder in the same breath as
+it records the vacancy, and the holder is what the branch tests, so a place is offered to this exactly
+once and whatever is decided is decided for good. Three vacancies in four therefore sat in `vixyband`
+under a heading promising an answer that could not come. The roll now sits last, after a neighbour and
+an origin have been found, so *one in four* describes openings somebody could actually have set out
+for — which changes no outcome, since a band still needs all four to agree. #929.
 
 ### 65.6 `vixyband`
 
 A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
 one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
-`vixyband` lists what is in flight, where each is bound, and what vacancies stand unanswered.
-`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so
-what it produces is what play produces. It refuses rather than inventing a destination when nothing
-is recorded as vacant.
+`vixyband` lists what is in flight, where each is bound, and what vacancies are on record. **An empty
+list is the resting state, not a queue that ran dry** — with the option on, every vacancy is spent as
+it is considered, so a name sitting there is a defect worth chasing rather than a band still owed.
+
+`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so what
+it produces is what play produces. With no vacancy on record it aims at the zone you are standing in
+and says that it did, which is also the better test of the two halves: arrival is the half that builds
+a party, and this is the only way to be standing in the zone when that happens. It refuses only from
+the world map, which is neither a parasang nor a zone and so cannot be a destination.
 
 ### 65.7 Off-switch, and what stays out
 
@@ -9682,6 +9697,19 @@ no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on 
 that absence is the argument against rather than the licence. A band that kills Argyve while you are
 underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
 than depopulated* is a different and much larger question, recorded in #924.
+
+### 65.8 Known limit: vacancies recorded while the option was off
+
+§64 records who holds a place whatever this option says, because it is a separate feature that changes
+no behaviour on its own. So a run played with bands off still accumulates vacancies — and turning the
+option on later will not reach them. Nothing considers a vacancy twice, and the holder that would let
+it be reconsidered was removed when it was first written.
+
+New vacancies from that point on behave normally, so the cost is bounded and backward-looking: places
+emptied before the switch was flipped stay empty. `vixyband` marks the list as inert when it finds it
+in that state rather than letting it read as a backlog. Giving those records a second chance means a
+vacancy that can be re-rolled on every departure, which tends toward certainty and is #802's faucet in
+a new shape — so it wants its own cap and its own issue, not a quiet extension of this one.
 
 ## Appendix A — every merged vanilla melee weapon
 

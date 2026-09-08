@@ -130,6 +130,17 @@ recorded because contributors need them, not because subscribers do.
   existing part rather than naming a class — catching a typo there needs vanilla's conversation
   contents, not its class list.
 
+### Fixed
+
+- **A place nobody came for stops being recorded as though somebody still might** (#929). A vacancy
+  is now spent by the dispatch that considers it, answered or not. Three in four were left on the
+  books waiting for a band that could never be sent, because a place is only ever offered up once.
+
+  Nothing about the world changes — a band still arrives at one vacancy in four, exactly as before.
+  What changes is that `vixyband` no longer reports a backlog that was never going to clear, which
+  matters because it is the instrument for the two things about travelling bands I have not yet
+  watched happen.
+
 ## [2.17.0] - 2026-09-07
 
 ### Added
