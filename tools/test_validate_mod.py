@@ -173,6 +173,81 @@ class PrefixRecognition(unittest.TestCase):
                 )
                 self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
 
+    # ------------------------------------------- the code-spawned route (#926)
+
+    def _with_script(self, blueprint: str, cs: str | None) -> Path:
+        """A mod declaring one blueprint, and optionally one script mentioning a name."""
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_mod(tmp, f'  <object Name="{blueprint}" />')
+        scripting = tmp / "mod" / "Scripting"
+        scripting.mkdir(parents=True, exist_ok=True)
+        if cs is not None:
+            (scripting / "Vixy_Spawner.cs").write_text(cs, encoding="utf-8")
+        return tmp
+
+    def test_a_blueprint_the_code_names_is_reachable(self) -> None:
+        """The route itself. A band token is in no table and should be in none — the code that
+        creates it is the whole of its reachability."""
+        for prefix in COVERED_PREFIXES:
+            with self.subTest(prefix=prefix):
+                tmp = self._with_script(
+                    f"{prefix}Token",
+                    "namespace XRL.World.Parts { public class Vixy_Spawner {\n"
+                    f'  void Go() {{ GameObject.Create("{prefix}Token"); }}\n'
+                    "} }",
+                )
+                self.assertEqual(findings_for(validate_mod.check_reachability, tmp), [])
+
+    def test_a_blueprint_no_script_names_is_still_reported(self) -> None:
+        """The route must not swallow the check it lives in — a script that mentions nothing
+        vouches for nothing."""
+        tmp = self._with_script(
+            "Vixy_Orphan",
+            "namespace XRL.World.Parts { public class Vixy_Spawner { } }",
+        )
+        items = findings_for(validate_mod.check_reachability, tmp)
+        self.assertTrue(
+            any("Orphan" in detail for _, detail in items),
+            "an unreachable blueprint passed because some script existed",
+        )
+
+    def test_a_commented_out_mention_does_not_vouch(self) -> None:
+        """This repo keeps blocks of dormant blueprints and scripts commented out, and a name
+        that only appears in one is spawned by nothing. Same reason
+        check_mutation_type_arguments strips comments."""
+        for body in (
+            '// GameObject.Create("Vixy_Orphan");',
+            '/* GameObject.Create("Vixy_Orphan"); */',
+        ):
+            with self.subTest(body=body):
+                tmp = self._with_script(
+                    "Vixy_Orphan",
+                    "namespace XRL.World.Parts { public class Vixy_Spawner {\n"
+                    f"  void Go() {{ {body} }}\n"
+                    "} }",
+                )
+                items = findings_for(validate_mod.check_reachability, tmp)
+                self.assertTrue(
+                    any("Orphan" in detail for _, detail in items),
+                    "a commented-out mention vouched for a blueprint",
+                )
+
+    def test_a_longer_name_is_not_vouched_for_by_a_shorter_one(self) -> None:
+        """Whole words only. A substring match would let `Vixy_Band` vouch for `Vixy_BandToken`
+        it never mentions, which is the failure this check exists to catch arriving through the
+        check itself."""
+        tmp = self._with_script(
+            "Vixy_BandToken",
+            "namespace XRL.World.Parts { public class Vixy_Spawner {\n"
+            '  void Go() { GameObject.Create("Vixy_Band"); }\n'
+            "} }",
+        )
+        items = findings_for(validate_mod.check_reachability, tmp)
+        self.assertTrue(
+            any("BandToken" in detail for _, detail in items),
+            "a shorter name vouched for a longer one it never mentions",
+        )
+
     def test_dynamic_table_tag_counts_as_reachable(self) -> None:
         """#171: creature variants self-register with a tag and sit in no population table.
 

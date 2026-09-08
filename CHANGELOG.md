@@ -18,6 +18,20 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** **A blueprint this fork's own code creates counts as reachable** (#926).
+  `check_reachability` demanded every new blueprint be obtainable by a population table, a
+  `DynamicObjectsTable:` tag or `TinkerItem`. A blueprint only the mod's C# ever places has none of
+  those and should have none — #832's band token is bookkeeping that walks the world map, and putting
+  it in a loot table to satisfy a check would put it in the world as scenery.
+
+  The marker is the code rather than a name or a tag, which is what stops it rotting: delete the
+  spawner and the blueprint stops being vouched for on the very next run. Comments are stripped, and
+  matching is on whole names — otherwise `Vixy_Band` would vouch for a `Vixy_BandToken` it never
+  mentions, which is the failure the check exists to catch arriving through the check.
+
+  **It changes today's answer not at all**: all 485 mod blueprints were already reachable by the
+  original three routes, verified before the change shipped.
+
 - **(internal)** **A place remembers who held it** (#923). Nothing in Caves of Qud knows who lives
   anywhere — across all 284 zone declarations there is no owner and no site type, and
   `FactionEncounters` places a whole war party and records nothing about having done so. So *"who
