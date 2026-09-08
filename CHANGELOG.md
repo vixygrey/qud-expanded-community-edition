@@ -148,6 +148,18 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal)** **A wiki claim was anchored on punctuation the wiki no longer uses** (#935).
+  `check_docs.py` verifies a figure written on the wiki by matching the sentence around it, and one
+  of those patterns anchored on an em dash. The wiki has dropped em dashes from its prose, so the
+  pattern stopped matching and the vibro-weapon count stopped being checked.
+
+  `claim-coverage` caught it, which is the whole reason that check exists: a claim pattern that
+  matches nothing is indistinguishable from a claim that is being verified, and the difference only
+  shows up the day the number goes wrong. Re-anchored on the colon the sentence now carries.
+
+  Worth noting for the passes still to come on the repository's own documents: any check that
+  matches prose can go idle the same way.
+
 - **Two options were hiding in a menu heading of their own** (#934). The switches for disease onset
   warnings and for wounds that rest will not close were filed under `Qud Expanded CE` rather than
   `Mods`, so Qud gave them a heading to themselves instead of listing them with the other
