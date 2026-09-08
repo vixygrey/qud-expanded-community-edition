@@ -3429,6 +3429,42 @@ def _reachability_candidates(
     return defined, tinkerable, tagged
 
 
+def _code_spawned() -> set[str]:
+    """Blueprint names this fork's own C# writes down.
+
+    **The fourth route, and the marker is the code rather than a name or a tag** — #926. A blueprint
+    that only `mod/Scripting/` ever creates is in no population table, carries no
+    `DynamicObjectsTable:` tag and has no `TinkerItem`, and should have none of them: #832's band
+    token is a piece of bookkeeping that walks across the world map, and putting it in a loot table
+    to satisfy a check would put it in the world as scenery.
+
+    That is the same argument the `IngredientMapping` exclusion makes one line up — *obtainable* is
+    not a question that applies — and it is deliberately not solved the two cheap ways.
+    `ABSTRACT_MARKERS` already exempts any name containing `Base`, so `Vixy_BaseBand` would pass;
+    that is lying to the check to satisfy it, and it leaves the next reader believing in an abstract
+    base that does not exist. An allowlist would rot the first time a spawner was deleted.
+
+    **Reading the code cannot rot.** Delete the spawner and the blueprint stops being vouched for on
+    the very next run, which is exactly when it should be.
+
+    Comments are stripped for the same reason `check_mutation_type_arguments` strips them: this repo
+    keeps blocks of dormant blueprints and scripts commented out, and a name that only appears in one
+    is not spawned by anything.
+
+    **What this does not check is whether the code actually *creates* it.** A blueprint named in a
+    string comparison passes. That is the same shape of limit this check already accepts when it does
+    not verify a table name is one vanilla defines — a name in the code is evidence of intent, not
+    proof of a call, and the deeper question wants the game rather than a regex.
+    """
+    names: set[str] = set()
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        src = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
+        # Whole words only. A substring match would let Vixy_Band vouch for Vixy_BandToken, which
+        # it never mentions - the failure this check exists to catch, arriving through the check.
+        names.update(re.findall(r"\b(?:" + "|".join(MOD_PREFIXES) + r")\w+", src))
+    return names
+
+
 def _mutation_equipment(roots: dict[Path, ET.Element]) -> set[str]:
     """Blueprints reachable through the chargen variant picker rather than through any table.
 
@@ -3491,7 +3527,8 @@ def _referenced_names(all_roots: dict[Path, ET.Element]) -> set[str]:
 
 
 def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every new blueprint must be obtainable: in a population table, tagged, or tinkerable.
+    """Every new blueprint must be obtainable: in a population table, tagged, tinkerable, or made
+    by this fork's own code.
 
     This is the check that surfaces #6 (72 unreachable chips) and #7 (9 unreachable armor
     pieces).
@@ -3518,6 +3555,7 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     roots = blueprint_sources(all_roots)
     defined, tinkerable, tagged = _reachability_candidates(roots)
     mutation_equipment = _mutation_equipment(roots)
+    code_spawned = _code_spawned()
     in_tables = _referenced_names(all_roots)
 
     for name, path in sorted(defined.items()):
@@ -3526,11 +3564,13 @@ def check_reachability(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             and name not in tinkerable
             and name not in tagged
             and name not in mutation_equipment
+            and name not in code_spawned
         ):
             f.add(
                 "unreachable",
                 f"{name} ({path.name}) is in no population table, carries no "
-                f"{DYNAMIC_TABLE_PREFIX} tag, and has no TinkerItem",
+                f"{DYNAMIC_TABLE_PREFIX} tag, has no TinkerItem, and is named by no script "
+                f"in mod/Scripting/",
             )
 
 

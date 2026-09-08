@@ -363,8 +363,9 @@ possible in practice. Match them when adding anything.
   priorities can. The vinereaper is the case: vanilla ships it at iron and steel only, so tiers 0–2
   stay in the tables and 3–8 are tinker-only.
 
-  **This is not a way around `unreachable`.** That check accepts "in a population table, *or*
-  tinkerable", and the second half is real: `TinkerData.TinkerRecipes` scans every blueprint carrying
+  **This is not a way around `unreachable`.** That check accepts four routes — in a population
+  table, carrying a `DynamicObjectsTable:` tag, tinkerable, *or* named by this fork's own C# — and
+  the tinkerable half is real: `TinkerData.TinkerRecipes` scans every blueprint carrying
   a `TinkerItem`, and `DataDisk` draws from that list filtered by tier, so the recipes turn up on
   found disks gated by Tinkering rank. **Bits are `000` plus the item's own tier** — three scrap bits
   and one of its tier — which is vanilla's commonest shape at four of the six tiers this covers.
@@ -1479,6 +1480,7 @@ seconds rather than after a round trip.
 | A mutation's `Class` existing, and never being a vanilla one | `mutation-class`, `missing-script` |
 | A mutation reached by name from C# existing at all | `mutation-name`, against the snapshot's `mutation_names` |
 | Mutation equipment counting as reachable, since the variant picker is its route | `unreachable`, following `MutationEquipment` up `Inherits` |
+| A blueprint only this fork's C# creates counting as reachable, since the code is its route | `unreachable`, matching whole `Vixy_`/`Raven_` names in `mod/Scripting/` with comments stripped |
 | Charter rule 5's banned APIs in `mod/Scripting/` | `scripting-policy` |
 | Instance fields on `[Serializable]` types, which enter every save | `serializable-shape` |
 | A file under `mod/` no declared path loads | `directory-coverage`, against `manifest.json`'s `Directories` |
