@@ -102,7 +102,7 @@ type to go and read.
 | [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) | Prefixing, merging, named arguments, save migration — the practices this fork is built on |
 | [Installing a mod](https://wiki.cavesofqud.com/wiki/Modding:Installing_a_mod) | Every install route, for writing release instructions |
 | [Colors & Object Rendering](https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering) | The colour letters, the markup language, colour templates, custom colours |
-| [Code page 437](https://wiki.cavesofqud.com/wiki/Modding:Code_page_437) | The escape table and how it renders — what `RenderString` takes |
+| [Code page 437](https://wiki.cavesofqud.com/wiki/Modding:Code_page_437) | The escape table and how it renders. Not only `RenderString`, which is how I had this line for a year: **every** UI string goes through the table, and XML is safe only because the reader undoes it first. `docs/LESSONS.md` has the asymmetry |
 | [Visual Style](https://wiki.cavesofqud.com/wiki/Visual_Style) | The palette itself, in several formats, plus the font and graphics conventions |
 | [Wishes](https://wiki.cavesofqud.com/wiki/Wishes) | The player-facing wish list — the testing tool, as opposed to the modding page above |
 | [Histographicnomicon](https://wiki.cavesofqud.com/wiki/Modding:Histographicnomicon) | The sultan-history generator in the mod toolkit |

@@ -4251,6 +4251,111 @@ def check_blueprint_refs(f: Findings, all_roots: dict[Path, ET.Element]) -> None
                     )
 
 
+# Qud renders UI text as code page 437. `UITextSkin.Apply` hands every string to
+# `Sidebar.FormatToRTF`, whose default branch substitutes `Codepage437Mapping[c]` for `c` with no
+# condition on it, so a character in this range does not reach the screen as itself: an e-acute
+# renders as a capital theta, a section sign as a masculine ordinal indicator. Above U+00FF nothing
+# is touched, which is why em dashes and curly quotes have always been safe.
+#
+# **XML is exempt, and finding out why is the whole reason this check is as small as it is.** Qud's
+# XML reader applies the *inverse* map on the way in: `GetAttribute` and `GetTextNode` both run
+# `Sidebar.ToCP437(value)` when the document declares `encoding="utf-8"`, which every file here
+# does. So a section sign written in XML is stored as U+0015 and rendered back as a section sign.
+# It round-trips, and vanilla relies on that - `Manual.xml` ships an o-umlaut and a c-cedilla that
+# would otherwise read as a division sign and a tau.
+#
+# What has no reader to undo it is text this mod hands to the game already in memory: a C# string
+# literal, and a JSON value, since `JsonSerializer.Deserialize` is a plain `JsonTextReader`. Those
+# get the forward map only, once, and the substitute is always a legitimate glyph rather than a
+# missing-glyph box - so the diff looks right, the mod validates, the game loads, and the only
+# person who sees it is somebody standing in front of it. See #931.
+CODEPAGE_FIRST = 0x80
+CODEPAGE_LAST = 0xFF
+
+# The one field under mod/ that Qud never renders. workshop.json's Description is Steam BBCode and
+# its only two readers are the uploader's TMP_InputField and SteamUGC.SetItemDescription.
+#
+# Title is deliberately *not* exempt. `ModInfo.ReadConfigurations` falls it back into
+# `Manifest.Title` when manifest.json omits a title, and that renders in the mod manager - so
+# exempting the file as a unit would be correct only for as long as manifest.json kept its own
+# title. That is a coupling to another file's contents, and not something a check should rest on.
+STEAM_ONLY_JSON = {("workshop.json", "Description")}
+
+
+def codepage_substitute(ch: str) -> str:
+    """What Qud puts on the screen instead of `ch`.
+
+    Derived from Python's own cp437 codec rather than copied out of the assembly. The two agree on
+    all 128 bytes from 0x20 to 0xFF; every divergence sits below 0x20, where Python decodes control
+    bytes as control characters while Qud substitutes the IBM PC display glyphs. This check never
+    looks below 0x80, so the codec is exact for its purposes and there is no second copy of the
+    table to drift out of step.
+
+    If Freehold ever change theirs, the *renders as* in the message goes stale while the verdict
+    stays right, which is the cheap direction to be wrong in.
+    """
+    return bytes([ord(ch)]).decode("cp437")
+
+
+def transliterated(text: str | None) -> list[str]:
+    """Every character in `text` that Qud would substitute on its way to the screen."""
+    if not text:
+        return []
+    return [c for c in text if CODEPAGE_FIRST <= ord(c) <= CODEPAGE_LAST]
+
+
+def json_strings(node: object, prefix: str = "") -> Iterator[tuple[str, str]]:
+    """Every string value in a parsed JSON document, with the key path that reaches it."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            yield from json_strings(value, f"{prefix}.{key}" if prefix else str(key))
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            yield from json_strings(value, f"{prefix}[{index}]")
+    elif isinstance(node, str):
+        yield prefix, node
+
+
+def check_codepage_text(f: Findings) -> None:
+    """No text this mod hands the game in memory may carry a character Qud will substitute.
+
+    Every UI string passes through `Sidebar.Codepage437Mapping`, so U+0080-U+00FF is a
+    transliteration range rather than a set of characters. The substitute is always a legitimate
+    glyph, never a missing-glyph box, which is what makes it invisible in review.
+
+    **XML is deliberately not scanned**, because Qud's own reader undoes the map on the way in and
+    the round trip is exact - see the note on CODEPAGE_FIRST. Scanning it would have failed the one
+    thing in this repository that uses the mechanism correctly, `Vixy_Band`'s pilcrow, and taught
+    everybody that the check was noise.
+
+    Comments are excluded, and that is what makes the C# half tolerable: nearly every doc comment
+    in mod/Scripting/ cites a FEATURES section with a section sign. `strip_cs_comments` already
+    blanks them while preserving string literals and line numbers.
+    """
+
+    def report(path: Path, where: str, ch: str) -> None:
+        f.add(
+            "codepage-text",
+            f"{path}: {where} carries {ch!r} (U+{ord(ch):04X}), which Qud renders as "
+            f"{codepage_substitute(ch)!r} — UI text is code page 437",
+        )
+
+    for cs in sorted((MOD / "Scripting").glob("*.cs")):
+        lines = strip_cs_comments(cs.read_text(encoding="utf-8-sig"))
+        for lineno, line in enumerate(lines, start=1):
+            for ch in transliterated(line):
+                report(cs, f"line {lineno}", ch)
+
+    for jf in sorted(MOD.rglob("*.json")):
+        with contextlib.suppress(json.JSONDecodeError):
+            data = json.loads(jf.read_text(encoding="utf-8-sig"))
+            for keypath, value in json_strings(data):
+                if (jf.name, keypath.split(".")[0].split("[")[0]) in STEAM_ONLY_JSON:
+                    continue
+                for ch in transliterated(value):
+                    report(jf, keypath, ch)
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS = (
@@ -4318,6 +4423,7 @@ def run() -> Findings:
     check_mutation_type_arguments(f)
     check_graded_unlevellable_chips(f, roots)
     check_merged_value(f, roots)
+    check_codepage_text(f)
     return f
 
 

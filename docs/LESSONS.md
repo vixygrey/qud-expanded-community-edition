@@ -4905,3 +4905,80 @@ Related: [`Containment is not dispatch — check the cascade level before assumi
 is the same failing one step out — there the part was inside a container and outside the cascade,
 here it is on the object itself and outside the registry. Both are *reachability at the moment of the
 call*, and neither is visible from the handler's side.
+
+## The same character is correct in XML and wrong in C#, because only one of them has a reader
+
+I nearly put a section sign in a `Popup.Show` string, took it out on a hunch, and then went to find
+out whether the hunch was right. It was, and for a reason I could not have guessed from either end
+of the pipeline alone.
+
+**Qud renders UI text as code page 437.** `UITextSkin.Apply` hands every string to
+`Sidebar.FormatToRTF`, whose default branch is unconditional:
+
+```csharp
+default:
+{
+    if (Codepage437Mapping.TryGetValue(c, out var value))
+    {
+        c = (char)value;
+    }
+    Dest.Append(c);
+    break;
+}
+```
+
+A section sign is U+00A7, which is 167, and the table maps 167 to 186 — `º`. So I stopped there and
+wrote down that the whole of U+0080–U+00FF is unsafe everywhere. That was wrong, and the check I
+built on it failed on the first correct thing it saw.
+
+**Qud's XML reader applies the inverse map on the way in.** `GetAttribute` and `GetTextNode` both
+run `Sidebar.ToCP437(value)` when the document declares `encoding="utf-8"`, which every file in
+`mod/` does:
+
+```csharp
+public override string GetAttribute(string name)
+{
+    attributeChecked.Add(name);
+    if (StringEncoding == "utf-8")
+    {
+        return Sidebar.ToCP437(base.GetAttribute(name));
+    }
+    return base.GetAttribute(name);
+}
+```
+
+`ToCP437` reads `Codepage437Inverse`, so a section sign written in XML is stored as U+0015 and comes
+back a section sign. Computed against both tables, `¶ § é × ö` all round-trip exactly, and vanilla
+depends on it — `Manual.xml` ships an o-umlaut and a c-cedilla that would otherwise read as `÷` and
+`τ`.
+
+So the rule is not about the character. It is about whether anything undid the map before the
+renderer applied it:
+
+| where the text comes from | inverse on read | net |
+|---|---|---|
+| an XML attribute or text node | yes | round-trips, safe |
+| a C# string literal | no | substituted once |
+| a JSON value — `JsonSerializer.Deserialize` is a plain `JsonTextReader` | no | substituted once |
+
+Above U+00FF nothing is touched anywhere, which is why em dashes and curly quotes have always been
+fine and why this had never bitten me before.
+
+**The near miss is the part worth keeping.** My first draft of `codepage-text` scanned XML, and it
+immediately failed `Vixy_Band`'s `RenderString="&#182;"` — the one place in this repository using
+the mechanism correctly, sitting alongside vanilla's 734 uses of the three-digit form. I had it
+half-written up as a shipped rendering defect in a feature merged two days earlier.
+
+> **A renderer tells you what it does to a string, never what was done to that string before it
+> arrived.** Reading `FormatToRTF` answered "what happens at the end" and I heard it as "what happens".
+> The question that separates the two is *who loaded this, and did they touch it* — and it is worth
+> asking before writing down a rule that spans more than one kind of file.
+
+The shape of the resulting check follows from that: it reads C# string literals and JSON values, and
+deliberately leaves XML alone. A guard that fires on the one correct use of a mechanism is worse than
+no guard, because the next person turns it off rather than reading it.
+
+Related: [`A decompiled call site tells you what that frame does not do, never what happens instead`](#a-decompiled-call-site-tells-you-what-that-frame-does-not-do-never-what-happens-instead)
+is the same failing pointed one frame the other way, and
+[`A guard that fires on a correct action teaches people to disable it`](#a-guard-that-fires-on-a-correct-action-teaches-people-to-disable-it)
+is what the first draft would have cost.

@@ -1545,6 +1545,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `layout` | `validate_mod.py` | the named files the checks read being where they expect, so a move cannot silently disable them |
 | `directory-coverage` | `validate_mod.py` | every file under `mod/` being reachable from exactly one path `manifest.json` declares, matching case |
 | `conflict-markers` | `check_docs.py` | no tracked file carrying a leftover conflict marker, the diff3 `\|\|\|\|\|\|\|` included |
+| `codepage-text` | `validate_mod.py` | a C# string literal or JSON value carrying a character Qud's code page 437 render would substitute (XML is exempt — its reader undoes the map) |
 | `count` | `check_build_log.py` | the log covering every script the mod ships |
 | `counts` | `check_docs.py` | the file and blueprint counts the documents quote |
 | `damage-ceiling` | `validate_mod.py` | damage against §3.2.1's per-family ceiling |
