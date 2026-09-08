@@ -1489,6 +1489,7 @@ seconds rather than after a round trip.
 | A tag name or merged table the snapshot has never seen | `snapshot-coverage`, against `tag_forms` + `tag_forms_absent` and the table sections |
 | A creature variant splitting its parent's share of a table, not adding to it | `variant-density`, against the snapshot's `variant_parent_quantities` |
 | Option wiring — declared but unread, or read but undeclared | `option-wiring` |
+| An option filed outside `Category="Mods"`, or whose display text does not name the mod (#934) | `option-placement` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
 | Filenames without spaces | `filename-space` |
 | Line endings | `.gitattributes` |
@@ -1581,6 +1582,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `naming-option-coverage` | `validate_mod.py` | the syllables the option can switch off being exactly the ones the XML adds |
 | `naming-priority` | `validate_mod.py` | a combining scope sitting above 0 and below 100 |
 | `option-default` | `validate_mod.py` | a Checkbox `Default` of `Yes` or `No`, and a Combo `Default` among its own `Values` |
+| `option-placement` | `validate_mod.py` | an option outside `Category="Mods"`, or whose display text does not open by naming the mod (#934) |
 | `option-slider` | `validate_mod.py` | slider `Min` above 1, which crashes Qud's options menu (#51) |
 | `option-wiring` | `validate_mod.py` | an option declared but unread, or read but undeclared |
 | `part-attribute` | `validate_mod.py` | a part attribute naming a settable member |

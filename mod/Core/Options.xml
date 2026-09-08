@@ -474,8 +474,8 @@
   </option>
   <option
     ID="OptionQudExpandedCEOnsetWarning"
-    DisplayText="Disease onsets say what is happening"
-    Category="Qud Expanded CE"
+    DisplayText="{{C|Qud Expanded}}: disease onsets say what is happening"
+    Category="Mods"
     Type="Checkbox"
     Default="Yes"
     SearchKeywords="qud expanded disease glotrot ironshank monochrome onset warning"
@@ -490,8 +490,8 @@
   </option>
   <option
     ID="OptionQudExpandedCEWounds"
-    DisplayText="Heavy blows leave wounds that rest will not close"
-    Category="Qud Expanded CE"
+    DisplayText="{{C|Qud Expanded}}: heavy blows leave wounds that rest will not close"
+    Category="Mods"
     Type="Checkbox"
     Default="No"
     SearchKeywords="qud expanded wounds difficulty healing regeneration physic treatment"
