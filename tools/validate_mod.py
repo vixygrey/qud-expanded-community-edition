@@ -69,6 +69,13 @@ DYNAMIC_TABLE_PREFIX = "DynamicObjectsTable:"
 # involved. Its value is an option ID, optionally prefixed with "!" to invert.
 OPTION_GATE_TAG = "ExcludeFromDynamicEncountersOption"
 
+# Where every option this mod declares has to be filed, and how its row has to open. Qud groups the
+# options menu by Category, so anything else gets a heading of its own and hides from a player
+# scrolling the mod's block. The prefix is what names the mod in a menu shared with every other one
+# installed. See issue #934 for the two that shipped without either.
+OPTION_CATEGORY = "Mods"
+OPTION_DISPLAY_PREFIX = "{{C|Qud Expanded}}: "
+
 # New objects the mod declares WITHOUT one of the MOD_PREFIXES. They are new declarations, not
 # vanilla replacements, so merge-discipline does not apply. Anything not listed here and not
 # mod-prefixed is treated as a vanilla record.
@@ -932,6 +939,41 @@ def check_option_wiring(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
             "option-wiring",
             f"{undeclared} is read but never declared — GetOption will always return the fallback",
         )
+
+
+def check_option_placement(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
+    """Every option must be filed where the player will look for it, and say whose it is.
+
+    Qud groups the options menu by `Category`, so an option declaring anything other than "Mods"
+    gets a heading of its own. It still works perfectly; it is just somewhere else, which is what
+    makes this invisible to every other check here. `OptionQudExpandedCEOnsetWarning` and
+    `OptionQudExpandedCEWounds` shipped that way from #581 and #192 until #934, and a player
+    scrolling the Mods block for the switch to turn wounds off had no reason to suspect a second
+    place to look.
+
+    The display prefix is the same requirement from the other side. This menu is shared with every
+    other installed mod, so a row that does not name the mod leaves the player no way to tell who
+    is responsible for it.
+    """
+    for path, root in all_roots.items():
+        if "option" not in path.name.lower():
+            continue
+        for el in root.iter("option"):
+            ident = el.get("ID", "<no ID>")
+            category = el.get("Category")
+            if category != OPTION_CATEGORY:
+                f.add(
+                    "option-placement",
+                    f'{ident}: Category="{category}" files this under a heading of its own. '
+                    f'Must be "{OPTION_CATEGORY}" so it sits with the rest, see issue #934',
+                )
+            display = el.get("DisplayText") or ""
+            if not display.startswith(OPTION_DISPLAY_PREFIX):
+                f.add(
+                    "option-placement",
+                    f"{ident}: DisplayText does not open with {OPTION_DISPLAY_PREFIX!r}, so the "
+                    f"row does not say which mod it belongs to ({display!r})",
+                )
 
 
 def check_filenames(f: Findings) -> None:
@@ -4377,6 +4419,7 @@ def run() -> Findings:
     check_directory_coverage(f)
     check_options(f, roots)
     check_option_wiring(f, roots)
+    check_option_placement(f, roots)
     check_helptext_shape(f, roots)
     check_option_defaults(f, roots)
     check_filenames(f)

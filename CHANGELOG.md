@@ -148,6 +148,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Two options were hiding in a menu heading of their own** (#934). The switches for disease onset
+  warnings and for wounds that rest will not close were filed under `Qud Expanded CE` rather than
+  `Mods`, so Qud gave them a heading to themselves instead of listing them with the other
+  thirty-three. Both now sit where the rest of the mod's options are, and both say whose they are:
+  their rows were also the only two that did not open by naming the mod.
+
+  The option a player is most likely to go looking for is the one this hurt most. Wounds are off by
+  default, so turning them on means finding the row, and a player who scrolled the mod's block and
+  saw no wounds switch had no reason to suspect there was a second place to look.
+
+  Only the menu changes. Both option IDs are untouched, and an ID is what a save stores, so nobody's
+  settings move.
+
+- **(internal)** **A convention that lived only in its own examples now has a check** (#934).
+  `validate_mod.py` gained `option-placement`, which asserts every declared option carries
+  `Category="Mods"` and opens its display text by naming the mod. Nothing checked either before, and
+  the two options above passed every gate for as long as they were wrong, because a misfiled option
+  works perfectly. It is just somewhere else, and that is invisible to a checker looking at
+  behaviour.
+
 - **A place nobody came for stops being recorded as though somebody still might** (#929). A vacancy
   is now spent by the dispatch that considers it, answered or not. Three in four were left on the
   books waiting for a band that could never be sent, because a place is only ever offered up once.
