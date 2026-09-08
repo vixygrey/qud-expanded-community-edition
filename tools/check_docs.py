@@ -469,7 +469,10 @@ WIKI_CLAIMS: list[tuple[str, list[str]]] = [
     # so it cannot match a sentence that happens to say "True Kin" near a 2.
     (r"\| True Kin \| ([\w-]+) \|", ["chip-slots-truekin"]),
     (r"\| Psionic Adept \| ([\w-]+) \|", ["chip-slots-psionicadept"]),
-    (r"([\w-]+) of them — battle axe", ["vibro-weapons"]),
+    # Anchored on a colon rather than the em dash it used to carry: the wiki dropped em dashes from
+    # its prose (#935), and a claim pattern anchored on punctuation the text no longer uses is a
+    # check that silently stops running. This is the first one that went idle that way.
+    (r"([\w-]+) of them: battle axe", ["vibro-weapons"]),
 ]
 
 
