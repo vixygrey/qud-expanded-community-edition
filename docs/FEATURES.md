@@ -2309,6 +2309,20 @@ rather than anything the mod already was.
 | marked artifacts stay yours | Checkbox | **Yes** | Whether an artifact you marked important is kept out of Argyve's picker. §27. |
 | charmed merchants still expect paying | Checkbox | **Yes** | Whether a charmed merchant's shop is free. §34. |
 | arrows can be picked back up | Checkbox | **Yes** | Whether a fired arrow can survive and land. §35. |
+| weapons wear from use | Slider 0–3 | **2** | How fast a wielded weapon accumulates wear. `0` off, `1` light, `2` normal, `3` heavy. Armour already wears from being hit; this is the other half. §41. |
+| disease onsets say what is happening | Checkbox | **Yes** | Whether an onset announces itself, warns near the end and reports being fought off. Vanilla speaks only after a failed save, so an onset you beat outright passes in silence. §43. |
+| heavy blows leave wounds that rest will not close | Checkbox | **No** | Whether a single heavy blow leaves a wound that caps natural healing until treated. Off by default: it makes the game harder. §44. |
+| plainer relic names | Checkbox, `Restart` | **Yes** | Whether plain-word name forms join the legendary relic pool. Vanilla's forms are never removed, so a plain name becomes likelier rather than a strange one impossible. §48. |
+| creatures use what they pick up | Checkbox | **Yes** | Whether a creature re-equips after acquiring a better weapon. Mostly visible on companions, since Qud's creatures do not pick things off the floor. §50. |
+| you have to sleep | Checkbox | **No** | Fatigue, its five bands, the ambush roll and the world-map refusal at `Exhausted`. The only option here that adds a system the base game does not have. §51. |
+| experience follows the gap in tiers | Checkbox | **No** | Whether a kill pays by tier distance rather than flat. Every tier it changes pays more than vanilla, so it makes levelling faster. §52. |
+| the Six Day Stilt is more of a market | Checkbox, `Restart` | **No** | Two more traders, a pedlar in the empty tents, and about a third more stock reaching one or two tiers higher. §53. |
+| kill enough of one people and they send someone | Checkbox | **No** | Whether a faction sends a named champion after a large enough kill tally, or rarely an envoy from their enemies. **They can kill you**; worth minding on Classic. §54. |
+| carrying a fortune attracts attention | Checkbox | **No** | Whether carried value draws raiders or a trader on entering a new zone. What the fortune is made of decides which. **Raiders can kill you**; worth minding on Classic. §55. |
+| people you shared water with remember you | Checkbox | **No** | Whether a past water-sibling remarks on what they have heard, gated on your standing with their people having moved. Their standing is noted the day you share water. §56. |
+| the water ritual is a relationship | Checkbox | **No** | Whether the ritual waits on an introduction, and whether a repeat is offered once you have risen in their people's eyes. Introducing yourself is always available and never waits on this. §57. |
+| killing a water-sibling costs everything | Checkbox | **No** | Whether anyone who thought well of you falls to nothing before vanilla's flat curse lands. If you were already disliked, nothing changes. §58. |
+| peoples send bands to places that fall empty | Checkbox | **No** | Whether emptying a lair can send another people to take it, crossing the world map as a real object. Moves only while you travel overland. §65. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2351,7 +2365,7 @@ about moving features up this table.
 | Scope | Options | Why |
 |---|---|---|
 | **Live** — applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
-| **Restart** | eased skill requirements | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. Declared `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
+| **Restart** | eased skill requirements, plainer relic names, the Six Day Stilt market | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. The other two are read at load rather than in play: relic name forms join the pool as it is built, and the Stilt's stock is decided when the zone's tables are read. All three declare `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
 ### 13.3 Two constraints worth knowing before adding another option
