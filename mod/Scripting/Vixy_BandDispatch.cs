@@ -49,23 +49,47 @@ namespace XRL
         /// <summary>The token blueprint. Named here, which is also its route past #926.</summary>
         public const string Blueprint = "Vixy_Band";
 
-        /// <summary>One in this many vacancies is answered.</summary>
+        /// <summary>One in this many answerable vacancies is answered.</summary>
         /// <remarks>
         /// A vacancy is already uncommon — it needs a zone that was held, cleared to the last
         /// member, and left. Rolling on top of that is what keeps a band something I come across
         /// rather than something that follows me around. See #832 on why the trigger is narrowed
         /// instead of optioned into silence.
+        /// <para>
+        /// The roll is the <em>last</em> gate rather than the first, so this number describes
+        /// openings somebody could actually have set out for. Which way round it sits changes no
+        /// outcome — a band is sent only when the roll, a neighbour, an origin and the placement all
+        /// agree — but with the roll first the constant claimed a rate over vacancies that had
+        /// nobody to answer them. #929.
+        /// </para>
         /// </remarks>
         public const int OneIn = 4;
 
         /// <summary>
         /// A zone has fallen empty. Perhaps somebody sets out for it.
         /// </summary>
+        /// <remarks>
+        /// <b>The vacancy is spent on the decision, not on the outcome.</b> Nothing calls this twice
+        /// for one zone: <c>Vixy_Territory.Record</c> removes <c>HeldBy</c> in the same breath as it
+        /// sets <c>Vacated</c>, and that property is the branch's own precondition — so whatever is
+        /// decided here is decided once and for good. Leaving the record set after a miss made three
+        /// vacancies in four sit in <c>vixyband</c> as though they were still queued for an answer
+        /// that could never come. #929.
+        /// <para>
+        /// The one exit that does not spend is the option being off, because that is the feature not
+        /// running rather than the feature deciding. Those records stay as <c>Vixy_Territory</c>
+        /// wrote them — see §65.8 for what they can and cannot become later.
+        /// </para>
+        /// </remarks>
         public static void OnVacancy(string ZoneID, string Lost)
         {
             if (!Raven_Options.TravellingBands) return;
             if (ZoneID.IsNullOrEmpty()) return;
-            if (!Stat.Random(1, OneIn).Equals(1)) return;
+
+            // From here the dispatch has run, so the opening is settled either way. A place that
+            // can be answered twice is a faucet, and a place recorded as waiting for an answer
+            // nothing will ever give is a lie the report then tells me.
+            The.ZoneManager.RemoveZoneProperty(ZoneID, Vixy_Territory.Vacated);
 
             string faction = Neighbour(Lost);
             if (faction.IsNullOrEmpty()) return;
@@ -73,12 +97,9 @@ namespace XRL
             string from = HeldZone(faction);
             if (from.IsNullOrEmpty()) return;
 
-            if (Send(faction, from, ZoneID))
-            {
-                // Answered. The vacancy is spent whether or not the band ever arrives - a place
-                // that can be answered twice is a faucet.
-                The.ZoneManager.RemoveZoneProperty(ZoneID, Vixy_Territory.Vacated);
-            }
+            if (!Stat.Random(1, OneIn).Equals(1)) return;
+
+            Send(faction, from, ZoneID);
         }
 
         /// <summary>
