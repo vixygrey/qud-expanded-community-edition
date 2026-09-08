@@ -130,6 +130,22 @@ recorded because contributors need them, not because subscribers do.
   existing part rather than naming a class — catching a typo there needs vanilla's conversation
   contents, not its class list.
 
+- **(internal)** **A character that is safe in XML and wrong in C#** (#931). Qud renders UI text as
+  code page 437, so everything between U+0080 and U+00FF is substituted on its way to the screen —
+  an e-acute arrives as a capital theta, a section sign as a masculine ordinal indicator.
+
+  **In XML that does not matter, because the reader undoes it**: `GetAttribute` and `GetTextNode`
+  both run the inverse map on any document declaring `encoding="utf-8"`, so a section sign written
+  there is stored as U+0015 and comes back a section sign. Vanilla depends on that — `Manual.xml`
+  ships an o-umlaut that would otherwise read as a division sign. Nothing undoes it for a string
+  this mod builds itself, so a C# literal or a JSON value is substituted once and silently.
+
+  `codepage-text` guards those two and deliberately leaves XML alone. My first draft did not, and it
+  failed immediately on the one thing here using the mechanism correctly, which I was a step away
+  from filing as a rendering bug in a feature merged two days earlier.
+
+  Nothing ships wrong today — measured at 0 before the check landed.
+
 ### Fixed
 
 - **A place nobody came for stops being recorded as though somebody still might** (#929). A vacancy

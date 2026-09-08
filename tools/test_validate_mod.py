@@ -4086,3 +4086,104 @@ class BitLetters(unittest.TestCase):
         self.assertEqual(len(validate_mod.BIT_CHARS), 12)
         levels = sorted(level for level, _, _ in validate_mod.BIT_CHARS.values())
         self.assertEqual(levels, [0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+
+
+class CodepageText(unittest.TestCase):
+    """#931. Qud renders UI text as code page 437, so U+0080-U+00FF is a transliteration range.
+
+    The lesson these tests exist to pin down is the *asymmetry*, not the map. Qud's XML reader runs
+    `Sidebar.ToCP437` on attributes and text nodes of any document declaring `encoding="utf-8"`, so
+    a section sign written in XML round-trips and comes back a section sign. A string this mod
+    builds in memory has no such reader, so it gets the forward substitution once and reaches the
+    screen as something else.
+
+    The same character is therefore correct in one file and wrong in another, and neither end of
+    the pipeline shows you that on its own. The first draft of this check scanned XML too and
+    failed on `Vixy_Band`'s pilcrow, which is the one place in this repository using the mechanism
+    properly - so `test_xml_is_not_scanned` is guarding a real near miss rather than a hypothetical.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+
+    def _findings(
+        self, *, cs: str = "", files: dict[str, str] | None = None
+    ) -> list[str]:
+        tmp = Path(tempfile.mkdtemp(dir=self.tmp))
+        mod = tmp / "mod"
+        (mod / "Scripting").mkdir(parents=True)
+        if cs:
+            (mod / "Scripting" / "Test.cs").write_text(cs, encoding="utf-8")
+        for name, body in (files or {}).items():
+            path = mod / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(body, encoding="utf-8")
+        with chdir(tmp):
+            f = validate_mod.Findings()
+            validate_mod.check_codepage_text(f)
+            return [detail for check, detail in f.items if check == "codepage-text"]
+
+    def test_a_string_literal_is_reported(self) -> None:
+        """The positive control. Without this the silences below prove nothing."""
+        found = self._findings(cs='class X { string s = "café"; }\n')
+        self.assertEqual(len(found), 1)
+        self.assertIn("U+00E9", found[0])
+
+    def test_the_message_names_what_the_screen_will_show(self) -> None:
+        """The whole value of the finding. "This is wrong" sends somebody to the wiki; "this renders
+        as a capital theta" is a defect they can see."""
+        found = self._findings(cs='class X { string s = "café"; }\n')
+        self.assertIn("Θ", found[0])
+
+    def test_a_comment_does_not_fire(self) -> None:
+        """Every doc comment in mod/Scripting/ cites a FEATURES section with a section sign. A check
+        that flagged those would be turned off within a day."""
+        found = self._findings(cs="// see FEATURES § 65.8\nclass X { }\n")
+        self.assertEqual(found, [])
+
+    def test_above_the_range_does_not_fire(self) -> None:
+        """An em dash is U+2014 and passes through untouched, which is why the prose in these
+        strings has always been safe."""
+        found = self._findings(cs='class X { string s = "a — b"; }\n')
+        self.assertEqual(found, [])
+
+    def test_xml_is_not_scanned(self) -> None:
+        """Qud's reader undoes the map for XML, so a pilcrow written there renders as a pilcrow.
+        Scanning it would fail `Vixy_Band` for using the mechanism correctly."""
+        found = self._findings(
+            files={
+                "ObjectBlueprints/Test.xml": '<?xml version="1.0" encoding="utf-8" ?>\n'
+                '<objects>\n  <object Name="Vixy_T">\n'
+                '    <part Name="Render" RenderString="¶" DisplayName="café" />\n'
+                "  </object>\n</objects>\n"
+            }
+        )
+        self.assertEqual(found, [])
+
+    def test_a_json_value_is_reported(self) -> None:
+        found = self._findings(files={"manifest.json": '{"description": "café"}'})
+        self.assertEqual(len(found), 1)
+        self.assertIn("description", found[0])
+
+    def test_workshop_description_is_exempt(self) -> None:
+        """Steam BBCode, read only by the uploader's input field and SteamUGC. It never reaches a
+        UITextSkin, so flagging it would be a guard firing on correct content."""
+        found = self._findings(files={"workshop.json": '{"Description": "café"}'})
+        self.assertEqual(found, [])
+
+    def test_workshop_title_is_not_exempt(self) -> None:
+        """The half that must survive the exemption. ModInfo.ReadConfigurations falls Title back
+        into Manifest.Title when manifest.json omits one, and that renders in the mod manager - so
+        exempting the file as a unit would be correct only while another file kept its own title."""
+        found = self._findings(files={"workshop.json": '{"Title": "café"}'})
+        self.assertEqual(len(found), 1)
+        self.assertIn("Title", found[0])
+
+    def test_the_substitute_is_the_games_own(self) -> None:
+        """Spot-checked against Sidebar.Codepage437Mapping read out of the assembly. If Python's
+        codec and Qud's table ever part company in this range, this is what says so."""
+        self.assertEqual(validate_mod.codepage_substitute("§"), "º")
+        self.assertEqual(validate_mod.codepage_substitute("é"), "Θ")
+        self.assertEqual(validate_mod.codepage_substitute("ö"), "÷")
