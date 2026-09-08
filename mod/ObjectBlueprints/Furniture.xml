@@ -106,4 +106,40 @@
   <object Name="Chiliad Basket" Load="Merge">
     <part Name="RandomColors" MainColor="w" DetailColor="all" />
   </object>
+
+  <!-- A band on the march, as one object on the world map. #832.
+
+       Not the party. Brain.GoToPartyLeader refuses world-map targets outright and
+       JoinPartyLeaderCommand applies that rule to every cached zone, so a leader lifted onto the map
+       leaves its retinue behind. This travels alone and Vixy_Band builds the real party at the
+       destination from FactionEncounters' own tables, which is cheaper and sidesteps the rule
+       rather than fighting it.
+
+       Inherits Object rather than PhysicalObject, and the omission is the design: Object is
+       Physics alone, so this has **no Brain**. IsCombatObject() is (Flags & 2), and vanilla's own
+       obsolete overload says combat-flagged objects always have a Brain - so being Brain-less makes
+       it non-combat with no flag to set. It cannot be attacked on a map with no tactical terrain,
+       and AIWorldMapTravel moves it with Forced: true, which bypasses the mobility check that would
+       otherwise fail on a null Brain.
+
+       RenderLayer 2 because every terrain object is 1, and a band standing on a parasang should be
+       seen rather than hidden under the ground it is crossing.
+
+       Reachable through mod/Scripting/ naming it (#926) and by no other route, deliberately: it is
+       bookkeeping that walks, and a population table entry would put it in the world as scenery. -->
+  <object Name="Vixy_Band" Inherits="Object">
+    <part
+      Name="Render"
+      DisplayName="band"
+      Tile="Items/sw_banner.bmp"
+      RenderString="&#182;"
+      ColorString="&amp;y"
+      DetailColor="w"
+      RenderLayer="2"
+      RenderIfDark="true"
+    />
+    <part Name="Physics" Solid="false" Takeable="false" IsReal="true" Weight="0" />
+    <part Name="Description" Short="A company on the move, seen from a long way off." />
+    <part Name="Vixy_Band" />
+  </object>
 </objects>

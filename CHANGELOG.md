@@ -18,6 +18,26 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Peoples send bands to places that fall empty** (#832). **Off by default.** Clear a lair to the
+  last of its holders and, sometimes, another people sets out to take it — crossing the world map as
+  a real thing you can see and follow, and becoming a camp where it arrives.
+
+  Caves of Qud's fiction says these factions send out warbands. The implementation places them at
+  zone-generation time and never moves them, so a raiding party is a tableau: no origin, no
+  destination, nothing it is doing. This gives one a reason to be somewhere else.
+
+  The band that travels is a single token rather than the party, because followers refuse to cross
+  onto the world map at all — so the party is built at the destination, by the same vanilla builder
+  that places every faction camp in the game. It cannot be attacked and will not attack: it has no
+  Brain, which is what makes it non-combat.
+
+  **It moves only while you are travelling overland**, because nothing outside your own zone runs.
+  The world moves when you move through it. Which also means nothing happens unseen — the only time
+  a band moves is the only time you could have watched it.
+
+  Who comes is your neighbours: a people recorded holding somewhere else, never the ones who just
+  lost the place. Story settlements are deliberately out of scope; `docs/FEATURES.md` §65.7 says why.
+
 - **(internal)** **A blueprint this fork's own code creates counts as reachable** (#926).
   `check_reachability` demanded every new blueprint be obtainable by a population table, a
   `DynamicObjectsTable:` tag or `TinkerItem`. A blueprint only the mod's C# ever places has none of

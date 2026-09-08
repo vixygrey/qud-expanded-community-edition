@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **526** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **527** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -616,14 +616,14 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Cybernetics.xml` | 10 | 14 |
 | `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
-| `Furniture.xml` | 4 | 9 |
+| `Furniture.xml` | 5 | 9 |
 | `Creatures.xml` | 46 | 4 |
 | `Food.xml` | 15 | 2 |
 | `Plants.xml` | 10 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **526 active** | **284** |
+| **Total** | **527 active** | **284** |
 
 ### 6.2 Melee weapons
 
@@ -2190,7 +2190,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 34 options (§13)
+│   ├── Options.xml             # 35 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2213,15 +2213,15 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Items.xml               # 18 new (§47, §49, §60), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
-│   ├── Furniture.xml           # 4 new, 9 merged (§29, §30)
+│   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 104 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 107 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
-│                               # their opinions, the territory record, and four
-│                               # Finesse powers
+│                               # their opinions, the territory record, the
+│                               # travelling bands, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2259,7 +2259,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 
 ## 13. Options (`Options.xml`)
 
-Thirty-four options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -9563,6 +9563,125 @@ is the thing under test. Long lists truncate and say how many they dropped.
 ### 64.8 Off-switch
 
 None. This records a fact and changes no behaviour; whatever acts on it carries the switch.
+
+---
+
+## 65. Peoples send bands to places that fall empty (`Vixy_Band`, `Vixy_BandDispatch`)
+
+**Off by default.** Clear a lair to the last of its holders and, sometimes, another people sets out
+to take it — crossing the world map as a real object you can see and follow, and becoming a camp
+where it arrives. All of #832, standing on §64's record.
+
+### 65.1 The fiction says warbands and the implementation is a diorama
+
+`FactionEncounters` builds a genuine party and somebody cared about it: a `HeroMaker` leader from
+`BaseFactionHeroTemplate_<Faction>`, members bound by `SetAlliedLeader<AllyRetinue>`, separate leader
+and member inventory tables, and a camp's worth of props. Templars even swap a `Templar Squire` for a
+`Knight Templar`.
+
+**And it is placed at zone-generation time and never moves.** `FactionEncounters` is a `ZoneBuilder`
+wired into 117 places in `Worlds.xml`, rolling 2 × 2% per zone. So a raiding party is a tableau: no
+origin, no destination, nothing it is doing.
+
+### 65.2 The band is a token, because the party cannot travel
+
+`Brain.GoToPartyLeader` refuses world-map targets outright:
+
+```csharp
+if (TargetCell.ParentZone.IsWorldMap())
+{
+    return false;
+}
+```
+
+and `JoinPartyLeaderCommand` applies that rule generically, walking every cached zone and calling
+`GoToPartyLeader()` on everything in it. `SystemMoveTo` moves one object and there is no party-move.
+**So a leader lifted onto the map strands its whole retinue in the lair.**
+
+One object travels instead, and the party is *built* at the destination —
+`FactionEncounters.BuildFactionEncounter(Faction, Zone, ZoneLevel, ZoneTier)` is `public static`, so
+an arriving band is indistinguishable from a placed one because it is one. That sidesteps the follow
+rule rather than fighting it, and it is cheaper than carrying twelve creatures across a map that
+refuses to hold them together.
+
+### 65.3 Non-combat comes free from omitting the Brain
+
+The token inherits `Object` — which is `Physics` alone — rather than `PhysicalObject`, so it has **no
+Brain**. `IsCombatObject()` is `(Flags & 2) != 0`, and vanilla's own obsolete overload says it:
+*"combat flagged objects always have Brain part."* So the token cannot be attacked on a map with no
+tactical terrain, with no flag to set and nothing to remember.
+
+It still moves, because `AIWorldMapTravel.TakeAction` uses `Move(..., Forced: true)`, which bypasses
+the mobility check that would otherwise fail on a null `Brain`. And it will not attack either: that
+same call passes `Peaceful: true`, which makes the occupant not a combat target and turns a blocked
+step into `Blocking = …` and a re-path.
+
+`RenderLayer` 2, because every terrain object is 1 and a band should be seen rather than hidden under
+the ground it is crossing.
+
+**Vanilla anticipated objects like this.** `ZoneManager.ActivateObjects` has a world-map branch that
+wakes exactly the things that are *not* terrain:
+
+```csharp
+if (Zone.IsWorldMap())
+    foreach (GameObject current in Zone.IterateObjects())
+        if (!current.HasPart<TerrainTravel>())
+        { current.MakeLive(); current.MakeActive(); }
+```
+
+### 65.4 It moves only while you travel overland
+
+`ZoneManager.Tick` marks and weathers the active zone and calls `CheckCached`, and does nothing else.
+No cached zone is ticked. So `AIWorldMapTravel.TurnTick` reaches a band only when the world map is
+the **active** zone — while you are crossing it.
+
+**`Pinned` does not change that**, though it looks like it should: it sets `Suspendability.Pinned`
+and calls `SetCachedZone`, which keeps the world map in memory rather than frozen. Cached is not
+ticked. Pinned buys persistence, not motion.
+
+The compromise is stated rather than hidden: **the world moves when you move through it, and holds
+still while you are underground.** The consolation is that the only time a band moves is the only
+time you could have watched it — so nothing happens unseen.
+
+### 65.5 The reason, and only this one
+
+A place somebody held and no longer does is a vacancy, and a people who hold ground elsewhere may
+want it. That is the whole trigger. It works only because §64 records who held a place.
+
+**Who comes is deliberately dumb**: a faction §64 has recorded holding some *other* zone, and never
+the people who just lost this one — that would be a respawn wearing a journey, which is what #830
+decided against. So the world reclaims using peoples you have actually met, and no new data is
+invented to decide it. Site types, sacred places and a model of what each faction wants are #924.
+
+The band sets out from a parasang its faction actually holds, so the distance walked is the real
+distance between two places, paced by `TerrainTravel`.
+
+**Once per vacancy, and one in four.** The vacancy property is removed as the band is sent, because a
+place that can be answered twice is a faucet — #802's lesson, already paid for once. The roll on top
+is what keeps this at the edge of attention rather than around you.
+
+### 65.6 `vixyband`
+
+A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
+one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
+
+`vixyband` lists what is in flight, where each is bound, and what vacancies stand unanswered.
+`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so
+what it produces is what play produces. It refuses rather than inventing a destination when nothing
+is recorded as vacant.
+
+### 65.7 Off-switch, and what stays out
+
+**Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces — and
+*places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
+before sending, and `Vixy_Band` asks again before building the camp, so turning it off stops new
+bands and stops a walking one arriving as anything.
+
+**Story settlements are out**, and every hand-built static zone. Nothing in the game protects them —
+no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints — and
+that absence is the argument against rather than the licence. A band that kills Argyve while you are
+underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
+than depopulated* is a different and much larger question, recorded in #924.
 
 ## Appendix A — every merged vanilla melee weapon
 

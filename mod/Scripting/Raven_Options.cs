@@ -60,6 +60,8 @@ namespace QudExpandedCE
         public const string GenderSelectionID = "OptionQudExpandedCEGenderSelection";
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
+        public const string TravellingBandsID = "OptionQudExpandedCETravellingBands";
+
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
         /// <summary>
@@ -628,6 +630,23 @@ namespace QudExpandedCE
         /// an addition vanilla never had here.
         /// </summary>
         public static bool ImportantArtifacts => Enabled(ImportantArtifactsID, "Yes");
+
+        /// <summary>
+        /// Whether peoples send bands toward places that have fallen empty.
+        /// </summary>
+        /// <remarks>
+        /// Live, and read at both ends of a journey: <c>Vixy_BandDispatch</c> asks before sending
+        /// one, and <c>Vixy_Band</c> asks again before building the camp on arrival. So turning it
+        /// off stops new bands and stops a walking one from arriving as anything, while a token
+        /// already on the map simply stops mattering.
+        ///
+        /// Defaults off, and this is the case rule 6 reserves that default for rather than a
+        /// borderline one: it is a genuinely new opinion about how Qud's world behaves - that a
+        /// place you empty does not stay empty - and it changes what happens in the world without
+        /// the player choosing it, which is the line #663 draws between an option that earns its
+        /// menu line and one that does not.
+        /// </remarks>
+        public static bool TravellingBands => Enabled(TravellingBandsID, "No");
 
         /// <summary>
         /// Whether a charmed merchant still charges for their goods.

@@ -743,4 +743,25 @@
             {{y|Off by default.}}
 </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCETravellingBands"
+    DisplayText="{{C|Qud Expanded}}: peoples send bands to places that fall empty"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded band warband faction travel territory reclaim vacancy world map"
+  >
+    <helptext>
+            Clear a lair to the last of its holders and, sometimes, another
+            people sets out to take it. The band crosses the world map as a
+            real thing you can see, and becomes a camp where it arrives.
+
+            {{y|It moves only while you travel overland.}} Nothing outside
+            your own zone runs, so a band waits while you are underground.
+
+            Off by default: a place you empty staying empty is Caves of Qud's
+            own opinion, and this changes it.
+        </helptext>
+  </option>
 </options>
