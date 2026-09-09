@@ -3547,7 +3547,7 @@ GameObjectFactory.Factory.Blueprints["ProceduralCookingIngredient_" + item].GetT
 ```
 
 An unguarded dictionary index on a name rebuilt by concatenation. With `type="vixyRested"` it looked
-for `ProceduralCookingIngredient_vixyRested`, found nothing, and threw `KeyNotFoundException`.
+for `ProceduralCookingIngredient_vixyRested`, found nothing, and threw `KeyNotFoundException`
 inside `GameObjectFactory.CreateObject`, whose `catch` swallows it into a `PhysicalObject` named
 `[invalid blueprint:Vixy_Dried Dunelace]` with a `?` glyph. **Every dried dunelace in the game was
 that placeholder**, from any source, and it surfaced in Nima Ruda's inventory because hers is the one
@@ -3699,7 +3699,7 @@ tiles beat three with one borrowed wrong.
 
 Each reference is `Chance="60"`, so **84% of ruins zones carry one plant or the other** and about one
 in thirty rolls the Large arm and has gone properly under. That figure is taken from the crypts,
-which pull `GraveMossPatches` at 60-70, rather than from the caves at 30 or the Moon Stair at 10.
+which pull `GraveMossPatches` at 60-70, rather than from the caves at 30 or the Moon Stair at 10:
 grave moss is that frequent because being mossy is part of what a crypt is, and "overgrown" is the
 same kind of claim about a ruin. This first shipped at 20, where five ruins in nine had neither
 plant, which states the opposite of what the issue is for.
@@ -4012,7 +4012,7 @@ fires for anyone holding a short blade, purchased skill or not. What is expensiv
 Fangs grant a smaller share of that without spending either.
 
 > ⚠️ **Three bleed sources can run at once** on a short-blade Bloodletter character with fangs: the
-> class crit bleed, `HornsProperties`' penetration bleed, and Bloodletter's own 75%-on-penetration.
+> class crit bleed, `HornsProperties`' penetration bleed, and Bloodletter's own 75%-on-penetration,
 > because `ShortBlades_Bloodletter` gates on `Weapon.GetPart<MeleeWeapon>().Skill == "ShortBlades"`,
 > which the fangs satisfy, so it fires on the bite too. All three demonstrably fire; whether that is
 > obnoxious at rank 8 with high Agility is a play question. **If it needs a dial, the dial is
@@ -4570,7 +4570,7 @@ the question.
 **Asked of the conversation, not the creature**, which is what keeps it from rotting. It needs no
 blueprint data, a future Qud patch that adds a chittering thing gets the right answer without this
 fork noticing, and so does another mod's creature. The alternative was tagging 29 blueprints with
-`NoAskName` and clearing it again on the six `Sapient*` plants that inherit from tagged bases.
+`NoAskName` and clearing it again on the six `Sapient*` plants that inherit from tagged bases:
 correct today, wrong at the next patch.
 
 **The measurement is what found the right rule.** 25 of vanilla's 164 conversations with a start
@@ -4683,7 +4683,7 @@ so and says how to undo it.
 **Selling is untouched, and cannot be touched.** `TradeScreen` is
 `SingletonWindowBase<TradeScreen>` and the legacy `TradeUI` is `IWantsTextConsoleInit`; neither is
 named in any file under `Base/`, so there is no substitution point and no way in but reflection,
-which charter rule 5 refuses. That is the widest gap in #570 and it is the one that stays open.
+which charter rule 5 refuses. That is the widest gap in #570 and it is the one that stays open,
 recorded in `docs/LESSONS.md` as the entry about a mod's reach ending where nothing in XML names the
 object.
 
@@ -4877,7 +4877,7 @@ Its idioms, worth knowing before writing a palette:
 
 ### 30.2 Two rules decide what gets one
 
-**The colour must carry no information.** That excludes every material ladder in this mod outright.
+**The colour must carry no information.** That excludes every material ladder in this mod outright:
 bronze through zetachrome is how a player reads a weapon's tier at a glance, and randomising it
 would be actively harmful. It is the same rule vanilla follows when it writes
 `<removepart Name="RandomColors" />` **fourteen times**, on `Cider Vase`, `Honey Vase`, `Wine Vase`
@@ -5149,7 +5149,7 @@ exists before they can find it; with it they arrive as one block.
 `{{lesbian|Whatever}}` and stores *that* as the item's proper name. So these are
 `docs/STYLEGUIDE.md` §1.1b identifiers: renaming one changes how every item already named with it
 renders, in saves already written. None of the 24 collides with vanilla's 152 shaders or 27 solid
-colours, and `validate_mod.py`'s `shader-collision` check keeps it that way in both directions.
+colours, and `validate_mod.py`'s `shader-collision` check keeps it that way in both directions:
 against vanilla, and against a duplicate inside this fork's own files.
 
 Uninstalling is graceful. `MarkupControlNode` treats an unresolved shader as `null` and renders the
@@ -5328,7 +5328,7 @@ about **substituting a class**. This needs a **field**:
 | `:433` | `GetObjects(Trader, Objects[0], The.Player, costMultiple)`, first use |
 
 The event fires between the assignment and the first use, and `Send` dispatches to the actor before
-the trader. So **a part on the player writes the field and the screen prices from the new value**.
+the trader. So **a part on the player writes the field and the screen prices from the new value**:
 public member, no reflection, no Harmony, no vanilla code copied, no blueprint merges. Attached
 through `Vixy_PlayerParts`, so it reaches characters already in a save.
 
