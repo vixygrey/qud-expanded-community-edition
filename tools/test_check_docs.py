@@ -495,6 +495,53 @@ class WikiLinks(unittest.TestCase):
         self.assertEqual(self._findings(page), [])
 
 
+class SelfAnchors(unittest.TestCase):
+    """#945. A document's links to its own headings were the one direction nothing checked.
+
+    Four sat broken in docs/LESSONS.md for as long as they had existed. The double-hyphen case is
+    the one that produced all of them, so it is the one that most needs pinning.
+    """
+
+    def _findings(self, body: str) -> list:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            (root / "DOC.md").write_text(body, encoding="utf-8")
+            subprocess.run(["git", "add", "DOC.md"], cwd=root, check=True)
+            with chdir(root):
+                f = check_docs.Findings()
+                check_docs.check_self_anchors(f)
+                return f.items
+
+    def test_a_resolving_anchor_passes(self) -> None:
+        body = "## Read the loop\n\nsee [above](#read-the-loop)\n"
+        self.assertEqual(self._findings(body), [])
+
+    def test_a_missing_heading_is_reported(self) -> None:
+        body = "## Read the loop\n\nsee [above](#a-lesson-never-written)\n"
+        found = self._findings(body)
+        self.assertTrue(found, "an anchor with no heading must be reported")
+        self.assertIn("anchors there", found[0][1])
+
+    def test_a_spaced_em_dash_needs_a_double_hyphen(self) -> None:
+        """The shape of every real one. The single-hyphen spelling looks right and is wrong."""
+        body = "## Containment is not dispatch — check the level\n\n"
+        self.assertEqual(
+            self._findings(body + "[x](#containment-is-not-dispatch--check-the-level)"),
+            [],
+        )
+        found = self._findings(
+            body + "[x](#containment-is-not-dispatch-check-the-level)"
+        )
+        self.assertTrue(found, "one hyphen where GitHub writes two must be reported")
+
+    def test_an_anchor_inside_code_is_an_example_not_a_link(self) -> None:
+        """A document explaining this rule has to be able to quote the syntax. The first version
+        of the check failed on docs/STYLEGUIDE.md's own row describing it."""
+        body = "## Real\n\nwrite `](#anchor)` to link, and ```\n](#fenced)\n``` too\n"
+        self.assertEqual(self._findings(body), [])
+
+
 class ChangelogSections(unittest.TestCase):
     def test_a_well_formed_changelog_is_quiet(self) -> None:
         self.assertEqual(findings_for(CLEAN), [])
