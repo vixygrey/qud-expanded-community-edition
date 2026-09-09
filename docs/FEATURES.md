@@ -20,19 +20,19 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New item blueprints** | **527** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
-| **New body system** | "Chip Interface" slots — 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
+| **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
 | **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
-| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork — §4) |
-| **Loot tables** | **139** vanilla tables merged — none replaced — plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
+| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork, §4) |
+| **Loot tables** | **139** vanilla tables merged, none replaced, plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
 > **This document specifies; the [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
-> explains.** Every figure below — tier, weight, price, drop rate, stat modifier, option default and
-> scope — is authoritative here, and the wiki links back to it rather than repeating it. What a build
+> explains.** Every figure below, whether tier, weight, price, drop rate, stat modifier, option
+> default or scope, is authoritative here, and the wiki links back to it rather than repeating it. What a build
 > plays like, how the chip families interact and how to open a run belong there instead. The boundary,
 > and why it is stricter for the wiki than for anything in this repository, is in
 > [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies).
@@ -49,10 +49,10 @@ Every genotype gains these starting skills:
 
 - **Staunch Wounds** (`Physic_StaunchWounds`)
 - **Cooking and Gathering** (`CookingAndGathering`)
-- **Meal Preparation** (`CookingAndGathering_MealPreparation`) — the base skill is required for this to function, which is why both are granted
+- **Meal Preparation** (`CookingAndGathering_MealPreparation`), and the base skill is required for this to function, which is why both are granted
 
 Every humanoid **NPC** also gains one Chip Interface slot (see §3). A Mutated Human player does
-not, though vanilla's genotype shares that anatomy — see §3.1.
+not, though vanilla's genotype shares that anatomy. See §3.1.
 
 ### 1.2 Mutated Human
 
@@ -63,18 +63,18 @@ not, though vanilla's genotype shares that anatomy — see §3.1.
 | HP gain / level (`BaseHPGain`) | 1-4 | **1-5** |
 | MP gain / level (`BaseMPGain`) | 1 | **1-2** |
 | Joppa reputation | 0 | **+300** |
-| Extra starting skill | — | **Menacing Stare** (`Persuasion_MenacingStare`) |
+| Extra starting skill | - | **Menacing Stare** (`Persuasion_MenacingStare`) |
 
 > ℹ️ **`BaseHPGain` was `2-3` through 2.2; this fork corrected it to `1-5` in #90.** All three of
 > Mura's writeups (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop
 > feature list) state 1-5, and the XML was the odd one out.
 >
 > Three things settled it. `2-3` is uniform over {2,3}, so it carries **vanilla's own 2.5 average**
-> — the headline mutant HP change moved nothing. It inverts the changelog's stated design, which
+> and the headline mutant HP change moved nothing. It inverts the changelog's stated design, which
 > gives mutants "variability but potential for greater numbers" against True Kin's 2-4 "for a
 > little more consistency, leaning the opposite from Mutants"; at 2-3 mutants are *more* consistent
 > than True Kin and strictly dominated by them, same floor of 2 against a ceiling of 3 rather than
-> 4. And every other HP claim in the docs matches its XML — True Kin's 2-4 and the Adept's 1-4 both
+> 4. And every other HP claim in the docs matches its XML: True Kin's 2-4 and the Adept's 1-4 both
 > check out, leaving this the single disagreement.
 >
 > The WIP notes' sentence is the source of the long-standing confusion: *"Narrowed health gain from
@@ -82,13 +82,13 @@ not, though vanilla's genotype shares that anatomy — see §3.1.
 > narrow while the numbers and the rationale say widen. The newer changelog carries the reasoning
 > and resolves it.
 >
-> Players who preferred the shipped 2-3 can select it — see §13.
+> Players who preferred the shipped 2-3 can select it. See §13.
 
 **How HP gain actually works**, verified against `Assembly-CSharp.dll` metadata rather than
 inferred: `XRL.GenotypeEntry.BaseHPGain` is a **public string**, and `XRL.World.Parts.Leveler`
 calls `RollHP(string BaseHPGain)` on every level-up via `GetEntryDice`. Rolls run through
 `Stat.RandomLevelUpChoice` on a dedicated seeded level-up RNG stream. The range is a uniform
-inclusive `min-max`, re-read **fresh at each level** — nothing is baked at chargen, which is why
+inclusive `min-max`, re-read **fresh at each level**, so nothing is baked at chargen, which is why
 the option over it takes effect mid-save from the next level onward. `BaseSPGain` and `BaseMPGain`
 work identically, through `RollSP` and `RollMP`.
 
@@ -99,16 +99,16 @@ work identically, through `RollSP` and `RollMP`.
 | Skill points / level | 70 | **85** |
 | HP gain / level | 1-4 | **2-4** |
 | Cybernetics license points | 2 | **4** |
-| Body object | `Humanoid` | **`TrueKin`** (custom anatomy — 2 Chip Interface slots) |
-| Extra starting skills | — | Staunch Wounds, Cooking and Gathering, Meal Preparation |
+| Body object | `Humanoid` | **`TrueKin`** (custom anatomy, 2 Chip Interface slots) |
+| Extra starting skills | - | Staunch Wounds, Cooking and Gathering, Meal Preparation |
 
 ### 1.4 Psionic Adept (new)
 
-**What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list —
+**What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list:
 credits cost 150 water each, implants are chosen, and you install exactly what you saved for at a
 becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be bought and
 cannot be built.** They carry no `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables
-naming them are `Artifact 3` through `8` — which is what `ChestBuilders` uses to fill a chest. So
+naming them are `Artifact 3` through `8`, which is what `ChestBuilders` uses to fill a chest. So
 they come out of chests, tier-scaled, and from nowhere else.
 
 Chargen fills three of its four slots from its affinity's own kit, and everything after that is a
@@ -116,15 +116,15 @@ find. It is the one genotype whose build you cannot decide in advance, which is 
 already says: a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become
 what you find.**
 
-The **95 skill points a level** — the highest in the game — are the counterweight. The Adept has no
+The **95 skill points a level**, the highest in the game, are the counterweight. The Adept has no
 innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
 points. What it has instead is the broadest skill access in the game and a mutation kit assembled
 from loot. **Skills and scavenging** is the fantasy.
 
 > ⚪ **Its power curve is the opposite shape to a mutant's**, and that is deliberate rather than a
 > defect to fix. A chip's rank is capped at its grade, so an Adept is at its strongest relative to
-> the others around **character level 18** — where the rank cap reaches 10 and a perfected chip is
-> finally worth its full value — and falls behind after 30, when a mutant's mutation-point income
+> the others around **character level 18**, where the rank cap reaches 10 and a perfected chip is
+> finally worth its full value, and falls behind after 30, when a mutant's mutation-point income
 > keeps climbing and the chips do not. Front-loaded breadth that plateaus. The working is in
 > [`docs/DESIGN_balance.md`](DESIGN_balance.md) §5.8, and #350 records the one route past the
 > plateau: chip levels sum, so two of the same mutation are worth twice the grade, at the cost of
@@ -135,12 +135,12 @@ Named `Psionic Adept` internally and in display, matching vanilla's convention t
 this fork renamed it (#24).
 
 Earlier versions called the genotype "Yttrian"; the anatomy and body object kept that name until
-this fork renamed them to `PsionicAdept` (#13) — that follows the *other* convention the same
+this fork renamed them to `PsionicAdept` (#13), which follows the *other* convention the same
 file sets, where a body object is the display name with spaces removed (`True Kin` → `TrueKin`).
 
 | Field | Value |
 |---|---|
-| Mutation points | 0 (`AllowedMutationCategories=""` — no mutation access at all) |
+| Mutation points | 0 (`AllowedMutationCategories=""`, so no mutation access at all) |
 | Stat points to allocate | **34** (True Kin: 38, Mutant: 44) |
 | Base stat floor | 12 in every stat (identical to True Kin), then heavily modified by affinity |
 | Stat range | 12–24 per stat |
@@ -159,11 +159,11 @@ Gathering, Meal Preparation, and **Gadget Inspector** (`Tinkering_GadgetInspecto
 the Rebuke Robot / Menacing Stare the other genotypes get.
 
 Because `IsTrueKin="True"` and cybernetics points are granted, Psionic Adepts can use the
-becoming nook and all cybernetics — they are mechanically a third "tech" genotype, not a mutant.
+becoming nook and all cybernetics, so they are mechanically a third "tech" genotype, not a mutant.
 
 > 🗒️ The chargen blurb reads `{{C|95}} skill points each level`, which is the Adept's
 > `BaseSPGain` and is true under every option. It used to read *30 bonus*, and a note here called
-> that stale — wrongly. **30 was the delta against this fork's own Mutated Human** (95 vs 65), which
+> that stale, wrongly. **30 was the delta against this fork's own Mutated Human** (95 vs 65), which
 > is the genotype most players arrive from. What made it wrong was not the number but the baseline:
 > the Mutant's 65 is itself an option, so switching skill points off moved the real delta to 45
 > while the panel still said 30. An absolute figure needs no baseline and cannot drift (#275).
@@ -175,8 +175,8 @@ becoming nook and all cybernetics — they are mechanically a third "tech" genot
 18 subtypes in one class (`Affinities`, chargen title "choose expertise", singular "affinity"),
 split into two categories:
 
-- **The Lore Seekers of the Grand Library** (`Full Psionic`) — 9 caster subtypes.
-- **The Immovable Wall of the Yttria** (`Half Psionic`) — 9 martial "Guardian" subtypes.
+- **The Lore Seekers of the Grand Library** (`Full Psionic`): 9 caster subtypes.
+- **The Immovable Wall of the Yttria** (`Half Psionic`): 9 martial "Guardian" subtypes.
 
 **Neither grants cybernetics license points.** The casters granted +1 each until #332: no vanilla
 caste grants any, the genotype is the only source in the base game, and stacked with the implant
@@ -187,22 +187,22 @@ subtracting penalties (True Kin net +3 to +4, Mutants net +2). Subtypes with ele
 resistances take a penalty resist equal to **half** their bonus.
 
 **The two halves now use one resistance scale**, 20 against a −10 counterpart, which is what the
-Guardians always used. The casters ran 40 / −20 until #332 — vanilla's castes are **always exactly
+Guardians always used. The casters ran 40 / −20 until #332, and vanilla's castes are **always exactly
 15 and never negative**, so 40 was 2.7x a number vanilla only ever states once.
 
 ### 2.1 Full Psionic — The Lore Seekers of the Grand Library
 
 | Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
 |---|---|---|---|---|---|---|---|---|
-| Force, Watchers of the World | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Rifles, Tinkering (+Disassemble, Reverse Engineer, Tinker I) |
+| Force, Watchers of the World | -2 | -2 | -2 | +4 | +2 | +2 | - | Short Blades Expertise, Rifles, Tinkering (+Disassemble, Reverse Engineer, Tinker I) |
 | Fire, Defenders of the Core | +1 | -2 | -2 | +2 | +2 | +2 | Heat +40 / Cold -20 | Short Blades Expertise, Axe, Heavy Weapons (+Tank, Sweep) |
 | Ice, Bulwark of the Throne | -2 | -2 | +1 | +2 | +2 | +2 | Cold +40 / Heat -20 | Short Blades Expertise, Rifles, Kickback, Endurance (+Swimming) |
 | Lightning, Hunters of the Defilers | -2 | +1 | -2 | +2 | +2 | +2 | Electric +40 / Acid -20 | Short Blades (+Bloodletter, Jab, Hobble), Pistol |
 | Light, Seekers of the Path | -2 | +1 | -2 | +2 | +2 | +2 | Heat +20, Electric +20 / Cold -10, Acid -10 | Short Blades Expertise, Pistol (+Akimbo, Weak Spotter, Sling and Run) |
 | Corrosive, Builders of the Wall | -2 | -2 | -2 | +2 | +2 | +4 | Acid +40 / Electric -20 | Short Blades Expertise, Rifles, Persuasion (+Intimidate, Berate, Snake Oiler) |
 | Blood, Lurkers of the Unknown | -2 | +1 | -2 | +2 | +2 | +2 | *+4 save vs Bleeding* | Short Blades, Pistol, Multiweapon Fighting (+Proficiency, Expertise) |
-| Mental, Guides of the Lost | -2 | -2 | -2 | +4 | +2 | +2 | — | Short Blades Expertise, Customs (+Trash Divining), Survival + **6 terrain survival skills** |
-| Temporal, Keepers of the Records | -2 | -2 | -2 | +2 | +4 | +2 | — | Short Blades Expertise, Rifles, Discipline (+Fasting Way, Iron Mind, Lionheart, Conatus, Mind over Body) |
+| Mental, Guides of the Lost | -2 | -2 | -2 | +4 | +2 | +2 | - | Short Blades Expertise, Customs (+Trash Divining), Survival + **6 terrain survival skills** |
+| Temporal, Keepers of the Records | -2 | -2 | -2 | +2 | +4 | +2 | - | Short Blades Expertise, Rifles, Discipline (+Fasting Way, Iron Mind, Lionheart, Conatus, Mind over Body) |
 
 *Light also carries an `extrainfo`: "Guaranteed one Solar Cell."*
 
@@ -210,33 +210,33 @@ Guardians always used. The casters ran 40 / −20 until #332 — vanilla's caste
 
 | Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
 |---|---|---|---|---|---|---|---|---|
-| Force, Main Battalion | +3 | +3 | +1 | — | -2 | -2 | — | Long Blades (+Dueling Stance), Shield (+Deft Blocking, Swift Blocking) |
+| Force, Main Battalion | +3 | +3 | +1 | - | -2 | -2 | - | Long Blades (+Dueling Stance), Shield (+Deft Blocking, Swift Blocking) |
 | Fire, Berserker Battalion | +4 | +2 | +2 | -2 | -2 | -2 | Heat +20 / Cold -10 | Axe (+Cleave, Dismember, Hook and Drag), Cudgel Charging Strike |
 | Ice, Assault Battalion | +4 | +2 | +2 | -2 | -2 | -2 | Cold +20 / Heat -10 | Cudgel (+Bludgeon, Charging Strike, Conk, Backswing) |
 | Lightning, Skirmish Battalion | +2 | +4 | +2 | -2 | -2 | -2 | Electric +20 / Acid -10 | Tactics (+Throwing, Juke), Acrobatics (+Dodge, Tumble) |
 | Light, Ranged Battalion | +2 | +4 | +2 | -2 | -2 | -2 | Heat +10, Electric +10 / Cold -5, Acid -5 | Rifles (+Kickback, Suppressive Fire, Wounding Fire, Sure Fire) |
 | Corrosive, Flank Battalion | +2 | +2 | +4 | -2 | -2 | -2 | Acid +20 / Electric -10 | Long Blades Proficiency, Endurance (+Swimming, Poison Tolerance, Weathered, Juicer) |
 | Blood, Assassin Battalion | +1 | +4 | +2 | -2 | -2 | -2 | *+2 save vs Bleeding* | Axe (+Dismember), Short Blades (+Bloodletter), Multiweapon Fighting (+Proficiency) |
-| Mental, Technical Battalion | +1 | +3 | +1 | — | -2 | — | — | Persuasion (+Inspiring Presence), Tinkering (+Disassemble, Deploy Turret, Lay Mine) |
-| Temporal, Support Battalion | +2 | +2 | +2 | **-6** | +1 | +1 | — | **the most skills in the game** — see below |
+| Mental, Technical Battalion | +1 | +3 | +1 | - | -2 | - | - | Persuasion (+Inspiring Presence), Tinkering (+Disassemble, Deploy Turret, Lay Mine) |
+| Temporal, Support Battalion | +2 | +2 | +2 | **-6** | +1 | +1 | - | **the most skills in the game**, see below |
 
 *Light Guardian also carries "Guaranteed one Solar Cell."*
 
 **Temporal, Support Battalion** is the most generous subtype in the game: it trades a crippling
 **-6 Intelligence** for base access to Axe, Bow and Rifle, Cooking and Gathering, Cudgel, Customs,
 Discipline, Endurance, Persuasion, Physic, Survival, Tactics and Tinkering (plus Tinker I,
-Disassemble and Scavenger) — **15 skills, 1,400 skill points**. Its own `extrainfo` says:
+Disassemble and Scavenger): **15 skills, 1,400 skill points**. Its own `extrainfo` says:
 *"Starts with massively lowered Intelligence in exchange for so many skills."*
 
 > ⚪ **That trade is now arithmetic rather than a claim (#330).** It granted **22 skills / 2,075 SP**
-> against vanilla's most generous caste at 7 / 700 and its median at 5 / 450 — and it opened *every*
+> against vanilla's most generous caste at 7 / 700 and its median at 5 / 450, and it opened *every*
 > base weapon tree, which is why it had no weapon identity of its own. `Leveler.RollSP` is
 > `(Intelligence − 10) × 4` per level, so -6 Intelligence costs **24 SP a level**, about 720 over a
 > full run. Vanilla's ceiling of 700 **plus** the 720 it pays is ≈1,400, which is what it grants now:
 > the most skills in the game, and it pays for them exactly.
 >
-> The specialist weapon trees went — Multiweapon Fighting, Heavy Weapon, Long Blade, Pistol, Shield,
-> Short Blade and Acrobatics — and the whole support kit stayed. A support unit keeps a sidearm and
+> The specialist weapon trees went, namely Multiweapon Fighting, Heavy Weapon, Long Blade, Pistol,
+> Shield, Short Blade and Acrobatics, and the whole support kit stayed. A support unit keeps a sidearm and
 > a long arm, not mastery of every weapon in the battalion.
 >
 > **`Mental, Guides of the Lost` came down with it**, from 12 skills / 825 SP to **10 / 700**, which
@@ -245,12 +245,12 @@ Disassemble and Scavenger) — **15 skills, 1,400 skill points**. Its own `extra
 
 ### 2.3 Subtype sprites
 
-18 custom tiles by **Noble Lark** live in `Textures/Subtypes/` — `{force,fire,ice,lightning,light,corrosive,blood,mental,temporal}{Psionic,Guardian}.png`.
+18 custom tiles by **Noble Lark** live in `Textures/Subtypes/`, as `{force,fire,ice,lightning,light,corrosive,blood,mental,temporal}{Psionic,Guardian}.png`.
 
 One naming quirk:
 `Subtypes.xml` references the tiles as **`.bmp`** (`Subtypes/forcePsionic.bmp`) while the shipped
-files are `.png`. The latter is normal Qud convention — the engine resolves `.bmp` tile paths
-against `.png` assets — but worth knowing if you ever rename them.
+files are `.png`. The latter is normal Qud convention, since the engine resolves `.bmp` tile paths
+against `.png` assets, but it is worth knowing if you ever rename them.
 
 ---
 
@@ -261,19 +261,19 @@ that cannot mutate.**
 
 ### 3.1 Body slots (`Bodies.xml`)
 
-A new abstract, integral, position-ignoring body part type — **Chip Interface** — is defined
+A new abstract, integral, position-ignoring body part type, **Chip Interface**, is defined
 and then attached to anatomies:
 
 | Anatomy | Chip Interface slots | Notes |
 |---|---|---|
-| `Humanoid` (merged) | **1** | Every humanoid NPC. A Mutated Human player shares this anatomy and has the slot taken off at chargen — see below |
+| `Humanoid` (merged) | **1** | Every humanoid NPC. A Mutated Human player shares this anatomy and has the slot taken off at chargen, see below |
 | `TrueKin` (new) | **2** | Full custom anatomy; True Kin genotype points at this |
 | `PsionicAdept` (new) | **4** | Psionic Adept anatomy |
 
 > ✅ **Resolved in this fork (#13).** The original shipped a slot called **"Chipset Interface"**
 > while every piece of Mura's player-facing documentation called it the **"Psionic Interface"**.
 > Neither was accurate: the slot takes 108 chips against 36 chipsets, and 13 of the 36 mutations
-> the chips grant are *physical* rather than mental. It is now **"Chip Interface"** — true of the
+> the chips grant are *physical* rather than mental. It is now **"Chip Interface"**, true of the
 > whole catalogue, and consistent with the technological fiction in the chips' own description.
 
 > ⚪ **A Mutated Human gets no slot (#353).** Vanilla's Mutated Human is `BodyObject="Humanoid"`, so
@@ -281,7 +281,7 @@ and then attached to anatomies:
 > Nobody chose that, and #352 found it made the mutant the **strongest chip user in the game**: a
 > chip's level is a tracker that sums with a mutation's inherent `BaseLevel` before the rank cap, so
 > one slot on a genotype that already mutates outperforms four on the genotype the chips were built
-> for. It also contradicts §3's own statement of what chips are for — *"genotypes that cannot
+> for. It also contradicts §3's own statement of what chips are for: *"genotypes that cannot
 > mutate"*. So `Raven_ChipSlotPlayerMutator` removes it at character creation. The anatomy is
 > unchanged, because NPCs still get theirs and the type string has to stay live for the other two.
 >
@@ -297,7 +297,7 @@ and swap the anatomy.
 
 **Slots come from the anatomy, so until #820 nothing after chargen could change the number.** A
 player asked whether a wish could give chip slots to a character who is not humanoid, and the answer
-was no — with a near miss that is worse than nothing. `rebuildbody:PsionicAdept` does yield four
+was no, with a near miss that is worse than nothing. `rebuildbody:PsionicAdept` does yield four
 slots, but `Body.Rebuild` replaces the **whole anatomy**, which is precisely what somebody asking
 that question is trying to keep. There is no vanilla wish that adds a single body part either: the
 only `AddPart` call anywhere in the wish surface is hardcoded inside `postgolem`.
@@ -313,7 +313,7 @@ Every slot it creates is stamped with a **`Manager`**, so `:0` uses vanilla's ow
 would have been the alternative, and counting is exactly what `Raven_ChipSlotPlayerMutator` is
 forced into for want of a manager to go on.
 
-They are **`Dynamic`**, so a slot survives a later `rebuildbody:` — `Body.Rebuild` re-places
+They are **`Dynamic`**, so a slot survives a later `rebuildbody:`, because `Body.Rebuild` re-places
 top-level dynamic parts by position hint and discards the rest, and a wished slot quietly vanishing
 on an unrelated wish would read as a bug rather than a rule.
 
@@ -321,7 +321,7 @@ on an unrelated wish would read as a bug rather than a rule.
 prefers the inventory over the drop inventory, so it goes into the pack rather than onto the floor.
 
 > ⚪ **This steps around §3.1's own balance decision, deliberately.** It will hand a Mutated Human
-> chip slots — the thing #352 and #353 removed. That reasoning was about what the *game* gives out;
+> chip slots, the thing #352 and #353 removed. That reasoning was about what the *game* gives out;
 > a wish is a dev channel that nothing reaches without being typed, so charter rule 6 is satisfied
 > trivially and no player meets it by accident. Said out loud here rather than left to be discovered,
 > because the decision was made rather than overlooked (#820).
@@ -331,7 +331,7 @@ prefers the inventory over the drop inventory, so it goes into the pack rather t
 `Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chip Interface slot with 0 AV /
 0 DV and 0 weight, and uses the `UnknownArmor` examiner alternate (so it needs identifying).
 Its description explains the fiction: the chip integrates with your flesh and grants lost
-knowledge — remove it and you lose the ability.
+knowledge, so remove it and you lose the ability.
 
 Each chip carries one or more custom parts named `Raven_Mod<Mutation>`. Every one of those is a
 one-line C# class in `Scripting/`:
@@ -344,7 +344,7 @@ public class Raven_ModDisintegration : ModImprovedMutationBase<Disintegration> {
 
 **Two of them need a variant, and the stock base class does not supply one (#411).** `FlamingRay`
 and `FreezingRay` derive the body part they fire from out of a chosen variant, and
-`ModImprovedMutationBase` passes `null` for it — so `BodyPartType` stayed null and activating the
+`ModImprovedMutationBase` passes `null` for it, so `BodyPartType` stayed null and activating the
 ability failed with *"Your  is too damaged to do that!"*, an empty body-part name printed straight
 into the sentence. Both now inherit `Raven_ModVariantMutationBase`, which passes the variant
 (`Ghostly Flames` and `Icy Vapor`, each the only one its mutation has) and then rebuilds the body's
@@ -357,7 +357,7 @@ granted by a chip; physical mutations do not scale at all. To compensate, chips 
 Chipsets follow the same split: **1 / 2 / 3** for mental, **2 / 4 / 6** for physical.
 
 **Two mutations ignore their level, so their chips have no grades (#347).** `Kindle` and
-`FrostWebs` both override `CanLevel()` to `false` and read their level nowhere — Kindle's cooldown
+`FrostWebs` both override `CanLevel()` to `false` and read their level nowhere. Kindle's cooldown
 and range are constants, and Frost Webs sets its range and area as literals. They are the only two
 of the 36 that do this. So all three Kindle chips are one item, all three Frost Webs chips are one
 item, and each line is now named, priced and levelled as that one item: **one display name, 20
@@ -369,13 +369,13 @@ are unchanged, because the other two mutations in each still scale.
 
 **Chip levels sum on a mutation you already have (#350).** `ModImprovedMutationBase` adds a
 tracker rather than setting a value, and `BaseMutation.CalcLevel` sums every tracker before
-clamping — so two chips of one mutation are worth twice the grade, and a chip stacks on an inherent
+clamping, so two chips of one mutation are worth twice the grade, and a chip stacks on an inherent
 mutation the same way. **This is vanilla's own behaviour, not something the fork added**: the Enigma
 Cone and the Enigma Cap each carry `ModImprovedConfusion` at Tier 3, on the Body and Head slots, so
 vanilla ships a deliberate stacking pair of its own. What limits it is the rank cap,
 `level / 2 + 1`, which applies to the total from every source: two perfected chips reach tracker 20
 and that cap does not reach 20 until **character level 38**, so a third copy is worth nothing before
-then. Doubling up is also strictly worse below level 18, where the cap binds at 10 either way — it
+then. Doubling up is also strictly worse below level 18, where the cap binds at 10 either way, because it
 buys depth after that, at the cost of half your breadth.
 
 ### 3.3 The 12 affinity families
@@ -406,23 +406,23 @@ Item tiers and prices are uniform across all families:
 | upgraded (`Improved`) | Tier 6 · 80 · **4** / **6** | Tier 7 · 160 · **2** / **4** |
 | perfected (`Advanced`) | Tier 8 · 320 · **6** / **10** | Tier 8 · 320 · **3** / **6** |
 
-Values are the chip curve, `1.25 × 2^tier`, set in #338 — this table said 20 / 40 / 60 until #347
+Values are the chip curve, `1.25 × 2^tier`, set in #338. This table said 20 / 40 / 60 until #347
 noticed it had not been updated with the blueprints. The Kindle and Frost Webs lines are the two
 exceptions: every grade of each is 20, for the reason in §3.2.
 
 > ✅ **All 144 chips can drop.** Upstream 2.2 shipped only *the first chip of each family* plus that
-> family's chipset in `Raven_Chips Tier 1/2/3` — 24 entries where 48 were needed — so chips B and C
+> family's chipset in `Raven_Chips Tier 1/2/3`, 24 entries where 48 were needed, so chips B and C
 > of all 12 families appeared nowhere in `PopulationTables.xml`. Since no chip carries a
 > `TinkerItem` part, they could not be built either, leaving **half the flagship catalogue
 > wish-only**. Each tier table now holds **48** entries (#6, fixed in #36).
 >
 > The 18 `Vixy_StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
-> deliberate — a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
+> deliberate: a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
 > sample of the whole catalogue.
 >
 > Chips remain **drop-only by design**: no `TinkerItem` anywhere in `PsionicChips.xml`. That is what
 > lets the *psionic chips in loot* option close the supply completely rather than leaving tinkering
-> as a way in — see §13.
+> as a way in, see §13.
 
 ### 3.4 Chip drop rates
 
@@ -436,15 +436,15 @@ Chips enter the loot pool through the **Artifact** tables (see §7.3):
 
 The denominator is **110**, not 100, because the entry is *added* to vanilla's pool rather than
 carved out of it. Vanilla's `Artifact N` group is a uniform 95 common / 5 rare across all six
-tables — read from the game's own `PopulationTables.xml` — so the merged pool totals 110 and a
+tables, read from the game's own `PopulationTables.xml`, so the merged pool totals 110 and a
 chip lands **9.09%** of the time. Under the pre-#34 replacement it was a flat 10%; see §7.3.
 
-Within a chip table, single chips are weight 3 and chipsets weight 1 — so a chipset is a 1-in-4
+Within a chip table, single chips are weight 3 and chipsets weight 1, so a chipset is a 1-in-4
 result among that family, and each family is equally likely.
 
 **That is the only route, and it was not until #481.** `Raven_Base Psionic Chip` inherits
 `BaseArmor`, so all 144 chips descended from it and every pool the game fabricates from that base
-picked them up — `DynamicInheritsTable:BaseArmor` ran **80% to 96% this fork's at tiers 4 and
+picked them up. `DynamicInheritsTable:BaseArmor` ran **80% to 96% this fork's at tiers 4 and
 above**, and it was chips the whole way down rather than armour.
 `DynamicObjectsTable:Items` took them too, because `FabricateDynamicObjectsTable` filters on the
 same `EncountersAPI.IsEligibleForDynamicEncounters` predicate that the inherits fabricator does.
@@ -452,7 +452,7 @@ same `EncountersAPI.IsEligibleForDynamicEncounters` predicate that the inherits 
 Neither was a decision anyone made. Membership follows from `Inherits=`, so there was no line in
 any diff to notice, and it quietly worked against §3.2's rule that **rarity is the access dial** for
 chips rather than price. One `<tag Name="ExcludeFromDynamicEncounters" />` on the base fixes both,
-because tags inherit — `BaseArmor:Tier8` goes 96% → 0%, and `Armor` tiers 4, 6 and 8 fall from
+because tags inherit: `BaseArmor:Tier8` goes 96% → 0%, and `Armor` tiers 4, 6 and 8 fall from
 61–69% to 16–19%.
 
 Nothing became harder to find: every chip is placed by hand, 48 apiece in `Raven_Chips Tier 1`–`3`
@@ -466,14 +466,14 @@ a commit rather than waiting to be noticed.
 
 ### 3.5 A follower can wear one, and it works
 
-**Hand a psionic chip to a humanoid follower and they will equip it and gain the mutation — and use
+**Hand a psionic chip to a humanoid follower and they will equip it and gain the mutation, and use
 it.** Verified in game (#417): a wished-up humanoid companion equipped a
 `Raven_Simple Disintegration Chip` unprompted, gained Disintegration, and killed a snapjaw with it.
 
 This is a real capability of the chip system and nothing described it until now. It follows from
-chips being **worn armour rather than implants** — `Raven_Base Psionic Chip` inherits `BaseArmor`
+chips being **worn armour rather than implants**: `Raven_Base Psionic Chip` inherits `BaseArmor`
 and sits in the slot with `WornOn="Chip Interface"`, which puts it on the ordinary AI equip path,
-and the grant fires on `EquippedEvent` targeting `E.Actor` — whoever wore it, not whoever is the
+and the grant fires on `EquippedEvent` targeting `E.Actor`, whoever wore it rather than whoever is the
 player. §13.1's callout traces every gate on that path.
 
 Two things are worth knowing before you try it.
@@ -481,7 +481,7 @@ Two things are worth knowing before you try it.
 **The option gates it, and it gates it at creation.** *Chip Interface slots on other humanoids* adds
 the slot to the `Humanoid` **anatomy**, which is the template a body is built from. A follower you
 already have was built with whatever the anatomy said at the time and will never gain the slot
-afterwards — switching the option on reaches only humanoids generated after it. That is not a defect;
+afterwards, so switching the option on reaches only humanoids generated after it. That is not a defect;
 it is what §13.2 means by an option read once, applied to a creature rather than to you.
 
 **Nothing in this mod ever puts a chip on an NPC.** Chips reach the world through the artifact tables
@@ -494,24 +494,24 @@ creature is *generated* carrying one.
 Seven trees are edited. Nothing is removed; requirements and costs are retuned, and **Finesse** is
 sold by all four melee trees.
 
-Both halves are optional, under two separate toggles — **eased skill requirements** and **retuned
+Both halves are optional, under two separate toggles, **eased skill requirements** and **retuned
 skill point costs**. They are split because their scopes differ: costs apply immediately, while
 requirements need a restart. See §13.
 
 | Tree | Change |
 |---|---|
 | **Axe** | Every power (Cleave, Charging Strike, Dismember, Hook and Drag, Decapitate, Berserk!) now accepts **Strength *or* Agility** for its attribute minimum. Thresholds unchanged: 19/19/21/23/25/29. |
-| **Cudgel** | Same treatment — Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
+| **Cudgel** | Same treatment: Bludgeon 17, Charging Strike 19, Conk 21, Backswing 23, Slam 25, Demolish 29, each **Strength or Agility**. |
 | **Long Blade** | *En Garde!* no longer needs both stats: it was Strength 29 **and** Agility 23 (either order); now it is **29 in Strength or Agility**. Adds **Finesse** (250, Agility 19). *Dueling Stance* is vanilla's again (#331). |
 | **Short Blade** | Adds **Finesse** (250, Agility 19). The tree is otherwise untouched. |
-| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it — see below. |
+| **Multiweapon Fighting** | *Multiweapon Expertise* **23 → 21**, *Multiweapon Mastery* **27 → 25**. Upstream 2.2 also added **Akimbo** here; this fork removed it, see below. |
 | **Cooking and Gathering** | *Butchery* and *Spicer* cost **50 → 100** each, offsetting the free Cooking and Gathering + Meal Preparation every genotype now starts with. |
 | **Tinkering** | *Reverse Engineer* cost **100 → 200**, the other half of the Cooking offset. Everything else is vanilla's: *Disassemble* costs 100 again, and *Tinker I / II / III* need Int **19 / 23 / 29** (#331). |
 
 > ⚔️ **Finesse** is how an Agility character gets damage out of a blade.
 >
 > `MeleeWeapon.Stat` names the stat a weapon rolls **penetration** against, and the damage die is
-> rolled once per penetration — so it multiplies a weapon's whole output. Vanilla uses Strength for
+> rolled once per penetration, so it multiplies a weapon's whole output. Vanilla uses Strength for
 > it on every melee weapon in the game, which leaves an Agility build paying for to-hit and DV and
 > getting no damage scaling at all.
 >
@@ -527,21 +527,21 @@ requirements need a restart. See §13.
 > | **Cudgel** | maces, quarterstaves |
 >
 > **The halberd and the war hammer are deliberately not on it.** #321 called them the two most
-> genre-inverted assignments in the mod and that still holds — what #342 changed was the reading of
+> genre-inverted assignments in the mod and that still holds. What #342 changed was the reading of
 > the *trees*, not of those two weapons. Vanilla describes the vinereaper as a crescent for scything,
 > which is a sickle, and Pathfinder's sickle carries finesse; its finesse bludgeon is likewise a
 > mace-family weapon and never the warhammer. Both trees had a genre-legitimate finesse weapon all
 > along. It was simply not the one the mod had picked.
 >
 > It applies only to weapons that roll against **Strength** in the first place. Vanilla has three
-> that do not, and one of them — the crystalline jile, at `Stat="Ego"` — is a dagger, so it would
+> that do not, and one of them, the crystalline jile at `Stat="Ego"`, is a dagger, so it would
 > otherwise have been converted into an Agility weapon by a power that never meant to touch it
 > (#366). The vibro blades are excluded too: their `MaxStrengthBonus` is 0, so no penetration bonus
 > of any kind reaches them.
 >
 > It costs 250 skill points and Agility 19, one purchase per tree. That price is the point: Agility
 > already buys melee to-hit and DV, so letting it buy penetration for free would make every other
-> melee stat pointless — the "Dex is the god stat" problem 5e is known for. Pathfinder charges a
+> melee stat pointless, the "Dex is the god stat" problem 5e is known for. Pathfinder charges a
 > feat for the same crossover, and this is that trade in Qud's own currency.
 >
 > The reasoning is in [`docs/DESIGN_balance.md`](DESIGN_balance.md) §3.
@@ -549,7 +549,7 @@ requirements need a restart. See §13.
 > ✅ **Akimbo was removed from Multiweapon Fighting in #88** (closing #11), and the story is worth
 > keeping because it is this repo's clearest demonstration that **`Class=` is an identifier**.
 >
-> Upstream 2.2 added Akimbo to Multiweapon Fighting under `Class="Pistol_Akimbo"` — the *same*
+> Upstream 2.2 added Akimbo to Multiweapon Fighting under `Class="Pistol_Akimbo"`, the *same*
 > implementation class as the Pistol tree's Akimbo. `SkillFactory.PowersByClass` holds one entry
 > per class, and vanilla grants powers **by class**: the Gunslinger calling is
 > `<skill Name="Pistol_Akimbo" />`. So the mod's power was served wherever the game asked for
@@ -558,7 +558,7 @@ requirements need a restart. See §13.
 > None of it was visible for years, because both powers were named "Akimbo" and rendered
 > identically. It surfaced only when this fork renamed one of them while working on something else.
 > Giving the mod's copy a distinct class fixed the Gunslinger but left a character who bought both
-> holding the ability twice, with a skills screen that would not close — so the power was removed
+> holding the ability twice, with a skills screen that would not close, so the power was removed
 > rather than shipped with a known way to spoil a run.
 >
 > Nothing is lost that cannot be had elsewhere: Akimbo is unchanged in the Pistol tree, where it has
@@ -584,14 +584,14 @@ than only finding it. Combined with the energy-cell notes below, Gigantic on a c
 charge and stacks with High Capacity.
 
 **Tier 7 is the price of that**, added in #317. It puts the recipe alongside `ModNanon` and
-`ModSuspensor` — the top of what vanilla lets anyone build. Without the attribute `ModEntry` defaults
+`ModSuspensor`, the top of what vanilla lets anyone build. Without the attribute `ModEntry` defaults
 `TinkerTier` to **1**, which is what shipped until now, and nothing vanilla allows at tier 1 is in
 the same company: `ModGigantic.ApplyModification` calls `AdjustDamage(3)` on a melee weapon, and
 damage is rolled **once per penetration**, so it is +3 *per penetration* rather than +3 flat.
 
 > ⚖️ **What Gigantic costs the player is real, and easy to miss from the blueprint.**
 > `GetSlotsRequiredEvent` does `E.Increases++`, so a gigantic item takes **one more equipment slot**
-> unless the wielder is a gigantic creature — a gigantic one-handed sword needs both hands, and a
+> unless the wielder is a gigantic creature: a gigantic one-handed sword needs both hands, and a
 > gigantic shield does too. `GetAddedWeight()` is the blueprint's weight **× 4**, floored at 4, so a
 > 6 lb greataxe becomes 30 lb. Those two are why the capability is worth keeping rather than
 > reverting.
