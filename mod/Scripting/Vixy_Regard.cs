@@ -33,9 +33,10 @@ namespace XRL.World
     /// <para>
     /// <b>The water ritual.</b> Speaking alone loses a handful of characters who are silent on
     /// purpose. <c>GivesRep</c> rescues three of them — <c>Oboroqoru</c>, <c>Dreamer</c> and
-    /// <c>Warden 1-FF</c> — and admits no animal at all: <c>Bat</c>, <c>Dog</c> and <c>Glowfish</c>
-    /// are all <c>GivesRep=False</c>. Sharing water is vanilla's own marker for a people you can
-    /// have standing with, so it is the right second question.
+    /// <c>Warden 1-FF</c>. However, <c>HeroMaker</c> also adds <c>GivesRep</c> to legendary beasts,
+    /// and birds carry Markov speech in <c>Conversations.xml</c> — both of which leaked animals into
+    /// personhood. <see cref="IsAnimal"/> gates both checks first so wildlife never holds territory
+    /// or opinion. #952.
     /// </para>
     /// <para>
     /// <b>Known miss: <c>Sparafucile</c>, and it is deliberate.</b> Twenty-three emote lines, mute
@@ -45,7 +46,6 @@ namespace XRL.World
     /// proper names to legendary beasts, so it would admit a legendary bat — the same leak that
     /// forced §62.6's reply to go wordless. One mute assassin is the price, and it is cheaper than
     /// vermin with opinions.
-    /// </para>
     /// <para>
     /// <b>The speaking test is <c>Vixy_AskName.SaysNothing</c>, not a copy of it.</b> That method
     /// walks reachable nodes from the seed, resolves <c>Inherits</c> at bake, excludes the nodes
@@ -70,12 +70,61 @@ namespace XRL.World
         [ModSensitiveStaticCache]
         private static Dictionary<string, bool> SpeakingByConversation;
 
+        private static readonly HashSet<string> AnimalFactions = new HashSet<string>
+        {
+            "Antelopes", "Apes", "Arachnids", "Baboons", "Bears", "Beasts",
+            "Birds", "Cats", "Crabs", "Dogs", "Equines", "Fish", "Flowers",
+            "Frogs", "Fungi", "Insects", "Mollusks", "Oozes", "Roots",
+            "Succulents", "Swine", "Tortoises", "Trees", "Unshelled Reptiles",
+            "Urchins", "Vines", "Winged Mammals", "Worms"
+        };
+
+        private static readonly HashSet<string> AnimalSpecies = new HashSet<string>
+        {
+            "antelope", "ape", "arachnid", "baboon", "bear", "beetle", "bird",
+            "cat", "centipede", "clam", "crab", "croc", "dog", "dragonfly",
+            "eel", "equine", "fish", "fly", "frog", "horse", "insect", "jelly",
+            "leech", "moth", "ooze", "pig", "prickler", "reptile", "root",
+            "rosepuff", "scorpion", "shark", "sheyd", "slug", "snail", "spider",
+            "star", "succulent", "swine", "tortoise", "tree", "urchin", "vine",
+            "winged mammal", "worm"
+        };
+
+        /// <summary>
+        /// Whether this creature is an animal, beast, or non-sentient organism.
+        /// </summary>
+        public static bool IsAnimal(GameObject Creature)
+        {
+            if (Creature == null) return false;
+            if (Creature.Blueprint == "Oboroqoru") return false;
+
+            string faction = Creature.GetPrimaryFaction();
+            if (!faction.IsNullOrEmpty() && AnimalFactions.Contains(faction))
+            {
+                return true;
+            }
+
+            string species = Creature.GetPropertyOrTag("Species");
+            if (!species.IsNullOrEmpty() && AnimalSpecies.Contains(species.ToLowerInvariant()))
+            {
+                if (Creature.HasTag("Humanoid") || Creature.GetPropertyOrTag("Class") == "human")
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Whether this creature could think better of somebody at all.
         /// </summary>
         public static bool CanHold(GameObject Creature)
         {
             if (Creature == null || !Creature.IsCreature) return false;
+
+            if (IsAnimal(Creature)) return false;
 
             // Vanilla's own marker for a people you can have standing with. Cheaper than the
             // conversation walk and answers the silent-but-real cases, so it goes first.
