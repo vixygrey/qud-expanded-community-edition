@@ -639,7 +639,7 @@ Conventions the mod follows:
 - Vibro variants sit at tier 5, cost 300, take an energy cell, use 100 charge per swing, and set penetration equal to the defender's AV.
 
 
-#### Greataxes (Axe, two-handed, Strength) — **new family**
+#### Greataxes (Axe, two-handed, Strength): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -650,18 +650,18 @@ Conventions the mod follows:
 | Flawless Crysteel Greataxe | new | 7 | 1d8+5 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Greataxe | new | 8 | 1d8+6 | +1 | 9 | (inh) | 1280 | 4 | yes |
 
-#### Glaives (Axe, two-handed, Finesse) — **new family**
+#### Glaives (Axe, two-handed, Finesse): **new family**
 
 The Axe tree's two-handed finesse weapon, added in #342. Of Pathfinder's three polearms it is the one
 whose identity survives translation: the halberd's traits are **reach** and **versatile**, and Qud has
 neither, while the glaive's are flavour rather than mechanism. *"A long, single-edged blade on the end
 of a 7-foot pole."*
 
-Damage is **the greataxe's die one tier behind**, the same way the quarterstaff pays the maul — which
+Damage is **the greataxe's die one tier behind**, the same way the quarterstaff pays the maul, which
 gives it a memorable property: **a glaive at tier N hits exactly as hard as a one-handed battle axe at
 tier N+1.** Weight is the greataxe line minus one, per §3.2's light-for-its-class rule.
 
-Neither the glaive nor a plain spear carries `finesse` in Pathfinder — the two-handed finesse
+Neither the glaive nor a plain spear carries `finesse` in Pathfinder, and the two-handed finesse
 precedents are both elven weapons. This is a fork decision resting on the light-for-its-class rule
 rather than an imported trait, recorded plainly so nobody later reads it as genre canon.
 
@@ -677,13 +677,13 @@ rather than an imported trait, recorded plainly so nobody later reads it as genr
 | Flawless Crysteel Glaive | new | 7 | 1d8+4 | +1 | 8 | (inh) | 640 | 4 | yes |
 | Zetachrome Glaive | new | 8 | 1d8+5 | +1 | 9 | (inh) | 1280 | 3 | yes |
 
-`Vixy_Vibro Glaive` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`, bits `0015`.
+`Vixy_Vibro Glaive` follows the vibro convention: tier 5, value 300, `ChargeUse="100"`, bits `0015`.
 
-The tile is this fork's own art, `mod/Textures/items/Vixy_Glaive.png` — a broad single-edged blade
+The tile is this fork's own art, `mod/Textures/items/Vixy_Glaive.png`, a broad single-edged blade
 with a back-spur at the socket, so it reads as a chopping weapon rather than the spear's thrusting
 point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 
-#### Halberds (Axe, two-handed, Strength) — **new family**
+#### Halberds (Axe, two-handed, Strength): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -695,7 +695,7 @@ point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 | Fullerite Halberd | new | 5 | 1d7+3 | +1 | 6 |  | 160 | 9 | yes |
 | Vibro Halberd | new | 5 | 1d6+3 | +0 | 0 |  | 300 | 7 | yes |
 
-#### Vinereapers (Axe, one-handed, Finesse) — vanilla family, completed to all tiers
+#### Vinereapers (Axe, one-handed, Finesse): vanilla family, completed to all tiers
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -710,7 +710,7 @@ point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 | Flawless Crysteel Vinereaper | new | 7 | 1d9+2 | +0 | 8 |  | 640 | 3 |  |
 | Zetachrome Vinereaper | new | 8 | 1d10+3 | +0 | 9 |  | 1280 | 2 |  |
 
-#### Katanas (Long Blades, two-handed, Finesse) — **new family**
+#### Katanas (Long Blades, two-handed, Finesse): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -725,7 +725,7 @@ point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 | Flawless Crysteel Katana | new | 7 | 2d10 | +1 | 8 |  | 640 | 4 | yes |
 | Zetachrome Katana | new | 8 | 2d12 | +1 | 9 |  | 1280 | 3 | yes |
 
-#### Rapiers (Long Blades, one-handed, Finesse) — **new family**
+#### Rapiers (Long Blades, one-handed, Finesse): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -740,15 +740,15 @@ point. One 16×24 sprite recoloured across all nine tiers by `ColorString`.
 | Flawless Crysteel Rapier | new | 7 | 2d6+1 | +0 | 8 |  | 640 | 2 |  |
 | Zetachrome Rapier | new | 8 | 2d8 | +0 | 9 |  | 1280 | 2 |  |
 
-#### Spears (Short Blades, two-handed, Finesse) — **new family**
+#### Spears (Short Blades, two-handed, Finesse): **new family**
 
 **The only two-handed weapon in the Short Blades tree**, added in #342. That gap was the reason for
 it: Single Weapon Fighting zeroes every non-primary intrinsic attack, so a two-handed weapon has
-already paid its cost — and a short-blade specialist was the one build that could never take the
+already paid its cost, and a short-blade specialist was the one build that could never take the
 skill cheaply. Pathfinder's elven branched spear is the precedent for a two-handed finesse weapon.
 
 Damage sits at the **midpoint between the dagger line and the two-handed long sword line** at each
-tier — above its own tree's one-handed line, below the two-handed line of the tree above. The Short Blades tree
+tier, above its own tree's one-handed line, below the two-handed line of the tree above. The Short Blades tree
 is already the finesse tree, so unlike the quarterstaff the spear does not pay for finesse twice.
 Weight is the katana line minus one, keeping §3.2's light-for-its-class rule.
 
@@ -767,13 +767,13 @@ Deliberately **not** throwable, though PF2e's spear is and the whole dagger line
 | Flawless Crysteel Spear | new | 7 | 2d8 | +1 | 8 | (inh) | 640 | 3 | yes |
 | Zetachrome Spear | new | 8 | 2d10 | +1 | 9 | (inh) | 1280 | 2 | yes |
 
-`Vixy_Vibro Spear` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`, bits `0015`.
+`Vixy_Vibro Spear` follows the vibro convention: tier 5, value 300, `ChargeUse="100"`, bits `0015`.
 
-The tile is this fork's own art, `mod/Textures/items/Vixy_Spear.png` — one 16×24 drawing recoloured
+The tile is this fork's own art, `mod/Textures/items/Vixy_Spear.png`, one 16×24 drawing recoloured
 across all nine tiers by `ColorString`, with the head and butt-ferrule taking the tier colour and the
 haft taking `DetailColor`.
 
-#### Wristblades / arm daggers (Short Blades) — **new family**
+#### Wristblades / arm daggers (Short Blades): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -791,15 +791,15 @@ haft taking `DetailColor`.
 **Two things worth knowing before building around these.**
 
 **They attack from the Arm slot**, and `BodyPart.ScanForWeapon` walks every body part, so two arms
-plus two hands is **four attack attempts a round**. That is vanilla's mechanic, not this fork's —
+plus two hands is **four attack attempts a round**. That is vanilla's mechanic, not this fork's;
 what the fork changed is availability: vanilla ships exactly one wristblade, `ArmDagger4` at tier 4,
 and one item at one tier is a find rather than a build. The damage is priced against that extra
 attack at roughly 60% of the dagger of the same tier (#324, and `docs/STYLEGUIDE.md` §3.2.1). Vanilla
-prices its own at full parity — `ArmDagger4` **is** `Dagger4` — because it never had to price a build.
+prices its own at full parity, since `ArmDagger4` **is** `Dagger4`, because it never had to price a build.
 
 **Single Weapon Fighting turns them off, and it defaults to on.** While that ability is toggled on,
 `SingleWeaponFighting_Ability` multiplies the attack chance of every non-primary body part by zero,
-and the combat loop marks only the first part primary — so your wristblades make **no attacks at
+and the combat loop marks only the first part primary, so your wristblades make **no attacks at
 all**. The skill's own bonuses need the toggle on, so the two are alternatives you switch between
 rather than combine. This is vanilla's behaviour and applies to your off-hand weapon just the same,
 but it is worth stating here, because a new character who buys Single Weapon Fighting and then
@@ -816,7 +816,7 @@ straps on wristblades will see nothing happen and have no obvious reason why.
 | Fullerite Mace | new | 5 | 2d4+1 | +0 | 6 | (inh) | 160 | 5 |  |
 | Zetachrome Mace | new | 8 | 3d4+1 | +0 | 9 | (inh) | 1280 | 2 |  |
 
-#### Maces, two-handed (Cudgel, Strength) — **new family**
+#### Maces, two-handed (Cudgel, Strength): **new family**
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
 |---|---|---|---|---|---|---|---|---|---|
@@ -829,15 +829,15 @@ straps on wristblades will see nothing happen and have no obvious reason why.
 | Flawless Crysteel Maceth | new | 7 | 3d6 | +1 | 8 | (inh) | 640 | 5 | yes |
 | Zetachrome Maceth | new | 8 | 4d6 | +1 | 9 | (inh) | 1280 | 5 | yes |
 
-#### Quarterstaves (Cudgel, two-handed, Finesse) — **new family**
+#### Quarterstaves (Cudgel, two-handed, Finesse): **new family**
 
 The Cudgel tree's two-handed finesse weapon, added in #342. Pathfinder files both the staff and the
-bo staff in the **club** group and tags each `monk` — the trait that has always meant Dexterity in
-both systems — so the staff is where a finesse two-handed cudgel comes from. It is the lightest of
+bo staff in the **club** group and tags each `monk`, the trait that has always meant Dexterity in
+both systems, so the staff is where a finesse two-handed cudgel comes from. It is the lightest of
 the three two-handed cudgel lines at every tier, per §3.2's rule that a finesse weapon is light for
 its class, and it deals **the maul's die one tier behind**, which is what the finesse costs.
 
-Wood rather than metal, so no `Metal` part — matching vanilla's own `Staff` and `Club`. The tier
+Wood rather than metal, so no `Metal` part, matching vanilla's own `Staff` and `Club`. The tier
 material is the ferrule, not the shaft, which is what a shod quarterstaff actually is.
 
 | Blueprint | New? | Tier | Damage | Pen | Max STR | Stat | Value | Weight | 2-slot |
@@ -852,7 +852,7 @@ material is the ferrule, not the shaft, which is what a shod quarterstaff actual
 | Flawless Crysteel Quarterstaff | new | 7 | 3d4+1 | +1 | 8 | (inh) | 640 | 4 | yes |
 | Zetachrome Quarterstaff | new | 8 | 3d6 | +1 | 9 | (inh) | 1280 | 4 | yes |
 
-`Vixy_Vibro Quarterstaff` follows the vibro convention — tier 5, value 300, `ChargeUse="100"`,
+`Vixy_Vibro Quarterstaff` follows the vibro convention: tier 5, value 300, `ChargeUse="100"`,
 bits `0015`.
 
 #### War hammers (Cudgel, Strength)
@@ -889,12 +889,12 @@ The full vibro set added by the mod is: **vibro battle axe, vibro greataxe, vibr
 vibro halberd, vibro greatsword, vibro rapier, vibro katana, vibro wristblade** (8 weapons,
 all tier 5, all 300 value, all `ChargeUse=100`, all tinkerable at bits `0015`, all with
 `Mods="AxeMods,BladeMods,WeaponMods,CommonMods,ElectronicsMods"`). None of them appear in any
-population table — they are tinker-only.
+population table, and are tinker-only.
 
 #### Rebalanced vanilla melee lines (merge-only, no new blueprint)
 
 The mod also retunes the vanilla **Long Sword**, **Dagger/Short Blade**, **Battle Axe**, and
-**Cudgel** progressions — mostly weight, value, and damage-die smoothing so the new families
+**Cudgel** progressions, mostly weight, value and damage-die smoothing so the new families
 line up with them. Notable base-object edits: `BaseAxe` weight → 3, `BaseLongBlade` weight → 2,
 `BaseDagger` weight → 1 (and `Stat="Agility"` on the dagger bases and both relic-dagger bases).
 
@@ -913,65 +913,65 @@ Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
 
 New concepts introduced:
 
-- **Vambraces** — a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla fills that slot with bracelets and gadgets and never with armor: no arm item in the game grants more than a single point of AV, and across all 28 of them **not one carries a negative DV**. So the line is held to the slot rather than allowed to reshape it — AV 1, DV 0 and a pound at every tier, matching vanilla's own numbers (#318, #381). What separates the nine is price, which makes them flavour rather than a progression, and that is deliberate: the Arm slot is for utility artifacts, and a vambrace is what you wear until you find one.
-- **Greatshields** — a full tier 0–8 line of two-handed-feel `Hand` shields with the highest AV in the game (3 → 10) at a DV cost.
-- **Bio-scanner mask** and **mutating mask** — two `Face`-slot artifacts.
-- **Reinforced suspension** — `Tread`-slot accessory for the mechanical-legs build.
+- **Vambraces**, a full tier 0–8 line of `Arm`-slot armor built on vanilla's `BaseArmlet`. Vanilla fills that slot with bracelets and gadgets and never with armor: no arm item in the game grants more than a single point of AV, and across all 28 of them **not one carries a negative DV**. So the line is held to the slot rather than allowed to reshape it: AV 1, DV 0 and a pound at every tier, matching vanilla's own numbers (#318, #381). What separates the nine is price, which makes them flavour rather than a progression, and that is deliberate: the Arm slot is for utility artifacts, and a vambrace is what you wear until you find one.
+- **Greatshields**, a full tier 0–8 line of two-handed-feel `Hand` shields with the highest AV in the game (3 → 10) at a DV cost.
+- **Bio-scanner mask** and **mutating mask**, two `Face`-slot artifacts.
+- **Reinforced suspension**, a `Tread`-slot accessory for the mechanical-legs build.
 
 Vanilla families completed:
 
 - **Weave cloaks** at every tier (bronzeweave → zetachromeweave), filling out the vanilla ironweave cloak.
-- **Nanoweave** and **Flexi** sets — vanilla ships the vest of each and nothing to go with it; helmet, gloves, boots and cloak complete both lines. They trade AV for **positive DV**, which vanilla's metal armor never gives.
+- **Nanoweave** and **Flexi** sets. Vanilla ships the vest of each and nothing to go with it; helmet, gloves, boots and cloak complete both lines. They trade AV for **positive DV**, which vanilla's metal armor never gives.
 
 
 #### Feet
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Boots | new | 0 | Feet | 2 | -2 | — | 5 | 8 |
-| Iron Boots | new | 1 | Feet | 2 | -1 | — | 10 | 7 |
-| Chain Boots | merge | 2 | Feet | 2 | -2 | — | 20 | 6 |
-| Steel Boots | merge | 2 | Feet | 3 | -3 | — | 20 | 7 |
-| Carbide Boots | merge | 3 | Feet | 3 | -2 | — | 40 | 9 |
+| Bronze Boots | new | 0 | Feet | 2 | -2 | - | 5 | 8 |
+| Iron Boots | new | 1 | Feet | 2 | -1 | - | 10 | 7 |
+| Chain Boots | merge | 2 | Feet | 2 | -2 | - | 20 | 6 |
+| Steel Boots | merge | 2 | Feet | 3 | -3 | - | 20 | 7 |
+| Carbide Boots | merge | 3 | Feet | 3 | -2 | - | 40 | 9 |
 | Flawless Crysteel Boots | merge | 7 | Feet | 4 | 0 | 5/5/5/5 | 650 | 6 |
-| Folded Carbide Boots | new | 4 | Feet | 3 | -1 | — | 80 | 8 |
-| Fullerite Boots | merge | 5 | Feet | 4 | -4 | — | 195 | 10 |
-| Flexiboots | new | 5 | Feet | 1 | 3 | — | 160 | 2 |
+| Folded Carbide Boots | new | 4 | Feet | 3 | -1 | - | 80 | 8 |
+| Fullerite Boots | merge | 5 | Feet | 4 | -4 | - | 195 | 10 |
+| Flexiboots | new | 5 | Feet | 1 | 3 | - | 160 | 2 |
 | Crysteel Boots | merge | 6 | Feet | 4 | -2 | 5/5/5/5 | 400 | 6 |
-| Nanoweave Boots | new | 6 | Feet | 3 | 1 | — | 300 | 3 |
+| Nanoweave Boots | new | 6 | Feet | 3 | 1 | - | 300 | 3 |
 | Zetachrome Pumps | merge | 8 | Feet | 4 | 0 | 6/6/6/6 | 1500 | 5 |
 
 #### Hands
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Gauntlets | new | 0 | Hands | 2 | -2 | — | 5 | 8 |
-| Iron Gauntlets | new | 1 | Hands | 2 | -1 | — | 10 | 7 |
-| Steel Gauntlets | merge | 2 | Hands | 3 | -3 | — | 20 | 7 |
-| Carbide Gauntlets | merge | 3 | Hands | 3 | -2 | — | 40 | 9 |
-| Folded Carbide Gauntlets | new | 4 | Hands | 3 | -1 | — | 80 | 8 |
-| Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | — | 195 | 10 |
-| Flexigloves | new | 5 | Hands | 1 | 2 | — | 160 | 2 |
+| Bronze Gauntlets | new | 0 | Hands | 2 | -2 | - | 5 | 8 |
+| Iron Gauntlets | new | 1 | Hands | 2 | -1 | - | 10 | 7 |
+| Steel Gauntlets | merge | 2 | Hands | 3 | -3 | - | 20 | 7 |
+| Carbide Gauntlets | merge | 3 | Hands | 3 | -2 | - | 40 | 9 |
+| Folded Carbide Gauntlets | new | 4 | Hands | 3 | -1 | - | 80 | 8 |
+| Fullerite Gauntlets | merge | 5 | Hands | 4 | -4 | - | 195 | 10 |
+| Flexigloves | new | 5 | Hands | 1 | 2 | - | 160 | 2 |
 | Crysteel Gauntlets | merge | 6 | Hands | 4 | -2 | 5/5/5/5 | 400 | 6 |
-| Nanoweave Gloves | new | 6 | Hands | 2 | 1 | — | 300 | 3 |
+| Nanoweave Gloves | new | 6 | Hands | 2 | 1 | - | 300 | 3 |
 | Flawless Crysteel Gauntlets | merge | 7 | Hands | 4 | 0 | 5/5/5/5 | 650 | 6 |
 | Zetachrome Gloves | merge | 8 | Hands | 4 | 0 | 5/5/5/5 | 1500 | 5 |
-| Chain Gauntlets | merge | - | Hands | 2 | -1 | — | - | 6 |
+| Chain Gauntlets | merge | - | Hands | 2 | -1 | - | - | 6 |
 
 #### Head
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Helmet | new | 0 | Head | 2 | -2 | — | 5 | 10 |
-| Iron Helmet | new | 1 | Head | 2 | -1 | — | 10 | 9 |
-| Chain Coif | merge | 2 | Head | 2 | -1 | — | 20 | 6 |
-| Steel Helmet | merge | 2 | Head | 3 | -3 | — | 20 | 9 |
-| Carbide Helmet | new | 3 | Head | 3 | -2 | — | 40 | 11 |
-| Folded Carbide Helmet | new | 4 | Head | 3 | -1 | — | 80 | 10 |
-| Fullerite Armet | merge | 5 | Head | 4 | -4 | — | 95 | 12 |
-| Flexihelmet | new | 5 | Head | 1 | 2 | — | 160 | 2 |
+| Bronze Helmet | new | 0 | Head | 2 | -2 | - | 5 | 10 |
+| Iron Helmet | new | 1 | Head | 2 | -1 | - | 10 | 9 |
+| Chain Coif | merge | 2 | Head | 2 | -1 | - | 20 | 6 |
+| Steel Helmet | merge | 2 | Head | 3 | -3 | - | 20 | 9 |
+| Carbide Helmet | new | 3 | Head | 3 | -2 | - | 40 | 11 |
+| Folded Carbide Helmet | new | 4 | Head | 3 | -1 | - | 80 | 10 |
+| Fullerite Armet | merge | 5 | Head | 4 | -4 | - | 95 | 12 |
+| Flexihelmet | new | 5 | Head | 1 | 2 | - | 160 | 2 |
 | Crysteel Coronet | merge | 6 | Head | 4 | -2 | 5/5/5/5 | 400 | 8 |
-| Nanoweave Helmet | new | 6 | Head | 2 | 1 | — | 300 | 3 |
+| Nanoweave Helmet | new | 6 | Head | 2 | 1 | - | 300 | 3 |
 | Flawless Crysteel Coronet | merge | 7 | Head | 4 | 0 | 5/5/5/5 | 650 | 8 |
 | Zetachrome Apex | merge | 8 | Head | 4 | 0 | 6/6/6/6 | 1500 | 7 |
 
@@ -979,15 +979,15 @@ Vanilla families completed:
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Plate Armor | new | 0 | Body | 3 | -3 | — | 8 | 24 |
-| Iron Plate Armor | new | 1 | Body | 3 | -1 | — | 16 | 21 |
-| Chain Mail | merge | 2 | (inh) | - | - | — | 25 | 15 |
-| Steel Plate Mail | merge | 2 | Body | 4 | -4 | — | 32 | 26 |
-| Carbide Plate Armor | merge | 3 | Body | 4 | -2 | — | 64 | 20 |
-| Folded Carbide Plate Armor | new | 4 | Body | 6 | -4 | — | 128 | 24 |
+| Bronze Plate Armor | new | 0 | Body | 3 | -3 | - | 8 | 24 |
+| Iron Plate Armor | new | 1 | Body | 3 | -1 | - | 16 | 21 |
+| Chain Mail | merge | 2 | (inh) | - | - | - | 25 | 15 |
+| Steel Plate Mail | merge | 2 | Body | 4 | -4 | - | 32 | 26 |
+| Carbide Plate Armor | merge | 3 | Body | 4 | -2 | - | 64 | 20 |
+| Folded Carbide Plate Armor | new | 4 | Body | 6 | -4 | - | 128 | 24 |
 | Fullerite Flake Armor | merge | 5 | Body | 4 | -2 | 12/12/3/3 | 320 | 40 |
-| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | — | 345 | 70 |
-| Crysteel Shardmail | merge | 6 | Body | 8 | -4 | — | 1200 | 18 |
+| Fullerite Plate Mail | merge | 5 | Body | 6 | -2 | - | 345 | 70 |
+| Crysteel Shardmail | merge | 6 | Body | 8 | -4 | - | 1200 | 18 |
 | Flawless Crysteel Shardmail | merge | 7 | Body | 8 | -2 | 9/9/9/9 | 1900 | 18 |
 | Zetachrome Lune | merge | 8 | Body | 8 | -2 | 10/10/10/10 | 6000 | 15 |
 
@@ -995,29 +995,29 @@ Vanilla families completed:
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronzeweave Cloak | new | 0 | Back | 1 | -1 | — | 5 | 4 |
-| Ironweave Cloak | merge | 1 | Back | 1 | 0 | — | 10 | 3 |
-| Steelweave Cloak | new | 2 | Back | 2 | -2 | — | 20 | 3 |
-| Carbideweave Cloak | new | 3 | Back | 2 | -1 | — | 40 | 6 |
-| Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | — | 80 | 5 |
-| Flexicloak | new | 5 | Back | 1 | 2 | — | 160 | 2 |
-| Fulleriteweave Cloak | new | 5 | Back | 2 | -2 | — | 160 | 6 |
+| Bronzeweave Cloak | new | 0 | Back | 1 | -1 | - | 5 | 4 |
+| Ironweave Cloak | merge | 1 | Back | 1 | 0 | - | 10 | 3 |
+| Steelweave Cloak | new | 2 | Back | 2 | -2 | - | 20 | 3 |
+| Carbideweave Cloak | new | 3 | Back | 2 | -1 | - | 40 | 6 |
+| Folded Carbideweave Cloak | new | 4 | Back | 2 | 0 | - | 80 | 5 |
+| Flexicloak | new | 5 | Back | 1 | 2 | - | 160 | 2 |
+| Fulleriteweave Cloak | new | 5 | Back | 2 | -2 | - | 160 | 6 |
 | Crysteelweave Cloak | new | 6 | Back | 2 | -3 | 6/6/6/6 | 320 | 3 |
-| Nanoweave Cloak | new | 6 | Back | 2 | 1 | — | 300 | 3 |
+| Nanoweave Cloak | new | 6 | Back | 2 | 1 | - | 300 | 3 |
 | Flawless Crysteelweave Cloak | new | 7 | Back | 2 | -1 | 6/6/6/6 | 640 | 3 |
 | Zetachromeweave Cloak | new | 8 | Back | 2 | 0 | 6/6/6/6 | 1280 | 2 |
-| Portable Beehive | merge | - | Back | 0 | 1 | — | - | - |
+| Portable Beehive | merge | - | Back | 0 | 1 | - | - | - |
 
-#### Arm (vambraces — new slot usage)
+#### Arm (vambraces, new slot usage)
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bronze Vambrace | new | 0 | Arm | 1 | 0 | — | 4 | 1 |
-| Iron Vambrace | new | 1 | Arm | 1 | 0 | — | 8 | 1 |
-| Steel Vambrace | new | 2 | Arm | 1 | 0 | — | 16 | 1 |
-| Carbide Vambrace | new | 3 | Arm | 1 | 0 | — | 32 | 1 |
-| Folded Carbide Vambrace | new | 4 | Arm | 1 | 0 | — | 64 | 1 |
-| Fullerite Vambrace | new | 5 | Arm | 1 | 0 | — | 128 | 1 |
+| Bronze Vambrace | new | 0 | Arm | 1 | 0 | - | 4 | 1 |
+| Iron Vambrace | new | 1 | Arm | 1 | 0 | - | 8 | 1 |
+| Steel Vambrace | new | 2 | Arm | 1 | 0 | - | 16 | 1 |
+| Carbide Vambrace | new | 3 | Arm | 1 | 0 | - | 32 | 1 |
+| Folded Carbide Vambrace | new | 4 | Arm | 1 | 0 | - | 64 | 1 |
+| Fullerite Vambrace | new | 5 | Arm | 1 | 0 | - | 128 | 1 |
 | Crysteel Vambrace | new | 6 | Arm | 1 | 0 | 5/5/5/5 | 256 | 1 |
 | Flawless Crysteel Vambrace | new | 7 | Arm | 1 | 0 | 5/5/5/5 | 512 | 1 |
 | Zetachrome Vambrace | new | 8 | Arm | 1 | 0 | 6/6/6/6 | 1024 | 1 |
@@ -1026,15 +1026,15 @@ Vanilla families completed:
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Bio Scanner Mask | new | 5 | Face | 0 | 0 | — | 60 | 5 |
-| Mutating Mask | new | 8 | Face | 1 | 1 | — | 1000 | 5 |
-| VISAGE | merge | - | (inh) | - | - | — | - | - |
+| Bio Scanner Mask | new | 5 | Face | 0 | 0 | - | 60 | 5 |
+| Mutating Mask | new | 8 | Face | 1 | 1 | - | 1000 | 5 |
+| VISAGE | merge | - | (inh) | - | - | - | - | - |
 
 #### Tread
 
 | Blueprint | New? | Tier | Slot | AV | DV | Resists (H/C/A/E) | Value | Weight |
 |---|---|---|---|---|---|---|---|---|
-| Reinforced Suspension | new | 3 | Tread | 0 | 2 | — | 25 | 5 |
+| Reinforced Suspension | new | 3 | Tread | 0 | 2 | - | 25 | 5 |
 
 #### Bucklers (Arm slot)
 
@@ -1064,7 +1064,7 @@ Vanilla families completed:
 | Flawless Crysteel Shield | merge | 7 | Hand | 7 | -2 | 450 | 6 |
 | Zetachrome Shield | new | 8 | Hand | 8 | -1 | 1280 | 5 |
 
-#### Greatshields — **new family** (Hand slot)
+#### Greatshields: **new family** (Hand slot)
 
 | Blueprint | New? | Tier | Slot | AV | DV | Value | Weight |
 |---|---|---|---|---|---|---|---|
@@ -1080,24 +1080,24 @@ Vanilla families completed:
 
 #### Notable armor artifacts
 
-**Bio-scanner mask** (tier 5, 60 value, Face) — energy-cell powered visor that sets the
+**Bio-scanner mask** (tier 5, 60 value, Face) is an energy-cell powered visor that sets the
 `BioScannerEquipped` property, giving creature readouts. 5-turn boot sequence, complexity 5,
 tinkerable (bits `0005`), accepts a Solar Cell by default.
 
-**Mutating mask** (tier 8, 1000 value, Face, AV 1 / DV 1) — a `GasMask` with Power 10 that also
-grants **+100 reputation with 50 factions simultaneously** (Antelopes through Worms — effectively
+**Mutating mask** (tier 8, 1000 value, Face, AV 1 / DV 1) is a `GasMask` with Power 10 that also
+grants **+100 reputation with 50 factions simultaneously** (Antelopes through Worms, effectively
 every faction in the game including Joppa, Kyakukya, Barathrumites, Mechanimists, Templar, Girsh,
 Consortium and Mamon). Flavor: the visage takes the appearance of whoever looks at you.
 
-**Reinforced suspension** (tier 3, `Tread`) — +2 DV, -15 carry weight penalty, `Role="Uncommon"`, tinkerable.
+**Reinforced suspension** (tier 3, `Tread`) gives +2 DV, -15 carry weight penalty, `Role="Uncommon"`, tinkerable.
 
 > ⚠️ **Two data bugs found in `Armor.xml`:**
 > - `Flawless Crysteel Boots` has `<tag Name="Tier" Value="3" />`. It should be 7 (vanilla value, and its price is 640 = tier-7 price). As shipped it will roll on tier-3 loot pools and gets tier-3 mod capacity.
-> - `Raven_Carbideweave Cloak` has `Commerce Value="5"`. The weave-cloak curve is 5/10/20/**40**/80/160/320/640/1280 — carbideweave should be 40.
+> - `Raven_Carbideweave Cloak` has `Commerce Value="5"`. The weave-cloak curve is 5/10/20/**40**/80/160/320/640/1280, so carbideweave should be 40.
 
 ### 6.4 Ranged weapons
 
-#### Psionic pistols & rifles — new family (18 weapons)
+#### Psionic pistols & rifles: new family (18 weapons)
 
 Two new base blueprints, `Raven_Base Psionic Pistol` and `Raven_Base Psionic Rifle`, both tier 3,
 energy-cell powered, tinkerable (bits `0003`), complexity 3, with `UnknownPistol`/`UnknownRifle`
@@ -1118,7 +1118,7 @@ Nine elemental variants of each:
 | Disintegration | disintegrating psionic … | 5 / 1d6 | 7 / 1d6 | `Disintegrate`, penetrates creatures |
 | Perception | mindflaying psionic … | 5 / 1d6 | 7 / 1d6 | `Mental Psionic` damage |
 | Ice | hyperborean psionic … | 4 / 1d8 | 6 / 1d8 | `Cold`, -3d20 (pistol) / -3d40 (rifle) temperature |
-| Fire | conflagrating psionic … | 4 / 1d8 | 6 / 1d8 | +3d20 / +3d40 temperature. Pistol is `Heat Fire`; **rifle is `Heat` only** — likely an oversight |
+| Fire | conflagrating psionic … | 4 / 1d8 | 6 / 1d8 | +3d20 / +3d40 temperature. Pistol is `Heat Fire`; **rifle is `Heat` only**, likely an oversight |
 | Lightning | fulminating psionic … | 4 / 1d8 | 6 / 1d8 | `Electric` |
 | Acid | corrosive psionic … | 4 / 1d8 | 6 / 1d8 | `Acid` |
 | Blood | sanguine psionic … | 3 / 1d10 | 5 / 1d10 | `Exsanguination` + **vampiric** (80–100% of damage healed, `Reduction=1d3-1`, cap 1d10+10, living targets only, reality-distortion based) |
@@ -1126,19 +1126,19 @@ Nine elemental variants of each:
 | Temporal | astral psionic … | 5 / 1d6 | 7 / 1d6 | `Cosmic` + **omniphase** (hits phased targets) |
 
 > ⚠️ Both psionic bases carry `Mods="…RifleMods,ElectronicsMods,BeamWeaponMods"`. The **pistol**
-> base inherits `BaseRifle` and lists `RifleMods` rather than `PistolMods` — likely an oversight
+> base inherits `BaseRifle` and lists `RifleMods` rather than `PistolMods`, likely an oversight
 > that blocks pistol-specific mods on the psionic pistols.
 
-#### Conventional guns — new (6 weapons)
+#### Conventional guns: new (6 weapons)
 
 | Blueprint | Tier | Skill | Shots/action | Ammo | Accuracy | Range inc. | Value | Notes |
 |---|---|---|---|---|---|---|---|---|
 | Fine-tuned handgun | 6 | Pistol | 2 (2 ammo) | 10 slugs | **1** (near-perfect) | 1 | 750 | Projectile pen 8 / 1d8. Turret name "miniature burstfire turret" |
 | Modified handcannon | 5 | Pistol | 8 (1 ammo) | 4 shotgun shells | 30 | 12 | 400 | Fires shotgun shells from a handcannon; pellets pen 4 / 1d2 |
 | Drum shotgun | 3 | Rifle | 10 (2 ammo, 10/anim) | 20 shells | 36 | 6 | 125 | `NoWildfire`, two-slot, weight 16 |
-| Compact flamethrower | (inherits) | Heavy | — | 16 dram liquid | — | — | — | Occupies **both Missile Weapon slots** instead of hands |
-| Cryocannon | 5 | Heavy Weapons | 1 | energy cell, 2000 charge | 0 | — | 750 | 1d8 `Cold NonPenetrating`, **-300 temperature** on hit and on entering |
-| Net gun | 5 | Rifle | 1 | energy cell, 1000 charge | — | 12 | 130 | 1d4 `Electric NonPenetrating` + deploys a **Stasisfield** (radius 1, duration 1d3+3). Also a radius-8 light source while charged |
+| Compact flamethrower | (inherits) | Heavy | - | 16 dram liquid | - | - | - | Occupies **both Missile Weapon slots** instead of hands |
+| Cryocannon | 5 | Heavy Weapons | 1 | energy cell, 2000 charge | 0 | - | 750 | 1d8 `Cold NonPenetrating`, **-300 temperature** on hit and on entering |
+| Net gun | 5 | Rifle | 1 | energy cell, 1000 charge | - | 12 | 130 | 1d4 `Electric NonPenetrating` + deploys a **Stasisfield** (radius 1, duration 1d3+3). Also a radius-8 light source while charged |
 
 #### Merged vanilla ranged weapons
 
@@ -1158,14 +1158,14 @@ Nine elemental variants of each:
 
 | Implant | Cost | Chargen | Slots | Effect | Weight |
 |---|---|---|---|---|---|
-| **Steel dermal plating** | 1 | — | Body | +1 AV | 6 |
-| **Steel hand bones** | 1 | — | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
+| **Steel dermal plating** | 1 | - | Body | +1 AV | 6 |
+| **Steel hand bones** | 1 | - | Hands | Fists deal **1d5** (`Raven_SteelFist`, tier 3) | 10 |
 | **Omni pass** | 2 | ✅ | Hands, Feet, Body, Back, Face, Arm, Head | **Walk through forcefields and unlock any door** (`DoorUnlocker:1` + `CyberneticsForcefieldNullifier`) | 0 |
-| **Sleep suppressor** | 2 | — | Body | **Cannot be put to sleep against your will**, and fatigue accrues at half rate — §51.5c | 1 |
-| **Air filtration system** | 3 | — | Body | `GasMask` Power 100 — **immune to gas attacks** | 2 |
-| **Crysteel dermal plating** | 6 | — | Body, Head, Back | +2 AV | 12 |
-| **Zetachrome hand bones** | 8 | — | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
-| **Zetachrome dermal plating** | 9 | — | Body, Head, Back | +3 AV | 16 |
+| **Sleep suppressor** | 2 | - | Body | **Cannot be put to sleep against your will**, and fatigue accrues at half rate, §51.5c | 1 |
+| **Air filtration system** | 3 | - | Body | `GasMask` Power 100, so **immune to gas attacks** | 2 |
+| **Crysteel dermal plating** | 6 | - | Body, Head, Back | +2 AV | 12 |
+| **Zetachrome hand bones** | 8 | - | Hands | Fists deal **3d6** (`Raven_ZetachromeFist`, tier 8, `Zetachrome` part) | 10 |
+| **Zetachrome dermal plating** | 9 | - | Body, Head, Back | +3 AV | 16 |
 
 Plus the two supporting fist weapons (`Raven_SteelFist`, `Raven_ZetachromeFist`), both `MaxStrengthBonus="999"`.
 
@@ -1177,7 +1177,7 @@ the omission.
 
 **Character creation reads a tag, not a table.** `QudCyberneticsModule` builds its list from
 `GetBlueprintsWithTag("StartingCybernetic:General")` plus the subtype and genotype variants, then
-expands it **once per slot** — which is why the Omni pass, at seven slots, occupies seven rows of that
+expands it **once per slot**, which is why the Omni pass, at seven slots, occupies seven rows of that
 list. `Implants_1and2Pointers` and its siblings have exactly one reader in the whole assembly,
 `CyberneticsHasRandomImplants`, which stocks **NPCs**; being in them has never had anything to do with
 chargen.
@@ -1195,20 +1195,20 @@ else {
 ```
 
 Genotype and subtype each *add* to `CyberneticsLicenses`, `CyberneticsTerminal` spends it later in
-play, and the chargen module only ever writes it on the decline branch — which zeroes the pool
+play, and the chargen module only ever writes it on the decline branch, which zeroes the pool
 outright in exchange for +1 Toughness. So declining is not saving the points, it is forfeiting them,
 and nearly every True Kin takes something. **`Cost` is never read at chargen and never shown there.**
 
 That is what settles the question, and it is not the question I first asked. It is not *is the price
-right* — nothing is paid. It is **does this belong on a free one-pick list beside night vision, dermal
+right*, because nothing is paid. It is **does this belong on a free one-pick list beside night vision, dermal
 insulation, translucent skin, carbide hand bones and pentaceps.**
 
 | implant | why it is not offered |
 |---|---|
-| **Steel hand bones** | `CarbideHandBones` is on the same free list and gives 2d3 against steel's 1d5. With nothing paid there is no cheaper tier, only a strictly dominated option — a trap rather than a budget pick |
+| **Steel hand bones** | `CarbideHandBones` is on the same free list and gives 2d3 against steel's 1d5. With nothing paid there is no cheaper tier, only a strictly dominated option, a trap rather than a budget pick |
 | **Steel dermal plating** | vanilla keeps its own `DermalPlating` off the list, so +1 AV is something the game declines to give away here, whatever it charges for it elsewhere |
 | **Sleep suppressor** | a blanket refusal of involuntary sleep is a hard immunity, and this list is deliberately made of small conveniences. Already free to *find*; free from turn one is a different proposition |
-| the four above cost 2 | every chargen-eligible implant in vanilla costs 1 or 2. Not because cost is spent here — it is not — but because Freehold evidently treats it as a proxy for how much to give away, and these are past it |
+| the four above cost 2 | every chargen-eligible implant in vanilla costs 1 or 2. Not because cost is spent here, since it is not, but because Freehold evidently treats it as a proxy for how much to give away, and these are past it |
 
 **The nine merged vanilla implants keep their own tags.** This mod writes `StartingCybernetic` exactly
 once, on the Omni pass, and never `*delete`s one; `Load="Merge"` adds tags rather than replacing them,
@@ -1219,21 +1219,21 @@ That was the one way this could have been a regression rather than an omission.
 
 | Implant | Change |
 |---|---|
-| Carbide dermal plating (`DermalPlating`) | Renamed to **carbide** dermal plating. Cost and effect are vanilla's — 3 points, +1 AV |
+| Carbide dermal plating (`DermalPlating`) | Renamed to **carbide** dermal plating. Cost and effect are vanilla's: 3 points, +1 AV |
 | Crysteel hand bones | Weight 10 and a custom tile; cost, value and **3d4** fist damage are vanilla's |
 | Fullerite hand bones / fist | Vanilla's **2d4+1** |
 | Motorized treads | `SaveModifier` +6 vs Move, Knockdown, Knockback, Restraint, Drag (EMP-sensitive, tech-scannable) |
 | Air current microsensor, Nocturnal apex, Rapid release finger flexors | New custom tiles and color strings |
 
 > ⚪ **The buffs that used to be in this table were reverted in #335.** Eight implants had been made
-> cheaper, stronger, or both — `DermalPlating` at 2 points for +2 AV against vanilla's 3 for +1,
+> cheaper, stronger, or both: `DermalPlating` at 2 points for +2 AV against vanilla's 3 for +1,
 > both insulations at +10 and +20 against +6 and +9, the ankle tendons doubled, `CherubicVisage` at
 > +2 Ego, `OpticalMultiscanner` at 4 points and 240 water against 8 and 600.
 >
 > **What made it matter is that most of them stack.** `CyberneticsOneOnly` is the only gate on
 > duplicate implants and it is per-blueprint; vanilla tags 17 items with it and the platings and
 > insulations are not among them. `Slots="Body,Head,Back"` is three distinct body parts, and
-> `ImplantedEvent` adds the stat once per implant with no cap — so three high-grade insulations were
+> `ImplantedEvent` adds the stat once per implant with no cap, so three high-grade insulations were
 > **+60 to each of the four elemental resistances**. Resistance applies as `(100 - resistance) / 100`,
 > so a Full Psionic caster's +40 on top of that reached **exactly 100**, which multiplies those paths
 > to zero. Vanilla's ceiling by the same route is 42. It is now 47.
@@ -1243,14 +1243,14 @@ That was the one way this could have been a regression rather than an omission.
 > restating it.
 
 > ⚪ **The plating line is priced on vanilla's own rate (#418).** Restoring carbide to 3 points for
-> +1 AV in #335 was right on its own and left it **dominated by two of this fork's rungs** — steel
+> +1 AV in #335 was right on its own and left it **dominated by two of this fork's rungs**: steel
 > gave the same +1 AV for a third of the licence cost, and crysteel gave twice the AV for the same
 > 3 points. Vanilla ships exactly one plating, so there is exactly one data point for what AV costs:
 > **3 licence points each**. The fork's rungs now sit on that rate.
 >
 > | plating | source | licence | water | AV | across 3 slots |
 > |---|---|---:|---:|---:|---:|
-> | steel | fork | 1 | 60 | +1 | **+1** — Body only |
+> | steel | fork | 1 | 60 | +1 | **+1**, Body only |
 > | carbide | vanilla | 3 | 180 | +1 | +3 |
 > | crysteel | fork | 6 | 360 | +2 | +6 |
 > | zetachrome | fork | 9 | 800 | +3 | +9 |
@@ -1263,23 +1263,23 @@ That was the one way this could have been a regression rather than an omission.
 > when it undercut carbide in every slot. `Slots` governs installation rather than what is already
 > installed, so a save with steel plating in a Head or Back slot keeps it.
 >
-> Crysteel moved from `Implants_3Pointers` to `Implants_4PlusPointers` to match — those table names
+> Crysteel moved from `Implants_3Pointers` to `Implants_4PlusPointers` to match, and those table names
 > are literal about licence cost, and `implant-table-cost` in `tools/validate_mod.py` now holds that.
 
 ### 6.6 Other equipment
 
-#### Energy cells — new
+#### Energy cells: new
 
 | Blueprint | Tier | Max charge | Recharge | Weight | Value | Drop weight | Tinker bits |
 |---|---|---|---|---|---|---|---|
-| **Advanced chem cell** | 5 | 50,000 | — | 1 | 300 | 10 | `0014` |
-| **Dark matter cell** | 8 | **500,000** | — | 70 | 1200 | 1 | `0047` |
+| **Advanced chem cell** | 5 | 50,000 | - | 1 | 300 | 10 | `0014` |
+| **Dark matter cell** | 8 | **500,000** | - | 70 | 1200 | 1 | `0047` |
 | **Solar cell array** | 4 | 10,000 | 10/turn in sunlight | 1 | 150 | 5 | `0023` |
 | **Solar cell nexus** | 7 | 50,000 | 10/turn in sunlight | 1 | 225 | 1 | `0025` |
 
 For reference, the mod's own notes record the vanilla baseline: chem cell 10,000 (T1);
 fidget 2,500 (T1, 2/20 per turn out of/in combat); solar 2,500 (T2, 10/turn); nuclear 100,000 (T7);
-antimatter 200,000 (T8); and the liquid-fuelled cells — lead-acid 4,000 (500/dram), combustion
+antimatter 200,000 (T8); and the liquid-fuelled cells: lead-acid 4,000 (500/dram), combustion
 6,000 (750/dram), thermoelectric 40,000 (5,000/dram), biodynamic 60,000 (7,500/dram).
 
 So the solar array is 4× the capacity of a basic solar cell and the nexus 20×, at vanilla's own
@@ -1291,18 +1291,18 @@ matches the **mech power core**, which is the only other 500,000 cell in the gam
 > **Recharge was 25 and 50 per turn.** Vanilla ships exactly one solar cell and its rate is **10**, so
 > 25 and 50 were invented. The nexus at 50 mattered more than it looks: a psionic pistol costs 50
 > charge a shot, so the nexus paid for **one shot per turn, indefinitely**, outdoors in daylight.
-> Vanilla's own ratio is a laser pistol at 100 a shot against a solar cell making 10 — **ten turns of
+> Vanilla's own ratio is a laser pistol at 100 a shot against a solar cell making 10, or **ten turns of
 > sun per shot**. Both fork cells are now 10 as well, which leaves capacity as the thing that
 > separates them, exactly as it separates every vanilla cell.
 >
 > **The dark matter cell weighed a pound.** Vanilla's portable ceiling is the antimatter cell at
 > 200,000; the only 500,000 cell it ships is the mech power core, at **70 lb**. Keeping the capacity
-> and taking the weight is the honest version of that trade — it is a power source you install
+> and taking the weight is the honest version of that trade. It is a power source you install
 > somewhere, not one you pocket.
 >
 > **And the drop weights were inverted.** See below.
 
-#### Energy cells — rarity
+#### Energy cells: rarity
 
 Vanilla's rule is visible once entry tier is read against capacity: **more charge, rarer, and later**.
 
@@ -1322,16 +1322,16 @@ and the recharging cells run their own ladder alongside it:
 | **Solar nexus** | 50,000 | Ammo 7 | **1** |
 
 Both ladders are monotone: nothing with more charge is commoner than something with less. They were
-not, before #326 — the advanced chem cell sat at weight **20**, four times commoner than the nuclear
+not, before #326. The advanced chem cell sat at weight **20**, four times commoner than the nuclear
 cell at twice its capacity and twenty times commoner than antimatter.
 
-**How cell mods interact** (from Mura's pinned feature list — useful context for retuning these):
+**How cell mods interact** (from Mura's pinned feature list, useful context for retuning these):
 
 | Mod | Effect |
 |---|---|
-| **Radio Powered** | Recharges (10 × Tier) per turn, up to (1 + Tier) max depth. Does **not** stack with Fidget/Solar recharge — only the highest rate applies. |
+| **Radio Powered** | Recharges (10 × Tier) per turn, up to (1 + Tier) max depth. Does **not** stack with Fidget/Solar recharge; only the highest rate applies. |
 | **High Capacity** | Max charge × (14 + Tier) / 10. A tier-1 cell gets 1.5×, each tier adds 0.1, capping at **2.2× at tier 8**. |
-| **Gigantic** | Doubles max charge, and **stacks** with High Capacity. (Mura never confirmed whether the stack is additive or multiplicative — worth testing, and note §5: this mod is what makes Gigantic tinkerable in the first place.) |
+| **Gigantic** | Doubles max charge, and **stacks** with High Capacity. (Mura never confirmed whether the stack is additive or multiplicative, worth testing, and note §5: this mod is what makes Gigantic tinkerable in the first place.) |
 
 > ⚠️ The dark matter cell (500,000 charge) and the advanced chem cell (50,000 charge) are both
 > priced at **300**. Given the mod's own doubling curve, the dark matter cell is drastically
@@ -1342,15 +1342,15 @@ cell at twice its capacity and twenty times commoner than antimatter.
 | Item | Tier | Effect | Value |
 |---|---|---|---|
 | **Advanced hoversled** | 6 | `Backpack` **-100 carry weight**, worn "Floating Nearby", tinkerable (`00345`) | 400 |
-| **Cybernetics credit pass** | — | `CyberneticsCreditWedge` worth **3 credits** | 450 |
+| **Cybernetics credit pass** | - | `CyberneticsCreditWedge` worth **3 credits** | 450 |
 | **Large sphere of negative weight** | 8 | `Suspensor` at **200% force**, **0 charge use**, complexity 7, tinkerable (`00008`), trinket, `DisplayFullNameAsReward` | 100 |
 
 #### Merged vanilla equipment
 
 | Item | Change |
 |---|---|
-| `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable**, 10,000 charge per use — every vanilla recoiler inherits this |
-| `Programmable Recoiler` | **Vanilla object.** Charge use 10,000 → **5,000**, and `Reprogrammable` false → **true**, so the cheaper recoiler can now be re-imprinted. Custom description. *(Listed as a new object in earlier drafts of this file — it is not; see #29.)* |
+| `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable**, 10,000 charge per use, and every vanilla recoiler inherits this |
+| `Programmable Recoiler` | **Vanilla object.** Charge use 10,000 → **5,000**, and `Reprogrammable` false → **true**, so the cheaper recoiler can now be re-imprinted. Custom description. *(Listed as a new object in earlier drafts of this file; it is not, see #29.)* |
 | `Reprogrammable Recoiler` | **Vanilla object.** Charge use 30,000 → **2,500**. Custom description. |
 | All 7 location recoilers (Joppa, Grit Gate, Six Day Stilt, Kyakukya, Golgotha, Bethesda Susa, Ezra) | Given `NameElide` values so their names render correctly under the new programmable system |
 | Force bracelet | Charge use → 250 |
@@ -1361,14 +1361,14 @@ cell at twice its capacity and twenty times commoner than antimatter.
 | Yuckwheat stem, Witchwood bark (`Food.xml`) | Weight → 0 |
 | Chute crab claw (`Creatures.xml`) | Damage **1d3-1** (can now roll 0), Cudgel skill, Strength, Hand slot |
 
-#### Throwables — pure price rebalance
+#### Throwables: pure price rebalance
 
 All **51** grenade blueprints (sleep gas, poison gas, stun gas, acid gas, flashbang, heat, cold,
 HE, EMP, normality gas, stasis, sunder, defoliant, fungicide, fire support, time dilation,
-glitter — grades 1/2/3 each) are repriced to a flat **10 / 20 / 30** by grade. Nothing else about
+glitter, grades 1/2/3 each) are repriced to a flat **10 / 20 / 30** by grade. Nothing else about
 them changes.
 
-#### Furniture — new
+#### Furniture: new
 
 | Blueprint | Inherits | Notes |
 |---|---|---|
@@ -1377,12 +1377,12 @@ them changes.
 | `Raven_Empty Armor Rack` | Weapon Rack | Recolored |
 | `Raven_Rusted Door` | Metal Door | Non-occluding, renders in dark |
 
-### 6.7 Ammo — arrows, shells and one slug live, bullets cut
+### 6.7 Ammo: arrows, shells and one slug live, bullets cut
 
 `ObjectBlueprints/Ammo.xml` was 524 lines with **every one of its 62 objects inside a single XML
 comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud change broke the
 effects and the ammo degraded to plain ammo. #144 revived the arrows and #145 the shells. #146 was
-the largest reachability claim of the three — 12 vanilla weapons plus 7 relic bases consume slugs —
+the largest reachability claim of the three, since 12 vanilla weapons plus 7 relic bases consume slugs,
 and it resolved by **cutting all 20 bullet objects** and adding one new round in their place, the
 scour slug. Those 20 stay commented as a record of what was tried, with `Raven_Quill Arrow` and its
 projectile. See *The scour slug* below for the measurement that decided it.
@@ -1403,7 +1403,7 @@ Those figures are vanilla's `Boomrose Arrow`, the only effect arrow the game shi
 Payloads sit at roughly half their mk I grenade, which is the ratio Boomrose keeps against a high
 explosive grenade mk I (force 1,200 against 2,000; 1d6 against 4d6). `HEGrenade` takes no radius
 attribute anywhere in the game, so Boomrose's lower force buys a smaller blast as well as weaker
-damage — it is the same area part as the grenade, dialled down, which is what makes it a like-for-
+damage. It is the same area part as the grenade, dialled down, which is what makes it a like-for-
 like anchor for the gas and flashbang arrows.
 
 **Blaze and cryo are asymmetric on purpose, because Qud implements heat and cold differently.**
@@ -1424,17 +1424,17 @@ effect removes itself as soon as temperature falls back under `FlameTemperature`
 | 701–900 | 4–5 |
 | 901+ | 5–6 |
 
-So the size of the hit sets the tick *and* the duration, and a small one is penalised twice —
+So the size of the hit sets the tick *and* the duration, and a small one is penalised twice:
 barely igniting something is worth about 2 damage in total. At 250, two arrows put a target near
 520 for roughly 20 turns, which is what one thermal grenade does to a single target.
 
-**Cold takes −50, far below half,** because freezing has no damage tier — crossing −100 is a
+**Cold takes −50, far below half,** because freezing has no damage tier: crossing −100 is a
 binary immobilise. Halving the grenade moderates nothing: from 25, anything deeper than about
 −125 is a one-shot disable, so −200 lands in the same place as −400.
 
 −50 freezes on the third consecutive hit, and the arithmetic matters because the first attempt at
 this number did not survive play-testing. `Physics.IsFrozen()` is `Temperature <= BrittleTemperature`
-with no save and no roll, so it is pure accounting — but temperature returns to ambient by
+with no save and no roll, so it is pure accounting, but temperature returns to ambient by
 `Math.Max(5, |diff| × 0.02)` every turn, and at these magnitudes the `0.02` term never reaches 5,
 making it a flat **5 a turn**. Each hit nets −45 rather than −50, and every miss hands 5 back:
 
@@ -1449,19 +1449,19 @@ it moved. A single hit reaches −20, nowhere near the −100 line, so it stays 
 disable by a wide margin.
 
 One caveat for both temperature arrows: `TemperatureOnHit` passes `Radiant: false`, and on that
-branch resistance still applies — cold whenever the result lands below 25, heat whenever it lands
+branch resistance still applies: cold whenever the result lands below 25, heat whenever it lands
 above 50. The glowpad these were tested against has `ColdResistance` 0 and `HeatResistance` 25, so
 blaze igniting it in two hits is a figure measured against a *resistant* target.
 
 Both stay on `TemperatureOnHit` rather than `ThermalGrenade`, single-target by design. Fire
 already spreads through the game's own mechanics, so the blaze arrow reaches beyond what it hits
 without an area part, and the cryo arrow is meant to be single-target. `ThermalGrenade` also
-appears on six objects in the game and every one inherits `Grenade` — no projectile precedent,
-unlike `HEGrenade`, `GasGrenade`, `FlashbangGrenade`, `SunderGrenade` and `DeploymentGrenade` —
+appears on six objects in the game and every one inherits `Grenade`, so there is no projectile precedent,
+unlike `HEGrenade`, `GasGrenade`, `FlashbangGrenade`, `SunderGrenade` and `DeploymentGrenade`.
 so its failure mode on a projectile would be silent.
 
 **None of them is craftable, and that follows a rule far wider than arrows.** Qud has exactly one
-crafting system, and Tinkering is the **artifact** skill — it builds recovered old-world technology
+crafting system, and Tinkering is the **artifact** skill: it builds recovered old-world technology
 and nothing else. No arrow is craftable, but neither is a dagger, a long sword, a battle axe, a
 steel suit, a short bow or a compound bow:
 
@@ -1473,7 +1473,7 @@ steel suit, a short bow or a compound bow:
 | **Turbow** | |
 
 The Turbow is the tell: the only craftable bow in the game, and the only one with an `Examiner`
-part — *"servos click on the wheeling groves and a miniature air turbine exaggerates the pull of
+part: *"servos click on the wheeling groves and a miniature air turbine exaggerates the pull of
 the bowstring."* An artifact that happens to be bow-shaped. Slugs and shells are craftable because
 they are cartridges serving firearms, which are recovered tech in their own right.
 
@@ -1481,10 +1481,10 @@ Giving these arrows a recipe would not have filled a gap Freehold left; it would
 into the artifact system, which vanilla declines to do for every wooden and forged object it ships.
 An earlier revision did exactly that, and also merged a `TinkerItem` onto vanilla's `Boomrose
 Arrow`; both were reverted before release. Whether this fork should add a *mundane* crafting system
-of its own — fletching, smithing, leatherwork — is #154.
+of its own, covering fletching, smithing and leatherwork, is #154.
 
 **Reachability is therefore entirely the drop tables.** Each arrow is weight 2 in `Ammo 2`,
-`Ammo 3` and `Ammo 4`, at Boomrose's own quantities (1, then 1d4, then 1d4) — so the set of six is
+`Ammo 3` and `Ammo 4`, at Boomrose's own quantities (1, then 1d4, then 1d4), so the set of six is
 worth roughly what Boomrose alone is worth in those pools rather than six times as much. They stay
 out of `Ammo 1`, where vanilla keeps Boomrose at weight 1 against wooden arrows' 100. Those tables
 also feed merchant stock through `Tier1Wares`, `Tier2Wares` and `YurlWares`, so buying is a
@@ -1497,42 +1497,42 @@ stasis arrow (omitted `IsRealityDistortionBased`, so normality would not have su
 **A fourth was replaced after release.** The quill arrow shipped in 2.3.0 **doing nothing**:
 `BleedingOnHit` registers `WeaponHit` and `WieldedWeaponHit`, both raised on the melee path, and
 `MissileWeapon` raises `ProjectileHit` instead. It flew, hit, dealt its `1d2`, and never bled
-anything — with no error anywhere, which is why it survived a release. Found while working #145,
+anything, with no error anywhere, which is why it survived a release. Found while working #145,
 whose razor shell had the identical defect.
 
 The **part** is melee-only; the **mechanic** is not. `BleedingOnHit` sits on exactly two vanilla
-objects, `Lamprey Bite` and `Sharpened Polyp` — and only the first is a natural weapon, the second
+objects, `Lamprey Bite` and `Sharpened Polyp`, and only the first is a natural weapon, the second
 being a wieldable `LongBlades` item. Bleeding itself reaches much further:
 `XRL.World.Parts.Skill.ShortBlades`, the tree's *root* class, bleeds on every critical hit with no
 power purchased, and `Rifle_WoundingFire` applies `Bleeding` at range from `MissileWeapon.cs`. This
 section previously said the opposite; corrected in #219.
 
-So #201 changed the payload because `BleedingOnHit` cannot fire from a projectile — which remains
-true — not because Qud declines to bleed things at range. Whether the mod should own a
+So #201 changed the payload because `BleedingOnHit` cannot fire from a projectile, which remains
+true, rather than because Qud declines to bleed things at range. Whether the mod should own a
 bleeding-at-range part is #210, and charter rule 2's question there is not whether to invent a
 mechanic but whether ammunition should deliver one that vanilla gates behind 250 skill points and a
 marking turn.
 
 The replacement is the **hulk honey arrow**, and `StickyOnHit` is the one payload for which being a
-single projectile is an *advantage* — it was rejected for the takedown shell precisely because eight
+single projectile is an *advantage*, and it was rejected for the takedown shell precisely because eight
 pellets applied eight separate `Stuck` effects. It is also the only arrow that reaches every
 anatomy: `Stuck` has no limb requirement, so it holds oozes and insects that `Prone` cannot touch,
 and `Stuck.Apply` calls `Flight.Fall`, so it grounds fliers too.
 
-Named for Qud's own sticky substance, which the game already models — `LiquidHoney` sets
-`StickyWhenWet`, `StickyDuration = 12` and `StickySaveVs = "Honey Stuck Restraint"` — so the
+Named for Qud's own sticky substance, which the game already models: `LiquidHoney` sets
+`StickyWhenWet`, `StickyDuration = 12` and `StickySaveVs = "Honey Stuck Restraint"`, so the
 substance on the tip explains the mechanic rather than decorating it, which is the naming rule
 above. `Duration="6" SaveTarget="17"` is half the hold of `CastNet` and hulk honey itself (both 12 /
 20), with the save midway between vanilla's light restraint (freezing liquid, 5 / 15) and its heavy
 one. An arrow fires at bow range from a stack; a net must be closed with and thrown once.
 
 Measured: an oddly-hued glowpad held for **~4.3 turns against the cap of 6**. Its Strength is 6, so
-its modifier is −5 and `d20 − 5 ≥ 17` is unreachable — only a natural 20 frees it, and `Duration`
+its modifier is −5 and `d20 − 5 ≥ 17` is unreachable, so only a natural 20 frees it, and `Duration`
 becomes the binding constraint. `CastNet` would hold the same target the full 12, so the arrow is
 half a net in practice as well as on paper. `SaveTarget` governs the other end instead: a
 Strength-16 target escapes in about two attempts.
 
-**`Raven_Quill Arrow` is commented out rather than deleted**, so #210 can restore it verbatim — the
+**`Raven_Quill Arrow` is commented out rather than deleted**, so #210 can restore it verbatim. The
 quillipede barb is the right fiction for bleeding and the wrong one for anything else, so the
 replacement took a new blueprint instead of the name. Commenting out a blueprint that shipped is not
 free: `GameObject.GetBlueprint` falls back to the generic `Object` blueprint and logs an error, so
@@ -1540,14 +1540,14 @@ anyone still holding one keeps a working arrow (its parts are serialised on the 
 blueprint-level tag lookups answer as `Object`. One day of release exposure on a weight-2 drop,
 against leaving an arrow in the tables that does nothing.
 
-**None of them can end up in a turret the game stocked** — all six carry `ExcludeFromTurretStock`,
+**None of them can end up in a turret the game stocked**: all six carry `ExcludeFromTurretStock`,
 and vanilla's `Boomrose Arrow` gains it by merge. `MagazineAmmoLoader.GetAmmoBlueprints` is
 **opt-out**: every blueprint with the matching ammo part is a candidate unless tagged, and an
 untagged one gets one entry in the pool while a `TurretStockWeight="N"` gets N.
 
 **Which turrets, exactly.** Auto-stocking runs off a `GenerateIntegratedHostInitialAmmo` event, and
 only two things raise it: `TurretTinker`, for wild turrets, and `PlaceTurretGoal`, for an AI placing
-one. **`Tinkering_DeployTurret` does not** — a turret you deploy yourself arrives *empty* and you
+one. **`Tinkering_DeployTurret` does not**, so a turret you deploy yourself arrives *empty* and you
 load it from your own pack. Confirmed in game. So this is about turrets nobody chose the ammunition
 for, not about your own.
 
@@ -1561,22 +1561,22 @@ than a weighted pick:
 | Before | 25 | 2 of each → **12 effect arrows and a boomrose**, plus 18 steel |
 | After | 18 | 18 steel, 6 carbide, 4 folded carbide, 2 of each end-game arrow |
 
-The Turbow is unaffected either way — it uses `EnergyAmmoLoader`, so a Turbow turret stocks no
+The Turbow is unaffected either way, because it uses `EnergyAmmoLoader`, so a Turbow turret stocks no
 arrows at all.
 
-Two reasons, covering different arrows. **Three of the six burst** — dream dew, starshell and
-stinger carry area payloads — and a turret stocked by the game is one nobody picked the ammunition
+Two reasons, covering different arrows. **Three of the six burst**, since dream dew, starshell and
+stinger carry area payloads, and a turret stocked by the game is one nobody picked the ammunition
 for, so a target closing to point blank puts the cloud or the flash on the turret and on anything
 beside it. Boomrose is the vanilla case of the same problem. Blaze, cryo and hulk honey are
 single-target and that argument does not reach them.
 
 **What reaches all six is that they are hand-made.** A waxed bulb of honey, a
-hollowed stinger with the sac still in it, a scored gas bulb, a phial, a wax shell — none of that
+hollowed stinger with the sac still in it, a scored gas bulb, a phial, a wax shell: none of that
 survives being cycled through a magazine and a feed mechanism. A vanilla arrow is a shaft and a
 metal head, which does.
 
 Only the blast case is merged into vanilla. Fullerite, crysteel, flawless crysteel and zetachrome
-arrows are also untagged and therefore also stocked, at one entry each — but they are better
+arrows are also untagged and therefore also stocked, at one entry each, but they are better
 sticks, not hazards, and where Freehold draws its value ceiling is their economy to set. See #147.
 
 #### The four effect shells
@@ -1591,16 +1591,16 @@ else
     E.Projectile = GameObject.Create(ProjectileObject, ...);
 ```
 
-and all four weapons that take a shell hardcoded a pellet — `ProjectileShotgunPellet` on the Pump
+and all four weapons that take a shell hardcoded a pellet: `ProjectileShotgunPellet` on the Pump
 Shotgun, `ProjectileCombatShotgunPellet` on the Combat Shotgun, and this mod's own two. Every
 shell's `AmmoShotgunShell ProjectileObject` was discarded and the payload never existed. That is
 the *"degraded to plain ammo"* symptom #14 recorded, and it is structural rather than a bug.
 
 **The fix is vanilla's own.** An empty `ProjectileObject` means "fire whatever is loaded", and it
-appears exactly three times in the game — the **Grenade Launcher** and the **Dart Gun**, both
+appears exactly three times in the game: the **Grenade Launcher** and the **Dart Gun**, both
 weapons whose ammunition carries the payload. #145 merges that blank onto both vanilla shotguns
 and sets it on this mod's two. Plain `Shotgun Shell` is unaffected: `ProjectileShotgunShell` and
-the two pellet blueprints are the same object three times over — `BasePenetration` 4 over `1d2`,
+the two pellet blueprints are the same object three times over, at `BasePenetration` 4 over `1d2`,
 all inheriting `BaseShotgunProjectile`.
 
 The cost is stated rather than hidden: if Freehold ever differentiates the combat shotgun's pellet
@@ -1608,7 +1608,7 @@ from the pump's, this merge discards it. That is charter rule 1's own failure mo
 because the alternative is a category of ammunition that cannot exist.
 
 **The payload is per pellet, and that governs every number.** `MissileWeapon.Fire` raises
-`LoadAmmoEvent` `AmmoPerAction` times, then `DeepCopy`s the result up to `ShotsPerAction` — so one
+`LoadAmmoEvent` `AmmoPerAction` times, then `DeepCopy`s the result up to `ShotsPerAction`, so one
 shell becomes **eight** projectiles, each with its own spread roll and its own copy of the payload.
 
 | Displayed as | Blueprint | Payload |
@@ -1621,20 +1621,20 @@ shell becomes **eight** projectiles, each with its own spread roll and its own c
 **The temperature figures came out of play-testing, and the first two attempts were wrong in ways
 worth recording**, because both traps generalise and #146 meets them again with a chaingun.
 
-Parity per action is the right *target* — a shell and an arrow each cost one piece of ammunition
-per action — but ÷8 is the wrong way to reach it, twice over. `MissileWeapon.Fire` rolls
+Parity per action is the right *target*, since a shell and an arrow each cost one piece of ammunition
+per action, but ÷8 is the wrong way to reach it, twice over. `MissileWeapon.Fire` rolls
 `Stat.Random(-WeaponAccuracy, WeaponAccuracy)` per pellet, and at the Pump Shotgun's
 `WeaponAccuracy="45"` only about **two of eight** connect, ranging from 1.8 to 4.4 across
-measured runs. And ambient regression is a **flat 5 a turn** — a floor, not a curve — so −6 a
+measured runs. And ambient regression is a **flat 5 a turn**, a floor rather than a curve, so −6 a
 pellet with a couple connecting was erased about as fast as it landed. Eight shells into a 500 HP
 target never got it cold.
 
 So the divisor is the pellets that *land*: −50 and +250 over two gives **−25** and **+125**, which
-is three shots to freeze and two to ignite — the arrows' own figures, reached the way a shotgun
+is three shots to freeze and two to ignite, the arrows' own figures, reached the way a shotgun
 reaches them. Measured: 3 shots, ~4 turns frozen, against the arrow's 3 hits and ~3 turns.
 
 **`Max`/`MaxTemp` bound the duration**, which no `Amount` can. Overshoot past −100 *is* the freeze
-duration at 5 a turn, and it scales with however many pellets happen to connect — two point-blank
+duration at 5 a turn, and it scales with however many pellets happen to connect: two point-blank
 shots once reached −185 and held for ~17 turns. The cap stops the payload applying once the target
 is past the line. Its value has a trap: it must sit **beyond** the threshold. `MaxTemp="-90"` would
 stop the cold at about −95, above the brittle line, and the target would never freeze at all.
@@ -1646,30 +1646,30 @@ precedent.
 
 | | trigger | what happens |
 |---|---|---|
-| `Frozen` | ≤ −100 | *"Can't take physical actions."* — and **nothing** below it, all the way to the −10,000 floor |
+| `Frozen` | ≤ −100 | *"Can't take physical actions."*, and **nothing** below it, all the way to the −10,000 floor |
 | `Burning` | ≥ 350 | damage per turn, scaling with distance above |
 | `Vaporized` | ≥ 10,000 | `ParentObject.Die(…, "You were vaporized.")` |
 
 So heat is a damage type with a runaway top end and a kill line; cold is a control effect that
 plateaus, where every point past −100 buys only duration. That is why the two shells' numbers are
 not mirror images, and why #144 could cut the arrow's cold from −400 to −50 without losing anything
-— there was no deeper tier to buy.
+There was no deeper tier to buy.
 
 **Six of Mura's ten were cut, and the mechanism did the sorting.**
 
 *Area payloads cannot be scaled down*, because eight pellets multiply the geometry rather than the
 magnitude. `GasGrenade.DoDetonate` fills the impact cell **and all eight adjacent cells** at the
-full `Density`, and density is per cell — so dividing it thins the gas without shrinking anything.
+full `Density`, and density is per cell, so dividing it thins the gas without shrinking anything.
 Eight pellets across a `WeaponAccuracy="45"` cone reach up to **72 gas cells** from one shell.
 `FlashbangGrenade` bottoms out at radius 1 / duration 1 per pellet. `HEGrenade` is worst: `Explode`
 deals `Force / 250` and propagates only while `(Force − dealt) / 8 > 100`, so Boomrose's 1,200
-divided by eight is **150 — zero damage and no propagation at all**. And `IGrenade` detonates on
+divided by eight is **150, zero damage and no propagation at all**. And `IGrenade` detonates on
 the projectile's *death* (`BeforeDeathRemovalEvent`, when `Primed`), so a pellet that hits nothing
 still goes off where it lands. Cut: explosive, flash, poison gas, sleep gas.
 
 *Bleeding is not available to a projectile at all.* `BleedingOnHit` registers `WeaponHit` and
 `WieldedWeaponHit`; `WeaponHit` is raised in `Combat.cs` on the melee path, and `MissileWeapon`
-raises `ProjectileHit` instead. The razor shell would have fired and done nothing — **and so does
+raises `ProjectileHit` instead. The razor shell would have fired and done nothing, **and so does
 the quill arrow shipped in 2.3.0**, replaced in #201. Cut: razor.
 
 *Vibro, sunder and stasis* go for the reasons #144 cut their arrows, each worse on eight pellets
@@ -1678,7 +1678,7 @@ weapon; `BasePenetration="10"` is above every vanilla firearm projectile includi
 rifle's 7; and the stasis shell omitted `IsRealityDistortionBased`, which all three vanilla stasis
 grenades set.
 
-What survives is what a shotgun already is — many small hits — so the payload rides the hit.
+What survives is what a shotgun already is, many small hits, so the payload rides the hit.
 
 **Armour stops the damage, not the temperature.** `ProjectileHit` fires even when a pellet fails to
 penetrate (the `Penetrations = 0` branch raises it too) and `TemperatureOnHit` never checks
@@ -1687,7 +1687,7 @@ penetration. It is also why the cryo shell answers everything the takedown shell
 whatsoever, so an ooze, a slug or a worm freezes exactly as well as a humanoid.
 
 **The flechette shell is new, because a real slug shell is not expressible.** Shot count belongs to
-the gun — `num9` is read straight off `MissileWeapon.ShotsPerAction` with no event between, and
+the gun: `num9` is read straight off `MissileWeapon.ShotsPerAction` with no event between, and
 `GetMissileWeaponPerformanceEvent`, the one event ammunition can reach, carries penetration and
 damage but no count. That is filed upstream as #200. So the anti-armour round reaches its role
 through penetration instead: eight steel darts rather than one slug. Pen 6 over flat 1 damage came
@@ -1695,17 +1695,17 @@ from simulating `Stat.RollDamagePenetrations` directly:
 
 | Mean damage per pellet | AV 0 | AV 4 | AV 8 | AV 10 | **AV 12** |
 |---|---|---|---|---|---|
-| standard pellet — pen 4 / `1d2` | 5.34 | 2.34 | 1.22 | 0.73 | **0.33** |
-| flechette — pen 6 / `1` | 4.56 | 2.56 | 1.11 | 0.82 | **0.49** |
+| standard pellet, pen 4 / `1d2` | 5.34 | 2.34 | 1.22 | 0.73 | **0.33** |
+| flechette, pen 6 / `1` | 4.56 | 2.56 | 1.11 | 0.82 | **0.49** |
 
 Within 10% of standard shot everywhere below AV 10 and **48% ahead at AV 12**, which is the most
-populous declared AV in the game — 70 blueprints, all cherubim, plus Rodanis Y. Pen 7 and `1d2`
+populous declared AV in the game: 70 blueprints, all cherubim, plus Rodanis Y. Pen 7 and `1d2`
 damage were both tried and both beat standard shot nearly everywhere, making them upgrades rather
 than trades.
 
 **Every penetration figure above is the raw XML value, which is not what the game shows.** Qud adds
-`RuleSettings.VISUAL_PENETRATION_BONUS`, a flat **+4**, to every penetration it displays anywhere —
-melee, thrown, arrows, mutations and missiles alike:
+`RuleSettings.VISUAL_PENETRATION_BONUS`, a flat **+4**, to every penetration it displays anywhere:
+melee, thrown, arrows, mutations and missiles alike,
 
 ```csharp
 stringBuilder.Append(Math.Max(E.Penetration + RuleSettings.VISUAL_PENETRATION_BONUS, 1));
@@ -1720,7 +1720,7 @@ stringBuilder.Append(Math.Max(E.Penetration + RuleSettings.VISUAL_PENETRATION_BO
 The offset is not arbitrary and the manual explains the result without naming it: *"Each weapon has
 a penetration value (→4, for example). This value represents the armor value (AV) that your weapon
 will usually penetrate with ease."* The penetration die is `Random(1, 10) - 2`, which averages
-**3.89** — so folding 4 into the display makes `displayed penetration > target AV` the comparison a
+**3.89**, so folding 4 into the display makes `displayed penetration > target AV` the comparison a
 player can make by eye. The flechette reads as *usually penetrates AV 10*, which is where it was
 aimed, arrived at independently from the cherub arithmetic above.
 
@@ -1729,26 +1729,26 @@ and the game is always four higher.
 
 **The takedown shell carries two parts because neither can stack.** `Prone.Apply` opens with a
 `HasEffect<Prone>` guard and `GroundOnHit` extends a `Grounded` duration rather than adding a
-second, so pellets buy reliability and never magnitude — which is what makes `Chance` an honest
+second, so pellets buy reliability and never magnitude, which is what makes `Chance` an honest
 dial. Both sit at `Chance="40"`, sized against the ~2 pellets that land rather than the 8 fired;
 `Chance="12"` shipped first and gave a shell a 22% chance of doing anything at all.
 
 **Three things about it that play-testing corrected, all of which a player will also meet.**
 
 *`Prone` promises more than Qud delivers.* Its own summary is `-6 Agility, -5 DV, -80 move speed,
-must spend a turn to stand up`, at `Duration = 1`. It does **not** stop the target attacking — a
-prone creature adjacent to you still bites — and it neither stacks nor refreshes, so a second shell
+must spend a turn to stand up`, at `Duration = 1`. It does **not** stop the target attacking, since a
+prone creature adjacent to you still bites, and it neither stacks nor refreshes, so a second shell
 into a downed target is wasted. It buys a window and an action.
 
 *The anatomy exclusion is wider than "no legs".* `LimbSupportsProneness` wants a `Feet` or `Roots`
-part with `Mobility` above zero, and **`Legs` — the variant every insect, spider and crab is built
-from — is `VariantOf="Feet"` with `Mobility="0"`.** A fire ant queen has six legs in its anatomy and
+part with `Mobility` above zero, and **`Legs`, the variant every insect, spider and crab is built
+from, is `VariantOf="Feet"` with `Mobility="0"`.** A fire ant queen has six legs in its anatomy and
 cannot be knocked off any of them. The `Mobility` clause excludes as much as the missing-limb one.
 
 *Grounding is silent unless the target is airborne.* `Grounded.Apply` prints nothing; the *"falls to
 the ground"* line comes from `Flight.Fall`, which only fires on a live `Flying` effect. Three
 play-tests read as failures before examining a target showed the `Grounded` status had been there
-all along. The reason is worth knowing when testing: **a wished creature is not flying** —
+all along. The reason is worth knowing when testing: **a wished creature is not flying**.
 `Flight.StartFlying` is only reached from the `Wings` mutation's `CommandEvent` handler, so flight
 is an activated ability rather than a spawn state, and a fresh gamma moth is standing on the ground.
 
@@ -1758,13 +1758,13 @@ the configured `Duration="20-30"`, with the *"falls to the ground"* message appe
 window trying to take off and failing.
 
 `GroundOnHit` also needs `SaveTarget="40"`, not `ProneOnHit`'s 25, because `FlyingLevelAidsSave`
-subtracts the target's flying level first — and nearly every flier in the game carries `Wings` at
+subtracts the target's flying level first, and nearly every flier in the game carries `Wings` at
 level 10. At 25 that is a save against 15, which is why six point-blank shells failed to ground a
 gamma moth. Vanilla's only user of the part writes 40 for exactly this reason.
 
 `StickyOnHit` was the obvious alternative and fails the same test the gas shells did: it reaches
 every anatomy and grounds fliers by itself, but it has no `Chance` field, `Stuck` has no anti-stack
-guard, and `GameObject.ApplyEffect` does not deduplicate — so one shell applies **eight separate
+guard, and `GameObject.ApplyEffect` does not deduplicate, so one shell applies **eight separate
 `Stuck` effects** and escaping rolls a save against each. No dial, so no shell.
 
 `GroundOnHit` needs `ChargeUse="0"` written out: it is an `IPoweredPart` whose constructor sets
@@ -1772,7 +1772,7 @@ guard, and `GameObject.ApplyEffect` does not deduplicate — so one shell applie
 silently. Vanilla's only user, `ProjectileNaserCannon`, writes the same zero.
 
 **Unlike the arrows these are craftable, and that is the same rule read the other way.** Tinkering
-is the artifact skill, and a cartridge serves a firearm, which is recovered technology — vanilla
+is the artifact skill, and a cartridge serves a firearm, which is recovered technology. Vanilla
 agrees, giving `Shotgun Shell` and `Lead Slug` recipes while no arrow in the game has one.
 
 Cost and availability are set separately. `TinkerItem.LoadBlueprint` reads the recipe tier from
@@ -1782,14 +1782,14 @@ Tinker 2 past tier 3:
 | Shell | Bits | `BuildTier` | Recipe tier | Skill |
 |---|---|---|---|---|
 | incendiary, cryo, flechette | `001` | **4** | 4 | **Tinker 2** |
-| takedown | `001` | — | 1 | Tinker 1 |
+| takedown | `001` | - | 1 | Tinker 1 |
 
-All four cost two scrap metal and one phasic power systems for three shells — **exactly what vanilla
+All four cost two scrap metal and one phasic power systems for three shells, **exactly what vanilla
 charges for a gas, flashbang, thermal, freeze or high explosive grenade mk III**, which are the
 payloads these shells carry dialled down. The material bracket matches the thing being imitated.
 
 They cost `003` until #146, a **pure alloy**: a level-3 bit vanilla reserves for its exotic grenades
-— plasma, gravity, time dilation — and never asks for on a payload of this kind. The rarity was
+such as plasma, gravity and time dilation, and never asks for on a payload of this kind. The rarity was
 doing gating work `BuildTier` already does, and it read as a tax on the line rather than a decision
 about any shell.
 
@@ -1801,7 +1801,7 @@ vanilla's own recipe tiers is #202.
 
 **All four carry `ExcludeFromTurretStock`, and the case is stronger than it was for arrows.**
 `Shotgun Shell` is the *only* blueprint in the game with `AmmoShotgunShell` and carries no exclusive
-tag, so the shell pool is a single entry — untagged, these four would be four fifths of every
+tag, so the shell pool is a single entry. Untagged, these four would be four fifths of every
 shotgun turret's ammunition. `TurretTinker` also falls back to `"Pump Shotgun"` twice, which makes
 shotgun turrets the game's default. The scope is the same narrow one as for arrows: only
 `TurretTinker` and `PlaceTurretGoal` raise `GenerateIntegratedHostInitialAmmo`, so a turret you
@@ -1809,14 +1809,14 @@ deploy yourself still arrives empty.
 
 **Reachability is both routes.** Weight 2 apiece in `Ammo 2` through `Ammo 8`, at Boomrose's
 quantities (1 at tier 2, `1d4` above). Unlike the arrows they run the full range, because shells
-have no tier ladder — Boomrose stops at 4 because fullerite, crysteel and zetachrome arrows take
+have no tier ladder. Boomrose stops at 4 because fullerite, crysteel and zetachrome arrows take
 over, and there is no better shell to replace these. Vanilla keeps plain `Shotgun Shell` at weight
 25 in every pool from `Ammo 2` to `Ammo 8`.
 
 #### The scour slug
 
 Mura's ten effect bullets are **cut**, decided in #146. Six had already been cut from the arrows and
-the shells for reasons that did not change, and the razor bullet — the one worth arguing about —
+the shells for reasons that did not change, and the razor bullet, the one worth arguing about,
 failed the test this whole line is built on. **813 of 904 creature blueprints bleed**, robots
 included, so it had no dead matchup: a straight upgrade over a plain slug rather than a trade.
 
@@ -1825,13 +1825,13 @@ What replaced it is one round, `Vixy_Scour Slug`, carrying `RustOnHit` at `Chanc
 | | |
 |---|---|
 | What it does | takes **one random item** from the target's equipment or inventory and applies `Rusted` |
-| Dead to | creatures carrying nothing — `GetRandomItemFrom` returns `null`, silently |
-| Dead to | creatures whose gear is all **natural** — see below, and this is the big one |
-| Dead to | anything carrying only non-metal — `Rusted.Apply` opens on `!HasPart<Metal>` |
+| Dead to | creatures carrying nothing, so `GetRandomItemFrom` returns `null`, silently |
+| Dead to | creatures whose gear is all **natural**, see below, and this is the big one |
+| Dead to | anything carrying only non-metal, since `Rusted.Apply` opens on `!HasPart<Metal>` |
 | Costs you | `Rusted` drops an item to **1%** of its value, and a second one destroys it outright |
 
 **This is a narrow round, and that is the trade it is priced on.** 728 of 904 creature blueprints
-are dead to `RustOnHit` — but that number alone describes a round that does nothing, and the useful
+are dead to `RustOnHit`, but that number alone describes a round that does nothing, and the useful
 half is the other one: **134 of 340 humanoid creature blueprints have a rustable item**, against
 202 that do not. It is a round for the armed and the armoured and dead weight against beasts, and
 those are the two figures that say so. Both are recomputed from the game by
@@ -1840,35 +1840,35 @@ those are the two figures that say so. Both are recomputed from the game by
 Worth knowing that it is narrower still in play than in the bestiary. Restricting the count to
 creatures a vanilla population table can actually spawn moves the rustable share from 18.8% to
 17.4%, and weighting by how many table entries name each one takes it to 13.6%. And a blueprint
-census is a *floor* in the other direction — a creature arms itself from what is lying around, so
+census is a *floor* in the other direction, because a creature arms itself from what is lying around, so
 what a blueprint declares is the least it can be carrying.
 
 ##### Natural gear is invisible to it
 
 The largest dead category is not creatures carrying nothing. It is **351 of 904 creature blueprints
-carry only natural gear**, and they are immune however armed they look — a temple mecha holding a
+carry only natural gear**, and they are immune however armed they look. A temple mecha holding a
 `MachinedEdge` that *has* `<part Name="Metal" />` cannot be rusted at all.
 
 `NaturalWeapon` sets `<intproperty Name="Natural" Value="1">`. `BodyPart.DoEquip` opens with
 `GameObject.EquipAsDefaultBehavior()`, which is true for anything `IsNatural()`, and that branch
 assigns `bodyPart.DefaultBehavior` rather than `bodyPart._Equipped`. `GetEquippedObjects` collects
 `Equipped` only. So the pool `GetRandomItemFrom` draws from is empty, it returns `null`, and
-`?.ApplyEffect` does nothing without a message. Armour is unaffected — `EquipAsDefaultBehavior`
-refuses anything with an `Armor` part — so armoured creatures stay rustable.
+`?.ApplyEffect` does nothing without a message. Armour is unaffected, because `EquipAsDefaultBehavior`
+refuses anything with an `Armor` part, so armoured creatures stay rustable.
 
-It fills a real gap: **Bow and Rifle is the only tree with status-inflicting shots** — Wounding,
-Suppressive, Flattening, Sure, Beacon, Disorienting and Ultra Fire — while Pistol (30 weapons) and
+It fills a real gap: **Bow and Rifle is the only tree with status-inflicting shots**: Wounding,
+Suppressive, Flattening, Sure, Beacon, Disorienting and Ultra Fire, while Pistol (30 weapons) and
 Heavy Weapon (16, including the Chaingun and Linear Cannon) have none. Slugs are eaten across all
 three, so ammunition is the only vehicle that reaches the two empty ones.
 
 **It does not need to penetrate.** `MissileWeapon` raises `ProjectileHit` inside the
 failed-to-penetrate branch as well, with `Penetrations` 0, and `RustOnHit` checks penetration
-nowhere — so this answers a target you cannot hurt. Deliberate, and the reason the chance is a third
+nowhere, so this answers a target you cannot hurt. Deliberate, and the reason the chance is a third
 of vanilla's default.
 
 **Rust is repairable**, at a premium: `Tinkering_Repair` branches to `RustedRepairCost`, forcing the
 item's highest bit and including 75% of the rest against 50% for ordinary repair. So the round is an
-expensive setback rather than annihilation — except on an artifact, where `IActivePart.IsRustSensitive`
+expensive setback rather than annihilation, except on an artifact, where `IActivePart.IsRustSensitive`
 defaults true and `IsReady` returns `ActivePartStatus.Rusted`, so a rusted laser rifle simply stops
 firing.
 
@@ -1876,18 +1876,18 @@ firing.
 
 The mechanism that made the slug possible at all, and the reason #145's fix could not be reused.
 
-All 19 slug consumers — 12 weapons, 7 relic bases — name their projectile on `MagazineAmmoLoader`,
+All 19 slug consumers, 12 weapons and 7 relic bases, name their projectile on `MagazineAmmoLoader`,
 which only consults the round's own `ProjectileObject` when that field is blank. That is why every
 effect bullet Mura wrote was loaded, fired, and had its payload discarded.
 
 For shotguns, blanking the field was free: both pellet projectiles are 1d2/pen 4, identical to
-`ProjectileShotgunShell`. For slugs that field is **where the weapon's ballistics live** — 1d6/pen 3
-for the Borderlands Revolver, 1d8/pen 7 for the Sniper Rifle, 2d12 `Vorpal` for the Linear Cannon —
+`ProjectileShotgunShell`. For slugs that field is **where the weapon's ballistics live**: 1d6/pen 3
+for the Borderlands Revolver, 1d8/pen 7 for the Sniper Rifle, 2d12 `Vorpal` for the Linear Cannon.
 and blanking all 19 would flatten every one to `ProjectileLeadSlug`'s 1d6/pen 3.
 
 So `Vixy_AmmoPayload` merges the round's payload **into** the weapon's projectile instead. One part,
 merged onto `BaseFirearm`, which reaches all 19 plus both Masterwork variants and any firearm a
-future Qud release adds — one vanilla name on the compatibility surface rather than nineteen, adding
+future Qud release adds, so one vanilla name on the compatibility surface rather than nineteen, adding
 a part and replacing no attribute.
 
 It needs two events, because one is not available:
@@ -1895,7 +1895,7 @@ It needs two events, because one is not available:
 | Event | Order | Why |
 |---|---|---|
 | `LoadAmmoEvent` | **before** `MagazineAmmoLoader` | reads `loader.Ammo`, the stack about to be drawn from, while `RemoveOne()` has not yet run |
-| `ProjectileSetup` | after the projectile exists | fired by `MissileWeapon.SetupProjectile` once per projectile — a separate dispatch, so part order stops mattering |
+| `ProjectileSetup` | after the projectile exists | fired by `MissileWeapon.SetupProjectile` once per projectile, a separate dispatch, so part order stops mattering |
 
 Running *after* the loader in one dispatch is not purchasable at any price: `ObjectBlueprintLoader.Bake`
 inherits a parent's parts before the object's own, and `AddPartInternals` orders `PartsList` by
@@ -1954,12 +1954,12 @@ tonic, one themed single chip, a **basic neutral mind chipset**, a **basic preco
 
 | Guardian | Weapon(s) | Armor | Chip | Other deviations |
 |---|---|---|---|---|
-| Force | Long Sword2 + **Iron Greatshield** | iron set | Disintegration | — |
-| Fire | **Steel Halberd** | iron set | Kindle | — |
-| Ice | **Steel War Hammerth** (2H) | iron set | Frost Webs | — |
+| Force | Long Sword2 + **Iron Greatshield** | iron set | Disintegration | - |
+| Fire | **Steel Halberd** | iron set | Kindle | - |
+| Ice | **Steel War Hammerth** (2H) | iron set | Frost Webs | - |
 | Lightning | Long Sword2 + **Iron Buckler** + **Lightning Psionic Rifle** | iron set | EMP | **2d3** injectors |
 | Light | **Compound Bow + 100 Wooden Arrows** + **Light Psionic Rifle** + Dagger2 | iron set | Photosynthetic Skin | Guaranteed **Solar Cell**, only 1d2 cells |
-| Corrosive | **Steel Long Swordth** (2H) | iron set | Corrosive Gas | — |
+| Corrosive | **Steel Long Swordth** (2H) | iron set | Corrosive Gas | - |
 | Blood | 2× Dagger2 | **Vine-Weave Tunic, Elastyne Slippers / Gloves / Skull Cap** — no iron set | Syphon Vim | 1d2 cells |
 | Mental | **Battle Axe3** | iron set | Sunder Mind | 2 full + 2 empty waterskins, **Basic Toolkit**, 2d4 scrap, **1** cell |
 | Temporal | **2× Temporal Psionic Pistol** | **Cloth Robe + Sandals** — no iron set | Space-Time Vortex | **1** salve tonic, **Basic Toolkit**, **1** injector, 1d4 scrap, **1** cell |
@@ -2025,7 +2025,7 @@ moved by well under a percentage point:
 
 | | common | rare | chips |
 |---|---|---|---|
-| vanilla, unmodded | 95.00% | 5.00% | — |
+| vanilla, unmodded | 95.00% | 5.00% | - |
 | before (replacement) | 85.00% | 5.00% | 10.00% |
 | **after (merge)** | **86.36%** | **4.55%** | **9.09%** |
 
@@ -2504,7 +2504,7 @@ infix is not where the collision is.
 | pool | vanilla | now | 50% repeat at | expected repeats in 20 names |
 | ---------- | ------: | --: | ------------: | ---------------------------: |
 | prefixes | 29 | 68 | 7 → 11 draws | 6.6 → 2.8 |
-| infixes | 20 | 28 | *unchanged by design* | — |
+| infixes | 20 | 28 | *unchanged by design* | - |
 | postfixes | 24 | 36 | 7 → 11 draws | 7.9 → 2.6 |
 
 Widening halves perceived repetition. It cannot do much better than that: the effect scales with the
@@ -2656,7 +2656,7 @@ Vanilla's own shape for a people with a faction is three scopes, and Naphtaali s
 | namestyle | Faction | Species | Culture |
 | --- | --- | --- | --- |
 | `Snapjaw` | 100, exclusive | **50, combining** | 50, combining |
-| `Naphtaali` (vanilla) | 100, exclusive | — | 50, combining |
+| `Naphtaali` (vanilla) | 100, exclusive | - | 50, combining |
 | `Naphtaali` (here) | 100, exclusive | **50, combining** | 50, combining |
 
 So the change is one scope. `Priority="50"` is what keeps it surgical: exclusion is
@@ -3303,7 +3303,7 @@ of these takes a named neighbour rather than a guess, and only where the default
 | sweetfrond | *(inherited `strip`)* | fibre | frond | `frond` is Yempuris's word |
 | rimeburr | blade | grass | thatch | Primal Grass — the grass idiom again |
 | shadetooth | *(inherited `strip`)* | fibre | strip | Fracti, the nearest desert succulent |
-| broadglove | — | — | mass | `Fungus`, which is its parent — it declares none of the three |
+| broadglove | - | - | mass | `Fungus`, which is its parent — it declares none of the three |
 | dunelace | *(inherited `strip`)* | fibre | strip | Fracti, the salt flats' only named neighbour |
 
 `stag` rather than `tag`, which is what vanilla uses for all three: 26 of 26 for `Plank`, 14 of 14
@@ -5605,10 +5605,10 @@ not sight, sound or touch.
 |---|---|---|---|
 | objects in the pool | 6 | 12 | **24** |
 | weight per vanilla trinket | 35 | 35 | 35 |
-| weight per fork trinket | — | 35 | **11** |
+| weight per fork trinket | - | 35 | **11** |
 | this fork's share of the table | 0% | 50% | **48.5%** |
 | each vanilla trinket's share of a draw | 14.1% | 7.6% | **7.9%** |
-| each fork trinket's share of a draw | — | 7.6% | **2.5%** |
+| each fork trinket's share of a draw | - | 7.6% | **2.5%** |
 
 The weight drop is the whole reason the share *fell* while the content trebled, and §36.1.1 has the
 rule behind it.
@@ -7163,7 +7163,7 @@ one layer down, waiting for the moment anyone made the code run.
 
 | load | band | rest |
 |---|---|---:|
-| under 50% | — | 100% |
+| under 50% | - | 100% |
 | 50%+ | lightly burdened | 95% |
 | 75%+ | encumbered | 85% |
 | 90%+ | heavily burdened | 75% |
