@@ -1,12 +1,12 @@
-﻿# Caves of Qud Expanded — Complete Feature Reference
+﻿# Caves of Qud Expanded: Complete Feature Reference
 
-*I reconstructed this by reading the whole mod source — every XML blueprint, population table,
+*I reconstructed this by reading the whole mod source: every XML blueprint, population table,
 skill, genotype, subtype, body, C# script, and the Joppa map patch. No complete list of what this
 mod does had ever existed, including for Mura, and I needed one before I could safely change
 anything. Where this document and the XML disagree, **the XML is what ships**; §10 tabulates the
 disagreements I know about.*
 
-**Original author:** Mura (`@mura_raven`) — with contributions from Noble Lark (subtype sprites),
+**Original author:** Mura (`@mura_raven`), with contributions from Noble Lark (subtype sprites),
 Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship).
 **Workshop ID:** 1134036260 · **Last upstream release:** 2.2 (built for Qud 1.0)
 **Steam tags:** Stable, Armor, Artifact, Cybernetic, Item, Item Mod, Weapon, Genotype, Subtype, Mutation, Skill, Balance, Lore
@@ -190,7 +190,7 @@ resistances take a penalty resist equal to **half** their bonus.
 Guardians always used. The casters ran 40 / −20 until #332, and vanilla's castes are **always exactly
 15 and never negative**, so 40 was 2.7x a number vanilla only ever states once.
 
-### 2.1 Full Psionic — The Lore Seekers of the Grand Library
+### 2.1 Full Psionic: The Lore Seekers of the Grand Library
 
 | Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
 |---|---|---|---|---|---|---|---|---|
@@ -206,7 +206,7 @@ Guardians always used. The casters ran 40 / −20 until #332, and vanilla's cast
 
 *Light also carries an `extrainfo`: "Guaranteed one Solar Cell."*
 
-### 2.2 Half Psionic — The Immovable Wall of the Yttria
+### 2.2 Half Psionic: The Immovable Wall of the Yttria
 
 | Subtype | STR | AGI | TOU | INT | WIL | EGO | Resistances | Bonus skills |
 |---|---|---|---|---|---|---|---|---|
@@ -7479,11 +7479,11 @@ already banked stays on the player and simply stops mattering.
 
 ## 52. Experience follows the gap in tiers (`Vixy_XPCurve`)
 
-Off by default. What a kill is worth depends on how far above or below me it was — I am paid more
+Off by default. What a kill is worth depends on how far above or below me it was: I am paid more
 for punching up, and the taper for punching down is gentler than vanilla's without losing its floor.
 
 **The design is Mura's**, from the Experience Curve sub-mod. **The implementation is not, and could
-not be.** That mod declares a class called `XRL.World.Parts.Experience` — vanilla's own name — and
+not be.** That mod declares a class called `XRL.World.Parts.Experience`, vanilla's own name, and
 relies on type resolution preferring the mod's copy. It does not, and never has: `ModManager.
 ResolveType` calls `Type.GetType` first, which searches `Assembly-CSharp`, so vanilla's type is found
 and the mod assemblies are never consulted. That C# has never run for anybody who installed it. #775
@@ -7495,7 +7495,7 @@ has the measurement and `docs/LESSONS.md` has the trap.
 
 | gap | vanilla | here |
 |---|---|---|
-| 3 or more above it | nothing | **nothing** — vanilla's floor, kept |
+| 3 or more above it | nothing | **nothing**, vanilla's floor, kept |
 | 2 above | a tenth | **a third** |
 | 1 above | a half | a half |
 | level with it | full | full |
@@ -7510,13 +7510,13 @@ vanilla's floor. And at tier 6 against a Level-20 cragmensch (gap 2) a 500-point
 with `(Base: 500 | Penalty: -334)`.
 
 That last one is the case worth having: vanilla would have paid 50, and a build where
-`E.TierScaling = false` failed to take — vanilla re-scaling an already-scaled number — would have paid
+`E.TierScaling = false` failed to take, with vanilla re-scaling an already-scaled number, would have paid
 16. Three hypotheses, an order of magnitude apart, and only one of them gives 166.
 
 **The bonus has no ceiling**, and that is Mura's design rather than an oversight: the multiplier is
 `1 + 0.05 × g × (g + 1)`, so four tiers up doubles the award and eight tiers up pays ×4.6. Killing
 something eight tiers above you is a feat vanilla already pays full price for; this pays more. There
-is no cap because the gap is self-limiting — you have to survive the thing first.
+is no cap because the gap is self-limiting: you have to survive the thing first.
 
 **Vanilla's zero at three tiers up is kept on purpose, and Mura's curve did not keep it.** His formula
 is `Amount / (gap + 1)` at every positive gap, which never reaches zero, so a high-level character
@@ -7531,29 +7531,29 @@ docstring because the annotation is the more persuasive of the two and reads as 
 ### 52.2 Why this is a part and not a fork
 
 `IXPEvent.TierScaling` is a public flag that vanilla's own `Experience` part gates its tier scaling
-on, and **nothing in the game ever sets it false** — an unwired switch whose single purpose is
+on, and **nothing in the game ever sets it false**, an unwired switch whose single purpose is
 disabling exactly the behaviour being replaced. So `Vixy_XPCurve` rewrites `E.Amount`, turns that flag
 off, and hands back. Vanilla still does the clamping, the global multiplier, the award, the write-back
 and the party pass-down. Only the curve is this fork's, and everything around it keeps tracking
-upstream — which the sub-mod's whole-file copy did not: it sat two behaviours behind vanilla, ignoring
+upstream, which the sub-mod's whole-file copy did not: it sat two behaviours behind vanilla, ignoring
 `TierScaling` and never doing the `E.Amount` write-back, with nothing able to show it.
 
 `Priority` is load-bearing. Part order is dispatch order, this has to run before vanilla's
 `Experience`, and a higher priority is the only thing that moves a part earlier. `Experience` does not
 override `Priority`, so it sits at `IPart`'s default 45000; **90000** is vanilla's own value for parts
-that must go first — `Combat`, `Render`, `Body`, `Inventory` and `Brain` all use it.
+that must go first: `Combat`, `Render`, `Body`, `Inventory` and `Brain` all use it.
 
 ### 52.3 The message
 
 Vanilla prints `You gain N XP!` and *then* sends `AwardedXPEvent`, so the annotation lands as a second
-line — `(Base: 40 | Bonus: 24)` — with nothing suppressed and no vanilla code replaced. Mura folded
+line, `(Base: 40 | Bonus: 24)`, with nothing suppressed and no vanilla code replaced. Mura folded
 both into one line, which is not available without owning the award, and owning the award is the fork
 this avoids.
 
 ## 53. The Six Day Stilt, made more of a market (`Optional/StiltMarket/`)
 
-Off by default, and read at load rather than while you play. Two more traders at the Stilt — a smithy
-and a water merchant — a pedlar in the tents that would otherwise stand empty, and about a third more
+Off by default, and read at load rather than while you play. Two more traders at the Stilt, a smithy
+and a water merchant, a pedlar in the tents that would otherwise stand empty, and about a third more
 stock on every merchant, reaching one or two tiers higher than usual.
 
 **The idea and the two merchants are Mura's**, from the Caves of Qud Expanded — The Grand Bazaar
@@ -7565,7 +7565,7 @@ direction charter rule 3 cares about.
 ### 53.1 What did not come across
 
 `SixDayTents.cs` does not travel, and could not have. It declares `XRL.World.ZoneBuilders.SixDayTents`
-— vanilla's own name — so it has never run for anybody who installed that sub-mod (#775). Repointing
+with vanilla's own name, so it has never run for anybody who installed that sub-mod (#775). Repointing
 the builder at a prefixed class would mean **replacing vanilla's whole `SixDayStilt` cell**, because
 cells are overwritten wholesale by name with no cell- or zone-level merge anywhere in `WorldFactory`.
 That is charter rule 1's full-redeclaration shape, and #793 refused it.
@@ -7595,26 +7595,26 @@ Bazaar's tier-7 and tier-8 rows carry `Chance="2"` and `"1"`, so removing them c
 expected items and does nothing whatever for volume. They are gone because zetachrome should not be
 purchasable, not because they were expensive.
 
-The budget is spent cheapest-first, so the *reach* — one or two tiers above what a merchant normally
-stocks, at 20% and 10% — always fits, and whatever remains goes to the staple. That is why a gunsmith
+The budget is spent cheapest-first, so the *reach*, one or two tiers above what a merchant normally
+stocks at 20% and 10%, always fits, and whatever remains goes to the staple. That is why a gunsmith
 gains `Guns 4`, `Guns 5` and `Guns 6` **and** more ammunition, while a small merchant gains only the
 reach.
 
 ### 53.3 The pedlar
 
 Vanilla's `EmptyTent` holds one table and nothing else; the Grand Bazaar filled it with eight to
-twelve bedrolls. `Vixy_Pedlar` puts a person there instead — junk, a little water, whatever the scrap
+twelve bedrolls. `Vixy_Pedlar` puts a person there instead: junk, a little water, whatever the scrap
 heap gave up. It is the only version that explains why the tent was standing.
 
 **Its weight is left alone deliberately.** `EmptyTent` is weight 4 of 80 in `StiltTents`, and could be
-merged down to 2 or 3 — but **not to 1**, because `PopulationItem.MergeFrom` reads
+merged down to 2 or 3, but **not to 1**, because `PopulationItem.MergeFrom` reads
 `if (Item.Weight != 1)`, so a merged weight of exactly one is indistinguishable from none given and is
 silently discarded. Adding the two new tents dilutes empty tents from 5.0% to 4.5% as a side-effect,
 which is the additive way to have fewer of them.
 
 **Three of the water vessels join `DynamicObjectsTable:Items`**, and that is Mura's design rather
 than an accident. `Raven_Water Vase`, `Raven_Water Bottle` and `Raven_Water Pitcher` inherit vanilla's
-`Vase`, `Bottle` and `Pitcher`, which carry that membership — so with the option on, a container that
+`Vase`, `Bottle` and `Pitcher`, which carry that membership, so with the option on, a container that
 already holds water can turn up as ordinary loot. The *merchant-owned* copies are the ones they
 excluded, with `ExcludeFromDynamicEncounters` marked `*noinherit` so the exclusion does not travel to
 children. `dynamic-pools.json` records the three, so a fourth arriving later fails a commit.
@@ -7626,11 +7626,11 @@ vanilla declares `Role` as a tag 349 times and as a property never, and `role-fo
 
 Off by default. Kill five hundred of one faction and, rarely, somebody arrives about it: a named
 champion of theirs, near my level, who says on arrival what they have come for. Far more rarely it goes
-the other way and an envoy turns up from their enemies — pleased, and interested in me.
+the other way and an envoy turns up from their enemies, pleased, and interested in me.
 
 Item **A3** of `docs/DESIGN_difficulty_systems.md`, split out as #190. Its §0 governs: it scales with
 player power rather than depth or elapsed time, it ships behind an option defaulted off, and it has
-to *sometimes* pay rather than only cost — the fourth constraint #644 added, and the reason the
+to *sometimes* pay rather than only cost, the fourth constraint #644 added, and the reason the
 second roll exists at all.
 
 ### 54.1 Five hundred, and why it is not a large number by accident
@@ -7649,12 +7649,12 @@ walking back through is completely inert. **Loading a save rolls nothing at all*
 arriving, so the first zone seen after a load is retired without being rolled in. That also covers
 switching the option on mid-session, where the zone I am standing in would otherwise fire the moment
 I took a step (#806). That is vanilla's own order in `CheckPsychicHunters`, and
-it is what stops re-walking a cleared dungeon from turning into a stream of hunters — the kill tally
+it is what stops re-walking a cleared dungeon from turning into a stream of hunters, since the kill tally
 already caps how many can ever come, but only this caps how fast (#802).
 
 The consequence is deliberate: past a threshold, somebody arrives only somewhere I have not been.
 Cross five hundred kills in territory I have already cleared and it stays quiet until I move on.
-That is the better story as well as the quieter one — a hunter appearing in a corridor I emptied an
+That is the better story as well as the quieter one: a hunter appearing in a corridor I emptied an
 hour ago never had one attached.
 
 **The flag lives on the zone rather than on the part.** `ZoneManager.ZoneProperties` is serialised by
@@ -7662,14 +7662,14 @@ the manager itself and is where vanilla reads `AmbushChance` in the very method 
 part's save layout does not change, a second feature can take its own key on the same store, and only
 zones actually entered cost anything.
 
-The tally is **spent, not cleared** — and only once somebody is actually standing there. Five hundred
+The tally is **spent, not cleared**, and only once somebody is actually standing there. Five hundred
 comes off the count and the rest keeps running, so carrying on earns the next one rather than
 starting over, and a visit that could not be placed costs nothing.
 
 ### 54.2 Only peoples who could hear about it
 
 Fifteen factions are eligible, and the list is **curated rather than derived**. Qud has no faction
-flag for sentience. The obvious proxy — factions with `Naming.xml` scopes — fails outright, because
+flag for sentience. The obvious proxy, factions with `Naming.xml` scopes, fails outright, because
 Qud authors names for bears, crabs, fish, worms and oozes; and `Culture` tags are the mechanism
 `docs/LESSONS.md` records as nearly dead. So it is a judgement written where it can be argued with,
 which beats a derivation that would be wrong. A baboon troop sends no avenger, because a baboon troop
@@ -7683,7 +7683,7 @@ cannot hear about it.
 They are one of the faction's own members, **chosen** because their blueprint's own level is within
 five of mine, and passed through `HeroMaker` so they are named and equipped as one of their heroes.
 
-**Chosen, not assigned — and the difference is the whole of it.** This used to take any member and
+**Chosen rather than assigned, and the difference is the whole of it.** This used to take any member and
 write my level onto its `Level` stat. That changes an integer and nothing else: hit points, armour,
 resistances and inventory are all declared on the blueprint. An `Issachari Raider` has 16 hit points
 and a dagger; a `Gunner-Knight Templar` has 90, fullerite flake armour, a long sword, two grenades
@@ -7694,7 +7694,7 @@ measurement, and a character died to it in testing.
 `inventoryTier`, so it scales what *HeroMaker adds* and never touches the base blueprint.
 
 **The envoy is deliberately not filtered this way.** Level matching exists so a fight is fair, and a
-visitor has not come to fight. Applying it there would do real harm rather than none — the
+visitor has not come to fight. Applying it there would do real harm rather than none:
 Barathrumites, who are the envoy for both the Templar and Mechanimist grudges, have nobody within
 five levels of a character past about eighteen, so it would have silenced the only reward path for
 exactly the characters most likely to have earned it.
@@ -7703,7 +7703,7 @@ exactly the characters most likely to have earned it.
 snapjaws top out around twenty; both go quiet for a late character, and silence is the right failure.
 
 **They do not appear when they are rolled for.** Being told *"you are being followed"* and then
-having ten of my own turns before they find me is the difference between a threat and an ambush —
+having ten of my own turns before they find me is the difference between a threat and an ambush:
 long enough to drink something, take a position, or start for the stairs, and **leaving the zone
 loses them outright**. That is deliberate: the feature is meant to pose a decision, and walking away is one of
 the answers. The counter runs on `BeginTakeActionEvent`, which `Vixy_Fatigue` and `Vixy_Bearing`
@@ -7712,40 +7712,40 @@ already use.
 The envoy has no such delay, because a visitor is not an ambush.
 
 **`GetMembers` is asked with `Dynamic: true`, and that argument is load-bearing.** It filters
-`IsBaseBlueprint` either way, so an abstract parent like `Templar` — which spawns nameless and
-unrendered if you wish for it directly — can never arrive. But `IsExcludedFromDynamicEncounters` is
+`IsBaseBlueprint` either way, so an abstract parent like `Templar`, which spawns nameless and
+unrendered if you wish for it directly, can never arrive. But `IsExcludedFromDynamicEncounters` is
 applied *only* when `Dynamic` is set, and that is the flag Qud marks its named characters with.
 Without it a Barathrumite envoy could be Argyve, Rodanis Y or Euclid, a Consortium one Asphodel, and
-a Mechanimist hunter High Priest Eschelstadt. 133 blueprints across the fifteen carry the flag —
+a Mechanimist hunter High Priest Eschelstadt. 133 blueprints across the fifteen carry the flag,
 counting those that inherit it or take it from a mixin, which is how `BasePaxKlanq` and every
 `Chiliad Creature` are covered without declaring it themselves.
 
 **It leaves the Hindren with nobody at all**, and that is vanilla's shape rather than a fault here:
 every hindren blueprint is either a named character or a pariah filed under another faction. The
-empty pool is caught and the visit dropped before the tally is spent, so nothing breaks — hindren
+empty pool is caught and the visit dropped before the tally is spent, so nothing breaks. Hindren
 kills simply accumulate against a faction that can never answer. They stay on the list because they
 plainly belong on it, and because one generic hindren added by a later patch makes it work with no
 change here. The Consortium and the Trolls have a single eligible blueprint each, so those two will
 always send the same face.
 
 **Nothing forces them hostile, because the arithmetic already has.** `Brain.GetFeeling` sums a
-personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them — five
+personal opinion and `GetBaseFactionFeeling`, and the latter reads my reputation with them, five
 hundred of their dead is far past the -10 line on its own. Forcing it would mean
 `Allegiance.Hostile`, which is hostile to *everything* and would set the champion against their own
 kin.
 
 **The arrival message is the whole explanation, and it has to be**, because hostile creatures attack
-rather than converse — #632 established that the expensive way, so a `ConversationScript` on somebody
+rather than converse. #632 established that the expensive way, so a `ConversationScript` on somebody
 sent to kill me is worth nothing. The line names the faction for that reason; it is not atmosphere.
 
 `SpecialType` is left at its `"Hero"` default deliberately. A `Special="Champion"` scope would need
-one namestyle per faction — every scope in vanilla's `Naming.xml` is faction-bound — and until those
+one namestyle per faction, since every scope in vanilla's `Naming.xml` is faction-bound, and until those
 exist, all five `NameMaker` calls carry `SpecialFaildown: true`, so an unknown value does not merely
 do nothing: it **misses** each faction's own hero namestyle (`Snapjaw Hero Title` and its kin) and
 falls down to generic. Passing nothing names them better than passing a word with no scope behind it.
 
 They arrive **eight cells off**, not in my square. The bare `getClosestPassableCell()` sorts every
-passable cell in the zone by distance from its own and returns the nearest — so called on my cell it
+passable cell in the zone by distance from its own and returns the nearest, so called on my cell it
 returns my cell. The predicate overload keeps that nearest-first ordering, so a distance floor lands
 them at the edge of the room: seen, then met. Both overloads return the cell they were called on when
 nothing matches, which is the one case that must be caught rather than placed.
@@ -7753,12 +7753,12 @@ nothing matches, which is the one case that must be caught rather than placed.
 ### 54.4 The envoy, and how narrow it honestly is
 
 Who is glad comes from **Qud's own faction feelings**, through `GetFeelingTowardsFaction` rather than
-the `FactionFeeling` dictionary directly — the accessor resolves a specific entry, then `About="*"`,
+the `FactionFeeling` dictionary directly, because the accessor resolves a specific entry, then `About="*"`,
 then zero. Reading the dictionary raw misses every wildcard, and wildcards are how most of the fifteen
 say it.
 
 Candidates who would not talk to me are dropped **before** the comparison rather than after, and that
-is most of the design. Only three of the fifteen carry a `-50` wildcard — and they are precisely the
+is most of the design. Only three of the fifteen carry a `-50` wildcard, and they are precisely the
 three whose starting reputation with me is worst:
 
 | | wildcard | starting reputation |
@@ -7772,7 +7772,7 @@ makes them hostile to me. Ranking first and filtering after would have picked on
 every time and then thrown the visit away.
 
 Every other faction's wildcard is zero or absent, so once those three are out, **the only dislike
-left among the fifteen is authored** — and this is what the feature actually pays out on:
+left among the fifteen is authored**, and this is what the feature actually pays out on:
 
 | I keep killing five hundred of | who may arrive glad | their feeling |
 |---|---|---:|
@@ -7781,7 +7781,7 @@ left among the fifteen is authored** — and this is what the feature actually p
 | the other thirteen | nobody, at starting reputation | |
 
 **Thirteen of fifteen are silent, and I am keeping it that way.** What survives is Barathrum's
-quarrel with the Templar and the Mechanimists — Qud's central mid-game conflict, and legible on sight
+quarrel with the Templar and the Mechanimists, Qud's central mid-game conflict, and legible on sight
 in a way a snapjaw thanking me for goatfolk never would have been. Broadening it would mean a table of
 rivalries of my own invention sitting on top of the game's, and the game's answer here is that the
 Barathrumites genuinely do not care about snapjaws. Reputation moves during a run, so the third
@@ -7802,7 +7802,7 @@ fires `Event.New("Killed")` on the killer and gates it on `HasRegisteredEvent`, 
 makes counting possible at all.
 
 **It is a part, not an `IGameSystem`.** `ZoneActivatedEvent` dispatches to `The.Game` and to `Zone`,
-never to the player — which is why `XRL.PsychicHunterSystem` must be a system, since it acts *before*
+never to the player, which is why `XRL.PsychicHunterSystem` must be a system, since it acts *before*
 the player is placed. A hunter needs the player placed first, so `EnteredCellEvent` on a part is both
 cheaper and more correct. `Vixy_TacticsWary` is this fork's precedent for the hook.
 
@@ -7811,7 +7811,7 @@ cheaper and more correct. `Vixy_TacticsWary` is this fork's precedent for the ho
 ## 55. Carrying a fortune attracts attention (`Vixy_Hoard`)
 
 Off by default. Carry enough of value and, rarely, somebody takes an interest the first time I walk
-somewhere new — a raiding party who wants it off me, or about as often a trader who sought me out
+somewhere new: a raiding party who wants it off me, or about as often a trader who sought me out
 because of what I am carrying, and arrives with stock.
 
 Item **A2** of `docs/DESIGN_difficulty_systems.md`, split out as #189. Its §0 governs: it scales with
@@ -7819,14 +7819,14 @@ player power rather than depth or elapsed time, it ships behind an option defaul
 to *sometimes* pay rather than only cost (#644).
 
 **The decision is carry or cache, and caching is genuinely safe.** `ZoneManager.FreezeZone`
-serialises a zone to disk rather than discarding it, and the only path that discards one —
-`DeleteZone` — is reachable solely from the `rebuild`/`flushandrebuild` wish commands. A homestead
+serialises a zone to disk rather than discarding it, and the only path that discards one,
+`DeleteZone`, is reachable solely from the `rebuild`/`flushandrebuild` wish commands. A homestead
 cache persists, so this asks a real question rather than setting a trap.
 
 ### 55.1 The axis is what I carry, and nothing had to be built to measure it
 
 `GameObject.ValueEach` runs `GetIntrinsicValueEvent`, then `AdjustValueEvent`, then
-`GetExtrinsicValueEvent` — and both `Inventory` and `Body` answer that last one by adding each
+`GetExtrinsicValueEvent`, and both `Inventory` and `Body` answer that last one by adding each
 contained or worn object's own `Value`, which recurses into containers. So asking the player for
 `.Value` already totals everything carried and worn. It is a property read, not a sum.
 
@@ -7839,7 +7839,7 @@ if (Object.TryGetPart<Examiner>(out var Part)) return Part.Complexity > 0;
 return false;
 ```
 
-The most valuable objects in the game fail it — but **not on the `TinkerItem` clause**, which is
+The most valuable objects in the game fail it, but **not on the `TinkerItem` clause**, which is
 worth stating precisely because the obvious guess is wrong. The Otherpearl inherits `TinkerItem` from
 `Armor` and Gimeleth inherits it from `MeleeWeapon`; both pass the first test. They fail the second,
 by two different routes: the Otherpearl has an `Examiner` (from `BaseBracelet`, which sets only
@@ -7858,7 +7858,7 @@ Of the top fifty items by value, **69% is invisible to `IsArtifact`**. It measur
 feature is about a fortune, and the treasure end is exactly the half it cannot see.
 
 **Water counts, at one per dram**, through `LiquidVolume`. Two thousand drams is about one Nullray
-Pistol — bounded, and correct for a setting where water is the currency.
+Pistol, bounded, and correct for a setting where water is the currency.
 
 ### 55.2 So the artifact predicate chooses *who*, not *whether*
 
@@ -7868,7 +7868,7 @@ cleanly instead of making one axis do both jobs.
 
 It is measured as a **share of value, not a count**, because a count cannot tell one Otherpearl from
 forty grenades. `GiveArtifact.IsArtifact` is `public static`, so the definition of *artifact* comes
-from vanilla and cannot drift between this fork's two answers to that question — it would be a real
+from vanilla and cannot drift between this fork's two answers to that question, so it would be a real
 defect for the hoard index to count something the give-artifact picker then declined to offer.
 
 | the hoard is mostly | raiders | trader |
@@ -7877,14 +7877,14 @@ defect for the hoard index to count something the give-artifact picker then decl
 | treasure | Issachari | jeweler, gemcutter, apothecary |
 
 **Nobody raids me who does not already want me dead.** The Templar open at -700 reputation and the
-Issachari at -475, both past `Brain.GetFeelingLevel`'s -10 line from the start — but the
+Issachari at -475, both past `Brain.GetFeelingLevel`'s -10 line from the start, but the
 **Mechanimists open at 0**. Sent unfiltered they would arrive perfectly friendly and stand there
 while the message announced they had come for my hoard, which is §54.4's envoy problem wearing the
 other face. Filtering before the choice rather than forcing hostility after keeps the world's own
 answer: a faction I am on good terms with does not rob me, and mending things with the Templar stops
 them coming.
 
-Raiders are ordinary faction members — not `HeroMaker` heroes — two or three of them, each **chosen**
+Raiders are ordinary faction members rather than `HeroMaker` heroes, two or three of them, each **chosen**
 because its blueprint's own level is within five of mine. §54 sends one named champion because one
 *is* the event there; here the fiction is a raiding party, and a fight I can lose is not the same as
 a wall.
@@ -7896,25 +7896,25 @@ three arrived with ninety hit points, fullerite armour and rifles apiece however
 said they were. That killed a character in testing; §54.3 has the detail and #806 the measurement.
 
 Each raider is drawn separately, so a party is not three copies of one blueprint where the faction
-has more to offer — and if the faction has nobody within range, nobody comes.
+has more to offer, and if the faction has nobody within range, nobody comes.
 
 **They do not appear when they are rolled for either.** *"You are being watched"* comes first, and
-they arrive ten of my turns later — or not at all, if I have left the zone by then. §54.3 has the
+they arrive ten of my turns later, or not at all, if I have left the zone by then. §54.3 has the
 reasoning; the trader is exempt for the same reason the envoy is.
 
 **The pending arrival lives in game state, not in a field on the part.** A `[Serializable]` part's
 layout is written into every save and charter rule 5 treats it as frozen, which `validate_mod.py`'s
-`serializable-shape` check enforces mechanically — it caught me writing these as fields on the
+`serializable-shape` check enforces mechanically, and it caught me writing these as fields on the
 grounds that nothing had shipped yet. The rule is about the shape being fixed at all, not about when
 changing it becomes expensive.
 
 ### 55.3 The trader, which is the part vanilla never shipped
 
-**This is §0's fourth constraint, and it is the piece most at risk of being cut** — so I built it
+**This is §0's fourth constraint, and it is the piece most at risk of being cut**, so I built it
 first.
 
 Vanilla wrote its own version of this valve. `PsychicHunterSystem.CreateExtradimensionalSoloDeviant`
-clears allegiance, joins a faction, attaches a conversation and never sets `Hostile` — a creature
+clears allegiance, joins a faction, attaches a conversation and never sets `Hostile`, so a creature
 drawn by your glimmer that turns up to *talk*. **And nothing calls it.** It appears once in the whole
 assembly, its own definition, against fifteen mentions of the three hostile creators beside it. So
 across the entirety of Qud's only notoriety system, the number of shipping encounters where notoriety
@@ -7930,14 +7930,14 @@ not talk to me is not an opportunity.
 
 ### 55.4 When it rolls
 
-**3% raiders, and only if that misses, 2% trader** — so the two can never arrive together and the
+**3% raiders, and only if that misses, 2% trader**, so the two can never arrive together and the
 effective trader rate is 2% of the 97% that miss, 1.94% against 3%. Near enough to even that the
 system is not a difficulty tax with a story attached. §54 is the deliberately lopsided one; this is
 not.
 
 Rolled on the **first arrival in a zone**, using the same per-zone flag mechanism as §54 under its own
 key, so the two features share the idiom without either knowing about the other. The zone is retired
-before the threshold is even checked — otherwise every zone I walked through while poor would stay
+before the threshold is even checked, because otherwise every zone I walked through while poor would stay
 armed, and coming into money would set off everywhere I had already been the next time I passed
 through.
 
@@ -7954,7 +7954,7 @@ treat it as a starting position.
 ## 56. People you shared water with remember you (`Vixy_WaterMemory`)
 
 Off by default. Share water with somebody and, afterwards, they will say what they have heard of you
-since — **but only once your standing with their own people has moved by fifty either way**. It is
+since, **but only once your standing with their own people has moved by fifty either way**. It is
 only ever a remark: nothing is asked of you and nothing changes hands.
 
 **The choice appearing is itself the signal.** It would have been easier to offer it after every
@@ -7973,61 +7973,61 @@ The reputation has to be captured at the ritual and read back in a conversation 
 later, so this is a player part that records and a conversation part that speaks.
 
 **Nothing had to be built to hold the number.** `WaterRitualRecord` is an `IPart` on the creature
-carrying a `List<string> attributes` with prefix lookup helpers — persisted, per individual,
+carrying a `List<string> attributes` with prefix lookup helpers, persisted, per individual,
 travelling with them in the save, and already attached to the ritual.
 
 **Detecting a past ritual costs nothing either.** `WaterRitual.PerformRitual` sets `WaterRitualed` on
-the speaker, and that property is read by **nothing** — zero uses across vanilla's own
+the speaker, and that property is read by **nothing**: zero uses across vanilla's own
 `Conversations.xml`. A canonical marker going spare.
 
 **The snapshot lands after the ritual's own award**, and that is what makes it mean anything.
-`WaterRitual` calls `PerformRitual()` — where `ModifyReputation()` pays `repValue`, 100 by default, to
-the speaker's own faction — and only *then* sends the event. So what is recorded is where I stood once
+`WaterRitual` calls `PerformRitual()`, where `ModifyReputation()` pays `repValue`, 100 by default, to
+the speaker's own faction, and only *then* sends the event. So what is recorded is where I stood once
 the ritual had done its work. A moment earlier and it would capture the standing the award was about
 to change, so everybody would report good news of me immediately, on the strength of the water I had
 just shared with them. That ordering is vanilla's rather than a choice here.
 
 `WaterRitualStartEvent.Send` dispatches to `Actor` and nobody else, and `Actor` is always the player.
-It fires the legacy string event first, gated on `HasRegisteredEvent`, then the `MinEvent` — the same
-shape as `Killed` in §54.5 — so both are registered, and the write is guarded against running twice.
+It fires the legacy string event first, gated on `HasRegisteredEvent`, then the `MinEvent`, the same
+shape as `Killed` in §54.5, so both are registered, and the write is guarded against running twice.
 
 ### 56.2 Their own people, not their related factions
 
-§55's neighbour in #753 is that a legendary's related factions are **rolled** — uniform across the
+§55's neighbour in #753 is that a legendary's related factions are **rolled**, uniform across the
 visible factions at 10% friend, 45% dislike, 45% hate. A line about what the Girsh think of me,
 delivered by a Joppa villager, would read as noise until that half is constrained.
 
 Their own faction is the one relationship the ritual definitely established, so it is the only axis
 that cannot produce a sentence the player finds absurd. The threshold either way is one
-`REPUTATION_BASE_UNIT` — 50, the unit vanilla prices the ritual's own awards in, so "enough to
+`REPUTATION_BASE_UNIT` is 50, the unit vanilla prices the ritual's own awards in, so "enough to
 notice" means the same here as it does there.
 
 ### 56.3 One node, one pool, and why the direction arrives as a token
 
 `IConversationElement` collapses a `~` pool with `GetRandomSubstring('~')` **before**
-`PrepareTextEvent` fires, so a part cannot steer which line was drawn — by the time it is asked, the
+`PrepareTextEvent` fires, so a part cannot steer which line was drawn: by the time it is asked, the
 draw is already made. But `PrepareTextEvent` hands over the `StringBuilder` and runs **before**
 vanilla's own `=variable=` substitutions, so a token planted in the text can be filled and the result
 still goes through normal processing.
 
 That buys one node, one pool of framings in `Conversations.xml` where the prose belongs, and the
 direction supplied by the part as `good report` or `ill report`. Every line in the pool carries
-`=Vixy_ritualreport=` and has to read correctly with either substituted in — and with `little`, which
+`=Vixy_ritualreport=` and has to read correctly with either substituted in, and with `little`, which
 is kept as an unreachable fallback so that no path can render the raw token to a player.
 
-**The part is declared twice — on the choice and on the node — and that is not redundancy.**
+**The part is declared twice, on the choice and on the node, and that is not redundancy.**
 Conversation events *bubble upward*: an event fired on a choice reaches parts on that choice, then
 its parent node, then the conversation. `PrepareTextEvent` is fired on the element whose text it is,
 so a part sitting only on the choice never sees the node's text and the player is shown a raw
 `=Vixy_ritualreport=`. That is exactly what happened in testing.
 
-The two copies do not collide, and not by luck: propagation is split by perspective — `Listener` for
-what you say, `Speaker` for what they say — and a part registers for the perspective it is placed in
+The two copies do not collide, and not by luck: propagation is split by perspective, `Listener` for
+what you say and `Speaker` for what they say, and a part registers for the perspective it is placed in
 unless `Register` overrides it. The choice's copy answers visibility; the node's copy fills the text.
 Without that split the node's copy would also receive the bubbled visibility events of the node's two
 exit choices and could hide them, stranding you there. `Modding:Conversations` documents all of this.
 
-The choice sits at **Ordinal 9700** — below §51's makers-mark at 9800 and the ask-a-name at 10000,
+The choice sits at **Ordinal 9700**, below §51's makers-mark at 9800 and the ask-a-name at 10000,
 well above vanilla's water ritual at 980 and `[begin trade]` at 990. It belongs with the things you
 say to somebody, not with the transactions.
 
@@ -8047,7 +8047,7 @@ when that attribute is shorter than the prefix it was handed. Both halves here u
 ### 56.5 The snapshot is taken whether the option is on or off
 
 Only the speaking half is gated. The record is one short string on a part that already exists,
-invisible unless something reads it — and gating it would mean switching the option on did nothing
+invisible unless something reads it, and gating it would mean switching the option on did nothing
 for anybody I had already shared water with, which is a worse off-switch than a string is a cost.
 Charter rule 6 is satisfied by the half that can be seen.
 
@@ -8060,15 +8060,15 @@ deal with you again. Three changes to one gesture, all of #753, and each of them
 §56 rather than reading.
 
 **The option covers the ritual half only.** `Vixy_Introduce` shipped behind it and came out again in
-#633 — giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
+#633, because giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
 §61 needs the marker on two people vanilla wrote no introduction for. What
 `OptionQudExpandedCEWaterBond` still decides, off by default, is whether the *ritual* waits on an
 introduction and whether a repeat is offered. §57.2 and §57.4 are the halves it gates.
 
 ### 57.1 You could share water with someone who never learned your name
 
-And there was no way to tell them. `Vixy_AskName` (§40) hides itself when `speaker.HasProperName` —
-correct, because you can already see what they are called — but the ritual requires `GivesRep`, and
+And there was no way to tell them. `Vixy_AskName` (§40) hides itself when `speaker.HasProperName`,
+correctly, because you can already see what they are called, but the ritual requires `GivesRep`, and
 those populations barely overlap:
 
 | | `GivesRep` | `<xtagGrammar Proper="true" />` |
@@ -8084,7 +8084,7 @@ with has exactly one naming exchange.
 
 **Except that vanilla already had its own, and that nearly shipped as a dead end.** Twenty-six
 conversations carry a hand-written introduction, and **seven of them are on people who can perform a
-water ritual** — Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. Using vanilla's option
+water ritual**: Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammuz. Using vanilla's option
 would have left the gate shut for ever, because only this fork's introduction set the marker.
 Introducing yourself and then being refused the ritual is a dead end that looks exactly like a bug.
 
@@ -8093,8 +8093,8 @@ route through `GotoID="Name"` but Agyra and Une do not, and none of them carries
 seven conversation IDs would have been exact today and rotted silently as Qud adds people, with
 nothing in the validator able to notice.
 
-So `Vixy_Introductions` **watches from the conversation level instead**. Events bubble upward — a
-choice is handled by parts on itself, then its node, then its conversation — so one part on
+So `Vixy_Introductions` **watches from the conversation level instead**. Events bubble upward: a
+choice is handled by parts on itself, then its node, then its conversation, so one part on
 `BaseConversation` sees every choice taken anywhere in the game. It needs `Register="Listener"` in
 the XML, and that is not decoration: a conversation-level part registers for the *Speaker*
 perspective by default, and a choice is the player's to speak, so without the override it would
@@ -8103,14 +8103,14 @@ never see one.
 The test is **the bare `=name=` token in a choice's unsubstituted text**, and it took two rounds of
 testing to arrive at something that simple. A choice is what *you* say and `=name=` is *your* name, so
 a choice carrying it is you naming yourself. Parsed and tested per text exactly as the code does,
-**35 choice texts in vanilla contain the token and all 35 are introductions** — there is no false
+**35 choice texts in vanilla contain the token and all 35 are introductions**, so there is no false
 positive to defend against.
 
 I first wrote a list of three phrasings, and it was wrong in both directions at once. The false
-positives it guarded against — *"Live and drink, =name="* and its kin — are `<text>` on **nodes**,
+positives it guarded against, *"Live and drink, =name="* and its kin, are `<text>` on **nodes**,
 which is the speaker's words and never reaches this. And it missed `MehmetIntroduce`, whose line is
 *"I am called =name="* and matches none of the three, so the ritual stayed locked for anyone who
-introduced themselves to Mehmet the way the game offers — the exact dead end this part exists to
+introduced themselves to Mehmet the way the game offers, the exact dead end this part exists to
 prevent. The list had been built by eye off a regex that concatenated sibling elements, instead of by
 parsing at the granularity the runtime uses.
 
@@ -8118,8 +8118,8 @@ It still fails in the safe direction: a false positive would open the gate early
 this fork's own introduction visible and able to set the marker. Neither locks the ritual.
 
 **Both of this fork's own naming choices are excluded from that scan, and forgetting the second one
-broke the entire feature.** `Vixy_AskName`'s pool contains *"I am =name=, … What is your name?"* — it
-is an introduction as well as a question — and it is distributed to the start node of every
+broke the entire feature.** `Vixy_AskName`'s pool contains *"I am =name=, … What is your name?"*, which
+is an introduction as well as a question, and it is distributed to the start node of every
 conversation in the game. So the scan found it everywhere, concluded the game already had an
 introduction everywhere, hid this fork's introduction everywhere, and left the ritual gate shut on
 everyone. It presents as the ritual never appearing and no way to introduce yourself, which is what
@@ -8127,33 +8127,33 @@ testing found.
 
 The scan asks what is **present**, not what is visible: `Elements` holds every choice the node was
 built with, including ones their own parts hide. Three distributed ask-a-name choices had to be
-excluded by ID for exactly that reason — this fork's `Vixy_AskName` and `Vixy_Introduce`, and
+excluded by ID for exactly that reason: this fork's `Vixy_AskName` and `Vixy_Introduce`, and
 **vanilla's own `AskName`**, which can never render at all because its part opens with
 `if (!GlobalConfig.GetBoolSetting("GeneralAskName")) return false;` and that key exists nowhere under
 `Base/` (§40 is this fork's answer to precisely that). Each is a *question* that happens to carry a
-self-naming variant, and each is invisible exactly where this test matters — which presence cannot
+self-naming variant, and each is invisible exactly where this test matters, which presence cannot
 tell. Left in, they made the scan report an introduction in every conversation in the game, hid this
 fork's introduction everywhere, and held the ritual shut on everyone.
 
-### 57.2 The ritual now waits for it — but the gate falls open, not shut
+### 57.2 The ritual now waits for it, but the gate falls open rather than shut
 
 `Vixy_RitualGate` is added to vanilla's own `WaterRitualChoice` by `Load="Add"`, so the choice keeps
 its text, its `IfSpeakerHavePart="GivesRep"` and its Ordinal of 980; only visibility is answered.
 
 **Every uncertain case resolves to visible**, and that is the load-bearing decision. Some creatures
-can be talked to but cannot be introduced to — tagged `NoAskName`, or reached through a start node
+can be talked to but cannot be introduced to, whether tagged `NoAskName` or reached through a start node
 that does not allow escape. "Hide until introduced" would hide the ritual from them *for ever*, and
 quests route through it. The rule is therefore **hide only when an introduction is possible and has
 not happened**. Hiding this wrongly strands a questline; showing it wrongly costs a dram.
 
 ### 57.2a Nothing that only growls, and one thing vanilla settles rather than this
 
-`Vixy_Introduce` reuses §40's `SaysNothing` — strip every `{{emote|…}}` span from the speaker's own
+`Vixy_Introduce` reuses §40's `SaysNothing`: strip every `{{emote|…}}` span from the speaker's own
 nodes, and if nothing but whitespace remains, offer nothing. #881, corrected in #885.
 
 **The way in was the companion rename flow**, which calls `GiveProperName(name, Force: true)` and
 sets `Renamed`. So a dog you have named carries a proper name while its conversation is still
-`Animals` — `{{emote|*soft growling*}}` — and the introduction answered *"Rex. I will remember it."*
+`Animals`, `{{emote|*soft growling*}}`, and the introduction answered *"Rex. I will remember it."*
 §40 already refused exactly this for the question, and said why: a choice offering to be told a name,
 sitting under an emote and answered in words, is worse than no feature. The mirror of that question
 never got the mirror of its test.
@@ -8164,26 +8164,26 @@ measurement live there.
 **Two people used to be saved by ordering alone, and now they are correct outright.** `Tammuz`,
 one of the seven ritual-capable people §57.1 lists, and `Lebah`, whose *"I am =name=. What is your
 name?"* is quoted in #572, both open on an emote and then talk. A start-node test called them mute
-and only `Possible()`'s `AlreadyOffered()` check — which runs first — kept the ritual gate right for
+and only `Possible()`'s `AlreadyOffered()` check, which runs first, kept the ritual gate right for
 them. #885 fixed the test itself, so they no longer depend on that luck; the ordering stays because
 a conversation vanilla wrote an introduction into is a person whatever its greeting looks like.
 
 **The other half of #881 turned out not to be a defect.** A legendary snapjaw does carry a proper
-name — `HeroMaker` calls `GiveProperName` and only swaps the conversation when a `HeroConversation`
-template tag resolves, which vanilla uses **zero** times — and its conversation is `ehehehehehe`,
+name, since `HeroMaker` calls `GiveProperName` and only swaps the conversation when a `HeroConversation`
+template tag resolves, which vanilla uses **zero** times, and its conversation is `ehehehehehe`,
 `you food?`, `libm drin`. An introduction there reads wrong.
 
 But **vanilla already does the same thing, deliberately.** `WaterRitualChoice` is distributed from
 `BaseConversation` to every `GivesRep` creature, its node reads *"Live and drink,
 =subject.waterRitualLiquid=-=player.siblingTerm=."*, and `HeroMaker` adds `GivesRep` to every hero
 unless `HeroNoWaterRitual` is set. So Freehold already has a legendary snapjaw speak formal ritual
-language — and wrote `live and drink, ehehe` and `lipum dronk!` into that same snapjaw's own
+language, and wrote `live and drink, ehehe` and `lipum dronk!` into that same snapjaw's own
 conversation, so it knew. Matching that treatment is consistent rather than broken, and the
 alternative was worse: the only durable signal is `HeroMaker`'s `Hero` property, and hiding on it
 would take the naming exchange away from the water ritual's *core* population to fix a case vanilla
 does not consider broken.
 
-**There is no register test, and #881 records the search.** Player-address tokens fail — Warden Yrame
+**There is no register test, and #881 records the search.** Player-address tokens fail. Warden Yrame
 uses none and `Humanoids` uses them. `Species` and `Role` are free-form, and Tam is
 `Role="Unspecified"` exactly like Snapjaw. No sapience tag exists in the blueprint data. Structural
 depth fails hardest, since 102 of vanilla's 200 conversations are a single node with no live choice
@@ -8197,11 +8197,11 @@ and that set holds `Snapjaw` beside `JoppaFarmer`.
 Introduce yourself and the ritual may not appear until you end the conversation and start it again.
 It depends on where the introduction leads: this fork's own returns with `<choice Target="Start">`,
 which navigates back and rebuilds the choice list, so the ritual is there at once. Mehmet's goes to
-`<node ID="Name" Inherits="Welcome">` — a different node that inherits the start node's choices — and
+`<node ID="Name" Inherits="Welcome">`, a different node that inherits the start node's choices, and
 that list is not rebuilt, so the change is not seen until the conversation is reopened.
 
 **This is engine behaviour rather than a defect here.** Choice visibility is settled when a node's
-list is composed, and `Modding:Conversations` documents no way to force a refresh — its delegates are
+list is composed, and `Modding:Conversations` documents no way to force a refresh, and its delegates are
 all predicates evaluated per element. Nothing in vanilla changes a choice's visibility mid-conversation,
 so nothing has needed one. Fixing it from this side would mean redeclaring somebody else's
 conversation, which charter rule 1 refuses for a cosmetic gain.
@@ -8211,7 +8211,7 @@ conversation to share water.
 
 ### 57.4 Sharing water again cost a dram and did nothing
 
-Re-entering the ritual is vanilla behaviour — `PerformRitual()` is gated on
+Re-entering the ritual is vanilla behaviour, and `PerformRitual()` is gated on
 `!HasIntProperty("WaterRitualed")`, so a second visit awards nothing. It is **not** free, though, and
 that is easy to miss: `WaterRitualBegin` charges the dram in a branch that sits *outside* the
 first-time check, so every entry pays.
@@ -8229,7 +8229,7 @@ hidden after a completed ritual unless the bond can actually deepen.
 
 ### 57.5 Bonds deepen, and cannot be farmed
 
-**The gate is that you came back having done well by them**, not that you came back — measured with
+**The gate is that you came back having done well by them**, not that you came back, measured with
 the same shift §56 computes. That is what makes it unfarmable: the thing you would have to farm is
 reputation with their people, and reputation is capped by how much world there is. "You did it again"
 would have been an infinite tap, because repeats are unlimited.
@@ -8237,8 +8237,8 @@ would have been an infinite tap, because repeats are unlimited.
 **It happens once per person**, marked in `WaterRitualRecord.attributes`.
 
 **And it renews nothing that was finite.** Vanilla's rewards are per-creature pools on that same
-record — `secretsRemaining` is 2 or 3, `numGifts` is 1, `canGenerateItem` flips false and stays
-false — and each menu option hides itself when its pool is spent:
+record: `secretsRemaining` is 2 or 3, `numGifts` is 1, `canGenerateItem` flips false and stays
+false, and each menu option hides itself when its pool is spent:
 
 ```csharp
 public override bool Available => WaterRitual.Record.secretsRemaining > 0;
@@ -8260,7 +8260,7 @@ this hard.
 
 ### 58.1 What vanilla already does, accurately
 
-`GivesRep`'s death handler checks `wasParleyed` — set when the ritual is performed — and then walks
+`GivesRep`'s death handler checks `wasParleyed`, set when the ritual is performed, and then walks
 **every visible faction that does not already hate you**:
 
 ```csharp
@@ -8276,7 +8276,7 @@ events in the game, and it unlocks an achievement named `VIOLATE_WATER_RITUAL`.
 ### 58.2 The flaw is that it is flat
 
 Vanilla's bands are **250 for liked** and **600 for loved**. At 700 with a faction the curse takes you
-to 600 — still loved. So the people who knew you best forgive you most easily, which is precisely
+to 600, still loved. So the people who knew you best forgive you most easily, which is precisely
 backwards for this crime. A curse that leaves you with friends is not a curse.
 
 ### 58.3 What changes
@@ -8286,13 +8286,13 @@ however far above they were; anyone at or below neutral takes vanilla's hundred 
 
 | standing before | vanilla | here |
 |---:|---:|---:|
-| 700 (loved) | 600 — still loved | **−100** |
+| 700 (loved) | 600, still loved | **−100** |
 | 300 (liked) | 200 | **−100** |
 | 0 | −100 | −100 |
 | −50 | −150 | −150 |
 
 **One line does it, because the amount is a delta.** Subtracting the current standing makes the result
-land on the penalty itself — `standing + (amount - standing) == amount` — which also preserves the
+land on the penalty itself, since `standing + (amount - standing) == amount`, which also preserves the
 variance vanilla rolls into `VaryRep` rather than replacing it with a number of this fork's.
 
 `ReputationChangeEvent` is vanilla's own hook: `Reputation.Modify` routes every change through
@@ -8303,7 +8303,7 @@ so anything asking what this would cost is told the truth.
 ### 58.4 What was deliberately left alone
 
 **The curse reaches mollusks and fish**, who have no way to hear about it. §54.2's reasoning about
-which peoples can hold an opinion would exclude them, and it is not applied here — because in this
+which peoples can hold an opinion would exclude them, and it is not applied here, because in this
 one place it would *soften* the punishment. Tightening that fiction is a separate argument from making
 the sentence bite, and it pulls the other way.
 
@@ -8316,7 +8316,7 @@ faction regards you, and what they hold against you personally (#836).
 
 ### 59.1 The gap is resolution, not absence
 
-I filed this believing nothing in Qud reports regard. It does — `Description.GetFeelingDescription`
+I filed this believing nothing in Qud reports regard. It does, in `Description.GetFeelingDescription`
 renders `Friendly` / `Neutral` / `Hostile` off the full `Brain.GetFeelingLevel`, and Look shows it on
 both UIs. I had read `Brain`'s own `GetShortDescriptionEvent` handler, found the `Hostile`/`Calm`
 blueprint flags, and stopped one class short.
@@ -8329,7 +8329,7 @@ What is actually wrong is the resolution, and it is wrong by construction:
 | −249 … +249 | 0 | **Neutral** |
 | ≥ +250 | +50 / +100 | Allied |
 
-`Reputation.GetFeeling` is a five-value step function — −100, −50, 0, +50, +100 — applied before
+`Reputation.GetFeeling` is a five-value step function of −100, −50, 0, +50 and +100, applied before
 `Brain` ever sees a number, and `GetFeelingLevel` then bands at −10 and +50. So the entire ±249 band,
 where ordinary play lives, is one word. And it is asymmetric: from feeling 0 a single
 `OpinionTrespass` (−25) or `OpinionThief` (−20) crosses into Hostile at once, while
@@ -8338,20 +8338,20 @@ wronged is legible; being liked is not.**
 
 ### 59.2 Freehold wrote the readout and left it behind a debug flag
 
-`Brain.BuildChronology` is complete — the party leader with their feeling, every allegiance dated by
+`Brain.BuildChronology` is complete: the party leader with their feeling, every allegiance dated by
 the in-world calendar, then per-observer opinions with authored prose and value. All 22 `IOpinion`
 classes and all 18 `Ally*` reasons override `GetText(GameObject)`: *"Killed Kesil."*, *"Poked around
 where they shouldn't."*, *"Rebuked me."*
 
 It is reached by a **Show Attitude** inventory action gated on
 `Options.DebugInternals || Options.DebugAttitude`, and `OptionDebugAttitude` is
-`Category="Debug" Requires="OptionShowAdvancedOptions==Yes"` — double-gated out of ordinary play.
+`Category="Debug" Requires="OptionShowAdvancedOptions==Yes"`, double-gated out of ordinary play.
 `IOpinion`'s own doc comment says what it is: *"As of yet only for hostility debugging purposes, may
 be leveraged somewhere player-facing in the future."*
 
 ### 59.3 Not `BuildChronology` verbatim, which would be wrong twice
 
-It dumps opinions about **everyone** the creature has an opinion of — a lore leak — with raw values
+It dumps opinions about **everyone** the creature has an opinion of, a lore leak, with raw values
 and calendar dates, which is a debug panel wearing a skill's name. This filters to the player and
 keeps only the authored text, so what you read is Freehold's prose about you and nothing else.
 
@@ -8364,8 +8364,8 @@ OE.Process(IComponent<GameObject>.ThePlayer, E);
 ```
 
 for **any** object, not just equipment. `IShortDescriptionEvent.Process` calls
-`ParentEvent.ApplyTo(this)` before dispatching — which copies `E.Object`, so the handler knows what
-is being examined — and its `finally` copies the builders back, so appending to `Postfix` reaches the
+`ParentEvent.ApplyTo(this)` before dispatching, which copies `E.Object`, so the handler knows what
+is being examined, and its `finally` copies the builders back, so appending to `Postfix` reaches the
 description. One passive `BaseSkill` on the player, zero vanilla records, and it lands in the place a
 player already looks.
 
@@ -8381,7 +8381,7 @@ if (!Opinions.TryGetValue(Subject.BaseID, out List)) { Opinions[Subject.BaseID] 
 ```
 
 It creates the list when none exists, so a readout calling it would add an empty `OpinionList` to
-every creature examined — mutating save state from a look. `Opinions` is a public field and
+every creature examined, mutating save state from a look. `Opinions` is a public field and
 `Dictionary.TryGetValue` creates nothing.
 
 ### 59.6 A follower defers, and says so
@@ -8393,14 +8393,14 @@ leader and stops there.
 
 ### 59.7 Decay is in the description rather than per creature
 
-Grudges lapse after 16,800 turns and kindnesses never do — `IOpinion.Duration` returns 0 for
+Grudges lapse after 16,800 turns and kindnesses never do, because `IOpinion.Duration` returns 0 for
 `BaseValue >= 0`, which nothing overrides. A per-creature countdown would be the debug precision this
 power exists to avoid, so the power's own description carries the rule instead.
 
 ### 59.8 Cost, derived
 
-Vanilla prices pure-information powers at 0–50 — `Gadget Inspector` 0, `Mind's Compass` 0, the seven
-`Wilderness Lore` powers 25–50 — and charges more where a power yields something: Trash Divining is
+Vanilla prices pure-information powers at 0–50: `Gadget Inspector` 0, `Mind's Compass` 0, the seven
+`Wilderness Lore` powers 25–50, and charges more where a power yields something: Trash Divining is
 150 because its secrets trade for reputation. This grants no resource, so it sits in the information
 band, above Tactful's free because it applies to every creature rather than one terrain. Intelligence
 19 matches Tactful's gate and keeps the tree's entry requirement flat.
@@ -8419,7 +8419,7 @@ time (#843).
 
 An unexpected heavy fight deep in a dungeon, the meter near the top, and a level and a half between
 you and anywhere safe to lie down. Measured against `Vixy_Fatigue`'s own numbers, that is not a close
-call — it is unsurvivable. Once fatigue reaches `Collapsing` the per-action drop chance runs 1% at 950
+call; it is unsurvivable. Once fatigue reaches `Collapsing` the per-action drop chance runs 1% at 950
 to 25% at 1000 while the meter is still rising, so the race lasts:
 
 | fatigue | walking | fighting |
@@ -8432,13 +8432,13 @@ A Qud zone is 80×25, so a crossing is about 80 moves at best. **Unaided you can
 
 ### 60.2 200 rounds is derived, not picked
 
-It buys roughly two crossings — out of a shallow delve, not a deep one. That is a sixth of a game day
+It buys roughly two crossings, out of a shallow delve rather than a deep one. That is a sixth of a game day
 and the same order as `Vixy_Gutter.Cost`. Anything much shorter does not reach the stairs; anything
 much longer stops being a rescue and becomes a way to live at the top of the meter.
 
 ### 60.3 It defers the collapse and never touches the meter
 
-`Accrue(Strain())` runs throughout, so the debt is not merely still owed — it *grows while it is
+`Accrue(Strain())` runs throughout, so the debt is not merely still owed; it *grows while it is
 being spent*. The window lapses further up the meter than it started, and the collapse roll resumes
 at the higher rate. That is the whole balance argument and it needs no number beyond stating it.
 
@@ -8456,7 +8456,7 @@ confused *"the vanilla effect cannot express this"* with *"this cannot be built"
 
 ### 60.5 It refreshes rather than accumulating, unlike vanilla's own `Wakeful`
 
-`Wakeful.Apply` does `Effect.Duration += Duration` and returns false, uncapped — ten doses would be
+`Wakeful.Apply` does `Effect.Duration += Duration` and returns false, uncapped, so ten doses would be
 ten windows. Building on it would have inherited an unbounded window by construction. `Vixy_Wakebriar`
 takes the longer of the two instead.
 
@@ -8465,41 +8465,41 @@ takes the longer of the two instead.
 `Tonic.CausesOverdose` defaults **true** and base tonic capacity is **1**, so a second concurrent tonic
 effect triggers a Toughness save at `16 + 3 × (count − capacity)`, escalating, with mutants carrying a
 flat 5% on top and 33% under `TonicAllergy`. The `Overdose` event fires on every effect that fails and
-**does nothing unless the effect registers for it** — so this one ends. Reaching for a second dose to
+**does nothing unless the effect registers for it**, so this one ends. Reaching for a second dose to
 extend the window closes it instead, with the meter wherever it has climbed to.
 
 ### 60.7 It is worth carrying with fatigue switched off
 
 `Vixy_SleepSuppressor`'s docstring names the trap: an item whose only effect is fatigue-shaped sits in
 the loot tables doing nothing for most players, because fatigue is off by default. So this also
-refuses `CanApplyInvoluntarySleep` and `ApplyInvoluntarySleep` — the same two string events
+refuses `CanApplyInvoluntarySleep` and `ApplyInvoluntarySleep`, the same two string events
 `Vixy_Sleepless` refuses, and the only two fired. That covers sleep gas, a cudgel to the head, crungle
 gaze, Pax Klanq's madness, the fatecaller and `DeepDream`.
 
 ### 60.8 Priced and distributed as vanilla does a tonic
 
 `Bits="01"`, one ingredient, Tier 2, TechTier 4, and `DynamicObjectsTable:Tonics_NonRare`, which
-takes that pool from seven members to eight — a 12% share. Witchwood Bark is the ingredient because it
+takes that pool from seven members to eight, a 12% share. Witchwood Bark is the ingredient because it
 is a harvested plant product at value 4, the same band as `SalveTonic`'s Dreadroot Tuber at 5, and it
 grows where cragwort does (§18).
 
 ### 60.9 Off-switch
 
-None. It rides the existing sleep option — with fatigue off the collapse it defers cannot happen — and
+None. It rides the existing sleep option, since with fatigue off the collapse it defers cannot happen, and
 rule 6's #663 test says nobody turns off a consumable they can decline to drink.
 
 ### 60.10 The other half is not built
 
 #843 describes two consumables: this one, and a cooked dish that halves `Strain` to be taken *before*
 a delve. The dish is deferred, and with it three questions that do not arise for a tonic which never
-touches `Strain` — whether two halvings stack (`BaseAccrual` is 22, so implant plus dish would be
+touches `Strain`, namely whether two halvings stack (`BaseAccrual` is 22, so implant plus dish would be
 22 → 11 → **5**, truncating twice), what the dish does with fatigue off, and where its ingredient
 comes from.
 
 ## 61. People who know my name talk to me differently (`Conversations.xml`)
 
 Introduce yourself to Tam, Elder Irudad, Warden Yrame or Mehmet and each gains a question you can
-only ask once a name has passed between you, answered in their own voice. All of #633, and no C# —
+only ask once a name has passed between you, answered in their own voice. All of #633, and no C#:
 the whole feature is four `Load="Merge"` conversation blocks.
 
 ### 61.1 The counter the issue was named for cannot be read, and would be the wrong key anyway
@@ -8510,7 +8510,7 @@ conversation with every NPC, nothing reads it but the `== 1` pronoun check on th
 predicate exposes it.
 
 **It cannot be read from XML, and the naive read is off by one.** `IfSpeakerHaveProperty` is an
-existence test — `HasProperty` checks the `IntProperty` dictionary as well as `Property`, so it sees
+existence test, since `HasProperty` checks the `IntProperty` dictionary as well as `Property`, so it sees
 an int property but cannot compare one. And the increment fires inside `BeginConversationEvent`,
 reached at `ConversationUI.InternalConversation` line 410, while choice visibility is not decided
 until `choice.IsVisible()` at line 505, inside the loop that starts after it. So the key already
@@ -8524,7 +8524,7 @@ boolean on purpose.
 
 **And a count is the wrong key for the thing the issue said would decide it.** #633 argued that a
 quest gated behind repeat visits is a quest nobody finds, and it is right. Nothing can tell a player
-they are being tallied — `ConversationDelegate.Require`, documented as grey-out-and-prevent, is
+they are being tallied. `ConversationDelegate.Require`, documented as grey-out-and-prevent, is
 tagged `<todo>` and never registered, so there is no shown-but-unselectable choice in Qud. Giving
 somebody my name is an act I choose and remember, and `Vixy_Introduced` (§57) already records it per
 creature. So the ladder is keyed to naming rather than to counting, which also means the issue's
@@ -8539,10 +8539,10 @@ writing more carefully.
 A snapjaw's entire conversation is `ehehehehehe`, `you food?`, `libm drin. ehehehe. lipum dronk!` A
 dromad says *"our chests are drawn"*. No single line is true in both mouths, and a legendary snapjaw
 carries a proper name, because `HeroMaker` calls `GiveProperName` and only swaps the conversation
-when a `HeroConversation` template tag resolves — a tag vanilla uses **zero** times.
+when a `HeroConversation` template tag resolves, a tag vanilla uses **zero** times.
 
 **No test separates them.** §40's emote test asks whether anything is being *said*, and a snapjaw
-says plenty. `IfUnderstood` is a false friend — it reads `Examiner.UnderstandingTable`, the
+says plenty. `IfUnderstood` is a false friend: it reads `Examiner.UnderstandingTable`, the
 medication identification table. `ConversationScript.Filter` has 9 vanilla uses and no beast among
 them. `NoAskName` resolves onto exactly **four** blueprints across all 5,202, none of them a beast.
 
@@ -8565,7 +8565,7 @@ Mehmet's `Welcome` node carries two texts:
 
 *Traveller* before, *=name=* after. Elder Irudad's start node has the same split. So "this person
 talks differently once they know you" is shipped, established, and keyed to **what you have done for
-them** — never to a relationship. That is the whole of what these four add, and it is why the
+them**, never to a relationship. That is the whole of what these four add, and it is why the
 register to write in was already demonstrated on each of them.
 
 ### 61.4 The marker reaches two of them for free and two only because #633 ungated it
@@ -8576,16 +8576,16 @@ carrying the bare `=name=` token. Two of the cast have one already:
 | | vanilla's own introduction | route to the marker |
 |---|---|---|
 | Tam | `I am =name=. Who are you?` | `Vixy_Introductions` |
-| Mehmet | `MehmetIntroduce` — `I am called =name=.` | `Vixy_Introductions` |
+| Mehmet | `MehmetIntroduce`, `I am called =name=.` | `Vixy_Introductions` |
 | Elder Irudad | none | `Vixy_Introduce` |
 | Warden Yrame | none | `Vixy_Introduce` |
 
 All four carry `<xtagGrammar Proper="true" />`, so `Vixy_Introduce` is the route for the two vanilla
-never wrote one for — and **it used to be hidden unless `OptionQudExpandedCEWaterBond` was on**, which
+never wrote one for, and **it used to be hidden unless `OptionQudExpandedCEWaterBond` was on**, which
 is `Default="No"`. That would have left half this cast dark, split on a line no player can see.
 
 So the naming exchange came off the option. **Giving somebody my name changes no mechanic**, and rule
-6 as settled in #663 says flavour that changes no mechanic does not earn an option — a switch nobody
+6 as settled in #663 says flavour that changes no mechanic does not earn an option, since a switch nobody
 would use costs a menu line, a helptext and a branch forever. What `WaterBond` still decides is
 whether the *ritual* waits on an introduction, which is the opinionated half and the half somebody
 might genuinely refuse. `Vixy_RitualGate` and §56's snapshot are untouched.
@@ -8600,19 +8600,19 @@ anybody you had already met, the moment it needed to notice having passed.
 descending `Priority`. An absent Ordinal is Priority 0, which sorts ahead of everything the mod
 distributes at 9700 and above and ahead of vanilla's water ritual at 980 and `[begin trade]` at 990.
 A merged choice is appended to `Elements` and `Algorithms.StableSortInPlace` preserves insertion
-order among equals, so each question lands at the foot of that person's own list — where a thing you
+order among equals, so each question lands at the foot of that person's own list, where a thing you
 ask somebody belongs, rather than among the transactions.
 
 ### 61.5a The second cast is one merchant voice, and the first attempt could never have worked
 
 Every shopkeeper in the game gains a question once a name has passed between you, gated on
-`IfSpeakerHaveProperty="Vixy_Introduced"` and `IfSpeakerHavePart="GenericInventoryRestocker"` — the
+`IfSpeakerHaveProperty="Vixy_Introduced"` and `IfSpeakerHavePart="GenericInventoryRestocker"`, the
 merchant test, the same shape as vanilla's own `IfSpeakerHavePart="GivesRep"` on the water ritual. A
 part rather than a blueprint list, so nothing rots when Qud adds a shopkeeper.
 
 **One voice for all of them earns its place only because the shared thing is the trade.** An
-apothecary, a tinker and a dromad stallholder do not share a register in general — that is §61.2's
-whole finding — but they do share what a returning customer means, and every line is about that and
+apothecary, a tinker and a dromad stallholder do not share a register in general, which is §61.2's
+whole finding, but they do share what a returning customer means, and every line is about that and
 nothing else. None promises anything set aside, because no mechanic backs that up and a promise the
 game does not keep is worse than no line.
 
@@ -8629,7 +8629,7 @@ same lines pasted inline, and `AddConversation` gives the creature a per-object 
 because it was copied into the builder, which is exactly what made them look like the same thing.
 
 **And those blueprints have no other home.** `HumanTinker*` and `HumanApothecary*` have **zero**
-placement references anywhere in `Base/*.xml` — village builders are their only source. So the
+placement references anywhere in `Base/*.xml`, and village builders are their only source. So the
 `tinker` and `herbalist` conversations are unreachable content, and a merge into them is dead on
 arrival. Only `DromadTrader1`–`8` are placed by population tables, 32 references, and those keep
 their blueprint conversation.
@@ -8640,14 +8640,14 @@ instance of it the same morning.
 
 The fix is this file's existing route rather than a new one. `ConversationsAPI.AddDynamicShim` ends
 with `Conversation.Children.AddRange(BaseConversation.Children)`, appending every choice **and node**
-of `BaseConversation` into the dynamic conversation — which is why `Vixy_Introduce` works on a
+of `BaseConversation` into the dynamic conversation, which is why `Vixy_Introduce` works on a
 village apothecary, and why the reply's `Target` resolves, since `ConversationUI.GetTargetNode`
 searches only the current conversation's own elements and would otherwise log *"Invalid target"* and
 end the conversation.
 
 **The dromad-specific voice went with it.** `DromadTrader1`–`8` all carry
 `GenericInventoryRestocker`, so a conversation-specific question would have stood beside the generic
-one — two familiarity questions on the same trader. Excluding them needed a predicate that does not
+one, namely two familiarity questions on the same trader. Excluding them needed a predicate that does not
 exist: `IfSpeakerHaveTag` is existence-only, so `Species="dromad"` is not testable, and a blueprint
 list rots. One voice, and the loss is a line about counting a road by those who walk it twice.
 
@@ -8657,13 +8657,13 @@ Each of §61's four carries four ways to ask and four or five answers, and the m
 of each. `IConversationElement.Prepare` calls `GetRandomSubstring('~')`, so one is drawn per showing.
 
 This is not decoration. The whole feature is a line you see on every visit to somebody you visit
-often, and vanilla sizes its pools accordingly — Warden Yrame's own greeting has eight variants and a
+often, and vanilla sizes its pools accordingly. Warden Yrame's own greeting has eight variants and a
 snapjaw's has thirty-five. A single fixed line would read well once and become wallpaper by the
 fifth time, which is the failure mode this feature is most exposed to.
 
 ### 61.5d The third cast is Grit Gate, written one at a time
 
-Eight of Grit Gate's own — **Otho, Hortensa, Dardi, Aloysius, Iseppa, Shem, Barathrum and Q Girl** —
+Eight of Grit Gate's own: **Otho, Hortensa, Dardi, Aloysius, Iseppa, Shem, Barathrum and Q Girl**,
 each with four ways to ask and four answers in their own voice.
 
 **I planned a faction predicate and a single Barathrumite voice, and the conversations refused it.**
@@ -8672,8 +8672,8 @@ my work space!"*; Aloysius proposes an accord in which he refrains from having E
 to my component atoms; Iseppa asks if I am lost; Shem whispers. They are a collection of eccentrics
 rather than a culture, and one voice would have been wrong for every one of them.
 
-**And the predicate was never needed.** Named NPCs almost all have a conversation of their own — 105
-named blueprints across 89 distinct conversations — so per-person writing is a per-conversation merge
+**And the predicate was never needed.** Named NPCs almost all have a conversation of their own, across 105
+named blueprints and 89 distinct conversations, so per-person writing is a per-conversation merge
 and no C# at all. A faction test would serve only the unnamed rank-and-file, who are not people you
 have a relationship with. That is the whole of what an `IfFaction` predicate would have bought, and
 it is why this cast ships without one.
@@ -8685,8 +8685,8 @@ anywhere in Joppa. Warden Yrame was the one arc of that shape in §61; this has 
 ### 61.5e Declared at conversation level, because "the start node" has no single referent here
 
 Each choice sits directly under `<conversation>` rather than inside a start node, and that is
-load-bearing. Dardi, Hortensa, Aloysius and Iseppa each carry three conditional starts — `Recame`,
-`Post Arms` and `Greetings` — and **Otho has five separate `<node ID="Start">` variants**. Merging
+load-bearing. Dardi, Hortensa, Aloysius and Iseppa each carry three conditional starts, `Recame`,
+`Post Arms` and `Greetings`, and **Otho has five separate `<node ID="Start">` variants**. Merging
 into "the start node" would have had to pick one.
 
 `ConversationXMLBlueprint.Read` assigns `Distribute="Start"` to any choice whose parent is a
@@ -8703,13 +8703,13 @@ distribute the water ritual and `[begin trade]` to the whole game.
 
 | | why |
 |---|---|
-| **Euclid** | speaks `=MARKOVPARAGRAPH=` between `*thip thip thip*` — procedural babble, not a person |
+| **Euclid** | speaks `=MARKOVPARAGRAPH=` between `*thip thip thip*`, procedural babble rather than a person |
 | **Sparafucile** | 23 emote lines and deliberately mute; correctly hidden by §26's test |
 | **Jacobo**, **Mafeo** | both carry `GenericInventoryRestocker`, so §61.5a's merchant question already covers them and a second would double up |
-| **PaxKlanq2**, **Neek** | registers of their own, worth doing properly rather than quickly. *Corrected in §61.5s: this said "fungal and whispered", and Neek is not whispered — that is Shem -1, written in this same cast* |
+| **PaxKlanq2**, **Neek** | registers of their own, worth doing properly rather than quickly. *Corrected in §61.5s: this said "fungal and whispered", and Neek is not whispered; that is Shem -1, written in this same cast* |
 | rank-and-file Barathrumite / Arconaut / Tinker | all use `Humanoids`; not named individuals |
 
-Leaving Jacobo and Mafeo to the merchant voice is also what resolves the overlap without machinery —
+Leaving Jacobo and Mafeo to the merchant voice is also what resolves the overlap without machinery:
 the same problem that cost the dromad-specific voice in §61.5b, handled by choosing rather than by
 inventing a predicate to exclude them.
 
@@ -8718,7 +8718,7 @@ inventing a predicate to exclude them.
 Nine named residents of the Freehold have a conversation of their own, and **four of them already had
 a familiarity line before I wrote a word.** `GenericInventoryRestocker` is inherited, not declared per
 blueprint: Rokhas takes it from `PigFarmer`, and Bep, Krka and Tillifergaewicz declare it themselves.
-So §61.5a's merchant question already reaches all four, and a second would double up — the same rule
+So §61.5a's merchant question already reaches all four, and a second would double up, the same rule
 that left Jacobo and Mafeo to the merchant voice at Grit Gate, applied by checking the chain rather
 than by eye.
 
@@ -8733,24 +8733,24 @@ That leaves **Mak, Une and Goek**, four ways to ask and four answers each, per �
 | | the register it had to be written in | route to the marker |
 |---|---|---|
 | **Mak** | a millennium of grievance; calls me *whelp* and will not waste the honey of his mouth on idle inquiries | `Vixy_Introduce` |
-| **Une** | dry and courtly behind a mask, wearing a warden's authority like a coat she can take off | **free** — her `Whomst` node's answer carries the bare `=name=` token |
+| **Une** | dry and courtly behind a mask, wearing a warden's authority like a coat she can take off | **free**, since her `Whomst` node's answer carries the bare `=name=` token |
 | **Goek** | delighted by nearly everything, speaks of himself as *rrk*, safe and free as woodsmoke | `Vixy_Introduce` |
 
 They share a reef and not a register, which is §61.2 again: Mak and Goek are both svardym, both
 founders of the same settlement, and are opposites in every way the writing cares about.
 
 **Une gives the feature its best vanilla anchor so far.** Refuse to give her your name and her `Snub`
-node calls you *"O Nameless One"* — so the fiction that naming yourself changes how somebody deals
+node calls you *"O Nameless One"*, so the fiction that naming yourself changes how somebody deals
 with you is hers before it is this fork's. §61.3 found that beat keyed to errands; this is the first
 place vanilla keys it to naming directly.
 
 Declared at conversation level per §61.5e. All three have a single start node, so the placement buys
-nothing here but consistency — and writing it the other way would make the next cast's exception look
+nothing here but consistency, and writing it the other way would make the next cast's exception look
 like a special case rather than the rule.
 
 ### 61.5h Geeub is excluded by his characterisation, and he is the first who is
 
-Every exclusion in §61.5f is about register or overlap — procedural babble, deliberate muteness, a
+Every exclusion in §61.5f is about register or overlap: procedural babble, deliberate muteness, a
 merchant already covered. Geeub is a different kind of no, and worth recording separately because the
 test it implies is one I had not been applying.
 
@@ -8770,7 +8770,7 @@ it cannot be missed.** A line that turns on him remembering my name would not si
 content; it would contradict it.
 
 This is the mirror of §61.3 and it is why §61.3 matters. That section reads vanilla already writing
-this beat as the licence for the whole feature — the register was demonstrated on each of the four
+this beat as the licence for the whole feature, since the register was demonstrated on each of the four
 before I wrote them. The same reading has to be able to come back negative. Everywhere else in §61 I
 am extending something vanilla established; on Geeub I would be overwriting a characterisation vanilla
 built deliberately.
@@ -8781,7 +8781,7 @@ so far where the answer is yes.
 
 **Many Eyes is out for a related but separate reason.** It is hand-written rather than Euclid's
 `=MARKOVPARAGRAPH=`, so §61.5f's first exclusion does not catch it. But it deals in a title it
-assigned me — `NON MOLOCH` — and uses no name and no player-address term anywhere in its eight nodes.
+assigned me, `NON MOLOCH`, and uses no name and no player-address term anywhere in its eight nodes.
 Familiarity keyed to naming has nothing to attach to on something that does not use names. That is an
 exclusion on the axis rather than on the voice, and it would be answered by a different key rather
 than by better writing.
@@ -8789,7 +8789,7 @@ than by better writing.
 
 ### 61.5i The fifth cast is the Six Day Stilt, and one of them nearly went unwritten
 
-Three people — **Warden Esthers, Lulihart and Tszappur** — and the smallest cast so far, but the
+Three people, **Warden Esthers, Lulihart and Tszappur**, and the smallest cast so far, but the
 Stilt is the place in Qud you pass through most often, so the ratio of writing to visits is the best
 of any of them.
 
@@ -8798,7 +8798,7 @@ conversation's `node/text` elements, and hers keeps its words in the two shapes 
 character content on the node, and a `<start>` element rather than `<node ID="Start">`. She scored
 zero words. She has a full greeting and six choices, and she stands at the gate of the busiest
 settlement in the game. `docs/LESSONS.md` records why a test that disagrees with the truth about
-exactly one conversation in the file is worse than that rate makes it sound — the failure removes
+exactly one conversation in the file is worse than that rate makes it sound, because the failure removes
 somebody, and a removal makes no noise.
 
 **Two of the three had my half of the exchange written for them already.** Asked what is in the
@@ -8809,7 +8809,7 @@ tents, Warden Esthers snaps:
 
 So the line to write is the one where she concedes she has started keeping a tally after all, of one
 person, and dislikes the precedent. And Lulihart's `SlynthSettled` node says the slynth *"stop by my
-tent from time to time to visit and smoke with me, **as you do**"* — vanilla has already written me as
+tent from time to time to visit and smoke with me, **as you do**"*, so vanilla has already written me as
 a repeat visitor to his tent, so this answers a relationship the game asserts rather than inventing
 one. Une's `Snub` node in §61.5g was the first of these; there are now three, and they are the best
 material the feature has found.
@@ -8818,7 +8818,7 @@ Tszappur needs no anchor and gets none. He offers to brood on the life of Reshep
 who will stand still for it, so his shift is simply that he stops pitching and talks.
 
 Two incidental corrections to my own reading, neither of which changed the cast. **Lulihart inherits
-`BaseHindren`**, not the slynth line his quest nodes imply — he is a hindren drifter at the Stilt
+`BaseHindren`**, not the slynth line his quest nodes imply: he is a hindren drifter at the Stilt
 whose kin are at Bey Lah, which is where this feature goes next. And his conversation's
 `Inherits="BaseSlynthMayor"` is not a mayor's voice: twelve conversations inherit it, including
 Irudad, Otho, Nuntu and Goek, so it is the slynth-settlement quest boilerplate and per-person merging
@@ -8828,13 +8828,13 @@ stays correct.
 ### 61.5j The sixth cast is Bey Lah, where the one-voice question finally got a fair test
 
 Grit Gate refused a single Barathrumite voice because §61.5d found a collection of eccentrics rather
-than a culture. The hindren are a genuine culture — six people sharing a name-suffix, a village and a
-questline — so this is the first cast where a shared register was actually plausible.
+than a culture. The hindren are a genuine culture, six people sharing a name-suffix, a village and a
+questline, so this is the first cast where a shared register was actually plausible.
 
 **It is not close.** Angohind studies Willow Shakesprig and models himself on the Great Plant
 Detective, Hemlock Cones. Keh answers a refusal with *"then I overestimated your intellect further
 than I realized. Get out."* Kesehind manages *"you may not."* Neelahind is half-absent with grief for
-Eskhind. Isahind wants to know if you are buying. They share a suffix, not a mouth — so §61.2's
+Eskhind. Isahind wants to know if you are buying. They share a suffix, not a mouth, so §61.2's
 finding survives the one case built to break it.
 
 **Isahind is a gap §61.5a could not reach.** Her dialogue is *"Shall we trade?"* and *"Care to buy a
@@ -8851,18 +8851,18 @@ had already said about my standing and given me no way to reply to:
 | **Une** (§61.5g) | her `Snub` node calls me *"O Nameless One"* if I refuse to name myself | naming is already the axis; the line is the other end of it |
 | **Warden Esthers** (§61.5i) | *"You think I keep a tally of every shopkeeper that steps foot on the Stiltgrounds?"* | she concedes she keeps one, of me |
 | **Lulihart** (§61.5i) | the slynth *"stop by my tent from time to time to visit and smoke with me, **as you do**"* | answers a friendship the game already granted |
-| **the hindren** (here) | `kendren` — `Books.xml` says it is *"their word for non-hostile sentients"*, 91 uses in vanilla | being named is what makes me more than one |
+| **the hindren** (here) | `kendren`, and `Books.xml` says it is *"their word for non-hostile sentients"*, 91 uses in vanilla | being named is what makes me more than one |
 
 **So the criterion is not "does this person have a distinct register" but "has vanilla already stated
 something about my standing that I cannot currently answer".** The first question decides whether a
 line *can* be written; this one decides whether it is worth writing. `kendren` is the clearest case
-yet, because it is a word for an outsider who merely is not attacking — a low bar, as Keh says, and
+yet, because it is a word for an outsider who merely is not attacking, a low bar, as Keh says, and
 never meant as a compliment.
 
 ### 61.5l The first cast whose answers depend on how things are going
 
-Every previous cast was tonally static. Bey Lah has village states — `HindrenVillageRavaged`,
-`Doomed`, `Prospers` and `QuestFullyResolved` — a leadership change, and an Eskhind who can be killed.
+Every previous cast was tonally static. Bey Lah has village states, `HindrenVillageRavaged`,
+`Doomed`, `Prospers` and `QuestFullyResolved`, a leadership change, and an Eskhind who can be killed.
 Neelahind alone carries **20 conditional start nodes**, the most of anyone written for §61.
 
 The sharp case is Isahind, whose greeting in the ravaged village is *"I'd rather not talk. Sorry."*
@@ -8871,7 +8871,7 @@ fare after your village was destroyed, and answering, is worth more than the que
 vanishing. Her ravaged answer is that she said it to the door and I happened to be standing in it.
 
 **The conditional text is vanilla's own shape, and there are two of them.** Mehmet's `Welcome` node
-carries two mutually exclusive `<text>` elements — that is §61.3's example. Thah marks his catch-all
+carries two mutually exclusive `<text>` elements, which is §61.3's example. Thah marks his catch-all
 `Priority="-1"` so it loses to any conditional that matches, which is the only fallback idiom in the
 game and is used five times.
 
@@ -8890,7 +8890,7 @@ introduction in vanilla: Agyra, Une, Miryam, Tzedech, Tikva, Thicksalt and Tammu
 §57.2's gate falls open rather than shut. Une was written with Yd Freehold in §61.5g. These are the
 other six.
 
-**Every one of them reaches the marker for free** — the best coverage of any cast, and not a
+**Every one of them reaches the marker for free**, the best coverage of any cast, and not a
 coincidence: they are the population `Vixy_Introduced` was designed around. Vanilla wrote each of them
 a naming exchange, which is exactly what §57.1's scan detects.
 
@@ -8910,13 +8910,13 @@ sharpest form. Tammuz calls me *madhand* and *moon king*. Tzedech calls me *Enti
 kicksofts him at windfall. `kendren` was one word shared by a culture; this is six epithets, one
 apiece, and every answer here trades its epithet for the name.
 
-Five chime-voices and no shared register, again — Miryam mourns in low tones, Tzedech rings a
+Five chime-voices and no shared register, again: Miryam mourns in low tones, Tzedech rings a
 bone-shaking alarm and will not be calmed, Tikva looks into the light so it need not look at anything
 else, Thicksalt has a tactile vocabulary of his own, Tammuz stammers and asks me to agree with him.
 
 **Agyra is the sixth and is not at Chavvah**, but watching the Tomb of the Eaters. Ey uses ey/em/eir,
-which ey explains unprompted — *"Ey, em, eir, eirs, emself. Thusly do we call ourselves and one
-another"* — and speaks in thee-and-thou through `=ifplayerplural:=`. Eir answer is hospitality, which is what ey is for.
+which ey explains unprompted, *"Ey, em, eir, eirs, emself. Thusly do we call ourselves and one
+another"*, and speaks in thee-and-thou through `=ifplayerplural:=`. Eir answer is hospitality, which is what ey is for.
 
 The five at Chavvah answer differently once the -elseing is done, keyed on
 `IfHaveState="ElseingComplete"` over Thah's `Priority="-1"` catch-all, exactly as §61.5l set out.
@@ -8927,7 +8927,7 @@ worse than leaving em one good answer.
 
 ### 61.5n The eighth cast is a culture that wrote the boundary down
 
-Lebah, Doyoba, Gyamyo, Yona, Dadogom and Vivira — the rest of Agyra's coterie at the Tomb of the
+Lebah, Doyoba, Gyamyo, Yona, Dadogom and Vivira, the rest of Agyra's coterie at the Tomb of the
 Eaters. Agyra was written with the water-siblings in §61.5m because ey is one of §57.1's seven; these
 are the other six watchers.
 
@@ -8937,15 +8937,15 @@ every one refuses to explain it, in character:
 
 | | credo | how the refusal sounds |
 |---|---|---|
-| **Doyoba** | *"Suffering breedeth in still water."* | *"Wouldst I shall chew your food for you as well?"* — then apologises for the sharpness |
+| **Doyoba** | *"Suffering breedeth in still water."* | *"Wouldst I shall chew your food for you as well?"*, then apologises for the sharpness |
 | **Gyamyo** | *"Reconciliation without understanding is a salt poultice."* | *"Oh dear."* |
 | **Yona** | *"Anyone may strike a slumberling once."* | *"Only a fool asketh after the meaning of a credo."* |
 | **Dadogom** | *"Be still and know."* | *"I cannot think on thy behalf."* |
 | **Vivira** | *"Form needeth not follow function."* | states the taboo itself |
-| **Lebah** | *"An thou art swallowed by the Gyre, sing thee to the last."* | explains it plainly — refusing would take more words than ey has |
+| **Lebah** | *"An thou art swallowed by the Gyre, sing thee to the last."* | explains it plainly, since refusing would take more words than ey has |
 
 Agyra tells me I am *"inexperienced in our ways"*, and vanilla gives me no route out of being that.
-So the answer here is never an explanation — that would break the very thing it answers — but what a
+So the answer here is never an explanation, which would break the very thing it answers, but what a
 friend is given **instead** of one. The same constraint settles the asks: not one of them may ask
 what a credo means, because having learned not to is the whole of what has changed.
 
@@ -8964,7 +8964,7 @@ A culture whose stated organising principle is that each member must differ is t
 writing six voices needs no defence at all.
 
 **The state split is the cleanest any cast has had.** Each watcher has exactly one charge and exactly
-one state meaning I freed it — `ChoseNacham` for Doyoba, `ChoseKah` for Gyamyo, `ChoseDagasha` for
+one state meaning I freed it: `ChoseNacham` for Doyoba, `ChoseKah` for Gyamyo, `ChoseDagasha` for
 Yona, `ChoseVaam` for Dadogom. Only one child can ever be freed, as Lebah says: *"An ye free one,
 three remaineth forever."* So at most one of the four gets that answer and the other three cannot,
 without any predicate of mine enforcing it. Over Thah's `Priority="-1"` catch-all per §61.5l. Lebah
@@ -8976,7 +8976,7 @@ the mopango and the player does not catch it from them.
 
 ### 61.5p The ninth cast is Kyakukya, where the criterion is stated outright
 
-Mayor Nuntu, Warden Indrix and Crowsong — an ape who deserted his own people to become mayor of a
+Mayor Nuntu, Warden Indrix and Crowsong: an ape who deserted his own people to become mayor of a
 mushroom village, a goatfolk warrior who sends me to kill his elder brother, and whatever Crowsong is.
 
 **Nuntu says §61.5k's criterion out loud**, which no previous anchor quite managed. Ask him to take
@@ -8990,18 +8990,18 @@ and then offers no way to ask who that is. Every previous anchor had to be infer
 a refusal; this one is the thesis, in the speaker's own mouth.
 
 **Indrix's wandering was a caveat and is not one, and Nuntu is the one who settles it.** He carries
-`Wanders="true"`, which I had flagged as disqualifying — somebody you cannot find again cannot become
+`Wanders="true"`, which I had flagged as disqualifying, since somebody you cannot find again cannot become
 familiar. Nuntu: *"You'll find him patrolling the village."* A patrol, not a migrant, and the same
 zone holds him. Worth recording because the blueprint flag alone said the opposite, and reading one
 line of somebody else's dialogue was what corrected it.
 
 **Indrix is also the first person written here with no unconditional start at all.** All four of his
-are gated — on wearing the Cyclopean Prism, on the quest being untaken, active, or finished. §61.5l's
+are gated: on wearing the Cyclopean Prism, on the quest being untaken, active, or finished. §61.5l's
 walk falls back to every start when none is unconditional rather than answering on a guess, so he
 reads as speaking. That fallback existed from the moment #897 was written and this is the first thing
 to lean on it.
 
-Only Indrix takes a state variant, keyed `IfFinishedQuest="Raising Indrix"` — the one state in this
+Only Indrix takes a state variant, keyed `IfFinishedQuest="Raising Indrix"`, the one state in this
 cast that changes what we are to each other, since I killed his brother at his asking. Nuntu's states
 are about the slynth rather than about me, and Crowsong has none, so both take the catch-all alone.
 
@@ -9014,7 +9014,7 @@ including them was real. They are excluded anyway.
 - **While bound they cannot speak.** Every start node is pure emote. Nacham *"gives no indication of
   understanding"*, Kah *"lacks any means to make sound"*, Dagasha has no mouth.
 - **Only one can ever be freed.** Lebah: *"An ye free one, three remaineth forever."*
-- **After freeing, the conversation is one farewell line** — *"Learn well."* *"Stay safe."*
+- **After freeing, the conversation is one farewell line**: *"Learn well."* *"Stay safe."*
 
 So there is no second visit to be familiar across. §61's other exclusions are about **register**
 (Euclid's procedural babble), **characterisation** (Geeub, written to forget me) and **axis** (Many
@@ -9033,7 +9033,7 @@ offering to introduce me to a bound, incomprehensible machine.
 
 ### 61.5r The tenth cast is one man, and his quest is this feature's own premise
 
-Thah keeps the slynth cradle at the hydropon — a people grown one at a time from a cutting of water
+Thah keeps the slynth cradle at the hydropon, a people grown one at a time from a cutting of water
 lily, a handful of generations old, who kept no written history until he was grown. He reads and
 tinkers, and he hesitates constantly: *"the, ah, austerity of our cradle."* The tic is most of the
 voice and it is a man thinking faster than he speaks and correcting himself in public.
@@ -9041,7 +9041,7 @@ voice and it is a man thinking faster than he speaks and correcting himself in p
 **Freehold wrote this feature's premise as a quest, and gave it to him.** Thah asks me to be an
 ambassador: to go to the settlements where I have *"likely ingratiated"* myself and ask them to take
 his people in. Every conversation that can answer that request inherits `BaseSlynthMayor`, and **eight
-of the twelve that do are people written in the nine casts before this one** — Elder Irudad, Otho,
+of the twelve that do are people written in the nine casts before this one**: Elder Irudad, Otho,
 Goek, Lulihart, Keh, Eskhind, Agyra and Nuntu.
 
 So the slynth quest and §61 have been walking the same road from opposite ends. The quest asks whether
@@ -9062,12 +9062,12 @@ never return from. §61.5k's criterion asks where vanilla has asserted my standi
 to answer; here it has asserted the whole thesis and left the door open.
 
 The state split is therefore his: `IfFinishedQuest="Landing Pads"` is after they have gone, over a
-`Priority="-1"` catch-all. That last part is a small pleasure — §61.5l took the fallback idiom from
+`Priority="-1"` catch-all. That last part is a small pleasure, because §61.5l took the fallback idiom from
 *this conversation's* `LandingPadsCommentary` node, the only place in the game that uses it, and this
 is the first time the fork has written one back into it.
 
-Like Warden Indrix in §61.5p, Thah has **no unconditional start** — all four are gated on the Landing
-Pads quest being untaken, active, ready or finished — so he is the second speaker to depend on #897's
+Like Warden Indrix in §61.5p, Thah has **no unconditional start**, since all four are gated on the Landing
+Pads quest being untaken, active, ready or finished, so he is the second speaker to depend on #897's
 fallback to every start when none is unconditional.
 
 The marker is free: his own greeting choice is *"Moon and Sun, Thah. I am =name=."*
@@ -9084,7 +9084,7 @@ Meyehind and Liihart carry Bey Lah's states, so they answer differently in the r
 §61.5l. The rest take the catch-all alone.
 
 **Liihart is the hardest thing written for this feature**, which is not obvious from 88 words. He
-speaks almost entirely in ellipsis — *"................................"*, *"...."*, and once
+speaks almost entirely in ellipsis: *"................................"*, *"...."*, and once
 *"this sucks. ...but you're not so bad."* The whole of him is what he will not quite say, so a warm
 answer would destroy him. His familiarity line had to be warmer *and* still mostly dots.
 
@@ -9104,7 +9104,7 @@ anything walks that conversation the start carries the inherited text and choice
 walk finds his words the ordinary way.
 
 The hatch is still real and still needed for conversations genuinely assembled by code. And #897's
-measurement, taken on unresolved XML, errs in the safe direction — inheritance only ever *adds* text,
+measurement, taken on unresolved XML, errs in the safe direction, because inheritance only ever *adds* text,
 so a conversation the probe called silent may speak at runtime, and none that it called speaking can
 fall silent. The fix stands; one sentence of its explanation did not.
 
@@ -9117,19 +9117,19 @@ of Omonporch on the grounds that no Earl was present to object. **Rainwater Shom
 high gate to Brightsheol and opens every sentence with *"Saad,"*.
 
 **Shomer gives the last anchor and it is the same shape as the first.** *Saad* is what he calls
-everybody at the gate — *"Saad, welcom"*, *"No Saad Resheph residen her"* — a word for whoever happens
+everybody at the gate, in *"Saad, welcom"* and *"No Saad Resheph residen her"*, a word for whoever happens
 to be standing where I stand. `kendren` in §61.5j was a word for an outsider who is not attacking.
 Twelve casts, and the last closes on the same finding the middle ones did: **vanilla keeps giving me a
 name for my position and never one for me.** That is §61.5k stated as plainly as it can be.
 
 **Asphodel is the only person in §61 for whom vanilla had already written the answer.** Xis `Loved`
-node — *"Oh... oh! It's you! You are a dear friend, indeed"* — fires on faction standing rather than
+node, *"Oh... oh! It's you! You are a dear friend, indeed"*, fires on faction standing rather than
 on anything I did or said. Warmth already there, with no door into it. This adds the door.
 
 ### 61.5u Three excluded, and the exclusion taxonomy closes on one entity
 
 **AgateSeveranceStar** and **Phinae Hoshaiah** are each **one node with one choice, and that choice is
-the exit.** There is no conversation to be familiar *in* — the whole exchange is a greeting and a
+the exit.** There is no conversation to be familiar *in*: the whole exchange is a greeting and a
 door. That is not §61.5q's arc shape, which is about meeting somebody once; it is thinner. The two
 smallest entries on the survey, at 20 and 23 words, were always going to be the two that could not be
 written, and it is worth saying that the limit is structural rather than a matter of effort.
@@ -9138,13 +9138,13 @@ written, and it is worth saying that the limit is structural rather than a matte
 
 | ground | how it applies |
 |---|---|
-| **arc shape** (§61.5q) | dismisses me permanently once the -elseing is done — *"store yourself until Fate reshapes you. The end."* |
+| **arc shape** (§61.5q) | dismisses me permanently once the -elseing is done, in *"store yourself until Fate reshapes you. The end."* |
 | **axis** (§61.5f, Many Eyes) | calls me *utensil* and *stardimmer*, and never a name |
 | **characterisation** (§61.5h, Geeub) | holds that *"words are bricks. Each spoken is laid in bond and builds your prison. There is no understanding"* |
 
 An entity whose stated position is that conversation is a prison cannot be handed a warm line about
 being known without contradicting it. So the four grounds this feature accumulated across twelve casts
-— **register, characterisation, axis, arc shape** — close on a single creature that answers to three.
+on **register, characterisation, axis and arc shape**, close on a single creature that answers to three.
 
 
 ### 61.6 Off-switch
@@ -9158,31 +9158,31 @@ conversations, so removing the mod restores vanilla exactly.
 ## 62. A gift somebody remembers (`Vixy_Gift`, `Vixy_OpinionGift`)
 
 Introduce yourself to somebody you know by name and a `[give]` choice appears. Hand them something
-and they remember it — ten gifts on ten separate days brings a person from indifference to
+and they remember it: ten gifts on ten separate days brings a person from indifference to
 **Allied**. All of #634.
 
 ### 62.1 The ledger is twenty-two entries and seventeen are grievances
 
 `Brain.Opinions` is a real, serialised, per-creature memory of what you did to somebody. The five
 positives are `OpinionSummon` (+50), `OpinionProselytize` (+25), `OpinionBeguile` (+5),
-`OpinionMollify` (+1) and `OpinionRebuke` — earned by summoning, converting, beguiling or calming.
+`OpinionMollify` (+1) and `OpinionRebuke`, earned by summoning, converting, beguiling or calming.
 
 **So the only reliable way to be thought well of by an individual in Qud is to override their will.**
-Everything else in the ledger is a complaint. Qud's central social mechanic *is* a gift — the water
-ritual is sharing water — but it grants faction reputation, not personal regard, so the game already
+Everything else in the ledger is a complaint. Qud's central social mechanic *is* a gift, since the water
+ritual is sharing water, but it grants faction reputation, not personal regard, so the game already
 knows generosity should mean something and applies it only at the scale of a people.
 
 Giving was already possible and already unremembered. `GiveArtifact`, `LibrarianGiveBook` and
 `GiveReshephSecret` are the only conversation routes for handing over an item and none touches
 `Opinion`; nor does trade. `CompanionGiveItems` calls `TradeUI.ShowTradeScreen(target, 0f)`, a free
-transfer, and **no trade-completion event exists** — the five that do all fire before items move. You
+transfer, and **no trade-completion event exists**: the five that do all fire before items move. You
 can hand a companion your whole inventory and their regard is unchanged.
 
 ### 62.2 5 × 10, and why the tenth gift is the one that matters
 
 `Vixy_OpinionGift` is `BaseValue` 5 and `Limit` 10. `Brain.AddOpinion` starts `Magnitude` at 1 and
-renews it as `Magnitude = min(Limit, Magnitude + 1)` behind the inherited `Cooldown` of 1200 turns —
-one game day — with `Value = BaseValue × Magnitude`. So a second gift inside a day counts for
+renews it as `Magnitude = min(Limit, Magnitude + 1)` behind the inherited `Cooldown` of 1200 turns,
+one game day, with `Value = BaseValue × Magnitude`. So a second gift inside a day counts for
 nothing, and the tenth on the tenth day reaches **+50**.
 
 That number is `Brain.GetFeelingLevel`'s Allied threshold, and it is the whole point of the value.
@@ -9192,7 +9192,7 @@ Personal and faction feeling **sum** into one figure, and from #188 faction feel
 |---:|---|
 | +100, +50 | already Allied |
 | 0 | reaches **Allied** |
-| −50 | reaches **Neutral** — off hostility |
+| −50 | reaches **Neutral**, off hostility |
 | −100 | still hostile |
 
 An earlier proposal capped at +40 to stay deliberately short of Allied. It would have changed what a
@@ -9200,8 +9200,8 @@ player can observe in **one** of those five cases; +50 changes two, both visible
 Look line with no dependency on anything else.
 
 **Allied is substantial and is not recruitment.** `IsAlliedTowards` has 28 call sites across twenty
-files — your mines and impaler traps spare them, AI declines to catch them in area effects, they can
-be bandaged, they path around you rather than blocking — and exactly one is in `XRL.World.AI`, which
+files: your mines and impaler traps spare them, AI declines to catch them in area effects, they can
+be bandaged, they path around you rather than blocking, and exactly one is in `XRL.World.AI`, which
 is `Step`'s pathing courtesy. Nothing makes an Allied creature fight for you or follow you; that is
 `IsLedBy`, a separate concept.
 
@@ -9210,22 +9210,22 @@ is `Step`'s pathing courtesy. Nothing makes an Allied creature fight for you or 
 Two things #634 asked for turn out to be vanilla's defaults, in opposite directions.
 
 **Diminishing returns are not needed.** `AddOpinion` keeps one opinion of each type per subject, and
-the default `Limit` is `1f` — so out of the box a hundred waterskins are worth exactly one. The work
+the default `Limit` is `1f`, so out of the box a hundred waterskins are worth exactly one. The work
 was deciding how much stacking to *permit*, against `OpinionBeguile`'s 20 and `OpinionThief`'s 10.
 
 **Positive opinions never expire.** `IOpinion.Duration` returns 0 for a non-negative `BaseValue` and
-16,800 turns otherwise, and **nothing overrides it** — so the ledger is asymmetric a second way
+16,800 turns otherwise, and **nothing overrides it**, so the ledger is asymmetric a second way
 beyond the 17-to-5 count: the grievances are the ones that heal, after 14 game days. Left alone
 deliberately. `Limit` already bounds the total, so permanence creates no faucet, and requiring a
 player to top a friendship up would turn a gesture into a chore.
 
 ### 62.4 `OpinionBeguile` is the template, and `OpinionMollify` is the trap
 
-Mollify looks like the model — it is the most sophisticated opinion in the game, computing exactly
+Mollify looks like the model, being the most sophisticated opinion in the game, computing exactly
 enough magnitude to cancel the target's current negative feeling, with `Limit` 1000. Routing a gift
 through it would have been a disaster: **`AddOpinion` calls `Initialize` again on every renewal**, so
 one waterskin handed to somebody whose faction sits at −100 would wipe the whole deficit in a single
-act — precisely the *murder becomes an accounting problem* failure the feature exists to avoid.
+act, precisely the *murder becomes an accounting problem* failure the feature exists to avoid.
 
 `OpinionBeguile` is the same shape with that trap already absent: `IOpinionSubject`, a small
 `BaseValue`, a raised `Limit`, no `Initialize`. Copied, with 20 changed to 10.
@@ -9240,18 +9240,18 @@ hand and `WantFieldReflection` is turned off to match.
 |---|---|
 | **Somebody you know by name, who knows yours** | `HasProperName` and `Vixy_Introduced` (§57.1). A gift is a gesture between two people; handing one to a stranger you cannot address is a transaction |
 | **Not your own followers** | vanilla's `Give Items` already covers them, moves a whole inventory at once, and the opinion would be inert anyway |
-| **Not somebody else's follower** | refused by name. `Brain.GetFeeling` early-returns `GetFinalLeaderBrain().GetFeeling(Target)` before it reads any opinion map, so an opinion on a bodyguard can never be observed — and `AddOpinion` has no such guard, so it would look like it worked |
+| **Not somebody else's follower** | refused by name. `Brain.GetFeeling` early-returns `GetFinalLeaderBrain().GetFeeling(Target)` before it reads any opinion map, so an opinion on a bodyguard can never be observed, and `AddOpinion` has no such guard, so it would look like it worked |
 | **Not a creature you are controlling** | `Brain.TryGetOpinions` returns false for `IsPlayer()`, so the gift would silently vanish |
 
 **What counts as giftable** is tradeable, non-temporary, not a quest item, and worth something. The
 value floor is what stops ten pebbles buying the same regard as ten carbines: the opinion is flat by
-design — #634 asks it to scale against the grievances rather than against value — and flat with no
+design, since #634 asks it to scale against the grievances rather than against value, and flat with no
 floor makes the gesture free. `CanBeTradedEvent` is re-checked, which the free-give path skips
 (`TradeUI` gates it on `CostMultiple > 0f`), so items that refuse ordinary trade cannot slip through
 as gifts.
 
 Water settles itself: a waterskin is an object with a value and is offered, while an individual dram
-is not an object at all — drams live in a `LiquidVolume` inside a container, so nothing in an
+is not an object at all: drams live in a `LiquidVolume` inside a container, so nothing in an
 inventory walk can reach one. The water ritual is the faction-scale version of this and §57 owns it.
 
 ### 62.6 The transfer is `TakeItem`'s, and the reply is wordless
@@ -9262,18 +9262,18 @@ Vanilla has both halves of this and they never meet. `GiveArtifact` picks and do
 
 The transfer follows `TakeItem.Execute` step for step, and three of its steps are not obvious: hand
 the item back if the receiver refuses it, say so with `Does("take")` so the sentence conjugates for
-the speaker, and set **`WontSell`** — without which a merchant puts your gift straight back on the
+the speaker, and set **`WontSell`**, without which a merchant puts your gift straight back on the
 shelf at their markup. `ReceiveObject` is `TakeObject(…, Silent: true)` and does the whole move, so
 nothing is removed first; removing it would drop a failed give on the floor.
 
 **The reply is an emote**, and that is §61.2 applied rather than forgotten. The choice is distributed
 from `BaseConversation`, so it reaches every mouth in the game, and no spoken line is true in all of
-them — a legendary snapjaw carries a proper name because `HeroMaker` calls `GiveProperName` while its
+them, since a legendary snapjaw carries a proper name because `HeroMaker` calls `GiveProperName` while its
 conversation is still `you food?`. Written replies for a named cast are #919. The acknowledgement a
 player actually reads is `Popup.Show`'s *"Tam takes the waterskin."*, in Qud's own conjugation.
 
 `=pronouns.Subjective=` and `=pronouns.possessive=` are vanilla's own substitutions, so one line
-serves every gender — a they/them speaker reads *"They incline their head"* with no second line
+serves every gender, and a they/them speaker reads *"They incline their head"* with no second line
 written.
 
 ### 62.6a The emote changes once giving stops being remarkable
@@ -9282,7 +9282,7 @@ Ten lines in the ordinary pool, drawn per giving rather than per creature: `Prep
 `GetRandomSubstring('~')` each time the node is displayed, so ten gifts to one person draw ten times.
 
 **From the seventh gift the reply comes from a different node of five.** The warmth is *familiarity*,
-not gratitude — being thanked for the tenth time is what a stranger does, so those lines are about
+not gratitude, because being thanked for the tenth time is what a stranger does, so those lines are about
 the giving having become unremarkable rather than about appreciation:
 
 > *They take it without hesitating.* · *They do not ask why.* · *They look at you rather than at what
@@ -9295,12 +9295,12 @@ surfaces a player can see change together rather than at two thresholds nobody c
 
 The redirect is vanilla's own mechanism. `ChangeTarget` is an `IPredicatePart` that assigns
 `E.Target` on `GetTargetElementEvent` when its predicates match; it cannot be reused directly only
-because **no conversation predicate reaches `Brain.Opinions`** — the 58 `If*` delegates cover quests,
+because **no conversation predicate reaches `Brain.Opinions`**: the 58 `If*` delegates cover quests,
 state, time, reputation and genotype, and there is no `IfOpinionAtLeast` to write. So `Vixy_Gift`
 answers that event itself.
 
 Ordering makes it read correctly, and it is `ConversationUI.SelectChoice`'s rather than the mod's:
-`choice.Enter()` runs first — where the item changes hands and the opinion is recorded — and
+`choice.Enter()` runs first, where the item changes hands and the opinion is recorded, and
 `GetTargetNode` sends `GetTargetElementEvent` after it. So the magnitude read there already includes
 the gift just given, and the seventh gift is the one that first sees the warmer node rather than the
 eighth. A failed or escaped give returns false from `Enter()` and never reaches the node at all.
@@ -9316,16 +9316,16 @@ a player who does not introduce themselves and then choose to give, ten times ov
 **Uninstalling the mod costs the ledger of any creature holding a gift opinion, and nothing else.**
 This is the first time this fork puts a type of its own into a vanilla collection, so it was traced
 end to end. While installed it round-trips correctly: `SerializationWriter.WriteDirect(Type)` writes
-`Type.FullName` for any type whose assembly is in `LocalAssemblies` — which `Init` populates with
-every mod assembly — and `ModManager.ResolveType` finds it again through `modAssembly.GetType`.
+`Type.FullName` for any type whose assembly is in `LocalAssemblies`, which `Init` populates with
+every mod assembly, and `ModManager.ResolveType` finds it again through `modAssembly.GetType`.
 *(Which also means the class's namespace is now part of the save format and must never change.)*
 
 On removal, `ReadTokenizedType` throws, `DeserializeComposite` catches and returns null, and
-`OpinionList.Read` dereferences it with **no guard** — unlike `GameObject.Load` and `Effect.Load`,
+`OpinionList.Read` dereferences it with **no guard**, unlike `GameObject.Load` and `Effect.Load`,
 which both check. But the blast is contained one level up: `Brain.Read` reaches it through
 `ReadComposite<OpinionMap>()`, which opens its own length-prefixed block and catches, and `SkipBlock`
-repositions the stream cleanly. So a creature that remembered a gift forgets its ledger — gratitude
-and grudges alike — while its Brain, faction, AI and conversation all survive.
+repositions the stream cleanly. So a creature that remembered a gift forgets its ledger, gratitude
+and grudges alike, while its Brain, faction, AI and conversation all survive.
 
 ---
 
@@ -9336,13 +9336,13 @@ separate days brings a person to **Allied**. All of #921, and the other half of 
 
 ### 63.1 Vanilla built one side of this mirror and not the other
 
-`Brain.HandleEvent(AIHelpBroadcastEvent)` is where every social grievance in the game is formed —
+`Brain.HandleEvent(AIHelpBroadcastEvent)` is where every social grievance in the game is formed:
 `OpinionAttackAlly` at −75, `OpinionKilledAlly` at **−200**, `OpinionThief`, `OpinionTrespass`. So
 the game already believes that what you do to somebody a person cares about is personal, and prices
 it heavily. Kill the thing that was *hunting* them and nothing is recorded at all.
 
-**A grievance in Qud is witnessed, not private.** `AIHelpBroadcastEvent.Send(Actor, Target, …)` —
-`Actor` the victim, `Target` the wrongdoer — floods **visibility radius 20** for everything carrying
+**A grievance in Qud is witnessed, not private.** `AIHelpBroadcastEvent.Send(Actor, Target, …)`, with
+`Actor` the victim and `Target` the wrongdoer, floods **visibility radius 20** for everything carrying
 a `Brain`, dispatches to the victim's final leader first, then every witness. This fork does not use
 the witness half yet; see §63.6.
 
@@ -9353,7 +9353,7 @@ something is dead. It is not, and three things line up to make this the cheap ti
 on all 957 creature blueprints:
 
 - `Brain.HandleEvent(BeforeDeathRemovalEvent)` is what *sends* the broadcast, and it runs while the
-  dying creature still exists — `GameObject.Die` calls `Destroy` only after every death event
+  dying creature still exists, because `GameObject.Die` calls `Destroy` only after every death event
 - `Brain.Target` is cleared solely by `StopFighting`, which is not on that path
 - the player has a `Brain` and is not the `Actor`, so it is in the flood
 
@@ -9369,7 +9369,7 @@ if (MinEvent.CascadeTo(cascadeLevel, 64))
     return RegisteredEvents?.Dispatch(E) ?? true;   // early return
 ```
 
-`64 & 64` is non-zero, so it takes that return and **never walks `PartsList`** — `WantEvent` is not
+`64 & 64` is non-zero, so it takes that return and **never walks `PartsList`**, so `WantEvent` is not
 called at all. A part written the way the other ten in `mod/Scripting/` are written would compile,
 load, validate clean and do nothing. It has to `Registrar.Register(AIHelpBroadcastEvent.ID)`, which
 is this fork's first `MinEvent`-by-ID registration; the ten existing `Registrar.Register` calls are
@@ -9382,22 +9382,22 @@ object-level dispatch. `docs/LESSONS.md` records both halves.
 ### 63.4 Narrowed rather than optioned
 
 Rule 6 asks whether anybody would turn a thing off, and here that depended entirely on how often it
-fires. Defending is not opt-in the way giving is — you kill things constantly — and reaching Allied
+fires. Defending is not opt-in the way giving is, since you kill things constantly, and reaching Allied
 broadly by accident would be a difficulty change. So the trigger is narrow instead:
 
 | condition | why |
 |---|---|
 | I did the killing, and the cause is `Killed` or `Murder` | not theft, trespass or assault |
-| the dying creature is not temporary | the summon farm — conjure something hostile, let it pick a fight, kill it |
+| the dying creature is not temporary | the summon farm: conjure something hostile, let it pick a fight, kill it |
 | it had a target, and that target is not me | the natural narrowing: **in ordinary combat hostiles target you**, so something targeting an NPC means you intervened in someone else's fight |
 | the target is not temporary | |
 | the target can hold a regard at all | §63.7 |
 | a led creature resolves to its final leader | `GetFeeling` reads the leader's map, so an opinion on a bodyguard could never be observed |
 
-The `IsTemporary` test catches summons and not every creature a player made — a clone or a
+The `IsTemporary` test catches summons and not every creature a player made, such as a clone or a
 charmed-and-released creature is not temporary. Recorded rather than closed, since nobody has run it.
 
-`Vixy_OpinionDefended` is `BaseValue` 10 and `Limit` 5 — **+50 over five defences**, the same ceiling
+`Vixy_OpinionDefended` is `BaseValue` 10 and `Limit` 5, or **+50 over five defences**, the same ceiling
 §62 reaches at twice the rate per act, on the same `OpinionBeguile` shape and with the same absence
 of an `Initialize` override. The inherited 1200-turn cooldown means defending the same person twice
 in one fight counts once.
@@ -9406,13 +9406,13 @@ in one fight counts once.
 
 *"{{G|Mehmet}} will remember that."* in the message log, the moment it lands.
 
-The gift does not need this — it has *"Tam takes the waterskin"* and a reply node. A defence happens
+The gift does not need this, because it has *"Tam takes the waterskin"* and a reply node. A defence happens
 mid-fight with no conversation to put anything in, so without a line the only way to learn it worked
 would be to suspect it and go examine somebody. That is `docs/LESSONS.md`'s *an effect that reports
 nothing*, and the same failure that moved §62's ceiling from +40 to +50: a number nobody can see is
 not a feature.
 
-A log line rather than a popup, per `Vixy_Trinket` — this fires in combat, and a popup would be an
+A log line rather than a popup, per `Vixy_Trinket`, because this fires in combat, and a popup would be an
 interruption rather than a notice. It names the **holder** rather than the creature defended on the
 rare occasion they differ, because a led creature's regard *is* its leader's, so naming the follower
 would report a feeling nothing will ever show. Gated on the rescue having been visible rather than on
@@ -9422,7 +9422,7 @@ zone can still be the one who remembers it.
 ### 63.6 What is deliberately not built
 
 **Witnesses.** The flood hands over everyone who saw it, for free, and vanilla gates its own
-`OpinionKilledAlly` behind `feeling >= 50` — it forms the grievance only for those who already cared
+`OpinionKilledAlly` behind `feeling >= 50`, so it forms the grievance only for those who already cared
 about the victim. Mirroring that is the obvious next step and is deferred on purpose: it is the piece
 that broadens the rate, and the rate is what decides whether §63.4's narrowing was enough.
 
@@ -9430,30 +9430,30 @@ that broadens the rate, and the rate is what decides whether §63.4's narrowing 
 
 Kill a dog harrying a bat in a cave and the bat does not become your friend; kill a snapjaw harrying
 a villager and the villager thinks better of you. `Vixy_Regard.CanHold` is what separates them, and
-it is **not** the question §61.2 could not answer — that one was about spoken *register*, and it has
+it is **not** the question §61.2 could not answer: that one was about spoken *register*, and it has
 no answer. This one is about whether a creature is a person, and it does partition.
 
 Two tests, unioned:
 
 - **Speaking.** Strip `{{emote|…}}` from every line a conversation owns and **29 of vanilla's 199
-  fall silent** — `Animals`, `Antelopes`, `Apes`, `Clams`, `Crabs`, `Fish`, `Frogs`, `Goats`,
+  fall silent**: `Animals`, `Antelopes`, `Apes`, `Clams`, `Crabs`, `Fish`, `Frogs`, `Goats`,
   `Insects`, `Oozes`, `Reptiles`, `Spiders`, `Tortoises`, `Worms`, `Fungi`, `Plants`, `Crystals`,
-  `Robots` among them. The 170 that speak include `Snapjaw` — *"you food?"*
+  `Robots` among them. The 170 that speak include `Snapjaw`, with *"you food?"*
 - **`GivesRep`.** Speaking alone loses characters who are silent on purpose. This rescues
   `Oboroqoru`, `Dreamer` and `Warden 1-FF`, and admits no animal: `Bat`, `Dog` and `Glowfish` are all
   `GivesRep=False`.
 
 **`Sparafucile` is a known miss.** Twenty-three emote lines, mute by characterisation, and
 `GivesRep=False`, so this says no to a real person; `AppleFarmerDaughter`, `TauChime` and `Star` are
-the same shape. The union that would rescue them is `HasProperName`, and it cannot be used —
+the same shape. The union that would rescue them is `HasProperName`, and it cannot be used.
 `HeroMaker` hands proper names to legendary beasts, so it would admit a legendary bat, the same leak
 that forced §62.6's reply to go wordless. One mute assassin is cheaper than vermin with opinions.
 
-The speaking test **is** `Vixy_AskName.SaysNothing` rather than a copy of it — that method walks
+The speaking test **is** `Vixy_AskName.SaysNothing` rather than a copy of it, because that method walks
 reachable nodes, resolves `Inherits` at bake, excludes what `BaseConversation` contributes to
 everybody, and errs toward "speaks" for runtime-built conversations, four pieces of reasoning from
 #881 and #885 a second implementation would get wrong differently. It wants a live `Conversation` and
-none is open when somebody dies, so one is built from the blueprint with `new Conversation(bp)` — the
+none is open when somebody dies, so one is built from the blueprint with `new Conversation(bp)`, the
 same constructor `ConversationUI.HaveConversation` uses.
 
 ### 63.8 Off-switch
@@ -9466,7 +9466,7 @@ ledger if the mod is removed, and nothing else changes.
 
 ## 64. A place remembers who held it (`Vixy_Territory`)
 
-Invisible in play, and deliberately so — this records a fact and changes no behaviour. It is the
+Invisible in play, and deliberately so: this records a fact and changes no behaviour. It is the
 substrate #832's travelling bands need and the answer #830 was reaching for. All of #923.
 
 ### 64.1 Nothing in the game knows who lives anywhere
@@ -9478,7 +9478,7 @@ a builder rolled creatures into it, and nothing records that afterwards.
 The one builder that would know says nothing. `FactionEncounters.BuildFactionEncounter` takes a
 faction, draws its leader from `BaseFactionHeroTemplate_<Faction>`, its members from
 `GetFactionMembers(Faction)` and its props from `FactionEncounterPartyObjects_<Faction>`, places all
-of it — and **sets no zone property at all**. The faction that populated a zone is known for the
+of it, and **sets no zone property at all**. The faction that populated a zone is known for the
 length of one method call.
 
 So *"who holds this place, and did that change?"* could not be asked.
@@ -9497,7 +9497,7 @@ dispatches per-object and what dispatches centrally*; the alternative was a part
 `XRL.PsychicHunterSystem` is vanilla's precedent and registers identically.
 
 **This is the fork's first `IGameSystem`.** §57's notoriety considered one and chose a part, for a
-reason that does not apply here — it needed the player placed first, and this does not care where the
+reason that does not apply here: it needed the player placed first, and this does not care where the
 player is. It is installed from `Vixy_PlayerParts` all the same, because that class already owns the
 two moments that matter: chargen for a new character, `CallAfterGameLoaded` for an existing save.
 
@@ -9507,7 +9507,7 @@ lair is covered exactly as well as a faction encounter, and no vanilla builder i
 
 ### 64.3 Only people hold ground
 
-`Vixy_Regard.CanHold` decides — the same test §63.7 uses for who can think better of you, because
+`Vixy_Regard.CanHold` decides, the same test §63.7 uses for who can think better of you, because
 both questions are *is this a person*. Measured over the game: **445 of 957** creature blueprints
 pass.
 
@@ -9518,8 +9518,8 @@ pass.
 A bat does not hold a cave.
 
 **Awakened machines hold and ordinary ones do not, and that falls out for free.** The Slynth, Thah
-and the newly sentient pass on their own conversations — `Slynth`, `SlynthWanderer`, `Thah`,
-`NewlySentientBeings` — while base `Robots` fails the emote-only test. The distinction the game
+and the newly sentient pass on their own conversations, `Slynth`, `SlynthWanderer`, `Thah` and
+`NewlySentientBeings`, while base `Robots` fails the emote-only test. The distinction the game
 already draws between a machine and an awakened one is the distinction this makes, with no special
 case to drift.
 
@@ -9529,22 +9529,22 @@ A faction **holds** a zone with **3+** living members and the plurality. A zone 
 the recorded holder has **none** left.
 
 Those two tests do not meet, and that is the point: it avoids having to pick a middle number for the
-one wounded snapjaw left in a lair, which is neither a garrison nor an opening. Corpses are skipped —
-zones keep their dead, so it has to be asked — and so is anyone the player is leading, who is not the
+one wounded snapjaw left in a lair, which is neither a garrison nor an opening. Corpses are skipped, because
+zones keep their dead, so it has to be asked, and so is anyone the player is leading, who is not the
 local population.
 
 Recorded on leaving rather than entering, because leaving is when the answer has changed. Qud has no
 *cleared* signal at all (#830), so emptiness is computed, and `Zone.Deactivated` only sends the event
-— the cells and their occupants are still walkable at that moment.
+The cells and their occupants are still walkable at that moment.
 
 ### 64.5 Zone properties, and what they cost
 
 `ZoneManager.ZoneProperties` is keyed by `ZoneID` and serialised with the main save, so a record
-survives its zone freezing to disk and — the point of the exercise — **can be read for a zone that is
+survives its zone freezing to disk and, the point of the exercise, **can be read for a zone that is
 not loaded**. #832's bands need to find a vacancy without thawing half the map.
 
 The cost was measured rather than estimated. A real save at turn 3,285 holds **18** frozen zones and
-**486,586 bytes** of zone data — about **27 KB per zone**, one zone per ~180 turns. A record is a
+**486,586 bytes** of zone data, about **27 KB per zone**, one zone per ~180 turns. A record is a
 tokenised property name and faction against a `ZoneID`: at worst ~41 bytes, realistically under 10,
 since `WriteOptimized` puts repeated strings in the token table once.
 
@@ -9554,13 +9554,13 @@ since `WriteOptimized` puts repeated strings in the token table once.
 ### 64.6 Known limit
 
 **A zone that has never been built has no record.** Occupancy cannot be known before a zone exists,
-so anything reading this sees only places the player has visited — whether or not they emptied them.
+so anything reading this sees only places the player has visited, whether or not they emptied them.
 #832 inherits that and it cannot be fixed here.
 
 ### 64.7 `vixyterritory`, because a silent system cannot be checked
 
 The record produces no output at any point, which is right for a record and awkward for a test. The
-wish reports what is held, what is vacated, and — the line that matters — **whether the system is
+wish reports what is held, what is vacated, and, the line that matters, **whether the system is
 installed at all**.
 
 That first line exists because this fork had never installed an `IGameSystem` before, and
@@ -9571,7 +9571,7 @@ empty list is `docs/LESSONS.md`'s *a search that finds nothing has two explanati
 tool.
 
 It reads `ZoneProperties` directly rather than zone by zone, since the whole point of the record is
-being queryable for zones that are not loaded — and asking per zone would need a list of zones, which
+being queryable for zones that are not loaded, and asking per zone would need a list of zones, which
 is the thing under test. Long lists truncate and say how many they dropped.
 
 ### 64.8 Off-switch
@@ -9583,7 +9583,7 @@ None. This records a fact and changes no behaviour; whatever acts on it carries 
 ## 65. Peoples send bands to places that fall empty (`Vixy_Band`, `Vixy_BandDispatch`)
 
 **Off by default.** Clear a lair to the last of its holders and, sometimes, another people sets out
-to take it — crossing the world map as a real object you can see and follow, and becoming a camp
+to take it, crossing the world map as a real object you can see and follow, and becoming a camp
 where it arrives. All of #832, standing on §64's record.
 
 ### 65.1 The fiction says warbands and the implementation is a diorama
@@ -9612,7 +9612,7 @@ and `JoinPartyLeaderCommand` applies that rule generically, walking every cached
 `GoToPartyLeader()` on everything in it. `SystemMoveTo` moves one object and there is no party-move.
 **So a leader lifted onto the map strands its whole retinue in the lair.**
 
-One object travels instead, and the party is *built* at the destination —
+One object travels instead, and the party is *built* at the destination.
 `FactionEncounters.BuildFactionEncounter(Faction, Zone, ZoneLevel, ZoneTier)` is `public static`, so
 an arriving band is indistinguishable from a placed one because it is one. That sidesteps the follow
 rule rather than fighting it, and it is cheaper than carrying twelve creatures across a map that
@@ -9620,7 +9620,7 @@ refuses to hold them together.
 
 ### 65.3 Non-combat comes free from omitting the Brain
 
-The token inherits `Object` — which is `Physics` alone — rather than `PhysicalObject`, so it has **no
+The token inherits `Object`, which is `Physics` alone, rather than `PhysicalObject`, so it has **no
 Brain**. `IsCombatObject()` is `(Flags & 2) != 0`, and vanilla's own obsolete overload says it:
 *"combat flagged objects always have Brain part."* So the token cannot be attacked on a map with no
 tactical terrain, with no flag to set and nothing to remember.
@@ -9647,7 +9647,7 @@ if (Zone.IsWorldMap())
 
 `ZoneManager.Tick` marks and weathers the active zone and calls `CheckCached`, and does nothing else.
 No cached zone is ticked. So `AIWorldMapTravel.TurnTick` reaches a band only when the world map is
-the **active** zone — while you are crossing it.
+the **active** zone, while you are crossing it.
 
 **`Pinned` does not change that**, though it looks like it should: it sets `Suspendability.Pinned`
 and calls `SetCachedZone`, which keeps the world map in memory rather than frozen. Cached is not
@@ -9655,7 +9655,7 @@ ticked. Pinned buys persistence, not motion.
 
 The compromise is stated rather than hidden: **the world moves when you move through it, and holds
 still while you are underground.** The consolation is that the only time a band moves is the only
-time you could have watched it — so nothing happens unseen.
+time you could have watched it, so nothing happens unseen.
 
 ### 65.5 The reason, and only this one
 
@@ -9663,15 +9663,15 @@ A place somebody held and no longer does is a vacancy, and a people who hold gro
 want it. That is the whole trigger. It works only because §64 records who held a place.
 
 **Who comes is deliberately dumb**: a faction §64 has recorded holding some *other* zone, and never
-the people who just lost this one — that would be a respawn wearing a journey, which is what #830
+the people who just lost this one, which would be a respawn wearing a journey, which is what #830
 decided against. So the world reclaims using peoples you have actually met, and no new data is
 invented to decide it. Site types, sacred places and a model of what each faction wants are #924.
 
 The band sets out from a parasang its faction actually holds, so the distance walked is the real
 distance between two places, paced by `TerrainTravel`.
 
-**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it —
-answered or not — because a place that can be answered twice is a faucet, which is #802's lesson
+**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it,
+answered or not, because a place that can be answered twice is a faucet, which is #802's lesson
 already paid for once. The roll on top is what keeps this at the edge of attention rather than
 around you.
 
@@ -9682,7 +9682,7 @@ it records the vacancy, and the holder is what the branch tests, so a place is o
 once and whatever is decided is decided for good. Three vacancies in four therefore sat in `vixyband`
 under a heading promising an answer that could not come. The roll now sits last, after a neighbour and
 an origin have been found, so *one in four* describes openings somebody could actually have set out
-for — which changes no outcome, since a band still needs all four to agree. #929.
+for, which changes no outcome, since a band still needs all four to agree. #929.
 
 ### 65.6 `vixyband`
 
@@ -9690,7 +9690,7 @@ A band is rare on purpose: a zone that was held, cleared to its last member and 
 one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
 `vixyband` lists what is in flight, where each is bound, and what vacancies are on record. **An empty
-list is the resting state, not a queue that ran dry** — with the option on, every vacancy is spent as
+list is the resting state, not a queue that ran dry**: with the option on, every vacancy is spent as
 it is considered, so a name sitting there is a defect worth chasing rather than a band still owed.
 
 `vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so what
@@ -9701,13 +9701,13 @@ the world map, which is neither a parasang nor a zone and so cannot be a destina
 
 ### 65.7 Off-switch, and what stays out
 
-**Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces — and
+**Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces, and
 *places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
 before sending, and `Vixy_Band` asks again before building the camp, so turning it off stops new
 bands and stops a walking one arriving as anything.
 
-**Story settlements are out**, and every hand-built static zone. Nothing in the game protects them —
-no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints — and
+**Story settlements are out**, and every hand-built static zone. Nothing in the game protects them:
+no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints, and
 that absence is the argument against rather than the licence. A band that kills Argyve while you are
 underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
 than depopulated* is a different and much larger question, recorded in #924.
@@ -9715,7 +9715,7 @@ than depopulated* is a different and much larger question, recorded in #924.
 ### 65.8 Known limit: vacancies recorded while the option was off
 
 §64 records who holds a place whatever this option says, because it is a separate feature that changes
-no behaviour on its own. So a run played with bands off still accumulates vacancies — and turning the
+no behaviour on its own. So a run played with bands off still accumulates vacancies, and turning the
 option on later will not reach them. Nothing considers a vacancy twice, and the holder that would let
 it be reconsidered was removed when it was first written.
 
@@ -9723,9 +9723,9 @@ New vacancies from that point on behave normally, so the cost is bounded and bac
 emptied before the switch was flipped stay empty. `vixyband` marks the list as inert when it finds it
 in that state rather than letting it read as a backlog. Giving those records a second chance means a
 vacancy that can be re-rolled on every departure, which tends toward certainty and is #802's faucet in
-a new shape — so it wants its own cap and its own issue, not a quiet extension of this one.
+a new shape, so it wants its own cap and its own issue, not a quiet extension of this one.
 
-## Appendix A — every merged vanilla melee weapon
+## Appendix A: every merged vanilla melee weapon
 
 Full listing of the 79 `Load="Merge"` edits in `MeleeWeapons.xml`. Blank cells mean the mod did
 not touch that field (the vanilla value is inherited).
@@ -9812,12 +9812,12 @@ not touch that field (the vanilla value is inherited).
 
 ---
 
-## Appendix B — every psionic chip
+## Appendix B: every psionic chip
 
 144 chips. `Mut. level` is the level of the granted mutation(s).
 
 > 🗒️ **These are the ranks each chip grants, not necessarily the rank you will see.** Qud caps a
-> mutation's effective rank at `level / 2 + 1` — `BaseMutation.GetMutationCapForLevel`, applying to
+> mutation's effective rank at `level / 2 + 1`, via `BaseMutation.GetMutationCapForLevel`, applying to
 > every mutation from every source. So a perfected chip's rank 10 reads as rank 1 on a level-1
 > character and is fully yours at level 18. Your character sheet shows the arithmetic per mutation,
 > equipment bonus and cap both.
