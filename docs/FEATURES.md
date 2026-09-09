@@ -5477,7 +5477,7 @@ being weaker than it might be.
 
 ## 36. Six more trinkets (`ObjectBlueprints/Trinkets.xml`, `Vixy_Trinket`)
 
-**Qud's category of ordinary objects from before was six items, and this doubles it** — an hourglass,
+**Qud's category of ordinary objects from before was six items, and this doubles it**: an hourglass,
 a hand mirror, a snow globe, a kaleidoscope, a spinning top and a hand bell (#603).
 
 ### 36.1 The gap was breadth, and deliberately not the curve
@@ -5494,11 +5494,11 @@ since wave two changed them.
 #### 36.1.1 Why this fork's trinkets weigh 11 and vanilla's weigh 35
 
 `STYLEGUIDE.md` §3.2.1 caps this fork's share of any vanilla loot table at half, and is explicit
-that **half is a chosen number rather than a derived one** — vanilla has no opinion about how much
+that **half is a chosen number rather than a derived one**, since vanilla has no opinion about how much
 of its loot pool may belong to someone else. The reasoning it gives is a texture decision: *at the
 low tiers most of what a player finds should still be the game they bought.*
 
-`validate_mod.py`'s `table-share` check enforces it, and wave two ran straight into it — eighteen
+`validate_mod.py`'s `table-share` check enforces it, and wave two ran straight into it. Eighteen
 fork entries at vanilla's own weight of 35 came to 630 against vanilla's 210, or 75%. The styleguide
 also says what to do about it, in as many words: **where completeness tips a table past half, the fix
 is a lower per-item weight, never less content.**
@@ -5508,8 +5508,8 @@ brought down with wave two; it had not been released, so no save or player was a
 
 ### 36.2 The register, and what it forbids
 
-Read off the existing five — `PlasticTree` is furniture by weight, value and unknown appearance, so
-it is not part of the reference set — each vanilla trinket does exactly **one small, ordinary, human
+Read off the existing five, since `PlasticTree` is furniture by weight, value and unknown appearance, so
+it is not part of the reference set, each vanilla trinket does exactly **one small, ordinary, human
 thing**. Sitting. Drawing. Grinding salt. Not a stat and not a mechanic, but an affordance.
 
 The two failure modes are gag items and trinkets that turn out to be secretly useful, and both are
@@ -5538,14 +5538,14 @@ All six `Inherits="Trinket"` and deliberately override none of these:
   unknown appearances are a shared pool of 49 blueprints rather than per-item art, so this costs a
   line rather than a tile.
 
-`<stag Name="Trinket" />` is what earns the value-curve exemption in `docs/STYLEGUIDE.md` §3.2 —
+`<stag Name="Trinket" />` is what earns the value-curve exemption in `docs/STYLEGUIDE.md` §3.2.
 `tools/validate_mod.py` reads that marker, so it is load-bearing rather than decorative, and a
 trinket without it would be repriced against a curve it is exempt from.
 
 ### 36.4 Why there is C# here at all, and why it is subclasses
 
 All 1,371 part classes in `tools/qud-api.json` were searched for a generic, XML-configurable
-"perform a flavour action" part. There is none — vanilla gives each of its six trinkets a bespoke
+"perform a flavour action" part. There is none: vanilla gives each of its six trinkets a bespoke
 class (`Chair`, `Crayons`, `BubbleLevel`, `SpiralIron`), so rule 5's "use the data where the game
 does it in data" had no data route to prefer.
 
@@ -5561,7 +5561,7 @@ for a data-first fork. It buys save stability and a shape closer to vanilla's.
 ### 36.5 Tiles
 
 Six new 16x24 three-colour PNGs in `mod/Textures/items/`. Black is the foreground and takes
-`ColorString`, white is the `DetailColor`, transparent is the background — that mapping is the
+`ColorString`, white is the `DetailColor`, transparent is the background, and that mapping is the
 modding wiki's, and it is the reverse of what the file bytes suggest at a glance.
 
 ### 36.6 Off-switch
@@ -5587,7 +5587,7 @@ That makes `CanDisassemble` a consequence of what a thing *is*, so a player can 
 which without being told, and the rule is stated once in the blueprint header rather than repeated
 six times.
 
-| the machines — scrapable | the one small thing | | the softness — not scrapable | the one small thing |
+| the machines, scrapable | the one small thing | | the softness, not scrapable | the one small thing |
 |---|---|---|---|---|
 | tuning fork | strike it | | sprig of dried lavender | smell it |
 | horseshoe magnet | hold it out | | feather | run it through your fingers |
@@ -5615,18 +5615,18 @@ rule behind it.
 
 **There is a second route, and it needed its own dial.** `Trinket` carries
 `<tag Name="DynamicObjectsTable:Trinkets" />`, which these inherit, and that pool is consumed by
-`JoppaConvertTrinket` and `OtherConvertTrinket` — the trinket handed over at a water ritual. The
+`JoppaConvertTrinket` and `OtherConvertTrinket`, the trinket handed over at a water ritual. The
 `table-share` ceiling does not reach it, because it governs `PopulationTables.xml` and this is a tag.
 Left alone it would have put this fork at **73%** of that pool, so the ritual would have produced one
 of mine nearly three times in four.
 
 Every one of the eighteen therefore carries
 `<tag Name="DynamicObjectsTable:Trinkets:Tier1:Weight" Value="0.3" />`, the fine dial STYLEGUIDE.md
-§3.2.1 names for exactly this — *reach for `:Weight` when a blueprint should stay in a pool and weigh
+§3.2.1 names for exactly this: *reach for `:Weight` when a blueprint should stay in a pool and weigh
 less*. **167 vanilla blueprints carry a `:Weight` tag**, at 0.05 to 0.3. That brings the pool to **45.3%**,
 within a couple of points of the explicit route, so both ways a trinket can reach a player now have
 the same texture instead of one quietly contradicting the other. The effect on play is the one the ceiling exists to produce: vanilla's six stay the
-trinkets a player meets most, and this fork's eighteen are the long tail — a player still draws one
+trinkets a player meets most, and this fork's eighteen are the long tail, so a player still draws one
 of mine a little under half the time, but any particular one of them is now a genuine find.
 
 ### 37.3 What this reuses rather than repeats
@@ -5647,19 +5647,19 @@ nothing taken away, and dropping them from the tables is a live change with no s
 
 ## 38. Two more ways to carry things (`ObjectBlueprints/OtherEquipment.xml`)
 
-**Qud's whole carry-capacity category was three items** — `Pocketed Vest` (Body, +5%), `Molly
-Netting` (Back, +16%) and `Nylon Bodypack` (Back, +20%) — and two of the three are back-slot, which
+**Qud's whole carry-capacity category was three items**: `Pocketed Vest` (Body, +5%), `Molly
+Netting` (Back, +16%) and `Nylon Bodypack` (Back, +20%), and two of the three are back-slot, which
 is why it reads as backpacks and nothing else (#584).
 
 ### 38.1 It was never a back-slot mechanic
 
 `CarryBonus` is an attribute on the **`Armor`** part, and `Armor` takes any `WornOn`. The Humanoid
-anatomy already provides 2× Arm, and Arm is a live, well-populated slot — 18 vanilla armour items sit
+anatomy already provides 2× Arm, and Arm is a live, well-populated slot, with 18 vanilla armour items sitting
 there. So an arm satchel is one line of XML and needs no anatomy change at all, which is what
 answered #170's first checkbox: **no new slot is needed.**
 
 **`CarryBonus` on `Armor` is a percentage, not a flat amount.** `E.AdjustWeight((100 + n) / 100)`,
-and several worn at once compound multiplicatively — vanilla's three together are **+46%**.
+and several worn at once compound multiplicatively, and vanilla's three together are **+46%**.
 
 | | capacity at Strength 16 | Encumbered at (75%) |
 |---|---:|---:|
@@ -5668,7 +5668,7 @@ and several worn at once compound multiplicatively — vanilla's three together 
 | + two arm satchels at +8% | **409 lb** | **307 lb** |
 
 Base capacity is `Strength × 15`. The burden bands in §14 are percentages of capacity and therefore
-scale on their own — what a capacity item actually changes is how much of play sits below the first
+scale on their own. What a capacity item actually changes is how much of play sits below the first
 band, which is why 8% per arm was chosen to stay well under vanilla's bodypack alone.
 
 ### 38.2 The shoulder bag needs no new mechanism, and it took a decompile to be sure
@@ -5686,7 +5686,7 @@ profile resolves in this order:
 `MeleeWeapon.Slot`
 
 So a held object needs a profile naming `Hand`, and `UsesSlots` is the route. **Twelve vanilla
-blueprints already use it**, as a `<tag>` with a comma-separated slot list — `Banner of the Holy
+blueprints already use it**, as a `<tag>` with a comma-separated slot list, as in `Banner of the Holy
 Rhombus` is `Back,Hand`, and `Nanopneumatic Jackhammer` is `Hand,Hand,Back`. It is a property backed
 by `GetTagOrStringProperty`, so it is a tag rather than a `Physics` attribute.
 
@@ -5703,30 +5703,30 @@ about 5% to a Strength 30 one.
 
 ### 38.4 Tiles
 
-Two 16x24 three-colour PNGs in `mod/Textures/items/`, following §36.5's mapping — black takes
+Two 16x24 three-colour PNGs in `mod/Textures/items/`, following §36.5's mapping, where black takes
 `ColorString`, white takes `DetailColor`, transparent is the background.
 
 Both were redrawn once, for the same reason the trinkets were: at 16 pixels a shape reads as whatever
 it most resembles, not as what you meant. A rounded rectangle with two full-width bands is a **barrel**,
-not a strapped pouch — so the satchel's straps became a two-tone flap instead. And a strap curling out
-of the top of a bag is a **teapot handle** — so the shoulder bag's runs to the corner of the tile.
+not a strapped pouch, so the satchel's straps became a two-tone flap instead. And a strap curling out
+of the top of a bag is a **teapot handle**, so the shoulder bag's runs to the corner of the tile.
 
 ### 38.5 Specialised containers were considered and dropped
 
-The issue also proposed a bag that grants capacity and accepts only one category of thing — an
-ingredient bag modelled on `EnergyCellRack`'s `CanAcceptObjectEvent` filter — on the reasoning that
+The issue also proposed a bag that grants capacity and accepts only one category of thing, an
+ingredient bag modelled on `EnergyCellRack`'s `CanAcceptObjectEvent` filter, on the reasoning that
 *a container can afford a bigger bonus because it carries less variety, and the restriction is the
 price.*
 
 **The restriction is not a price.** `CarryBonus` raises the character's total capacity and has no
 opinion about the bag's contents, so a filtered bag is worth exactly what an unfiltered one is to
-anybody who was not relying on it for storage — which, Qud's inventory being flat, is everybody. The
+anybody who was not relying on it for storage, which, Qud's inventory being flat, is everybody. The
 item would have been nearly free, which is the *secretly useful* failure the category's register
 warns about, arriving by a side door.
 
 The design that would work is the one the issue lists as an alternative: the bag makes its **contents
 weightless** through `GetExtrinsicWeightEvent`, and accepts only one category. Then the filter really
-is the price — free carriage, bounded to `PreparedCookingIngredient`, which is a clean 81-blueprint
+is the price: free carriage, bounded to `PreparedCookingIngredient`, which is a clean 81-blueprint
 population. Recorded here rather than built, so the reasoning survives if anyone reopens it.
 
 ### 38.6 Off-switch
@@ -5745,19 +5745,19 @@ claims about it wrong. Worth stating them, because the corrections are what made
 
 | the issue said | what ships |
 |---|---|
-| *"I recognise someone else's mark"* is the cheapest shape **to build** | it is not a shape to build — the item's description already reads *"this dagger bears the mark of Argyve"* |
+| *"I recognise someone else's mark"* is the cheapest shape **to build** | it is not a shape to build, since the item's description already reads *"this dagger bears the mark of Argyve"* |
 | the merchant shape is **impossible**, because `DynamicMakersMarks` ships off | `GenericInventoryRestocker.GetCraftmarkApplication` never consults that setting. Every hero merchant's stock is stamped today |
 | a search for **a price adjustment** returns nothing | `obj.RequirePart<Commerce>().Value += num` sits three lines below the stamp |
 
 **Two parts carry a mark and the issue conflated them.** `HasMakersMark` is on the **creature** and
 holds only `Mark` and `Color`. `XRL.World.Parts.MakersMark` is on the **item** and holds `Mark`,
-`Color` **and `CrafterName`** — so the link from an object back to its maker is already on the
+`Color` **and `CrafterName`**, so the link from an object back to its maker is already on the
 object, already serialised, and already printed.
 
 ### 39.2 So the feature is one thing: the reaction
 
 You could buy a dagger stamped with Argyve's name, carry it to Argyve, and he had nothing to say.
-That was the entire gap, and it is what this fills — a conversation choice that appears **only** when
+That was the entire gap, and it is what this fills: a conversation choice that appears **only** when
 you are carrying the speaker's own work.
 
 Matching is on **`CrafterName`, not the glyph**. `Mark` is one or more glyph characters that
@@ -5766,21 +5766,21 @@ a finite pool, so a substring test would false-positive the moment two makers sh
 `CrafterName` is `;;`-joined and splits cleanly.
 
 A **replica is deliberately not its original**: `HasMakersMark` regenerates the mark on
-`ReplicaCreatedEvent`, so a clone of a smith is not that smith, and nothing here special-cases it —
+`ReplicaCreatedEvent`, so a clone of a smith is not that smith, and nothing here special-cases it:
 the names simply do not match.
 
 ### 39.3 Rate-limited by Freehold rather than by me
 
 `TriggersMakersMarkCreationEvent` has exactly two handlers, `ModMasterwork` and `ModLegendary`. So
 the game's own answer to *when is an object worth marking* is **when it is notable**, and inheriting
-that filter is why this needs no frequency tuning — the issue's *"keep it quiet"* requirement is met
+that filter is why this needs no frequency tuning, since the issue's *"keep it quiet"* requirement is met
 by vanilla rather than by a number I chose.
 
 ### 39.4 Off-switch
 
 None, on the same reasoning as §31's. It changes no number, no loot table and no character creation,
 and adds one conversation line that only appears when you are already carrying the speaker's work.
-There is nothing to refuse but a sentence — and #692 had just cut five options to fit the menu, so a
+There is nothing to refuse but a sentence, and #692 had just cut five options to fit the menu, so a
 new one would need to earn its line rather than default into it.
 
 ### 39.5 What is still out of reach
@@ -5804,19 +5804,19 @@ five ways and the economy is load-bearing:
 |---|---|---|
 | `Broken` from damage | a `Breakable` item reaching **¼ HP**; force-unequipped, value **÷100** | yes |
 | `Broken` from examine / modding / overload | botched identification, botched mod, overloaded use | yes |
-| `Rusted` | qudzu, jells, sludge, normality. **Metal only** | yes — a *second* rusting destroys it |
-| `ShatteredArmor` ("cracked") | Cleave / Shattering Blows | **no — 300 turns**, 2000 from Shattering Blows |
+| `Rusted` | qudzu, jells, sludge, normality. **Metal only** | yes, since a *second* rusting destroys it |
+| `ShatteredArmor` ("cracked") | Cleave / Shattering Blows | **no, 300 turns**, 2000 from Shattering Blows |
 
 `ShatteredArmor` is the one to notice: Freehold made the *common combat* degradation temporary on
 purpose, so it is an inconvenience rather than an errand.
 
-**So the gap is not degradation. It is that armour wears from use and weapons do not** — using armour
+**So the gap is not degradation. It is that armour wears from use and weapons do not**, because using armour
 means being hit, and the item takes that damage. `Combat` and `MeleeWeapon` contain no path that
 damages a weapon.
 
 ### 41.2 The capacity is vanilla's; only the interval was ours
 
-Weapons are **HP 25** — 84 of 86 missile weapons and the melee line alike — and `Broken` fires at
+Weapons are **HP 25**, across 84 of 86 missile weapons and the melee line alike, and `Broken` fires at
 `CurrentHP <= MaxHP / 4`, which integer division puts at 6.
 
 > **A weapon holds exactly 19 points of wear**, identical for a bronze dagger and a carbide greataxe.
@@ -5830,14 +5830,14 @@ The interval is `10 + 5 × Tier` uses, because tier is where vanilla keeps mater
 | 8 | zetachrome | 50 | 300 hits | 950 |
 
 **This was retuned after play.** It first shipped at `20 × (Tier + 1)`, which put zetachrome at
-1,080 hits before it showed any wear and 3,420 before it broke — never, in a real run. That inverted
+1,080 hits before it showed any wear and 3,420 before it broke, which is never, in a real run. That inverted
 the point of the feature: the repair economy is meant to engage with gear worth keeping, and the
 steeper curve meant the better the weapon the less it ever participated. The figure had been chosen
 by asking how long *one* weapon should last, without checking what the multiplier did at the top of
 the range.
 
 **Differing hitpoints per material was the better instinct and does not work.** Of 1,935 carried
-weapons with a numeric tier, 718 sit at 25 HP and only 277 declare it — the rest inherit from
+weapons with a numeric tier, 718 sit at 25 HP and only 277 declare it; the rest inherit from
 `PhysicalObject`, the root every object descends from. There is no bronze base to merge onto, so that
 route is ~718 merges *and* it changes how those weapons answer blasts and acid the moment it ships.
 
@@ -5851,24 +5851,24 @@ the same economic work and never ambushes anybody.
 
 | | hook | on | cost |
 |---|---|---|---|
-| melee, per **hit** | `WieldedWeaponHit` | **attacker** — carries the weapon | one part on the player, **zero merges** |
+| melee, per **hit** | `WieldedWeaponHit` | **attacker**, which carries the weapon | one part on the player, **zero merges** |
 | missile, per **shot** | `ShotComplete` | the weapon | **51 merges** |
 
 Missile weapons get no central hook: `ShotComplete` knows the weapon but only reaches the weapon, and
 `BeginMissileAttack` reaches the attacker carrying no parameters at all. So that half is merged onto
-the blueprints declaring `MissileWeapon` with a numeric tier — 51 of the 64 declarers; the other 13
+the blueprints declaring `MissileWeapon` with a numeric tier, 51 of the 64 declarers; the other 13
 are gazes, natural weapons and the base itself.
 
 **Per shot, not per projectile**, and vanilla's own shapes say why: a Swarm Rack burns ten rounds for
 ten projectiles, so per-projectile would double-bill a cost already levied in ammunition; and a pump
 shotgun puts eight pellets out of **one shell in one discharge**. `ShotCompleteEvent` is sent at the
-same brace depth as the projectile loop rather than inside it, which is what makes this per-shot —
+same brace depth as the projectile loop rather than inside it, which is what makes this per-shot.
 and is the one place it could silently become per-projectile.
 
 ### 41.5 Exemptions and visibility
 
 `NaturalGear` (357 blueprints, every one a `MeleeWeapon` carrier) so nobody's fangs wear out, and
-anything with no `Tier` tag — 2,061 carried `MeleeWeapon` blueprints that are largely corpses and
+anything with no `Tier` tag. 2,061 carried `MeleeWeapon` blueprints that are largely corpses and
 oddments. The tag is the opt-in.
 
 **Three visible states, because vanilla has none.** Armour simply breaks with no warning, which is
@@ -5878,17 +5878,17 @@ tolerable when the cause is visibly being hit and much worse when it is a counte
 |---|---:|---:|---:|
 | `[{{y|worn}}]` | 6 of 19 | 60 hits | 300 hits |
 | `[{{O|battered}}]` | 12 of 19 | 120 hits | 600 hits |
-| `[{{r|broken}}]` — vanilla's own | 19 of 19 | 190 hits | 950 hits |
+| `[{{r|broken}}]`, vanilla's own | 19 of 19 | 190 hits | 950 hits |
 
 **The middle state was added after play.** One warning at a third and then nothing until the weapon
 breaks tells you something is wrong but not how urgent it is. Three bands split the capacity evenly
 and escalate in colour, so the display answers *how bad* rather than only *yes or no*. `battered`
-collides with nothing — the assembly contains no such string, and vanilla's item vocabulary is only
+collides with nothing: the assembly contains no such string, and vanilla's item vocabulary is only
 `broken`, `rusted` and `cracked`.
 
 ### 41.6 Off-switch
 
-A **0–3 slider** — off, light, normal, heavy — scaling the interval ×2 / ×1 / ×0.5. `Min` is 0
+A **0–3 slider**, off, light, normal and heavy, scaling the interval ×2 / ×1 / ×0.5. `Min` is 0
 deliberately: a slider with `Min` above 1 sends Qud's options menu into unbounded recursion and
 crashes the game (#51). Default **normal**, since the economy loop is the point. Read live, so
 turning it off stops wear accruing immediately; wear already spent stays spent, like any other damage.
@@ -5904,7 +5904,7 @@ Qud already draws: someone who follows me is someone I know; a stranger is not (
 The companion menu gains **Look Over** (`l`), which shows their level, hit points, AV/DV/MA, the six
 primary attributes, their active mutations with levels, and their skills.
 
-Equipment is deliberately absent — `Description` already appends an `Equipped:` line to any
+Equipment is deliberately absent, because `Description` already appends an `Equipped:` line to any
 creature's examine text, so it is the one thing here a player can already read.
 
 Like `ShowEffects`, the only other purely read-only companion action, it **costs no time** and does
@@ -5916,7 +5916,7 @@ not close the menu.
 has never once been passed anything but `The.Player`. **It renders a follower correctly, and it is
 still the wrong call.**
 
-`Show` is a **cycler, not a viewer** — the classic path loops `ScreenList` until you exit, the modern
+`Show` is a **cycler, not a viewer**: the classic path loops `ScreenList` until you exit, the modern
 path builds all eight as tabs. So every entry point reaches `TinkeringScreen`, which mixes the two
 subjects *inside single operations*:
 
@@ -5927,11 +5927,11 @@ TinkeringHelpers.ProcessTinkeredItem(gameObject2, The.Player)
 ```
 
 > Aimed at a follower, that lists **their** items while modding against **my** Intelligence and
-> delivering the result to **me**. No crash, no error — a coherent-looking screen performing a
+> delivering the result to **me**. No crash, no error, just a coherent-looking screen performing a
 > hybrid action.
 
 `ShowPopup` is no escape: its dictionary holds only `"Factions"`, and the modern branch routes it
-back through the same tabbed host. So this renders its own panel — which will not track a future
+back through the same tabbed host. So this renders its own panel, which will not track a future
 vanilla screen, and that is the price of not shipping the hybrid above.
 
 ### 42.3 Followers by any route, because vanilla already treats them alike
@@ -5953,23 +5953,23 @@ The water ritual's join choice now reads `[250 reputation] [level 14]`.
 That is true for a strong recruit and false for every weak one:
 
 > **The price only encodes their level above its floor.** At thirteen levels below me it is a flat
-> **50** and encodes nothing at all — which is most late-game recruiting.
+> **50** and encodes nothing at all, which is most late-game recruiting.
 
 ### 42.5 Zero vanilla records for the action, one merge for the level
 
-`OwnerGetInventoryActionsEvent` fires on the **actor** — `GameObject` gates its own handler on
-`E.Actor == this && IsPlayer()` — and carries the companion as `E.Object`; `InventoryActionEvent`
+`OwnerGetInventoryActionsEvent` fires on the **actor**, and `GameObject` gates its own handler on
+`E.Actor == this && IsPlayer()`, and carries the companion as `E.Object`; `InventoryActionEvent`
 returns the same way as `E.Item`. Both halves reach **one part on the player**, the same shape that
 made `WieldedWeaponHit` cheap for weapon wear (§41).
 
 The level tag is one `Load="Add"` part merged onto vanilla's `JoinPartyChoice`. Appending is the
 requirement rather than a detail: vanilla assigns `E.Tag` outright and returns `false`, which reads
-as final and is not — `IConversationElement.HandleEvent` discards each part's return value and stops
+as final and is not, because `IConversationElement.HandleEvent` discards each part's return value and stops
 only when `E.HandlePartDispatch` says so.
 
 **That part is deliberately not an `IWaterRitualPart`.** That base would have supplied matching
 colours, and its `HandleEvent(IsElementVisibleEvent)` returns a `Visible` field defaulting to
-`false` — inheriting it to borrow two colour properties would have **hidden vanilla's join choice
+`false`, and inheriting it to borrow two colour properties would have **hidden vanilla's join choice
 outright**. Hence the fixed `{{K|…}}`, the register `Description` already uses for `Weight:`.
 
 ### 42.6 Off-switch
@@ -5983,7 +5983,7 @@ forever and nothing else.
 
 **Qud's feedback about disease is loudest when it stops mattering and quietest when it matters
 most.** Contracting glotrot gets a popup and a journal entry, by which point nothing can be changed.
-The five-day contest you could still win gets one repeated line — and sometimes nothing at all
+The five-day contest you could still win gets one repeated line, and sometimes nothing at all
 (#581).
 
 ### 43.1 There is a path where the whole episode is invisible
@@ -6005,7 +6005,7 @@ if (Object.MakeSave("Toughness", 13, …)) {
 ```
 
 > Two consecutive opening passes reach `Stage -2`, the cure branch runs, and **its message is gated
-> on `SawSore` too**. Two rolls, 2,400 turns, complete silence — and the silence is *caused* by having
+> on `SawSore` too**. Two rolls, 2,400 turns, complete silence, and the silence is *caused* by having
 > done well on the first roll.
 
 ### 43.2 And the last thing it tells you can be that you are improving
@@ -6018,10 +6018,10 @@ if (Object.MakeSave("Toughness", 13, …)) {
 | 2 | fail | 2 | *"Your throat feels sore."* |
 | 3 | pass | 1 | *"You feel a bit better."* |
 | 4 | pass | 0 | *"You feel a bit better."* |
-| 5 | pass | −1 | *"You feel a bit better."* — **then glotrot lands in the same tick** |
+| 5 | pass | −1 | *"You feel a bit better."*, **then glotrot lands in the same tick** |
 
 Three saves won in a row, the last word from the game is that it is easing, and the disease arrives
-because the clock ran out one step short of the cure. Not a missing message — an actively misleading
+because the clock ran out one step short of the cure. Not a missing message but an actively misleading
 one, produced by correct code doing what it says.
 
 ### 43.3 What this adds
@@ -6035,7 +6035,7 @@ Three lines, and no numbers:
 | beaten | *Whatever had hold of you loosens its grip.* | ” | ” |
 
 **The deadline is the one worth saying, because it is the one you can act on.** All three onsets take
-Yuckwheat and honey for a save bonus — +3 for glotrot, +2 for the others — and glotrot has an outright
+Yuckwheat and honey for a save bonus, +3 for glotrot and +2 for the others, and glotrot has an outright
 cure in flaming ick. `Bonus` is consumed when a save actually uses it, so it is a one-shot a player
 can deliberately stack before a roll. The game ships three counters to this and never says the clock
 is running.
@@ -6046,11 +6046,11 @@ own popup and journal entry already cover that. It was never the quiet moment.
 ### 43.4 Messages only, because `GetDetails()` is closed
 
 #581 asked for the status-screen line to carry the trend. Both call sites invoke `GetDetails()`
-directly on the effect — `CharacterStatusScreen.HandleHighlightEffect` and `GameObject` — and
+directly on the effect, in `CharacterStatusScreen.HandleHighlightEffect` and `GameObject`, and
 `Campfire.ProcessEffectDescription` is pure string substitution. **There is no hook.**
 
 Reaching it would mean Harmony, or substituting a subclass and thereby writing a mod type into save
-data that an uninstall could not read back. Neither is worth a line of flavour text — and a deadline
+data that an uninstall could not read back. Neither is worth a line of flavour text, and a deadline
 belongs in a message at the moment it matters rather than on a screen you would have to think to
 open. Stage magnitude is absent for the same reason, and because day 2 versus day 5 matters more than
 stage 1 versus stage 2: only one of them is a deadline.
@@ -6061,7 +6061,7 @@ stage 1 versus stage 2: only one of them is a deadline.
 checks for Glotrot, Ironshank and Monochrome twice each. `Ill` does not gate on `Disease` and is not
 one. **This is not a pilot for a fourth.**
 
-The three share no base class — each carries its own copy of the same twelve lines — so the wording
+The three share no base class, and each carries its own copy of the same twelve lines, so the wording
 is written once here and applied by type rather than inherited.
 
 ### 43.6 Zero vanilla records, and no polling
@@ -6071,7 +6071,7 @@ than discovered. `GetDiseaseOnsetEvent.GetFor` is vanilla's own central lookup, 
 onsets answer and which `BoostedImmunity` and `Campfire` already use.
 
 The day counter is polled from that lookup rather than run inside the effect's own tick, so nothing
-depends on whether this part's `EndTurn` handler is registered before or after the effect's — worst
+depends on whether this part's `EndTurn` handler is registered before or after the effect's, worst
 case a line lands one turn late, invisible against a 1200-turn cadence. **#717 shipped inert because
 I reasoned about dispatch order; this arranges not to care about it.**
 
@@ -6092,11 +6092,11 @@ Part A of that document adds opposition; Part B removes the free resources that 
 ### 44.1 The gap
 
 Natural healing is `(20 + 2×ToughnessMod + 2×WillpowerMod)` per turn into a counter paying 1 HP per
-100 — roughly 0.2 HP a turn. Slow, but turns are cheap, so hit points are very nearly renewable and
+100, or roughly 0.2 HP a turn. Slow, but turns are cheap, so hit points are very nearly renewable and
 damage has no memory: you walk out of every fight as though it never happened.
 
-Qud already has the answer to that and never requires it. #640 counted the treatment economy —
-**11 restorative blueprints, four cooking domains, Convalessence and the `Physic` tree** — and closed
+Qud already has the answer to that and never requires it. #640 counted the treatment economy:
+**11 restorative blueprints, four cooking domains, Convalessence and the `Physic` tree**, and closed
 as *deliberate, not a gap*. Nothing needed building first.
 
 ### 44.2 What a wound is
@@ -6129,7 +6129,7 @@ public override bool FireEvent(Event E)
 ```
 
 This does the same thing conditionally. And the arithmetic is vanilla's too: **`Penalty` on the
-Hitpoints stat *is* the damage store** — `Stomach` heals by `Penalty -= num` — so "hit points a wound
+Hitpoints stat *is* the damage store**, and `Stomach` heals by `Penalty -= num`, so "hit points a wound
 holds back" is a floor below which natural healing may not lower `Penalty`, and needs no bookkeeping
 of its own.
 
@@ -6140,7 +6140,7 @@ bandage, salve, injector, `Physic` use, regeneration tank and healing meal alrea
 wound. The treatment economy becomes load-bearing without a single item being touched.
 
 And `Heal` fires a `Healing` event before applying, so the wound removes itself on being treated
-**at all** — rather than requiring you to be healed past the reserve. That is the gentler of the two
+**at all**, rather than requiring you to be healed past the reserve. That is the gentler of the two
 readings and a deliberate choice: the bite is the interruption and the consumable, not the
 arithmetic. §B1 names itself the item most likely to feel bad, and a wound you cannot clear without
 the right supplies is exactly how that happens.
@@ -6148,24 +6148,24 @@ the right supplies is exactly how that happens.
 ### 44.5 A proportional threshold, which is vanilla's own
 
 Immediately above the `TookDamageEvent` send site, the floating combat text scales itself by
-`damage.Amount / stat.BaseValue` in five bands — 0.1, 0.2, 0.3, 0.4, 0.5. **Freehold already
+`damage.Amount / stat.BaseValue` in five bands: 0.1, 0.2, 0.3, 0.4, 0.5. **Freehold already
 classifies how big a hit was as a fraction of maximum hit points**, and the player has been trained
 on it all game: the number gets visibly bigger at exactly those steps. The wound fires at the top
 band.
 
 That also closes #192's last checkbox. This fork adds **+4** to the maximum weapon die at tier 5 and
-nothing at the other eight — which only matters to an absolute number. A fraction of maximum hit
+nothing at the other eight, which only matters to an absolute number. A fraction of maximum hit
 points is invariant to weapon tier, character level, Strength and every multiplier at once.
 
-*Honest limit:* those bands are read from a **presentation** path — how large to draw a number — so
+*Honest limit:* those bands are read from a **presentation** path, how large to draw a number, so
 they are good evidence of how Freehold thinks about severity, and are not a balance figure anybody
 tuned for consequences. The shape is well founded; the number wants play.
 
 ### 44.6 Damage over time cannot wound
 
 `IDamageEvent.Indirect` is passed `Indirect: true` by `Poisoned`, `PhasePoisoned`, `PoisonGasPoison`,
-`SporeCloudPoison`, `AshPoison`, `Bleeding`, `Burning`, `GasDamaging` and `LifeDrain` — every
-damage-over-time source — and it reaches `TookDamageEvent`. So most of the *"generous thresholds"*
+`SporeCloudPoison`, `AshPoison`, `Bleeding`, `Burning`, `GasDamaging` and `LifeDrain`, every
+damage-over-time source, and it reaches `TookDamageEvent`. So most of the *"generous thresholds"*
 worry is answered by a flag that already exists rather than by tuning. A wound comes from being hit
 hard once, not from standing in gas.
 
@@ -6174,7 +6174,7 @@ hard once, not from standing in gas.
 The mutation registers `Regenerating`; this clamps on `Regenerating2`, which
 `ProcessNaturalHealing` fires **second**, so the clamp lands last whatever the mutation did to
 `Amount`. Rather than bolting a wound-specific exemption on top, the reserve itself shrinks 10% per
-level and is gone at 10 — the existing lever, which is what #192 asked for.
+level and is gone at 10, the existing lever, which is what #192 asked for.
 
 ### 44.8 Never permanent, two ways
 
@@ -6184,14 +6184,14 @@ delayed rather than stranded.
 
 ## 45. What lies past sharp (`Vixy_TeachUpgrade`, `Vixy_UpgradeDiskFilter`)
 
-**Six vanilla item mods are complete, gated, presented — and reachable by nothing.** Each is the
+**Six vanilla item mods are complete, gated and presented, and reachable by nothing.** Each is the
 second rung of a ladder whose first rung ships and is tinkerable today. Four of them are genuine
 rungs, and this makes those four reachable, from a person (#723).
 
 ### 45.1 What was already written, and what was missing
 
 Each upgrade already carries three finished pieces: **the gate** (`ModKeen.ModificationApplicable`
-returns `Object.HasPart<ModSharp>()`), **the effect**, and **the presentation** — the base suppresses
+returns `Object.HasPart<ModSharp>()`), **the effect**, and **the presentation**, since the base suppresses
 its own adjective and rules text so the item reads *"keen"* rather than *"sharp keen"*.
 
 All six carry Freehold's own `/// This part is not used in the base game.` The only missing piece was
@@ -6199,7 +6199,7 @@ a `<mod>` entry.
 
 | base | upgrade | what the upgrade adds | teacher | tier |
 |---|---|---|---|---:|
-| `ModSharp` | `ModKeen` | +1 pen again — +2 total | **Yla Haj** | 4 |
+| `ModSharp` | `ModKeen` | +1 pen again, +2 total | **Yla Haj** | 4 |
 | `ModMasterwork` | `ModLegendary` | crit threshold −4, 20% more crits | **Barathrum the Old** | 5 |
 | `ModSerrated` | `ModMicroserrated` | 7% dismember, stacking with the base's 3% | **Bep** | 6 |
 | `ModOverloaded` | `ModMassivelyOverloaded` | power load +800 against the base's +300 | **Q Girl** | 6 |
@@ -6213,13 +6213,13 @@ a `<mod>` entry.
 armour it is close to strictly bad.
 
 It also has a detail worth recording: its description reads *"+3 AV, -2 DV, -10 move speed, x2
-weight"* while its code adds **2**. That is correct — `ModReinforced` suppresses **both** its adjective
+weight"* while its code adds **2**. That is correct, because `ModReinforced` suppresses **both** its adjective
 and its rules text when Overbuilt is present, so Overbuilt's line has to state the *combined* total,
 1 + 2. **The deference is load-bearing for the numbers being right, not cosmetic.**
 
 **`ModSmart` converts a scoped gun into a powered artifact.** It calls
 `Object.RequirePart<EnergyCellSocket>()`, installs a `Smartgun` and a `BootSequence`, and applies
-`IncreaseDifficultyAndComplexity(5, 2)` — the only one of the six using the unconditional form, which
+`IncreaseDifficultyAndComplexity(5, 2)`, the only one of the six using the unconditional form, which
 calls `RequirePart<Examiner>()` and so *creates* complexity. Its bonus is conditional three ways:
 powered, booted, and a HUD or techscanner on the wielder. `ModScoped` gives a flat
 `AimVarianceBonus = 4` with no conditions, so **smart is not strictly better than scoped.**
@@ -6243,18 +6243,18 @@ public bool CanMod(string ModTag)
 }
 ```
 
-`Tables` is not only loot distribution — it is **the whitelist of what a mod may be applied to in the
+`Tables` is not only loot distribution; it is **the whitelist of what a mod may be applied to in the
 tinker screen**. Without it the recipe is learnable, visible, and applicable to nothing, forever.
 
 **`MinTier="99"` is what keeps them out of loot instead.** `ModEntry.MinTier` is read in exactly two
-places: the generation eligibility test, and `RandomAltarBaetyl`'s `MinTier <= 8` gate — so one
+places: the generation eligibility test, and `RandomAltarBaetyl`'s `MinTier <= 8` gate, so one
 attribute closes both loot and the Sparking Baetyl. Generation could not have produced them anyway,
 since eligibility is computed once against the bare item and `ModificationApplicable` requires the
 base mod.
 
 ### 45.4 `TinkerTier` does four jobs at once
 
-Which is why each is set deliberately rather than left to `ModEntry`'s default of **1** — a default
+Which is why each is set deliberately rather than left to `ModEntry`'s default of **1**, since a default
 that would put an upgrade in the tree *beside or before* its own prerequisite.
 
 | what it drives | how |
@@ -6262,7 +6262,7 @@ that would put an upgrade in the tree *beside or before* its own prerequisite.
 | tree position | `TinkerData.Tier` |
 | data-disk rarity | `DataDisk.GetDataScore` |
 | water ritual price | `50 × Tier / 3` reputation |
-| **required skill** | `DataDisk.GetRequiredSkill` — Tinker I ≤ 3, Tinker II ≤ 6, else Tinker III |
+| **required skill** | `DataDisk.GetRequiredSkill`: Tinker I ≤ 3, Tinker II ≤ 6, else Tinker III |
 
 Every value here lands in **Tinker II**, one rank above the Tinker I that Sharp, Masterwork and
 Serrated sit at. Tinker I/II/III are independent purchases at 100/200/300 points with
@@ -6270,7 +6270,7 @@ Serrated sit at. Tinker I/II/III are independent purchases at 100/200/300 points
 
 ### 45.5 You cannot find these, and that is the fiction
 
-**Disks are filtered.** There is no per-recipe "tinkerable but not findable" attribute — every
+**Disks are filtered.** There is no per-recipe "tinkerable but not findable" attribute; every
 consumer reads the one `TinkerData.TinkerRecipes` list, and its only gate, `TinkerAllowed`, removes a
 recipe from tinkering too. So `Vixy_UpgradeDiskFilter` merges onto `DataDisk` and re-rolls.
 
@@ -6296,7 +6296,7 @@ with no loot route nothing in the world carries one.
 ### 45.6 One teacher each
 
 The choice appears only when you already know the base recipe, do not know the upgrade, and hold the
-Tinkering rank — and it is invisible otherwise, so it never reads as a non sequitur.
+Tinkering rank, and it is invisible otherwise, so it never reads as a non sequitur.
 
 **No reputation price.** The water ritual charges for a recipe, but two of these four teachers have no
 water ritual at all, so borrowing that mechanism would make the feature inconsistent between them. The
@@ -6305,7 +6305,7 @@ cost is already real: finding the person, knowing the base, and buying the rank.
 **One teacher per recipe is a maintainer's decision with a cost**, taken deliberately: a tinker who
 dies takes their recipe out of that save permanently. A recipe with four interchangeable sources is a
 checklist; one with a single source is a person worth finding. Barathrum replaced Pax Klanq in that
-list partly on this — Pax Klanq is an explicit quest target.
+list partly on this, since Pax Klanq is an explicit quest target.
 
 ### 45.7 Off-switch
 
@@ -6315,7 +6315,7 @@ repoint saved water-ritual offers at different recipes. The feature is opt-in by
 instead: you must find a specific person, already know the base recipe, and have bought a 200-point
 skill rank. Nothing here changes unless a player goes and does all three.
 
-## 46. Wary — a second look (`Vixy_TacticsWary`)
+## 46. Wary, a second look (`Vixy_TacticsWary`)
 
 A Tactics power, **cost 100, Agility 15**: whenever you enter a cell you search again, with a **+6
 bonus**, for hidden things in that cell and the eight around it (#722).
@@ -6333,7 +6333,7 @@ Object.ProcessEnteredCell(...)   ← EnteredCellEvent, mover present
 ```
 
 At the moment vanilla searches, the mover has left one cell's `Objects` list and not yet joined the
-next — it is in the dispatch set of nothing. Withdrawn in #720; the lesson is in `docs/LESSONS.md`
+next; it is in the dispatch set of nothing. Withdrawn in #720; the lesson is in `docs/LESSONS.md`
 under *"a dispatch list is a snapshot"*.
 
 **The door is four lines further down the same method.** A part handling `EnteredCellEvent` is
@@ -6359,7 +6359,7 @@ So firing a **second** `Searched` with the term set puts the number where `Hidde
 ### 46.3 It is a second roll, and that is accepted deliberately
 
 Vanilla's bonus-0 search has already run inside `EnterCell` and cannot be suppressed from here, so
-the real chance is `1 − P(both fail)` — `Hidden`'s `!Found` guard makes the two a clean union.
+the real chance is `1 − P(both fail)`, and `Hidden`'s `!Found` guard makes the two a clean union.
 
 | Intelligence | vanilla alone | as advertised | actual |
 |---:|---:|---:|---:|
@@ -6369,13 +6369,13 @@ the real chance is `1 − P(both fail)` — `Hidden`'s `!Found` guard makes the 
 | 24 | 41.7% | 66.7% | **80.6%** |
 
 > **The divergence is entirely in the band the skill is not for.** Below a hidden thing's
-> `Difficulty`, `Stat.Random(1, Intelligence)` cannot succeed at all — the defect #221 was filed
-> about — so for exactly the characters this exists for, the double roll and the intended single
+> `Difficulty`, `Stat.Random(1, Intelligence)` cannot succeed at all, the defect #221 was filed
+> about, so for exactly the characters this exists for, the double roll and the intended single
 > roll are the same number.
 
 The overshoot lands on characters who could already find things, and it errs toward noticing a mine
-rather than missing one. The alternatives — lowering the bonus, or firing only when the first roll
-was hopeless — both trade a real cost for exactness against a `Difficulty` the searcher has no way
+rather than missing one. The alternatives, lowering the bonus or firing only when the first roll
+was hopeless, both trade a real cost for exactness against a `Difficulty` the searcher has no way
 to know, since it fires at a *cell* and only `Hidden` knows what it guards.
 
 ### 46.4 Mines are the population that matters, and no blueprint declares them
@@ -6396,13 +6396,13 @@ add it at runtime.
 > **A part added when an object is created is declared by no blueprint**, so a blueprint census
 > measures declarations and not reach.
 
-`Hidden`, `HiddenRender` and `EelSpawn` all read the bonus, so all three get the second roll — an eel
+`Hidden`, `HiddenRender` and `EelSpawn` all read the bonus, so all three get the second roll, and an eel
 lurking in water is exactly the hidden threat this is named for.
 
 ### 46.5 It says what it did, because the last one could not be tested
 
 `Hidden` sets `Found = true` and prints nothing, so a successful search is indistinguishable from a
-search that never ran — which is how #717 reached a merge while doing nothing. Behind **Debug
+search that never ran, which is how #717 reached a merge while doing nothing. Behind **Debug
 Internals**, off by default and vanilla's own convention for this, Wary reports how many nearby cells
 had something listening.
 
@@ -6412,7 +6412,7 @@ None needed: it is a skill power you choose to buy, holds no state, and does not
 
 ## 47. Only Joppa's bookshelf was about Joppa (`Core/Books.xml`)
 
-Four local histories, one for each named bookshelf that had none. Pure data — four `<book>` texts,
+Four local histories, one for each named bookshelf that had none. Pure data: four `<book>` texts,
 four blueprints, four population merges, no C#.
 
 ### 47.1 What vanilla does, and where it stops
@@ -6425,13 +6425,13 @@ off a shelf three hundred parasangs away.
 
 `JoppaBookshelf` is the exception, and it is the whole argument: it places `HistoryofJoppaVol1` and
 `Vol2` **unconditionally**, and those two texts appear in no other table in the game. It is also the
-only named shelf with no Markov corpus — Freehold gave Joppa real local writing instead of
+only named shelf with no Markov corpus, because Freehold gave Joppa real local writing instead of
 procedural filler.
 
 ### 47.2 Joppa's shape does not generalise, because Joppa has one shelf
 
 Every one of these tables is `Style="pickeach"`, where `PopulationList.Generate` iterates every
-child and never reads `Weight` — that is consulted only for `pickone`. An entry with no `Chance` is
+child and never reads `Weight`, which is consulted only for `pickone`. An entry with no `Chance` is
 therefore generated once per shelf, unconditionally. Joppa gets away with placing both volumes that
 way because **Joppa has exactly one bookshelf**.
 
@@ -6446,19 +6446,19 @@ Counted from the static maps, and for Red Rock from `Redrock.cs`:
 
 Copying Joppa's unconditional shape would have handed a player eight identical copies of the same
 history at Grit Gate and nine at Yd Freehold. Each `Chance` is instead sized so this fork supplies
-at most half of what a player meets on that shelf, per `docs/STYLEGUIDE.md` §3.2.1 — Hydropon lands
+at most half of what a player meets on that shelf, per `docs/STYLEGUIDE.md` §3.2.1. Hydropon lands
 on certainty because one expected copy on one shelf *is* always, which is Joppa's situation exactly.
 
 Red Rock is thin by its own construction rather than by choice: `Worlds.xml` gives it a single
 Level 12 zone, `Redrock.cs` places 1.975 encounter regions there on average, and `Study` is one of
-fifteen equal-weight options — so Red Rock has any bookshelf at all in about 13% of playthroughs.
+fifteen equal-weight options, so Red Rock has any bookshelf at all in about 13% of playthroughs.
 
 ### 47.3 The register
 
 Read off the two Joppa volumes: one page, a 30–50 word body (theirs are 48 and 30), a dim-white
 framing line, a blank line, one paragraph in third person past tense closing on something still
 true. Each text gives the origin of exactly one thing visible at that location, and no invented
-proper noun is ever glossed — vanilla names *Jeweled Dusk* and *Ut yara Ux* and explains neither.
+proper noun is ever glossed: vanilla names *Jeweled Dusk* and *Ut yara Ux* and explains neither.
 
 | text | place | subject |
 |---|---|---|
@@ -6470,7 +6470,7 @@ proper noun is ever glossed — vanilla names *Jeweled Dusk* and *Ut yara Ux* an
 **The framing line is not reused, and that is deliberate.** `VillageBase.generateHistoryBooks`
 builds a history book per journal note for every procedural village, titled
 `History of <village>, Vol. <roman>` and opening with the same sentence the Joppa volumes use. That
-template is the *village* register, generated per world — so these four borrow its shape and none of
+template is the *village* register, generated per world, so these four borrow its shape and none of
 its wording, and each speaks in the register its own place would use. It is also why generic
 `VillageBookshelf` is excluded: villages already have this feature.
 
@@ -6485,7 +6485,7 @@ Across the 34 vanilla blueprints inheriting `Book`, every general-pool scholarly
   place's own history does not.
 - **`ExcludeFromDynamicEncounters` must be declared, not inherited.** The base `Book` carries it
   with `*noinherit`, which applies it to `Book` alone. Without it, `RandomAltarBaetyl` and the two
-  Sifrah token pools can demand one of these — a baetyl asking for a book that exists in one
+  Sifrah token pools can demand one of these, such as a baetyl asking for a book that exists in one
   location, and only sometimes.
 
 No `RevealSecretOnRead`. The Joppa volumes reveal journal secrets; extending that system is a
@@ -6499,13 +6499,13 @@ additive and no vanilla record is rewritten.
 
 ## 48. Plainer relic names (`Optional/HistoryNames/historyspice.json`)
 
-First stage of #730. Pure data — one JSON file the game merges into its own naming grammar. No C#,
+First stage of #730. Pure data: one JSON file the game merges into its own naming grammar. No C#,
 no scripting tier, no new blueprint.
 
 ### 48.1 The complaint, and why more words would not fix it
 
 A legendary relic's name is assembled from a grammar in the game's `HistorySpice.json`. The
-vocabulary is not small — around 236 adjectives and 426 nouns sit behind the pools — so "add more
+vocabulary is not small, with around 236 adjectives and 426 nouns behind the pools, so "add more
 words" is refuted rather than untried. What is missing is **plainness**. Real names are mostly
 mundane with occasional strangeness, and the strangeness registers *because* it is surrounded by
 plainness. When every modifier is exotic, obscurity becomes the baseline and reads as noise.
@@ -6521,11 +6521,11 @@ if (file.Type == ModFileType.JSON && file.Name == "historyspice.json")
 ```
 
 - **Basename matching**, so `manifest.json` declaring `Directories` does not hide the file.
-- **`MergeArrayHandling.Union`** — additive only. Vanilla's own forms cannot be removed, so this
+- **`MergeArrayHandling.Union`** is additive only. Vanilla's own forms cannot be removed, so this
   makes a plain name likelier rather than a strange one impossible. That is an honest ceiling and
   the option's help text says so.
-- **The expander walks `HistoricSpice.root` by arbitrary path**, so a key this fork adds —
-  `spice.Vixy_plainAdjectives` — resolves like any vanilla one.
+- **The expander walks `HistoricSpice.root` by arbitrary path**, so a key this fork adds,
+  `spice.Vixy_plainAdjectives`, resolves like any vanilla one.
 
 The pool this writes into, `spice.history.relics.names`, has **no consumer besides the four relic
 naming sites**, so adding a form there is surgical. Seeding `spice.adjectives` or `spice.nouns`
@@ -6534,13 +6534,13 @@ that is a different feature and is not done here.
 
 ### 48.3 Only modifiers count
 
-Six of vanilla's eight forms are anchored by `spice.itemTypes`, which is already plain — *edge*,
+Six of vanilla's eight forms are anchored by `spice.itemTypes`, which is already plain: *edge*,
 *hatchet*, *mace*, *helm*, *mask*, *tome*. So only two forms are composed entirely from the exotic
 lexicon, and the pool is **25% all-strange, not 100%**. But *the hatchet of the sagittal quincunx*
 has a plain head noun and still reads as noise, so a head noun does not count toward the quota: it
 is grammatically obligatory, and the modifier is where a name chooses its register.
 
-Plainness is also **diluted rather than absent** — three of the 30 `spice.adjectives` slots already
+Plainness is also **diluted rather than absent**, since three of the 30 `spice.adjectives` slots already
 reach a plain word. The fix is therefore to add *forms* that draw from a plain pool directly, not to
 add words that must win a 1-in-30 slot draw. `docs/DESIGN_history_naming.md` §4 carries the full
 reasoning.
@@ -6548,7 +6548,7 @@ reasoning.
 ### 48.4 The twelve forms
 
 Twelve added forms against vanilla's eight, so the pool is twenty and the all-strange share is
-`2/20` — **exactly the 10% §4.2 asks for**, and the number `MergeArrayHandling.Union` makes the
+`2/20`, **exactly the 10% §4.2 asks for**, and the number `MergeArrayHandling.Union` makes the
 minimum, since vanilla's two cannot be removed.
 
 Ten draw only on plain vocabulary; two are mixed, pairing a plain modifier with the relic's own
@@ -6570,29 +6570,29 @@ element. Rendered as the game builds them:
 | 12 | `*personNounPossessive* <plainAdj> <elementNoun>` | the Wanderer's Bright Mirror |
 
 Four vocabulary lists back them, and **the split between them is grammatical rather than
-decorative**. `Vixy_plainNouns` are count nouns and take an article — *the Gear of the Crossing*;
-`Vixy_plainMassNouns` do not — *the Mace of Water*. Writing form 3 against the count list first
+decorative**. `Vixy_plainNouns` are count nouns and take an article, as in *the Gear of the Crossing*;
+`Vixy_plainMassNouns` do not, as in *the Mace of Water*. Writing form 3 against the count list first
 produced *the Cap of Wall*, which is why they are separate lists rather than one.
 
 Forms 9 and 10 carry no article. `QudHistoryHelpers.ExtractArticle` strips a leading `the ` into the
 relic's `Article` field and otherwise leaves it null, so a form without one becomes a bare proper
-name — the shape vanilla's own forms 7 and 8 use.
+name, the shape vanilla's own forms 7 and 8 use.
 
-Only the four bindings that exist are used — `*element*`, `*itemType*`, `*personNounPossessive*`,
+Only the four bindings that exist are used: `*element*`, `*itemType*`, `*personNounPossessive*`,
 `*creatureNamePossessive*`. `*creatureName*` and `*personNoun*` appear nowhere in the assembly, and
 the expander leaves an unmatched token in place, so a form naming one would render it literally
 inside a relic's name. `history-spice` in `tools/validate_mod.py` refuses that, and refuses a
-malformed file — the merge sits in a try/catch that logs a mod error and carries on, so a JSON
+malformed file, because the merge sits in a try/catch that logs a mod error and carries on, so a JSON
 error otherwise costs the whole feature in silence.
 
 **Not every relic reaches this pool.** A relic whose history entity is a region is named by
 `GenerateRelicNameByRegion`, a C# concat that never consults the forms, and `ItemNaming` has a
 branch that composes a name from the zone instead. Both are already grounded, so neither is a
-problem — but the 10% is a share of the names that reach the pool, not of every relic in the world.
+problem, but the 10% is a share of the names that reach the pool, not of every relic in the world.
 
 ### 48.5 Off-switch
 
-`OptionQudExpandedCEPlainRelicNames`, gating `Optional/HistoryNames` in `manifest.json` — the #498
+`OptionQudExpandedCEPlainRelicNames`, gating `Optional/HistoryNames` in `manifest.json`, the #498
 route, with no C# reading it. The directory is a **sibling** of `Optional/JoppaBuilding` rather than
 nested inside a listed path, because `ModInfo.InitializeFiles` recurses unconditionally and a gated
 directory inside a listed one has its gate silently ignored.
@@ -6600,17 +6600,17 @@ directory inside a listed one has its gate silently ignored.
 **Restart-scoped, not new-world-scoped**, which is easy to get backwards. `InitializeFiles` runs
 inside `ModManager.BuildMods()`, so the gate is read once at mod build; but relics are named at
 worldgen, at lazy zone build, and during play, so a running game keeps drawing from whichever pool
-was loaded. Relics that already have names keep them — a name is written once, when the relic is
+was loaded. Relics that already have names keep them, since a name is written once, when the relic is
 made.
 
 ## 49. Thirteen books (`Core/Books.xml`)
 
-Two continuations into the general pool, and eleven volumes stocked by booksellers only. Pure data —
+Two continuations into the general pool, and eleven volumes stocked by booksellers only. Pure data:
 texts, blueprints and table entries. No C#. #741.
 
 ### 49.1 The pool, and why it is worth being careful with
 
-`Books` is **28 entries at 469 weight**, of which **22 carry an authored text** — 84.4% of the weight,
+`Books` is **28 entries at 469 weight**, of which **22 carry an authored text**, 84.4% of the weight,
 71 pages. The half ceiling in §3.2.1 would permit about **23** new entries at parity weight, so the
 share was never the binding constraint here. Two things are.
 
@@ -6633,7 +6633,7 @@ roughly the whole of §47's four local histories, three times over.
 Continuing a series inherits a register instead of testing a new one against 22 established texts, and
 a volume II of something already on the shelf reads as a find rather than an addition. Both voices are
 strict: the Yewtarch is a plant of the Consortium of Phyta cataloguing humanoid kings it considers
-seedlings, dating everything **PP** — prior to publication — because it takes its own volumes as the
+seedlings, dating everything **PP**, prior to publication, because it takes its own volumes as the
 epoch of paramount significance. Eta answers a question containing a category error with a parable
 that reframes rather than corrects, under Roman numerals, with *"Eta smiled in patience"* as refrain.
 
@@ -6642,21 +6642,21 @@ Together they put this fork at **7.9%** of the pool.
 ### 49.3 Eleven volumes the booksellers carry
 
 Ten transpose the manner of a writer the maintainer admires and ask what it would have produced had it
-grown here — so they are Qud books by Qud authors, and **no real person is named, quoted or attributed
+grown here, so they are Qud books by Qud authors, and **no real person is named, quoted or attributed
 anywhere**. Style is not the property of the stylist; the prose is this fork's. The eleventh, *A
 Concordance of Loss*, is neither transposition nor continuation.
 
 They lean on the pool's dominant convention rather than inventing one: **thirteen of vanilla's
-twenty-two open with editorial apparatus** — an editor's note, a translator's note, a named compiler —
-presenting a text as a published artifact within the world rather than as raw narration. Every one of
+twenty-two open with editorial apparatus**: an editor's note, a translator's note or a named compiler.
+Presenting a text as a published artifact within the world rather than as raw narration. Every one of
 these carries that frame.
 
 **None of them enters the general pool.** `Vixy_Homages` is referenced from `BookBinderInventory` and
-`ScribeInventory_Legendary` — no bookshelf, no trinket roll, no starting character. Shares are 17.6%
+`ScribeInventory_Legendary`: no bookshelf, no trinket roll, no starting character. Shares are 17.6%
 and 26.3%, both inside the ceiling.
 
 One route is not a choice made here and should not be described as one. Every item in the game
-inherits `DynamicObjectsTable:Items` from the `Item` root, and `HamilcrabInventory` rolls it — so a
+inherits `DynamicObjectsTable:Items` from the `Item` root, and `HamilcrabInventory` rolls it, so a
 hamilcrab can carry one of these, exactly as it can carry any of vanilla's own books. That is
 vanilla's design rather than this fork's, it applies to all 256 of this fork's items already, and
 `dynamic-pools` is what refused the first commit here and made the point. The four local histories in
@@ -6668,7 +6668,7 @@ not.
 These carry a real value and **no** `ExcludeFromDynamicEncounters`, which is the exact opposite of
 §47's local histories and is deliberate. Across vanilla's 34 `Book` descendants the split is clean: a
 general-pool scholarly text is priced 35–350 with no exclusion tag, while a location-bound or trivial
-one is priced at or near zero and declares it. These are the first kind — so they pay the Stilt
+one is priced at or near zero and declares it. These are the first kind, so they pay the Stilt
 librarian, `LibrarianGiveBook` awarding value² / 25, and they are baetyl- and Sifrah-eligible exactly
 as vanilla's own texts are. That is right for a scholarly find and wrong for a village's own history,
 which is why the two features price oppositely.
@@ -6680,16 +6680,16 @@ and pricing it like a treatise would be the joke misfiring.
 ### 49.5 One dependency worth not forgetting
 
 *A Concordance of Loss* lists, among things a village can no longer recover, *"the greater part of a
-story about a girl and a globe of pearl-glass."* That is `TeleporterOrbs` — **The Girl in the Sky**,
+story about a girl and a globe of pearl-glass."* That is `TeleporterOrbs`, **The Girl in the Sky**,
 764 words about Aphir's daughter, which #699 found is reachable by nothing in the game: no blueprint,
 no `Story` property, no code. #741 decided to leave it cut, and the line is true only while that
-holds. **If that text is ever given a blueprint, this item becomes a lie and must go** — the story
+holds. **If that text is ever given a blueprint, this item becomes a lie and must go**, because the story
 would then be recoverable, sitting on a shelf two rooms away.
 
 ### 49.6 Off-switch
 
 None, on the same reading as §47.5. Rule 6 asks whether anybody would actually turn it off, and
-thirteen books that change no mechanic — eleven of which a player must choose to buy — are the flavour
+thirteen books that change no mechanic, eleven of which a player must choose to buy, are the flavour
 case #663 settled.
 
 There was a second reason to keep them ungated, and it is worth recording. `table-share` and
@@ -6701,7 +6701,7 @@ first, and neither is worth buying an option nobody wants.
 
 ## 50. Companions use what you give them (`Vixy_Reequip`)
 
-Tiers A and B of #588. Tier C — creatures that collect and never equip — is #759, split off because
+Tiers A and B of #588. Tier C, creatures that collect and never equip, is #759, split off because
 it is the only part that is invention rather than derivation.
 
 ### 50.1 Nothing in Qud re-equips an NPC after it acquires an item
@@ -6714,7 +6714,7 @@ it is the only part that is invention rather than derivation.
 | `Reequip` goal | pushed by `ModPsionic` alone |
 | `EquipCharge` | a cell being charged |
 | `MechaPlayer` | piloting |
-| `Brain.WantToReequip()` | body-plan changes — the multi-limb mutations, two cybernetics |
+| `Brain.WantToReequip()` | body-plan changes: the multi-limb mutations, two cybernetics |
 
 `Inventory`, `Body`, `Combat` and `Physics` mention neither name. So a creature that picks up a
 carbine keeps swinging its axe.
@@ -6727,16 +6727,16 @@ carbine keeps swinging its axe.
 two obvious candidates can carry a rule about who is doing the taking.
 
 All four `CommandTakeObject` variants share one event ID and differ only in flags, so the **silent**
-path counts — which matters, because that is the one `Rummager` uses through `GameObject.TakeObject`.
+path counts, which matters, because that is the one `Rummager` uses through `GameObject.TakeObject`.
 
 ### 50.3 The axis is Tinkering, and the anchor is vanilla's own
 
 **Intelligence cannot do this job.** `Creature` declares 16 and `BaseHumanoid` overrides it with
-`sValue="14,1d3,(t)d1"`, so every humanoid lands in one band whatever it is holding — while
+`sValue="14,1d3,(t)d1"`, so every humanoid lands in one band whatever it is holding, while
 **`Goatfolk Yurtwarden` inherits `Animal` at 6 and carries a Desert Rifle**. The stat tracks nothing
 useful in either direction.
 
-Tinkering does. **57 of 849 creatures carry it — 6.7%** — and the reason to believe it is the right
+Tinkering does. **57 of 849 creatures carry it, 6.7%**, and the reason to believe it is the right
 axis rather than a convenient one is that `Rummager` is exactly three creatures, of which **two also
 have Tinkering**:
 
@@ -6753,16 +6753,16 @@ agreement was not designed for this, which is what makes it a rule 2 anchor.
 
 **#588 was scoped on the reading that mundane weapons have no `Examiner`. They do.** `BaseDagger`,
 `BaseLongBlade` and `BaseAxe` all carry one, for the `Alternate="UnknownKnife"` display before
-identification — the count only looks right if `Inherits` is left unresolved, which is the trap
+identification, since the count only looks right if `Inherits` is left unresolved, which is the trap
 `AGENTS.md` names outright.
 
 `Examiner.Complexity` defaults to 0 and separates cleanly. Across 3,959 weapon blueprints:
 
 | | count |
 |---|---:|
-| no `Examiner` — natural weapons, thrown | 2,585 |
-| **Complexity 0** — mundane | **917** |
-| Complexity 1–9 — artifact | 457 |
+| no `Examiner`: natural weapons, thrown | 2,585 |
+| **Complexity 0**, mundane | **917** |
+| Complexity 1–9, artifact | 457 |
 
 ### 50.5 What each creature does
 
@@ -6776,7 +6776,7 @@ Computed from the resolved blueprints:
 | Goatfolk Yurtwarden | B | re-equips | ignores | ignores |
 | Templar | B | re-equips | ignores | ignores |
 
-Note `Barathrumite` sits in **tier B** — the generic blueprint carries no Tinkering skill, only the
+Note `Barathrumite` sits in **tier B**, because the generic blueprint carries no Tinkering skill, only the
 Tinker variant does. Widening tier A by faction would be invention rather than derivation, and is
 not done here.
 
@@ -6790,42 +6790,42 @@ keeps its shotgun.
 was written, and it is the most important thing on this page.
 
 There is **no pickup goal**. The full goal-handler list is `Kill`, `Wander`, `MoveTo`, `Flee`,
-`Guard`, `Pet`, `Bored`, `Retreat`, `Wait` and their kin — nothing takes an item off the floor.
+`Guard`, `Pet`, `Bored`, `Retreat`, `Wait` and their kin; nothing takes an item off the floor.
 `GoFetch` exists but is pushed only by `Fetches`, which **no creature carries**. `ChangeEquipment`
 only ever *unequips*. So the live acquisition paths are:
 
 | path | creatures |
 |---|---|
-| `Rummager` | **3** — Cave Arconaut, Graverobber, Svardym Scrounge |
+| `Rummager` | **3**: Cave Arconaut, Graverobber, Svardym Scrounge |
 | `CryptFerretBehavior` | 1 |
 | `ThiefBot` | 1 |
 | being handed something | any companion |
 | trade | merchants |
 
-A snapjaw will still walk past a dropped axe, and #588's own example — *"a cannibal can make use of
-a better hitting stick"* — cannot happen, because cannibals never pick sticks up.
+A snapjaw will still walk past a dropped axe, and #588's own example, *"a cannibal can make use of
+a better hitting stick"*, cannot happen, because cannibals never pick sticks up.
 
 **So this is a companion feature.** That is a smaller claim than the issue made, and it is the true
 one. The pickup half is a separate question, and a larger one: #222 already asked whether more
 creatures should scavenge and answered no, so widening it means reopening that rather than extending
 this.
 
-> **The mistake worth recording.** The hook was verified — `TookEvent` is the right event, dispatches
+> **The mistake worth recording.** The hook was verified: `TookEvent` is the right event, dispatches
 > to the actor, fires on the take path including the silent variant. What was not verified is whether
 > anything *sends* it for an ordinary creature. `docs/LESSONS.md` already carries this exact trap at
 > *"Count the consumers before you count anything else"*: a declaration is evidence somebody wrote
 > it, not that anything reads it. Finding the other end of an event means asking who fires it, for
-> the case you care about — not only who receives it.
+> the case you care about, not only who receives it.
 
 ### 50.7 Blast radius, stated rather than discovered
 
-The part is merged onto **`Creature`**, so it reaches all 849 non-base creature blueprints at once —
+The part is merged onto **`Creature`**, so it reaches all 849 non-base creature blueprints at once,
 the same order of reach as the Chip Interface merge into `Humanoid`, and **the first part this fork
 has merged onto a creature blueprint at all**. Everything else in `mod/Scripting/` hangs off an item,
 the player, or a skill.
 
 The reach is still right under the narrower scoping, and arguably more clearly so. **Almost anything
-in Qud can become a companion** — beguiled, proselytised, recruited — so "which creatures might be
+in Qud can become a companion**, whether beguiled, proselytised or recruited, so "which creatures might be
 handed a weapon" really is *all of them*, and an authored list would invent the cohort rather than
 derive it. The part then refuses the player, anything with no `Brain`, and anything with no `Combat`
 part, so what it reaches in practice is smaller than the merge.
@@ -6836,7 +6836,7 @@ every save on every creature; charter rule 5 treats a shipped part's shape as fr
 
 ### 50.8 Off-switch
 
-`OptionQudExpandedCEReequipOnPickup`, read on every acquisition — so turning it off stops the
+`OptionQudExpandedCEReequipOnPickup`, read on every acquisition, so turning it off stops the
 behaviour from the next pickup rather than the next load, which is the **runtime** off-switch rule 6
 prefers over a load-time one. Nothing is taken back: a creature already holding what it chose keeps
 it. Default on, and the help text says it makes fights harder.
