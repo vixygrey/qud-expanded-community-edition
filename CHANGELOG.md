@@ -18,6 +18,22 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** **A document's links to its own headings are checked now** (#945). `check_docs.py`
+  verified the wiki's links into this repository and every relative path between documents, and
+  never a link from a document to a heading inside itself. Four sat broken in `docs/LESSONS.md` for
+  as long as they had existed.
+
+  All four had one cause, and it is the one anybody writing a link by hand will hit: GitHub does not
+  collapse runs of hyphens, so a heading carrying a spaced em dash anchors with a **double** hyphen
+  and the single-hyphen spelling that looks right is wrong.
+
+  It reuses the anchor machinery the wiki check already had, so the check is about fifteen lines,
+  and it needs no network and no second repository, which is why it runs in the ordinary pass rather
+  than behind a flag. 59 links checked across the tree, all resolving.
+
+  The first version failed on the styleguide row describing it, because that row quotes the link
+  syntax as an example. Code is stripped before matching now, and that case is pinned in a test.
+
 - **Peoples send bands to places that fall empty** (#832). **Off by default.** Clear a lair to the
   last of its holders and, sometimes, another people sets out to take it — crossing the world map as
   a real thing you can see and follow, and becoming a camp where it arrives.
