@@ -134,6 +134,11 @@ namespace XRL.World.Conversations.Parts
         /// </remarks>
         public override bool HandleEvent(EnteredElementEvent E)
         {
+            if (!Raven_Options.NameSharingAndGifts)
+            {
+                return false;
+            }
+
             GameObject speaker = The.Speaker;
             speaker?.SetIntProperty(Vixy_Introduce.Marker, 1);
 
@@ -156,7 +161,7 @@ namespace XRL.World.Conversations.Parts
         {
             GameObject speaker = The.Speaker;
 
-            if (!Raven_Options.AskName || speaker == null)
+            if (!Raven_Options.NameSharingAndGifts || speaker == null)
             {
                 return false;
             }

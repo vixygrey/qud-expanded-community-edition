@@ -4147,7 +4147,7 @@ a named character or a pariah filed elsewhere, so no hindren can ever be sent. T
 only because the empty case was already guarded and the tally is spent after placement rather than
 before. Count it rather than assuming it; an empty pool is exactly the failure this trade buys.
 
-Related: [`pickeach ignores Weight, and Chance is a repeat count`](#pickeach-ignores-weight-and-chance-is-a-repeat-count)
+Related: [`pickeach` ignores `Weight`, and `Chance` is a repeat count](STYLEGUIDE.md#321-the-curves-av-damage-weight-and-table-share)
 is the same shape in the population tables: an argument that reads as one thing, silently means
 another, and produces a plausible result either way.
 

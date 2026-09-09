@@ -1948,6 +1948,47 @@ def anchors_of(path: Path) -> set[str]:
     return found
 
 
+def check_self_anchors(f: Findings) -> int:
+    """A link from a document to a heading inside that same document must resolve.
+
+    `check_wiki_links` does this across repositories and `check_links` follows relative paths, so
+    the one direction nothing covered was a document pointing at itself. Four such links sat broken
+    in `docs/LESSONS.md` for as long as anyone had written them, and #938 only surfaced them because
+    renaming headings meant asking who cited them (#945).
+
+    It is the same silent shape as an orphaned `Load="Merge"`: a bad fragment still renders as an
+    ordinary link, still returns HTTP 200, and lands the reader at the top of the page, where they
+    assume they misread it.
+
+    The trap the four shared is worth stating, since it is the one a person writing the link by hand
+    will hit. `github_anchor` does not collapse runs of hyphens, so a heading with a spaced em dash
+    anchors with a *double* hyphen, and the single-hyphen spelling that looks right is wrong.
+
+    Unlike the wiki check this needs no network and no second repository, so it belongs in the
+    ordinary run.
+
+    Code is stripped first, because a document explaining this rule has to be able to write
+    `](#anchor)` as an example without the example being read as a link. That is not hypothetical:
+    the first version of this check failed on the `docs/STYLEGUIDE.md` row describing it.
+    """
+    checked = 0
+    for doc in tracked_files():
+        if doc.suffix != ".md" or not doc.is_file():
+            continue
+        text = doc.read_text(encoding="utf-8")
+        text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
+        text = re.sub(r"`[^`\n]*`", "", text)
+        anchors = anchors_of(doc)
+        for anchor in re.findall(r"\]\(#([^)\s]+)\)", text):
+            checked += 1
+            if anchor not in anchors:
+                f.add(
+                    "self-anchor",
+                    f"{doc}: #{anchor} - no heading in this file anchors there",
+                )
+    return checked
+
+
 def check_wiki_links(wiki: Path, f: Findings) -> int:
     """Every anchor the wiki links to must still exist in the file it names."""
     cache: dict[Path, set[str] | None] = {}
@@ -2136,6 +2177,7 @@ def main() -> int:
     items = check_item_tables(f)
     file_rows = check_file_rows(f, known)
     check_links(f)
+    self_anchors = check_self_anchors(f)
     prose_links = check_prose_doc_links(f)
     check_sections(f)
     check_heading_order(f)
@@ -2167,6 +2209,7 @@ def main() -> int:
         f"links, sections, check names and preserved documents all clean; "
         f"{pins} pinned tool(s) in step; "
         f"{prose_links} prose path(s) resolve; "
+        f"{self_anchors} same-file anchor link(s) resolve; "
         f"{markers} tracked file(s) carry no conflict markers"
     )
     return 0

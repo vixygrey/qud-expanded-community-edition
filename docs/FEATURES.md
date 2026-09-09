@@ -2216,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 107 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 108 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -4609,9 +4609,10 @@ wherever a conversation is assembled at runtime.
 
 ### 26.6 Off-switch
 
-`OptionQudExpandedCEAskName`, on by default, read live on every offering. Off hides the question from
-the next conversation onward; names already given are kept, since they are stored on the creature like
-any other proper name.
+`OptionQudExpandedCEAskName`, on by default, is the live gate for name sharing and gifts. Off hides
+the ask-name choice, self-introduction choice, dependent familiar choices and gift choice from the
+next conversation onward. Existing names, introduction markers and gift opinions are kept. Re-enable
+the option to use the systems again.
 
 ## 27. A marked artifact is not offered to Argyve (`Conversations.xml`, `Vixy_GiveArtifact`)
 
@@ -8059,11 +8060,9 @@ Give your name before you share water; come back having risen in their people's 
 deal with you again. Three changes to one gesture, all of #753, and each of them came out of playing
 §56 rather than reading.
 
-**The option covers the ritual half only.** `Vixy_Introduce` shipped behind it and came out again in
-#633, because giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
-§61 needs the marker on two people vanilla wrote no introduction for. What
-`OptionQudExpandedCEWaterBond` still decides, off by default, is whether the *ritual* waits on an
-introduction and whether a repeat is offered. §57.2 and §57.4 are the halves it gates.
+**The combined option covers name sharing and gifts.** `Vixy_Introduce`, `Vixy_Introductions` and
+`Vixy_RitualGate` read `OptionQudExpandedCEAskName` for the name-sharing path. The water ritual's
+own repeat and reputation rules remain controlled by `OptionQudExpandedCEWaterBond`, off by default.
 
 ### 57.1 You could share water with someone who never learned your name
 
@@ -9310,8 +9309,9 @@ the order the gate needs: the way to unlock it is the choice immediately above i
 
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
-No option, on rule 6's #663 test: the feature is opt-in at the point of use, since nothing happens to
-a player who does not introduce themselves and then choose to give, ten times over ten days.
+`OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice
+and stops new gift opinions. Existing gift opinions stay in each save and work again when the option
+is enabled. Ordinary trade, water rituals and unrelated opinions remain unchanged.
 
 **Uninstalling the mod costs the ledger of any creature holding a gift opinion, and nothing else.**
 This is the first time this fork puts a type of its own into a vanilla collection, so it was traced

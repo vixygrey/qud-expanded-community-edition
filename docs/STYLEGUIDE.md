@@ -1525,6 +1525,7 @@ seconds rather than after a round trip.
 | Option wiring, declared but unread or read but undeclared | `option-wiring` |
 | An option filed outside `Category="Mods"`, or whose display text does not name the mod (#934) | `option-placement` |
 | Slider `Min` above 1, which crashes Qud's options menu (#51) | `option-slider` |
+| A link to a heading inside the same document resolving (#945) | `self-anchor` |
 | Filenames without spaces | `filename-space` |
 | Line endings | `.gitattributes` |
 | XML formatting | `prettier` with `@prettier/plugin-xml`, checked in CI |
@@ -1628,6 +1629,7 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `required-checks` | `check_docs.py` | the documented count of required checks matching the ruleset copy |
 | `scripting-policy` | `validate_mod.py` | charter rule 5's banned APIs in `mod/Scripting/` |
 | `sections` | `check_docs.py` | the section headings the documents cross-reference |
+| `self-anchor` | `check_docs.py` | a `](#anchor)` link resolving to a heading in the same file. A spaced em dash anchors as a **double** hyphen, which is the spelling four broken links in `docs/LESSONS.md` got wrong (#945) |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
 | `snapshot-coverage` | `validate_mod.py` | everything this fork writes being something `tools/qud-api.json` has an opinion about, so a snapshot the mod has outrun fails without needing the game |
 | `subtype-gear` | `validate_mod.py` | a subtype's `Gear` naming a table this fork actually defines |
