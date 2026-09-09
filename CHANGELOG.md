@@ -146,6 +146,21 @@ recorded because contributors need them, not because subscribers do.
 
   Nothing ships wrong today — measured at 0 before the check landed.
 
+### Changed
+
+- **(internal)** **The five short documents lost their em dashes** (#936). `AGENTS.md`, `README.md`,
+  `CONTRIBUTING.md`, `docs/CHARTER.md` and `docs/STYLEGUIDE.md`, 402 of them, each sentence rebuilt
+  rather than having its punctuation swapped. `docs/STYLEGUIDE.md` §8.1 now carries the rule, the
+  three carve-outs and the two traps, so the passes still queued under #935 do not rediscover them.
+
+  Ten headings changed, which moves their anchors. I checked all ten first: nothing in this
+  repository or the wiki cited any of them. External links into those sections will stop landing in
+  the right place, which is the accepted cost of the change.
+
+  Two stale figures went with it. `CONTRIBUTING.md` said the wiki holds 56 anchor links across 11
+  pages, and after the rewrite it holds 89 across 27; it also said renaming one heading breaks five
+  links, where those 89 land on 67 distinct headings and the worst case is four.
+
 ### Fixed
 
 - **(internal)** **A wiki claim was anchored on punctuation the wiki no longer uses** (#935).
