@@ -327,7 +327,7 @@ possible in practice. Match them when adding anything.
   3·2·2·4·3·5·2·2·2 against war hammers at 4·3·3·5·4·6·3·3·3, and mauls 6·5·5·7·6·8·5·5·5 against
   greathammers at 7·6·6·8·7·9·6·6·6.
 
-  Before #342 the offset pointed the other way, and the mace family broke the +3 rule at two tiers.
+  Before #342 the offset pointed the other way, and the mace family broke the +3 rule at two tiers:
   fullerite was +4 and zetachrome +2. Flipping it repaired both. Every weight moved **downward**,
   which matters: `check_weight_curve` lets a merge lighten a vanilla item and never make one heavier,
   and `Mace2`, `Steel Hammer`, `Cudgel6`, `Cudgel7` and `Cudgel5th` are all vanilla.
@@ -397,7 +397,7 @@ Every other one was written after measuring what this fork already shipped: 0 of
 0 of 4 cells. This fork ships no priced food at all, so that test reads 0 of 0 and settles nothing.
 Vanilla settles it instead: of its **32** edibles carrying both a `Tier` tag and a price, **none**
 sits on the curve, at ratios from 0.006 (mopango corpse, 2 against a curve of 320) to 6.25 (black
-puma haunch, 250 against 40). A thousandfold spread is the absence of a curve, not drift from one.
+puma haunch, 250 against 40). A thousandfold spread is the absence of a curve, not drift from one:
 a saltwurm corpse and a crystal of Eve share tier 8 and nothing else. Food is priced by what eating
 it does. Declaring the exemption up front is what stops the first edible this fork adds from being
 silently priced against a rule that has never described anything here (#177).
@@ -567,7 +567,7 @@ nexus at 50 a turn against a psionic pistol at 50 a shot, which is one shot per 
 ever. Capacity is what separates this fork's solar cells now, as it separates every vanilla cell.
 
 **Vanilla's portable charge ceiling is 200,000.** The only 500,000 cell it ships is the mech power
-core, at **70 lb**. A cell may hold more than an antimatter cell only by taking that weight.
+core, at **70 lb**. A cell may hold more than an antimatter cell only by taking that weight. The
 dark matter cell keeps its 500,000 and carries the 70 (#323), which makes it a power source you
 install rather than one you pocket.
 
@@ -711,7 +711,7 @@ corrections, both from reading `PopulationItem` rather than the XML:
   other is a case one float cannot express.
 
 Over-crediting **vanilla** is the quiet direction of an error here: it shrinks this fork's share and
-so hides a ceiling breach rather than inventing one. Both corrections above were found that way.
+so hides a ceiling breach rather than inventing one. Both corrections above were found that way:
 nothing was failing, and that was the problem.
 
 > **`DesertCanyonZoneGlobals-Reachable` sits at 34%**, which is the least headroom of any table this
@@ -853,15 +853,15 @@ worst slice**, so no pool hides behind its good tiers.
 **What fails instead is drift.** `tools/inherited-pools.json` pins two things per pool, because two
 different things move and they want telling apart:
 
-- **which of this fork's blueprints the pool reaches**, which changes when an `Inherits=` changes.
+- **which of this fork's blueprints the pool reaches**, which changes when an `Inherits=` changes,
   the thing no diff shows;
 - **this fork's share of each slice**, rounded to whole percent, which also moves when *vanilla's*
   content moves. A Qud update adding tier-8 weapons lowers my share of that slice without a line of
   mine changing, and that is worth being told.
 
 *(Two earlier derivations here are void and worth recording as such. The first justified a floor on
-the pool's **total** size by a gap between 9 and 16 in the size distribution; there is no such gap.
-it was measured over the already-over-half cells only. The second put the floor on vanilla's count
+the pool's **total** size by a gap between 9 and 16 in the size distribution; there is no such gap. It
+was measured over the already-over-half cells only. The second put the floor on vanilla's count
 **at that tier**, and rested on "no cell has vanilla holding four, five or six" out of thirty-four
 cells. Both counted members. Once slices are weighed rather than counted there are a hundred and
 eighty-five of them, not thirty-four, and neither derivation survives contact with the real numbers. The
@@ -1058,7 +1058,7 @@ both were corrected in #261 and #262.
 
 Membership is now pinned in `tools/dynamic-pools.json`, so a blueprint arriving in a pool fails a
 commit rather than waiting to be noticed. Run the tool without `--check` to see the route, and
-`--snapshot` to accept a change deliberately. It needs the game and skips loudly without it.
+`--snapshot` to accept a change deliberately. It needs the game and skips loudly without it: the
 tags that decide this live on vanilla blueprints, so nothing in CI can check it (#303).
 
 ---
@@ -1145,7 +1145,7 @@ name this fork writes is accounted for at all: 41 names, 38 with a recorded form
 `Scrap`, carry no opinion, and a name vanilla never uses has nothing to copy, since nothing outside
 this mod can say what is right for `Vixy_CreatureVariant`.
 
-Vanilla leans hard: 8,203 `<tag>` against 961 `<stag>`, and the `<stag>` names are categorisation.
+Vanilla leans hard: 8,203 `<tag>` against 961 `<stag>`, and the `<stag>` names are categorisation:
 `Contemporary`, `Historical`, `Power`, `Plank`, `Crafts`.
 
 **Two different consumers read a `Semantic*` key, and an `<stag>` written for one reaches the other
@@ -1170,7 +1170,7 @@ similar, so **the live set has no fixed size**. Treat a category vanilla uses as
 you have checked otherwise.
 
 This fork writes five: `Fiber`, `FiberMaterial`, `Plank`, `Floating`, `Trinket`. None is among the
-24 and none matches the runtime shapes, so nothing here is enrolled in a pool by accident. Checked,
+24 and none matches the runtime shapes, so nothing here is enrolled in a pool by accident. Checked
 rather than assumed.
 
 ### 4.1 Line endings, LF
@@ -1675,7 +1675,7 @@ source for a pattern would produce a check harder to trust than the sentence it 
 build that.**
 
 **Should not be checked:** design rationale. "Cold has no gradient, so halving moderates nothing"
-is a judgment, not a fact. Mechanising it would pad the check until it stops meaning anything.
+is a judgment, not a fact. Mechanising it would pad the check until it stops meaning anything,
 the failure `.typos.toml`'s own policy warns about.
 
 What actually catches the second and third kinds is an acceptance criterion that requires
