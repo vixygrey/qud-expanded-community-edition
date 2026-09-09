@@ -18,6 +18,12 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **(internal)** **Corpus JSON files are exempt from codepage-text transliteration checks** (#933).
+  Qud's procedural text generator loads `LibraryCorpus.json` via `JsonUtility` without character
+  translation, and vanilla authors book prose using raw code page 437 byte values directly.
+  `check_codepage_text` now detects Markov corpus schemas and skips transliteration validation
+  on them, preventing false positives on intentional raw bytes.
+
 - **(internal)** **A document's links to its own headings are checked now** (#945). `check_docs.py`
   verified the wiki's links into this repository and every relative path between documents, and
   never a link from a document to a heading inside itself. Four sat broken in `docs/LESSONS.md` for

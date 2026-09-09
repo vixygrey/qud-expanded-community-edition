@@ -4181,6 +4181,11 @@ class CodepageText(unittest.TestCase):
         self.assertEqual(len(found), 1)
         self.assertIn("Title", found[0])
 
+    def test_corpus_json_is_exempt(self) -> None:
+        """#933. Qud's MarkovChainData / LibraryCorpus.json is authored directly in raw CP437 byte codes."""
+        found = self._findings(files={"Corpus.json": '{"WordData": {"café": 1}}'})
+        self.assertEqual(found, [])
+
     def test_the_substitute_is_the_games_own(self) -> None:
         """Spot-checked against Sidebar.Codepage437Mapping read out of the assembly. If Python's
         codec and Qud's table ever part company in this range, this is what says so."""
