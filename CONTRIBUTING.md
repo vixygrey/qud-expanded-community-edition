@@ -3,23 +3,23 @@
 I'd be glad of the help. This is a community fork and it's meant to act like one.
 
 **You'll be credited by name**, in the README and the Workshop description, in the same pull request
-that merges your work — not later, and you shouldn't have to ask. That's charter rule 3, and it's
+that merges your work, not later, and you shouldn't have to ask. That's charter rule 3, and it's
 the one condition Mura attached to opening this mod up, so I treat it as permanent.
 
 **Write however comes naturally to you.** The documents here are in my voice, first person and all,
 because I wrote them. That's a description of how I write, not a house style. Your issues, pull
-requests and comments are yours — I'd rather have your contribution than a stylistic match.
+requests and comments are yours, and I'd rather have your contribution than a stylistic match.
 
 ## Start here
 
-- [`docs/CHARTER.md`](docs/CHARTER.md) — the six rules I maintain this fork under, and why. They're
+- [`docs/CHARTER.md`](docs/CHARTER.md) covers the six rules I maintain this fork under, and why. They're
   constraints rather than aspirations, and most are mechanically enforced.
-- [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) — naming, layout, formatting. **Read §1 before renaming
+- [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout and formatting. **Read §1 before renaming
   anything**: several conventions look like mess and are load-bearing identifiers, and breaking one
   fails silently with no error anywhere.
-- [`docs/LESSONS.md`](docs/LESSONS.md) — traps I've already hit, mostly about Qud itself. Worth a
+- [`docs/LESSONS.md`](docs/LESSONS.md) collects traps I've already hit, mostly about Qud itself. Worth a
   skim; it'll save you an afternoon at some point.
-- [`docs/FEATURES.md`](docs/FEATURES.md) — what the mod actually does. §10 is the severity-ranked
+- [`docs/FEATURES.md`](docs/FEATURES.md) records what the mod actually does. §10 is the severity-ranked
   backlog, with a file and line on every open row, and it's a good place to find a first change.
 
 There's **no build step**. Qud loads the XML in `mod/` directly, so you need no toolchain to
@@ -31,13 +31,13 @@ Trunk-based: issue first, short-lived branch, small PR, squash merge.
 
 ### Issue first
 
-Nothing gets coded before it's filed. `docs/FEATURES.md` §10 is the backlog to seed from — each row
+Nothing gets coded before it's filed. `docs/FEATURES.md` §10 is the backlog to seed from, and each row
 is already scoped and carries a file and line.
 
 The [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1) is the live
 view of the same work, and it's public. Check it before starting: it shows what's already in
-progress, and every issue carries a **Track** — Ammo, Content, Systems, Sub-mod merges, Upstream,
-Tooling & docs — which is how the work is grouped in practice. If you file something, I'll add it to
+progress, and every issue carries a **Track** (Ammo, Content, Systems, Sub-mod merges, Upstream,
+Tooling & docs), which is how the work is grouped in practice. If you file something, I'll add it to
 the board and set its track; you don't have to.
 
 Labels: `bug` · `feature` · `chore` · `docs` · `tech-debt` · `balance` · `compat` ·
@@ -48,10 +48,10 @@ Four of those are less obvious than they look:
 - **`compat`** earns its own label because charter rule 1 makes cross-mod and future-patch
   compatibility a distinct class of work rather than a flavour of `bug`.
 - **`upstream-defect`** means a bug inherited from Mura's 2.2. **`upstream-qud`** means a bug in
-  Caves of Qud itself — the distinction matters, because one is ours to fix and the other is ours to
+  Caves of Qud itself. The distinction matters, because one is ours to fix and the other is ours to
   work around.
 - **`security`** covers charter rule 5: the mod ships C# that runs with full process privileges.
-- **`balance`** means the change moves a number a player feels — damage, weight, a release duration,
+- **`balance`** means the change moves a number a player feels: damage, weight, a release duration,
   a drop weight. It is orthogonal to `bug` rather than a softer version of it: a value can be plainly
   wrong *and* correcting it can change how the mod plays, and the second half wants deciding against
   the value curves in [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) §3.2 rather than riding along with
@@ -61,7 +61,7 @@ Four of those are less obvious than they look:
 
 - **Short-lived branches off `main`**, named `type/kebab-case-description`. Never commit to `main`;
   a ruleset enforces it server-side and a local hook fails first.
-- **Atomic commits** — one logical change each. This matters more here than in most repositories: a
+- **Atomic commits**, one logical change each. This matters more here than in most repositories: a
   population-table edit and a blueprint edit can look identical in a diff and have completely
   different blast radii. Never mix a defect fix with a design change in one commit.
 - **Conventional commits**, with scopes matching this repo's structure:
@@ -70,30 +70,30 @@ Four of those are less obvious than they look:
 
   Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #3)`.
 
-- **The body carries the causality.** Charter rule 2 lives or dies here — say *why*, and cite the
+- **The body carries the causality.** Charter rule 2 lives or dies here, so say *why*, and cite the
   convention or the in-world reason. A one-line commit body is a rule-2 violation. This is the rule
   I care most about and the one most easily skipped.
 
 ### Your PR merging isn't the end of it
 
 An item only reaches **Done** on the board once the change is live on the Steam Workshop *and* a
-release has been cut for everyone else — GOG, itch, and Linux players outside Steam install from
+release has been cut for everyone else. GOG, itch, and Linux players outside Steam install from
 the release zip, and a change that exists only in `main` hasn't reached them.
 
-Two columns cover the gap. **QA** means the code is written and someone is testing it — the
+Two columns cover the gap. **QA** means the code is written and someone is testing it. The
 validators can prove an object is well-formed and reachable, but only playing can prove it does what
 it says, so an item can sit in QA while its pull request is still open. **Staging** is everything
 merged since the last release: changes that passed QA, and changes that never needed it, like this
 sentence.
 
-So if your change merges and the board doesn't move to Done, nothing is wrong — it's in Staging, and
+So if your change merges and the board doesn't move to Done, nothing is wrong. It's in Staging, and
 you'll see it in the changelog when a release is cut.
 
-**An issue closed without shipping goes straight to Done**, and #364 is the first — a report whose
+**An issue closed without shipping goes straight to Done**, and #364 is the first: a report whose
 premise turned out not to hold. Nothing about it will ever appear in a release, so it cannot wait in
 Staging, and leaving it in On Deck would count dead work as upcoming. So Done means *out of the
 pipeline*: released, for anything that was built, and immediate for anything that will not be. The
-issue's close reason carries the distinction — `completed` against `not planned` — which is where to
+issue's close reason carries the distinction, `completed` against `not planned`, which is where to
 look if you need to tell the two apart.
 
 Cutting one is mine to do and [`docs/RELEASING.md`](docs/RELEASING.md) is how, if you ever want to
@@ -103,10 +103,10 @@ know what your change is waiting on.
 
 - **The title must be a conventional commit too.** It becomes the squash commit message, and CI
   checks it.
-- **State the compatibility impact** — which vanilla records the change touches, and whether the
+- **State the compatibility impact**: which vanilla records the change touches, and whether the
   edit is additive. If it touches a table other mods commonly touch, say so.
 - **Update [`CHANGELOG.md`](CHANGELOG.md).** [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
-  format — `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed` / `Security`, newest first,
+  format: `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed` / `Security`, newest first,
   under `[Unreleased]` until a release cuts it. Entries that don't affect the shipped mod are marked
   **(internal)**, because the changelog serves subscribers first and contributors second.
 
@@ -117,7 +117,7 @@ know what your change is waiting on.
   Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
 
 Ten checks run on every pull request and all ten must pass. Run
-`python3 tools/validate_mod.py` before you commit — locally it costs you seconds instead of a round
+`python3 tools/validate_mod.py` before you commit. Locally it costs you seconds instead of a round
 trip.
 
 ### If you touch `mod/Scripting/`
@@ -125,7 +125,7 @@ trip.
 **Nothing in CI compiles the C#, and nothing can.** Compiling it needs the game's own
 `Assembly-CSharp.dll`, which is proprietary and cannot be committed or fetched on a runner. The
 validator lints those files, but a linter is not a compiler. Two local checks cover the gap, and both
-skip rather than fail if you don't have the game — so neither can block you, and neither is
+skip rather than fail if you don't have the game, so neither can block you, and neither is
 CI-enforced. That makes running them a courtesy you owe the next person.
 
 **[`tools/compile_scripting.py`](tools/compile_scripting.py) actually compiles it**, in about half a
@@ -140,12 +140,12 @@ It needs a .NET SDK (`brew install dotnet`) and finds one on its own; set `QUD_M
 `QUD_CSC` if your install isn't where it looks. Two things worth knowing: the language version is
 pinned to C# 9 on purpose, because the SDK's compiler is newer than the one Unity embeds and would
 otherwise accept syntax the game rejects; and the reference set is deliberately narrow, so a file that
-starts using a new namespace fails here while compiling fine in game. That is a false *failure* — it
+starts using a new namespace fails here while compiling fine in game. That is a false *failure*: it
 names the missing reference, and the fix is to add it to `REFERENCES`.
 
 **[`tools/check_build_log.py`](tools/check_build_log.py) reads back what the game actually did.** Qud
 compiles every enabled mod at launch and records the outcome in `build_log.txt`; this reads that
-verdict and refuses it unless it demonstrably describes your working tree — the `identical` check
+verdict and refuses it unless it demonstrably describes your working tree. The `identical` check
 compares your source against the copy the game compiled, and the `fresh` check rejects a verdict
 written before that copy. Launch the game once with the mod enabled, then:
 
@@ -172,7 +172,7 @@ The snapshot goes stale when Qud updates, so **regenerate it after every game up
 python3 tools/snapshot_qud_api.py --assembly
 ```
 
-`--assembly` is not an optional extra — the committed snapshot is built that way, and mixing the two
+`--assembly` is not an optional extra. The committed snapshot is built that way, and mixing the two
 sources is refused outright, because a plain run drops 656 part names in silence (#244).
 
 A `snapshot-check` pre-commit hook runs `--check` on **every** commit, `always_run` rather than on a
@@ -180,7 +180,7 @@ file pattern: what it catches is a Qud update, which correlates with nothing in 
 game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
 contributor who has none of them. `--require` turns that skip into a failure.
 
-To have that check run rather than skip, install both — the .NET SDK (`brew install dotnet`) and
+To have that check run rather than skip, install both, the .NET SDK (`brew install dotnet`) and
 `ilspycmd`:
 
 ```bash
@@ -203,16 +203,16 @@ $ command -v ilspycmd    # nothing
 ```
 
 Put the `export` in your shell profile with `$HOME` spelled out, not `~`. Until you do, the hook
-skips on every commit — which it does loudly, so it is a visible no-op rather than a false pass, but
+skips on every commit, which it does loudly, so it is a visible no-op rather than a false pass, but
 it is still a check that never runs.
 
 ### Checking the wiki's links into this repository
 
 The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) links into this
-repository for its figures — 56 anchor links across 11 pages, almost all into `docs/FEATURES.md`.
+repository for its figures: 89 anchor links across 27 pages, almost all into `docs/FEATURES.md`.
 GitHub derives an anchor from the heading text, so **renaming a heading silently breaks every wiki
-link to it**: a bad fragment still returns HTTP 200 and neither repository reports anything. Renaming
-one heading breaks five links.
+link to it**: a bad fragment still returns HTTP 200 and neither repository reports anything. Those
+links land on 67 distinct headings, so renaming a heavily cited one breaks up to four at once.
 
 ```bash
 python3 tools/check_docs.py --wiki
@@ -225,7 +225,7 @@ Deliberately outside the normal run, like `--ruleset` and for the same reason: i
 repository and a network, and a check that passes quietly when it could not reach anything is worse
 than no check. **Run it after renaming or removing a heading in any document the wiki cites.**
 
-It cannot tell whether a page is still *true* — only whether its links still land. That half stays
+It cannot tell whether a page is still *true*, only whether its links still land. That half stays
 judgement, and the rule is the same one that applies here: when a change lands, grep the wiki for
 what it describes.
 
@@ -253,8 +253,8 @@ python3 tools/report_dynamic_tables.py --check     # the hook
 python3 tools/report_dynamic_tables.py --snapshot  # when the change is deliberate
 ```
 
-Like the compile hook, it needs the game — `BaseArrow` is vanilla, so a mod-only run would miss the
-tag that matters most — and skips loudly without it. `--require` turns the skip into a failure.
+Like the compile hook, it needs the game, because `BaseArrow` is vanilla and a mod-only run would miss the
+tag that matters most, and it skips loudly without it. `--require` turns the skip into a failure.
 
 ## Two things that will save you pain
 
@@ -269,7 +269,7 @@ write it right the first time.
 
 ## The wiki: it explains, `docs/FEATURES.md` specifies
 
-The wiki is for the things a reference document is bad at — what a build actually plays like, how the
+The wiki is for the things a reference document is bad at: what a build actually plays like, how the
 chip families interact, which combinations are worth building toward, what a system is *for* in the
 game's fiction, how to open a run as a Psionic Adept. [`docs/FEATURES.md`](docs/FEATURES.md) keeps
 every figure: tiers, weights, prices, drop rates, stat modifiers, option defaults and their scopes.
@@ -291,7 +291,7 @@ That is a stronger rule for the wiki than for anything in this repository, becau
 separate git repository and not one of the ten checks reaches it.** No `typos`, no prettier, no
 `tools/validate_mod.py`, no changelog requirement, no review, and no `merge-discipline` or
 `unreachable` check standing behind its numbers. It is prose with *fewer* guardrails than the documents
-that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails — which makes it
+that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails, which makes it
 the highest-risk place in this project to write a number down.
 
 **When a change lands, grep the wiki for what it describes.** `docs/LESSONS.md` already carries that
@@ -307,37 +307,37 @@ This has already cost something. While the ammunition page was being written, th
 and a page pushed an hour earlier still described this mod's ammunition as "arrows and shells". That
 sentence went from true to incomplete with no signal of any kind, and nothing in this repository would
 have prompted anyone reviewing that change to think about it. `--wiki` above would not have caught it
-either — no anchor broke.
+either, because no anchor broke.
 
 One practical trap: a wiki page **cannot** use a relative link to a file in this repository, because it
 is a different repository. Figures need a full `https://github.com/…/blob/main/docs/FEATURES.md` URL.
 That extra friction is exactly what tempts people to paste the number instead. Pay it.
 
 If you're creating or reorganising wiki pages, the home page should link to this section rather than
-restate it — same reason: one owner per rule.
+restate it, for the same reason: one owner per rule.
 
 ## Licensing your contribution
 
-Contributions are offered under the same terms as the project — Apache-2.0 for code, CC BY 4.0 for
-content — so it stays consistently licensed. You keep your copyright; you're granting a licence, not
+Contributions are offered under the same terms as the project, Apache-2.0 for code and CC BY 4.0 for
+content, so it stays consistently licensed. You keep your copyright; you're granting a licence, not
 signing anything away. [`COPYING.md`](COPYING.md) has the details, including which parts of this
 repository aren't mine to license and why.
 
 ## Conduct
 
-[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) — the Contributor Covenant, and the standard I hold
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) is the Contributor Covenant, and the standard I hold
 myself to as much as anyone else. If I fall short of it, say so.
 
 ## Security
 
 If you find something that could be abused before subscribers can update, please report it
-privately rather than opening an issue — [`SECURITY.md`](SECURITY.md) has the details and the
+privately rather than opening an issue. [`SECURITY.md`](SECURITY.md) has the details and the
 reasoning. This mod ships C# that Qud runs with full process privileges, which is why it has a
 policy at all.
 
 ## If something here is wrong
 
-Say so — file an issue. The documentation has gone quietly stale four separate times now (#93, #96,
+Say so, and file an issue. The documentation has gone quietly stale four separate times now (#93, #96,
 #106, #139) because not one of the ten checks reads a sentence and asks whether it's still true. The
 fourth was caused by the two checks that closed #134: they made "the C# has no compile gate" false in
 four documents at once, and nothing noticed. A contributor noticing is still the only mechanism that
