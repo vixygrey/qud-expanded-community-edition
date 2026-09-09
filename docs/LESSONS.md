@@ -1,17 +1,17 @@
 # Lessons learned
 
 Operational traps I hit while maintaining this fork, written down so nobody pays for them twice.
-I add to this whenever something bites — the reasoning is the durable artifact, not the fix.
+I add to this whenever something bites, because the reasoning is the durable artifact, not the fix.
 
 Some are about Caves of Qud itself and should be useful to anyone modding it: where the game keeps its
 own API documentation, which vanilla data files aren't valid XML, how an extension point fails when you
-forget its marker attribute. Others are about git, GitHub and the tooling here — and a growing number
+forget its marker attribute. Others are about git, GitHub and the tooling here, and a growing number
 are about the same underlying problem, which is telling a real green result from one that means
 nothing.
 
 (That first sentence used to read "most of these", which stopped being true somewhere around the
 thirteenth entry and was corrected in #137. A count in prose rots exactly as described in the last
-section of this document, so there is deliberately no proportion quoted here now — nothing checks it.)
+section of this document, so there is deliberately no proportion quoted here now, because nothing checks it.)
 
 ---
 
@@ -20,7 +20,7 @@ section of this document, so there is deliberately no proportion quoted here now
 A Qud crash report's exception type narrows the search enormously, and it's free:
 
 - `EXC_BAD_ACCESS` in the **Stack Guard** region with `RECURSION LEVEL n` markers is a **stack
-  overflow** — unbounded recursion inside the game, not an exception thrown by mod code. A
+  overflow**: unbounded recursion inside the game, not an exception thrown by mod code. A
   handler that calls two functions and returns cannot produce it.
 - A managed exception appears in `game_log.txt` with a stack trace instead, and names the type.
 
@@ -28,12 +28,12 @@ I chased the options-menu crash through two wrong hypotheses before reading the 
 The recursion markers pointed at the game's own UI, which immediately made "my C# threw something"
 the wrong tree.
 
-The crash report lives in macOS's crash reporter, **not** in Qud's own logs — `game_log.txt` had
+The crash report lives in macOS's crash reporter, **not** in Qud's own logs. `game_log.txt` had
 four lines because the process died before logging started.
 
 ## Stacked PRs do not survive a squash merge of their base
 
-Squash-merging PR A **and deleting its branch** does not retarget PR B stacked on it — GitHub
+Squash-merging PR A **and deleting its branch** does not retarget PR B stacked on it. GitHub
 **auto-closes B**. Once B's branch is rebased, `gh pr reopen` fails outright
 (*"Could not open the pull request"*) and `--base` cannot be changed on a closed PR. The only
 recovery is a fresh PR.
@@ -43,14 +43,14 @@ longer descends from `main`.
 
 **Do instead:** retarget the child to `main` *before* merging the base, or merge the base without
 deleting its branch. Recover with
-`git rebase --onto origin/main <old-base-tip> <child-branch>` — and capture `<old-base-tip>`
+`git rebase --onto origin/main <old-base-tip> <child-branch>`, and capture `<old-base-tip>`
 *before* merging, because it's painful to find afterwards. Better still, don't stack when the base
 will merge soon.
 
 ## A closing keyword next to an issue number links it, whatever the sentence is doing
 
 GitHub scans a pull request body for a closing keyword followed by an issue reference and matches it
-as a **bare substring**. The surrounding grammar is not read — not the tense, not the subject, not
+as a **bare substring**. The surrounding grammar is not read: not the tense, not the subject, not
 whether the sentence is about this pull request at all. There are **nine** keywords, and the
 past-tense forms are the ones most likely to be written by accident:
 
@@ -62,7 +62,7 @@ resolve resolves resolved
 
 Two ways this has bitten, and they fail differently:
 
-Real examples, with the issue numbers **masked** — see the warning below, because writing them
+Real examples, with the issue numbers **masked**, and see the warning below, because writing them
 faithfully here would arm this document:
 
 ```
@@ -77,18 +77,18 @@ Those were #286 against #284, #292 against #10, #360 against #339, and #362 agai
 > ⚠️ **Quoting an example arms it.** The fourth entry happened while writing the third: the pull
 > request documenting the mistake quoted the offending sentence verbatim, in both its body and its
 > commit message, and registered the same issue a second time. That is why the block above uses
-> `#NNN`. **When you write up a closing-keyword mistake, mask the number** — a bug report about a
+> `#NNN`. **When you write up a closing-keyword mistake, mask the number**, because a bug report about a
 > live wire is still a live wire.
 
 The first is the memorable one and the second is the ordinary one. #286 was written to advance #284
 without finishing it, and nothing in it counted: not the paragraph listing which acceptance boxes
 were still open, not the commit trailer saying the issue stays open, not a comment on the issue
-saying the same. #292 was not arguing with the parser at all — it was a sentence about what an
+saying the same. #292 was not arguing with the parser at all; it was a sentence about what an
 earlier pull request had done, and the reference was not even to the issue the pull request was
 about.
 
 So the rule is adjacency, not intent. Denial, narration, quotation, questions and **delegation** all
-buy exactly nothing, and an entry that lists the ways a sentence can be shaped will always miss one —
+buy exactly nothing, and an entry that lists the ways a sentence can be shaped will always miss one:
 the first version of this entry omitted the three past-tense keywords, and `closed` caught me the
 next day.
 
@@ -98,7 +98,7 @@ something to be done manually is not a way of saying it should not happen automa
 reads a verb and a number, and there is no register of speech it declines to read.
 
 **Do instead:** keep the keyword away from the reference in every form. **"Why #N stays open"**,
-**"Part of #N"**, **"advances #N"**; and when narrating, name the issue without the keyword —
+**"Part of #N"**, **"advances #N"**; and when narrating, name the issue without the keyword.
 *"resolved issue 10"*, *"#50 fixed that"*. Before merging a pull request that only advances an
 issue:
 
@@ -120,20 +120,20 @@ other failure at the same seam, and the check prescribed above does not catch it
 correct and the work was not complete.**
 
 #673 asked for three lessons when I read it. It was edited before my pull request merged and asked for
-**four** — a new entry, and a fourth row in an existing table. #675 closed it as completed with three.
+**four**: a new entry, and a fourth row in an existing table. #675 closed it as completed with three.
 `closingIssuesReferences` came back exactly right: `[667, 672, 673, 674]`. Every one of those was an
 issue the PR meant to close. It has nothing to say about whether what merged still matches what the
 issue says, and a closing keyword written on Monday closes an issue rewritten on Tuesday.
 
 > **Re-read the issue body before merging, not only before starting.** For a bundle it matters more,
-> because one stale reading is invisible among three correct ones — and the closing keyword makes the
+> because one stale reading is invisible among three correct ones, and the closing keyword makes the
 > issue disappear from the backlog either way, so nothing surfaces the gap afterwards.
 
 Cheapest form: `gh issue view <n> --json title,body` immediately before the merge, and compare against
 what the branch actually contains. It costs one command per issue and would have caught this.
 
 **And the link check lags an edit.** Writing this entry, its own pull request body said *"#675 closed
-#673 …"*, so `closingIssuesReferences` returned `[673, 678]` — the *"writing about a closing keyword is
+#673 …"*, so `closingIssuesReferences` returned `[673, 678]`, and the *"writing about a closing keyword is
 writing one"* trap, in the pull request about that trap. Rewording the sentence fixed the body
 immediately and **the API kept reporting the stale pair for another minute or so**. Re-check after a
 pause rather than concluding the link is stuck; and do not read a single clean result straight after an
@@ -147,7 +147,7 @@ stopped running it, and the sixth closed an issue I had explicitly written that 
 
 The five clean results were not evidence the check was unnecessary. They were the check working.
 
-What made it stoppable was that the work had become routine — same shape of pull request, same
+What made it stoppable was that the work had become routine: same shape of pull request, same
 sections, same body template, six times in an afternoon. Routine is exactly when a verification step
 feels redundant, and exactly when it is not, because it is also when nobody is reading their own
 boilerplate closely. The sentence that closed the issue was in a paragraph I had written five times
@@ -164,14 +164,14 @@ Two things that would have caught it, in order of cost:
   expiry date. The repository already prefers mechanical enforcement to prose for exactly this reason,
   and `docs/CHARTER.md` rule 4 says so: *"Keep new checks in the script rather than in prose."*
 
-**That second one is done** — [`tools/check_pr_intent.py`](../tools/check_pr_intent.py) runs in the
+**That second one is done**. [`tools/check_pr_intent.py`](../tools/check_pr_intent.py) runs in the
 **PR conventions** job and fails a pull request whose body names an issue after `Part of`, `Advances`
 or `Why … stays open` while `closingIssuesReferences` says it would close that same issue (#361). It
 catches all three instances above, including this one, and its tests carry them in their own words so
 that a regular expression over prose cannot quietly stop matching.
 
 **Keep running the manual check anyway.** The automated one needs a *stated* intent to contradict, so
-it cannot see a pull request that carries a closing reference and says nothing either way — and that
+it cannot see a pull request that carries a closing reference and says nothing either way, and that
 body is the easier one to write by accident, not the harder one. What the check removes is the case
 that has actually bitten, three times.
 
@@ -184,7 +184,7 @@ field rendered, not a typo in the message.
 
 What produced it: `FlamingRay` and `FreezingRay` are *variant* mutations, deriving their body part
 from a chosen variant. `BaseMutation.Create` only calls `SetVariant` when the variant is non-empty,
-and the chip base class passes `null` — so the derivation never ran. The mutation's own fallback
+and the chip base class passes `null`, so the derivation never ran. The mutation's own fallback
 looked like it should save this, and does not: it assigns the `Variant` **field** directly rather
 than going through `SetVariant`, so the body part stays unset even once a variant exists.
 
@@ -209,7 +209,7 @@ check was present and still did not cover it.
 
 #403's body explained the defect by quoting #360's sentence. The quotation contained the words
 *close* and *#339* next to each other, so GitHub resolved it, and `closingIssuesReferences` came back
-naming an issue the pull request had no business touching. **The new check passed, correctly** —
+naming an issue the pull request had no business touching. **The new check passed, correctly.**
 there was no `Part of #339` for the link to contradict, only a quotation. The manual look caught it,
 about thirty seconds after I had written in that same body that the automated check cannot see this
 case.
@@ -226,7 +226,7 @@ Two things worth having in writing:
   nothing.
 
 So the quarantine is wider than it looks. It is not only your own intent that has to keep the keyword
-away from the number — an explanation, a quotation, a changelog entry and a commit message all parse
+away from the number: an explanation, a quotation, a changelog entry and a commit message all parse
 the same way, and none of them is a register the parser declines to read.
 
 That second point generalises past this check. Several of the habits in this document are still
@@ -235,7 +235,7 @@ habits, and every one of them has the same failure mode.
 ## Squash merging invalidates blame-ignore SHAs
 
 `.git-blame-ignore-revs` must list the **squash commit on `main`**, not the commit from the
-feature branch — squash merging replaces the branch SHA, so an entry written before merge points
+feature branch, because squash merging replaces the branch SHA, so an entry written before merge points
 at a commit that doesn't exist in history and is silently ignored.
 
 So **an entry can only be added after its PR merges**, in a follow-up. And because the squash
@@ -243,7 +243,7 @@ collapses a whole PR into one commit, a PR containing a mechanical change plus a
 produces a squash commit that isn't purely mechanical. If I mean a change to be blame-ignored, it
 gets its own PR.
 
-Verify with `git merge-base --is-ancestor <sha> HEAD` — a listed SHA that fails this check is doing
+Verify with `git merge-base --is-ancestor <sha> HEAD`, and a listed SHA that fails this check is doing
 nothing.
 
 ## Normalisation rules need explicit exemptions for preserved documents
@@ -251,11 +251,11 @@ nothing.
 `* text=auto eol=lf` in `.gitattributes` reaches Mura's original documents too, and those are a
 provenance record meant to stay byte-for-byte. They need `-text` to opt out of EOL conversion
 entirely. Check with `git ls-files --eol` and `git add --renormalize`, not by reading the
-attribute file — `git check-attr` reports an inherited `eol` value even where it doesn't apply.
+attribute file, because `git check-attr` reports an inherited `eol` value even where it doesn't apply.
 
 ## The game ships its own API documentation
 
-`CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.xml` — **898 documented members** with
+`CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.xml` holds **898 documented members** with
 summaries, including the full `QudGameBootModule.BOOTEVENT_*` lifecycle and the
 `AbstractEmbarkBuilderModule` chargen surface. It's better than metadata analysis and I wasn't
 using it.
@@ -266,21 +266,21 @@ absent, which is a real signal about what is and isn't a supported extension poi
 ## For "does this API exist", read the DLL metadata, not the XML docs
 
 `Assembly-CSharp.xml` documents **some** members. `GenotypeFactory`, `SkillFactory` and
-`MutationPoints` appear in none of it — and all three exist, public, in the assembly. I briefly
+`MutationPoints` appear in none of it, and all three exist, public, in the assembly. I briefly
 mistook absence from the documentation for absence from the API, which nearly redirected an entire
 design toward sub-mod splits it didn't need.
 
 Read the assembly instead. A metadata reader gives you 7,837 types with field and method names,
 signatures and visibility flags; point its `DLL` constant at
 `CoQ.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll`. Mine lives outside this repository,
-so it isn't something a clone gets — any ECMA-335 metadata reader will do.
+so it isn't something a clone gets, and any ECMA-335 metadata reader will do.
 
-## The vanilla game data is readable — check it
+## The vanilla game data is readable, so check it
 
 `~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base`
 
-30 XML files plus `ObjectBlueprints/`. **Not** `CoQ_Data/StreamingAssets`, which holds only DLC —
-that wrong turn made me report several questions as unanswerable when they weren't.
+30 XML files plus `ObjectBlueprints/`. **Not** `CoQ_Data/StreamingAssets`, which holds only DLC.
+That wrong turn made me report several questions as unanswerable when they weren't.
 
 Two gotchas when reading it:
 
@@ -288,7 +288,7 @@ Two gotchas when reading it:
   `Books.xml` and `Manual.xml` embed control characters as numeric references (`&#11;`, `&#15;`,
   `&#27;`, `&#x7;`) which Qud accepts and XML 1.0 forbids. A strict parser rejects them.
 - **Never swallow those failures.** Skipping `Items.xml` silently makes every object it defines
-  look absent — which surfaced as *208 phantom "orphaned merge" defects* before I surfaced the
+  look absent, which surfaced as *208 phantom "orphaned merge" defects* before I surfaced the
   parse errors. `tools/check_vanilla_drift.py` strips the invalid refs and reports anything it
   still cannot read.
 - **Reuse that parser rather than writing another.** `parse(path, lenient=True)` in
@@ -303,7 +303,7 @@ Two gotchas when reading it:
 
   Knowing the drift checker copes is not the same as knowing the fix is one import away. I read the
   warning above, wrote my own `ET.parse` inside a `try/except` anyway, and got two empty results that
-  looked like findings — that vanilla has no shield above AV 2, and no items in the `Arm` slot at
+  looked like findings: that vanilla has no shield above AV 2, and no items in the `Arm` slot at
   all. Both are false; the second is wrong by 46 items. Going through `parse` took the same scan
   from **1,913** blueprints to **5,202**, because everything `Items.xml` defines was missing.
 
@@ -315,7 +315,7 @@ them:
 
 - Mod options **can** gate content. `PopulationManager.Populations` stays mutable at runtime, so
   drops and behaviour are option-gateable; only chargen- and save-baked definitions are not.
-- The loader dispatches on **root element**, not filename — so XML filenames are free.
+- The loader dispatches on **root element**, not filename, so XML filenames are free.
 - Dev files **do** ship to subscribers.
 
 That directory is the cheapest ground truth available. Use it before asserting how Qud behaves.
@@ -323,7 +323,7 @@ That directory is the cheapest ground truth available. Use it before asserting h
 ## Distinguish "frozen by saves" from "frozen by vanilla identity"
 
 They look alike and behave completely differently. Renaming a vanilla blueprint or population
-table doesn't break a save — it silently orphans the `Load="Merge"` so the edit stops applying,
+table doesn't break a save; it silently orphans the `Load="Merge"` so the edit stops applying,
 with **no error anywhere**. See `docs/STYLEGUIDE.md` §1.
 
 ## A generator must never read the file it writes
@@ -333,8 +333,8 @@ it, and write back to the same path. That's correct exactly once. `mod/preview.p
 *composited* result, so a second run would have layered `- CE` and `& VixyGrey` on top of marks
 that were already there.
 
-The fix: keep the pristine input as its own committed file — `tools/preview-base.png`, Mura's
-original, verified byte-identical to `git show upstream-2.2:preview.png` — and generate from that.
+The fix: keep the pristine input as its own committed file, `tools/preview-base.png`, Mura's
+original, verified byte-identical to `git show upstream-2.2:preview.png`, and generate from that.
 
 Two things make this worth remembering rather than filing under "obvious":
 
@@ -342,17 +342,17 @@ Two things make this worth remembering rather than filing under "obvious":
   It renders, and a binary diff tells you nothing. Same silent-failure class as an orphaned
   `Load="Merge"`.
 - **The general form is broader than images.** Any generator whose output overwrites its own input
-  has stopped being idempotent — it applies to anything that appends, wraps, or composites. It's
+  has stopped being idempotent: it applies to anything that appends, wraps, or composites. It's
   the same reasoning that makes charter rule 5 require option handlers to make data *match* the
   option's value rather than performing a one-way edit.
 
 Two habits catch it: make `regenerate → diff against the committed artefact` part of finishing the
-work, and **guard the input's identity** rather than trusting it — that script refused to run unless
+work, and **guard the input's identity** rather than trusting it. That script refused to run unless
 the base was 418×312, because every offset was measured against that logo and a swapped base would
 have misplaced the marks instead of erroring.
 
 > **The pipeline this describes no longer exists** (#500). `mod/preview.png` is now generated from
-> nothing but code — `tools/build_preview.py` reads no image at all, so the failure mode it taught
+> nothing but code, since `tools/build_preview.py` reads no image at all, so the failure mode it taught
 > me is structurally impossible there now. The lesson keeps its place because the general form is
 > what matters: *any* generator whose output overwrites its own input has stopped being idempotent,
 > and the one here happened to be an image.
@@ -373,7 +373,7 @@ None of the five was a correctness error in the sense any of those tools measure
 | Renaming in game ignored it too | `GiveProperName` passes the *object*, so `Generate` reads gender off it and an option is invisible |
 | Four vibro weapons lost a rules description | two `<part Name="RulesDescription">` in one object; Qud merges them and the later `Text` wins |
 
-Every one is a question about **when something happens** — when a list is populated, when a flag is
+Every one is a question about **when something happens**: when a list is populated, when a flag is
 re-read, which object a call passes, what a loader does with a collision. The harness modelled how a
 name *resolves*, which is a question about correctness, and it answered that question well. It could
 not have answered any of these, because it does not model a lifecycle. Neither does a compiler.
@@ -385,7 +385,7 @@ Two specifics worth keeping:
 - **The game reports errors nothing here reads.** Qud writes `MODERROR` lines to
   `~/Library/Logs/Freehold Games/CavesOfQud/Player.log` on every launch. The four duplicate-part
   errors had been printed there since #390 and nobody had looked. `tools/check_build_log.py` already
-  reads a *different* game-written file to prove the C# compiled — the same trick against `Player.log`
+  reads a *different* game-written file to prove the C# compiled, the same trick against `Player.log`
   is worth building, and #448 records the thought.
 - **"It compiled and loaded" is not "it ran".** `check_build_log.py` reported that the game compiled
   all 51 files from source byte-identical to the tree and loaded the mod, on the same launch where
@@ -393,7 +393,7 @@ Two specifics worth keeping:
 
 This is the same shape as *A gate is only evidence about the property it checks*, one level up: there
 the question was which property a check inspects, here it is which *kind* of question a whole class
-of tooling can be asked. Both end the same way — before trusting green, name the question it answers.
+of tooling can be asked. Both end the same way: before trusting green, name the question it answers.
 
 The practical rule: **anything that touches a screen, a lifecycle, or an event order gets a
 `tools/sync_mod.py --dev` pass before it merges**, not after. Content and value changes can lean on
@@ -402,7 +402,7 @@ the checks; behaviour cannot.
 ## A gate is only evidence about the property it checks
 
 Reformatting the XML in #78 produced output that `tools/validate_mod.py`,
-`tools/check_vanilla_drift.py` **and** `npx prettier --check` all passed — while prettier had
+`tools/check_vanilla_drift.py` **and** `npx prettier --check` all passed, while prettier had
 reflowed the text inside `<helptext>` in `Options.xml`, inserting a newline mid-sentence into a
 string Qud renders in its options menu.
 
@@ -410,8 +410,8 @@ None of those three gates was broken. None of them looks at whether text *conten
 three were honestly green and collectively meaningless for that question. Three passing checks felt
 like three pieces of evidence and were zero.
 
-It surfaced when I compared the **parsed element tree** of every file before and after — tags,
-attributes, stripped text — which found 18 of 19 files identical and one not. That's exactly the
+It surfaced when I compared the **parsed element tree** of every file before and after, covering tags,
+attributes and stripped text, which found 18 of 19 files identical and one not. That's exactly the
 ratio that gets waved through on a 2,500-line diff.
 
 This is the general form of two things recorded below in their specific cases: an orphaned
@@ -419,15 +419,15 @@ This is the general form of two things recorded below in their specific cases: a
 silently ceasing to merge. Stated generally:
 
 > **Before trusting a green run, ask which property each check actually inspects.** A change that
-> rewrites content wholesale needs a comparison of a *parsed* representation — the AST for Python,
-> the element tree for XML — not a reading of the diff and not the checks that happen to exist.
+> rewrites content wholesale needs a comparison of a *parsed* representation, the AST for Python and
+> the element tree for XML, rather than a reading of the diff and not the checks that happen to exist.
 
 The same trap catches *manual* verification, where there's no green run to be suspicious of. The
-wiki here was disabled in #102 after confirming it had never been created — a true answer, correctly
+wiki here was disabled in #102 after confirming it had never been created, a true answer, correctly
 obtained, to the wrong question. **"Never used" is evidence about the past, not about intent**, and
 an unwanted feature and a not-yet-wanted one are identical from the API; I wanted the wiki, for
 documenting the mod's mechanics, and it had to be turned back on (#106). Before acting on a check,
-confirm it answers the question you're actually deciding — and where the real question is intent, no
+confirm it answers the question you're actually deciding, and where the real question is intent, no
 command answers it. Ask.
 
 It's also why `serializable-shape` and `subtype-tile` were written: each exists because nothing else
@@ -437,7 +437,7 @@ was looking at that property, and "nothing was looking" is not the same as "noth
 
 `no-commit-to-main` tests the branch you are standing on. At `pre-commit` that is exactly the right
 question. `default_install_hook_types` also installs `pre-push`, and the hook set no `stages:`, so it
-ran there too — where the same question is the wrong one. It refused
+ran there too, where the same question is the wrong one. It refused
 `git push origin refs/tags/v2.7.0` from `main`, which is precisely where a release tag belongs.
 
 I got the tag up with `--no-verify`. That is the part worth recording: **the workaround for a guard
@@ -464,7 +464,7 @@ and I nearly wrote up "main is unprotected" as a finding on the strength of it. 
 
 I committed straight to `main` in #119. The GitHub ruleset rejected the push so nothing was lost,
 but `.pre-commit-config.yaml` carries a `no-commit-to-main` hook written for exactly that mistake,
-and it never ran — because `pre-commit install` had never succeeded in that clone.
+and it never ran, because `pre-commit install` had never succeeded in that clone.
 
 It hadn't succeeded because it can't, on my machine:
 
@@ -473,7 +473,7 @@ It hadn't succeeded because it can't, on my machine:
 ```
 
 `core.hooksPath` points at a global hooks directory, and `pre-commit` won't write `.git/hooks/`
-while it's set — reasonable in general, because git would normally ignore the file it just wrote.
+while it's set, which is reasonable in general, because git would normally ignore the file it just wrote.
 My global hook *does* delegate to the per-repo one, so the arrangement works; `pre-commit` just
 can't tell. Unset it for the length of the install and put it straight back:
 
@@ -487,10 +487,10 @@ git config --global core.hooksPath "$saved"
 Two things make this worth writing down rather than filing under "install your tools":
 
 - **The repository had no way to know.** A missing hook produces no output, no warning, and no
-  difference in any check. It's the same shape as a missing `[PlayerMutator]` attribute — the
+  difference in any check. It's the same shape as a missing `[PlayerMutator]` attribute:
   feature simply doesn't happen. The only signal was the mistake it was meant to prevent.
 - **`core.hooksPath` also silently disables per-repo hooks it has no delegator for.** Git consults
-  *only* that directory, so a per-repo hook with no counterpart there is never read — and nothing
+  *only* that directory, so a per-repo hook with no counterpart there is never read, and nothing
   says so.
 
   > **No longer true here, and worth recording as fixed rather than deleted** (#495). When this was
@@ -511,7 +511,7 @@ Two things make this worth writing down rather than filing under "install your t
 
 I described `docs/PERMISSION.md` as recording "permission to fork with a credit condition" that
 "says nothing about copyright or licensing at all", and licensed this repository on that basis
-(#101). I'd checked by grepping it for "licen" — zero hits — and read the section headings.
+(#101). I'd checked by grepping it for "licen", getting zero hits, and reading the section headings.
 
 The body of §1 says:
 
@@ -519,25 +519,25 @@ The body of §1 says:
 > they please**, all I ask is that you **give credit where due, which includes Noble Lark for the
 > subclass sprites**.
 
-Which is, in plain language, an attribution grant — and it names Noble Lark's sprites *inside* the
+Which is, in plain language, an attribution grant, and it names Noble Lark's sprites *inside* the
 grant, where I had written that they weren't covered at all. My search was for the wrong token: a
 grant this broad simply doesn't need the word "licence" in it, and the absence of that word is what
 I mistook for the absence of the thing.
 
 This is *a gate is only evidence about the property it checks*, with me as the gate. `grep` answered
-the question I asked — does this string appear — perfectly, and I treated that as settling a
+the question I asked, does this string appear, perfectly, and I treated that as settling a
 question it could not reach. The same shape as disabling the wiki because it had never been created
 (#106): a true answer, correctly obtained, to the wrong question.
 
 > **Before summarising a document, read it.** A keyword search tells you a word is absent, which is
 > almost never what you actually want to know. This is worth more care in short documents than long
-> ones, because a short document has no excuse — `docs/PERMISSION.md` is under 100 lines and I had
+> ones, because a short document has no excuse. `docs/PERMISSION.md` is under 100 lines and I had
 > already opened it twice.
 
 ## `git checkout <file>` restores from the index, not from HEAD
 
-While testing a new check in #80, `git checkout mod/Core/Subtypes.xml` — which I used to undo a
-deliberately broken probe — also silently reverted the real fix in that file, because the fix had
+While testing a new check in #80, `git checkout mod/Core/Subtypes.xml`, which I used to undo a
+deliberately broken probe, also silently reverted the real fix in that file, because the fix had
 never been staged. The validator caught it moments later, but the command itself gave no sign it had
 discarded work.
 
@@ -547,7 +547,7 @@ keep the probe in a different file entirely.
 ## Discovery attributes fail by doing nothing
 
 `[PlayerMutator]` is the marker Qud scans for. A class implementing `IPlayerMutator` **without** it
-compiles, ships, and is simply never called — no exception, no log line, just a feature that doesn't
+compiles, ships, and is simply never called: no exception, no log line, just a feature that doesn't
 happen. Measured: 11 of the installed mods implementing that interface carry the attribute.
 
 This generalises to every attribute-driven extension point in the game, `[HasOptionFlagUpdate]` and
@@ -576,18 +576,18 @@ additive route.
 
 Found while deciding #227, which wanted True Kin told that Ego drives the mental mutations chips
 grant. It cannot be done that way. What *does* reach a vanilla genotype is **`<extrainfo>`**, which
-`MergeWith` appends to with a duplicate check — the same list holding vanilla's *"Access to
+`MergeWith` appends to with a duplicate check, the same list holding vanilla's *"Access to
 cybernetics"* and *"May rebuke robots"*. That is the additive route into the chargen panel, and it
 is what #227 used in the end.
 
 > **A merge routine is not uniform across the elements it merges.** Before writing one, read the
-> method for the specific element rather than the one above it — the failure here is silence, not an
+> method for the specific element rather than the one above it. The failure here is silence, not an
 > error, and the diff looks correct.
 
 ## A mutation's rank is capped by character level, and the game will show you the arithmetic
 
 `BaseMutation.GetMutationCapForLevel(level)` is `level / 2 + 1`, and `CalcLevel` applies it to the
-sum of every source — inherent rank, equipment, tonics, cooking, the lot. It is not something a mod
+sum of every source: inherent rank, equipment, tonics, cooking, the lot. It is not something a mod
 opts into.
 
 So a chip granting rank 10 reads as **rank 1** on a level-1 character:
@@ -598,19 +598,19 @@ So a chip granting rank 10 reads as **rank 1** on a level-1 character:
 
 I did not know this, and it cost more than knowing it would have. Testing #226 on a fresh character,
 a `Tier="3"` chip and a `Tier="10"` chip both produced rank 1, and I read that as chip tier doing
-nothing — filed an issue saying so, put a warning into `docs/FEATURES.md` calling 144 documented
+nothing, filed an issue saying so, put a warning into `docs/FEATURES.md` calling 144 documented
 levels aspirational, and rewrote a changelog entry that had been right. Before that I had gone the
 other way, quoting the rank-10 figures as though every player saw them. Two opposite wrong claims,
 each true for exactly one row of that table.
 
 **The game was showing the answer the whole time.** `BaseMutation.GetLevelCalculations` builds a
-plain-language breakdown per mutation and the character sheet displays it — *"rank is increased by 10
+plain-language breakdown per mutation and the character sheet displays it, in *"rank is increased by 10
 due to your equipped item"* beside *"rank is capped at 1 due to your level."* One screen, no
 decompiling, and I read the assembly for an hour first.
 
 > **When a number in game does not match the number in the data, look for what sits between them
 > before concluding either is wrong.** A cap, a clamp or a scale is a likelier explanation than a
-> broken mechanism, and Qud tends to expose its own arithmetic in the UI — check that before
+> broken mechanism, and Qud tends to expose its own arithmetic in the UI, so check that before
 > reasoning about the code, and certainly before filing.
 
 ## Being in step with a document is not the same as being right
@@ -619,22 +619,22 @@ The wiki is written from `docs/FEATURES.md`, so there are three ways a page goes
 of them look like anything:
 
 1. **A link rots.** GitHub derives an anchor from the heading text, so renaming a heading breaks
-   every wiki link to it — and a bad fragment still returns HTTP 200, so neither repository reports
+   every wiki link to it, and a bad fragment still returns HTTP 200, so neither repository reports
    it. Renaming one heading breaks five links. `tools/check_docs.py --wiki` catches this.
 2. **The page goes stale.** The repository moved and the page did not. The scour slug landed while
    the ammunition page was being written, and a page pushed an hour earlier still said "arrows and
    shells". No check will catch this; the remedy is grepping the wiki when a change lands.
 3. **The page faithfully repeats something false.** Nothing is stale, no anchor is broken, every
-   figure matches its source — and the source is wrong.
+   figure matches its source, and the source is wrong.
 
 The third is the dangerous one, because it is invisible from both sides. **This fork's documents were
-about 5% verified when that was measured** — 74 checked claims against roughly 713 data rows and 583
-numbers in `docs/FEATURES.md` — and a single session turned up nine claims that did not match the mod
+about 5% verified when that was measured**: 74 checked claims against roughly 713 data rows and 583
+numbers in `docs/FEATURES.md`, and a single session turned up nine claims that did not match the mod
 or the game, three of them introduced while fixing the other six.
 
 > **Do not treat a repository document as a source of truth for a figure you are about to publish.**
 > Recompute it, or check it against the game. Where a table is data rather than prose, make something
-> recompute it — `check_docs.py` does that for the 144 rows of Appendix B, and found three wrong ones
+> recompute it. `check_docs.py` does that for the 144 rows of Appendix B, and found three wrong ones
 > on its first run that two careful reads that same day had missed.
 
 ## A public field is not a supported setter if something caches what it derives
@@ -642,7 +642,7 @@ or the game, three of them introduced while fixing the other six.
 `PowerEntry.Attribute` and `.Minimum` are public and writable, so I assumed retuning a skill
 requirement at runtime would be trivial. It isn't. `MeetsAttributeMinimum` gates on a **cached**
 `_requirements` list, `InitRequirements()` returns early when that cache already exists, and the
-cache is private — reaching it would need reflection, which charter rule 5 rules out. Once anything
+cache is private, and reaching it would need reflection, which charter rule 5 rules out. Once anything
 has rendered or checked that power, writing the field is **inert, with no error**.
 
 What saved the feature is that `HandleXMLNode` never primes the cache. It's null after load, so the
@@ -658,25 +658,25 @@ screen first.
 This is why #91 became two options rather than one. `Cost` is a plain int that `Render` and purchase
 read directly, so costs are genuinely live; requirements are not, and one toggle covering both would
 have had to describe itself dishonestly. **The scopes are a property of the game, not a design
-choice** — `docs/FEATURES.md` §13.2 tabulates all three (live / restart / new character).
+choice**, and `docs/FEATURES.md` §13.2 tabulates all three (live / restart / new character).
 
 Same silent-failure family as an orphaned `Load="Merge"` and a missing `[PlayerMutator]`.
 
 ## Read the IL when the metadata and the XML docs run out
 
 The two lessons above say to check `Assembly-CSharp.xml` for documentation and a metadata reader for
-structure. Neither can answer *"does this method rebuild, append, or return early"* — and that
+structure. Neither can answer *"does this method rebuild, append, or return early"*, and that
 question decided the design above. Method bodies can answer it, and reading them needs **no
 decompiler**, because the metadata reader already yields each method's RVA.
 
-- Header: `b & 3 == 2` means tiny format, one byte, code length `b >> 2`. Otherwise fat — 12-byte
+- Header: `b & 3 == 2` means tiny format, one byte, code length `b >> 2`. Otherwise fat, at 12-byte
   header with the code size at offset 4.
 - Then scan opcodes. Token-bearing ones (`ldfld` `0x7b`, `stfld` `0x7d`, `call` `0x28`,
   `newobj` `0x73`) carry a 4-byte metadata token whose high byte is the table and low three the RID,
   so a field or method name can be resolved straight out of the tables.
 
 **Do not scan for tokens alone.** A token-only pass over `InitRequirements` showed `ldfld` → `newobj`
-→ `stfld` and read as a clean rebuild — exactly backwards, because it had dropped the branch between
+→ `stfld` and read as a clean rebuild, exactly backwards, because it had dropped the branch between
 them. The opening bytes settled it: `02 7b … 3a d4 00 00 00` is `ldarg.0; ldfld _requirements;
 brtrue → ret`, a guard rather than a rebuild.
 
@@ -692,14 +692,14 @@ title. The check stays red until an unrelated commit is pushed.
 
 `.github/workflows/ci.yml` now lists `edited` explicitly. The general form: **a check that reads the
 event payload must listen for the event that changes that payload**, or it's unfixable by the very
-action it demands — which teaches contributors that a red check can be ignored.
+action it demands, which teaches contributors that a red check can be ignored.
 
 ## Stale prose rots silently, and the emphatic passages rot worst
 
 Every gate here inspects a *machine-readable* property. `validate_mod.py` checks XML and C#
 structure, prettier checks formatting, `typos` checks spelling, CodeQL checks the Python. **Not one
 of them reads a sentence and asks whether it's still true.** So documentation decays with no signal
-at all — the same silent-failure shape as an orphaned `Load="Merge"`, but across every file a
+at all, the same silent-failure shape as an orphaned `Load="Merge"`, but across every file a
 contributor reads *first*.
 
 Measured at the point the option toggles landed (#93): **all five** items in the *Release blockers*
@@ -714,18 +714,18 @@ day telling contributors that CoQE-original blueprint names were *"verified free
 because it was written before `v2.3.0` and still opened with *"this fork has no saves yet"*. That
 sentence stopped being true on 2026-08-17 and nothing anywhere noticed. #201 needed to replace a
 shipped arrow, read §1.1b, and got the wrong answer from the one document whose job it is to give
-the right one — the correct answer came from `git tag`.
+the right one; the correct answer came from `git tag`.
 
 A wrong number gets repeated. A wrong *permission* gets acted on, and this one authorises the
 silent-failure class the same section exists to prevent: rename a shipped blueprint and
 `GameObject.GetBlueprint` logs through `MetricsManager` and falls back to the generic `Object`, so
 every player's copy degrades without crashing and without telling anyone. When a document grants
 leave to do something dangerous **on the basis of a state of the world**, the grant needs the state
-written next to it — a date, a version, a tag — so the reader can check the premise rather than
+written next to it, whether a date, a version or a tag, so the reader can check the premise rather than
 trusting the conclusion.
 
 **The emphasis is the tell.** A 🔴 callout, a "highest-value fix in the codebase", a numbered
-priority list — I write those when a defect is freshest and most irritating, and that same emphasis
+priority list, since I write those when a defect is freshest and most irritating, and that same emphasis
 is what stops me revisiting them. They read as settled background rather than as claims under
 review, so the strongest statements here become the least trustworthy. Two harms, both
 charter-relevant: they point the next contributor at work already done, and they advertise a
@@ -735,7 +735,7 @@ Stale **cross-references** are the same class. The charter's own commit-message 
 `closes #4` for work that actually closed #3, and nothing checks issue numbers in prose either.
 
 > **When a PR closes a defect, grep the docs for it in the same PR.** `rg -i 'artifact 3|removetable'`
-> costs seconds. The fix and the prose describing the defect are one change, not two — and the
+> costs seconds. The fix and the prose describing the defect are one change, not two, and the
 > second half is the one no gate will ever remind me about.
 
 ## "Could not determine" is not a pass
@@ -748,7 +748,7 @@ disabled entry as a failure outright, because it is only ever run deliberately.
 
 The sharper form of the trap is that a **negative result can be ambiguous**. `find_compiler()` walks
 up from `csc.dll` to the dotnet root, and the first version went up three directories instead of four.
-That does not raise — it lands on a directory with no `dotnet` beside it, and reports *"no SDK
+That does not raise; it lands on a directory with no `dotnet` beside it, and reports *"no SDK
 found"*, which is exactly what a machine with no SDK reports. On a laptop where `dotnet` is keg-only
 and genuinely not on `PATH`, that read as correct behaviour. It survived to the first real run.
 
@@ -760,7 +760,7 @@ the function and checked for `None` would have shared its mental model and agree
 > place".** If it cannot, the reassuring answer and the broken one are the same string. Verify against
 > a source derived differently from the code under test.
 
-This is a specific case of *A gate is only evidence about the property it checks*, above — the check
+This is a specific case of *A gate is only evidence about the property it checks*, above, and the check
 was honestly green about a question it was not actually asking.
 
 ## A suite of failure cases needs a positive control
@@ -770,7 +770,7 @@ reported as broken. A script that failed unconditionally would satisfy all fourt
 `test_a_good_log_passes`, is the only one that can tell a working check from a broken one, and it is
 worth writing even when it looks tautological.
 
-It paid for itself on its first CI run, by failing — see the next lesson for what it found.
+It paid for itself on its first CI run, by failing. See the next lesson for what it found.
 
 > **Any suite whose cases all assert failure is satisfied by a permanently broken subject.** Add the
 > case that must pass, and treat it as the load-bearing one.
@@ -807,7 +807,7 @@ It surfaced only because the skip *count* was identical to the previous scenario
 have been if the second variable had taken effect. Put assignments directly on the command
 (`A=1 B=2 cmd`), or use an array, which zsh does split.
 
-> **After running a scenario, confirm it actually took effect** — assert on something that must differ
+> **After running a scenario, confirm it actually took effect**, so assert on something that must differ
 > between cases, such as a count, an exit code or a reason string. A green result from a check that
 > never ran is worse than a red one, because it is filed as evidence.
 
@@ -819,8 +819,8 @@ and reported *Item not found* with every field blank and no offer to create anyt
 upload of this fork failed on it (#163).
 
 The correct state was not a different value but **no key at all**. The uploader writes
-`workshop.json` itself — "Create Workshop Id for Mod…" creates the Steam item and writes a file
-containing nothing but the new id — so a hand-authored file with a placeholder pre-empts the one
+`workshop.json` itself. "Create Workshop Id for Mod…" creates the Steam item and writes a file
+containing nothing but the new id, so a hand-authored file with a placeholder pre-empts the one
 step that would have worked.
 
 The evidence was sitting on disk the whole time. Of the 72 installed mods that ship a
@@ -836,12 +836,12 @@ back.
 ## A search that finds nothing has two explanations, and one of them is the search
 
 Three times now a check has reported nothing and I have read it as an answer. Twice in one day,
-and once again much later — and the late one is the one that should worry me, because by then the
+and once again much later, and the late one is the one that should worry me, because by then the
 trap was already written down in this repository.
 
 **`strings` on a .NET assembly.** Deciding whether `Builder` was dead data in vanilla, I searched
-`Assembly-CSharp.dll` for the literal and got zero hits — for `Builder`, and for every other name I
-tried, including ones that certainly exist. That last part was the tell and I nearly missed it.
+`Assembly-CSharp.dll` for the literal and got zero hits, for `Builder` and for every other name I
+tried, including ones that certainly exist. That last part was the tell and I nearly missed it:
 macOS `strings` reads ASCII runs; .NET keeps user strings in the `#US` heap as **UTF-16**, so the
 search could not have found anything. Had I trusted it, `Builder` would have gone into the
 documents as a defect in Freehold's own data. It is a real mechanism: every value resolves to a
@@ -849,14 +849,14 @@ type in `XRL.World.PartBuilders`.
 
 **A test edit that never applied.** Verifying that `snapshot_qud_api.py` refuses to write when a
 cited figure cannot be found, I patched a line of `CITED_FIGURES` in a temporary copy, ran the
-tool, and got exit 0. The conclusion — that the gate does not work — was wrong twice over: `ruff
+tool, and got exit 0. The conclusion, that the gate does not work, was wrong twice over: `ruff
 format` had already split those tuples across several lines, so the single-line replacement target
 matched nothing, the file was never modified, and the run I read was an ordinary clean one. The
 gate works. The test did not run.
 
 **`command -v` on an installed tool.** Investigating #226 I wanted to decompile
 `Assembly-CSharp.dll`, ran `command -v ilspycmd`, got nothing, and filed the issue saying the tool
-was not installed and the question therefore needed a play session. It was installed — version
+was not installed and the question therefore needed a play session. It was installed, at version
 11.0.0.9375, sitting in `~/.dotnet/tools`. The .NET installer writes the **literal** string
 `~/.dotnet/tools` into `/etc/paths.d/dotnet-cli-tools`, and `path_helper` copies entries verbatim
 without expanding `~`, so the entry resolves to a directory named `~` and matches nothing. The path
@@ -870,7 +870,7 @@ check that did not execute, and the second is far more common than it feels. A c
 a *problem* at least proves it ran.
 
 > **Before believing an empty result, prove the search can find anything at all.** Probe for
-> something you know is present, or assert the edit landed before running the thing that reads it —
+> something you know is present, or assert the edit landed before running the thing that reads it.
 > `assert old in text` costs one line and converts a silent no-op into a loud failure.
 
 This is the same principle as the positive control two lessons up, one level out: there it is a
@@ -954,7 +954,7 @@ list is shorter than it looks. `DynamicObjectsTable:Guns` has **exactly one** co
 
 `Gunsmith` carries the legendary table as `HeroTable`, and `GenericInventoryRestocker` reaches for
 it only when `ParentObject.GetIntProperty("Hero") > 0`. **An ordinary gunsmith never touches it**,
-so wishing one and reading their stock tests nothing at all — which is the shape of mistake worth
+so wishing one and reading their stock tests nothing at all, which is the shape of mistake worth
 avoiding here, because it looks exactly like a test that passed.
 
 There is no shortcut to a hero. `HeroMaker.MakeHero` is a method with no wish exposing it, and no
@@ -967,7 +967,7 @@ any sample where the roll would not have picked them anyway. It takes several le
 before an absence means anything, and they are not common.
 
 So the honest cost of play-testing a pool change is: find a legendary merchant of the right kind,
-repeatedly, and then reason carefully about what you did not see. That is why #303 exists — the
+repeatedly, and then reason carefully about what you did not see. That is why #303 exists:
 membership belongs in a snapshot that fails loudly, not in a habit of looking. #261 and #262 were
 both verified from `tools/report_dynamic_tables.py` for this reason, and moved to Staging on it.
 
@@ -982,7 +982,7 @@ kept printing a plausible number.
 
 **Tier is a fallback chain, not a tag.** `GameObjectBlueprint.Tier` returns the `Tier` tag when there
 is one, and otherwise `GetStat("Level").BaseValue / 5 + 1` clamped to 1–8. **Vanilla creatures carry
-`Level` and no `Tier` tag at all** — `Goat` is `<stat Name="Level" Value="1" />` and nothing else — so
+`Level` and no `Tier` tag at all**. `Goat` is `<stat Name="Level" Value="1" />` and nothing else, so
 a report keyed on the tag dropped 593 eligible blueprints, 46 of them this fork's own creature
 variants. `BaseAnimal`, `BaseReptile` and `Humanoid` were reported as pools that did not exist, while
 I held 52%, 57% and 5 members of them. And `_Tier`'s `-999` sentinel, for a blueprint with neither,
@@ -991,7 +991,7 @@ does not mean *excluded*: the delta simply misses `TierDeltaWeights` and it join
 **Role lives in two stores.** The weighting asks
 `Tags.TryGetValue("Role", …) || Props.TryGetValue("Role", …)`, and `<property Name="Role">` lands in
 `Props` while `<tag Name="Role">` lands in `Tags`. Vanilla declares it as a tag 349 times and as a
-property never. This fork does the exact opposite, thirteen times, on the Zetachrome items — so
+property never. This fork does the exact opposite, thirteen times, on the Zetachrome items, so
 reading only tags weighted them ×100 too heavily and put `BaseShield` Tier8 at 97% when it is 69%.
 
 Both are the *silent zero* two lessons up, one level in: not a search that could not match, but a
@@ -1003,7 +1003,7 @@ drawn from its absence was not.
 > sentinel, the XML you can grep for is one branch of three.
 
 The cost was not the wrong number so much as what rested on it. #481 is a design decision about pool
-dominance, and it was being weighed against these figures — including three pools the report said
+dominance, and it was being weighed against these figures, including three pools the report said
 were empty. I found this only because #502 sent me back into `PopulationManager` for something else.
 
 ## Rescaling a per-action budget to per-hit has to clear whatever decays per turn
@@ -1012,11 +1012,11 @@ The cryo arrow puts −50 on a target per action. A shell spends one piece of am
 too, and fires eight pellets, so eight pellets at −6 looked like the same budget. It shipped, and
 eight shells into a 500 HP target left it never getting cold.
 
-The mechanism was fine — a probe build renamed the shell's projectile and confirmed the game was
+The mechanism was fine: a probe build renamed the shell's projectile and confirmed the game was
 firing *ours*, and that `TemperatureOnHit` applied from it. The number was the defect, and the
 reason was quoted in my own design comment three paragraphs above the number:
 
-> temperature returns to ambient by `Math.Max(5, |diff| * 0.02)` every turn — a flat 5 a turn at
+> temperature returns to ambient by `Math.Max(5, |diff| * 0.02)` every turn, a flat 5 a turn at
 > these magnitudes
 
 **That is a floor, not a curve.** Divide a payload far enough and it lands under the rate at which
@@ -1026,14 +1026,14 @@ at all. The arrow never had the problem because −50 against −5 is decisive o
 
 > Before dividing an effect across hits, find what the game restores per turn and check the result
 > against it. Below that line the part fires, the event reaches the target, and nothing observable
-> happens — which is indistinguishable from being broken, and costs an evening to tell apart.
+> happens, which is indistinguishable from being broken, and costs an evening to tell apart.
 
 #146 will meet this directly: a chaingun divides by six.
 
 ## The divisor is the projectiles that land, not the projectiles fired
 
 The same tuning pass got the divisor wrong twice. Eight pellets leave a Pump Shotgun, so ÷8 looks
-right — but `MissileWeapon.Fire` rolls `Stat.Random(-WeaponAccuracy, WeaponAccuracy)` **per
+right, but `MissileWeapon.Fire` rolls `Stat.Random(-WeaponAccuracy, WeaponAccuracy)` **per
 projectile**, and at `WeaponAccuracy="45"` that scatters most of them whatever the range.
 
 Measured across three play-tests, by working backwards from how many shots a freeze took and how
@@ -1046,14 +1046,14 @@ far past the brittle line it landed:
 | −25 a pellet, two shots at true point blank | ~4.4 |
 
 So the real divisor is about **2**, with a spread of roughly 2 to 4. Accuracy varies the rate as
-well as range does — the Pump Shotgun at 45 is the worst of the four shell weapons, the modified
-handcannon at 30 the best — so tune against the loosest gun and the rest over-deliver slightly.
+well as range does: the Pump Shotgun at 45 is the worst of the four shell weapons, the modified
+handcannon at 30 the best, so tune against the loosest gun and the rest over-deliver slightly.
 
 > A multi-projectile weapon delivers a *fraction* of its payload, and the fraction is both small
 > and variable. Derive it from a measurement, not from the shot count in the blueprint.
 
 **It applies to probabilities as much as magnitudes**, which I did not generalise the first time.
-The takedown shell's `Chance="40"` per pellet started life as `12` — sized against eight pellets,
+The takedown shell's `Chance="40"` per pellet started life as `12`, sized against eight pellets,
 so a shell had a 22% chance of doing anything at all, and play-testing saw nothing fire. Same
 arithmetic, third occurrence in one feature.
 
@@ -1062,7 +1062,7 @@ arithmetic, third occurrence in one feature.
 Duration and intensity are the same number for temperature: how far past the line you land, at 5 a
 turn back. Two point-blank shells put a target near −185 and held it frozen about seventeen turns,
 where the arrow sits at −115 for three. No `Amount` fixes that, because the overshoot scales with
-however many pellets happen to connect — shaving it only moves which end of the variance is wrong.
+however many pellets happen to connect, so shaving it only moves which end of the variance is wrong.
 
 `TemperatureOnHit` already has the tool. With `Max="true"` it applies only while the target is
 short of `MaxTemp`, on whichever side `Amount` points:
@@ -1072,7 +1072,7 @@ short of `MaxTemp`, on whichever side `Amount` points:
 ```
 
 The trap is the value. `MaxTemp="-90"` reads like a reasonable cap and would stop the cold applying
-around −95 — *above* the −100 brittle line — so the target would never freeze at all. The cap would
+around −95, *above* the −100 brittle line, so the target would never freeze at all. The cap would
 silently defeat the payload it exists to limit. At −110 the last applicable pellet lands between
 −110 and −135: the freeze is guaranteed and the overshoot is bounded.
 
@@ -1097,7 +1097,7 @@ foreach (Flying item in Object.YieldEffects<Flying>())
     if ((item as Flying)?.Source != null) FailFlying(flying.Source, Object);
 ```
 
-A target that happened to be walking gets grounded — genuinely unable to fly for 20–30 turns — in
+A target that happened to be walking gets grounded, genuinely unable to fly for 20–30 turns, in
 complete silence. It took *examining* a creature and finding the `Grounded` status sitting in its
 effect list to establish that anything had happened at all.
 
@@ -1106,8 +1106,8 @@ effect list to establish that anything had happened at all.
 
 The cause turned out to be sharper still, and it is a trap for anyone testing a flight-related
 effect: **a creature you wish into existence is not flying.** `Flight.StartFlying` is reached only
-from the `Wings` mutation's `CommandEvent` handler — flight is an *activated ability*, not a state
-things spawn in — so a freshly wished gamma moth stands on the ground until its AI decides to take
+from the `Wings` mutation's `CommandEvent` handler, because flight is an *activated ability* rather than a state
+things spawn in, so a freshly wished gamma moth stands on the ground until its AI decides to take
 off. Ground it in that window and `Flight.Fall` has no live `Flying` effect to fail, so it applies
 in silence.
 
@@ -1116,16 +1116,16 @@ also measured `Grounded`'s duration for free: the moth spent ~20 turns unable to
 `Grounded` refuses `CanChangeMovementModeEvent` for `"Flying"` the whole time, against a configured
 `Duration="20-30"`.
 
-Two chased bugs came out of this session's testing that were never bugs — this one, and a wish
+Two chased bugs came out of this session's testing that were never bugs: this one, and a wish
 returning a `Raven_Cryo Arrow` because the shell it asked for was not loaded. Both looked exactly
 like broken code and both were the observation being wrong. The cost of the wrong diagnosis is
 worse than the cost of checking: the first thing I did on this one was start reading `IsReady` for
 a fault that did not exist.
 
-## Containment is not dispatch — check the cascade level before assuming a part is reached
+## Containment is not dispatch, so check the cascade level before assuming a part is reached
 
-`MissilePerformance` is a real vanilla part with exactly the dials an effect round wants —
-`PenetrationModifier`, `DamageDieModifier`, `DamageModifier`, `AddAttributes` — and vanilla puts it on
+`MissilePerformance` is a real vanilla part with exactly the dials an effect round wants:
+`PenetrationModifier`, `DamageDieModifier`, `DamageModifier` and `AddAttributes`, and vanilla puts it on
 the Turbow. Putting it on a *round* looked like a free way to let ammunition modify a shot without
 touching a single vanilla weapon. It would have loaded, fired, and done nothing.
 
@@ -1165,8 +1165,8 @@ The obvious way to let ammunition carry a payload is a part on the weapon that r
 after `MagazineAmmoLoader` has set it during `LoadAmmoEvent`. That ordering is not available, and no
 attribute buys it.
 
-Part order *is* dispatch order — `GameObject.HandleEventInner` walks `PartsList.GetArray()` in index
-order — and the list is built by `AddPartInternals`:
+Part order *is* dispatch order, since `GameObject.HandleEventInner` walks `PartsList.GetArray()` in index
+order, and the list is built by `AddPartInternals`:
 
 ```csharp
 int priority = P.Priority;                    // IPart.Priority => 45000 by default
@@ -1178,15 +1178,15 @@ else {
 }
 ```
 
-Equal priorities append, so blueprint order survives — and a *higher* priority only walks the part
+Equal priorities append, so blueprint order survives, and a *higher* priority only walks the part
 **backwards**, toward the front. Nothing can push a part later than what is already in the list.
 Meanwhile `ObjectBlueprintLoader.Bake` calls `Inherit(obj.Inherits, …)` before overlaying the object's
 own children, so parts declared on an abstract base are always added first. `MagazineAmmoLoader` is
 declared on the concrete weapons, never on `BaseFirearm`, so a part merged onto the base runs *before*
 the loader, permanently.
 
-The fix is not a knob, it is a different shape: read what you need while you are early — the loader's
-`Ammo` field still holds the round it is about to chamber, before `RemoveOne()` — and do the work at a
+The fix is not a knob, it is a different shape: read what you need while you are early. The loader's
+`Ammo` field still holds the round it is about to chamber, before `RemoveOne()`, and do the work at a
 later event. `MissileWeapon.SetupProjectile` fires `ProjectileSetup` on the launcher once per
 projectile, after the projectile exists, which is order-independent because it is a separate dispatch.
 
@@ -1195,7 +1195,7 @@ projectile, after the projectile exists, which is order-independent because it i
 
 ## Search where the effect is applied, not where the part is used
 
-I told the maintainer of this repo — myself — that bleeding is melee-only in Qud by design, and put it
+I told the maintainer of this repo, myself, that bleeding is melee-only in Qud by design, and put it
 in #210 as a charter rule 2 argument against ever projecting it. The evidence was that `BleedingOnHit`
 appears on exactly two vanilla objects, both melee.
 
@@ -1203,25 +1203,25 @@ That is a fact about one part. The question was about a mechanic. Grepping every
 site in the decompiled assembly takes one command and returns about twenty, including two that
 demolish the claim:
 
-- `XRL.World.Parts.Skill.ShortBlades.WeaponMadeCriticalHit` — the tree's **root** class, so every
+- `XRL.World.Parts.Skill.ShortBlades.WeaponMadeCriticalHit`, the tree's **root** class, so every
   critical hit with any short blade bleeds, with no power purchased and, via
   `Skills.GetGenericSkill(Skill, Attacker)`'s reflection fallback, no requirement that the attacker
   have the skill at all.
-- `MissileWeapon.cs:1862` — the Bow and Rifle tree's **Wounding Fire**, which is bleeding at range and
+- `MissileWeapon.cs:1862`, the Bow and Rifle tree's **Wounding Fire**, which is bleeding at range and
   has been all along.
 
 Both were reachable from the start. Neither was reachable from the part.
 
-> **For "does vanilla do X", search for the thing X *is* — the effect class, the constructor, the
-> applied state — not the one part you happen to have found doing it.** A part census answers "how is
+> **For "does vanilla do X", search for the thing X *is*: the effect class, the constructor, the
+> applied state, rather than the one part you happen to have found doing it.** A part census answers "how is
 > this part used", which is a different and much narrower question than it looks.
 
 The cost here was not a bug, it was a design argument built on a false premise and written into an
 issue, where it sat looking authoritative until someone questioned it.
 
 **It happened again, on the chip budget, in the opposite direction.** Costing the psionic chips
-(#338) I checked whether Mura's stated reason for the 3/6/10 physical ladder was true — that mental
-mutations keep scaling with Ego from a chip and physical ones do not — by grepping each of the 36
+(#338) I checked whether Mura's stated reason for the 3/6/10 physical ladder was true, namely that mental
+mutations keep scaling with Ego from a chip and physical ones do not, by grepping each of the 36
 mutation *classes* for `Stat("Ego")`. Seven matched, so I reported the rationale as holding for 7 of
 23, called the split broken in both directions, and shipped that into `docs/DESIGN_balance.md`, the
 changelog and two issue comments before catching it.
@@ -1239,7 +1239,7 @@ and `GetStat()` falls through to the *category*, declared once in `Mutations.xml
 themselves were doing something else with it. The rationale was correct, and the ladders turn out to
 be calibrated to meet exactly at Ego 24.
 
-Same shape as the bleeding case and the same fix — but note what made it *harder* to catch. The
+Same shape as the bleeding case and the same fix, but note what made it *harder* to catch. The
 bleeding grep returned too few results and the claim was that the mechanic did not exist. Here the
 grep returned seven results, which looked like a finding rather than like a miss. **A partial match
 is more dangerous than no match**, because it furnishes a number, and a number reads as evidence that
@@ -1262,7 +1262,7 @@ if (Stack) {
 ```
 
 `Stack = true` **merges** into an existing bleed. `Stack = false` piles a separate one on. And
-`BleedingOnHit.Stack` is a bare `public bool Stack;` — default **false** — while both vanilla users
+`BleedingOnHit.Stack` is a bare `public bool Stack;`, default **false**, while both vanilla users
 write `Stack="true"` explicitly. So an inherited XML payload that omits the attribute quietly gets the
 compounding version, which on a six-round burst is six independent effects rather than one.
 
@@ -1271,7 +1271,7 @@ The same trap runs through the skill data, where one power carries three differe
 it grants is displayed as **Mark Target** (`AddMyActivatedAbility("Mark Target", "CommandMarkTarget", …)`).
 Prose that quotes any one of those and expects a reader to find it in the game is a coin flip.
 
-> **Read the field, do not read the field name** — and when documenting a vanilla mechanic, write down
+> **Read the field, do not read the field name**, and when documenting a vanilla mechanic, write down
 > which of its names the player actually sees.
 
 ## The issue gets checked against the game; the prose written afterwards does not
@@ -1281,22 +1281,22 @@ Two claims in the ammunition work turned out to be wrong, and both survived revi
 **"Bleeding is melee-only in Qud by design."** Written into #210 as a charter rule 2 argument, and
 from there into `docs/FEATURES.md`, an `Ammo.xml` comment and a released changelog entry. It came
 from noting that `BleedingOnHit` sits on exactly two vanilla objects, both melee. Grepping every
-`new Bleeding(` call site instead — one command — returns about twenty, including the Short Blades
+`new Bleeding(` call site instead, one command, returns about twenty, including the Short Blades
 critical-hit bleed on the tree's *root* class and `Rifle_WoundingFire`, which is bleeding at range and
 always was. Corrected in #219.
 
 **The effect shells costing `003`.** Decided while implementing #145, on the reasoning that two scrap
 metal and one pure alloy "sits between vanilla's two anchors, a grenade mk I at two bits for one and
 plain shot at one bit for five". Both anchors are real; neither is the right comparison. Vanilla
-charges `001` for every gas, flashbang, thermal, freeze and high explosive grenade mk III — the exact
-payloads those shells carry, dialled down — and reserves pure alloy for plasma, gravity and time
+charges `001` for every gas, flashbang, thermal, freeze and high explosive grenade mk III, the exact
+payloads those shells carry, dialled down, and reserves pure alloy for plasma, gravity and time
 dilation. Corrected in #146.
 
 The thing worth noticing is where they came from. **Neither was in the issue.** I re-read #145 end to
 end afterwards and checked every claim in it: the weapon list, all ten shell configurations, the gas
-densities, the stasis inconsistency, all twelve weapon stats, the resonance damage figures — including
+densities, the stasis inconsistency, all twelve weapon stats, the resonance damage figures, including
 the non-obvious one, that vanilla's mk I sets `Level="2"` so `2d10+4` really is its non-structural
-damage — and the takedown shell's anatomy and save mechanics. Every one held.
+damage, and the takedown shell's anatomy and save mechanics. Every one held.
 
 What was wrong got written *later*, in the commit messages, XML comments, `FEATURES.md` sections and
 changelog entries that explain the finished work. Those are written from what the author now believes,
@@ -1306,35 +1306,35 @@ detailed and sitting next to working code.
 
 > **Prose that explains a decision needs the same evidence the decision did.** When writing up
 > finished work, treat every factual sentence as a claim to verify, not a summary of one already
-> verified — especially the ones that begin "vanilla does…" or "the game declines to…". The check is
+> verified, especially the ones that begin "vanilla does…" or "the game declines to…". The check is
 > one grep. The failure ships, gets quoted forward into three more documents, and is corrected in
 > public.
 
-The general form: an investigation has a natural check — you are looking things up, so you look this
+The general form: an investigation has a natural check: you are looking things up, so you look this
 up too. A write-up has none, because by then you are describing rather than discovering.
 
 ## A creature's blueprint is where it starts, not what it is carrying
 
 Proving the scour slug's second-rust branch needed one number held still: how many things the target
 is carrying. `RustOnHit` draws one item at random from equipment and inventory together, so pool size
-*is* the experiment — with the chance temporarily at `100`, rust-then-dust on a pool of one is exactly
+*is* the experiment, since with the chance temporarily at `100`, rust-then-dust on a pool of one is exactly
 two hits.
 
 I picked the target by reading XML. `Wraith-Knight Templar` → `Templar` → `BaseTrueKin` →
 `BaseHumanoid` declares exactly one `<inventoryobject>`, a `Long Sword7`. Nothing on that chain
 declares a `<builder>`. Across the whole of `StreamingAssets/Base` the creature's name appears in two
-files, `Creatures.xml` and `Naming.xml` — no population table, no outfitting. Every static source
+files, `Creatures.xml` and `Naming.xml`, with no population table and no outfitting. Every static source
 agreed on one item.
 
 It took five or six hits. I spent a decompiling session on the gap and disproved three hypotheses in a
 row: that `Crysteel` vetoes rust (it has no `ApplyRusted` handler and nothing rust-related at all),
 that natural weapons pad the selection pool (`BodyPart.GetEquippedObjectCount` counts only `Equipped`,
 never `DefaultBehavior`), and that the roll scales with level (`GetSpecialEffectChanceEvent.GetFor` is
-pure dispatch — no built-in scaling of any kind). All three were hypotheses about code, because the
+pure dispatch, with no built-in scaling of any kind). All three were hypotheses about code, because the
 prediction I was defending had come from code.
 
 The answer came from looking at the creature. It had a second weapon equipped that its blueprint does
-not mention anywhere. Pool of two — and both runs, five or six and then four, are ordinary variance
+not mention anywhere. Pool of two, and both runs, five or six and then four, are ordinary variance
 for a pool of two. Nothing was ever broken.
 
 A knight wished onto a bare floor has one weapon equipped. The one that had two had *both* equipped.
@@ -1343,18 +1343,18 @@ going to show that, because it is not a fact about the blueprint.
 
 > **When an experiment's arithmetic depends on the state of a live object, measure the live object
 > first.** A prediction read out of the XML is a prediction about a blueprint. The thing standing in
-> the zone has a history — it picks things up — and that history is the variable the experiment
+> the zone has a history, since it picks things up, and that history is the variable the experiment
 > actually rests on.
 
 Two costs, worth separating. The small one is a session spent debugging code that was working. The
-larger one is that I nearly wrote the result up with a cause attached — first that this fork's own
+larger one is that I nearly wrote the result up with a cause attached: first that this fork's own
 population merges had armed it, then that a vanilla `<builder>` had. Both were checked and both were
 false. The section above says prose explaining a decision needs the same evidence the decision did;
 this is that rule applied to the explanation of a *test result*, which is just as tempting to write
 from the first mechanism that fits and has exactly as little checking it.
 
 One limitation to know before designing the next one: **examine shows only what a creature has
-equipped**, never its inventory, and no wish dumps another creature's pack — I read the whole command
+equipped**, never its inventory, and no wish dumps another creature's pack. I read the whole command
 list looking for one. The only reliable census is killing it with an ordinary weapon and counting
 what drops.
 
@@ -1365,7 +1365,7 @@ what drops.
 into `Stat.RollDamagePenetrations`, and there is **no Strength term anywhere in the damage path**.
 Damage is `Σ over Penetrations of roll(BaseDamage)`.
 
-So the field sets penetration — but penetration decides how many times the damage die is rolled, so
+So the field sets penetration, but penetration decides how many times the damage die is rolled, so
 the stat is a **multiplier on the weapon's whole output** rather than a side statistic. On a
 `Long Sword8th` against AV 10, Strength 16 → 28 takes the same swing from 2.7 to 13.4 average damage.
 The damage line never changes.
@@ -1377,14 +1377,14 @@ Two consequences that are easy to get backwards:
   Whatever you call the column, say penetration.
 - **Strength is not wired into combat at all.** Line 899 sets `string text2 = "Strength"` and line
   907 overwrites it with the weapon's own value. Strength is the *default value of an attribute*, not
-  an engine assumption — which is exactly why a mod can move it and why the move is so large.
+  an engine assumption, which is exactly why a mod can move it and why the move is so large.
 
 Vanilla holds the line rigidly: `Stat` is Strength on 4,351 of 4,354 melee weapons, `ThrownWeapon`
 hardcodes `Stat("Strength")`, and the only two ranged weapons with a `ProjectilePenetrationStat` use
 Strength for draw weight. Agility never scales damage anywhere. Verify that before assuming any
 stat's role, because the field names do not tell you.
 
-## Read the whole loop before modelling it — this one decays its own bonus
+## Read the whole loop before modelling it, because this one decays its own bonus
 
 I modelled `Stat.RollDamagePenetrations` from its first thirty lines: three dice per wave, each
 penetrating die scoring a penetration, all three rolling another wave. That gives an unbounded chain
@@ -1406,7 +1406,7 @@ that draws the eye is the innermost block.
 The tell was the absurd number, and only because the input happened to reach a degenerate case. Had
 I sampled a narrower range of stats the wrong model would have produced plausible figures and gone
 into a document. **A model of game arithmetic wants one deliberately extreme input** for that
-reason — the ordinary range will not tell you the model is wrong.
+reason: the ordinary range will not tell you the model is wrong.
 
 **There was an earlier tell and I missed it, because it looked like nothing.** The first version of
 this model was a Monte Carlo simulation, and without `Bonus -= 2` the loop cannot terminate at all
@@ -1415,7 +1415,7 @@ penetrates, `wave` is always 3, and `while (wave == 3)` runs forever. I had back
 passed its timeout. It was still running seventeen hours later, pinning a core, and I only found it
 because the interface said a task was live.
 
-So the bug's first symptom was a **hung process**, not a wrong number — and I went and rebuilt the
+So the bug's first symptom was a **hung process**, not a wrong number, and I went and rebuilt the
 same wrong model analytically instead, where the same degenerate case finally surfaced as a
 printable absurdity.
 
@@ -1423,8 +1423,8 @@ printable absurdity.
 > silent, and silence reads as progress. If a job is expected to print only at the end, it has no
 > liveness signal at all, and a runaway can sit there for as long as the session does.
 
-Two habits come out of it. Give a long computation **incremental output** — a line per row, not one
-table at the end — so that silence means something. And when a model of a loop is being ported,
+Two habits come out of it. Give a long computation **incremental output**, a line per row rather than one
+table at the end, so that silence means something. And when a model of a loop is being ported,
 **bound the port** even if the original looks unbounded: a `for _ in range(80)` where the real code
 has a decay costs nothing and turns an infinite loop into a visibly wrong number, which is the
 failure you want.
@@ -1436,14 +1436,14 @@ a `MeleeWeapon` passing `AttackFromPart` is added to the attack list. `Combat.Pe
 then makes one attack attempt per part in that list. Two hands and two arms is four attacks.
 
 `MeleeWeapon.Slot` is a restriction rather than a grant: `Slot="Arm"` means the weapon attacks
-*only* from an Arm, so it cannot be stacked into hands — but an Arm holding one is a genuine extra
+*only* from an Arm, so it cannot be stacked into hands, but an Arm holding one is a genuine extra
 limb. Only the first part in the list is primary; the rest roll against
 `RuleSettings.BASE_SECONDARY_ATTACK_CHANCE`, which is 15, plus 20/15/15 from the three Multiweapon
 Fighting powers.
 
 The balance consequence is entirely about **what else wants that slot**, and that is not something
 the weapon's own blueprint shows you. Vanilla's Arm slot holds Kindrish, Otherpearl, the Transkinetic
-Cuffs and the rest of the utility artifacts, nearly all at AV 0 — so vanilla's one arm-mounted
+Cuffs and the rest of the utility artifacts, nearly all at AV 0, so vanilla's one arm-mounted
 weapon, `ArmDagger4`, is trading an extra attack against a unique effect. Add ordinary armour to the
 slot and that trade quietly stops being a trade. Before pricing an item that occupies an unusual
 slot, enumerate what already lives there.
@@ -1451,14 +1451,14 @@ slot, enumerate what already lives there.
 ## A number that agrees because both sides share the error is not a cross-check
 
 Deriving the armour curves in #340 I surveyed every vanilla blueprint carrying an `Armor` part,
-totalled the per-slot maxima, and got **32** — the exact figure #318 had already published for
+totalled the per-slot maxima, and got **32**, the exact figure #318 had already published for
 best-in-slot AV. That looked like independent confirmation from a second method, so I stopped
 checking and wrote the curve.
 
 It was a coincidence. Shields carry their AV on a **`Shield` part, not an `Armor` one**, so the
 survey never saw a single one of vanilla's fourteen. My 32 was #318's 32 with the shield's 7
 missing and two named artefacts wrongly included, and those two errors happened to cancel. The
-curve shipped with no Shield column at all — in a document whose whole job was to give #319, *a
+curve shipped with no Shield column at all, in a document whose whole job was to give #319, *a
 finding about a shield*, something to be a defect against.
 
 Two things to take from it.
@@ -1469,7 +1469,7 @@ When a recount lands on a figure you were hoping for, the question is not *does 
 both of these be wrong the same way*.
 
 **When a survey defines a category by one part name, ask what else delivers the same effect.**
-Grepping `GetStat("AV")` finds only `Armor` — which is exactly why the miss was invisible. `Shield`
+Grepping `GetStat("AV")` finds only `Armor`, which is exactly why the miss was invisible. `Shield`
 never touches the AV stat at all: it sets `E.ShieldBlocked` on a `GetDefenderHitDiceEvent` and its
 AV applies to that one attack. Two mechanisms, one player-facing effect, and no shared symbol to
 grep for. The category to enumerate is *"what reduces incoming damage"*, not *"what writes to the AV
@@ -1477,7 +1477,7 @@ stat"*.
 
 That difference matters beyond the miss, because **shield AV is conditional and armour AV is not.**
 Block chance is `25 * (1 + ImprovedBlock)`, plus 25 for `Shield_Block` and 25 for
-`Shield_DeftBlocking` — so 25% bare, 75% fully skilled, and 100% only under Shield Wall. Any
+`Shield_DeftBlocking`, so 25% bare, 75% fully skilled, and 100% only under Shield Wall. Any
 best-in-slot total that adds a shield's AV to a body armour's is an upper bound, not a figure.
 
 The tell I ignored: **the category had no members where the finding said the worst case was.** #318
@@ -1487,13 +1487,13 @@ thing the issue is about has answered a different question.
 ## A commented-out blueprint is invisible to every check, and to nothing else
 
 `mod/ObjectBlueprints/MeleeWeapons.xml` holds four objects inside a `<!-- rework these or remove
-them` block — `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`, `Raven_Vibro War Hammer` and
+them` block: `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`, `Raven_Vibro War Hammer` and
 `Raven_Two-Handed Vibro War Hammer`. They are not blueprints. They are text.
 
 I tagged one of them by accident. The mace-ladder change in #342 needed a `Finesse` tag on ten
 blueprints, I matched objects with a regex over the raw file, and the regex found the commented one
 because a comment is just characters. The tag went in, the object stayed dead, and **every check
-passed** — `validate_mod.py` parses with ElementTree, which does not see inside a comment, so there
+passed**, because `validate_mod.py` parses with ElementTree, which does not see inside a comment, so there
 was nothing for it to report. The defect reached `main` and shipped a changelog line promising a
 tagged vibro mace that does not exist.
 
@@ -1506,8 +1506,8 @@ raw_objs = set(re.findall(r'<object Name="([^"]*)"', raw))
 assert not (raw_objs - live) & touched      # touched something that is not a blueprint
 ```
 
-`stat-discipline` already knew this and says so in its own docstring — *"Parses rather than greps,
-deliberately… ElementTree does not see inside a comment"* — written because a line-based check
+`stat-discipline` already knew this and says so in its own docstring, *"Parses rather than greps,
+deliberately… ElementTree does not see inside a comment"*, written because a line-based check
 reported those same two vibro war hammers as violations nobody could fix. **The knowledge existed in
 a docstring in the validator and nowhere a person writing an edit script would look.** That is the
 part worth fixing, and why this is here.
@@ -1518,7 +1518,7 @@ declares `Role` as a tag and never as a property, I ran `grep -c 'tag Name="Role
 commented-out blueprints in `Creatures.xml`, one of them a robot called Graftek. I had the number
 wrong in a changelog entry, a lesson on this very page, an issue and a pull request before parsing
 the same files and getting a different answer. `requested_inherits_slices` strips comments before it
-counts, for exactly this reason, and says so — I did not extend the courtesy to a one-line check of
+counts, for exactly this reason, and says so. I did not extend the courtesy to a one-line check of
 my own. **A figure that is going into prose deserves the parse too**, because prose has no test.
 
 The general shape: **a validator that ignores a region cannot protect that region.** Anything
@@ -1528,7 +1528,7 @@ writes to the file rather than through the parser has to police itself.
 ## Nothing checks that `Inherits=` names a blueprint that exists
 
 Writing the spear line for #342 I gave nine blueprints `Inherits="BaseShortBlade"`. There is no such
-object. Qud's Short Blades base is **`BaseDagger`** — the bases are `BaseAxe`, `BaseCudgel`,
+object. Qud's Short Blades base is **`BaseDagger`**, and the bases are `BaseAxe`, `BaseCudgel`,
 `BaseDagger`, `BaseLongBlade`, and a handful of ranged ones.
 
 `validate_mod.py` reported nothing. The file parses, the objects are well-formed, `unreachable` fired
@@ -1547,13 +1547,13 @@ grep -ho '<object Name="Base[A-Za-z]*"' "$BASE"/ObjectBlueprints/*.xml | sort -u
 
 Two things worth carrying beyond the specific mistake.
 
-**An invented name is more dangerous than a wrong one.** A typo of a real base — `BaseCudgle` — fails
+**An invented name is more dangerous than a wrong one.** A typo of a real base, `BaseCudgle`, fails
 the same way, silently, so neither spelling nor plausibility helps. Only existence does.
 
 **Inheriting the nearest base is not automatically right either.** `BaseDagger` carries
 `DynamicObjectsTable:Daggers`, so a spear inheriting it would appear anywhere the game asks for a
 dagger specifically. The spears inherit `MeleeWeapon` and declare their skill, mods and sounds
-explicitly instead. **Read what a base actually grants before adopting it** — the tags it carries
+explicitly instead. **Read what a base actually grants before adopting it**, because the tags it carries
 travel with every child.
 
 ## A scope that looks load-bearing may match nothing at all
@@ -1561,7 +1561,7 @@ travel with every child.
 The entry above says to confirm a parent blueprint exists before building on it. This is the same
 question asked of a *relationship* rather than a reference, and the answer surprised me more.
 
-`Naming.xml` scopes on `Culture` **50 times**, naming 36 distinct cultures — twice as often as it
+`Naming.xml` scopes on `Culture` **50 times**, naming 36 distinct cultures, twice as often as it
 scopes on `Species`, which it uses 25 times. Read the scope table and the design looks obvious:
 culture is how a creature gets a culturally appropriate name, and species is the fallback for things
 that have no culture. I was one step from building #436 on top of that.
@@ -1580,8 +1580,8 @@ And almost nothing carries the tag.
 | | |
 |---|---|
 | `Culture` tags across every vanilla blueprint | **41 instances, 33 distinct values** |
-| Runtime writes of `Culture` in the whole 12 MB assembly | **one** — `EndGame.cs`, `"Chiliad Qudish"` |
-| Village generation touching `Culture` | **none** — `VillageBase`, `Village` and `VillageMaker` never mention it |
+| Runtime writes of `Culture` in the whole 12 MB assembly | **one**, in `EndGame.cs`, `"Chiliad Qudish"` |
+| Village generation touching `Culture` | **none**, since `VillageBase`, `Village` and `VillageMaker` never mention it |
 | Scoped cultures that can never match a creature | **7 of 36** |
 
 The dead seven are `Qudish`, `Arcologian`, `Ekuemekiyyen`, `Ibulian`, `Yawningmoon`, `Chiliad
@@ -1592,7 +1592,7 @@ scope and `Genotype="Mutated Human"`. The rest of the `Culture` scopes are dupli
 style's `Species` scope, reachable only through that `?? GetSpecies()` fallback.
 
 **`Ape` is dead for a second reason, and it is the more general one.** Apes carry no `Culture` tag,
-so the fallback supplies their species — which is `ape`. The scope asks for `Ape`. `NameScope.ApplyTo`
+so the fallback supplies their species, which is `ape`. The scope asks for `Ape`. `NameScope.ApplyTo`
 compares with `Culture != this.Culture`, an ordinal `string` comparison, so the capital is fatal.
 `Bear`, `Bird` and `Antelope` look identical and work, because a blueprint tags each of them with the
 capitalised spelling. Nothing distinguishes the working ones from the broken one by reading.
@@ -1615,7 +1615,7 @@ data that is well-formed, passes every check, and does nothing.
 
 There is a second, less comfortable point. **`tools/naming_harness.py` could have answered this
 before #436 was ever written.** It reimplements `XRL.Names` precisely so questions like this stop
-being guesses, it was sitting in the repository the whole time, and I did not think to ask it — I
+being guesses, it was sitting in the repository the whole time, and I did not think to ask it. I
 read the XML instead and drew a conclusion from how the file looked. A tool built to answer a class
 of question only helps if the question gets asked of it.
 
@@ -1632,38 +1632,38 @@ standing beside it, and there was no state of the game in which a player should 
 
 **Reverting felt like the safe direction, and that is why I did not check.** A change that makes an
 item stronger obviously needs weighing against its neighbours. A change that puts a number back to
-vanilla's reads as a *removal* of an opinion — as returning to the state where, by definition,
+vanilla's reads as a *removal* of an opinion, as returning to the state where, by definition,
 nothing is out of place. But the neighbours were not vanilla's. They were mine, priced against the
 buffed carbide, and restoring the anchor moved every one of them relative to it without touching a
 line of their XML.
 
 **The test is positional, not directional.** Before changing any value, list what a player is
-choosing *between* and check the whole set afterwards — including the entries the diff does not
+choosing *between* and check the whole set afterwards, including the entries the diff does not
 touch. A rung is dominated when something costs less for the same benefit, or the same for more, and
 that is arithmetic over the set rather than a property of the item you edited.
 
 **I caught it the same day, and that is the uncomfortable part.** #335 and the fix are hours apart in
-`git log`. I was not returning to cold code — I had written the restore, argued for it in the issue,
+`git log`. I was not returning to cold code: I had written the restore, argued for it in the issue,
 and could still recite why. I found the domination anyway only because I went to look up the plating
 costs for an unrelated in-game check and read all four rows at once. Familiarity with a change is not
 coverage of it; the diff was the thing I knew, and the diff was where the defect was not.
 
 There was a second layer under it, and it is the more general trap. `Implants_3Pointers` is a vanilla
 population table, and its **name is a claim about its contents**. Re-pricing crysteel from 3 points
-to 6 invalidated a placement in a *different file* that never mentioned the cost — so the loot table
+to 6 invalidated a placement in a *different file* that never mentioned the cost, so the loot table
 went on saying *3 Pointers* while holding a 6-point implant, and nothing in the game or in `tools/`
 had any opinion about it.
 
 **When a name encodes a value, editing the value edits the name's truth.** Grep for the identifier
 you are re-pricing before you finish, not just the file you are in. `implant-table-cost` in
-`tools/validate_mod.py` now holds this particular coupling, per charter rule 4 — but the general
+`tools/validate_mod.py` now holds this particular coupling, per charter rule 4, but the general
 version has no check and probably cannot have one. Bracket names, tier names and table names are all
 assertions, and the thing that makes them dangerous is that they are usually right.
 
 ## A knob that accepts your value and rounds it away is worse than no knob
 
-`DynamicObjectsTable:<Table>:Weight` looks like a rarity dial. Vanilla sets it on ten blueprints —
-`Astral Tabby` at 0.2, `Ixlthyxl` at 0.1, `Issachari Raider` at 3 — and I read that spread as
+`DynamicObjectsTable:<Table>:Weight` looks like a rarity dial. Vanilla sets it on ten blueprints:
+`Astral Tabby` at 0.2, `Ixlthyxl` at 0.1, `Issachari Raider` at 3, and I read that spread as
 evidence the game tunes creature rarity with it deliberately. I then built a whole rarity curve on
 top: 0.5 for common coats, 0.25 for uncommon, 0.08 for the albinos. It was internally consistent,
 documented, and completely inert.
@@ -1672,7 +1672,7 @@ Three facts compose, and no one of them is visible from the XML:
 
 1. **No creature table is ever requested in the `:Tier` form.** Zero occurrences across the whole of
    `StreamingAssets/Base`, so they are all built by `FabricateDynamicObjectsTable` rather than the
-   multitier path — and the two methods weight entries completely differently.
+   multitier path, and the two methods weight entries completely differently.
 2. **In that method the tier-delta bonus is unreachable.** `num` and `num2` initialise to `-1` and
    are never assigned, so the `TierDeltaWeights` lookup guarded by `num != -1` never runs.
 3. **`:Weight` is a multiplier wrapped in `(uint)Math.Ceiling`.** On a base of 1, `ceil(1 × 0.25)`
@@ -1696,7 +1696,7 @@ which is the detail that should have warned me and instead reassured me: I had c
 >
 > `InitWeights()` fills that table with `Common` and `Minion` at **4.0**, `Skirmisher` at 1.0,
 > `Artillery`/`Uncommon`/`Brute`/`Tank` at 0.25, `Specialist`/`Leader`/`Hero` at 0.1, and
-> `Rare`/`Epic` at 0.01. Every one of those below 1.0 still ceilings to 1 — but 4.0 does not. **On a
+> `Rare`/`Epic` at 0.01. Every one of those below 1.0 still ceilings to 1, but 4.0 does not. **On a
 > `Common` or `Minion` blueprint the base weight is 4**, and there `:Weight` 0.5 gives 2 and 0.75
 > gives 3. The dial works.
 >
@@ -1709,12 +1709,12 @@ which is the detail that should have warned me and instead reassured me: I had c
 > `Unspecified` are used on **63** vanilla blueprints and appear in no multiplier table at all, so
 > they silently take the plain base weight.
 >
-> Nothing shipped depends on this — every `:Weight` tag was removed from `Creatures.xml`. It is the
+> Nothing shipped depends on this, since every `:Weight` tag was removed from `Creatures.xml`. It is the
 > lesson that was wrong, and the lesson is what future me will trust. The other half, where the dial
 > works in *every* `:Tier`-requested pool rather than only on two roles, is #493.
 
 > **A setting the engine accepts, stores, and quietly discards is indistinguishable from one that
-> works — from the outside, and from the diff.** Vanilla using a value is evidence that vanilla's
+> works, from the outside, and from the diff.** Vanilla using a value is evidence that vanilla's
 > authors believed in it, not evidence that it does anything.
 
 This is the same family as the vacuous shell loop and the scope that matches nothing: **silence read
@@ -1729,7 +1729,7 @@ entire weight design.
 **The postscript is worse than the lesson.** All of the above is true, and none of it mattered:
 `DynamicObjectsTable:<Biome>_Creatures` is not rolled by anything that populates a zone, so the
 weights I was so carefully computing governed a pool no hillside consults. I audited the arithmetic
-of a mechanism twice without once asking what called it. (It *is* called — by village generation.
+of a mechanism twice without once asking what called it. (It *is* called, by village generation.
 See the entries below, including the correction.)
 
 **The mechanism that did work was three lines further down the same method.** `AggregateWith` bundles
@@ -1743,14 +1743,14 @@ it onto thirteen vanilla creatures so each of my variants would share its parent
 taking a new one, and wrote in the feature reference that the tables therefore did not grow.
 
 They shrank. The tag **inherits**, so merging it onto `Baboon` also reached `Hulking Baboon`,
-`Shrewd Baboon` and `Baboon Hero 1` — three distinct creatures vanilla had given three separate
-slots — and folded all four into one. Baboons in the hills became roughly four times rarer.
+`Shrewd Baboon` and `Baboon Hero 1`, three distinct creatures vanilla had given three separate
+slots, and folded all four into one. Baboons in the hills became roughly four times rarer.
 `ClockworkBeetle`, a machine, began competing for the giant beetle's slot. `Sultan Croc`, a named
 legendary, shared the ordinary croc's. Hills lost five slots, DesertCanyon and Jungle four each.
 
 > **Merging a tag onto a vanilla record is not an edit to that record. It is an edit to that record
 > and to everything descended from it.** The blast radius is the subtree, and the subtree is not
-> visible from the diff — which shows one `<object Name="Baboon" Load="Merge">` and three lines.
+> visible from the diff, which shows one `<object Name="Baboon" Load="Merge">` and three lines.
 
 The charter already says to know the blast radius, and I had even applied it correctly elsewhere:
 the `Chip Interface` merge into base `Humanoid` is documented as reaching every humanoid in the
@@ -1760,7 +1760,7 @@ it is a base, whatever else it looks like.**
 
 Two things made this survive review. Every static check passed, because nothing errors: the tag
 parses, the table builds, the creatures simply get rarer. And my own arithmetic in the pull request
-was right about the variants and never asked the second question — I counted what I was adding and
+was right about the variants and never asked the second question. I counted what I was adding and
 never counted what vanilla already had underneath.
 
 **What found it was playing the game.** Grey walked a run of zones and reported seeing exactly one
@@ -1768,8 +1768,8 @@ named variant, plus goats called "goat" and baboons called "baboon". That is a s
 had written could produce, and the first honest read of it was that my design was wrong rather than
 that the observation was.
 
-**What to do.** Before merging a tag onto a vanilla record, list its descendants — one pass over
-`Inherits` answers it — and decide for each whether the tag belongs there. Where it does not,
+**What to do.** Before merging a tag onto a vanilla record, list its descendants, since one pass over
+`Inherits` answers it, and decide for each whether the tag belongs there. Where it does not,
 `*delete` is vanilla's own idiom for dropping an inherited tag. Then encode the answer: `tools/
 qud-api.json` records the descendant list and `aggregate-sweep` in `tools/validate_mod.py` fails
 until each is exempted, so a Qud patch adding a descendant becomes a red run instead of a slow
@@ -1777,8 +1777,8 @@ change in what the world spawns.
 
 ## A pool with no members can be live, and a pool with 191 can be dead
 
-Four times I shipped something aimed at a declaration whose consumer I had not traced — #171, #177,
-#476, #478 — and the rule that came out of it is above: *"Does anything read this?" is the wrong
+Four times I shipped something aimed at a declaration whose consumer I had not traced, in #171, #177,
+#476 and #478, and the rule that came out of it is above: *"Does anything read this?" is the wrong
 question. "Does the thing that reads it run where I need my content to appear?" is the right one.*
 
 Auditing against Freehold's own wiki I found the mirror image, and it matters because the obvious
@@ -1802,19 +1802,19 @@ not put a creature in a zone, and the pair says the thing plainly:
 
 > **Membership count and liveness are independent, and neither implies the other.** A pool with no
 > members can be rolled on every village. A pool with a hundred and twenty-three can be rolled by
-> nobody. "Who declares this?" is not a proxy for "is this real?" — they are two questions and both
+> nobody. "Who declares this?" is not a proxy for "is this real?": they are two questions and both
 > have to be asked.
 
 The cheerful consequence: my three plants reach coda villages through that third line for free,
 without a `Coda_` tag, because the fallback catches them.
 
 **What to do instead.** Ask the two questions separately and answer each at its own end. Membership
-is answered in the data — grep the tag. Liveness is answered in the assembly, or with
+is answered in the data, so grep the tag. Liveness is answered in the assembly, or with
 `population:generate:<table>#<amount>`, which fabricates the table by name rather than waiting for
 something to have rolled it.
 
 This is also the first time in the audit that checking the far end came back *"no consumer, nothing
-to worry about"* rather than *"you built the wrong thing"* — the `<stag>` categories in #501 were
+to worry about"* rather than *"you built the wrong thing"*: the `<stag>` categories in #501 were
 the other. Worth saying, because four bad results in a row make the check feel like a formality
 right up until it is not.
 
@@ -1827,7 +1827,7 @@ zone builder requires one.
 
 > **Corrected later, and the correction is the more useful fact.** I originally wrote that these
 > pools have *no consumer at all*, on the strength of finding nothing in `Assembly-CSharp.dll`. That
-> search was wrong — see *"strings cannot see a .NET string literal"* below — and every biome-keyed
+> search was wrong, see *"strings cannot see a .NET string literal"* below, and every biome-keyed
 > pool does have a consumer: **procedural village generation**, in `VillageBase.cs:167`,
 > `Village.cs:734` and `VillageCoda.cs:1369`. So the tag was not inert. It was for villagers, and I
 > was expecting wilderness.
@@ -1839,7 +1839,7 @@ what a player meets in the hills.
 I built a whole feature on that tag: 32 blueprints, 72 `*delete` tags to control which pools they
 joined, 13 merges and 10 exemptions to balance the slots. All of it aimed at tables nobody rolls.
 Three rounds of decompiling, two shipped pull requests, and a validator check written to guard the
-mechanism — none of which could fail, because everything I built was internally consistent.
+mechanism, none of which could fail, because everything I built was internally consistent.
 
 > **A declaration is evidence that someone wrote it, not that anything reads it.** Before building
 > on a mechanism, find the *other end*: grep for the name outside the files that declare it. If
@@ -1848,13 +1848,13 @@ mechanism — none of which could fail, because everything I built was internall
 `docs/LESSONS.md` already carried this, from nine hours earlier: *a scope that looks load-bearing may
 match nothing at all*, written after finding that `Culture="Qudish"` matches no blueprint in the
 game. I wrote that entry, filed the issue, and then made the identical mistake inside the next
-feature — because there I was counting *vanilla's* usage rather than my own, and 191 tags felt like
+feature, because there I was counting *vanilla's* usage rather than my own, and 191 tags felt like
 proof. It is proof that Freehold typed them.
 
 **And what found it was the game, not the code.** Grey played, saw plain goats and boars where the
 design predicted half variants, and reported it. Every static check passed throughout. The wish
 `population:findblueprint <name>` enumerates every table in `PopulationManager.Populations` with the
-odds of that blueprint appearing in each — it is the fastest way to answer "does my thing actually
+odds of that blueprint appearing in each, and it is the fastest way to answer "does my thing actually
 spawn", and one run of it would have settled in seconds what I spent hours inferring.
 
 > **Reach for `population:generate:<table>#<amount>` instead when the question is about a table
@@ -1868,7 +1868,7 @@ spawn", and one run of it would have settled in seconds what I spent hours infer
 >
 > The difference is not convenience, it is that **`findblueprint` cannot see a table that has not
 > been built yet.** It enumerates `PopulationManager.Populations`, which holds what has already been
-> fabricated — so a pool nothing has rolled in that session is simply absent, and absence reads
+> fabricated, so a pool nothing has rolled in that session is simply absent, and absence reads
 > exactly like "no consumer". That is the false negative below: I ran it after a session with no
 > village in it, saw no `*_Creatures` table, and called the family decoration. Naming the table
 > sends it through `RequireTable`, which fabricates it on demand, so the question gets answered
@@ -1876,23 +1876,23 @@ spawn", and one run of it would have settled in seconds what I spent hours infer
 >
 > **It has a false negative of its own, though, and it looks identical to failure.** `RequireTable`
 > fabricates a pool for *any* name carrying the prefix, so a misspelled one builds an empty table,
-> caches it, and reports nothing — no error, no "unknown table". Grey typed
+> caches it, and reports nothing: no error, no "unknown table". Grey typed
 > `SaltMarshes_Ingredients` for `Saltmarsh_Ingredients` while checking #489 and got
 > "did not generate any results", which reads exactly like a tag that did not take. Had that been
 > the first pool tried rather than the third, I would have gone hunting a bug that was not there.
 >
 > **So an empty result is only evidence once the name is known to be right.** Confirm the spelling
-> against the blueprint that declares it — `grep -o 'DynamicObjectsTable:[A-Za-z_]*'` over the file
-> you just edited — before reading emptiness as anything at all.
+> against the blueprint that declares it, with `grep -o 'DynamicObjectsTable:[A-Za-z_]*'` over the file
+> you just edited, before reading emptiness as anything at all.
 
 I did not know that wish existed until I indexed the wiki (#506), which is its own small argument
 for `docs/WIKI.md`: the tool that would have prevented this entry was documented the whole time.
 
-**The rule generalises, and #177 is where I found out how far — then how far it does not.** Adding
+**The rule generalises, and #177 is where I found out how far, then how far it does not.** Adding
 harvestable plants, the obvious way to distribute a preserved cooking ingredient was
 `DynamicObjectsTable:<Biome>_Ingredients`. No population table names one, so I wrote that the whole
-biome-keyed family was decoration and that only flat pools — `Ammo`, `Chests`, `Corpses`,
-`EnergyCells`, `Guns`, `Items` and the rest — are ever rolled.
+biome-keyed family was decoration and that only flat pools, `Ammo`, `Chests`, `Corpses`,
+`EnergyCells`, `Guns`, `Items` and the rest, are ever rolled.
 
 **That was wrong, and it stayed wrong in three documents until a playtest question sent me back.**
 Every biome-keyed pool is rolled, from C# rather than from data:
@@ -1904,7 +1904,7 @@ Every biome-keyed pool is rolled, from C# rather than from data:
 | `<Biome>_Plants` | `VillageBase.cs:1430`, `VillageCodaBase.cs:1705` |
 | `<Biome>_FarmablePlants` | `VillageBase.cs:1412` |
 
-They are all **procedural village generation** — who lives there, what they farm, what the walls are
+They are all **procedural village generation**: who lives there, what they farm, what the walls are
 made of. Not zone spawns. So the #171 tags were never inert; they were pointed at villages while I
 was watching hillsides.
 
@@ -1912,8 +1912,8 @@ was watching hillsides.
 > question. The right one is **"does the thing that reads it run where I need my content to
 > appear?"** A pool with a real consumer can still be the wrong pool.
 
-The grep shortcut I wrote here — enumerate `DynamicObjectsTable:` out of `PopulationTables.xml` and
-treat anything absent as decoration — is **necessary but not sufficient**, and stating it as
+The grep shortcut I wrote here, enumerate `DynamicObjectsTable:` out of `PopulationTables.xml` and
+treat anything absent as decoration, is **necessary but not sufficient**, and stating it as
 sufficient is what produced the error. Pool names are built at runtime by string concatenation, so
 they cannot be found by grepping data at all.
 
@@ -1921,7 +1921,7 @@ they cannot be found by grepping data at all.
 
 Three of my findings rested on `strings Assembly-CSharp.dll | grep …` coming back empty, and all
 three were wrong. .NET stores string literals in the metadata `#US` heap as **UTF-16**, and `strings`
-reads ASCII by default — so it finds *identifiers* (method and type names, which are UTF-8) and
+reads ASCII by default, so it finds *identifiers* (method and type names, which are UTF-8) and
 silently misses every literal. macOS `strings` has no `-e` flag to fix it either.
 
 Recovering them takes four lines:
@@ -1955,7 +1955,7 @@ Assessing #638 I ran:
 for f in Stealth.cs Hidden.cs HiddenRender.cs; do rg -c '…' "$SRC/$f" || echo 0; done
 ```
 
-and reported **0, 0, 0** — written up as *"zero references in the stealth machinery."* `Stealth.cs`
+and reported **0, 0, 0**, written up as *"zero references in the stealth machinery."* `Stealth.cs`
 does not exist. `rg` failed on it, `|| echo 0` swallowed the failure, and a missing file was reported
 as a clean negative. The other two return **1**, not 0. So two of the three numbers were wrong and
 the third was meaningless.
@@ -1978,27 +1978,27 @@ recorded in the save against the last version that wrote the old one.
 **It could not work, and the reason is worth keeping.** `v2.7.0` was tagged at 04:23 and #497 landed
 at 12:20 the same day, so a save recording `2.7.0` was written either by the release, which wrote
 nothing, or by an unreleased build, which wrote a block. The version is identical in both cases.
-`manifest.json` cannot move ahead to break the tie either — `check_version_matches_changelog` binds
+`manifest.json` cannot move ahead to break the tie either, because `check_version_matches_changelog` binds
 it to the newest *released* changelog heading, so bumping it means cutting a release.
 
 > **A version identifies a release, not a commit.** Any question of the form "did the code that wrote
-> this have change X" is unanswerable by version whenever X landed between a tag and the next one —
+> this have change X" is unanswerable by version whenever X landed between a tag and the next one,
 > which is where every change spends most of its life.
 
 **The failure was silent and unbounded, which is the other half.** `IPart.Load` reads a length
 prefix, keeps `Position` and `Length` as locals, and repositions to the end of the block **only from
 inside its `catch`**. So reading *too much* throws, gets caught, and `SkipBlock` puts the stream back
-— the component is dropped from that object and nothing else suffers. Reading *too little* throws
+The component is dropped from that object and nothing else suffers. Reading *too little* throws
 nothing at all, and every object after it in the zone deserialises from bytes that are not its own.
 The log said `Recovered from game object deserialization error` 48 times in one session, on
-`Desert Rifle`, `Musket`, `Humanoid`, `Hypertractor` — none of which is the component that
+`Desert Rifle`, `Musket`, `Humanoid`, `Hypertractor`, none of which is the component that
 under-read. The blast lands downstream of the fault.
 
 > **Over-read is contained; under-read is not.** When a format guess can go either way, guess long.
 
 **The fix was to delete the question.** All three classes hold no serialisable state, so the block
-they wrote was a count of zero and nothing else. Suppressing both halves — `Write` writing nothing,
-`Read` reading nothing — gives one shape in every version, and a boundary that does not exist cannot
+they wrote was a count of zero and nothing else. Suppressing both halves, with `Write` writing nothing,
+`Read` reading nothing, gives one shape in every version, and a boundary that does not exist cannot
 be got wrong. The classes stay on the `IScribed` bases, which is the part that is expensive to do
 later; when one gains a field, both overrides come out, and by then the version really will have
 moved.
@@ -2013,7 +2013,7 @@ that a change of serialization format would lose? I answered it four times and g
 answers, because I kept reading the declaration and not the attribute above it.
 
 **First pass**, filing the issue: I grepped for field declarations, saw
-`private string Pending;` on `Vixy_AmmoPayload`, and wrote that it "carries risk today — it holds an
+`private string Pending;` on `Vixy_AmmoPayload`, and wrote that it "carries risk today, since it holds an
 instance field, which is precisely the case migration protects." The line directly above it is
 `[NonSerialized]`, and the comment above *that* explains at length that the field is transient by
 construction. I had read neither.
@@ -2022,14 +2022,14 @@ construction. I had read neither.
 so a private field is never serialized anyway. Right conclusion, and it made the first one wrong
 twice over.
 
-**Third pass**: `IPart` declares `public GameObject _ParentObject`, and `Effect` declares five more —
+**Third pass**: `IPart` declares `public GameObject _ParentObject`, and `Effect` declares five more.
 `ID`, `DisplayName`, `Duration`, `_Object`, `_StatShifter`. Inherited public fields *are* included by
 `GetCachedFields()`, so I concluded all three classes did carry state after all, and that the whole
 conversion was unsafe.
 
 **Fourth pass**: every one of those six is `[NonSerialized]` too, and the mask in `WriteNamedFields`
 excludes exactly that. `Effect.Load` reads `ID`, `DisplayName` and `Duration` explicitly before
-calling `Read`, which is *why* they are marked — the container owns them, not field reflection.
+calling `Read`, which is *why* they are marked: the container owns them, not field reflection.
 
 The answer was the one I first assumed, arrived at only on the fourth try, and I would have shipped
 a save-desynchronising change on the third if I had stopped there feeling vindicated.
@@ -2063,8 +2063,8 @@ result.
 > vanilla art is cheap and right; reusing the colours it was given for a different biome is not.
 > Check the palette against what the player will actually be looking at.
 
-There is a second half. **Vanilla signals ripeness with a change of hue** — witchwood `&W` → `&r`,
-starapple `&g` → `&R`, noisegrass `&K` → `&M` — and cragwort's ripe state changed one detail pixel
+There is a second half. **Vanilla signals ripeness with a change of hue**: witchwood `&W` → `&r`,
+starapple `&g` → `&R`, noisegrass `&K` → `&M`, and cragwort's ripe state changed one detail pixel
 and left the tile black. Even a ripe one was indistinguishable at a glance, which defeats the point
 of `StartRipeChance` entirely: the number decides how often a plant is worth harvesting, and the
 colour is how a player finds out.
@@ -2099,9 +2099,9 @@ plant that is already standing there. The guard runs, passes, and places a secon
 > is really `HasSomethingDrawnAboveLayer5()`, and it is used as an occupancy test in dozens of
 > places. Read what a guard measures before trusting what it is called.
 
-Two things made this hard to see from the mod side. The symptom is a **grammar** bug —
+Two things made this hard to see from the mod side. The symptom is a **grammar** bug.
 `You pass by a brinereed and a brinereed`, because `Physics.EnterCell` lists every object in the cell
-and `Grammar.MakeAndList` neither deduplicates nor counts — so it reads as a text problem rather than
+and `Grammar.MakeAndList` neither deduplicates nor counts, so it reads as a text problem rather than
 a placement one. And it is invisible in three of six biomes, which is exactly the pattern that makes
 a bug look like something else. I first assumed the mod I saw it in was doing something exotic; it
 was not, it was calling `IsEmpty()` in a loop on a `RenderLayer=1` object.
@@ -2111,7 +2111,7 @@ identical lines are cheaper than one invariant that holds in half the file for a
 someone else's XML. The same goes for anything else the caller can default: if correctness depends on
 it, say it locally.
 
-Creatures looked exempt, and the reason looked good — `PlaceObjectInArea` carries a separate
+Creatures looked exempt, and the reason looked good: `PlaceObjectInArea` carries a separate
 `workingSet.RemoveAll(p => Z.GetCell(p).HasCombatObject())`, which is not blueprint-keyed and so is
 stronger than the plant guard rather than weaker. **That sentence stood here until #613 and it was
 wrong.** The entry below has what actually happens; the sweep for "what else does this affect" was
@@ -2131,7 +2131,7 @@ Population.Generate(Result, Vars, Hint ?? DefaultHint);   // PopulationTable.Gen
 ```
 
 A `<table>` reference hands its own hint down, or the one it was given. Nesting was never a barrier
-to the hint — only to my model of it.
+to the hint, only to my model of it.
 
 > **When a check keys on a name, ask what else can wear that name's clothes.** I had verified the
 > hint reached six biome tables and generalised to "the table the template names". The thing being
@@ -2139,7 +2139,7 @@ to the hint — only to my model of it.
 
 The tell was there and I nearly walked past it. Running the finished content, `template_hints` came
 back `None` for both of my targets. My first reading was "these aren't template-referenced tables,
-so the check correctly has no opinion" — which is exactly what a silent skip looks like from the
+so the check correctly has no opinion", which is exactly what a silent skip looks like from the
 inside. What made me look again was that it *should* have had an opinion: the ruins templates
 obviously place vegetation, so a vegetation table having no placement route was a contradiction, not
 an exemption.
@@ -2151,13 +2151,13 @@ skip; none of them asserted that the *set of things skipped* was correct. Wideni
 
 There is a second, cheaper lesson. **The fix landed because content was written against it within
 the hour.** Tooling merged with no consumer is tooling nobody has proven. If a check is built ahead
-of the content it guards — which is the right order — the content is still the test.
+of the content it guards, which is the right order, the content is still the test.
 
 ## The same blind spot, in a second check that did not inherit the fix
 
 #544 taught `scatter_quantity` to follow a `<table>` reference into a table this fork writes,
 because vanilla's overgrowth idiom is a sub-table and a `Vixy_` copy of it would otherwise measure
-as nothing. I wrote that resolution, tested it, documented it — and did not apply it to
+as nothing. I wrote that resolution, tested it, documented it, and did not apply it to
 `check_placement_hint`, which keys on the same merge blocks and had the same hole.
 
 The result: **all three of this fork's patch tables were unguarded at once.** Stripping the hint from
@@ -2181,7 +2181,7 @@ instance in a string literal and silently stopped covering the file when a secon
 
 - `check_docs.py`'s `WORD_NUMBERS` stopped at `twenty`, and the capture groups stopped at `\w`. The
   mod reached its twenty-first option, three documents spelled it *"Twenty-one"*, and the check
-  failed pointing at `one` — the wrong figure, with a message about an unknown number rather than a
+  failed pointing at `one`, the wrong figure, with a message about an unknown number rather than a
   stale count (#605).
 - `naming-option-coverage` compared each namestyle against the literal `"Qudish"` and skipped
   everything else. It had been correct for as long as Qudish was the only namestyle this fork
@@ -2197,7 +2197,7 @@ map, and reporting an entry the map has that the data does not, costs a few line
 expiry.
 
 **What to do instead.** After fixing a resolution bug, grep for the other readers of the same
-structure before closing it — here, everything that iterates `population` and filters
+structure before closing it. Here, everything that iterates `population` and filters
 `Load == "Merge"`. And test the *negative*: a check that passes on correct content proves nothing
 until it has been seen to fail on incorrect content. Stripping the attribute and re-running took ten
 seconds and is the only reason this was found before release rather than after.
@@ -2219,11 +2219,11 @@ for (int i = 0; i < tinkerData.Cost.Length; i++)
 tinkerData.Tier = part.GetParameter("BuildTier", num);
 ```
 
-That tier is the whole skill gate, in `DataDisk.GetRequiredSkill` — `Tinker1` at 3 or below,
-`Tinker2` at 6 or below, `Tinker3` above — and it weights disk placement through
+That tier is the whole skill gate, in `DataDisk.GetRequiredSkill`: `Tinker1` at 3 or below,
+`Tinker2` at 6 or below, `Tinker3` above, and it weights disk placement through
 `DataDisk.GetDataScore`. `BuildTier` is a real public field (`public int BuildTier = 1;`) that
 **vanilla writes nowhere: zero occurrences against 332 `TinkerItem` records.** It is the lever for
-decoupling what a recipe costs from when it unlocks, and this fork's effect shells use it —
+decoupling what a recipe costs from when it unlocks, and this fork's effect shells use it.
 `Bits="001" BuildTier="4"` puts them behind Tinker 2 on materials that alone would score tier 1.
 
 **The digits are not bits, and they are redrawn every world.** A digit is a *level*, and
@@ -2236,7 +2236,7 @@ extra bit, looping with a 10% continuation:
 while ((num > 0) & flag) { num--; num2++; if (random.Next(0, 101) <= 90) flag = false; }
 ```
 
-**That path only ever splits downward** — one level-2 bit becomes two level-1s, then three level-0s.
+**That path only ever splits downward**: one level-2 bit becomes two level-1s, then three level-0s.
 Nothing anywhere combines upward into a higher tier, whatever the Steam threads say. The official
 wiki's *Bits* page has this exactly right ("replace one or more of their advanced bits with two bits
 of previous tiers... remain the same for the entire game"); it was secondhand advice that had it
@@ -2244,7 +2244,7 @@ backwards.
 
 **`Bits` is a property, not the attribute.** Its getter returns the *resolved* cost out of
 `BitCostMap`; the setter files what XML wrote into `BitSpecMap`. So the field never holds the string
-in the blueprint, and `TinkerItem.Initialize`'s unrecognised-bit warning never fires on a digit — by
+in the blueprint, and `TinkerItem.Initialize`'s unrecognised-bit warning never fires on a digit, because
 the time it reads `Bits`, the digits are already letters.
 
 **The letters in XML are not the letters the game shows you.** This is the one that will bite
@@ -2258,7 +2258,7 @@ somebody. `BitType.TranslateBit` remaps every scrap character on the way to the 
 | `C` | **scrap electronics** | D | `<D>` |
 
 `B` and `C` are valid in both alphabets and mean different things in each. Write `Bits="B"` after
-reading the wiki's `<B>` and you have asked for scrap metal while intending scrap crystal — and
+reading the wiki's `<B>` and you have asked for scrap metal while intending scrap crystal, and
 nothing warns, because `B` *is* a real bit. The ten `Bits="BC"` records in
 `mod/ObjectBlueprints/Ammo.xml` are Mura's, and they are safely inside the commented-out block from
 #146, but they are what this trap looks like in the wild. Use digits unless there is a reason not to.
@@ -2272,7 +2272,7 @@ rule. Read `LoadBlueprint` in the assembly before trusting any account of it, th
 
 One last distinction, because the wiki prints both in the same infobox and they routinely disagree:
 **an item's `Tier` is not its recipe's tier.** A nuclear cell is item tier 7 with `<006>`, which is
-recipe tier 6, which is Tinker II — not the Tinker III its item tier would suggest.
+recipe tier 6, which is Tinker II, not the Tinker III its item tier would suggest.
 
 ## Before writing a name register, find out who would ever call for a name
 
@@ -2298,7 +2298,7 @@ those that declare it:
 | cragmensch | 6 | none | no dialogue anywhere to derive from |
 | urshiib | 2 | none | 18 of 20 are hand-named Barathrumites |
 | slynth | 1 | none | the best anchor in the set, and almost nobody to use it |
-| baetyl | 0 | none | `InorganicObject` — a stone idol, not a people |
+| baetyl | 0 | none | `InorganicObject`, a stone idol rather than a people |
 
 **Slynth is the one to remember.** It has 235 conversation lines, a named leader, and a speech
 register nobody would have to invent. Exactly one blueprint would ever draw from it. That is
@@ -2306,11 +2306,11 @@ register nobody would have to invent. Exactly one blueprint would ever draw from
 a pool that draws nothing, but a pool nothing draws from.
 
 **Then check whether the register already exists under a scope that does not reach.** Vanilla has a
-`Naphtaali` namestyle — 22 prefixes, 21 infixes, 15 postfixes of Semitic register. The Naphtaali
+`Naphtaali` namestyle: 22 prefixes, 21 infixes, 15 postfixes of Semitic register. The Naphtaali
 *are* woodsprogs; `BaseNaphtaali` inherits `BaseWoodsprog`. What vanilla never wrote is a `Species`
 scope, so a woodsprog outside the tribe fell through to Qudish while one inside it was named
-correctly. Vanilla's own shape for a people with a faction is all three scopes — Snapjaw carries
-Faction 100, Species 50, Culture 50 — and Naphtaali stops at two.
+correctly. Vanilla's own shape for a people with a faction is all three scopes, and Snapjaw carries
+Faction 100, Species 50, Culture 50, while Naphtaali stops at two.
 
 So the fix was **one scope, and no syllables at all**:
 
@@ -2333,7 +2333,7 @@ Two things that made the difference, both cheap:
   `Base="Naphtaali"` delegates through `NameStyle.Generate` and avoids merging onto a vanilla record
   entirely, which is charter rule 1's preference. But `tools/naming_harness.py` records `style.base`
   and never follows it, so the fragment generated empty strings. That is a limitation of the harness,
-  not of the game — and an unprovable change is not a shippable one, so the scope merge won.
+  not of the game, and an unprovable change is not a shippable one, so the scope merge won.
 - **Byte-identical output is the rule 1 proof.** `Faction=Naphtaali` at a fixed seed generates the
   same names before and after, which says the pools were added to and not replaced. Cheaper and more
   convincing than reading the loader again.
@@ -2341,8 +2341,8 @@ Two things that made the difference, both cheap:
 ## `public` is an access modifier, not an extension point
 
 #589 was planned as `Vixy_Fangs : Horns`, and the reasoning was sound. `Horns.RegrowHorns` is
-variant-general — it reads the variant blueprint's `MeleeWeapon Slot`, finds that body part, creates
-the object and equips it — so a fangs mutation could inherit the whole anatomy and regrowth machinery
+variant-general: it reads the variant blueprint's `MeleeWeapon Slot`, finds that body part, creates
+the object and equips it, so a fangs mutation could inherit the whole anatomy and regrowth machinery
 and override only the four values that differ. Ten lines instead of sixty.
 
 `Horns` declares all four in members that cannot be overridden:
@@ -2358,12 +2358,12 @@ public override bool HandleEvent(RegenerateDefaultEquipmentEvent E)  // virtual 
 
 The three virtual methods are all reachable, and every one of them calls the non-virtual
 `RegrowHorns`, which sets `MaxStrengthBonus = 100`, `BaseDamage = GetBaseDamage(Level)`,
-`AV = GetAV(Level)` and force-equips the result — which is every one of the four things the subclass
+`AV = GetAV(Level)` and force-equips the result, which is every one of the four things the subclass
 existed to change. A subclass can override `ChangeLevel`, but `base.ChangeLevel(...)` runs the
 parent's version, and C# has no `base.base`. No arrangement of overrides gets past it.
 
 > **Before planning a subclass of a game type, read the modifiers on the members you intend to
-> change — and on the ones that call them.** A class is extensible where it is virtual, not where it
+> change, and on the ones that call them.** A class is extensible where it is virtual, not where it
 > is public, and the second list is usually much shorter than the first.
 
 One command answers it:
@@ -2383,14 +2383,14 @@ the modifier on what you plan to inherit, not only on what you plan to replace.*
 
 **The same read named the right parent.** `Beak` derives from `BaseDefaultEquipmentMutation` and does
 all its work in `OnRegenerateDefaultEquipment`, which is virtual and is the only place it writes
-anything — Face slot, `Part.DefaultBehavior` instead of force-equip, its own damage. That is the
+anything: Face slot, `Part.DefaultBehavior` instead of force-equip, its own damage. That is the
 pattern #589 wanted in the first place, arrived at from the other direction. So *"which of these can
 I extend"* produced a better design than *"which of these is nearest"*, and it is worth asking in
 that order. The 36 `ModImprovedMutationBase<T>` stubs in this fork work precisely because that base
 was written to be extended; a vanilla gameplay class carries no such promise.
 
 **And the rule has a positive form, which #190 found.** `HeroMaker.MakeHero` takes
-`string SpecialType = "Hero"` and **nothing branches on it anywhere in the method** — it is passed
+`string SpecialType = "Hero"` and **nothing branches on it anywhere in the method**; it is passed
 unexamined to five `NameMaker` / `GiveProperName` calls, each with `SpecialFaildown: true`, so it
 resolves as a scope dimension in `Naming.xml` and degrades gracefully when the scope is unrecognised.
 
@@ -2400,7 +2400,7 @@ resolves as a scope dimension in `Naming.xml` and degrades gracefully when the s
 > is what makes a parameter genuinely open.
 
 It is also a cost estimate. Because `SpecialType` is never examined, adding a `"Champion"` hero kind
-is a data addition to `Naming.xml` rather than code — which is most of why the difficulty document's
+is a data addition to `Naming.xml` rather than code, which is most of why the difficulty document's
 ranking of A3 as *"most work"* was wrong (#719).
 
 ## A virtual method that ends in `base` is not an extension point either
@@ -2409,7 +2409,7 @@ The entry above settles the easy half: a member that is not virtual cannot be ov
 the modifiers answers it in one command. #570 hit the half that survives that check.
 
 `GiveArtifact.HandleEvent(EnterElementEvent)` **is** virtual. It is also unusable as a parent, and for
-a reason the modifiers do not show — its last line:
+a reason the modifiers do not show, in its last line:
 
 ```csharp
 public override bool HandleEvent(EnterElementEvent E)
@@ -2420,7 +2420,7 @@ public override bool HandleEvent(EnterElementEvent E)
 ```
 
 A subclass wanting to filter that picker must override the method and do its own picking. Then it
-needs the conversation advanced, which is what vanilla's final line does — but from the subclass,
+needs the conversation advanced, which is what vanilla's final line does, but from the subclass,
 `base.HandleEvent(E)` reaches `GiveArtifact`, not `IConversationPart`, and re-runs the entire picker a
 second time. C# has no `base.base`, so the tail call vanilla makes is the one call the subclass cannot
 make.
@@ -2436,7 +2436,7 @@ public virtual bool HandleEvent(InventoryActionEvent E)
 }
 ```
 
-A no-op. The subclass can override, do its own work, `return true`, and lose nothing — it has
+A no-op. The subclass can override, do its own work, `return true`, and lose nothing, because it has
 replicated the grandparent exactly.
 
 > **After confirming a method is virtual, read what its own `base` call reaches.** If the grandparent
@@ -2449,7 +2449,7 @@ classes with identical modifiers answered oppositely, one issue apart.
 
 The fallback when the answer is no: derive from the grandparent instead and reuse the parent's static
 helpers. `Vixy_GiveArtifact` would extend `IConversationPart` directly while calling
-`GiveArtifact.IsArtifact`, which is `public static` — so the definition of *artifact* still comes from
+`GiveArtifact.IsArtifact`, which is `public static`, so the definition of *artifact* still comes from
 vanilla and cannot drift, even though none of vanilla's code is inherited.
 
 ## A guard that hands back the cell it was avoiding
@@ -2464,7 +2464,7 @@ else if (gameObject.IsCombatObject() && Z.GetCell(location2D).HasCombatObject())
 ```
 
 **The second guard does nothing at all.** `getClosestPassableCell()` collects every `IsPassable()`
-cell in the zone and sorts them by distance *from the cell it was called on* — and a cell is at
+cell in the zone and sorts them by distance *from the cell it was called on*, and a cell is at
 distance 0 from itself. So it returns that same cell, unless the cell is impassable. Creatures are
 `Physics Solid="false"`, so an occupied cell is passable, so the object is added exactly where the
 branch exists to prevent. Two crocs, one tile, which is how #613 was reported.
@@ -2472,8 +2472,8 @@ branch exists to prevent. Two crocs, one tile, which is how #613 was reported.
 > **A fallback that searches "the closest X" will find the thing it started from, whenever the thing
 > it started from is an X.** The guard reads as *move it somewhere else*; it is written as *find the
 > nearest passable cell*, and the current cell qualifies. This is the same failure as `IsEmpty()` in
-> the entry above — a helper whose name describes the intent while its body describes something
-> broader — and it is worth noting that the two are in the same method, forty lines apart.
+> the entry above, a helper whose name describes the intent while its body describes something
+> broader, and it is worth noting that the two are in the same method, forty lines apart.
 
 **None of it is this fork's to fix.** Reaching that line means Harmony or a replacement zone
 builder, and charter rule 5 refuses the first while the second is a large new capability for
@@ -2490,27 +2490,27 @@ at the first guard in a method that has two. **Reading one guard tells you what 
 ## Vanilla builds mechanisms it never wires up, and the unused half is usually complete
 
 Before designing a system, check whether Freehold already shipped one and left the data end
-unconnected. It is not an occasional windfall — it is a habit, and looking first is cheap enough to be
+unconnected. It is not an occasional windfall; it is a habit, and looking first is cheap enough to be
 a first move rather than a lucky one. Four verified cases, each failing in a different place:
 
 **Data written that nothing parses.** `MerchantPersonalItem` appears on two `<inventoryobject>` nodes
 in vanilla's `Creatures.xml`. The string appears **nowhere in the assembly**, and
-`ParseInventoryObjectNode` reads a closed list of ten attributes that does not include it — so the
+`ParseInventoryObjectNode` reads a closed list of ten attributes that does not include it, so the
 attribute is set, saved in the file, and dropped on load.
 
 **A flag set at one end and read at neither.** `ActivatedAbilityEntry.Visible` is a public property
-over `Flags` bit 2. It is serialised, compared in `SameAs`, and `Phasing` actively sets it — and
+over `Flags` bit 2. It is serialised, compared in `SameAs`, and `Phasing` actively sets it, and
 nothing displays it. `Sidebar`, `AbilityManager`, `AbilityNode` and `ActivatedAbilities` contain no
 reference. The mutation is wired to a switch connected to nothing.
 
 **A whole feature built and hidden.** `HiddenMutations.xml`, a file sitting beside `Mutations.xml`,
-declares **50 complete mutations** — real classes, real art, real costs — under
+declares **50 complete mutations**, with real classes, real art and real costs, under
 `<mutations Hidden="true" ExcludeFromPool="true">`. None reaches character creation or the random
 mutation pool. `Heightened Smell` among them is a finished mutation with terrain-attenuated detection
 that this fork wanted and was about to write from scratch (#593).
 
 **A part finished down to its player-facing text, on no blueprint.** `TrashOracle` exists to adjust
-Trash Divining's chance — it guards on `E.Skill is Customs_TrashDivining`, carries `Bonus` and
+Trash Divining's chance: it guards on `E.Skill is Customs_TrashDivining`, carries `Bonus` and
 `Magnitude`, and handles `GetShortDescriptionEvent` to write *"Chance to reveal secrets via Trash
 Divining increased by 5%"* onto whatever item bears it. **No blueprint in the game carries it**, and
 nothing constructs one. This is the most finished of the four: somebody wrote the rules text a player
@@ -2522,11 +2522,11 @@ patching `Garbage`, and its guard clause was copied verbatim as the intended idi
 > design problem into a wiring problem.
 
 **The counterweight matters more than the instruction, and the third case demonstrates it.**
-`HiddenMutations.xml` is not an oversight — `Hidden="true"` is *typed out*. Somebody decided those
+`HiddenMutations.xml` is not an oversight, because `Hidden="true"` is *typed out*. Somebody decided those
 mutations should not be selectable. **Unused is evidence that something was considered, not that it
 was forgotten**, and the audit-first caution in #172 and #154 applies before assuming otherwise.
 Finding the mechanism tells you the thing is *possible*; it says nothing about whether it is *wanted*.
-That is why exposing one now takes a two-part test rather than a shrug — `docs/DESIGN_balance.md`
+That is why exposing one now takes a two-part test rather than a shrug, and `docs/DESIGN_balance.md`
 §10.4.
 
 **An empty grep is the weakest evidence in this file, and it is the evidence this pattern invites.**
@@ -2537,7 +2537,7 @@ its absence from the assembly but by `ParseInventoryObjectNode`'s attribute list
 enumerable**. Checking who reads a thing beats failing to find who reads it.
 
 Both halves of this bit while writing this entry. The `FLAG_VISIBLE` row above came in as *"0
-readers"*, which a grep appeared to confirm and which was wrong — the constant is unreferenced because
+readers"*, which a grep appeared to confirm and which was wrong: the constant is unreferenced because
 the code uses the literal `2`, while the flag behind it is read, written and compared. The row is
 stronger once corrected, and it would have shipped false.
 
@@ -2550,7 +2550,7 @@ back.
 
 That is easy to know and easy to forget one step later, while designing the curve rather than the
 call. "Halve it each time" is the obvious shape for diminishing returns and it is what #605 proposed
-in writing. From a base of 5 it produces **5, 2, 1, 0** — integer division truncating twice and then
+in writing. From a base of 5 it produces **5, 2, 1, 0**, integer division truncating twice and then
 reaching zero, which does not taper a bought skill so much as switch it off in any zone dense enough
 to matter. The intended 5, 2.5, 1.25 cannot be said at all.
 
@@ -2564,20 +2564,20 @@ the engine actually offers.
 
 The general shape is worth carrying past this instance: a curve is a claim about resolution as well
 as about shape, and the resolution belongs to the engine rather than to the design. Check what the
-consumer can represent *before* choosing how the value falls off — `ConstrainToPermillage` exists on
+consumer can represent *before* choosing how the value falls off, and `ConstrainToPermillage` exists on
 the same call for exactly this reason, and a caller that used it would have had ten times the room.
 
 ## A mod's reach ends where nothing in XML names the object
 
 Charter rule 5 rules out Harmony and reflection, which makes *"can a mod reach this at all"* a real
 question with a mechanical answer: **something in `Base/` has to name the type.** A blueprint part, a
-mutation `Class`, a conversation part, a zone builder — all substitutable, because XML names them and
+mutation `Class`, a conversation part, a zone builder, all substitutable, because XML names them and
 the game resolves that name. Nothing else is.
 
 Two issues hit the wall from opposite directions.
 
 **#585** wanted to dim older log messages. The markup work was done, the crux was settled, and the
-approach worked — on the classic sidebar and on the Modern full-log screen. The Modern UI's *live*
+approach worked, on the classic sidebar and on the Modern full-log screen. The Modern UI's *live*
 log converts each message to RTF once on arrival and keeps it in `protected List<T> _scrollListData`
 on a Unity component, behind a singleton. No XML anywhere names it. The only way in is reflection.
 
@@ -2585,7 +2585,7 @@ on a Unity component, behind a singleton. No XML anywhere names it. The only way
 `TradeScreen` is `SingletonWindowBase<TradeScreen>` and the legacy `TradeUI` is
 `IWantsTextConsoleInit`. Neither appears in any `Base/` XML file.
 
-In both cases the unreachable thing was the *widest* part of the issue — selling is where a marked
+In both cases the unreachable thing was the *widest* part of the issue: selling is where a marked
 item is most at risk, and the live log is the log most players read.
 
 > **Ask whether the call site is named in XML before designing anything that has to reach it.** The
@@ -2594,7 +2594,7 @@ item is most at risk, and the live log is the log most players read.
 
 The order is the whole lesson. In #570 the question came first and cost nothing; in #585 the design
 was nearly complete when the wall turned up. Both issues were worth filing and the findings were worth
-keeping — but one of them spent its budget before learning the thing that decided it.
+keeping, but one of them spent its budget before learning the thing that decided it.
 
 **A useful corollary: reachability is not all-or-nothing, and the split is the finding.** #570 came
 back with `GiveArtifact` and `RandomAltarBaetyl` reachable and both trade paths not, which turned a
@@ -2613,7 +2613,7 @@ idea. By the time it reached the tracker it had become a description of my own g
 Vanilla already handles it. `LiquidVolume.HandleEvent(AutoexploreObjectEvent)` refuses on
 `!ParentObject.IsOwned()`, so an owned container never receives the `CollectLiquid` command.
 `Village.cs` sets `Physics.Owner` to the village faction on every object tagged `Furniture` or
-`Vessel` — and the next three lines fill those same vessels with the village's signature liquids, so
+`Vessel`, and the next three lines fill those same vessels with the village's signature liquids, so
 the pass is aimed at exactly the object the issue was about. Preset settlements carry ownership
 hand-authored; Joppa's map has 28 objects owned by Joppa and its one vase among them.
 
@@ -2630,10 +2630,10 @@ village* however it was extended.
 **The tell was in the issue from the start.** A behaviour described in the first person that nobody
 has actually seen reads exactly like one that was, and nothing in the text marks the difference. This
 one survived to the point of an assembly investigation before *"wait, when did this happen to me"*
-got asked — and the answer, once asked, took one sentence.
+got asked, and the answer, once asked, took one sentence.
 
 Worth separating from a related and healthier case: an issue can be *filed* from a third-party
-observation deliberately and usefully — #613's croc stacking arrived as a bug report and was real. The
+observation deliberately and usefully, and #613's croc stacking arrived as a bug report and was real. The
 failure here is not the source, it is the source going unrecorded until the premise had already been
 spent on.
 
@@ -2652,7 +2652,7 @@ The Issachari will not talk to you. `Factions.xml` gives them `InitialPlayerRepu
 lives inside a conversation is worth nothing where there is no conversation.
 
 Nobody handed me that premise. I generated it while arguing for work I wanted to do, and it was wrong
-in the direction that made the case look stronger — which is the direction a premise of one's own
+in the direction that made the case look stronger, which is the direction a premise of one's own
 invention tends to fail in.
 
 **What makes it worth adding rather than filing under the same heading.** The surrounding
@@ -2661,20 +2661,20 @@ earlier overreach about villages naming their inhabitants, `GivesRep` checked an
 one of those was a question I thought to ask. *"Will they talk to me"* was not, and it was upstream of
 all of them. One line in `Factions.xml`, in a file opened that same day for something else.
 
-> **A statement about what a player will see is a claim, whoever made it.** It needs a source — a
-> play session, or a line of data read for that purpose — and "it follows from the other things I
+> **A statement about what a player will see is a claim, whoever made it.** It needs a source: a
+> play session, or a line of data read for that purpose, and "it follows from the other things I
 > just verified" is not one. Being the author of a premise is not evidence for it.
 
 The practical form: when an argument for building something rests on a player doing X, find the thing
 in the data that permits X before the argument is used. Reputation, hostility, gating flags and
-prerequisites are all cheap to read and all sit upstream of the interesting mechanics — which is
+prerequisites are all cheap to read and all sit upstream of the interesting mechanics, which is
 exactly why they get skipped.
 
 ## Two liquid containers never stack, and no blueprint says so
 
 `LiquidVolume.SameAs(IPart)` is `return false;`, unconditionally. `GameObject.SameAs` walks
 `PartsList` and fails on the first part that says no, so **no two objects carrying a `LiquidVolume`
-are ever `SameAs` each other** — two identical *empty* waterskins included. The only bypass is
+are ever `SameAs` each other**, two identical *empty* waterskins included. The only bypass is
 `Stacker`'s `AlwaysStack` tag with a matching blueprint, and across the whole of `ObjectBlueprints/`
 exactly five objects carry it: `Lead Slug`, `BaseArrow`, `HE Missile`, `Shotgun Shell`, `Bandage`.
 No container. Belt and braces, `LiquidVolume.Attach()` sets
@@ -2693,7 +2693,7 @@ The premise of #561 was that water scattered across five waterskins is worth con
 not, for currency: `GetFreeDramsEvent` sums `Volume` across every unsealed container holding the pure
 liquid, `UseDramsEvent` drains them in sequence, and `TradeScreen`, `PlayerStatusBar` and
 `WaterRitualBegin` all read `GetFreeDrams()`. **12 + 40 + 3 + 61 + 8 drams already spends exactly like
-124.** `GiveDrams` is the same story from the other side — it requires `IsPureLiquid(Liquid) ||
+124.** `GiveDrams` is the same story from the other side: it requires `IsPureLiquid(Liquid) ||
 IsEmpty()` before accepting a dram, so vanilla has never been able to contaminate a container by
 paying you.
 
@@ -2707,7 +2707,7 @@ honey at all. The feature is worth building for the container it frees, not the 
 ## A part on the actor can add an inventory action to somebody else's object
 
 `GetInventoryActionsEvent` and `GetInventoryActionsAlwaysEvent` are both sent to the **object** only.
-That makes a blueprint merge look like the only way to put an action on an item — and blueprint parts
+That makes a blueprint merge look like the only way to put an action on an item, and blueprint parts
 are baked in at creation, so every object already in a save would silently never get it.
 
 `OwnerGetInventoryActionsEvent` is the way past. `EquipmentAPI` fires it on the **actor**, alongside
@@ -2725,7 +2725,7 @@ blueprints, a `Medication` part filter found 2, and `Category="Tonics"` independ
 issue went up with a caveat saying nobody should act on it.
 
 The filter was counting blueprints that write `<part Name="Medication" />` in their own record.
-Tonics do not — they inherit it from a base. Resolving `Inherits=` first:
+Tonics do not; they inherit it from a base. Resolving `Inherits=` first:
 
 | Filter | Declared only | Resolved |
 |---|---|---|
@@ -2734,7 +2734,7 @@ Tonics do not — they inherit it from a base. Resolving `Inherits=` first:
 | `Category="Tonics"` | 13 | **13** |
 
 Category and part agree on all 13, in both directions. **The category was trustworthy the whole time
-and the audit method was what was wrong** — worth separating from #172's `Clothes` false positive,
+and the audit method was what was wrong**, worth separating from #172's `Clothes` false positive,
 which really was a filing artefact.
 
 > **A declared-part count is a lower bound**, and for anything with a `Base*` ancestor it can be off
@@ -2748,7 +2748,7 @@ count returned zero.
 
 `PhysicalObject`, `InorganicObject` and `Item` each carry
 `<tag Name="BaseObject" Value="*noinherit" />`. **`*noinherit` means the tag exists on the declaring
-blueprint and does not pass to children** — so inheriting it naively marks all 4,642 concrete objects
+blueprint and does not pass to children**, so inheriting it naively marks all 4,642 concrete objects
 as bases. **`*delete` means remove this inherited tag**; `Bandage` uses it to drop `Breakable`.
 Across `ObjectBlueprints/` there are **957** `*noinherit` and **147** `*delete`.
 
@@ -2757,23 +2757,23 @@ Across `ObjectBlueprints/` there are **957** `*noinherit` and **147** `*delete`.
 - A resolved tag set that honours neither sentinel is wrong in both directions: it invents tags that
   were never inherited and keeps tags that were explicitly deleted.
 
-> The failure is loud if you are lucky — every count is zero — and silent if you are not, as a tag
+> The failure is loud if you are lucky, when every count is zero, and silent if you are not, as a tag
 > filter quietly over-matches. Together with the two entries above and the `parse(lenient=True)` note,
 > this is one sequence: **parse, resolve `Inherits`, honour the sentinels, then count.**
 
 ## Qud has no stealth system, so nothing can interact with one
 
 Worth knowing before a design proposes light and shadow, or sneaking, and assumes there is something
-to hook into. **There is no `Stealth` type anywhere in the assembly** — not a part, not a skill, not
+to hook into. **There is no `Stealth` type anywhere in the assembly**: not a part, not a skill, not
 an effect. Across all 7,073 types nothing matches.
 
 Concealment is two unrelated things:
 
-- **`Hidden`** — hidden *objects*: traps, secret doors, stashes. Detection is
+- **`Hidden`** covers hidden *objects*: traps, secret doors, stashes. Detection is
   `Bonus + Random(1, Searcher.Intelligence) >= Difficulty`, fired from `Physics` as a `"Searched"`
-  event. **Intelligence and nothing else** — the same roll #621 records upstream, where a default
+  event. **Intelligence and nothing else**, the same roll #621 records upstream, where a default
   `Difficulty` of 15 means Intelligence 14 or below can never find a default hidden object.
-- **Camouflage** — `FoliageCamouflage` and `UrbanCamouflage` behind `ICamouflage`, plus
+- **Camouflage** covers `FoliageCamouflage` and `UrbanCamouflage` behind `ICamouflage`, plus
   `ConcealedHologramMaterial`, which conceals but is *not* an `ICamouflage`. **None of the three
   contains a single light reference.**
 
@@ -2788,7 +2788,7 @@ if (!Found && E.GetParameter("RenderEvent") is RenderEvent renderEvent
 }
 ```
 
-That is penetrating radar **defeating** concealment — a vision mode revealing what is hidden. It runs
+That is penetrating radar **defeating** concealment: a vision mode revealing what is hidden. It runs
 in the opposite direction from *"darkness helps you hide"*, and ambient light never enters it.
 
 > **Ambient light has no bearing on being seen or hiding, in either direction.** Darkness does not
@@ -2802,7 +2802,7 @@ combat penalty, no AI penalty.
 ## The `Tier` tag is what an item costs to make, not when a player meets it
 
 A third trap in the same family as *"a part a blueprint inherits is not a part it declares"* and the
-tag sentinels. The tag is present, numeric, and read correctly — and the conclusion is still wrong,
+tag sentinels. The tag is present, numeric, and read correctly, and the conclusion is still wrong,
 because the **population tables** decide when an item is encountered and they are an independent fact.
 
 #578 was filed on *"the face slot is dead until tier 3"*, measured off the `Tier` tag. The tables
@@ -2810,42 +2810,42 @@ disagree:
 
 | item | `Tier` tag | drops from | draw chance |
 |---|---|---|---|
-| Vinewood Sap Mask | 3 | `Armor 1C` — tier-1 **common** | 3.5% |
-| Goggles | 2 | `Armor 1R` — tier-1 **rare** | 10.0% |
-| Issachari Sun Veil | 1 | `Armor 2C`, `Armor 3C` — **no** tier-1 table | 9.1% |
+| Vinewood Sap Mask | 3 | `Armor 1C`, tier-1 **common** | 3.5% |
+| Goggles | 2 | `Armor 1R`, tier-1 **rare** | 10.0% |
+| Issachari Sun Veil | 1 | `Armor 2C`, `Armor 3C`, so **no** tier-1 table | 9.1% |
 
 Both of the slot's signature utilities are already in the tier-1 tables, and the item *tagged* tier 1
 is the one that never appears there. The gap the issue was named for was substantially not real.
 
 **It is not a one-off, and the shape differs by table kind.** Across every
 `Armor|Melee Weapon|Missile Weapon <N><C|R>` table, 238 entries carry a numeric `Tier` tag and **85 of
-them — 36% — disagree with their table's tier**:
+them, 36%, disagree with their table's tier**:
 
 | table kind | n | agrees with table tier | spread |
 |---|---|---|---|
 | `NC` (common) | 81 | **86%** | −2 … +2 |
 | `NR` (rare) | 157 | **53%** | −3 … +2 |
 
-> **`Armor NC` is a fair proxy for tier N. `Armor NR` is not** — a rare table agrees with its own
+> **`Armor NC` is a fair proxy for tier N. `Armor NR` is not**, because a rare table agrees with its own
 > number barely half the time and stocks items up to two tiers above it. `Strength Exo`, `Thermo Cask`
 > and `Gas Tumbler` are all `Tier` 6 in `Armor 4R`; five `Tier` 7 items sit in `Armor 5R`.
 
-**Not the same as the `Tier`-fallback entry above.** That one — *"a property the game derives is not
-the tag you can grep for"* — is about reading the field *correctly*, since `Tier` falls back to
+**Not the same as the `Tier`-fallback entry above.** That one, *"a property the game derives is not
+the tag you can grep for"*, is about reading the field *correctly*, since `Tier` falls back to
 `Level / 5 + 1` when absent. Here the field is read correctly and the inference from it is what
 fails. The two are easy to conflate and only one is about grepping the right thing.
 
-## A mechanism existing is not a mechanism working — check the values moving through it
+## A mechanism existing is not a mechanism working, so check the values moving through it
 
 I made this mistake four times in one session, in four disguises. The fourth is last because
-it got furthest — it survived into a recommendation, and Grey disproved it herself:
+it got furthest: it survived into a recommendation, and Grey disproved it herself:
 
 | where | what I confirmed | what I skipped | what it cost |
 |---|---|---|---|
-| #591 | `Quadruped` has no `Hand` or `Body` slot, so a saltback cannot use tier-1 gear | what is actually *in* `Armor 1C` — about 28% of it (caps, moccasins, masks, shawls) equips fine on a quadruped | called a harmless quirk "clearly wrong" and nearly filed an upstream report |
-| #635 | `IBaseJournalEntry.Attributes` exists, all three note kinds populate it, `TryGetAttribute` reads it | what the *values* are — `SecretAttributes` is on 7 blueprints, and the fallback yields 197 near-unique strings | recommended attribute-scoping in a posted comment, then had to withdraw it |
-| #568 | `Temporary.CarryOver` exists, with twelve precedents and exactly the right semantics | the *ordering* in `PerformPreserve` — `go.Obliterate()` runs before the product is created, so there is nothing to carry over from | nearly published "propagation, not refusal" as settled, when propagation is unreachable from a mod |
-| #591 *(again)* | the arrow ladder runs `StrengthPenetration` 2 → 9, Wooden to Zetachrome | that `Stat.RollDamagePenetrations` takes it as **`MaxBonus`**, not a bonus — and the bonus itself exists only when the *bow* declares `ProjectilePenetrationStat`, which `Short Bow` does not | recommended "Short Bow + Steel Arrows", a kit whose penetration is **0** with every arrow in the game |
+| #591 | `Quadruped` has no `Hand` or `Body` slot, so a saltback cannot use tier-1 gear | what is actually *in* `Armor 1C`, about 28% of it (caps, moccasins, masks, shawls) equips fine on a quadruped | called a harmless quirk "clearly wrong" and nearly filed an upstream report |
+| #635 | `IBaseJournalEntry.Attributes` exists, all three note kinds populate it, `TryGetAttribute` reads it | what the *values* are, with `SecretAttributes` is on 7 blueprints, and the fallback yields 197 near-unique strings | recommended attribute-scoping in a posted comment, then had to withdraw it |
+| #568 | `Temporary.CarryOver` exists, with twelve precedents and exactly the right semantics | the *ordering* in `PerformPreserve`, where `go.Obliterate()` runs before the product is created, so there is nothing to carry over from | nearly published "propagation, not refusal" as settled, when propagation is unreachable from a mod |
+| #591 *(again)* | the arrow ladder runs `StrengthPenetration` 2 → 9, Wooden to Zetachrome | that `Stat.RollDamagePenetrations` takes it as **`MaxBonus`**, not a bonus, and the bonus itself exists only when the *bow* declares `ProjectilePenetrationStat`, which `Short Bow` does not | recommended "Short Bow + Steel Arrows", a kit whose penetration is **0** with every arrow in the game |
 
 > **The shape is always the same:** find the mechanism, confirm it is real, and infer from its
 > existence that it does the job. What gets skipped is the data or the ordering flowing through it,
@@ -2853,7 +2853,7 @@ it got furthest — it survived into a recommendation, and Grey disproved it her
 
 This is a sibling of *"count the consumers before you count anything else"* and *"an empty grep is
 only evidence if the grep could have found the thing"*. Those say **check the far end of a
-reference**. This one says **check the values moving through it** — and knowing the first two did not
+reference**. This one says **check the values moving through it**, and knowing the first two did not
 stop me doing this, which is why it is written separately.
 
 ## Check what this fork already did before investigating what vanilla does
@@ -2866,11 +2866,11 @@ went to the decompiled assembly first and found the repo's own answer last:
 | #636 | audited vanilla's shield tiers and derived a −1 offset correcting at fullerite | `docs/STYLEGUIDE.md` §3.2 states the tier→material scale, `mod/ObjectBlueprints/Armor.xml` merges vanilla's steel and carbide armour onto it, and §3.2.1 already describes the same seam as an AV rule. `item-curve` fails CI if it drifts |
 | #605 | recommended the density fix four times, twice in posted comments | `mod/Scripting/Vixy_TrashMemory.cs`, wired in `Vixy_PlayerParts`, documented as `docs/FEATURES.md` §25, in `CHANGELOG.md`, and the issue closed as completed. It shipped in 2.9.0 |
 | #630 | traced turret ammunition through `MagazineAmmoLoader` and got it wrong | the comment at `mod/ObjectBlueprints/Ammo.xml:34` had the answer, ending *"Confirmed in game, not just read."* |
-| #690 | decompiled `RTF.FormatToRTF` to work out why option help text runs off the screen, and drew the wrong conclusion | `CHANGELOG.md` records #271 fixing the identical symptom — *"squashed into a thin box running off the bottom of the screen"* — and already states the number that settles it: vanilla's longest help text is 352 characters |
+| #690 | decompiled `RTF.FormatToRTF` to work out why option help text runs off the screen, and drew the wrong conclusion | `CHANGELOG.md` records #271 fixing the identical symptom, *"squashed into a thin box running off the bottom of the screen"*, and already states the number that settles it: vanilla's longest help text is 352 characters |
 
 > **The fork has already thought about more of vanilla than its own issues assume.** `AGENTS.md` says
 > to verify claims about Qud against the game's own files. That is right, and it is not the first step.
-> The first step is `docs/STYLEGUIDE.md`, `docs/FEATURES.md`, `CHANGELOG.md` and `mod/` — because a
+> The first step is `docs/STYLEGUIDE.md`, `docs/FEATURES.md`, `CHANGELOG.md` and `mod/`, because a
 > question worth filing an issue about is one I have often already answered, and the answer there is
 > both cheaper to find and more likely to be current than anything re-derived from the assembly.
 
@@ -2879,7 +2879,7 @@ would have started in the right place, and two public comments would not have re
 had already shipped.
 
 The fourth row is the one that should sting, because the repository was not merely *consistent* with
-the answer — it had **fixed this exact bug before**, described the symptom in the words the report
+the answer: it had **fixed this exact bug before**, described the symptom in the words the report
 would later use, and written down the measurement that decides it. A `git log -S` or a `grep -i
 "help text" CHANGELOG.md` costs seconds. I spent an afternoon and shipped a regression instead.
 A bug that recurs has a changelog entry; that entry is the cheapest source there is.
@@ -2896,7 +2896,7 @@ zone's `SecretAttributes` tag and its fallback, found **197 near-unique identifi
 `lakehinnom c`, and concluded that nothing describes a zone in a vocabulary the notes could share. The
 measurement was correct. The field was wrong.
 
-`Zone.GetRegion()` → `ZoneManager.GetRegionForZone` reads the **`Terrain` tag** on the same blueprint —
+`Zone.GetRegion()` → `ZoneManager.GetRegionForZone` reads the **`Terrain` tag** on the same blueprint,
 a curated **20-value** vocabulary covering **299 of 318** world-map terrains. Two fields describe the
 same zone; one is an identifier with the serial number filed off, the other is the category. I measured
 the identifier and wrote "Qud's data cannot express this" on the strength of it.
@@ -2905,8 +2905,8 @@ the identifier and wrote "Qud's data cannot express this" on the strength of it.
 > recording *"the data does not support this"*, name the field the feature would actually read and
 > check you measured that one.
 
-(The conclusion survived on a different objection — two of the three note kinds carry no location at
-all — but the reasoning in the thread was wrong for two rounds before anyone noticed.)
+(The conclusion survived on a different objection, that two of the three note kinds carry no location at
+all, but the reasoning in the thread was wrong for two rounds before anyone noticed.)
 
 ## A destructive-looking branch may be unreachable, and the reason can be an argument three frames up
 
@@ -2916,7 +2916,7 @@ side. #630 was filed on that reading: *deploying a turret destroys your weapon f
 It is not a split. The eighth argument to `GameObject.Create` is `ProvideInventory`, and
 `ProcessSpecification` matches a supplied object by blueprint, uses it instead of creating a fresh one,
 and **removes it from the list**. So the list is empty by the time the branch is tested, and the
-`Obliterate` never runs. What guarantees it is `RemoveOne()` in `Tinkering_DeployTurret` — a different
+`Obliterate` never runs. What guarantees it is `RemoveOne()` in `Tinkering_DeployTurret`, a different
 file, three frames up, making `Count == 1` and therefore making consumption certain.
 
 > **Reading the method was not enough.** The answer was in what the caller passed. A branch that looks
@@ -2928,14 +2928,14 @@ enough *into* a mechanism, here it is not reading far enough *out* of one.
 ## A memoised name that is never invalidated, and is not serialised either
 
 `CookingRecipe.GetDisplayName()` builds its string once and caches it in `CachedDisplayName`. Nothing
-in the class ever resets that field, it is **private**, and `Write`/`Read` do not serialise it — they
+in the class ever resets that field, it is **private**, and `Write`/`Read` do not serialise it; they
 cover `Hidden`, `Favorite`, `DisplayName`, `ChefName`, `Components`, `Effects` and `Tile`.
 
 So changing a recipe's `DisplayName` in place **shows the old name for the rest of the session and then
 silently starts working after a save and reload.** That is close to the worst shape a bug can have: it
 looks fixed the next time you sit down, so the report gets closed as unreproducible.
 
-`DeepCopy()` is the legitimate way around it — `Activator.CreateInstance` plus a field-by-field copy
+`DeepCopy()` is the legitimate way around it, using `Activator.CreateInstance` plus a field-by-field copy
 that omits the cache, so the copy renders from scratch. Reaching the private field instead would be
 reflection, which charter rule 5 refuses.
 
@@ -2968,8 +2968,8 @@ The inventory, from the #597 audit: `Nectar_Tonic_Applicator:41`,
 
 Three supporting facts, each of which cost a decompiling pass:
 
-- `MakeTemporaryEvent` is `[GameEvent(Cascade = 271)]` — `CASCADE_ALL` (15) plus
-  `CASCADE_DESIRED_OBJECT` (256) — so a clone's whole pack really is marked.
+- `MakeTemporaryEvent` is `[GameEvent(Cascade = 271)]`, meaning `CASCADE_ALL` (15) plus
+  `CASCADE_DESIRED_OBJECT` (256), so a clone's whole pack really is marked.
 - Non-root objects get `Duration = -1` plus `ExistenceSupport.SupportedBy`, so pack items have no
   clock of their own and expire with their supporter *wherever they have got to*.
 - `Temporary.Duration` is the live counter, decremented in place, so `CarryOver` passes on the
@@ -2992,20 +2992,20 @@ correct form for anything under `CoQ_Data/StreamingAssets/DLC/`.
 ## Two manifest features can be mutually exclusive, and the failure is silence
 
 `GeneralAskName` gates a complete conversation feature, appears nowhere in the game's data, and
-`GetBoolSetting` returns false for a key it cannot find — so a mod is the only thing that could ever
+`GetBoolSetting` returns false for a key it cannot find, so a mod is the only thing that could ever
 switch it on. `LoadGlobalConfig` ends with the call that would let one:
 
 ```csharp
 ModManager.ForEachFile("GlobalConfig.json", delegate(string fileName) { ... });
 ```
 
-That call takes `Recursive`, defaulted to **false**, which matches on `ModFile.RelativeName` — the
+That call takes `Recursive`, defaulted to **false**, which matches on `ModFile.RelativeName`, the
 path relative to the mod root. So the file has to sit at the mod root to be found.
 
 **And this mod has no reachable root.** `ModInfo.InitializeFiles` walks the whole mod only when
 `manifest.json` declares no `Directories`; otherwise it enumerates the declared paths and nothing
 else, so a root file is never registered at all. Declaring the root as a path does not rescue it,
-because the rack de-duplicates by containment — the root contains every other entry, so adding it
+because the rack de-duplicates by containment: the root contains every other entry, so adding it
 removes them all and enumerates everything underneath, including the directory gated behind
 `"Options": "OptionQudExpandedCEJoppaBuilding==Yes"`. Reaching the setting would have cost a shipped
 option its meaning.
@@ -3019,7 +3019,7 @@ Both features are documented. Neither mentions the other. The interaction is vis
 
 **What actually caught it was a check written for something else.** I had already designed the
 feature, written `mod/GlobalConfig.json`, and was on my way to the docs when `validate_mod.py`'s
-`directory-coverage` refused the commit: *"under mod/ but no declared path reaches it — it ships to
+`directory-coverage` refused the commit: *"under mod/ but no declared path reaches it, so it ships to
 subscribers and is never loaded."* That check exists to stop dead weight shipping to subscribers, not
 to catch this; it happened to state the exact fact that mattered.
 
@@ -3030,7 +3030,7 @@ what `GlobalConfig.json` is for. It knows which files the game will read, and th
 
 The workaround, recorded because the shape recurs: when the switch is unreachable, look at whether
 the thing behind it can be declared directly. `AskName`'s choice, response node and part are all
-public and mergeable, so #572 shipped its own choice targeting vanilla's own `TellName` node — more
+public and mergeable, so #572 shipped its own choice targeting vanilla's own `TellName` node, which is more
 code than setting a flag, and it left the Joppa option alone.
 
 ## A decompiled call site tells you what that frame does not do, never what happens instead
@@ -3044,7 +3044,7 @@ the screen. I traced it and found what looked like a clean answer:
   **`BlockWrap` never runs**.
 
 Both of those are true, and I checked both. Then I concluded *therefore the container wraps instead*
-and unwrapped all twenty-one help texts onto one line per paragraph — which is the one shape that
+and unwrapped all twenty-one help texts onto one line per paragraph, which is the one shape that
 guarantees the symptom, because a 400-character line has nothing left to break it.
 
 Nothing I read said the container wraps. I had established that one specific function declines to
@@ -3053,7 +3053,7 @@ evidence was entirely negative and I spent it as though it were positive.
 
 > **Verifying that a function is not responsible is not the same as finding what is.** A call site
 > that hands off to Unity, to a coroutine, to a layout pass, or to anything else outside the assembly
-> ends the trace — it does not continue it. When the next frame is somewhere the decompiler cannot
+> ends the trace; it does not continue it. When the next frame is somewhere the decompiler cannot
 > follow, say *"I do not know what wraps this"* and go measure, because the alternative is an
 > assumption wearing a citation's clothes.
 
@@ -3063,7 +3063,7 @@ way no amount of reading `OptionsRow` can, because it is the game's own working 
 derivation from it. `helptext-shape` now enforces those two numbers.
 
 Related: [`Vanilla builds mechanisms it never wires up`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete)
-is the same organ read the other way round — there, code that looks dead is live; here, a conclusion
+is the same organ read the other way round: there, code that looks dead is live; here, a conclusion
 that looks derived is guessed. And this is the third mechanism in one session that I read out of the
 assembly and had contradicted by a `tools/sync_mod.py --dev` pass, which is the whole argument of
 [`A claim about what a player experiences needs a source, and I am not one`](#a-claim-about-what-a-player-experiences-needs-a-source-and-i-am-not-one).
@@ -3077,13 +3077,13 @@ same direction every time:
 
 | document | claim | what ships |
 |---|---|---|
-| `DESIGN_difficulty_systems.md` §B1 | nothing in the game charges you for time | it does, and the currency is water — `RegenCounter` spends it while you wait (#674) |
-| `DESIGN_difficulty_systems.md` §B3 | Freehold cut survival attrition deliberately | `Stomach` runs a complete water system. `WATER_MINIMUM` is 0, so reaching zero locks out natural healing and then takes 2 hit points on a natural 1 of `1d(Toughness)` per heal tick — on the order of 2 HP per hundred actions, not per action (#705) |
+| `DESIGN_difficulty_systems.md` §B1 | nothing in the game charges you for time | it does, and the currency is water, since `RegenCounter` spends it while you wait (#674) |
+| `DESIGN_difficulty_systems.md` §B3 | Freehold cut survival attrition deliberately | `Stomach` runs a complete water system. `WATER_MINIMUM` is 0, so reaching zero locks out natural healing and then takes 2 hit points on a natural 1 of `1d(Toughness)` per heal tick, on the order of 2 HP per hundred actions, not per action (#705) |
 | `DESIGN_difficulty_systems.md` §B4 | medium effort, Harmony maybe | `Broken`, `Tinkering_Repair` and per-use breakage in `ChargeUsedEvent` all ship. The mechanic is a new *trigger*, not a new system |
 | `DESIGN_sleep.md` §1 | Qud has no hunger and no thirst attrition | both exist and thirst kills. `Famished` is −10 Quickness at 2,400 actions |
 | `DESIGN_sleep.md` §7 | `Asleep` and `Wakeful` need verifying before coding | both resolve as *already satisfied*: `Wakeful` refuses only the involuntary events, and `Asleep.Voluntary` is set correctly at all ten call sites |
 <!-- check-docs: not-a-file API_VERIFICATION.md - a private sibling project's document, brought in by #647 and deliberately taken back out by #648. Named because the claim was made there. -->
-| `DESIGN_sleep.md` §3.2 | a four-tier attribute ladder is a proportionate cost | vanilla's two survival timers use **one** stat penalty between them and otherwise refuse an action — no healing, no travel. The proposal was several times heavier than either (#179) |
+| `DESIGN_sleep.md` §3.2 | a four-tier attribute ladder is a proportionate cost | vanilla's two survival timers use **one** stat penalty between them and otherwise refuse an action: no healing, no travel. The proposal was several times heavier than either (#179) |
 | `DESIGN_sleep.md` §4 | dreams can be Markov-generated from the player's history | both generators load a fixed offline corpus, `LibraryCorpus.json`. The player's history ships already, as authored prose in two registers, in `JournalAPI.Accomplishments` (#179) |
 | `API_VERIFICATION.md` | a kinship registry exists to read | three markers, all on the NPC, none enumerable (#182) |
 | `DESIGN_history_recon.md` | the spice tree needs a code hook to mutate | `HistoricSpice.Init` merges a mod's `historyspice.json` already (#178, #689) |
@@ -3091,7 +3091,7 @@ same direction every time:
 > **Every error is optimistic in the same direction: a mechanism read as absent when it ships, or a
 > cost priced as new work when the state and the hook already exist.** That is the opposite of the
 > traps elsewhere in this file, which are all about misreading *the game*. This is about misreading
-> *my own scoping* — and it is the more expensive kind, because it decides whether a thing gets built
+> *my own scoping*, and it is the more expensive kind, because it decides whether a thing gets built
 > at all rather than how.
 
 **The two `DESIGN_sleep.md` rows added in #179 share a shape worth naming**, because it recurs and it
@@ -3099,7 +3099,7 @@ is more specific than "optimistic". Both reach for **generation where the game o
 and for **a stat penalty where the game refuses an action**. §3.2 proposed an attribute ladder where
 `Famished` simply declines to let you travel; §4 proposed generated history where the journal already
 holds timestamped deeds Freehold wrote prose for. In both cases the shipped mechanism is smaller,
-more idiomatic, and better than the invention — which is the same trade as `historyspice.json` two
+more idiomatic, and better than the invention, which is the same trade as `historyspice.json` two
 rows up.
 
 > **When a design calls for procedural content or a numeric penalty, check first whether Qud already
@@ -3107,7 +3107,7 @@ rows up.
 > misses them proposes more work for a worse result.
 
 **One of the rows above broke that rule, and it was the correction rather than the claim** (#705).
-The §B3 row originally ended *"and adds 2 hit points of penalty every action"* — a figure written
+The §B3 row originally ended *"and adds 2 hit points of penalty every action"*, a figure written
 into this table *while recording the correction*, carried from there into `DESIGN_sleep.md` §1 and
 `DESIGN_difficulty_systems.md` §B3, and wrong by about ninetyfold. It **overstates** what Qud does,
 which is the one direction this entry says the errors never run.
@@ -3128,7 +3128,7 @@ priced at *medium effort, Harmony maybe* on the strength of nobody having looked
 
 **The correction usually strengthens the argument rather than weakening it**, which is the part I did
 not expect. `DESIGN_sleep.md` opened by conceding that Qud rejects survival timers and that the mod
-therefore swims against the design. It does not — Qud runs two, tuned so they almost never fire, and
+therefore swims against the design. It does not: Qud runs two, tuned so they almost never fire, and
 a sleep timer is a third one in that company rather than a foreign body. The honest premise was the
 better premise, and the document had been arguing uphill against a fact that was not true.
 
@@ -3146,7 +3146,7 @@ August 2026 and held **247** on the 30th, so a `--limit 200` dump I was reading 
 already run off the end before it reached Todo.
 
 Todo came back as 13 rows. It has 22. **#193, #580, #583, #588, #595, #596, #633, #634 and #691 were
-simply not in the output**, and I went on to recommend two promotions from what was left — while #595,
+simply not in the output**, and I went on to recommend two promotions from what was left, while #595,
 which on a full read is one of the two strongest candidates in the whole column, sat in the nine that
 had been cut.
 
@@ -3164,7 +3164,7 @@ The general form: **a limit is a silent filter, and every listing command has on
 it or not.** `gh` defaults to 30 items on most subcommands, and the flag that raises it does not
 announce when it is still binding.
 
-**What actually catches it.** Not raising the limit — I raised it from 100 to 200 and was still
+**What actually catches it.** Not raising the limit. I raised it from 100 to 200 and was still
 wrong. Cross-check the listing against a source that counts differently:
 
 ```bash
@@ -3182,7 +3182,7 @@ at different limits and comparing impressions.
 Related: [`A search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
 is the zero-result version of the same failure, and
 [`"Could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member of the
-family — in all three a tool declines to answer the question and the silence gets read as the answer.
+family: in all three a tool declines to answer the question and the silence gets read as the answer.
 
 ## A guard on a collection nothing fills is not a budget
 
@@ -3191,7 +3191,7 @@ the list. I read that as an engine cap of three concurrently pinned zones, wrote
 #583 as *"the constraint that should replace the one in the body"*, and built a scheduling argument on
 top of it.
 
-`PinnedZones` has **exactly one writer in the whole assembly** — `ZoneManager.cs:647`, inside the save
+`PinnedZones` has **exactly one writer in the whole assembly**, `ZoneManager.cs:647`, inside the save
 loader, reading back what `:483` wrote. Nothing at runtime ever adds to it. The list is empty in every
 session, the `> 3` guard cannot fire, and the `Suspendability.Pinned` return behind it is unreachable.
 The pin vanilla actually uses is `GetZoneSuspendabilityEvent`, which has no cap at all.
@@ -3203,7 +3203,7 @@ The pin vanilla actually uses is `GetZoneSuspendabilityEvent`, which has no cap 
 The nearest neighbours here are [`a scope that looks load-bearing may match nothing at all`](#a-scope-that-looks-load-bearing-may-match-nothing-at-all)
 and [`a knob that accepts your value and rounds it away is worse than no knob`](#a-knob-that-accepts-your-value-and-rounds-it-away-is-worse-than-no-knob),
 both of which are a declaration with nothing on the other end. This is the same disease in a **guard**,
-which is worse, because a guard reads as enforcement rather than as data — I would have checked a tag's
+which is worse, because a guard reads as enforcement rather than as data. I would have checked a tag's
 consumers and did not think to check a bounds check's.
 
 Worth keeping the useful half: the dead guard is still real evidence about intent. Three is what
@@ -3212,7 +3212,7 @@ Freehold thought reasonable. That is a design opinion to adopt, not a limit to r
 ## A dead store looks exactly like a cache
 
 `AIWorldMapTravel.GetTravelSegments()` does the terrain lookup, caches the result in `TravelSegments`
-— and then `return 1000;`. The field is `[NonSerialized] private` and is read nowhere in the class.
+Then `return 1000;`. The field is `[NonSerialized] private` and is read nowhere in the class.
 Travel is therefore a flat 100 turns per parasang, terrain-blind, where the discarded value would have
 been 300 to 1,200.
 
@@ -3223,7 +3223,7 @@ the tail is one word you have already stopped looking at.
 > **When a method computes a value you are about to rely on, check that the value reaches the return.**
 > A private field written and never read means the computation is decoration.
 
-Every other habit in this file points at reading *more* of a method — [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-this-one-decays-its-own-bonus)
+Every other habit in this file points at reading *more* of a method, in [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-because-this-one-decays-its-own-bonus)
 among them. This is the case where the interesting line is the last one. It is a sibling of
 [`an effect that reports nothing is not an effect that did nothing`](#an-effect-that-reports-nothing-is-not-an-effect-that-did-nothing)
 rather than a duplicate: there the mechanism ran on wrong data; here it computes the right answer and
@@ -3236,30 +3236,30 @@ gates, and the difference decides what an off-screen event can be:
 
 | | gate to join | gate to stay |
 |---|---|---|
-| **Acting** — a `Brain`, goals, `AIBoredEvent` | `AddActiveObject` (`ActionManager.cs:317`) refuses unless the zone is cached, null, or the active one | `ValidateActor` (`:689`) evicts only when the zone is **not cached**, not when it is merely inactive |
-| **Ticking** — `WantTurnTick` / `TurnTick` | `MakeLive()`, called by `ActivateObjects` on activation and by `Cell.AddObject` only when the zone `IsActive()` — **but the method is public and ungated** | `ShouldRemove` (`:430`) drops the object when its zone is `Suspended` |
+| **Acting**, meaning a `Brain`, goals and `AIBoredEvent` | `AddActiveObject` (`ActionManager.cs:317`) refuses unless the zone is cached, null, or the active one | `ValidateActor` (`:689`) evicts only when the zone is **not cached**, not when it is merely inactive |
+| **Ticking**, meaning `WantTurnTick` / `TurnTick` | `MakeLive()`, called by `ActivateObjects` on activation and by `Cell.AddObject` only when the zone `IsActive()`, **but the method is public and ungated** | `ShouldRemove` (`:430`) drops the object when its zone is `Suspended` |
 
 `AllowCachedTurns` has one writer in the assembly, `ReclamationSystem`, and is false otherwise. So an
-actor enqueued while its zone was active keeps taking full turns indefinitely — which is how
-`OthoWander1` walks to Omonporch, by pinning its zone so it is never dropped — while an actor created
+actor enqueued while its zone was active keeps taking full turns indefinitely, which is how
+`OthoWander1` walks to Omonporch, by pinning its zone so it is never dropped, while an actor created
 in a zone the player has never entered **cannot join the queue at all**.
 
 > **An event whose actor must be created off-screen has to be `TurnTick`-driven, and its spawner has
 > to call `MakeLive()` by hand.** Only an event that continues an *existing* actor can use a brain.
 
-That is what `AIWorldMapTravel`'s docstring — *"Ideally this would be possible with a separate action
-queue/non-zone world map"* — is apologising for, and why that part does its work in `TurnTick` rather
+That is what `AIWorldMapTravel`'s docstring, *"Ideally this would be possible with a separate action
+queue/non-zone world map"*, is apologising for, and why that part does its work in `TurnTick` rather
 than through the `Brain` it sits beside.
 
-## When a count supports a claim, resolve it — and read the difference before the total
+## When a count supports a claim, resolve it, and read the difference before the total
 
 This file already says a declared-part count is a lower bound. I wrote that entry. Then, across three
 investigations in two days:
 
 | where | declared | resolved | what was in the gap |
 |---|---:|---:|---|
-| `DromadCaravan` (#583) | 9 | **11** | **`Tam`** — Joppa's merchant. *"Add the travel part to the carrier"* would have walked him out of the starting village |
-| `AddsRep` (#596) | 37 | **48** | the five fungal infections, which turned *"the only two-sided trade"* into a whole item family — the strongest precedent that issue has |
+| `DromadCaravan` (#583) | 9 | **11** | **`Tam`**, Joppa's merchant. *"Add the travel part to the carrier"* would have walked him out of the starting village |
+| `AddsRep` (#596) | 37 | **48** | the five fungal infections, which turned *"the only two-sided trade"* into a whole item family, the strongest precedent that issue has |
 | `GivesRep` (#188) | 44 | **57** | the blueprints carrying the part whose generated relations were the finding |
 
 > **In every case the gap was not noise, it was the answer.** The inherited members are not a rounding
@@ -3274,7 +3274,7 @@ tested `BlueprintIndex` in none of them.
 
 **Factions are save state.** `XRLGame.cs:2318` calls `Factions.Save`, which writes the whole
 `FactionTable` as composites, `Faction.Write` included. `Factions.Load` clears the table and rebuilds
-every faction from the save — **and then re-reads the XML**, which is the part that inverts the obvious
+every faction from the save, **and then re-reads the XML**, which is the part that inverts the obvious
 conclusion:
 
 ```csharp
@@ -3291,17 +3291,17 @@ public static void Load(SerializationReader Reader)
 is skipped, a **mod's** is merged, and a faction only a mod declares is created. Feelings land through
 `TryAddFactionFeeling` → `FactionFeeling.TryAdd`, which is add-if-absent.
 
-> **The asymmetry is the lesson.** Mod faction data is **live in the additive direction** — new
+> **The asymmetry is the lesson.** Mod faction data is **live in the additive direction**: new
 > factions and new feelings reach a character created before the mod was installed, on the next load.
 > It is **permanent in the subtractive direction**: once an edge exists and the game has saved, it is
 > in the save's own copy, and deleting it from the XML does nothing. Turning the option off leaves
 > every edge it ever created.
 
-That is a **one-way edit**, and a fourth off-switch scope — neither live, nor restart-scoped, nor
+That is a **one-way edit**, and a fourth off-switch scope, neither live, nor restart-scoped, nor
 new-character-scoped, but *additive-live and subtractive-never*. Any feature built on faction edges
 has to say so in its `<helptext>` the way the Chip Interface option does.
 
-This is [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-this-one-decays-its-own-bonus)
+This is [`read the whole loop before modelling it`](#read-the-whole-loop-before-modelling-it-because-this-one-decays-its-own-bonus)
 applied to a method rather than a loop, and the tell was available: a `Load` that only restored would
 have no reason to exist separately from `Init`.
 
@@ -3311,13 +3311,13 @@ The natural way to stop a burdened character running is to refuse `CanChangeMove
 vanilla's `Overburdened` refuses flight. **It does not work, and it fails silently.**
 
 `To` carries the movement **message name** rather than a mode identifier, and `Run` passes its own
-`ActiveEffectMessageName` — a field set from `EffectMessageName`, configurable per `Run` part. So a
+`ActiveEffectMessageName`, a field set from `EffectMessageName`, configurable per `Run` part. So a
 handler matching `"Running"` never fires, and the restriction ships inert with nothing to notice it.
 `Vixy_Burdened` vetoes the `ApplyRunning` string event instead, and records the rejected route in its
 docstring.
 
 > **Before matching on an event's string field, find where the string is set.** A field named for what
-> it selects is not necessarily populated with an identifier — this one carries display text, and
+> it selects is not necessarily populated with an identifier: this one carries display text, and
 > display text is configurable.
 
 The general form is [`a boolean's name is not its semantics, and neither is a skill's`](#a-booleans-name-is-not-its-semantics-and-neither-is-a-skills).
@@ -3327,7 +3327,7 @@ The general form is [`a boolean's name is not its semantics, and neither is a sk
 
 `Hidden` resolves a search as `Bonus + Stat.Random(1, Searcher.Intelligence) >= Difficulty`, and
 **nothing in the assembly writes `Bonus`**. #221 read that as an extension point left open. I built a
-skill to supply it, verified every link in the chain, shipped it in #717 — and it does nothing.
+skill to supply it, verified every link in the chain, shipped it in #717, and it does nothing.
 
 The chain really is as I read it. `Physics.Search()` fires `Event.New("Searched", "Searcher", …)` at
 the current cell and its eight neighbours, passing one Event object by `ref` so a value set on the
@@ -3350,7 +3350,7 @@ Objects.Add(Object);                                // the mover is added AFTER
 `EnterCell` calls `Search()` **before** the mover is added to the cell's `Objects`. So on the movement
 path the searcher is in the dispatch set of neither their new cell nor its neighbours, and a part on
 the searcher cannot see the event at all. The `CmdWait` path calls `Search()` from `XRLCore` while the
-player is already standing in the cell, so that one works — which is why the feature was not uniformly
+player is already standing in the cell, so that one works, which is why the feature was not uniformly
 dead, only dead in the case that matters.
 
 > **Membership in a dispatch list is evaluated at call time, and a call inside an "entering" method
@@ -3361,7 +3361,7 @@ dead, only dead in the case that matters.
 Two things this cost that are worth naming:
 
 - **Every static check passed.** It compiled, it validated, and the part was provably attached and
-  registered — a heartbeat printed in-game confirmed `HasRegisteredEvent("Searched") == true` on the
+  registered, and a heartbeat printed in-game confirmed `HasRegisteredEvent("Searched") == true` on the
   player while the handler never ran once. No check could have caught this, which is the whole
   argument for `tools/sync_mod.py --dev` *before* merge rather than after.
 - **The trigger was published wrong as well.** I wrote that searching happens "every player turn" in
@@ -3369,28 +3369,28 @@ Two things this cost that are worth naming:
   the wait command, and nowhere else. That figure came from an investigation comment I inherited and
   never checked.
 
-Related: [`Containment is not dispatch — check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-check-the-cascade-level-before-assuming-a-part-is-reached)
-is the same family — there the part was in the object and outside the cascade, here it was registered
+Related: [`Containment is not dispatch, so check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-so-check-the-cascade-level-before-assuming-a-part-is-reached)
+is the same family: there the part was in the object and outside the cascade, here it was registered
 for the event and outside the list. Both are *reachability at the moment of the call*, and neither is
 visible from the handler's side.
 
-## Ask what dispatches per-object and what dispatches centrally — the answer is the estimate
+## Ask what dispatches per-object and what dispatches centrally, because the answer is the estimate
 
 Costing a feature that applies to a whole category of objects turns on one question: **is there a hook
 a single registered listener can hear for every member?** Two events of near-identical shape answer it
 oppositely, and the difference is the entire cost of the feature.
 
 ```csharp
-// ObjectCreatedEvent.Process — dispatches to the object ONLY
+// ObjectCreatedEvent.Process: dispatches to the object ONLY
 if (Object.WantEvent(ID, MinEvent.CascadeLevel)) { … Object.HandleEvent(objectCreatedEvent); }
 
-// GetZoneSuspendabilityEvent.GetFor — dispatches to the game FIRST
+// GetZoneSuspendabilityEvent.GetFor: dispatches to the game FIRST
 The.Game.HandleEvent(Instance);
 Zone.HandleEvent(Instance);
 ```
 
 The second lets one `IGameSystem` answer for every zone in the game. The first does not, so a part
-that would act at creation has to already be on the object — which is usually the thing being solved.
+that would act at creation has to already be on the object, which is usually the thing being solved.
 
 > **The answer sorts a feature into one of three costs that are orders of magnitude apart:** one merge
 > onto a shared base, N merges onto every member, or not reachable at all without touching the caller.
@@ -3405,7 +3405,7 @@ so a player part would silently miss teleports, travel encounters and spore tran
 
 `Screens.Show(GameObject GO)` has one signature, honours its parameter in both UI branches, and every
 one of its nine call sites passes `The.Player`. It looks exactly like a facility written generically
-and never aimed anywhere else — and every test you would think to apply says so.
+and never aimed anywhere else, and every test you would think to apply says so.
 
 It is a **cycler**. `Show` enters at `CurrentScreen` and loops `Next` / `Previous` through eight
 screens, wrapping. Four of them touch `The.Player`, and one is not benign: `TinkeringScreen` mixes the
@@ -3418,7 +3418,7 @@ TinkeringHelpers.ProcessTinkeredItem(gameObject2, The.Player)
 ```
 
 Aimed at a follower it would list **their** items while modding against **the player's** Intelligence
-and delivering the results to **the player**. No crash and no error — a coherent-looking screen
+and delivering the results to **the player**. No crash and no error, just a coherent-looking screen
 performing a hybrid action.
 
 > **Check what a generic entry point dispatches *to*, not only what it accepts.** The signature, the
@@ -3438,7 +3438,7 @@ Reputation = Math.Max(50, 200 + (The.Speaker.Stat("Level") - The.Player.Stat("Le
                              * (int)((double)RuleSettings.REPUTATION_BASE_UNIT * 0.25));
 ```
 
-`REPUTATION_BASE_UNIT` is 50, so the multiplier is 12 — and the expression is only an encoding of the
+`REPUTATION_BASE_UNIT` is 50, so the multiplier is 12, and the expression is only an encoding of the
 level difference **above its floor**. At Δ ≤ −13 the price is a flat 50 and encodes nothing at all,
 which is most late-game recruiting.
 
@@ -3461,12 +3461,12 @@ true and it hides something. Nine grenade and mine parts implement
 
 Those feed cell navigation weight, and `FindPath` walks the zone's navigation map bounded by the
 `MaxWeight` its callers pass. **So the AI already refuses to walk beside a live explosive and will
-still throw one next to its friends** — it reasons about blast areas with its feet and not with its
+still throw one next to its friends**, because it reasons about blast areas with its feet and not with its
 arm.
 
-> **An area effect has two questions and they are answered in different places.** *Severity* — how bad
-> is it to be caught by this — is authored, ranked and consumed. *Extent* — which cells does it reach
-> — exists nowhere: `Radius`, `Force` and `Density` are per-type and unrelated. Check which half is
+> **An area effect has two questions and they are answered in different places.** *Severity*, how bad
+> is it to be caught by this, is authored, ranked and consumed. *Extent*, which cells does it reach,
+> exists nowhere: `Radius`, `Force` and `Density` are per-type and unrelated. Check which half is
 > actually missing before building a blast-profile abstraction, and do not invent a second severity
 > scale beside Freehold's.
 
@@ -3486,7 +3486,7 @@ else list.ShuffleInPlace();
 ```
 
 That reads as a creature's menu of options, and I designed against it for a while as though it were.
-It is not. **Melee is not in the list** — the loop tries each named category, and if none of them
+It is not. **Melee is not in the list**: the loop tries each named category, and if none of them
 fires it drops through to `Combat.AttackCell`. In the ranged branch the fallback is *approach the
 target*, equally absent from `tryMissileOrder`.
 
@@ -3495,7 +3495,7 @@ doctrine" is not expressible, because melee is already guaranteed; what you can 
 list*, and shortening is the whole lever.
 
 Which makes omission look free, and it is not. `AIHealingTonicUse` answers
-`AIGetDefensiveItemListEvent`, which is exactly what `TryDefensiveItems` gathers — so **dropping
+`AIGetDefensiveItemListEvent`, which is exactly what `TryDefensiveItems` gathers, so **dropping
 `defensiveItems` from a creature's order stops it drinking healing tonics.** Not deprioritise: stop.
 The most attractive version of the change is the one that silently disables healing.
 
@@ -3503,8 +3503,8 @@ Vanilla ships both shapes and the difference is the point: **`Galgal`** is a cre
 all six categories; **`TinkerTurret`** is a machine with no inventory and *restricts* to two.
 
 > **Before treating an ordered list of behaviours as the set of things that can happen, find what
-> runs when the list is exhausted.** A guaranteed fallback inverts the meaning of every edit — the
-> short list is the aggressive one — and any category you remove takes its handlers' side effects
+> runs when the list is exhausted.** A guaranteed fallback inverts the meaning of every edit: the
+> short list is the aggressive one, and any category you remove takes its handlers' side effects
 > with it.
 
 ## A method name can invert its own evaluation order
@@ -3517,12 +3517,12 @@ public string GetTagOrStringProperty(string Name, string Default = null)
 ```
 
 **The property wins.** Anything writing that property at runtime silently overrides a value the
-blueprint author wrote by hand — here, the only two authored combat doctrines in the game.
+blueprint author wrote by hand: here, the only two authored combat doctrines in the game.
 
 Nothing at the call site hints at it, and the neighbouring `GetPropertyOrTag` evaluates in the order
 *both* names suggest, so a spot check on the wrong one confirms the wrong belief.
 
-> **When a lookup merges two stores, read the body before deciding which store wins — especially
+> **When a lookup merges two stores, read the body before deciding which store wins, especially
 > when the name appears to say so.** A name is documentation, and documentation drifts; the
 > precedence is a property of four lines of code.
 
@@ -3547,13 +3547,13 @@ public GameObjectBlueprint GetBlueprint(bool UseDefault = true)
 ```
 
 It is a live lookup into the factory by blueprint name. **So a tag this fork merges applies to
-creatures already in an existing save**, at next load, with no migration — which is better than I
+creatures already in an existing save**, at next load, with no migration, which is better than I
 assumed when worrying about it.
 
 And the same fact is why **an option can never switch that tag off.** The value is in the loaded
 blueprint, not on the object, so there is nothing runtime code can clear. `docs/CHARTER.md` is
 explicit about preferring designs "whose off-switch is a runtime decision rather than a load-time
-one" — and a pure-data overlay expressed as tags cannot have one, however much the design document
+one", and a pure-data overlay expressed as tags cannot have one, however much the design document
 promises it. Only a part that writes the *property* each turn can, because that is the store the
 reader consults first (see the entry above).
 
@@ -3577,7 +3577,7 @@ public void Think(string Hrm)
 
 `Brain` exposes the toggle on the creature's own inventory actions, gated on
 `Options.DebugInternals`: enable **Debug Internals**, interact with the creature, choose **"enable
-think out loud"**. Every decision then prints — *"I'm going to melee my target in melee!"*, *"I'm
+think out loud"**. Every decision then prints: *"I'm going to melee my target in melee!"*, *"I'm
 going to try my defensive items"*, *"I'm going to stop pursuing my target."* `LastThought` also shows
 in the debug internals panel.
 
@@ -3609,14 +3609,14 @@ $ rg -rln 'OpinionFriendlyFire' src/      # meant: recursive + files + line numb
 public class ln : IOpinionSubject         # got:   --replace=ln
 ```
 
-It survives because **it does not error** — exit status 0, plausible output — and because it corrupts
+It survives because **it does not error**, with exit status 0 and plausible output, and because it corrupts
 *only identifiers*. Counts (`-c`), file lists (`-l`) and "does this exist" answers stay correct while
 the names in the same output are wrong, so nothing looks broken.
 
 It was also camouflaged by a real phenomenon: `public class n : IOpinionSubject` looks exactly like a
 decompiler failing to recover a name, which genuinely happens and which this repository already
 reasons about. The artifact landed inside an existing mental model and was absorbed. I misdiagnosed
-it twice — first as the decompiler, then as "`rg` mangles matched tokens" — and the second was worse,
+it twice, first as the decompiler and then as "`rg` mangles matched tokens", and the second was worse,
 because it blamed a tool for something I had typed.
 
 Nothing surfaced it directly. **An unrelated arithmetic oddity two steps away did**: a table claiming
@@ -3625,7 +3625,7 @@ things differing by one is worth a second look, and pulling that thread led back
 
 > **A flag that means one thing in `grep` and another in `ripgrep` fails by rewriting your evidence,
 > not by refusing to run.** Before believing an identifier read out of a search, confirm the search
-> printed the file rather than a transformation of it — the cheapest check is a second tool over the
+> printed the file rather than a transformation of it, and the cheapest check is a second tool over the
 > same line.
 
 Neighbour of [`a search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search),
@@ -3639,7 +3639,7 @@ and rewrote what it found. Both end in output that reads as evidence and is not.
 `check_docs.py` gained a check that file paths written as prose resolve. It passed locally and
 failed on CI with seventeen findings, every one naming `CLAUDE.md`.
 
-That file is real. It is also `.gitignore`d — private working notes, untracked since #115. So it
+That file is real. It is also `.gitignore`d, being private working notes, untracked since #115. So it
 exists on my machine and does not exist in a clean checkout, and a check asking the filesystem
 *"does this resolve"* answers differently in the two places.
 
@@ -3649,7 +3649,7 @@ if any((base / target).exists() for base in (Path("."), Path("docs"), doc.parent
 ```
 
 Nothing about that line is wrong in isolation. What is wrong is the assumption that the directory
-the check runs in is the repository — it is the repository **plus whatever else is lying around**,
+the check runs in is the repository; it is the repository **plus whatever else is lying around**,
 and `.gitignore` is precisely the list of things that differ.
 
 > **A gate that reads the working tree is testing a different repository than CI is.** Anything
@@ -3657,19 +3657,19 @@ and `.gitignore` is precisely the list of things that differ.
 > files temporarily out of the way, before it is trusted.
 
 The check itself is fine; the verification was not. Local green meant nothing here because the
-failure mode is *invisible locally by construction* — the same shape as
+failure mode is *invisible locally by construction*, the same shape as
 [`a hook that was never installed protects nothing, and this one failed to install quietly`](#a-hook-that-was-never-installed-protects-nothing-and-this-one-failed-to-install-quietly),
 where the thing that would have reported the problem was the thing that was missing.
 
 **And fix the class, not the instance.** Having marked `CLAUDE.md`, I swept every prose path in
-every document for anything else resolving to an untracked file. Zero — but the sweep is the part
+every document for anything else resolving to an untracked file. Zero, but the sweep is the part
 that makes the fix trustworthy, because one instance found by CI says nothing about the second.
 
 ## Five vanilla defects worth not rediscovering
 
 Found while investigating features that were then not built. All three are Freehold's rather than
-this fork's, all three are the kind that fail silently, and none is worked around anywhere here —
-recorded so the next investigation does not spend the same hours.
+this fork's, all three are the kind that fail silently, and none is worked around anywhere here.
+Recorded so the next investigation does not spend the same hours.
 
 **`Cell.DistanceToRespectStairs` makes flight direction matter by a factor of three.** `Kill` gives
 up pursuit past `num > 80`, and the metric composes global coordinates against a zone that is 80
@@ -3681,7 +3681,7 @@ int num2 = C.ParentZone.GetZonewY() * Definitions.Height * 25 + C.ParentZone.Get
 ```
 
 One zone east is ~80 and one zone north is ~25, so **fleeing north is roughly three times safer than
-fleeing east** — a consequence of zone geometry rather than a design decision. See #716.
+fleeing east**, a consequence of zone geometry rather than a design decision. See #716.
 
 **`Kill.LastSeen` is a budget, not a counter, and its name says otherwise.** Declared once,
 incremented once, tested once, assigned nowhere else in the file. So it is not *"six consecutive
@@ -3697,7 +3697,7 @@ if (Object != null && Actor.WantEvent(…) && !Object.HandleEvent(getThrowProfil
 ```
 
 The second branch tests **`Actor.WantEvent`** and calls **`Object.HandleEvent`**. A part on a thrown
-object that answers this event is silently skipped unless the thrower independently wants it — no
+object that answers this event is silently skipped unless the thrower independently wants it, with no
 error, no warning, the handler simply never runs for most throwers. This is why #580 could not be
 built cleanly, and it would have shipped inert exactly as #717 did.
 
@@ -3707,7 +3707,7 @@ built cleanly, and it would have shipped inert exactly as #717 did.
 **`ImmuneToSleepGas` is spelled past the event it is trying to catch.** The part registers
 `CanApplySleepGas`; `GasSleep` line 130 fires `CanApplySleegas`, missing the p. Both occurrences of the
 correct-looking spelling in the entire assembly are inside `ImmuneToSleepGas` itself, so nothing sends
-it what it is listening for — and no vanilla blueprint declares the part, so nothing has ever noticed.
+it what it is listening for, and no vanilla blueprint declares the part, so nothing has ever noticed.
 It is a working implementation of the right idea, wired to a name that does not exist.
 
 The general shape is worth more than the instance: **a part that looks purpose-built for the job is
@@ -3727,12 +3727,12 @@ public static void SetClipboard(string Msg)
 It writes to the Unity log. And unlike `ImmuneToSleepGas`, this one **has a caller**: `wish where?` at
 `Wishing.cs` line 2160 prints the zone ID and then "copies" it, so that wish has never put anything on
 anyone's clipboard. The working API is `ClipboardHelper.SetClipboardData`, which sets a flag that
-`GameManager` drains on the next frame through `UpdateFromMainThread` — seven vanilla call sites use it,
+`GameManager` drains on the next frame through `UpdateFromMainThread`, and seven vanilla call sites use it,
 including `Popup.ShowBlockWithCopy`, which is the affordance to reach for rather than the clipboard
 directly.
 
 Two things generalise. **A method whose body is one call to something unrelated is worth reading even
-when its name is unambiguous** — this is the second defect in this list of that exact shape, and both
+when its name is unambiguous**. This is the second defect in this list of that exact shape, and both
 were found by opening a method I had already decided I understood. And **when two APIs exist for one job,
 count the call sites**: seven against one is the fork in the road, and the one is the broken one.
 
@@ -3741,12 +3741,12 @@ is **silently dropped**. Fine behind a button, wrong inside a loop.
 
 ## The world-map movement gate is `ObjectLeavingCellEvent`, and its name does not say so
 
-#194 wanted to refuse a world-map crossing on a survival condition — *provision before you enter the
+#194 wanted to refuse a world-map crossing on a survival condition, meaning *provision before you enter the
 salt*. I spent three passes looking for the hook, settled on the wrong one, and the right one is not
 findable by name.
 
 **`CanTravelEvent` is the obvious candidate and cannot do it.** It carries exactly one field,
-`Object` — no cell, no destination — and its single call site is `The.Player.CanTravel()` at the
+`Object`, with no cell and no destination, and its single call site is `The.Player.CanTravel()` at the
 moment the player asks to go to the world map, *before* a destination exists. The destination is
 chosen afterwards, tile by tile. Vanilla uses it correctly for the one thing it can express:
 `Stomach` refuses travel outright while `IsFamished()`, with player-facing text. Anything conditioned
@@ -3767,7 +3767,7 @@ public override bool HandleEvent(ObjectLeavingCellEvent E)
 }
 ```
 
-It fires per world-map step, and it carries the origin `Cell` together with `Direction` — so the
+It fires per world-map step, and it carries the origin `Cell` together with `Direction`, so the
 destination is one lookup away, both halves of it being patterns vanilla already uses:
 
 ```csharp
@@ -3777,19 +3777,19 @@ E.Cell.GetCellFromDirection(E.Direction).GetFirstObjectWithPart("TerrainTravel")
 `GetFirstObjectWithPart("TerrainTravel")` is how `JoppaWorldBuilder`, `RingGateBuilder` and two
 `Wishing` paths read a world-map cell's terrain.
 
-**The general shape.** `E.Cell` on a *leaving* event is the cell being left, not the target — the
+**The general shape.** `E.Cell` on a *leaving* event is the cell being left, not the target: the
 event dispatches to the contents of the origin, which is why the terrain you are standing on is the
 one that charges you. Direction plus origin is how you reach the destination, and that is worth
 knowing before concluding a hook cannot see where a move is going.
 
 **And note what vanilla does with the power once it has it.** Both of Qud's thirst interruptions
-*ask* — *"You have run out of water! Do you want to stop travelling?"* — rather than refusing. A mod
+*ask*, in *"You have run out of water! Do you want to stop travelling?"*, rather than refusing. A mod
 that returns `false` here is making a harder claim on the player than the game makes anywhere in this
 system. That is a design decision, not a free capability.
 
 ## A mechanic that works by imitation needs the thing it imitates counted first
 
-I planned a *false sound* for exhaustion — a phantom noise, no source, to make an exhausted character
+I planned a *false sound* for exhaustion: a phantom noise, no source, to make an exhausted character
 distrust their own senses. It only works if a false sound is indistinguishable from a real one, so
 before writing it I counted the real ones.
 
@@ -3805,7 +3805,7 @@ own cause:
 | "You hear inaudible mumbling." | a conversation out of earshot |
 | "you hear a cry of distress from " | a named creature calling for help |
 
-There is no ambient soundscape, and no hallucination effect to borrow either — `WakingDream` and
+There is no ambient soundscape, and no hallucination effect to borrow either, since `WakingDream` and
 `DeepDream` are the metempsychosis mechanic (dream you are another creature, gain a level), not
 misperception. `"You sense a subtle psychic disturbance."` looks like a candidate and is not: it fires
 only for a player carrying `SensePsychic`, when someone else uses `Precognition`.
@@ -3816,19 +3816,19 @@ second occurrence, and after that it would read as a status message with a costu
 
 **The general shape.** For a mechanic whose whole effect is *being mistaken for something else*, the
 thing it imitates is a dependency, and it has to be counted the same way a hook's consumers get
-counted before a hook is built. "Atmospheric" is not a property of the message — it is a property of
+counted before a hook is built. "Atmospheric" is not a property of the message; it is a property of
 the message's *neighbours*, and I priced it without looking at them. The cheap check is one `grep` for
 the register I am proposing to join, run before the design rather than after.
 
 **Note which direction this one runs.**
 [`My design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
 collects nine claims that all fail by reading a shipped mechanism as absent. This is the first that
-fails the other way — a mechanism assumed present that Qud does not have. Both are optimistic about
+fails the other way: a mechanism assumed present that Qud does not have. Both are optimistic about
 how much work is left; only the direction changes. `DESIGN_sleep.md` §3.2.1 had actually recorded half
-of it already — *"There is no hallucination effect in the game to inherit"* — and I read that as a note
+of it already, in *"There is no hallucination effect in the game to inherit"*, and I read that as a note
 about implementation when it was a verdict on the idea.
 
-Related: [`When a count supports a claim, resolve it`](#when-a-count-supports-a-claim-resolve-it--and-read-the-difference-before-the-total).
+Related: [`When a count supports a claim, resolve it`](#when-a-count-supports-a-claim-resolve-it-and-read-the-difference-before-the-total).
 
 ## "I only ever attach it to the player" is a statement about my code, not about the game
 
@@ -3836,7 +3836,7 @@ Eleven parts, one attach site, one target: `The.Player`. Every one of them still
 were not me, by two routes I had not looked for.
 
 **`GameObject.DeepCopy()` copies every part.** `TemporalFugue` line 280 and `Cloning` line 84 both use
-it, so a fugue duplicate or a clone of me carries my whole part list — no save, no load, nothing I did.
+it, so a fugue duplicate or a clone of me carries my whole part list, with no save, no load and nothing I did.
 This is the common route and the one I did not think of first, because I was looking for a way the
 *attach* could go wrong rather than a way a part could travel without being attached at all.
 
@@ -3849,12 +3849,12 @@ everything onto a creature permanently, because the parts outlive the domination
 
 | predicate | means | goes false when |
 |---|---|---|
-| `IsPlayer()` | this object *is* `Game.Player.Body` right now | the player's body is reassigned — so a **puppet passes it** |
-| `IsPlayerControlled()` / `IsPlayerLed()` | relational, about who is driving | the copy stops being driven by me — self-limiting, which is why nine parts were fine |
-| `IsOriginalPlayerBody()` | stamped once at chargen, stripped from clones and fugue copies | never, for the body I started in — and it is **wrong** as an ownership test, because `Metempsychosis` is a legitimate permanent body change |
+| `IsPlayer()` | this object *is* `Game.Player.Body` right now | the player's body is reassigned, so a **puppet passes it** |
+| `IsPlayerControlled()` / `IsPlayerLed()` | relational, about who is driving | the copy stops being driven by me, self-limiting, which is why nine parts were fine |
+| `IsOriginalPlayerBody()` | stamped once at chargen, stripped from clones and fugue copies | never, for the body I started in, and it is **wrong** as an ownership test, because `Metempsychosis` is a legitimate permanent body change |
 
 The last row is the one that would have cost me. Reaching for `IsOriginalPlayerBody()` as "is this
-really me" looks exactly right and would leave a post-Metempsychosis character with none of the parts —
+really me" looks exactly right and would leave a post-Metempsychosis character with none of the parts,
 a bigger hole than the one being closed. The ownership test I wanted was the `Dominated` effect, whose
 `Dominator` field is also the way back to the real body.
 
@@ -3864,7 +3864,7 @@ accrued on a borrowed body and billed me twice for the same window.
 
 **The general shape.** Before deciding a part is player-only, ask two separate questions: *what attaches
 it*, and *what copies it*. I had only asked the first. The cheap check is one grep for `DeepCopy` and
-one for assignments to `Player.Body` — both are short lists, and both change who "the player" is
+one for assignments to `Player.Body`. Both are short lists, and both change who "the player" is
 underneath code that never moved.
 
 Related: [`A blueprint tag reaches every save, and no option can reach the tag`](#a-blueprint-tag-reaches-every-save-and-no-option-can-reach-the-tag)
@@ -3872,8 +3872,8 @@ is the same failure aimed at data instead of at parts.
 
 ## Integer division is where a design tier goes to die, and the neighbouring table dies with it
 
-`Vixy_Sleep.RestQuality` returns tenths — 15 for a settlement, **12 for a sheltered spot**, 10 for open
-ground — and the drain spent them as `4 * RestQuality / 10` in whole points:
+`Vixy_Sleep.RestQuality` returns tenths, 15 for a settlement, **12 for a sheltered spot** and 10 for open
+ground, and the drain spent them as `4 * RestQuality / 10` in whole points:
 
 | where | tenths | intended | `4 * t / 10` |
 |---|---:|---:|---:|
@@ -3888,14 +3888,14 @@ arithmetic that produces it.
 
 **The second half is the part worth remembering.** The ambush roll fires *every action asleep*, and its
 per-sleep odds were derived by compounding a per-turn rate over the expected sleep length. So the same
-truncation that made a sheltered spot rest like open ground also kept me there 42 actions longer — 42
-extra rolls — pushing a tier tuned to 30% up to a real 29.5% by accident and, had I only fixed the
+truncation that made a sheltered spot rest like open ground also kept me there 42 actions longer, at 42
+extra rolls, pushing a tier tuned to 30% up to a real 29.5% by accident and, had I only fixed the
 drain, down to 25% by a second accident. The rest rate and the ambush rate were never two numbers.
 Fixing one silently retunes the other.
 
 **And there is a cheaper way to find the sibling of this bug.** The same feature carried a second dead
 path: `RestQuality` read `GetIntProperty("Vixy_BurdenBand")`, and that string occurred **once in the
-whole repository — on the line reading it**. Nothing wrote it, so "sleeping in your armour rests you
+whole repository, on the line reading it**. Nothing wrote it, so "sleeping in your armour rests you
 less" had never once happened. A property key is a contract between two pieces of code that never
 reference each other, so nothing links them and no compiler complains; the check is a sweep for keys
 that are read and never written, which takes one script over `mod/` and came back with exactly one
@@ -3904,11 +3904,11 @@ real hit across 79 scripting files. Worth running whenever a feature keeps state
 **The general shape, in three parts.**
 
 - **A fractional constant in an integer expression is a design decision that may not survive contact
-  with the code.** Carry the fraction — this codebase already had the answer on the other side of the
+  with the code.** Carry the fraction, since this codebase already had the answer on the other side of the
   same meter, where `Accrue` keeps hundredths and a remainder. The bug was on the half that had not
   been given the same treatment.
 - **A tier collapsing into its neighbour is invisible from either end.** Nothing errors, nothing looks
-  odd in play, and the two tiers differ elsewhere — here in ambush odds — so the feature still *seems*
+  odd in play, and the two tiers differ elsewhere, here in ambush odds, so the feature still *seems*
   to distinguish them. Multiplying a documented rate table out by hand is the only thing that finds it.
 - **Before changing a rate, ask what else is measured in the same units of time.** Anything rolled per
   turn is coupled to anything that changes how many turns there are. That coupling is not visible in
@@ -3934,7 +3934,7 @@ read the old run, saw everything settled, and reported `ALL-SETTLED` within seco
 CI could not possibly have finished. I read it as the new state and said so.
 
 **The tell was arithmetic, not intuition.** CI here takes minutes, so a fully settled result seconds
-after a push cannot be describing that push. That is the only thing available — the output carries no
+after a push cannot be describing that push. That is the only thing available, because the output carries no
 timestamp, no head SHA and no hint that it describes a commit you have already replaced.
 
 > **Resolve the head SHA and ask about that commit.** A commit cannot be stale about itself:
@@ -3957,7 +3957,7 @@ GraphQL serving stale data against REST, because a REST call a minute later show
 was not that. The sync had simply happened in between, and a watcher I set afterwards timed it. Had
 I stopped at the first explanation, *"GraphQL lags REST"* would have gone into this file as a fact,
 sounded plausible for ever, and sent somebody looking for a consistency bug that does not exist. The
-two readings are distinguishable by one cheap experiment — poll one endpoint until it changes — and
+two readings are distinguishable by one cheap experiment, polling one endpoint until it changes, and
 I only ran it because the story felt tidier than the evidence.
 
 This is [`a capped listing answers a smaller question`](#a-capped-listing-answers-a-smaller-question-and-nothing-in-the-output-says-so)
@@ -3965,17 +3965,17 @@ with the world not merely smaller but *older*, and it is
 [`a search that finds nothing`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
 one step further along: there the wrong answer is blank and at least invites a second look, here it
 is fully populated. All three share the family with
-[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) — a tool declining to
+[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass), and a tool declining to
 answer the question asked, and the silence being read as the answer.
 
 ## A mod cannot shadow a vanilla type, and the method's own summary says the opposite
 
 Two sub-mods waiting to merge here replace a vanilla behaviour by declaring a class with vanilla's
-**exact fully-qualified name** and expecting type resolution to prefer theirs — `XRL.World.Parts.
+**exact fully-qualified name** and expecting type resolution to prefer theirs, as in `XRL.World.Parts.
 Experience` in one, `XRL.World.ZoneBuilders.SixDayTents` in the other. It does not work, and it has
 never worked.
 
-`ModManager.ResolveType` is where every XML-named extension point in the game arrives — **87 call
+`ModManager.ResolveType` is where every XML-named extension point in the game arrives, across **87 call
 sites**, covering parts, skills, mutations, effects, zone builders, biomes, embark modules,
 genotypes and populations. Its summary reads:
 
@@ -3993,12 +3993,12 @@ if ((object)value == null)
 ```
 
 `Type.GetType` with a namespace-qualified but not assembly-qualified name searches the **calling**
-assembly, and the caller is `Assembly-CSharp` — which is where vanilla's types live. So it finds
+assembly, and the caller is `Assembly-CSharp`, which is where vanilla's types live. So it finds
 vanilla's, returns it, and `ModAssemblies` is never reached. The resolution cache has exactly one
 writer, inside this method, so nothing can seed a mod type ahead of it either.
 
 **Measured rather than reasoned.** A reading this load-bearing deserved an experiment, so I built
-two assemblies — a host and a separately compiled library — both declaring the same
+two assemblies, a host and a separately compiled library, both declaring the same
 fully-qualified type, and reproduced the method's structure over them:
 
 | what declares the name | result |
@@ -4010,19 +4010,19 @@ The second row is the control, and it is the half that matters: the probe *can* 
 type, so the first row is a finding rather than a rigged setup.
 
 > **A mod type can only ever win a name vanilla does not already use.** That is the exact opposite
-> of shadowing, and it means a whole-file fork of a vanilla class is inert — it compiles, it ships,
+> of shadowing, and it means a whole-file fork of a vanilla class is inert: it compiles, it ships,
 > it loads, and nothing ever constructs it.
 
 **Freehold names this and warns about it, which I did not expect.** `ModManager.CheckXRLConflicts`
 walks every active mod's exported `XRL.*` types, and where the base assembly declares the same full
 name it records a conflict, writes `==== TYPE CONFLICTS DETECTED ====` to the build log, and raises
 a mod error ending *"It's strongly recommended to rename your type to be unique."* It is called
-unconditionally straight after `BuildMods()` — I checked the caller, because a mechanism with none
+unconditionally straight after `BuildMods()`. I checked the caller, because a mechanism with none
 is decoration. So this is not an undocumented corner: it is a thing the game detects, reports, and
 tells you to stop doing.
 
 **The constructive half, and it is the useful one.** The same resolver that refuses to shadow
-resolves a *uniquely named* mod type without complaint — that is the branch the control row above
+resolves a *uniquely named* mod type without complaint, and that is the branch the control row above
 exercises. So the route for replacing a vanilla behaviour is never "declare their name"; it is
 **declare your own name and get the game to ask for it**, which is exactly what a prefixed part,
 mutation `Class`, or `<builder Class=>` already does. This fork has been doing that by accident of
@@ -4030,17 +4030,17 @@ convention all along: 103 public types across 81 files, and **zero** collisions 
 4,833 classes.
 
 Related: [`a mod's reach ends where nothing in XML names the object`](#a-mods-reach-ends-where-nothing-in-xml-names-the-object)
-is the constraint this sits inside — a unique name only helps where something in `Base/` can be made
+is the constraint this sits inside: a unique name only helps where something in `Base/` can be made
 to ask for it. And
 [`vanilla builds mechanisms it never wires up`](#vanilla-builds-mechanisms-it-never-wires-up-and-the-unused-half-is-usually-complete)
 is what the port turned out to need: `IXPEvent.TierScaling` is a public flag, read by vanilla's
-`Experience` part, that **nothing in the game ever sets false** — the switch for replacing exactly
+`Experience` part, that **nothing in the game ever sets false**, the switch for replacing exactly
 the behaviour the shadowing mod was trying to replace.
 
 ## The index is for reading first, and I keep using it to confirm afterwards
 
 `docs/WIKI.md` exists because I asked for it, and this file already carries one entry about not
-reading it — [`I built the reference, then did not read it`](#i-built-the-reference-then-did-not-read-it),
+reading it, in [`I built the reference, then did not read it`](#i-built-the-reference-then-did-not-read-it),
 written after I re-derived `<mixin>` out of the decompiled loader that `Modding:Objects` documents
 nine times. That entry ends with the instruction: **read Freehold's page on it before reading the
 assembly.**
@@ -4049,7 +4049,7 @@ I did it the other way round twice more in a single session, and the second time
 asked to check the wiki.
 
 **#775.** I read `ModManager.ResolveType`'s body, traced its 87 call sites, and built a two-assembly
-probe to measure the resolution order — good work, and all of it about a mechanism
+probe to measure the resolution order. Good work, and all of it about a mechanism
 [`Modding:Compatibility`](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) exists to describe.
 
 **#793.** I read `WorldFactory.LoadWorldsNode`, established that a same-named cell is replaced
@@ -4061,7 +4061,7 @@ reading a `foreach` and had no idea to look for.
 
 > **The order is the whole lesson, and getting the right answer hides it.** Both readings were
 > correct, so nothing failed and nothing prompted a second look. What the assembly cannot tell you is
-> *what to go and read* — it answers the question you already knew to ask, while the page is
+> *what to go and read*: it answers the question you already knew to ask, while the page is
 > organised around the questions somebody else knew to ask. `Priority` on a `<mixin>` was the first
 > example; the `-` builder removal is the second, and neither is discoverable from the data.
 
@@ -4070,7 +4070,7 @@ existing` answered #793's open question in about ten seconds. The assembly trace
 same answer took several passes through three methods.
 
 **What makes this recur is that reading the assembly feels like the rigorous choice**, and this
-repository's own rules encourage it — `AGENTS.md` says to verify claims about Qud against the game's
+repository's own rules encourage it, and `AGENTS.md` says to verify claims about Qud against the game's
 own files, and the wiki is a secondary source that loses to the assembly wherever they disagree. All
 true, and none of it is an argument for reading the assembly *first*. The correction is one word:
 the wiki tells you **what the mechanism is**, the assembly tells you **what this build does**, and
@@ -4084,12 +4084,12 @@ curl -s -A "$UA" "https://wiki.cavesofqud.com/index.php?title=Modding:Worlds&act
 ```
 
 `action=raw` gives wikitext rather than HTML, which greps far better than a rendered page. The browser
-user agent is not decoration — the wiki answers **403** to an unrecognised one, so `WebFetch` and a
+user agent is not decoration, because the wiki answers **403** to an unrecognised one, so `WebFetch` and a
 bare `curl` both bounce, which is recorded at the end of `docs/WIKI.md` and is its own small instance
 of this entry's problem.
 
 Related: [`my design docs assume Qud has less than it does`](#my-design-docs-assume-qud-has-less-than-it-does-and-the-error-is-always-optimistic)
-is the same optimism aimed at the game rather than at the documentation — there I assume a mechanism
+is the same optimism aimed at the game rather than at the documentation: there I assume a mechanism
 is missing, here I assume its description is.
 
 ---
@@ -4107,7 +4107,7 @@ if (!blueprint.IsBaseBlueprint()
     && IsMember(blueprint, FactionName) ...
 ```
 
-Two filters, and they read alike but do not behave alike. `IsBaseBlueprint` is unconditional —
+Two filters, and they read alike but do not behave alike. `IsBaseBlueprint` is unconditional:
 abstract parents can never come out, whatever I pass. `IsExcludedFromDynamicEncounters` is applied
 **only** when `Dynamic` is set, and `!Dynamic ||` short-circuits it away entirely otherwise.
 
@@ -4119,7 +4119,7 @@ somebody's questline.
 **What makes it dangerous is that it cannot fail visibly.** A blueprint list is a blueprint list; a
 longer one looks better than a shorter one. Nothing throws, no check fires, and a unique is rare
 enough in the pool that a dozen test spawns can all come back ordinary. I found it only because a
-`[creature]` with the wrong sprite — from my own bad wish, not from the mod — made me go and read
+`[creature]` with the wrong sprite, from my own bad wish rather than from the mod, made me go and read
 what `GetMembers` actually filters.
 
 **The lesson is not about this method.** It is that a boolean whose name describes a *category of
@@ -4129,26 +4129,26 @@ means "give me everyone, uniques included". Read the body before overriding a de
 when the override widens something.
 
 **A second lesson sits on top of the first, and I paid for it twice in one session.** I counted the
-cost of respecting the flag three times and got three different answers — 98, then 125, then 133 —
+cost of respecting the flag three times and got three different answers, 98, then 125, then 133,
 because my first pass read only each blueprint's own body. `ExcludeFromDynamicEncounters` is an
 ordinary tag: it **inherits**, and it arrives through **mixins**. `PaxKlanq2` never declares it and
 is excluded anyway, via `BasePaxKlanq`; every `Chiliad Creature` is excluded via
 `BaseChiliadCreatureStats`. I had written both up as leaks the game had missed. They were not leaks,
 they were my resolver.
 
-So: **when measuring what a blueprint "has", resolve the chain the way the game does — `Inherits`
-and `<mixin>` both — or the measurement will read as a vanilla bug rather than as your own.** The
+So: **when measuring what a blueprint "has", resolve the chain the way the game does, with `Inherits`
+and `<mixin>` both, or the measurement will read as a vanilla bug rather than as your own.** The
 `*noinherit` value is the exception that proves it matters: `Asphodel` carries the flag that way
 precisely so its children do *not* inherit it.
 
 Check before shipping any faction-to-blueprint lookup: does every faction still have members once
-the flag is respected? Here one does not. **The Hindren pool is empty** — every hindren blueprint is
-a named character or a pariah filed elsewhere — so no hindren can ever be sent. That is survivable
+the flag is respected? Here one does not. **The Hindren pool is empty**: every hindren blueprint is
+a named character or a pariah filed elsewhere, so no hindren can ever be sent. That is survivable
 only because the empty case was already guarded and the tally is spent after placement rather than
 before. Count it rather than assuming it; an empty pool is exactly the failure this trade buys.
 
 Related: [`pickeach ignores Weight, and Chance is a repeat count`](#pickeach-ignores-weight-and-chance-is-a-repeat-count)
-is the same shape in the population tables — an argument that reads as one thing, silently means
+is the same shape in the population tables: an argument that reads as one thing, silently means
 another, and produces a plausible result either way.
 
 ---
@@ -4169,14 +4169,14 @@ never consulted it:
 |---|---:|---|
 | Hitpoints | 16 | **90** |
 | gear | a dagger | Fullerite Flake Armor, Long Sword4, 2 grenades, a rifle |
-| resistances | — | 25% heat / cold / electric |
+| resistances | - | 25% heat / cold / electric |
 
 The Templar pool runs from level 9 to 39 and is mostly level-24 knights, so "two or three ordinary
 faction members" was two or three fully equipped knights with the number twelve written on them. A
 character died to it, in the first session the feature was played.
 
 **`HeroMaker`'s `TierOverride` is not a rescue either**, which is the part I would have assumed. It
-reaches `MutateFromPopulationTable` and `inventoryTier` — it scales what *HeroMaker adds* and never
+reaches `MutateFromPopulationTable` and `inventoryTier`, so it scales what *HeroMaker adds* and never
 touches the base blueprint. So the feature that looked more careful, because it went through
 `HeroMaker`, had exactly the same defect.
 
@@ -4188,7 +4188,7 @@ then sends nobody, which is the honest failure.
 **Three things this cost me that are worth carrying forward:**
 
 1. **A stat is not a difficulty dial.** In a data-driven game, a creature's threat lives in its
-   blueprint — hit points, armour, inventory — and a derived-looking number like `Level` is mostly a
+   blueprint, covering hit points, armour and inventory, and a derived-looking number like `Level` is mostly a
    label. Ask what actually reads the field before using it as a lever.
 2. **The documentation made it worse, not better.** I wrote "at my level, give or take two" into
    `docs/FEATURES.md` and a PR body, and the confident phrasing is exactly why nobody looked again.
@@ -4200,10 +4200,10 @@ then sends nobody, which is the honest failure.
 A related trap on the same fix: `Statistic.sValue` is a **separate string field** from `BaseValue`, so
 a blueprint written `<stat Name="Level" sValue="18-29" />` reports a level of **zero** through
 `Stat("Level")`. Two Barathrumite blueprints are written that way, and a bare read would have dropped
-both silently — leaving that faction able to send nothing but chromelings. Take the lower bound.
+both silently, leaving that faction able to send nothing but chromelings. Take the lower bound.
 
 Related: [`a default argument was hiding every named character in the game`](#a-default-argument-was-hiding-every-named-character-in-the-game)
-is the same session and the same shape — a field that reads like a description and behaves like a
+is the same session and the same shape: a field that reads like a description and behaves like a
 control.
 
 ---
@@ -4232,24 +4232,24 @@ public bool TryGetAttribute(string Prefix, out string Value)
 ```
 
 `GetAttribute` returns the first attribute that does **not** match the prefix it was handed, with
-that prefix's length sliced off the front of it — and throws `ArgumentOutOfRangeException` outright
+that prefix's length sliced off the front of it, and throws `ArgumentOutOfRangeException` outright
 when the non-matching attribute is shorter than the prefix. It is wrong in every case except an
 empty list, where it correctly returns the default.
 
 **The trap is not the bug, it is which one you reach for.** `GetAttribute(prefix, default)` is the
-more inviting signature — one line, no `out`, a default already provided — and it is the broken one.
+more inviting signature, one line with no `out` and a default already provided, and it is the broken one.
 `TryGetAttribute` is clumsier to call and correct. I would have used the convenient one without
 looking if I had not been reading the class for another reason.
 
 **So: when two overloads of the same idea sit side by side, read both before choosing.** A codebase
 that offers `Get` and `TryGet` has usually written them at different times, and there is no rule
 saying the pleasant one is the maintained one. This is Freehold's code, not a mod's, and it has
-presumably been wrong for a long time without anybody noticing — which is what a method nothing calls
+presumably been wrong for a long time without anybody noticing, which is what a method nothing calls
 looks like.
 
 Related: [`a default argument was hiding every named character in the game`](#a-default-argument-was-hiding-every-named-character-in-the-game)
 and [`writing Level on a creature scales nothing`](#writing-level-on-a-creature-scales-nothing-and-the-number-makes-it-look-like-it-did)
-are the same session's other two — an argument, a field and now a method, each reading like one thing
+are the same session's other two: an argument, a field and now a method, each reading like one thing
 and behaving like another. The common defence is the same: read the body before trusting the name.
 
 ---
@@ -4259,7 +4259,7 @@ and behaving like another. The common defence is the same: read the body before 
 A part on a `<choice>` answered `IsElementVisibleEvent` correctly and never once received
 `PrepareTextEvent`, so the node it led to printed a raw `=Vixy_ritualreport=` token at a player.
 
-**Conversation events do not cascade down the way min events do — they bubble up.**
+**Conversation events do not cascade down the way min events do; they bubble up.**
 `Modding:Conversations` says it plainly:
 
 > an event fired on a choice will first be handled by parts on the choice itself, then its parent
@@ -4270,23 +4270,23 @@ the node's text; my part lived on the node's child. Upward propagation never rea
 part was simply never asked.
 
 **The fix is a second copy of the same part on the node**, and the reason that is safe is the second
-half of the mechanism. Propagation is split by perspective — `Listener` for what I say, `Speaker` for
-what they say — and a part registers for the perspective it is placed in unless `Register` overrides
+half of the mechanism. Propagation is split by perspective, `Listener` for what I say and `Speaker` for
+what they say, and a part registers for the perspective it is placed in unless `Register` overrides
 it (`IConversationPart.Register` maps listener/player to 1, speaker to 2, all to 3). So the copy on
 the choice is a Listener part answering that choice's visibility, and the copy on the node is a
 Speaker part filling the text. **Without that split the node's copy would also receive the bubbled
-visibility events of the node's other choices** — including its two exits — and a part that returns
+visibility events of the node's other choices**, including its two exits, and a part that returns
 false below a threshold would hide them and strand the player in the node.
 
 **The wiki documents both halves, and I read the assembly instead.** This is the second entry on that
 exact habit; the first is [`the index is for reading first`](#the-index-is-for-reading-first-and-i-keep-using-it-to-confirm-afterwards).
 There I established the rule after doing it twice in one session. Here I did it again, on a page
-`docs/WIKI.md` indexes by name, describing the precise mechanism I was guessing at — and the
+`docs/WIKI.md` indexes by name, describing the precise mechanism I was guessing at, and the
 maintainer pointed me at it after the symptom appeared in play.
 
 So the operational form, since the general form has not worked: **before writing a conversation part,
 read `Modding:Conversations`.** Not after it misbehaves. The page has a Parts section, an Events
-section explaining bubbling and perspective, and tables of the existing parts and delegates — several
+section explaining bubbling and perspective, and tables of the existing parts and delegates, several
 of which would have made a custom part unnecessary at all.
 
 Related: [`two adjacent methods, one of them inverted`](#two-adjacent-methods-one-of-them-inverted-and-the-broken-one-has-the-friendlier-name)
@@ -4304,17 +4304,17 @@ introductions, and wrote a list of three phrasings narrow enough to exclude them
 
 Both halves of that were wrong.
 
-**The false positives did not exist.** They were `<text>` on **nodes** — the speaker's words, not the
+**The false positives did not exist.** They were `<text>` on **nodes**: the speaker's words, not the
 player's. My regex, `<choice[^>]*>(.*?)</choice>` with `re.S`, had run together sibling elements and
 produced blobs containing both a choice and the node text around it. The runtime never sees those: it
 tests one choice's texts at a time.
 
 **And the narrow list missed a real one.** `MehmetIntroduce` reads *"I am called =name="*, which
 matches none of `I am =name=` / `My name is =name=` / `call me =name=`. So introducing yourself to
-Mehmet the way the game offers set nothing, and the gate stayed shut — the precise dead end the part
+Mehmet the way the game offers set nothing, and the gate stayed shut, the precise dead end the part
 had been written to prevent. It shipped to a test build and the maintainer hit it within minutes.
 
-**Parsed properly — per choice, per text, the way the code does — the answer was simpler than any of
+**Parsed properly, per choice and per text, the way the code does, the answer was simpler than any of
 it.** 35 choice texts in vanilla contain `=name=` and **all 35 are introductions**. A choice is what
 the player says and `=name=` is the player's own name, so the bare token is the whole test. The phrase
 list was defending against a phantom while letting a real case through.
@@ -4322,7 +4322,7 @@ list was defending against a phantom while letting a real case through.
 **The lesson is not "parse XML properly", though I should have.** It is that a heuristic must be
 validated **at the same granularity the runtime applies it**. I tested against concatenated blobs and
 tuned the rule to fit them, so the rule I built was fitted to an artefact of my own tooling. Had I
-tested per-element from the start, the correct rule would have been visible immediately — and it was
+tested per-element from the start, the correct rule would have been visible immediately, and it was
 both simpler and more robust than the one I reasoned my way to.
 
 Related: [`conversation events bubble up`](#conversation-events-bubble-up-and-i-attached-the-part-to-the-wrong-element)
@@ -4332,15 +4332,15 @@ the data, which is the expensive order twice over.
 ## `SetFinalizedChance` resets the multiplier, so "finalize" silently overrules other skills
 
 `Vixy_Fangs` is a secondary intrinsic attack, and #819 started as *"the bite hardly ever procs."* The
-number looked defensible in isolation — vanilla's `HornsProperties` sets 20 against an engine base of
-`RuleSettings.BASE_SECONDARY_ATTACK_CHANCE = 15` — and it was wrong in two directions at once, both
+number looked defensible in isolation, since vanilla's `HornsProperties` sets 20 against an engine base of
+`RuleSettings.BASE_SECONDARY_ATTACK_CHANCE = 15`, and it was wrong in two directions at once, both
 because of one method.
 
 **It throws away every bonus that ran before it.** The three passive Multiweapon skills add `+20`,
 `+15` and `+15` to `GetMeleeAttackChanceEvent` on the *identical* condition
 `E.Intrinsic && !E.Primary`. `HornsProperties` then calls `E.SetFinalizedChance(20)` and returns
 `false`, so the accumulated 65 becomes 20 and the event stops. Training the one skill line a bite
-character would obviously take made the bite *relatively worse* — 20 beside 65 — and nothing said so.
+character would obviously take made the bite *relatively worse*, 20 beside 65, and nothing said so.
 
 **And it resets `Multiplier` to 1.0, which is how Single Weapon Fighting pays its own cost.** That
 skill is a toggle; while it is on, `SingleWeaponFighting_Ability` sets `E.Multiplier = 0.0` on every
@@ -4361,7 +4361,7 @@ Three things worth carrying forward:
   handlers in a pass *before* the parts loop. Where an interaction depends on order, look for an
   explicit registration order rather than reasoning about part insertion.
 - **A flat number is only defensible against what else is on the ledger.** 20 against a base of 15 is
-  fine; 20 against a trained character's 65 is a defect. The value was never the problem — comparing
+  fine; 20 against a trained character's 65 is a defect. The value was never the problem; comparing
   it against one neighbour instead of the whole event was.
 
 The Single Weapon Fighting half was found by a player asking whether Fangs cancelled the skill, mid
@@ -4382,7 +4382,7 @@ predicts play.
 | `AIWorldMapTravel` | complete world-map travel, **0 blueprints carry it**, one runtime user | #832, asked whether warbands travel |
 
 **The failure mode is specific and it is not "the feature is missing".** It is reading a working
-mechanism, concluding the behaviour exists, and building on top of it — or telling the maintainer it
+mechanism, concluding the behaviour exists, and building on top of it, or telling the maintainer it
 exists. `ConversationDelegate.Require` is the sharpest case: its own doc comment says it *"greys out
 and prevents navigation instead of visibility"*, `Require` defaults to **true**, and
 `CreatePredicate` never reads the field. Believing the comment would have shipped a discoverability
@@ -4392,21 +4392,21 @@ fix that does nothing.
 
 - **Count the uses in vanilla's data**, not just the code. `grep -c` over `Base/` answers this in a
   second and is the single highest-value check in this repository.
-- **Check the registration, not the declaration.** A field can be public, documented and inert —
+- **Check the registration, not the declaration.** A field can be public, documented and inert.
   `Require` is read nowhere, and `RegenTime` is only consulted inside an `else if` that an empty
   string skips.
 - **Be careful about what "unused" implies.** It cuts both ways. Of vanilla's 57 conversation
-  predicates, **29 are never used**, and 16 of 27 actions — so being unexercised is the *default
+  predicates, **29 are never used**, and 16 of 27 actions, so being unexercised is the *default
   state* of a delegate there, not a warning. I over-alarmed about `AddIntState`'s zero uses on that
   basis and had to correct it. Unused means untested, not broken.
 
 **And the opposite reading is often the opportunity.** Four of the five above are features that could
 be switched on rather than written: `RegenTime` is one XML attribute per blueprint, `AIWorldMapTravel`
 needs a part attached to something. Freehold built more than it wired up, and the cheapest content in
-this fork has repeatedly been finding the wire rather than the mechanism — `Heightened Smell` (#593)
+this fork has repeatedly been finding the wire rather than the mechanism: `Heightened Smell` (#593)
 was exactly that, a complete mutation with art and a cost sitting in `HiddenMutations.xml`.
 
-**Every one of these five was found by a question rather than by a plan** — four of them the
+**Every one of these five was found by a question rather than by a plan**, four of them the
 maintainer's, asked in passing. Reading the assembly answers "how does this work". It does not answer
 "does this happen", and only play or a usage count will.
 
@@ -4423,11 +4423,11 @@ jq: parse error: Invalid string: control characters from U+0000 through U+001F m
 ```
 
 `comm` was reading `jq`'s empty stdout as one side of the comparison, so **every open issue came back
-as missing from the board** — seventeen numbers, correctly formatted, in a list I published before
+as missing from the board**: seventeen numbers, correctly formatted, in a list I published before
 noticing. The board was complete throughout.
 
 **`gh project item-list --format json` can emit JSON that `jq` refuses.** The cause is a raw newline
-inside a JSON string — an item whose title or body contains one — and nothing about that is exotic: it
+inside a JSON string, an item whose title or body contains one, and nothing about that is exotic: it
 depends only on what somebody typed into an issue. `json.loads(raw, strict=False)` parses it happily
 and `jq` has no equivalent switch, so anything cross-checking the board should parse in Python rather
 than assume the dump is clean.
@@ -4438,7 +4438,7 @@ than assume the dump is clean.
 > difference.
 
 **My first fix was wrong and looked right, which is the half worth keeping.** I read *control
-characters*, reached for `tr -d '\000-\010\013\014\016-\037'`, and it changed nothing — `tr`
+characters*, reached for `tr -d '\000-\010\013\014\016-\037'`, and it changed nothing, because `tr`
 spares `\n` by construction, so the remedy could not have addressed the cause I had just named. What
 exposed it was putting a sanity check in the same command as the fix: the parse failed again in the
 same breath. Had I run the fix alone and moved on, *"strip the control characters"* would have gone
@@ -4446,7 +4446,7 @@ into this file as a working answer to a problem it does not touch.
 
 Related: [`a search that finds nothing has two explanations, and one of them is the search`](#a-search-that-finds-nothing-has-two-explanations-and-one-of-them-is-the-search)
 is the same disease with an empty result rather than a full one, and
-[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member —
+[`"could not determine" is not a pass`](#could-not-determine-is-not-a-pass) is the third member:
 in all three a tool declines to answer and the silence is read as the answer. This one is the worst of
 the family, because there is no silence to notice.
 
@@ -4462,7 +4462,7 @@ Three in one week, and each cost real time before the grep that settled it in se
 
 Each looked load-bearing at the point I met it, because each was *named* for the thing I was
 investigating. `quicksleep` sat in a call I had written myself, passed alongside `forced` and
-`Voluntary`, which do work — so a collapse that seemed too short had an obvious explanation sitting
+`Voluntary`, which do work, so a collapse that seemed too short had an obvious explanation sitting
 right there in my own code, and I went looking for how it compressed the turns. It compresses
 nothing. The real answer was that `Asleep` prints *"You are asleep."* only when it is not already the
 last line, so an entire sleep leaves one message behind (#854).
@@ -4474,19 +4474,19 @@ until it turned out that nothing happens to anything (#862).
 
 **So: before reasoning about what a flag does, grep for who reads it.** In this repo that is
 `rg -n "<name>" dump/` over an `ilspycmd -p` dump, plus the same over
-`StreamingAssets/Base` — a public API can be reached from XML as well as from code, and checking one
+`StreamingAssets/Base`. A public API can be reached from XML as well as from code, and checking one
 is not checking both. It is thirty seconds against a hypothesis that can absorb an afternoon.
 
 Related: [`Discovery attributes fail by doing nothing`](#discovery-attributes-fail-by-doing-nothing)
-is the mirror image — there, a marker that is *absent* silently does nothing; here, a value that is
+is the mirror image: there, a marker that is *absent* silently does nothing; here, a value that is
 *present* silently does nothing. Both read as working code.
 
 ## A ratio ceiling forbids everything where the denominator is nearly zero
 
 `scatter-share` caps this fork at half a vanilla table's expected objects, and that is right in every
-table it was written against. `SaltDesertZoneGlobals` holds **1.80** expected objects — against 43 in
+table it was written against. `SaltDesertZoneGlobals` holds **1.80** expected objects, against 43 in
 the hills and 282 in the saltmarsh, because the salt flats are deliberately the emptiest zone in the
-game — so the ceiling there was 0.9 objects, and no findable plant can fit under it.
+game, so the ceiling there was 0.9 objects, and no findable plant can fit under it.
 
 The check reported 81.7%. **I obeyed the number instead of reading it**, cut dunelace six-fold to 1.35
 plants a zone against the mod's next-sparsest at 6.3, and shipped it. A playtest crossed eighteen salt
@@ -4496,26 +4496,26 @@ ratio meant.
 **What the ceiling is actually for is stated in `docs/STYLEGUIDE.md` §3.2.1**: at the low tiers most of
 what a player *meets* should still be the game they bought. In a zone of 80×25 cells holding 1.80
 scattered objects, there is nothing to drown out and what the player meets is terrain. So the fix was
-an absolute floor beneath the ratio — ten expected objects, half a percent of a zone's cells — and not
+an absolute floor beneath the ratio, at ten expected objects or half a percent of a zone's cells, and not
 a smaller number.
 
 **The general shape: a proportional guard needs a floor wherever its denominator can approach zero.**
 Half of almost nothing is a prohibition, and a prohibition dressed as a percentage does not read like
 one. It arrives as a specific, plausible figure with a specific, plausible fix attached, and the fix
-makes the content worse in a way nothing downstream measures — `validate_mod.py` went green,
+makes the content worse in a way nothing downstream measures. `validate_mod.py` went green,
 `check_docs.py` went green, 692 tool tests passed, and the plant was invisible.
 
 Ask what a check is protecting before you satisfy it. If satisfying it costs the feature the check
 exists to let you ship, the check has found its own edge rather than yours.
 
 Related: [`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
-is the same boundary from the other side — there the checks could not see the problem, here they
+is the same boundary from the other side: there the checks could not see the problem, here they
 created it. Both end in the same place: the game is the only oracle for whether content is *there*.
 
 ## A name the game rebuilds is not a name you may choose
 
 `IngredientMapping` blueprints carry a `CookingDomain` tag, and it genuinely settles which domain a
-blueprint declares — `GetRandomTypeListInternal` reads the tag and falls back to `Split('_')[^1]` only
+blueprint declares, because `GetRandomTypeListInternal` reads the tag and falls back to `Split('_')[^1]` only
 when it is absent. Having read that, I named mine `Vixy_ProceduralCookingIngredient_Rested` to satisfy
 `docs/STYLEGUIDE.md` §3.1's prefix rule, and considered the naming question closed.
 
@@ -4531,14 +4531,14 @@ every single ingredient carrying the domain, thrown inside `GameObjectFactory.Cr
 `catch` turns it into a `PhysicalObject` named `[invalid blueprint:Vixy_Dried Dunelace]` with a `?`
 glyph.
 
-**Three things made it survive to a playtest.** The message names the blueprint that is *fine* — the
+**Three things made it survive to a playtest.** The message names the blueprint that is *fine*, not the
 missing one is never mentioned. The exception is swallowed into an item's own description rather than
 logged where anyone would look. And every static check passed, correctly: the reference really was to
 a blueprint this mod really does define.
 
 **The general shape: a tag that controls a lookup does not control a reconstruction.** Reading the
 resolver is not the same as reading every consumer, and a configurable name is only configurable in
-the direction you read. Before treating a name as free, grep the *string* — `"Prefix_" +`
+the direction you read. Before treating a name as free, grep the *string*, as in `"Prefix_" +`
 concatenation is invisible to a search for the blueprint name, which is exactly why it is worth
 searching for the prefix instead.
 
@@ -4547,7 +4547,7 @@ string, which nothing reconstructs: `ProceduralCookingIngredient_vixyRested`, al
 `NEW_UNPREFIXED` beside `TrueKin` and `PsionicAdept` for the same reason those are there.
 
 Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
-is the mirror — there a value had no consumers, here a name had one more than I looked for. Both are
+is the mirror: there a value had no consumers, here a name had one more than I looked for. Both are
 answered by grepping consumers rather than reasoning from the definition.
 
 ## Reading how a list is built is not reading what happens when you pick from it
@@ -4555,7 +4555,7 @@ answered by grepping consumers rather than reasoning from the definition.
 Chargen's cybernetics list is built by `QudCyberneticsModule` from
 `GetBlueprintsWithTag("StartingCybernetic:General")`. I read that, found this fork's implants absent
 from the list, and wrote a whole issue arguing which of them belonged there **in terms of licence
-cost** — vanilla's chargen implants are all cost 1 or 2, is 1 point for +1 AV fair against vanilla's
+cost**. Vanilla's chargen implants are all cost 1 or 2, is 1 point for +1 AV fair against vanilla's
 3, does 1 point for 1d5 make a budget tier under carbide's 2 points for 2d3.
 
 Chargen never charges licence points. Twenty lines further down the same file:
@@ -4568,7 +4568,7 @@ else              { part.GetRandomElement().Implant(gameObject2); }   // no dedu
 
 The pick is free and leaves the pool intact; the only write is the *decline* branch, which forfeits
 the pool for +1 Toughness. So every argument I had made was about a price nobody pays, and two of my
-three conclusions inverted once that was corrected — a strictly weaker implant is a **trap** on a free
+three conclusions inverted once that was corrected: a strictly weaker implant is a **trap** on a free
 list where it had looked like a budget option.
 
 **The shape: I read the producer and stopped.** The list-building code answered "what appears", which
@@ -4579,7 +4579,7 @@ This is the second instance in a week. #858's cooking domain was the same: `Cook
 controls the resolver I read, and a *different* consumer rebuilds the blueprint name by concatenation,
 so the name I chose threw on every object that carried it.
 
-**Before reasoning about a value, find every place it is read** — not the one that answered the
+**Before reasoning about a value, find every place it is read**, not the one that answered the
 question you arrived with. `Cost` is real and does matter, at the cybernetics terminal in play; it
 just says nothing about chargen, and the correlation vanilla shows there is evidence about Freehold's
 taste rather than a mechanic.
@@ -4588,17 +4588,17 @@ Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-
 is the same instrument pointed at a value with *no* readers. Here the value had readers, and I found
 the wrong one.
 
-## An identifier with no referent in the data can still be checked — against the game
+## An identifier with no referent in the data can still be checked, against the game
 
 `Tile="Terrain/sw_brush_2.bmp"` is a string. Nothing in the game's XML defines it, nothing points at
 it, and every static check in this repo passed a blueprint carrying it. Qud renders a missing tile as
-a solid coloured block, so the failure is invisible until somebody is standing in front of it — and
+a solid coloured block, so the failure is invisible until somebody is standing in front of it, and
 three had shipped by the time anyone was: two of dunelace's three names (#858), the sleep
 suppressor's, and the steel fist's, that last one from before this fork existed.
 
 **I twice concluded the set was not enumerable, and twice that was wrong.** The textures are packed
 into Unity assets rather than sitting on disk, and `find` over `StreamingAssets` returns no `Terrain`
-directory at all. From that I reasoned to a proxy — "is this name referenced by vanilla's own XML" —
+directory at all. From that I reasoned to a proxy, "is this name referenced by vanilla's own XML",
 which reports a perfectly real sprite as missing whenever no blueprint happens to use one, and I
 wrote that limitation into an issue as though it were a property of the problem. The second attempt
 was worse: I took a sighting in the character-creation UI as confirmation, without checking that the
@@ -4611,10 +4611,10 @@ check is exact, needs no allowlist, and cannot false-positive.
 **The shape: "the data does not define it" is a fact about the data, not about the world.** A
 compiled binary, a packed asset bundle and a save file are all readable, and this repo already reads
 the first for part names. Before recording that something cannot be verified, ask which artefact
-would know — and validate the method on a case whose answer you already have, which is what finally
+would know, and validate the method on a case whose answer you already have, which is what finally
 separated a working extraction from two confident wrong ones.
 
-Related: [`The vanilla game data is readable — check it`](#the-vanilla-game-data-is-readable--check-it)
+Related: [`The vanilla game data is readable, so check it`](#the-vanilla-game-data-is-readable-so-check-it)
 is the same instrument one artefact earlier, and
 [`Static checks answer "is it correct". Launching answers "does it happen"`](#static-checks-answer-is-it-correct-launching-answers-does-it-happen)
 is the boundary this moved: three of these needed the game to *see*, and now none of them does.
@@ -4624,13 +4624,13 @@ is the boundary this moved: three of these needed the game to *see*, and now non
 #633 wants NPCs who open up over repeat visits, and vanilla already counts them. Every conversation
 with every NPC runs `ParentObject.ModIntProperty("ConversationCount", 1)` at `ConversationScript.cs:160`.
 Nothing reads it but the `== 1` pronoun check on the next line, and no conversation predicate exposes
-it — which is the whole of what the issue asks for.
+it, which is the whole of what the issue asks for.
 
 Investigating it, I found the counter free after all. `IfHaveProperty` carries `Speaker = true`, so
 `IfSpeakerHaveProperty` exists without being declared; `HasProperty` checks the `IntProperty`
 dictionary as well as `Property`, so it can see an int property even though it cannot compare one.
 The key is created by the first conversation. Therefore `IfSpeakerHaveProperty="ConversationCount"`
-already means *have I met this person before*, in pure XML, with no C# at all — and I wrote that up
+already means *have I met this person before*, in pure XML, with no C# at all, and I wrote that up
 as the recommended first step, on the strength of it being free.
 
 It is true of every NPC in the game, from the first line of the first conversation.
@@ -4650,11 +4650,11 @@ if (element is Choice choice && choice.IsVisible() && ...)   // 505 - visibility
 ```
 
 The increment lands before any choice list is ever composed. So the property exists, and the
-predicate fires, and it fires always — it answers *is a conversation open*, which nothing needed to ask.
+predicate fires, and it fires always: it answers *is a conversation open*, which nothing needed to ask.
 
 **The shape: I confirmed that the value is written and that the predicate reads it, and treated the
 pair as a mechanism.** Whether it can answer the question depends on a third fact that neither file
-states — which of the two runs first. A write and a read that are each correct still compose into
+states, meaning which of the two runs first. A write and a read that are each correct still compose into
 nothing when the write cannot be observed from before itself.
 
 Two things fall out of the correction, and both are worth keeping:
@@ -4664,7 +4664,7 @@ Two things fall out of the correction, and both are worth keeping:
 - **Per-NPC counting is closed in XML in both directions.** The action list has `SetIntProperty`
   (sets, and carries `Speaker = true`) and `AddIntState` (increments, but into global game state).
   There is no `AddIntProperty` and no `ModIntProperty`, and `IfSpeakerHaveProperty` is existence-only
-  — so a per-NPC counter can be neither incremented nor compared without C#. Vanilla's own
+  so a per-NPC counter can be neither incremented nor compared without C#. Vanilla's own
   `AskedKithKin` pair is the shape that *is* available, and it is deliberately boolean.
 
 Related: [`A flag that is plainly set is not a flag that is read`](#a-flag-that-is-plainly-set-is-not-a-flag-that-is-read)
@@ -4674,7 +4674,7 @@ is the same ordering question asked about membership rather than about a thresho
 
 ## My screen was wrong about exactly one conversation, and it was the one I was looking for
 
-Screening candidates for #633's fifth cast, I needed to skip anyone who only emotes — §26's test,
+Screening candidates for #633's fifth cast, I needed to skip anyone who only emotes, which is §26's test,
 which asks whether a speaker says anything once every `{{emote|…}}` span is stripped. My screen read
 each conversation's `node/text` elements, stripped the emotes, and called the remainder mute if
 nothing was left.
@@ -4688,34 +4688,34 @@ Vanilla writes a speaker's words at least three ways, and I had implemented one:
 ```
 
 The second puts the text in the node's own character content with no `<text>` wrapper. The third uses
-a `<start>` element rather than `<node ID="Start">` — the same pair `DistributeChildren` matches, and
+a `<start>` element rather than `<node ID="Start">`, the same pair `DistributeChildren` matches, and
 which §61.5e already relies on from the other direction.
 
 **Neither shape is rare.** 45 elements carry their speaker text as bare content, across 16
 conversations, and 38 conversations use a `<start>` element. Against 1,297 elements using a `<text>`
-child, though, they are almost always *accompanied* — a conversation that puts one node's words in
+child, though, they are almost always *accompanied*, in a conversation that puts one node's words in
 bare content usually wraps another's, so the naive test finds something and reports a talker.
 
 So the two tests disagree about **exactly one conversation in the whole file**. That sounds like a
-tolerable error rate and it is not, because the one is `WardenEsthers` — who greets you at the
+tolerable error rate and it is not, because the one is `WardenEsthers`, who greets you at the
 entrance to the Six Day Stilt, every visit, in a feature explicitly about people you go back to. Her
 conversation uses only the two shapes I had not implemented, so she scored zero words and I wrote her
 down as mute. She has a full greeting and six choices.
 
 **The trap is the direction the failure runs.** A mute test that is wrong in this direction *removes*
 somebody, and a removal makes no noise. Nothing fails, no check fires, the cast is one person smaller,
-and the write-up explains — with counts, in confident prose — why that person cannot be written. Had
+and the write-up explains, with counts, in confident prose, why that person cannot be written. Had
 the test been wrong the other way I would have found out immediately, because I would have sat down to
 write somebody and found nothing to write against.
 
 **So a screen whose failure mode is "quietly produce less" has to be verified against what it
 rejects, not what it admits.** I had checked the test by reading conversations it passed, which is
 the useless half. Reading the two it rejected took two minutes and changed the cast. The general
-form: when a filter's output is content, audit the discard pile — it is the only place its mistakes
+form: when a filter's output is content, audit the discard pile, because it is the only place its mistakes
 are visible.
 
 Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
-is the same file and nearly the same mistake, one feature earlier — there I ran sibling elements
+is the same file and nearly the same mistake, one feature earlier: there I ran sibling elements
 together and tuned a rule to fit the artefact; here I read one of three encodings and trusted the
 silence from the other two. Both are cases of testing my own parse instead of the data.
 
@@ -4725,12 +4725,12 @@ silence from the other two. Both are cases of testing my own parse instead of th
 exchanges. It has now been wrong three times, in a pattern worth naming.
 
 **#881 read the greeting.** A conversation whose start node is emote-only was silent. That silenced
-everyone who opens with a gesture and then talks — Neek, the Chavvah chimes, Lebah, Tammuz.
+everyone who opens with a gesture and then talks: Neek, the Chavvah chimes, Lebah, Tammuz.
 
 **#885 widened it to the whole conversation.** Does this speaker say a non-emote word *anywhere*? That
 fixed the four above, and admitted the mirror case: somebody silent **now** whose words are behind a
-quest. Nacham, Dagasha, Kah and Va'am are bound machines that cannot speak — Nacham *"gives no
-indication of understanding"* — and every word they will ever say sits behind one choice gated
+quest. Nacham, Dagasha, Kah and Va'am are bound machines that cannot speak, and Nacham *"gives no
+indication of understanding"*, and every word they will ever say sits behind one choice gated
 `IfHaveBlueprint="Repulsive Device"`. So the game offered to let me introduce myself to a bound,
 incomprehensible machine, and answered *"=name=. I will remember it."*
 
@@ -4747,10 +4747,10 @@ question kept being asked at the wrong scope:
 |---|---|---|
 | #881 | is this speaker talking **at hello** | anyone who warms up |
 | #885 | does this speaker talk **ever, anywhere** | anyone who talks only later |
-| #633 | can this speaker talk **without a condition being met** | — |
+| #633 | can this speaker talk **without a condition being met** | - |
 
 **"Now" and "ever" are both wrong, and the right question was "reachable".** A conversation is a graph
-and I twice answered a graph question with a flat scan — first over one node, then over all of them.
+and I twice answered a graph question with a flat scan: first over one node, then over all of them.
 Neither scan could express *the words exist but you cannot get to them*, which is the only sentence
 that separates Lebah from Nacham.
 
@@ -4772,7 +4772,7 @@ have reported it silent. Both would have shipped.
 
 **A footnote added later, because the second half of that was half wrong.** `ChavvahPrime`'s start is
 `Inherits="WelcomeNoPhysiology"`, and `ConversationXMLBlueprint` resolves `Inherits` at bake, so at
-runtime it carries the inherited text outright and is found speaking the ordinary way — the hatch is
+runtime it carries the inherited text outright and is found speaking the ordinary way, and the hatch is
 not what saves it. The probe was reading unresolved XML. That direction is safe (inheritance only
 adds text, so nothing the probe called speaking can fall silent at runtime) but it means **a
 measurement taken on the data files is not a measurement of the thing the code sees**, and I stated a
@@ -4793,7 +4793,7 @@ correction came from reading the actual sites rather than from any new measureme
 
 **`PERF`, at 14 findings, looked like an easy yes.** Reading them: four `PERF203` fire on loops that
 parse one file per iteration and record the failure, where the `try`/`except` *is* the error
-isolation and the only way to satisfy the rule is to move it into a helper called from the loop —
+isolation and the only way to satisfy the rule is to move it into a helper called from the loop,
 which hides it from the linter and changes nothing else. Ten `PERF401` fire on loops appending a
 formatted diagnostic string, four of them multi-line f-strings inside a condition that read worse as
 comprehensions. It is performance advice about code with no hot path.
@@ -4803,11 +4803,11 @@ them: `D209` (158 of the 162) moves every multi-line docstring's closing quotes 
 inverting a style this repository applies consistently and fixing no defect. `D205` (168) wants a
 blank line after a summary line, and most of these docstrings open with a sentence that wraps rather
 than a summary, so satisfying it means rewriting prose. What survived was **ten findings across four
-rules**, one of which — `D301` — is the only one with any defect-prevention in it.
+rules**, one of which, `D301`, is the only one with any defect-prevention in it.
 
 ### Why the count is such a convincing wrong answer
 
-It is genuinely evidence — about **cost**. A rule reporting 900 findings will be expensive whatever it
+It is genuinely evidence, about **cost**. A rule reporting 900 findings will be expensive whatever it
 says. The mistake is reading it as evidence about **benefit**, and the two are unrelated: `D301`
 reports four and is worth having permanently, `D209` reports 158 and is worth nothing here.
 
@@ -4816,7 +4816,7 @@ almost satisfies already, and therefore one it agrees with. It can equally mean 
 applies, which is what both of these turned out to be.
 
 **"Auto-fixable" compounds it.** 162 of 178 auto-fixable sounds like the change is nearly free, and
-it is — the *diff* is free. Whether the diff is an improvement is a separate question the fixability
+it is, because the *diff* is free. Whether the diff is an improvement is a separate question the fixability
 count says nothing about, and 158 of those 162 were an unimprovement.
 
 The habit that fixes it costs about two minutes: before adopting a rule, read five of its findings.
@@ -4825,7 +4825,7 @@ avoided by doing it before recommending rather than after.
 
 Related: [`I validated a heuristic at the wrong granularity`](#i-validated-a-heuristic-at-the-wrong-granularity-and-it-was-wrong-in-both-directions)
 and [`My screen was wrong about exactly one conversation`](#my-screen-was-wrong-about-exactly-one-conversation-and-it-was-the-one-i-was-looking-for)
-are the same failing about data rather than about rules — trusting a number my own tooling produced
+are the same failing about data rather than about rules: trusting a number my own tooling produced
 without looking at what it counted.
 
 ## A search that finds nothing has two explanations, and I hit the same one three times in a row
@@ -4834,14 +4834,14 @@ Counting how many creatures carry `GivesRep`, to size a possible gate for #634. 
 zeroes, and every zero was my tooling rather than the game:
 
 1. Hand-parsed `ObjectBlueprints.xml` with `ElementTree` and asked for `<part Name="GivesRep">`
-   directly. **0** — because parts are inherited, and almost nobody declares it on themselves.
-2. Switched to the repo's own `BlueprintIndex`, which resolves `Inherits`. Still **0** — because
+   directly. **0**, because parts are inherited, and almost nobody declares it on themselves.
+2. Switched to the repo's own `BlueprintIndex`, which resolves `Inherits`. Still **0**, because
    `load_all` defaults to `lenient=False`, five vanilla files fail to parse on an invalid character
    reference, and `Creatures.xml` is one of them. It printed a warning saying so and I read past it.
-3. Passed `lenient=True` to `parse` per file and rebuilt the index by hand. Still **0** — because
+3. Passed `lenient=True` to `parse` per file and rebuilt the index by hand. Still **0**, because
    `BlueprintIndex` wanted the roots `load_all` returns and I had reimplemented the loading badly.
 
-The answer is **50 of 957**, and it arrived the moment I called `load_all(base, lenient=True)` — the
+The answer is **50 of 957**, and it arrived the moment I called `load_all(base, lenient=True)`, the
 one-line form that was available at attempt 2.
 
 This file already has an entry for this exact failure, about `IsEligibleForDynamicEncounters`
@@ -4853,7 +4853,7 @@ docstring*, which I read while writing attempt 2, and I still shipped attempt 3.
 > know. `"Tam" in idx.objects` would have returned `False` at attempts 2 and 3 and cost one line.
 
 The near miss is what makes it worth writing down. I was about to put "GivesRep: 0" into a design
-comparison offered to the maintainer as the evidence for choosing between three options — a number
+comparison offered to the maintainer as the evidence for choosing between three options, a number
 that would have argued convincingly against a gate that is in fact the second-largest of the three.
 `docs/CHARTER.md` rule 4's *"keep new checks in the script"* has no equivalent for one-off analysis,
 so the discipline has to be the positive control.
@@ -4881,8 +4881,8 @@ if (MinEvent.CascadeTo(cascadeLevel, 64))
 this is true for every event declaring that cascade. The dispatch goes **only** through
 `RegisteredEvents`. `PartsList` is never walked and `WantEvent` is never called.
 
-The fix is one line — `Registrar.Register(AIHelpBroadcastEvent.ID)`, the `int` overload on
-`IEventRegistrar` — but nothing points at it. The part compiles, loads, validates clean under every
+The fix is one line, `Registrar.Register(AIHelpBroadcastEvent.ID)`, the `int` overload on
+`IEventRegistrar`, but nothing points at it. The part compiles, loads, validates clean under every
 check this repository has, and silently does nothing.
 
 > **`WantEvent` is not how a part subscribes; it is how a part is *filtered* once the object has
@@ -4892,17 +4892,17 @@ check this repository has, and silently does nothing.
 
 **Reading the vanilla part that handles it teaches the wrong lesson**, which is what makes this
 expensive rather than merely obscure. `Brain` has a `HandleEvent(AIHelpBroadcastEvent)` and does
-*not* register for it, and its `WantEvent` list does not mention it either — so copying `Brain` gives
+*not* register for it, and its `WantEvent` list does not mention it either, so copying `Brain` gives
 you the silent version. It works for `Brain` because `AIHelpBroadcastEvent.Send` calls
 `item2.Brain.HandleEvent(E)` **directly**, by name, after the object-level dispatch. That is a
 courtesy extended to one part, not a pattern.
 
 Worth knowing what the ten existing `Registrar.Register` calls in `mod/Scripting/` are: every one is
-the *string* overload for a legacy event — `"Killed"`, `"Healing"`, `"CanTrade"`. So there was no
+the *string* overload for a legacy event: `"Killed"`, `"Healing"`, `"CanTrade"`. So there was no
 in-repo example of the `int` form to copy, and no reason to suspect one was needed.
 
-Related: [`Containment is not dispatch — check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-check-the-cascade-level-before-assuming-a-part-is-reached)
-is the same failing one step out — there the part was inside a container and outside the cascade,
+Related: [`Containment is not dispatch, so check the cascade level before assuming a part is reached`](#containment-is-not-dispatch-so-check-the-cascade-level-before-assuming-a-part-is-reached)
+is the same failing one step out: there the part was inside a container and outside the cascade,
 here it is on the object itself and outside the registry. Both are *reachability at the moment of the
 call*, and neither is visible from the handler's side.
 
@@ -4927,7 +4927,7 @@ default:
 }
 ```
 
-A section sign is U+00A7, which is 167, and the table maps 167 to 186 — `º`. So I stopped there and
+A section sign is U+00A7, which is 167, and the table maps 167 to 186, giving `º`. So I stopped there and
 wrote down that the whole of U+0080–U+00FF is unsafe everywhere. That was wrong, and the check I
 built on it failed on the first correct thing it saw.
 
@@ -4949,7 +4949,7 @@ public override string GetAttribute(string name)
 
 `ToCP437` reads `Codepage437Inverse`, so a section sign written in XML is stored as U+0015 and comes
 back a section sign. Computed against both tables, `¶ § é × ö` all round-trip exactly, and vanilla
-depends on it — `Manual.xml` ships an o-umlaut and a c-cedilla that would otherwise read as `÷` and
+depends on it, since `Manual.xml` ships an o-umlaut and a c-cedilla that would otherwise read as `÷` and
 `τ`.
 
 So the rule is not about the character. It is about whether anything undid the map before the
@@ -4959,19 +4959,19 @@ renderer applied it:
 |---|---|---|
 | an XML attribute or text node | yes | round-trips, safe |
 | a C# string literal | no | substituted once |
-| a JSON value — `JsonSerializer.Deserialize` is a plain `JsonTextReader` | no | substituted once |
+| a JSON value, where `JsonSerializer.Deserialize` is a plain `JsonTextReader` | no | substituted once |
 
 Above U+00FF nothing is touched anywhere, which is why em dashes and curly quotes have always been
 fine and why this had never bitten me before.
 
 **The near miss is the part worth keeping.** My first draft of `codepage-text` scanned XML, and it
-immediately failed `Vixy_Band`'s `RenderString="&#182;"` — the one place in this repository using
+immediately failed `Vixy_Band`'s `RenderString="&#182;"`, the one place in this repository using
 the mechanism correctly, sitting alongside vanilla's 734 uses of the three-digit form. I had it
 half-written up as a shipped rendering defect in a feature merged two days earlier.
 
 > **A renderer tells you what it does to a string, never what was done to that string before it
 > arrived.** Reading `FormatToRTF` answered "what happens at the end" and I heard it as "what happens".
-> The question that separates the two is *who loaded this, and did they touch it* — and it is worth
+> The question that separates the two is *who loaded this, and did they touch it*, and it is worth
 > asking before writing down a rule that spans more than one kind of file.
 
 The shape of the resulting check follows from that: it reads C# string literals and JSON values, and
