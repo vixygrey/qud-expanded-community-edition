@@ -88,7 +88,7 @@ earlier pull request had done, and the reference was not even to the issue the p
 about.
 
 So the rule is adjacency, not intent. Denial, narration, quotation, questions and **delegation** all
-buy exactly nothing, and an entry that lists the ways a sentence can be shaped will always miss one.
+buy exactly nothing, and an entry that lists the ways a sentence can be shaped will always miss one:
 the first version of this entry omitted the three past-tense keywords, and `closed` caught me the
 next day.
 
@@ -280,7 +280,7 @@ so it isn't something a clone gets, and any ECMA-335 metadata reader will do.
 `~/Library/Application Support/Steam/steamapps/common/Caves of Qud/CoQ.app/Contents/Resources/Data/StreamingAssets/Base`
 
 30 XML files plus `ObjectBlueprints/`. **Not** `CoQ_Data/StreamingAssets`, which holds only DLC.
-that wrong turn made me report several questions as unanswerable when they weren't.
+That wrong turn made me report several questions as unanswerable when they weren't.
 
 Two gotchas when reading it:
 
@@ -841,7 +841,7 @@ trap was already written down in this repository.
 
 **`strings` on a .NET assembly.** Deciding whether `Builder` was dead data in vanilla, I searched
 `Assembly-CSharp.dll` for the literal and got zero hits, for `Builder` and for every other name I
-tried, including ones that certainly exist. That last part was the tell and I nearly missed it.
+tried, including ones that certainly exist. That last part was the tell and I nearly missed it:
 macOS `strings` reads ASCII runs; .NET keeps user strings in the `#US` heap as **UTF-16**, so the
 search could not have found anything. Had I trusted it, `Builder` would have gone into the
 documents as a defect in Freehold's own data. It is a real mechanism: every value resolves to a
@@ -1982,7 +1982,7 @@ nothing, or by an unreleased build, which wrote a block. The version is identica
 it to the newest *released* changelog heading, so bumping it means cutting a release.
 
 > **A version identifies a release, not a commit.** Any question of the form "did the code that wrote
-> this have change X" is unanswerable by version whenever X landed between a tag and the next one.
+> this have change X" is unanswerable by version whenever X landed between a tag and the next one,
 > which is where every change spends most of its life.
 
 **The failure was silent and unbounded, which is the other half.** `IPart.Load` reads a length
