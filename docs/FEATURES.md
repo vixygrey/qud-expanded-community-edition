@@ -1914,7 +1914,7 @@ the effect arrows a drop route alongside the cells already merged into `Ammo 4`�
 
 One `Vixy_StartingGear_*` table per Psionic Adept subtype. Common pattern:
 
-**Lore Seekers (casters)** — `StartingGear_Common`, their affinity's psionic pistol or rifle,
+**Lore Seekers (casters)** get `StartingGear_Common`, their affinity's psionic pistol or rifle,
 cloth robe, sandals, 3 half-full waterskins, 1d3 salve tonic, a dagger, **their affinity's basic
 chipset**, a **basic mental mirror chip**, a **basic clairvoyance chip**, 1d3 injectors,
 2d4 scrap, 1d3 cells, 1d3 from Artifact 1, 1d3 from Artifact 2.
@@ -1933,13 +1933,13 @@ Per-subtype deviations:
 | Mental | **2d3** injectors instead of 1d3 |
 | Temporal | Only 2 waterskins, but **2d3** rolls on Artifact 1 and Artifact 2 |
 
-**Immovable Wall (Guardians)** — `StartingGear_Common`, a themed weapon, a **full iron armor
+**Immovable Wall (Guardians)** get `StartingGear_Common`, a themed weapon, a **full iron armor
 set** (Raven_Iron Plate Armor, Boots, Gauntlets, Helmet), 3 half-full waterskins, 1d3 salve
 tonic, one themed single chip, a **basic neutral mind chipset**, a **basic precognition chip**,
 1d3 injectors, 1d3 cells. Three Guardians break the armor-set pattern entirely.
 
 > The chipset used to be **neutral body**, and the third chip **mental mirror**. Both changed in
-> #338. Neutral body carries `HeightenedSpeed`, which is one of the four steep permanent passives —
+> #338. Neutral body carries `HeightenedSpeed`, which is one of the four steep permanent passives.
 > so every one of the nine Guardians opened the game at +15 Quickness from a *generic* chipset that
 > is nobody's affinity. `docs/DESIGN_balance.md` §5.9 states the rule it broke: **a subtype starts
 > with its own affinity, not a generic chipset carrying someone else's steep passive.** Neutral mind
@@ -1960,35 +1960,35 @@ tonic, one themed single chip, a **basic neutral mind chipset**, a **basic preco
 | Lightning | Long Sword2 + **Iron Buckler** + **Lightning Psionic Rifle** | iron set | EMP | **2d3** injectors |
 | Light | **Compound Bow + 100 Wooden Arrows** + **Light Psionic Rifle** + Dagger2 | iron set | Photosynthetic Skin | Guaranteed **Solar Cell**, only 1d2 cells |
 | Corrosive | **Steel Long Swordth** (2H) | iron set | Corrosive Gas | - |
-| Blood | 2× Dagger2 | **Vine-Weave Tunic, Elastyne Slippers / Gloves / Skull Cap** — no iron set | Syphon Vim | 1d2 cells |
+| Blood | 2× Dagger2 | **Vine-Weave Tunic, Elastyne Slippers / Gloves / Skull Cap**, no iron set | Syphon Vim | 1d2 cells |
 | Mental | **Battle Axe3** | iron set | Sunder Mind | 2 full + 2 empty waterskins, **Basic Toolkit**, 2d4 scrap, **1** cell |
-| Temporal | **2× Temporal Psionic Pistol** | **Cloth Robe + Sandals** — no iron set | Space-Time Vortex | **1** salve tonic, **Basic Toolkit**, **1** injector, 1d4 scrap, **1** cell |
+| Temporal | **2× Temporal Psionic Pistol** | **Cloth Robe + Sandals**, no iron set | Space-Time Vortex | **1** salve tonic, **Basic Toolkit**, **1** injector, 1d4 scrap, **1** cell |
 
 ### 7.2 Equipment tables (merged)
 
-- **Melee Weapons 1C–8C / 1R–8R** — new melee blueprints are slotted into their tier's Common
+- **Melee Weapons 1C–8C / 1R–8R**: new melee blueprints are slotted into their tier's Common
   (one-handed) and Rare (two-handed) tables, mostly at weight 20. Tier-1 tables seed bronze gear
   at weight 20 and iron at weight 10; `Raven_Bronze Wristblade` is weight 5 in Melee Weapons 1C.
   **Eight new melee blueprints appear in no table at all:** the vibro weapons
-  (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade) — all
+  (battle axe, greataxe, vinereaper, halberd, greatsword, rapier, katana, wristblade), all
   tinkerable, so still reachable.
-- **Armor 1C–8C / 1R–8R** — all new armor is reachable. Upstream 2.2 left **ten pieces in no
-  table** — the four nanoweave pieces, the four flexi pieces, the bio-scanner mask and the mutating
-  mask — and since only the bio-scanner mask is tinkerable, nine of them were unobtainable in play.
+- **Armor 1C–8C / 1R–8R**: all new armor is reachable. Upstream 2.2 left **ten pieces in no
+  table**: the four nanoweave pieces, the four flexi pieces, the bio-scanner mask and the mutating
+  mask. Since only the bio-scanner mask is tinkerable, nine of them were unobtainable in play.
   All now have drop entries (#7, fixed in #38), and `validate_mod.py`'s `unreachable` check keeps
   it that way.
   Armor 7C/7R/8C/8R each used to carry a `<removetable>` stripping the tier-below reference,
-  severing vanilla's tier cascade — `Armor 8C` weights that cascade **900** against 85 of actual
+  severing vanilla's tier cascade. `Armor 8C` weights that cascade **900** against 85 of actual
   zetachrome, so a tier-8 roll is meant to be a rare jackpot rather than a guarantee. Removed in
   #4; the mod's own entries carry the weight instead, giving 25% top-tier at tier 8 against
   vanilla's 8.6%.
-- **Missile 2** — all 9 psionic pistols, weight 1 each.
-- **Missile 3** — all 9 psionic rifles, weight 1 each.
-- **Missile 4** — compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (2), modified handcannon (5), drum shotgun (5).
-- **Ammo 4–8** — solar cell array from tier 4; advanced chem cell from tier 5; solar cell nexus from tier 7; dark matter cell via a nested chance table at tier 8.
-- **Implants_1and2Pointers** — steel dermal plating, omni pass, steel hand bones.
-- **Implants_3Pointers** — air filtration system.
-- **Implants_4PlusPointers** — crysteel hand bones, crysteel dermal plating, zetachrome dermal
+- **Missile 2**: all 9 psionic pistols, weight 1 each.
+- **Missile 3**: all 9 psionic rifles, weight 1 each.
+- **Missile 4**: compact flamethrower (10), cryocannon (10), net gun (5), fine-tuned handgun (2), modified handcannon (5), drum shotgun (5).
+- **Ammo 4–8**: solar cell array from tier 4; advanced chem cell from tier 5; solar cell nexus from tier 7; dark matter cell via a nested chance table at tier 8.
+- **Implants_1and2Pointers**: steel dermal plating, omni pass, steel hand bones.
+- **Implants_3Pointers**: air filtration system.
+- **Implants_4PlusPointers**: crysteel hand bones, crysteel dermal plating, zetachrome dermal
   plating, zetachrome hand bones.
 
 ### 7.3 Artifact tables (merged)
@@ -2015,8 +2015,8 @@ and touch nothing else:
 | Artifact 8R | **Cybernetics credit pass** (w5), **dark matter cell** (w1) |
 
 These six were declared **without** `Load="Merge"` through 2.2, overwriting vanilla's tables
-outright. A source comment shows it was deliberate — *"Overwrite instead of merge to neatly add
-chips in"* — convenience bought at the price of conflicting with any other mod touching those
+outright. A source comment shows it was deliberate: *"Overwrite instead of merge to neatly add
+chips in"*, convenience bought at the price of conflicting with any other mod touching those
 tables and silently discarding whatever a future Qud patch adds to them. It was the mod's worst
 compatibility defect; converted to merges in **#34**.
 
@@ -2031,7 +2031,7 @@ moved by well under a percentage point:
 
 Chips drop marginally less often because the entry is added to the pool rather than carved out of
 it, which also dilutes rares by half a point. Reproducing the old numbers exactly would mean
-overriding vanilla's common weight to 85 — reintroducing a hardcoded assumption about a value the
+overriding vanilla's common weight to 85, reintroducing a hardcoded assumption about a value the
 game is free to change, which is the problem the fix existed to remove. Charter rule 1 prefers
 additive.
 
@@ -2049,9 +2049,9 @@ after the cell was corrected from tier 7 to tier 8.)
 
 ---
 
-## 8. World changes — Joppa (`Joppa.rpm`)
+## 8. World changes: Joppa (`Joppa.rpm`)
 
-A `Load="Merge"` map patch adding **76 cells** in the region X 16–27, Y 13–21 — a walled
+A `Load="Merge"` map patch adding **76 cells** in the region X 16–27, Y 13–21, a walled
 building near Argyve's workshop (the changelog describes it as "the building in red"). It was
 rebuilt as a separate structure in 2.2 specifically to stop it colliding with the Spring Molting
 update's new Joppa furniture and with the Saving Joppa sub-mod.
@@ -2071,12 +2071,12 @@ Contents:
 | Bookshelf, Bed, Dresser, Low Table, Floor Cushion, Vase, Oven, Woven Basket, Chest | 1 each |
 
 > 🗒️ The `What Does the Mod Do (WIP).txt` in this folder describes this as "two chests, a bedroll,
-> a becoming nook, and an empty cybernetics rack." That text predates the 2.2 rebuild — the shipped
+> a becoming nook, and an empty cybernetics rack." That text predates the 2.2 rebuild, and the shipped
 > map actually has **one** chest, a **bed** (not a bedroll), and a good deal more besides. Mura's
 > later pinned feature list drops the itemisation and just calls it "a new building into Joppa that
 > can be used as a sort of home base for the player," which matches what's in the file.
 
-Net effect: a free bed, storage, an oven, and — most importantly — **a becoming nook and
+Net effect: a free bed, storage, an oven, and most importantly **a becoming nook and
 cybernetics rack available in Joppa from turn one**, which matters a great deal now that
 Psionic Adepts and (buffed) True Kin both want early cybernetics.
 
@@ -2088,7 +2088,7 @@ The mod deliberately flattens the top of the price curve so high-tier gear is at
 
 - Standard tier progression for weapons/armor: **5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280**.
 - Body armor runs a parallel curve at 8/16/32/64/128/256/512/1024/2048.
-- Vambraces run at 4/8/16/32/64/128/256/512/1024 (half the standard curve — they're a partial slot).
+- Vambraces run at 4/8/16/32/64/128/256/512/1024 (half the standard curve, since they're a partial slot).
 - Two tier-8 items are pulled *below* curve: Cudgel8 and Cudgel8th, both 1200. The zetachrome greataxe and wristblade were also 1200 until #86 put them on the curve at 1280.
 - Vibro weapons are flat 300 across the board.
 - Laser pistol 250, laser rifle 550, chain pistol 100, borderlands revolver 25.
@@ -2100,29 +2100,29 @@ The mod deliberately flattens the top of the price curve so high-tier gear is at
 
 ## 10. Known issues & fork checklist
 
-Ordered roughly by impact. Rows marked ✅ are done and stay here as a record — each was a real
+Ordered roughly by impact. Rows marked ✅ are done and stay here as a record, because each was a real
 defect, and the shape of it is worth not reintroducing. I'd sooner keep a closed row than have
 someone rediscover the problem from scratch.
 
 | # | Severity | Issue | Where |
 |---|---|---|---|
-| 0 | ✅ Fixed | **`Skills.xml` had a duplicate `Tile` attribute** on Berserk!, making it the only file in the mod that failed a strict parse. The open question was whether Qud's loader was tolerating it or dropping the file silently — which would have meant §4's skill changes had never shipped. It was tolerating it: the changes had been live all along, so the defect was cosmetic. Attribute removed (#5). | `Skills.xml` |
-| 0b | ✅ Fixed | **`workshop.json` pointed at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID, so uploading would have published over their item rather than creating this fork's. Cleared for the fork's own upload; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). `tools/validate_mod.py` has a `workshop-target` check so the upstream ID cannot come back. The field held `0` until the first upload, which turned out to be its own defect — the uploader reads a zero as a lookup for item zero, not as "no item yet" (#163). It now carries the fork's real id, `3785441196`. | `workshop.json` |
-| 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe** — half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
-| 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges — guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
-| 2b | ✅ Fixed | **Nine new armor pieces were unobtainable** — the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `unreachable` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
-| 3 | ✅ Fixed | **All of `Ammo.xml` (62 objects) was commented out** — "removed temporarily". Mura pulled it when a Qud change broke the effects and the ammo degraded to plain ammo. All three families have now been through: six effect **arrows** revived in #144, four effect **shells** in #145, and one **slug** — the scour slug — designed and shipped in #146. #145 also established *why* the shells were dead: every shell-firing weapon hardcoded its pellet, so the ammunition's projectile was discarded, fixed by deferring the weapon to its ammo as vanilla's own grenade launcher does. The rest were **cut rather than revived**, on measurement rather than neglect — #146 worked out what rate of fire does to area and status effects and cut all ten bullets, keeping one slug with a payload that survives being fired in volume. The 22 objects those decisions covered — the ten bullets with their projectiles, and `Raven_Quill Arrow` with its — stay commented in the file as a record of what was tried, per the note above this table. 23 objects are live. | `ObjectBlueprints/Ammo.xml` |
+| 0 | ✅ Fixed | **`Skills.xml` had a duplicate `Tile` attribute** on Berserk!, making it the only file in the mod that failed a strict parse. The open question was whether Qud's loader was tolerating it or dropping the file silently, which would have meant §4's skill changes had never shipped. It was tolerating it: the changes had been live all along, so the defect was cosmetic. Attribute removed (#5). | `Skills.xml` |
+| 0b | ✅ Fixed | **`workshop.json` pointed at Mura's Workshop page.** `"WorkshopId": 1134036260` is the *original* mod's ID, so uploading would have published over their item rather than creating this fork's. Cleared for the fork's own upload; `Title`, `Description` and `ImagePath` now describe this fork and carry the `docs/PERMISSION.md` §4 credits (#2). `tools/validate_mod.py` has a `workshop-target` check so the upstream ID cannot come back. The field held `0` until the first upload, which turned out to be its own defect, since the uploader reads a zero as a lookup for item zero, not as "no item yet" (#163). It now carries the fork's real id, `3785441196`. | `workshop.json` |
+| 1 | ✅ Fixed | **72 of 144 psionic chips had no drop-table entry and no tinker recipe**, so half the flagship system was unobtainable. `Raven_Chips Tier 1/2/3` listed only the first chip of each family plus its chipset, 24 entries where 48 were needed. Each tier table now holds **48** (#6, fixed in #36). | `PopulationTables.xml` → `Raven_Chips Tier 1/2/3` |
+| 2 | ✅ Fixed | **Artifact 3–8 were full table replacements**, not merges, guaranteeing conflicts with any other mod touching them and silently discarding future vanilla additions. A source comment shows the overwrite was deliberate ("to neatly add chips in"), which made it convenience bought against charter rule 1. All six now merge a single `Raven_Chips Tier N` entry into vanilla's `Items` group (#3, fixed in #34); chip drop rate moved 10% → 9.09%. See §7.3. | `PopulationTables.xml` |
+| 2b | ✅ Fixed | **Nine new armor pieces were unobtainable**: the four nanoweave and four flexi pieces plus the mutating mask had no drop-table entry and no `TinkerItem`, and `Raven_Iron Maceth` had the same problem. All are reachable (#7, fixed in #38); the Maceth's entry is at `PopulationTables.xml:431`. `tools/validate_mod.py`'s `unreachable` check now reports **0** unreachable blueprints, so this class of defect fails CI rather than accumulating. | `Armor.xml`, `MeleeWeapons.xml`, `PopulationTables.xml` |
+| 3 | ✅ Fixed | **All of `Ammo.xml` (62 objects) was commented out**, "removed temporarily". Mura pulled it when a Qud change broke the effects and the ammo degraded to plain ammo. All three families have now been through: six effect **arrows** revived in #144, four effect **shells** in #145, and one **slug**, the scour slug, designed and shipped in #146. #145 also established *why* the shells were dead: every shell-firing weapon hardcoded its pellet, so the ammunition's projectile was discarded, fixed by deferring the weapon to its ammo as vanilla's own grenade launcher does. The rest were **cut rather than revived**, on measurement rather than neglect. #146 worked out what rate of fire does to area and status effects and cut all ten bullets, keeping one slug with a payload that survives being fired in volume. The 22 objects those decisions covered, the ten bullets with their projectiles and `Raven_Quill Arrow` with its, stay commented in the file as a record of what was tried, per the note above this table. 23 objects are live. | `ObjectBlueprints/Ammo.xml` |
 | 4 | ✅ Fixed | **Mutant HP gain was `2-3`** in XML against `1-5` in every one of Mura's writeups. `2-3` has vanilla's own 2.5 average, so the mod's headline HP change did nothing to the mean, and it left mutants strictly dominated by True Kin's 2-4. Corrected to `1-5` in #90, with a Combo option offering `2-3` and vanilla's `1-4`. | `Genotypes.xml` |
-| 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7) — wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
-| 6 | ✅ Fixed | **`<stag>` changed to `<tag>` twice, and it should not have been** — the advanced hoversled's `Floating` and the sphere of negative weight's `Trinket`. #50 (#10) made the change on the reading that `<stag>` is not an element Qud reads. It is: `XRL.World.GameObjectFactory` loads `tag` and `stag` into the same dictionary and **prefixes the second**, so `<stag Name="Floating" />` produces the tag `SemanticFloating`. Vanilla writes both of these names as `<stag>` and nothing else, so #50 made these two the only objects in the game carrying the unprefixed names. **Reverted in #478**; both read `<stag>` again, at `OtherEquipment.xml:141` and `:278`, and `curve_exempt` learned both forms in the same change — it recognised a trinket only by `<tag>`, so correcting the blueprint alone would have silently repriced the sphere at 100 against a curve of 1280. `tag-form` in `tools/validate_mod.py` now compares every tag against vanilla's usage of that name, and `docs/STYLEGUIDE.md` §4.0b carries the mechanism. This row sat at 🟠 Med for the whole time it was "fixed", which is what #291 is about. | `ObjectBlueprints/OtherEquipment.xml` lines 140, 277 |
-| 7 | ✅ Fixed | **Akimbo reused `Class="Pistol_Akimbo"`** across the Pistol and Multiweapon trees. `SkillFactory.PowersByClass` holds one entry per class and vanilla grants powers by class — the Gunslinger calling is `<skill Name="Pistol_Akimbo" />` — so the mod's entry was served in place of vanilla's. Removed from Multiweapon Fighting in #11 after a distinct class proved to duplicate the ability and lock the skills screen. | `Skills.xml` |
+| 5 | ✅ Fixed | **`Flawless Crysteel Boots` was tagged Tier 3** by the mod's merge, overriding vanilla's 7. Override removed (#9). (should be 7), so wrong loot pool and mod capacity | `ObjectBlueprints/Armor.xml` |
+| 6 | ✅ Fixed | **`<stag>` changed to `<tag>` twice, and it should not have been**: the advanced hoversled's `Floating` and the sphere of negative weight's `Trinket`. #50 (#10) made the change on the reading that `<stag>` is not an element Qud reads. It is: `XRL.World.GameObjectFactory` loads `tag` and `stag` into the same dictionary and **prefixes the second**, so `<stag Name="Floating" />` produces the tag `SemanticFloating`. Vanilla writes both of these names as `<stag>` and nothing else, so #50 made these two the only objects in the game carrying the unprefixed names. **Reverted in #478**; both read `<stag>` again, at `OtherEquipment.xml:141` and `:278`, and `curve_exempt` learned both forms in the same change, because it recognised a trinket only by `<tag>`, so correcting the blueprint alone would have silently repriced the sphere at 100 against a curve of 1280. `tag-form` in `tools/validate_mod.py` now compares every tag against vanilla's usage of that name, and `docs/STYLEGUIDE.md` §4.0b carries the mechanism. This row sat at 🟠 Med for the whole time it was "fixed", which is what #291 is about. | `ObjectBlueprints/OtherEquipment.xml` lines 140, 277 |
+| 7 | ✅ Fixed | **Akimbo reused `Class="Pistol_Akimbo"`** across the Pistol and Multiweapon trees. `SkillFactory.PowersByClass` holds one entry per class and vanilla grants powers by class, and the Gunslinger calling is `<skill Name="Pistol_Akimbo" />`, so the mod's entry was served in place of vanilla's. Removed from Multiweapon Fighting in #11 after a distinct class proved to duplicate the ability and lock the skills screen. | `Skills.xml` |
 | 8 | ✅ Fixed | **`Cudgel6th` had `MaxStrengthBonus="11"`** where every tier-6 peer uses 7 | `ObjectBlueprints/MeleeWeapons.xml` |
 | 9 | ✅ Fixed | **`Raven_Carbideweave Cloak` was valued at 5** instead of 40 | `ObjectBlueprints/Armor.xml` |
-| 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)** — both 300 | `ObjectBlueprints/OtherEquipment.xml` |
+| 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)**, both 300 | `ObjectBlueprints/OtherEquipment.xml` |
 | 11 | ✅ Fixed | **Psionic pistols listed `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/RangedWeapons.xml` |
-| 12 | ✅ Fixed | **Psionic Adept chargen text said "+30 bonus skill points"** — a bonus the genotype did not grant, against an actual delta of +25 on vanilla's True Kin and +10 on this fork's. Corrected in #276 (#275): the panel now reads `{{C|95}} skill points each level`, the absolute figure `BaseSPGain="95"` gives, which cannot drift out of step with a comparison the way a delta can. | `Genotypes.xml` |
+| 12 | ✅ Fixed | **Psionic Adept chargen text said "+30 bonus skill points"**, a bonus the genotype did not grant, against an actual delta of +25 on vanilla's True Kin and +10 on this fork's. Corrected in #276 (#275): the panel now reads `{{C|95}} skill points each level`, the absolute figure `BaseSPGain="95"` gives, which cannot drift out of step with a comparison the way a delta can. | `Genotypes.xml` |
 | 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/MeleeWeapons.xml` |
-| 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"` — the rifle likely won't set things alight | `ObjectBlueprints/RangedWeapons.xml` |
+| 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"`, so the rifle likely won't set things alight | `ObjectBlueprints/RangedWeapons.xml` |
 | 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |
 | 16 | ⚪ Note | The Chip Interface is merged into the base `Humanoid` anatomy, so **every humanoid NPC in the game gains a chip slot**. Currently nothing equips chips to NPCs, but any mod or future change that populates that slot would affect the whole world. The player-side half of that blast radius is settled: vanilla's Mutated Human shares the anatomy, so the merge gave the mutant player a slot as a side-effect, and #353 takes it back off at chargen (§3.1). | `Bodies.xml` |
@@ -2130,13 +2130,13 @@ someone rediscover the problem from scratch.
 ### Things the changelog references that are **not** in this folder
 
 The 2.2 changelog mentions fixes to **Experience Curve Beta**, the **Grand Bazaar**, and
-**Saving Joppa**. The first two are separate sub-mods by the same author — no `.cs` or map files
+**Saving Joppa**. The first two are separate sub-mods by the same author, with no `.cs` or map files
 for them exist in this directory, and carrying them forward means pulling them separately
 (#174, #175). The only C# here is the 36 one-line mutation-mod classes.
 
 **Saving Joppa is the exception, and it is partly here already.** Mura's standalone listing says
-so outright — *"there's no point in installing both as it is already incorporated into the base
-mod"* — and the shared parts check out: `Raven_Empty Weapon Rack`, `Raven_Empty Gun Rack`,
+so outright: *"there's no point in installing both as it is already incorporated into the base
+mod"*, and the shared parts check out: `Raven_Empty Weapon Rack`, `Raven_Empty Gun Rack`,
 `Raven_Empty Armor Rack` and `Raven_Rusted Door` are declared in `Furniture.xml` **identically** to
 the standalone's own copies, attribute for attribute.
 
@@ -2146,7 +2146,7 @@ furniture rather than the ruins, and anyone planning around that should verify t
 the current standalone rather than the sentence. It is also the fork's own precedent for #174 and
 #175: absorbing a sub-mod is something this mod's author has already done.
 
-### Mura's three partial feature lists — and how far to trust them
+### Mura's three partial feature lists, and how far to trust them
 
 Three overlapping writeups of the mod exist. None is complete; all three are explicitly labelled
 as partial by their author. Where they disagree with the XML, **the XML is what ships**.
@@ -2230,21 +2230,21 @@ only one of two overlapping entries, so a root entry would load the gated direct
 unconditionally. `directory-coverage` enforces that, and that every file here is
 reachable from exactly one declared path.
 
-Mura's original documents are NOT in mod/ — they live in docs/, outside what ships.
+Mura's original documents are NOT in mod/; they live in docs/, outside what ships.
 ```
 
 ---
 
 ## 12. Credits (carry these forward)
 
-- **Mura** (`@mura_raven`) — creator; years of work on the original mod
-- **Noble Lark** — all 18 psionic subtype sprites (credited in the Workshop description)
-- **Scrolldier / Parzival** — taught Mura to mod Caves of Qud (credited in the Workshop description)
-- **Arendeth** — population-table fixes (credited in `2.2 changelog.txt`)
-- **Tyrir** — found the 2.2 typo batch and the invalid blueprint in Other Equipment (credited in `2.2 changelog.txt`)
-- **Crow** — helped with bug fixes on the original (credited on the Workshop page)
+- **Mura** (`@mura_raven`), creator, years of work on the original mod
+- **Noble Lark**, all 18 psionic subtype sprites (credited in the Workshop description)
+- **Scrolldier / Parzival**, taught Mura to mod Caves of Qud (credited in the Workshop description)
+- **Arendeth**, population-table fixes (credited in `2.2 changelog.txt`)
+- **Tyrir**, found the 2.2 typo batch and the invalid blueprint in Other Equipment (credited in `2.2 changelog.txt`)
+- **Crow**, helped with bug fixes on the original (credited on the Workshop page)
 
-> 📌 **Fork permission — granted publicly.** The live Workshop description now reads:
+> 📌 **Fork permission, granted publicly.** The live Workshop description now reads:
 > *"Despite my original apprehension, I've decided to make the mod open to the community to
 > update, fork, and generally do with as they please, all I ask is that you give credit where due,
 > which includes Noble Lark for the subclass sprites."* Mura reiterated it in the discussions
@@ -2252,7 +2252,7 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 > this fork's request: *"@VixyGrey13 it's open to the community now, so feel free to do so, feel
 > free to DM me if you have any questions."*
 >
-> **The one condition is credit** — and Noble Lark is named explicitly. Keep the list above intact
+> **The one condition is credit**, and Noble Lark is named explicitly. Keep the list above intact
 > in your Workshop description and in-repo.
 
 ---
@@ -2260,13 +2260,13 @@ Mura's original documents are NOT in mod/ — they live in docs/, outside what s
 ## 13. Options (`Options.xml`)
 
 Thirty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
-reading one requires C# — `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
+reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
 `mod/manifest.json` gates the directory holding the map on
 `OptionQudExpandedCEJoppaBuilding==Yes`, so the option decides whether the file is ever loaded
 rather than what any code then does about it. Its ID still sits in `Raven_Options.cs` as a `const`
-nothing reads, with a comment saying so — every option ID in this mod is declared in one place, and
+nothing reads, with a comment saying so. Every option ID in this mod is declared in one place, and
 a reader looking for the missing one should find that note rather than nothing. It is also what
 `validate_mod.py`'s `option-wiring` check finds, since that check detects a read by looking for the
 ID as a string literal and cannot see the manifest route.
@@ -2280,7 +2280,7 @@ rather than anything the mod already was.
 > 2026-08-23, bearings on 2026-08-28.** ⚠️ **The Chip Interface option is due a re-check**: #353 narrowed it to True Kin
 > only, so the 2026-08-16 pass no longer covers what it does. Still the only evidence
 > that they *behave* correctly, and worth stating rather than assuming. Since #136 the C# is compiled
-> locally against the game's own assemblies, and #135 reads Qud's own build log back — but a compiler
+> locally against the game's own assemblies, and #135 reads Qud's own build log back, but a compiler
 > proves the code builds, not that an option does the right thing to a run. CodeQL cannot cover the C#
 > either (see `docs/CHARTER.md` rule 5). What each option actually does is checked by playing it.
 
@@ -2290,7 +2290,7 @@ rather than anything the mod already was.
 |---|---|---|---|
 | Mutated Human mutation points | Slider 0–24 | **16** | `MutationPoints`. Vanilla gives 12. |
 | Mutated Human hit points per level | Combo | **1-5** | `BaseHPGain`. `2-3` is what 2.2 shipped, `1-4` is vanilla. See §1.2. |
-| extra skill points per level | Checkbox | **Yes** | `BaseSPGain` — 65 for mutants against vanilla's 50, 85 for True Kin against 70. |
+| extra skill points per level | Checkbox | **Yes** | `BaseSPGain`: 65 for mutants against vanilla's 50, 85 for True Kin against 70. |
 | extra starting skills | Checkbox | **Yes** | Staunch Wounds, Cooking and Gathering, Meal Preparation; Menacing Stare for mutants. |
 | eased skill requirements | Checkbox | **Yes** | The fifteen retuned attribute requirements in §4. |
 | retuned skill point costs | Checkbox | **Yes** | The four retuned prices in §4. |
@@ -2299,7 +2299,7 @@ rather than anything the mod already was.
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
-| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one — but a player can, by handing a chip to a follower. See the callout below (#417). |
+| Chip Interface slots on other humanoids | Checkbox | **Yes** | The `Humanoid` anatomy merge, which reaches every humanoid NPC. §3.1. Nothing in this mod ever *places* a chip in one, but a player can, by handing a chip to a follower. See the callout below (#417). |
 | how your own random name sounds | Combo | **Random** | Which pool the player's own generated name is drawn from. §15.4. |
 | choose your gender at character creation | Checkbox | **Yes** | `Gender.EnableSelection`. Adds the Gender row, offering 13. §16. |
 | choose your pronouns at character creation | Checkbox | **Yes** | `PronounSet.EnableSelection`. Adds the Pronoun Set row, offering 14. §16. |
@@ -2330,9 +2330,9 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 
 > ⚠️ **An NPC's chip slot is reachable, and the documentation used to say it was not (#417).**
 > **Confirmed in game**: a humanoid follower equipped a chip unprompted, gained the mutation, and
-> killed a snapjaw with it. What follows was a code reading first and is now a result — see §3.5. This
+> killed a snapjaw with it. What follows was a code reading first and is now a result, see §3.5. This
 > row read *"nothing here ever fills those slots, so the reason to turn it off is to stop another mod
-> — or a later version of this one — being able to."* The first clause is true of the **mod**: no
+> or a later version of this one, being able to."* The first clause is true of the **mod**: no
 > creature is generated carrying a chip, and chips reach the world only through the artifact tables
 > that fill containers. The conclusion drawn from it is not, because a player is not another mod.
 >
@@ -2343,10 +2343,10 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 > | step | result |
 > |---|---|
 > | `Body.GetParts()` | returns every part with no filter, so the abstract slot is enumerated |
-> | `Armor.HandleEvent(QueryEquippableListEvent)` | adds the chip whenever `WornOn` matches the queried slot, and **never reads `RequireDesirable`** — 0 AV / 0 DV does not disqualify it |
+> | `Armor.HandleEvent(QueryEquippableListEvent)` | adds the chip whenever `WornOn` matches the queried slot, and **never reads `RequireDesirable`**, so 0 AV / 0 DV does not disqualify it |
 > | `NoAIEquip`, `CannotEquip`, `NoEquip`, `Food`, `Shield` | none of the 144 chips carries any of them |
 > | `Brain.CompareGear(chip, null)` | returns `-1` for an empty slot, so `IsNewGearBetter` is true |
-> | the grant | fires on `EquippedEvent` and targets `E.Actor` — whoever wore it, not whoever is the player |
+> | the grant | fires on `EquippedEvent` and targets `E.Actor`, whoever wore it rather than whoever is the player |
 >
 > The `_stock` guard in `PerformEquip` keeps merchants from wearing their own inventory, so this
 > needs a player to choose it: hand a chip to a humanoid follower.
@@ -2356,7 +2356,7 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 > capability no document describes; if it does not, whatever stops it belongs in `docs/LESSONS.md`,
 > because the trace above says it should.
 
-### 13.2 When an option takes effect — three scopes
+### 13.2 When an option takes effect: three scopes
 
 This is the distinction that decides how an option must be written and what its `<helptext>` has to
 warn about. The charter's guidance to *prefer designs whose off-switch is a runtime decision* is
@@ -2364,14 +2364,14 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live** — applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and — from your next level — hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
-| **Restart** | eased skill requirements, plainer relic names, the Six Day Stilt market | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. The other two are read at load rather than in play: relic name forms join the pool as it is built, and the Stilt's stock is decided when the zone's tables are read. All three declare `Restart="true"` — the attribute vanilla uses for `OptionEnableMods`. |
+| **Live**, applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and, from your next level, hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Restart** | eased skill requirements, plainer relic names, the Six Day Stilt market | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. The other two are read at load rather than in play: relic name forms join the pool as it is built, and the Stilt's stock is decided when the zone's tables are read. All three declare `Restart="true"`, the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 
 ### 13.3 Two constraints worth knowing before adding another option
 
 - **A slider's `Min` must be 0 or 1.** Anything higher sends Qud's options menu into unbounded
-  recursion and crashes the game with a stack overflow the moment the menu opens — a bug in the
+  recursion and crashes the game with a stack overflow the moment the menu opens, a bug in the
   game, not the mod, which is why the crash points nowhere near its cause. Verified by bisection
   and by every slider across the 87 mods installed locally. `tools/validate_mod.py` refuses to let
   it back in. See issue #51.
@@ -2382,20 +2382,20 @@ about moving features up this table.
 
 Anything that mutates loaded game data must also be **idempotent and reversible**: handlers run
 repeatedly and in any order, so each one makes the data *match* the option rather than performing a
-one-way edit. That is why every toggle here stores the vanilla value it replaced — the mod's XML
+one-way edit. That is why every toggle here stores the vanilla value it replaced, because the mod's XML
 overwrote it at load, and the original is gone from memory by the time an option is read.
 
 ---
 
 ## 14. Graded burden (`Vixy_Burden`)
 
-**Off by default** — a genuinely new opinion this fork introduces, which is what charter rule 6
+**Off by default**, being a genuinely new opinion this fork introduces, which is what charter rule 6
 reserves that default for.
 
 Vanilla has one weight threshold and nothing underneath it. Carry capacity is `15 × Strength`;
 exceed it and `Overburdened` applies, which makes you unable to move at all. Below it, nothing
 happens. So the optimal play is to sit at 99% of capacity forever and never think about weight
-again — a threshold that produces no decision.
+again, which is a threshold that produces no decision.
 
 Four bands fill that space:
 
@@ -2405,10 +2405,10 @@ Four bands fill that space:
 | lightly burdened | 50–75% | −1 DV |
 | encumbered | 75–90% | −2 DV, −1 Quickness per 10% above 75 |
 | heavily burdened | 90–100% | −4 DV, −10 Quickness, cannot run |
-| *(vanilla)* | > 100% | `Overburdened` — unable to move, untouched |
+| *(vanilla)* | > 100% | `Overburdened`, unable to move, untouched |
 
 **Vanilla's cliff is deliberately left where it is.** Moving it to 125%, as the original spec
-proposed, is only possible by intercepting `GetMaxCarriedWeightEvent` — and that figure is read by
+proposed, is only possible by intercepting `GetMaxCarriedWeightEvent`, and that figure is read by
 seven UI surfaces and by the **Pack Rat** mutation, which forces a character to stay above 90% of
 whatever capacity reports. Inflating it would pin a Pack Rat permanently in the worst band. Leaving
 the cliff alone costs one band and has no blast radius at all.
@@ -2421,8 +2421,8 @@ stores nothing, so the option takes hold on the next tick and adds nothing to th
 
 > ✅ **Played and confirmed on 2026-08-23** (maintainer). All five behaviours the pull request left
 > open: the band appears by name at each threshold, DV and Quickness move, running is refused in the
-> heavy band, the option takes hold on the next turn in both directions, and — the case with no
-> compile-time proof — **an existing save picks the part up on load**, not just a fresh character.
+> heavy band, the option takes hold on the next turn in both directions, and, in the case with no
+> compile-time proof, **an existing save picks the part up on load**, not just a fresh character.
 > That last one is the whole reason `Vixy_PlayerParts` carries two hooks rather than one.
 
 ### 14.0a A part attached only to the player still reaches other creatures (#769)
@@ -2432,14 +2432,14 @@ mechanisms put those parts on creatures that are not me, by different routes and
 severities.
 
 **Domination reassigns the player.** `Domination.Dominate` does `The.Game.Player.Body = defender`, so
-a save made while I am dominating something reloads with `The.Player` pointing at the puppet — and all
+a save made while I am dominating something reloads with `The.Player` pointing at the puppet, and all
 eleven parts get attached to it permanently, because they outlive the domination. `CmdSaveAndQuit` has
 no guard, so the save is reachable at any moment. The attach now walks back through the `Dominated`
 effect's `Dominator` field to the body I actually own.
 
 `IsOriginalPlayerBody()` is *not* the discriminator, and that is the trap worth knowing. It is stamped
 once at character creation and stripped from clones and fugue duplicates, so it means "the body I
-started the game in" — and `Domination.Metempsychosis` is a legitimate **permanent** body change where
+started the game in", and `Domination.Metempsychosis` is a legitimate **permanent** body change where
 attaching to the new body is correct. Gating on it would leave a post-Metempsychosis character with
 none of these parts, a worse hole than the one being closed.
 
@@ -2448,7 +2448,7 @@ line 84 both deep-copy me, so a fugue duplicate or a clone carries all eleven wi
 no domination involved. Guarding the attach cannot reach this at all; the parts have to guard
 themselves.
 
-Nine of the eleven already did, on `IsPlayerControlled()`, `IsPlayerLed()` or `IsPlayer()` — relational
+Nine of the eleven already did, on `IsPlayerControlled()`, `IsPlayerLed()` or `IsPlayer()`, all relational
 predicates that go false the moment the copy stops being me. Two did not:
 
 | part | what it did on a body that is not mine |
@@ -2458,7 +2458,7 @@ predicates that go false the moment the copy stops being me. Two did not:
 
 And one guarded correctly and was still wrong: `Vixy_Fatigue` checks `IsPlayer()`, which a puppet
 *passes*, because during a domination it is the player. It would accrue on the borrowed body, announce
-bands to me about a rat, and be able to collapse me mid-domination — while the true body's stale stamp
+bands to me about a rat, and be able to collapse me mid-domination, while the true body's stale stamp
 billed the same window again on return under §51.3b. It now bails on `Dominated`, so there is one
 meter and it is the one I own.
 
@@ -2466,11 +2466,11 @@ meter and it is the one I own.
 
 Neither is a shortcut; Qud has nowhere to put them.
 
-- **A stealth penalty.** There is no stealth system in Caves of Qud — the word does not appear
+- **A stealth penalty.** There is no stealth system in Caves of Qud; the word does not appear
   anywhere in the game assembly.
 - **"Movement costs double."** There is no movement-cost hook. Movement is charged at fixed energy
   and Quickness governs how fast it is earned back, so this would have to be spent through
-  Quickness — which is the penalty the band already applies. Listing both would double-count one
+  Quickness, which is the penalty the band already applies. Listing both would double-count one
   mechanism.
 
 A third, a fatigue rider on the heavy band, waits on the sleep work in
@@ -2480,7 +2480,7 @@ A third, a fatigue rider on the heavy band, waits on the sleep work in
 
 The heavy band's run block vetoes the **`ApplyRunning`** event, not
 `CanChangeMovementModeEvent`. Refusing the latter is how vanilla's own `Overburdened` blocks
-flight, so it looks like the obvious model — but that event's `To` carries the movement *message
+flight, so it looks like the obvious model, but that event's `To` carries the movement *message
 name*, which is `"sprinting"` by default and configurable per `Run` part. Matching on `"Running"`
 would never fire, and the restriction would have shipped silently inert.
 
@@ -2494,7 +2494,7 @@ sounding like men.
 ### 15.1 What a player was actually noticing
 
 Vanilla's Qudish namestyle has **29 prefixes, 20 infixes and 24 postfixes**, drawn as prefix=1,
-infix=0–2, postfix=1 — about **93,500 distinct names**. So exact repeats are *not* what anyone was
+infix=0–2, postfix=1, or about **93,500 distinct names**. So exact repeats are *not* what anyone was
 seeing: roughly 0.2% across 20 rolls.
 
 **Repeated syllables are.** There is a 50% chance of a repeated *opening* after 6.3 draws. That
@@ -2512,14 +2512,14 @@ square root of the pool, so reaching "you would never notice" needs roughly ten 
 
 ### 15.2 The ending carries the gendered read
 
-Qud's name generation is very nearly gender-blind — exactly **one** namestyle in the whole vanilla
+Qud's name generation is very nearly gender-blind: exactly **one** namestyle in the whole vanilla
 file uses a `Gender` attribute, and it is a Warden honorific. What reads as male-coded is a phonetic
 property of the postfix pool: **23 of vanilla's 24 endings are hard stops** (`-q -t -m -r -s`), with
 `la` the only open, vowel-final one.
 
 That matters more than it sounds, because the game already knows each character's gender.
 **117 of the 126 blueprints that resolve to Qudish inherit `RandomGender="male,female"` from
-`BaseHuman`** — a coin flip rolled at creation, before the name is generated, and passed to the
+`BaseHuman`**, a coin flip rolled at creation, before the name is generated, and passed to the
 generator. So half of every generated human in Qud already *was* female, drawing from a pool of hard
 stops.
 
@@ -2530,12 +2530,12 @@ Two namestyles use it:
 | `Vixy_Qudish Feminine` | `Species="human"`, `Gender="female"` | 36 open + 5 hard |
 | `Vixy_Qudish Neutral` | `Species="human"`, the non-binary genders | 18 open + 18 hard |
 
-The hard endings in the feminine pool are deliberate. It is a lean, not a rule — about one draw in
+The hard endings in the feminine pool are deliberate. It is a lean rather than a rule: about one draw in
 five takes one, so a name never states the gender outright.
 
 `Vixy_Qudish Neutral` carries one scope per gender, because `NameScope.Gender` is a single
 exact-match string rather than a list: `neuterperson`, `nonspecific`, and `elverson`. The last is
-inert today — vanilla hides that gender behind `Generic="false"` — and inert is the right state for
+inert today, since vanilla hides that gender behind `Generic="false"`, and inert is the right state for
 it until something makes the gender reachable.
 
 **`hartind` is deliberately absent.** Its person terms are `hartind` / `faun`, which makes it the
@@ -2543,7 +2543,7 @@ hindren third gender rather than a general one, and hindren have their own names
 
 ### 15.3 Three attributes doing more work than they look like
 
-- **`Load="Merge"` sits once on `<naming>`** and cascades — `LoadNamingNode` reads it and every level
+- **`Load="Merge"` sits once on `<naming>`** and cascades, because `LoadNamingNode` reads it and every level
   below inherits it. Without it, `LoadNameStyleNode` removes the namestyle from `_NameStyleList`,
   builds a replacement and **never adds it back to the list**, which `Generate` iterates. Qudish
   would leave name generation entirely and every procedurally named human would be called
@@ -2551,7 +2551,7 @@ hindren third gender rather than a general one, and hindren have their own names
 - **`Species="human"`** bounds both new namestyles. A scope carrying only `Gender` matches every
   female creature in the game, and female bears would draw Qudish names.
 - **`Priority="50"`** is under a hard ceiling of 100. Exclusion is `other.priority > scope.priority`,
-  and the faction namestyles that must keep winning — Templar, Barathrumite, Mechanimist, Snapjaw —
+  and the faction namestyles that must keep winning, namely Templar, Barathrumite, Mechanimist and Snapjaw,
   sit at exactly 100 with `Combine="false"`. At 100 these would displace them.
 
 All three are held by `tools/validate_mod.py`, and `tools/naming_harness.py` resolves the whole file
@@ -2562,7 +2562,7 @@ against vanilla without launching the game.
 Everything above scopes on a creature's gender and species. **None of it can reach the player**, and
 the reason is worth stating because it looks like an oversight and is not.
 
-`XRLCore.GenerateRandomPlayerName` calls `NameMaker.MakeName(null, null, Type)`. `For` is **null** —
+`XRLCore.GenerateRandomPlayerName` calls `NameMaker.MakeName(null, null, Type)`. `For` is **null**:
 there is no GameObject, because the name is generated at `BOOTEVENT_GENERATERANDOMPLAYERNAME`, before
 the player object is built. `NameStyles.Generate` only populates `Gender`, `Species` and `Tag` from a
 live GameObject, so the player's random name is drawn gender-blind from `Qudish` however the
@@ -2581,16 +2581,16 @@ default name as its element and takes back whatever the modules return. So
 There is no `Neutral` choice. It existed briefly and was cut: it drew from the mixed pool every
 time, which for a single name is indistinguishable from `Random` drawing that pool one time in
 three. Both mean *"I am not specifying"*, and offering two ways to say it is a wart rather than a
-capability. `Random` still reaches the mixed pool, so nothing was lost — `Vixy_Qudish Neutral` keeps
+capability. `Random` still reaches the mixed pool, so nothing was lost, and `Vixy_Qudish Neutral` keeps
 its `Vixy_Random` scope and its gender scopes, which is how it serves non-binary NPCs.
 
 `NameMaker.MakeName` takes `Tag` as an ordinary parameter, so reaching a tag-scoped namestyle needs
-no GameObject — just the argument. `GameObject.Validate(ref null)` returns false, so `Generate` skips
+no GameObject, just the argument. `GameObject.Validate(ref null)` returns false, so `Generate` skips
 the block that would overwrite `Tag` and the passed one survives.
 
 **It is a module rather than an `EmbarkEvent` handler for one reason.** `fireBootEvent` iterates
 `enabledModules` regardless of `game`, while `EmbarkEvent.Send` dispatches through
-`Game?.HandleEvent` — and character creation's own *"roll me another name"* passes `game: null`. An
+`Game?.HandleEvent`, and character creation's own *"roll me another name"* passes `game: null`. An
 event handler would have changed the final name and not the one previewed while choosing it.
 
 The `Tag` scopes sit at `Priority="200"` with `Combine="false"`, because an explicit choice should win
@@ -2600,7 +2600,7 @@ rather than a fourth pool.
 
 **The re-roll works, and it takes one line to explain why it nearly did not.** `EmbarkBuilder` fills
 `EmbarkInfo._modules` with `embarkInfo.modules.AddRange(...)` at the very *end* of character
-creation. Until then the list is empty — so the Name row's re-roll, which calls
+creation. Until then the list is empty, so the Name row's re-roll, which calls
 `builder.info.fireBootEvent(...)`, consulted nobody and handed back a name drawn the old way. The
 module therefore adds *itself* to that list in `Init()`. `EmbarkInfo.modules` is a public property,
 so this is a public member rather than a patch, and if Freehold ever changes it the mod stops
@@ -2617,7 +2617,7 @@ Whichever name you were shown is the one you keep: the preview writes `data.name
 `<random>` and the boot-time roll is what you get, flavoured the same way.
 
 **It follows the character afterwards.** Renaming yourself in game goes through
-`GameObject.GiveProperName`, which calls `NameMaker.MakeName(this, …)` — a valid `For`, so `Generate`
+`GameObject.GiveProperName`, which calls `NameMaker.MakeName(this, …)`, a valid `For`, so `Generate`
 reads `Gender`, `Species` and `Tag` off the object and an option is invisible to it. The module
 therefore writes the chosen tag onto the player as a `NamingTag` property at
 `AFTERBOOTPLAYEROBJECT`, and `Raven_Options` rewrites it whenever the option changes, so the property
@@ -2631,13 +2631,13 @@ Typing a name in bypasses all of this, which is always the surest way to get the
 - **Hand-authored NPCs.** Mehmet, Argyve, Barathrum and about 60 others carry their name on the
   blueprint and never call the generator.
 - **Non-human creatures.** Snapjaws, robots, animals, plants, reptiles, Templars and Mechanimists all
-  have their own syllable pools. Having a pool is not the same as being reached by it, though —
+  have their own syllable pools. Having a pool is not the same as being reached by it, though.
   §15.6 is a people whose register existed and whose scope did not, which is worth checking before
   concluding that a creature drawing Qudish has no register of its own.
 - **Village and site names.** `Qudish Site` is a separate namestyle with its own 23 prefixes, and
   scope matching gates on `Type` with exact equality, so a person-name scope can never be reached by
   a site call.
-- **The player's own random name**, by any of the gender scoping above — see §15.4, which reaches
+- **The player's own random name**, by any of the gender scoping above, see §15.4, which reaches
   it a different way.
 
 ### 15.6 Woodsprogs outside the tribe, and a register that already existed
@@ -2645,8 +2645,8 @@ Typing a name in bypasses all of this, which is always the surest way to get the
 Everything above widens or adds pools. This one adds **no syllables at all**, and it is the more
 interesting shape for it.
 
-A woodsprog in the Naphtaali tribe was always named correctly. A woodsprog anywhere else — a
-Kyakukya villager, a jungle forager — drew `Qudish` at 100%. That looks like a missing register and
+A woodsprog in the Naphtaali tribe was always named correctly. A woodsprog anywhere else, whether a
+Kyakukya villager or a jungle forager, drew `Qudish` at 100%. That looks like a missing register and
 is not: vanilla's `Naphtaali` namestyle is already there, and **the Naphtaali are woodsprogs**, since
 `BaseNaphtaali` inherits `BaseWoodsprog`. What vanilla never wrote is the scope that reaches a
 woodsprog outside the faction.
@@ -2664,7 +2664,7 @@ So the change is one scope. `Priority="50"` is what keeps it surgical: exclusion
 members, who are named exactly as they were. Only the woodsprogs who were getting Qudish move.
 
 `Erah` is why one register is right rather than two. She is the only hand-named woodsprog outside
-the tribe, and her name already sits inside these pools — a `re`/`ne` opening, a `ra` infix, an `h`
+the tribe, and her name already sits inside these pools: a `re`/`ne` opening, a `ra` infix, an `h`
 postfix. Qud holds no separate secular woodsprog register for this to override.
 
 There is no option on it. Charter rule 6 gates a change that grants *power* with no content
@@ -2676,11 +2676,11 @@ attached; this grants names, and a player who installs the mod is asking for the
 deliberately left the middle pool alone. **Issachari inverts every part of that conclusion** (#632).
 
 > ✅ **Played and confirmed on 2026-08-29** (maintainer). Reaching the names at all takes deliberate
-> effort, for the reason set out below — the tribe is hostile from the first turn, so a player either
+> effort, for the reason set out below. The tribe is hostile from the first turn, so a player either
 > meets them as legendary raiders named on sight, or earns standing with them first.
 
 Vanilla's namestyle is 7 verbs, 5 prepositions and 8 nouns, drawn one of each with
-`HyphenationChance="100"` and `TwoNameChance="0"` — so every Issachari is one hyphenated phrase from
+`HyphenationChance="100"` and `TwoNameChance="0"`, so every Issachari is one hyphenated phrase from
 **280 combinations**. Measured the same way as the Qudish note:
 
 | slot | pool | 50% chance of a repeat after |
@@ -2692,17 +2692,17 @@ Vanilla's namestyle is 7 verbs, 5 prepositions and 8 nouns, drawn one of each wi
 
 Every slot repeats inside four names and the whole name inside twenty. Against Qudish's ~93,500,
 where exact repeats run about 0.2% across twenty rolls, that is a different problem wearing the same
-shape — which is why the two entries in `Naming.xml` reach opposite conclusions from the same
+shape, which is why the two entries in `Naming.xml` reach opposite conclusions from the same
 arithmetic, and why both say so.
 
 **So all three pools widen together**, to 10 × 10 × 12 = **1,200**, a repeat at about 41. Widening
-only the prepositions — the worst slot — would have moved the problem rather than fixing it: at 15
+only the prepositions, the worst slot, would have moved the problem rather than fixing it: at 15
 infixes the preposition would repeat at 4.6 draws while the verb still repeated at 3.1.
 
 #### The register is the constraint
 
 The existing pools decompose cleanly: a **bodily or violent act**, sited against the desert's
-**materials**, its **elements**, or its **myth**. Verbs are present tense and visceral — ingestion
+**materials**, its **elements**, or its **myth**. Verbs are present tense and visceral: ingestion
 (Chews, Chugs, Drinks), violence (Flays, Chokes), immersion (Bathes), grief (Cries). Prepositions
 are spatial and short, `upon` the only elevated one. Nouns are Asphalt, Oil, Salt and Quicksalt;
 Fire and the-Sun; Serpents and the-Feathered-Serpent, where `the-` marks the singular mythic things.
@@ -2716,7 +2716,7 @@ Fire and the-Sun; Serpents and the-Feathered-Serpent, where `the-` marks the sin
 **Three of the four nouns are derived rather than invented**, which is charter rule 2 doing real work
 rather than being cited. The Issachari say two of them themselves, in their own barks: *"the brine
 air will cure your lungs to jerky"*, and *"Be respectful of the red-and-white and we will get
-along."* The third is from the Issachari Banner — *platinum stitch on a field of salt white*, read by
+along."* The third is from the Issachari Banner, *platinum stitch on a field of salt white*, read by
 *"mirage-trained eyes"*, and sewn into a scarlet collar, which corroborates the second.
 
 #### Why this was worth doing now and not before
@@ -2727,7 +2727,7 @@ only route to an Issachari name was `HeroMaker` making a legendary one.
 
 **§26 changed that**, but less than I first wrote, and the correction is worth keeping.
 
-With the question available, an Issachari is nameable — and there are plenty of them.
+With the question available, an Issachari is nameable, and there are plenty of them.
 `SaltDesertZoneGlobals` rolls an `IssachariParty` of **2d4 raiders plus 1–2 riflers** at 10% per salt
 desert zone, `VillageOneBaseFaction_Saltdunes` gives them a weight of 50 as a whole settlement's
 faction, and `LairOwners_Saltdunes` puts them in lairs.
@@ -2736,33 +2736,33 @@ faction, and `LairOwners_Saltdunes` puts them in lairs.
 `InitialPlayerReputation="-475"`. `REPUTATION_DISLIKED` is `-250`, so `Reputation.GetFeeling` returns
 `-50`, and `Brain.GetFeelingLevel` calls anything below `-10` **Hostile**. They attack rather than
 converse, and a question inside a conversation is no use where there is no conversation. Even the
-**Nomad** caste, which starts at `+200` with them, lands on `-275` — still past the line, and 26
+**Nomad** caste, which starts at `+200` with them, lands on `-275`, still past the line, and 26
 points short of neutral.
 
 So the honest reach of this change:
 
 - **A legendary Issachari** is named by `HeroMaker` with no conversation at all, so its name shows on
   sight. That is how most players will meet one of these, one at a time.
-- **A player in good standing** — the Nomad caste plus a little more reputation, or the faction's own
-  `<waterritual Skill="Endurance_Weathered" />` route — sees the full effect. Ordinary raiders are
+- **A player in good standing**, meaning the Nomad caste plus a little more reputation, or the faction's own
+  `<waterritual Skill="Endurance_Weathered" />` route, sees the full effect. Ordinary raiders are
   not the door to that, since `BaseIssachari` carries no `GivesRep`.
 
 The pool was genuinely thin either way, and every route that surfaces one of these names is better
 for the widening. But an earlier draft of this section said *"ask four people in one war party"*,
 which assumed a conversation the faction's reputation does not allow. That assumption was load-
-bearing in the argument for building this, and it went unchecked — the same failure as the entry in
+bearing in the argument for building this, and it went unchecked, the same failure as the entry in
 `docs/LESSONS.md` about a premise nobody verified, this time inside my own case for the work rather
 than inside a bug report.
 
 #### No off-switch
 
 Removed in #690. `NameElement.Weight` defaults to **1** and `Naming.xml` declares no `Weight`
-attribute, so the option's *on* branch was setting the value the XML already produced — it existed
+attribute, so the option's *on* branch was setting the value the XML already produced, so it existed
 only to implement the off switch. Rule 6 asks whether anybody would turn a thing off, and a wider
 pool of syllables changes no mechanic and takes nothing away.
 
 Two checks hold it together. `validate_mod.py`'s `naming-option-coverage` was written for Qudish and
-named it in a string comparison, so a second namestyle would have gone unchecked — the precise
+named it in a string comparison, so a second namestyle would have gone unchecked, the precise
 failure that check exists to prevent, aimed at itself. It is now keyed by namestyle, in both
 directions, and reports an array with entries that no namestyle merges. And `naming_harness.py`'s
 `VANILLA_POOLS` gained Issachari, so a fragment that cleared these pools instead of adding to them
@@ -2776,8 +2776,8 @@ on and widens it.
 ### 16.1 What vanilla already has, and cannot reach
 
 `Genders.xml` and `PronounSets.xml` are both vanilla files. Between them they define **13 genders**
-with full grammar tables — subjective, objective, possessive, substantive possessive, reflexive, plus
-six person terms — a separate pronoun-set system, automatic replication of genders into pronoun sets,
+with full grammar tables covering subjective, objective, possessive, substantive possessive,
+reflexive and six person terms, a separate pronoun-set system, automatic replication of genders into pronoun sets,
 procedural gender generation, and a selection UI rendered down to its screen coordinates and click
 regions. **141 vanilla creature blueprints declare a `Gender` tag.**
 
@@ -2786,7 +2786,7 @@ All of it is unreachable. Both files carry `EnableSelection="false"` on their ro
 `if (Gender.EnableSelection)` and the **Pronoun Set:** row only `if (PronounSet.EnableSelection)`.
 Both false means neither row is emitted, so character creation offers Name / Pet / World Seed and the
 handler that would run the choosers can never be reached. Absent a choice, the player is assigned
-`Gender.GetAnyGenericPersonalSingular()` — a random draw from `male`, `female`, `neuterperson`,
+`Gender.GetAnyGenericPersonalSingular()`, a random draw from `male`, `female`, `neuterperson`,
 `nonspecific`.
 
 The same gate sits on the in-game customization screen, where *"buy a new **random** gender for 4
@@ -2796,7 +2796,7 @@ MP"* renders unconditionally but the line that lets you **choose** one does not.
 
 `Gender.EnableSelection` and `PronounSet.EnableSelection` are public static fields, set from the root
 attribute of their XML files. A mod could ship a four-line `mod/Core/Genders.xml` with
-`EnableSelection="true"` and it would work — the loader reads the attribute off whatever `<genders>`
+`EnableSelection="true"` and it would work, because the loader reads the attribute off whatever `<genders>`
 root it is handed, base sorts before mods, and it is a plain static assignment, so last write wins.
 
 **That version cannot be switched off.** XML loads unconditionally, and charter rule 6 wants this to
@@ -2804,7 +2804,7 @@ be the player's choice. So `Raven_Options.cs` sets the two fields from two optio
 the only reason C# is involved.
 
 **And setting them once is not enough.** `QudCustomizeCharacterModule.Init()` calls
-`PronounSet.Reinit()`, which clears every pronoun set and re-reads `PronounSets.xml` — whose root
+`PronounSet.Reinit()`, which clears every pronoun set and re-reads `PronounSets.xml`, whose root
 carries `EnableSelection="false"`. Character creation therefore undoes the pronoun half of this *as
 it opens*. `Gender` has no equivalent `Reinit`, so it survives, and the symptom was one row
 appearing and the other not.
@@ -2834,7 +2834,7 @@ character-creation module, so nothing short of opening the screen would have cau
 | **new** | `per` | per / per / pers / pers / perself |
 | **new** | `ne` | ne / nem / nir / nirs / nemself |
 
-**Unhidden** means vanilla already ships it, complete, behind `Generic="false"` — the one attribute
+**Unhidden** means vanilla already ships it, complete, behind `Generic="false"`, the one attribute
 that keeps it out of `GetAllGenericPersonalSingular`. **Promoted** means vanilla ships it as a pronoun
 *set* but not as a gender, so it appeared in one row and never the other.
 
@@ -2853,13 +2853,13 @@ while changing nothing about the grammar.
 
 ### 16.5 The duplicate that `DoNotReplicateAsPronounSet` prevents
 
-`ReplicateGenders="true"` mirrors every gender into a pronoun set — but a pronoun set is **named by
+`ReplicateGenders="true"` mirrors every gender into a pronoun set, but a pronoun set is **named by
 all eleven of its forms, person terms included**, and replication is skipped only when a set of that
 exact name already exists.
 
 Vanilla's hand-written `xe`, `ze` and `sie` sets carry the field defaults, `human / child / friend /
 child / sib / progenitor`. The promoted genders carry elverson's. The names therefore differ, the
-replica is **not** skipped, and each would appear twice in the Pronoun Set row — identical pronouns,
+replica is **not** skipped, and each would appear twice in the Pronoun Set row, with identical pronouns,
 differing only in whether a stranger calls you `person` or `human`.
 
 `DoNotReplicateAsPronounSet="true"` on the three promoted genders prevents it. The genders mode of
@@ -2867,7 +2867,7 @@ differing only in whether a stranger calls you `person` or `human`.
 
 One consequence worth knowing: the **gender** `xe` carries `person / sibling / parent` while vanilla's
 hand-written **pronoun set** `xe/xem/…` keeps `human / sib / progenitor`. A player who leaves the
-Pronoun Set row on its `<from gender>` default — which is what it defaults to — never meets the
+Pronoun Set row on its `<from gender>` default, which is what it defaults to, never meets the
 difference.
 
 ### 16.6 What this does not do
@@ -2876,7 +2876,7 @@ difference.
   `<removegender>` exists and this file deliberately does not use it, for the reason §1.0b of
   `docs/STYLEGUIDE.md` gives about `<removetable>`.
 - **`EnableGeneration` stays off.** It is a third switch on both files, and it invents genders at
-  runtime — pronouns assembled from a syllable kit, a generated name, generated person terms. Roughly
+  runtime: pronouns assembled from a syllable kit, a generated name, generated person terms. Roughly
   half of what it produces reads as a plausible neopronoun and half does not, and a bad roll is
   visible for a whole run. Investigated and declined in #435.
 - **NPC naming is unaffected.** §15's namestyles scope on gender, so a gender added here will reach
@@ -2887,20 +2887,20 @@ difference.
 Adding nine genders changes more than the character-creation list, and I did not think of this when
 I argued for it.
 
-`Gender.CheckSpecial` resolves a set of keywords a blueprint can use in place of a gender name —
-`genericpersonalsingular`, `personalsingular`, `any`, `generic` and others — and they resolve through
+`Gender.CheckSpecial` resolves a set of keywords a blueprint can use in place of a gender name:
+`genericpersonalsingular`, `personalsingular`, `any`, `generic` and others, and they resolve through
 the same `GetAllGenericPersonalSingular()` the chargen row uses. **That list went from 4 to 13.**
 
 Nine vanilla creature blueprints use one of those keywords in their `RandomGender` tag. Those
 creatures now turn up as `fae`, `xe`, `spivak`, `ve`, `per`, `ne`, `ze`, `sie` or `elverson` where
 before they could only be `male`, `female`, `neuterperson` or `nonspecific`.
 
-`male` and `female` are untouched — `CheckSpecial` passes an ordinary gender name straight through
+`male` and `female` are untouched, because `CheckSpecial` passes an ordinary gender name straight through
 (`_ => Name`), so `RandomGender="male,female"`, which 117 of the 126 human blueprints inherit from
 `BaseHuman`, is still the same coin flip it always was. Only the blueprints that deliberately asked
 for "any generic personal singular gender" see a wider one.
 
-I think this is right — a blueprint asking for any generic gender should get any generic gender, and
+I think this is right: a blueprint asking for any generic gender should get any generic gender, and
 narrowing it would mean the fork adding genders and then hiding them from the world it added them
 to. But it is a change to what the world generates rather than to what a player can pick, it was not
 argued for, and it should not have been discovered by someone noticing a village full of women and
@@ -2909,7 +2909,7 @@ than a surprise.
 
 ## 17. Creature variants (`ObjectBlueprints/Creatures.xml`)
 
-**44 cosmetic colour and name variants of nineteen common creatures** (#171). Always on — the option
+**44 cosmetic colour and name variants of nineteen common creatures** (#171). Always on, and the option
 was removed in #690.
 
 ### 17.1 The one rule that keeps this cosmetic
@@ -2929,7 +2929,7 @@ The first attempt used `DynamicObjectsTable:<Biome>_Creatures` tags, on the read
 self-registers into a spawn table. **Those tables do not put a creature in a zone.** No population
 table references one and no zone builder requires one. All 32 shipped, and none ever spawned.
 
-They are not inert, though — I said they were, and that was wrong. Every biome-keyed pool is rolled
+They are not inert, though. I said they were, and that was wrong. Every biome-keyed pool is rolled
 by **procedural village generation** (`VillageBase.cs:167` for creatures), which decides who lives in
 a village rather than what walks a hillside. So the tags were pointed at villagers while the design
 was about wilderness. `docs/LESSONS.md` carries the full account and the correction.
@@ -2941,7 +2941,7 @@ shipped alone and was walked in a running game before the other 31 followed.
 
 **A variant takes its parent's `Chance` in that same table, and about half its `Number`.** So you
 meet a variant roughly as often as you meet the animal it is a variant of, but there are fewer of
-them when you do — the ordinary animal stays the common one by *count*, not by how rarely it turns
+them when you do: the ordinary animal stays the common one by *count*, not by how rarely it turns
 up. In `pickone` groups the currency is `Weight` and the same rule applies.
 
 That is the second version of this curve. The first put each variant one step below its parent on
@@ -2953,7 +2953,7 @@ never make a variant likelier than the animal it varies.
 
 **Six are still uncommon, and deliberately so**: the jungle boar, salamander and chameleon and the
 ruins beetles and glowmoth sit at vanilla's own 5% in those tables. Their variants match, which means
-you will meet a russet boar about as often as a plain jungle boar — rarely, because vanilla makes
+you will meet a russet boar about as often as a plain jungle boar, which is rarely, because vanilla makes
 boars rare in the jungle.
 
 The black goat and the rust-furred baboon are held one step below their parents rather than matching,
@@ -2961,27 +2961,27 @@ which is the rarity the roster always wanted and the first attempt could not exp
 
 **Where the parent's `Number` is already 1 there is nothing to halve, so the `Chance` or `Weight`
 halves instead.** Without that a variant of a single-spawn animal would be purely additive at the
-parent's own rate — a black bear at the cave tables' `Bear` weight of 5 would mean a bear *and* a
+parent's own rate. A black bear at the cave tables' `Bear` weight of 5 would mean a bear *and* a
 black bear drawn as readily as each other.
 
 ### 17.3a Three of them lived in a table vanilla had switched off
 
 The black bear, chalk centipede and hoary bat were merged into
-`LowerTremblingDunesZoneGlobals`, whose contents **Freehold commented out** — along with
+`LowerTremblingDunesZoneGlobals`, whose contents **Freehold commented out**, along with
 `TrembleRocky` and `TremblingDunesSurfaceZoneGlobals`, all three inside one `<!-- -->` block. The
 zone template still names the table and `Worlds.xml` still builds the zone, so the merge *created*
 the table rather than landing nowhere: a running game reported the chalk centipede at 45%, exactly
 the `Chance` declared.
 
 Which meant this fork's three were **100% of that zone's global population**, in a place a player
-walks into — and it re-enabled something vanilla had deliberately emptied. Both are things §3.2.1
+walks into, and it re-enabled something vanilla had deliberately emptied. Both are things §3.2.1
 and charter rule 2 exist to prevent, and nothing caught either, because `table-share` skipped a
 table absent from the snapshot in silence. `scatter-share` (#474) reports it instead, which is how
 this surfaced at all (#476).
 
 **Redrock was the wrong answer, and measuring is what showed it.** The first rehoming sent them to
 Redrock, on the reasoning that it is desert canyon country and holds all three parents. But Redrock
-is one world-map cell — `x="0-2" y="0-2"`, `Mutable="false"` — and is reached by **1 of the game's
+is one world-map cell, `x="0-2" y="0-2"` and `Mutable="false"`, and is reached by **1 of the game's
 87 zonetemplates**. That is exactly as narrow as the place they came from: it would have fixed the
 share and left the content just as hard to meet. Every named landmark is the same shape; the
 Rustwells are also 1.
@@ -3001,14 +3001,14 @@ The centipede does not go to `Tier2CaveCreatures`, which reaches 14, because
 §17.3's curve describes.
 
 **The derivation was done against commented-out data.** The original weights carry notes reading
-`Giant Centipede 45/1-2` and `Bat 90/1-3` — figures taken from inside the comment block, which is
+`Giant Centipede 45/1-2` and `Bat 90/1-3`, figures taken from inside the comment block, which is
 why they looked authoritative. A commented-out record is not a record.
 
 ### 17.3b Which creatures can take a variant
 
 Two rules, both learned the hard way:
 
-**The parent must have a live population entry.** Not a `DynamicObjectsTable` tag — those distribute
+**The parent must have a live population entry.** Not a `DynamicObjectsTable` tag, because those distribute
 into pools nothing reads. Grep for the blueprint name outside the file that declares it; if every hit
 is a declaration, there is no route.
 
@@ -3016,7 +3016,7 @@ is a declaration, there is no route.
 green, scrounge red, eld blue and jut bright-green encode *rank* rather than coat. A variant there
 would read as a different tier of enemy, which is the "two identical glyphs behaving differently"
 failure §17.1 exists to prevent. Named uniques and vanilla's own variants are out for the same family
-of reason — `Sultan Croc`, `Astral Tabby`, `Two-Headed Boar`.
+of reason: `Sultan Croc`, `Astral Tabby`, `Two-Headed Boar`.
 
 ### 17.4 One restoration and two additions
 
@@ -3026,7 +3026,7 @@ than a placement invented.
 
 **Two placements have no vanilla backing and are deliberate new content:** the **marsh dog** and the
 **salt beetle**. Nothing in vanilla, live or dead, puts a dog in the saltmarsh or a beetle on the
-dunes. Both are marked in the XML. The marsh dog stands without a plain dog beside it on purpose —
+dunes. Both are marked in the XML. The marsh dog stands without a plain dog beside it on purpose:
 it is a marsh-adapted animal, not a coat on something that already lives there.
 
 ### 17.5 Naming
@@ -3039,7 +3039,7 @@ all 1,072 vanilla creature display names, no vanilla variant replaces its parent
 ### 17.6 The catalogue
 
 ✦ marks a variant carrying its own description, because the inherited one names a colour it does not
-have — both salamanders inherit "ovoid spots, crimson and coral and citrine", and the beetles inherit
+have. Both salamanders inherit "ovoid spots, crimson and coral and citrine", and the beetles inherit
 "shining black elytra".
 
 | Variant | Parent | Table | Entry |
@@ -3092,7 +3092,7 @@ have — both salamanders inherit "ovoid spots, crimson and coral and citrine", 
 ### 17.7 A coat splits its parent's share, and never adds to it
 
 > ✅ **Played and confirmed on 2026-08-29** (maintainer). Animal density reads correctly after the
-> fix — which is the check that mattered, because the arithmetic below was verified three ways on
+> fix, which is the check that mattered, because the arithmetic below was verified three ways on
 > paper and none of those would have caught a merge that failed to apply. The reported symptom, a
 > croc and a silt croc on one tile, was the only evidence the density was ever wrong.
 
@@ -3108,14 +3108,14 @@ is:
 
 **This was wrong until #613**, and a player found it: a croc and a silt croc standing on the same
 tile in a salt marsh. `SaltMarshZoneGlobals` is a flat list of independent `Chance` rolls, so a
-variant merged in beside its parent was a *second* roll — the marsh expected 1.0 crocs where vanilla
+variant merged in beside its parent was a *second* roll: the marsh expected 1.0 crocs where vanilla
 expected 0.5, and a quarter of marshes got both. **30 vanilla creatures had drifted the same way, at
 a median of 1.6x and a worst of 2.11x.** The fix lowers vanilla's chance by merging onto its own
 entry and gives the difference to the coat, so each group sums back to vanilla's figure; 27 of the
 30 land exactly, and the other three are within 4.4% because chances are integers.
 
 `variant-density` in `tools/validate_mod.py` holds the line now, against the snapshot's
-`variant_parent_quantities`. **`scatter-share` could not have caught this and never could** — it
+`variant_parent_quantities`. **`scatter-share` could not have caught this and never could**, because it
 measures a share of a whole table against a 50% ceiling, and this table is about a tenth this fork's
 content while holding twice vanilla's crocs, because 260 watervine and brinestalk drown one reptile.
 Share is a property of a table; density is a property of a blueprint.
@@ -3128,7 +3128,7 @@ only ever existed where vanilla wrote a flat `Chance` list.
 
 Removed in #690. Its own rule above is the argument: **a variant differs in name, colour and flavour
 text and must not differ in stats.** Rule 6 says flavour that changes no mechanic does not need an
-option, and #664 removed §29's on exactly that reasoning — this is the same category as §30's object
+option, and #664 removed §29's on exactly that reasoning. This is the same category as §30's object
 colours, which was never given one.
 
 The apply method that backed it walked `PopulationManager.Populations` swapping each variant entry
