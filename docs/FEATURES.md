@@ -6843,7 +6843,7 @@ it. Default on, and the help text says it makes fights harder.
 
 ## 51. Fatigue, and sleeping somewhere safe (`Vixy_Fatigue`, `Vixy_Sleep`)
 
-The first slice of #179 — the loop and its consequences. The unreliability layer (§3.2.1 of the
+The first slice of #179: the loop and its consequences. The unreliability layer (§3.2.1 of the
 design doc) and dreams (§4.1) are deferred. **Off by default**, and the only option here that adds a
 system the base game does not have.
 
@@ -6860,7 +6860,7 @@ question now has a benchmark, and it decided the design.
 ### 51.2 No attribute penalties, because vanilla does not use them
 
 Between them, Qud's two survival timers spend **one stat penalty**. Everything else they do is a
-*capability* consequence — you cannot heal, and you cannot travel. The original spec proposed a
+*capability* consequence: you cannot heal, and you cannot travel. The original spec proposed a
 four-tier ladder across three attributes, which would have made this by far the heaviest of the three.
 
 | Fatigue | State | Effect |
@@ -6872,7 +6872,7 @@ four-tier ladder across three attributes, which would have made this by far the 
 | 950–1000 | Collapsing | rising chance of dropping where you stand, 1% climbing to 25% |
 
 The travel refusal uses `CanTravelEvent`, which carries one field and fires *before* a destination
-exists — so an outright refusal is the only thing it can express, which is exactly what this wants.
+exists, so an outright refusal is the only thing it can express, which is exactly what this wants.
 Anything conditioned on *where* you were going would need `ObjectLeavingCellEvent`; see
 `docs/LESSONS.md`.
 
@@ -6889,7 +6889,7 @@ actions *"roughly two in-game days"*; it is **0.83 of one**. Reaching full fatig
 **Play asked for closer to four, and the rate moved rather than the bands (#821).** The step from
 Tired to Weary read as arriving too soon, and the reason is the ladder's shape: the Rested band is
 **400 wide and every band after it is 200 or less**, so the second rung lands at half the pace the
-first one teaches you to expect. That shape is deliberate — the meter is not a clock — so the
+first one teaches you to expect. That shape is deliberate, because the meter is not a clock, so the
 baseline went to **0.22** instead, stretching everything by one proportion. Widening the early bands
 could only have come out of the later ones, and `Exhausted` is where `Vixy_Gutter` and the world-map
 refusal both live.
@@ -6910,7 +6910,7 @@ than guessing at it:
 
 | §6 checkbox | how `Stomach` answers it |
 |---|---|
-| companions exempt | an `IsPlayer()` gate — no special case needed |
+| companions exempt | an `IsPlayer()` gate, with no special case needed |
 | overland travel must not be free | stamp the turn on entry, pay the debt on return (§51.3a) |
 | accrual must pause while asleep | `if (!ParentObject.HasEffect<Asleep>())` |
 
@@ -6921,7 +6921,7 @@ before there was one to look at.
 ### 51.3a Crossing the map costs what it takes
 
 `Segments` on a terrain runs 1000–4000, so **one parasang is 300 ticks across ordinary ground and
-1,200 across North Sheva** — a quarter of an in-game day to a whole one. A tick is an action, which is
+1,200 across North Sheva**, a quarter of an in-game day to a whole one. A tick is an action, which is
 the unit fatigue accrues in, so travel prices itself.
 
 | journey | ticks | fatigue | arrives |
@@ -6931,18 +6931,18 @@ the unit fatigue accrues in, so travel prices itself.
 | 1 parasang, North Sheva | 1,200 | 504 | Tired |
 | 8 parasangs, baseline | 2,400 | 1,000 | **Collapsing** |
 
-**The catch-up cap was 1,200 turns and that made the map nearly free** — the exact hole §6 warned
+**The catch-up cap was 1,200 turns and that made the map nearly free**, the exact hole §6 warned
 about. A twenty-parasang haul cost the same as one bad parasang, because the cap bound the total
 rather than guarding against nonsense. It is now a sanity bound of 100,000, matching `Stomach`'s, and
 `Set` clamping at `Max` does the game-facing work: travel far enough without resting and you arrive
 with the meter full, which is the correct outcome and the player's own choice.
 
-Collapse cannot fire *on* the world map — accrual returns early there — so a long haul lands you in a
+Collapse cannot fire *on* the world map, since accrual returns early there, so a long haul lands you in a
 zone and then takes you down, rather than stranding you between parasangs.
 
 **The skill lever cuts fatigue as well as time, and that is deliberate.** A matching Survival skill
 and Trailblazer each add +100 to travel speed, so a salt-dune crossing is 750 ticks unskilled, 375
-with one and 250 with both — and the fatigue falls with it. A traveller who invested in crossing
+with one and 250 with both, and the fatigue falls with it. A traveller who invested in crossing
 ground quickly is also a traveller who arrives less tired.
 
 ### 51.3b Time I did not spend in my own body is still time (`Settle`)
@@ -6950,14 +6950,14 @@ ground quickly is also a traveller who arrives less tired.
 **Domination was a fatigue-free window wide enough to live in.** `Domination.Dominate` assigns
 `The.Game.Player.Body = defender`, so the puppet becomes the player and my real body stops answering
 `IsPlayer()`. The puppet never carries the fatigue part, and my real body's `Dominating` effect
-returns false from its own `BeginTakeActionEvent` handler — which zeroes that body's energy and stops
+returns false from its own `BeginTakeActionEvent` handler, which zeroes that body's energy and stops
 the dispatch chain, so whether the fatigue part is reached at all comes down to part-versus-effect
 ordering rather than anything worth relying on. Duration is `100 * (Level + 1)` rounds against a
 75-round cooldown, so at rank 10 that is roughly 1,100 rounds, recastable before it lapses.
 
 **The fix generalises the world-map catch-up instead of sitting beside it.** The turn fatigue was last
-charged is stamped on every action; a gap wider than `GapThreshold` — ten turns, which ordinary play
-never approaches — is billed at the base rate when I come back. The map was the first gap of this
+charged is stamped on every action; a gap wider than `GapThreshold`, ten turns, which ordinary play
+never approaches, is billed at the base rate when I come back. The map was the first gap of this
 shape and domination the second, and any future one is now billed without a line being written for it.
 
 The gap is charged at the **base** rate with no strain multiplier, because strain describes what I was
@@ -6965,18 +6965,18 @@ doing and across a gap that is exactly what is not known. The world map keeps it
 there the answer *is* known: overland travel is strain 1.5.
 
 Two things the stamp deliberately does not do. It is not updated when the part is on a body that is
-not the current player — that staleness *is* the bill. And it **is** updated while the option is off,
+not the current player, and that staleness *is* the bill. And it **is** updated while the option is off,
 so turning fatigue back on does not charge me for the time it was off.
 
 ### 51.3c The bands only speak on the way up
 
-One message per band crossed, and **only while getting worse**. Every line is written for a worsening —
-*"your eyes are heavy"*, *"you cannot keep this up"*, *"you are going to fall down"* — and each of the
+One message per band crossed, and **only while getting worse**. Every line is written for a worsening:
+*"your eyes are heavy"*, *"you cannot keep this up"*, *"you are going to fall down"*, and each of the
 last three carries `=WEIRDMARKOVSENTENCE=` on top.
 
 The first version announced any change of band, up or down. Found in play: an ambush cut a sleep short
 somewhere between Exhausted and Weary, and waking gave *"Your eyes are heavy, and the edges of things
-will not hold still"* — a deterioration message delivered at the exact moment the rest had helped, with
+will not hold still"*, a deterioration message delivered at the exact moment the rest had helped, with
 the unreliability flavour riding along just as I became more reliable. It read as the system being
 broken, which is fair, because it was.
 
@@ -6989,7 +6989,7 @@ me is a different feature.
 `Asleep` carries a `Voluntary` flag and vanilla sets it correctly at every call site: `Bed`,
 `Slumberling` and the two lair sleepers pass `true`; `GasSleep`, `Narcolepsy`, `CrungleGaze`,
 `ModFatecaller` and `PaxKlanqMadness` leave it `false`. Reading that one field closes the exploit the
-design doc called its single most important interaction — **carry sleep gas and the system dies** —
+design doc called its single most important interaction, **carry sleep gas and the system dies**,
 before it can open.
 
 Note `forced: true` does *not* mean involuntary. It bypasses the `CanApplySleep` refusals, and `Bed`
@@ -7001,7 +7001,7 @@ passes it alongside `Voluntary: true`. The two flags are orthogonal and easy to 
 | gas, narcolepsy, a conk, my own collapse | **0.50** | `Vixy_Sleep.InvoluntaryDrainHundredths`, flat |
 
 **The second row is §3.3's own number, and for a long time it was zero (#854).** The design doc has
-always said involuntary sleep recovers 0.5/turn — *"better than nothing, never a substitute"* — and
+always said involuntary sleep recovers 0.5/turn, *"better than nothing, never a substitute"*, and
 #179 did not build that tier. It built an early return, because reading `Voluntary` closed the exploit
 on one field and the tier was never the point; the doc's release checklist recorded the gap under
 Narcolepsy and marked it *"Tracked separately"*.
@@ -7010,7 +7010,7 @@ Narcolepsy and marked it *"Tracked separately"*.
 lying down for the same turns, and it still costs a grenade and leaves me prone at −12 DV with +4 to
 every attacker's penetration roll. Carrying sleep gas is not a way to skip a night.
 
-**Flat, where the voluntary rate is tiered.** `RestQuality` and `BurdenFactor` price a decision —
+**Flat, where the voluntary rate is tiered.** `RestQuality` and `BurdenFactor` price a decision:
 where I chose to lie down, what I chose to carry. Nothing about being gassed is a choice, so there is
 no decision to price. For the same reason the involuntary branch takes no dream stamp and rolls no
 ambush: §51.5a's dream is the reward for a night, and §51.5's ambush table prices where I chose to
@@ -7030,7 +7030,7 @@ and three of them were wrong.
 | `MovementModeChanged`'s involuntary flag | false | true |
 
 Found in play: I collapsed at 990 and woke in **Tired**. On a bed or in a settlement the top of that
-range is 480 points — nearly half the meter, for falling over.
+range is 480 points, nearly half the meter, for falling over.
 
 `Rest` now tiers by the flag instead of gating on it, so the collapse can be what it is. The log reads:
 
@@ -7042,12 +7042,12 @@ You fall asleep!
 
 **Waking still inside Collapsing is the point.** At 0.5/action a collapse returns 20–40, so I come up
 around 960 and the roll resumes at ~10% per action. §6 of the design doc already said as much about
-resting to heal — *"rest long enough and you eventually collapse into real sleep"* — and the way out
+resting to heal, *"rest long enough and you eventually collapse into real sleep"*, and the way out
 is one keypress, because `Vixy_Sleep.Attempt` passes `forced: true` and `Wakeful` cannot refuse it.
 
 #### `quicksleep` is write-only and I had been passing it
 
-`Asleep.quicksleep` is a public field with **zero reads anywhere in the assembly** — the declaration,
+`Asleep.quicksleep` is a public field with **zero reads anywhere in the assembly**: the declaration,
 two constructors, four call sites, and nothing that ever looks at it. `Vixy_Fatigue.Collapse` and
 `Vixy_Sleep.Attempt` both passed it, copied from `Bed.cs` along with the rest of the call. It
 compresses nothing and never has. Neither passes it now.
@@ -7060,8 +7060,8 @@ message behind. The turns passed. The log flattened them.
 ### 51.4a How long I sleep is mine to choose (#776)
 
 **The command used to give me no say, and a bedroll already does.** `Bed.cs` line 337 opens
-`Popup.PickOption("How long would you like to sleep?", …)` with three fixed spans — 150, 375 and 600
-rounds — each labelled with the clock time I would wake at, off `Calendar.GetTime`. Anyone who has
+`Popup.PickOption("How long would you like to sleep?", …)` with three fixed spans, 150, 375 and 600
+rounds, each labelled with the clock time I would wake at, off `Calendar.GetTime`. Anyone who has
 used a bedroll knows that dialogue. My `Sleep` command silently applied `Stat.Random(200, 320)`
 instead, which is *less* control than the bedroll in my own pack. The fix is to borrow the prompt, not
 to invent one.
@@ -7070,14 +7070,14 @@ to invent one.
 order, so the muscle memory survives. Escape backs out and costs nothing.
 
 **Every option carries its round count, and that part is not vanilla's.** `Calendar.GetTime` returns
-Qud's own time-of-day names — *Harvest Dawn*, *Waning Salt Sun*, *Jeweled Dusk* — which is verbatim what
+Qud's own time-of-day names, *Harvest Dawn*, *Waning Salt Sun*, *Jeweled Dusk*, which is verbatim what
 a bedroll says and reads as flavour rather than as an answer. It only tells me how long if I already
 know what time it is, which at the moment I decide to lie down is precisely what I do not know. So each
 line ends `{{K|(150 rounds)}}`, and *Until rested* carries its own computed figure. Borrowing the prompt
 was right; inheriting its one weakness was not.
 
 **A timed choice is a ceiling, not a span.** `Rest` ends the sleep the moment fatigue reaches zero, so
-"until 9:00" means "no later than 9:00" — waking earlier because I am rested is the good outcome
+"until 9:00" means "no later than 9:00", and waking earlier because I am rested is the good outcome
 rather than a broken promise.
 
 **A timed sleep that ends on the clock does not dream, and nothing had to be written for that.**
@@ -7094,7 +7094,7 @@ spend the same `DrainHundredths`, so the budget and the spending cannot come apa
 **A short sleep is a safer sleep, and I had this backwards in writing.** This paragraph used to say
 ambush was rolled once per sleep, so a nap carried the same risk as a night. It is not: `RollAmbush` is
 called from `Rest` on **every action**, and the per-sleep odds in §51.5 are compounded from a per-action
-rate. Same coupling as #777 — how long a sleep takes decides how many times the dice come out.
+rate. Same coupling as #777: how long a sleep takes decides how many times the dice come out.
 
 | sleeping on open ground | actions | found |
 |---|---:|---:|
@@ -7114,14 +7114,14 @@ present means no roll and an undisturbed sleep, whatever the terrain.
 
 That precondition is what the rate always meant, and getting it wrong made the mechanic dishonest.
 The first version woke the player, applied `Dazed` and printed *"something is moving nearby"* without
-checking that anything was — so on open ground in an empty zone, the common case, the message was
+checking that anything was, so on open ground in an empty zone, the common case, the message was
 simply **false** and the mechanic was a randomised penalty with no danger attached. §3.3 asked for
 *"spawn or wake a nearby hostile"*; declining to spawn was deliberate, and then the waking was never
 written, so neither half happened.
 
 **Hostility is a precondition, not a tier.** It used to be one, and that quietly broke the table:
 `Locate` returned `Hostile` whenever anything hostile stood in the zone, so `Bed`, `Sheltered` and
-`Open` could only apply when nothing hostile was present — which is exactly when no ambush is
+`Open` could only apply when nothing hostile was present, which is exactly when no ambush is
 possible. Five tiers collapsed to two.
 
 | where | rest quality | fatigue/action | actions to rest | P(found) per sleep | per turn |
@@ -7135,30 +7135,30 @@ Odds are *given something hostile is in the zone*, and derived from per-sleep ta
 `1 − (1 − p)ⁿ` backwards rather than chosen per turn.
 
 **The two right-hand columns are one number, not two, and that is the trap #777 fell into.** The roll
-fires every action asleep, so how fast a tier rests me decides how many times it is rolled — a slower
+fires every action asleep, so how fast a tier rests me decides how many times it is rolled: a slower
 sleep is a more dangerous one. The rest column and the ambush column are the same lever seen twice.
 
 For most of this feature's life the sheltered row was wrong in both. `DrainPerAction` was
 `4 * RestQuality / 10` in whole points, and rest qualities are tenths, so a sheltered spot's 12 came
-out as `4 * 12 / 10 == 4` — exactly what open ground gets. **One of the four tiers did nothing from
+out as `4 * 12 / 10 == 4`, exactly what open ground gets. **One of the four tiers did nothing from
 the day it shipped**, and this table quoted a 4.8 the code never produced. Worse, the extra 42 actions
 it spent asleep carried 42 extra rolls, so it was also more dangerous than the row said.
 
 Fixing the arithmetic alone would have quietly retuned the ambush column too: the same 0.14% over 208
 actions rather than 250 is 25%, not the 30% it was deliberately set to. So the per-turn rate moved
 0.14% → 0.17% in the same change. The tier is now 17% faster to rest, and exactly as dangerous as it
-always claimed to be — a doorway is worth finding for the reason the table gives, and for no accidental
+always claimed to be, so a doorway is worth finding for the reason the table gives, and for no accidental
 second reason.
 
 ### What I am carrying, and a penalty that had never once applied (#780)
 
 Sleeping in my armour rests me worse. It was supposed to already: `RestQuality` read
 `GetIntProperty("Vixy_BurdenBand")`, and **that string appeared exactly once in the whole
-repository — on the line reading it.** Nothing ever wrote it, so the branch was never taken. The band
+repository, on the line reading it.** Nothing ever wrote it, so the branch was never taken. The band
 was two functions away the entire time, in `Vixy_Burdened.BandFor`.
 
 Graded now, rather than the single threshold the dead line had, and applied to the hundredths rather
-than the tenths — `tenths * 3 / 4` truncates 15 to 11, 12 to 9 and 10 to 7, which is §51.5's own trap
+than the tenths, since `tenths * 3 / 4` truncates 15 to 11, 12 to 9 and 10 to 7, which is §51.5's own trap
 one layer down, waiting for the moment anyone made the code run.
 
 | load | band | rest |
@@ -7170,7 +7170,7 @@ one layer down, waiting for the moment anyone made the code run.
 
 **It keys on load, not on the burden option.** `Vixy_Burdened.BandFor` is a pure function of carried
 weight; only the *effect* is option-gated. So this reaches anyone running fatigue, whichever way they
-set graded burden — which is the right boundary, because "carrying a lot rests me worse" is a fatigue
+set graded burden, which is the right boundary, because "carrying a lot rests me worse" is a fatigue
 opinion rather than a burden one.
 
 And because the ambush roll fires every action asleep, the cost lands twice. Heavy on open ground:
@@ -7181,14 +7181,14 @@ And because the ambush roll fires every action asleep, the cost lands twice. Hea
 | heavily burdened | 3.00 | 333 | **70.9%** |
 
 A quarter less rest is a third more actions lying there. That is the same lever this section is about,
-and it is why the sleep menu now says *"You do not sleep well under all this"* — a penalty this size
+and it is why the sleep menu now says *"You do not sleep well under all this"*, since a penalty this size
 that nothing mentions is one I could only find with arithmetic.
 
-**A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub — a
-`CheckpointWidget` in cell (0,0) — so the list is Freehold's rather than one this fork invented and
+**A settlement is genuinely safe.** `Zone.IsCheckpoint()` is the game's own notion of a safe hub, a
+`CheckpointWidget` in cell (0,0), so the list is Freehold's rather than one this fork invented and
 has to maintain: **Joppa, the Stilt, Grit Gate, Kyakukya, Yd Freehold, Ezra, the Arrivarium.**
 
-On a hit the culprit is **woken if it was asleep** and aimed with `Brain.Target` plus a `Kill` goal —
+On a hit the culprit is **woken if it was asleep** and aimed with `Brain.Target` plus a `Kill` goal,
 which is how `PsychicHunterSystem` sends a hunter after the player. The sleeper wakes `Dazed` for 3–6
 turns (−4 Agility, −4 Intelligence, −10 Move Speed) and the message **names what found them**, because
 *"a snapjaw has found you"* is a decision and *"something is moving"* is only atmosphere.
@@ -7199,18 +7199,18 @@ the design's convenience, and it means the tier rates describe a real population
 ### 51.5a A full sleep gives something back
 
 The design doc's own instruction is **design the reward before the punishment**. Fatigue alone is a
-tax; a dream is the reason to sleep properly, in a safe place, without being woken — and it fires in
+tax; a dream is the reason to sleep properly, in a safe place, without being woken, and it fires in
 exactly one place, when fatigue reaches zero with the sleeper undisturbed. **An ambush costs the
 dream as well as the rest**, which is what makes where you lie down matter for something beyond
 safety.
 
 **A nap is not a night, and until #818 the game could not tell.** Sleeping is refused only at fatigue
-zero, so you could lie down at 1, wake at 0 and collect a dream — about four turns to accrue the
+zero, so you could lie down at 1, wake at 0 and collect a dream, about four turns to accrue the
 point and twenty to sleep it off. **A dream every 24 turns**, against one per 1,500 in ordinary play,
 and in a settlement `AmbushChance` is 0 so it cost nothing but keystrokes.
 
 **A rarer roll could not have fixed that**, which is worth stating because it was my first instinct: a
-chance gate only makes the loop longer, and at one in three it is 72 turns — still twenty times the
+chance gate only makes the loop longer, and at one in three it is 72 turns, still twenty times the
 intended rate. What closes it is charging real fatigue. A dream now requires having been at least
 **Tired** when you lay down, and then rolls at **50%**, so it is neither farmable nor a nightly
 fixture.
@@ -7218,30 +7218,30 @@ fixture.
 **Dreams quote rather than generate.** §4 originally asked for text *"Markov-generated from the
 player's recent history"*; both of Qud's generators load `LibraryCorpus.json`, a fixed offline corpus
 with nothing about the player in it, so that was never possible. `JournalAPI.Accomplishments` is the
-store it wanted — timestamped deeds with pre-authored prose in **three** registers:
+store it wanted: timestamped deeds with pre-authored prose in **three** registers:
 
 | field | voice |
 |---|---|
-| `Text` | plain, second person — *"You journeyed to Kyakukya."* |
+| `Text` | plain, second person, *"You journeyed to Kyakukya."* |
 | `MuralText` | third person, mythic |
 | **`GospelText`** | legendary, and often **counterfactual** |
 
 **The gospel voice is the one a dream wants, and picking it is the whole idea.** The mural voice
-reports what happened; the gospel voice mythologises it and is frequently untrue — vanilla's own
+reports what happened; the gospel voice mythologises it and is frequently untrue, and vanilla's own
 Omonporch entry reads *"=name= appointed the corrupt administrator Asphodel as earl"*, which the
 player did not do. Deeds returning grander and slightly wrong is what a dream is. `MuralText` then
 `Text` are the fallbacks, since not every accomplishment carries all three.
 
 The stored prose contains `=name=`, pronoun tokens and `<spice.…>` lookups, so it goes through
-`GameText.VariableReplace` before anyone reads it — the same replacer the journal uses.
+`GameText.VariableReplace` before anyone reads it, the same replacer the journal uses.
 
 **The portent tier** reveals an unrevealed `JournalMapNote`. `RevealMapNote` takes a `LearnedFrom`
 string, so the dream is recorded as the source the location was learned from rather than the map
-simply changing. It rolls at **25%** of dreams — down from 30 in #818, because it is the half that
+simply changing. It rolls at **25%** of dreams, down from 30 in #818, because it is the half that
 hands over something mechanical, and it already self-limits: every portent spends a location.
 
 It still **falls back to a recollection** when there is nothing left to learn. I had meant to drop
-that once a gate stood in front, so the two tiers would have independent rates — but the portent fails
+that once a gate stood in front, so the two tiers would have independent rates, but the portent fails
 whenever every location is known, which is the normal late-game case, so dropping it would turn a
 quarter of hard-won dreams into silence to buy a tidiness no player could observe.
 
@@ -7261,13 +7261,13 @@ points of Agility.
 | Exhausted | 682 | 1 in 200 | ~3.4 |
 | Collapsing | 227 | 1 in 80 | ~2.8 |
 
-**Weary was in §3.2.1 from the start and was never built** — until #822 it cost a message and a word
+**Weary was in §3.2.1 from the start and was never built**: until #822 it cost a message and a word
 in the status bar, nothing else. Its odds are sized against the band rather than picked: at the
 post-#821 rate that stretch is about 909 actions, so 1 in 500 is roughly two slips across the whole
 of it.
 
 **And it used to reach one class of ability out of six.** The filter was `Class.Contains("Mental")`,
-which matches `Mental Mutations` and nothing else — so a **True Kin got nothing from Exhausted** but
+which matches `Mental Mutations` and nothing else, so a **True Kin got nothing from Exhausted** but
 the world-map refusal, having no mutations at all, and neither did a mutant who took only physical
 ones. Vanilla ships 40 mental-mutation abilities, 36 physical, 34 skills, plus cybernetics, items and
 manoeuvres.
@@ -7275,27 +7275,27 @@ manoeuvres.
 It now takes **mental mutations, physical mutations, skills and manoeuvres**. Including skills is what
 reaches everyone, since every character has some. **Cybernetics, items and tonics are left out
 deliberately**: a grenade does not care how tired I am, and an implant guttering because I am sleepy
-reads as a malfunction rather than as fatigue. The line is my own body and my own training — and the
+reads as a malfunction rather than as fatigue. The line is my own body and my own training, and the
 message follows it, because *"your concentration slips"* is right for a mutation and wrong for a
 charge.
 
 **It does not intercept the activation, and that is the finding.** The obvious build is a true
-misfire — cancel the use, keep the cooldown — and it cannot be done evenly. Mutation commands
+misfire, cancelling the use and keeping the cooldown, and it cannot be done evenly. Mutation commands
 dispatch two different ways: 28 go through `CommandEvent`, which a part on the player can cancel, and
 35 go through the legacy `Event.New(Command)` path that `CommandEvent.Send` fires *first* and aborts
 on, so a handler never sees those in time. That misfire would land on some of my mutations and
-silently never land on the rest, decided by which ones I happened to roll — the #588 defect a second
+silently never land on the rest, decided by which ones I happened to roll, the #588 defect a second
 time.
 
 Writing the cooldown is vanilla's own idiom instead. `SphynxSalt_Tonic` finds mental abilities with
 `Class.Contains("Mental")` and assigns `entry.Cooldown` directly; the setter registers the countdown
 with `ActivatedAbilities`, so it is the supported path rather than a way around one. It reaches every
-activated ability identically, and `NotUsableDescription` — the one gate consulted before any command
-is sent — already refuses the press with the right message.
+activated ability identically, and `NotUsableDescription`, the one gate consulted before any command
+is sent, already refuses the press with the right message.
 
 **The companion mechanic is absent on purpose.** §3.2.1 paired this with false sounds, and Qud has
 nothing for a false sound to hide among: eight distinct "You hear" strings in the whole assembly,
-every one tied to an identifiable cause, and no hallucination effect to borrow — `WakingDream` and
+every one tied to an identifiable cause, and no hallucination effect to borrow, since `WakingDream` and
 `DeepDream` are the metempsychosis mechanic. A phantom noise with no true counterpart is not
 unsettling; it is identified as this mod the second time it happens.
 
@@ -7306,12 +7306,12 @@ OmniPass. **I cannot be put to sleep against my will, and I tire half as quickly
 
 **The second clause is the one that makes it worth shipping.** Fatigue is off by default under rule 6,
 so an item whose only effect were fatigue-shaped would sit in three vanilla implant tables doing
-nothing for most players — worse than not shipping it.
+nothing for most players, which is worse than not shipping it.
 
 **Those three tables are an NPC route, and character creation is a separate one this does not join
 (#867).** `Implants_1and2Pointers` and its siblings have one reader in the whole assembly,
 `CyberneticsHasRandomImplants`, which stocks NPCs. Chargen instead reads `StartingCybernetic:General`
-off the blueprint and hands you the pick for free — no licence cost, at chargen or after. So the
+off the blueprint and hands you the pick for free, with no licence cost, at chargen or after. So the
 question there is not what this is worth but whether a **blanket** refusal of involuntary sleep
 belongs on a list otherwise made of small conveniences, from turn one, at no cost. It does not, and
 §6.5 carries the reasoning. Finding one remains the way to have one. Refusing involuntary sleep stands on its own,
@@ -7325,18 +7325,18 @@ goes through regardless of what I do.
 | | |
 |---|---|
 | **Refused** | sleep gas, a cudgel to the head (`Cudgel_Bludgeon`), crungle gaze, Pax Klanq's madness, the fatecaller, `DeepDream` |
-| **Not refused** | narcolepsy — it is `ForceApplyEffect(..., forced: true)` |
+| **Not refused** | narcolepsy, since it is `ForceApplyEffect(..., forced: true)` |
 | **Not refused** | my own collapse from exhaustion, also `forced: true` |
 | **Not refused** | lying down on purpose, which is `Voluntary: true` and never enters the chain |
 
 The narcolepsy row is the one worth pausing on. When I proposed this the one real cost was that it
-would cancel a defect somebody took three points for at chargen — and mutants *can* take cybernetics,
+would cancel a defect somebody took three points for at chargen, and mutants *can* take cybernetics,
 at a rejection-syndrome risk of `5 + Cost + mutation levels`, so it was not hypothetical. `|| forced`
 means the cost does not exist. And the collapse row is the same mechanism doing me a favour twice: the
 implant slows the clock, it does not let me buy my way out of the end of it.
 
 **Two parts, because the event is a legacy one.** `CanApplyInvoluntarySleep` is a string event, and
-those reach the parts of the object they are fired on — they do not cascade out to equipment the way
+those reach the parts of the object they are fired on; they do not cascade out to equipment the way
 the modern pooled events do. `GasMask` can sit on an implant and read `E.Object == ParentObject.Equipped`
 because `GetRespiratoryAgentPerformanceEvent` cascades; this cannot. So `Vixy_SleepSuppressor` sits on
 the item and grants `Vixy_Sleepless` to the body on `ImplantedEvent`, taking it back on
@@ -7353,11 +7353,11 @@ quietly weaker in exactly the fights it is bought for.
 
 ### 51.5d The meter you can actually see (`Vixy_Fatigued`)
 
-From Tired upward, one word sits on the **active-effects line** beside `burdened` — `{{y|tired}}`,
+From Tired upward, one word sits on the **active-effects line** beside `burdened`: `{{y|tired}}`,
 `{{W|weary}}`, `{{r|exhausted}}`, `{{R|collapsing}}`.
 
 **It had no readout at all before this.** `Vixy_Fatigue` is an `IPart`, and
-`AbilityBar.InternalUpdateActiveEffects` walks `Object.Effects` — parts never reach that line. The only
+`AbilityBar.InternalUpdateActiveEffects` walks `Object.Effects`, and parts never reach that line. The only
 thing that had ever told me my fatigue was a one-off message at each band crossing, and those scroll
 away. Burden appeared there from the start because `Vixy_Burdened` is an `Effect`; fatigue could not,
 for no better reason than which base class it happened to inherit.
@@ -7372,14 +7372,14 @@ append to, so reaching it would need Harmony and rule 5 closes it.
 **But vanilla does this twice, and the second half is open.** `Famished` is an ordinary `Effect` with a
 `Duration` and a coloured `GetDescription()`, so hunger appears both as a continuous readout in the
 status bar and as a chip on the effects line once it turns bad. Fatigue gets the chip. The colours climb
-the way the band messages already do and borrow vanilla's own hunger vocabulary at the top — `{{W|}}`
-then `{{R|}}`, matching `FoodStatus` — so the same escalation means the same thing on both lines.
+the way the band messages already do and borrow vanilla's own hunger vocabulary at the top, `{{W|}}`
+then `{{R|}}`, matching `FoodStatus`, so the same escalation means the same thing on both lines.
 
 **Tired rather than Weary, and that is the point of building it.** §51.4a asks me how long I want to
 sleep, and *"until rested"* is a different choice at 420 than at 940. Starting the readout at Weary
 would leave that decision unlit for the whole first band.
 
-**One effect that renames itself**, rather than four that swap — `Vixy_Burdened`'s own pattern, so one
+**One effect that renames itself**, rather than four that swap, `Vixy_Burdened`'s own pattern, so one
 serialisable class and no per-band churn. It carries no state: the band is derived from the property bag
 on every refresh, so the word cannot disagree with the meter. Turning the option off removes it, rather
 than leaving *"exhausted"* on screen for a system that is no longer running.
@@ -7397,8 +7397,8 @@ The chip names the band and nothing else, and the bands are wide. `Accrue` takes
 | collapsing | 950–1000 | 227 |
 
 Nine hundred actions reading one unchanging word is most of a game day, and the crossing message that
-would have placed me scrolled away long before. So `GetDetails()` — which the Show Effects screen
-already renders, one keypress from the line — now carries position as well as cost: *not far into
+would have placed me scrolled away long before. So `GetDetails()`, which the Show Effects screen
+already renders one keypress from the line, now carries position as well as cost: *not far into
 this*, *well into this*, *on the edge of weariness*, and *about to drop* at the top, where what comes
 next is the floor rather than another band (#853).
 
@@ -7406,45 +7406,45 @@ next is the floor rather than another band (#853).
 figure precisely so fatigue is read and not counted. A percentage here would promise a resolution the
 rest of the design declines to offer.
 
-**Thirds computed rather than tabulated**, because the bands are 200, 200, 150 and 50 wide — a table
+**Thirds computed rather than tabulated**, because the bands are 200, 200, 150 and 50 wide, so a table
 of cut points would need correcting every time one moved, and #821 moved all of them once already.
 The multiply comes before the divide for the reason `docs/LESSONS.md` records under *integer division
 is where a design tier goes to die*: dividing first truncates to zero across the whole band and the
 reading would never move at all.
 
-**Not a status-bar meter, still.** §51.5d's finding holds — `PlayerStatusBar` fetches `Stomach` by
+**Not a status-bar meter, still.** §51.5d's finding holds, and `PlayerStatusBar` fetches `Stomach` by
 name into a slot of a **private** enum and fires no events at all, so there is nothing to register
 for. This is the readout that was reachable, not the one I would have chosen.
 
 ### 51.5e `wish vixyfatigue`, because the test plan could not be carried out
 
 **I wrote checks nobody could perform.** Three of the fatigue regression checks are claims about a
-number — that a world-map crossing charges once rather than twice, that a domination bills once on
+number: that a world-map crossing charges once rather than twice, that a domination bills once on
 return, that turning the option off and on costs nothing. §51.5d shows four words, and 126 against 252
 reads as the same word. None of those was executable. I had checked the mechanism and not the consumer,
 this time for my own QA.
 
 `wish vixyfatigue` prints what no UI shows: the value and band, both carried remainders, where I am
 standing with its rest quality and burden factor, the drain per action and actions to rest, the ambush
-rate — and the two stamps.
+rate, and the two stamps.
 
 **The stamps are the point.** Single-charging is not a claim about the meter, it is a claim about
 `Vixy_FatigueChargedTurn` and `Vixy_FatigueOnWorldMapSince`. Printing those against the current turn,
 with the gap between them, answers in one line what watching the bands cannot answer at all.
 
 `wish vixyfatigue:600` sets the meter, and that is what makes the rest of the plan affordable. Several
-checks begin *"reach Exhausted"*, which is about **3,600 actions** of unhurried play — not a test, an
+checks begin *"reach Exhausted"*, which is about **3,600 actions** of unhurried play. Not a test, but an
 afternoon.
 
 **Wishes reach mods by design.** `WishManager.UpdateCommandCollection` calls
-`ModManager.GetMethodsWithAttribute(typeof(WishCommand), typeof(HasWishCommand))` — `ModManager`, so
+`ModManager.GetMethodsWithAttribute(typeof(WishCommand), typeof(HasWishCommand))`, and `ModManager` is the entry point, so
 mod assemblies are scanned deliberately, the same way `[PlayerMutator]` is found. Two overloads share
 one command name because the dispatcher builds `^cmd$` for a no-argument handler and
 `^cmd(?::|\s+)(.*)$` for one taking a string; `SoundManager.ShowSoundLog` is vanilla doing exactly
-this. Rule 5 is untouched — no file I/O, no network, no reflection of my own, no Harmony.
+this. Rule 5 is untouched: no file I/O, no network, no reflection of my own, no Harmony.
 
-**The report copies.** `Popup.ShowBlockWithCopy` is the game's own affordance — a Copy button calling
-`ClipboardHelper.SetClipboardData`, the same one the world-seed display uses — and the copied text is
+**The report copies.** `Popup.ShowBlockWithCopy` is the game's own affordance, a Copy button calling
+`ClipboardHelper.SetClipboardData`, the same one the world-seed display uses, and the copied text is
 stripped of colour markup, because the point of copying a diagnostic is pasting it somewhere that is
 not Qud.
 
@@ -7465,7 +7465,7 @@ reads as its default.
 So fatigue lives in `Vixy_Fatigue`, `Vixy_FatigueRemainder`, `Vixy_FatigueBandSeen` and
 `Vixy_FatigueOnWorldMapSince` on the player's property bag, and `serializable-shape` stays silent
 because there is nothing new in any save's shape. The mod already stores persistent state this way in
-`Vixy_OnsetWarning`, and vanilla does it for the closest analogue — `Stomach` keeps its counters in
+`Vixy_OnsetWarning`, and vanilla does it for the closest analogue, since `Stomach` keeps its counters in
 fields but puts `OnWorldMapSince` in a property.
 
 ### 51.7 Off-switch
