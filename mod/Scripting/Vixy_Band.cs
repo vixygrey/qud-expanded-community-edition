@@ -48,16 +48,13 @@ namespace XRL.World.Parts
     public class Vixy_Band : IPart
     {
         /// <summary>
-        /// Where the band's faction is kept — a property on the token, not a field on this part.
+        /// The band's serialized route and mission properties. They live on the token, not this
+        /// part, because <c>Vixy_Band</c> must remain free of instance state.
         /// </summary>
-        /// <remarks>
-        /// Charter rule 5: a <c>[Serializable]</c> type's field layout is written into every save
-        /// and becomes an identifier, so every scripted type in this fork holds zero instance state
-        /// and <c>serializable-shape</c> fires the moment one does not. A string property on the
-        /// object is serialised with the object and carries no such obligation — the same choice
-        /// <c>Vixy_Notoriety</c> made when it put its tallies in game state rather than in the part.
-        /// </remarks>
         public const string FactionProperty = "Vixy_BandFaction";
+        public const string MissionProperty = "Vixy_BandMission";
+        public const string OriginProperty = "Vixy_BandOrigin";
+        public const string TargetProperty = "Vixy_BandTarget";
 
         public override bool WantEvent(int ID, int cascade)
         {

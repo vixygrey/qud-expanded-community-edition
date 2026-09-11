@@ -17,6 +17,9 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+- Travelling bands now avoid protected sites and choose reclaim, rival-expansion, or expansion missions
+  from recorded same-world holdings. Their tokens retain mission, origin and target metadata for
+  `vixyband` reporting. (#924)
 
 ### Changed
 

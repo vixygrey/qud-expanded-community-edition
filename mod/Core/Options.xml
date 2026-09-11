@@ -754,14 +754,16 @@
   >
     <helptext>
             Clear a lair to the last of its holders and, sometimes, another
-            people sets out to take it. The band crosses the world map as a
-            real thing you can see, and becomes a camp where it arrives.
+            people sets out to reclaim or expand into it. Protected story,
+            historic, artifact, merchant, oddity and static sites stay out.
 
-            {{y|It moves only while you travel overland.}} Nothing outside
-            your own zone runs, so a band waits while you are underground.
+            The band starts at a recorded holding and crosses the world map
+            as a real thing. It becomes a camp where it arrives.
 
-            Off by default: a place you empty staying empty is Caves of Qud's
-            own opinion, and this changes it.
+            {{y|It moves only while you travel overland.}} A band waits while
+            you are underground.
+
+            Off by default. This changes the world after you empty a place.
         </helptext>
   </option>
 </options>
