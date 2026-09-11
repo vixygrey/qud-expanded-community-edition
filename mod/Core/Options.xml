@@ -766,4 +766,24 @@
             Off by default. This changes the world after you empty a place.
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEWildlifeRecovery"
+    DisplayText="{{C|Qud Expanded}}: wilderness wildlife recovery"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded wildlife animals beasts vermin ecology recovery repopulate"
+  >
+    <helptext>
+            Allows eligible wilderness zones to recover one small cohort of
+            non-sentient wildlife after 30 days away. The cohort uses the
+            zone's natural population tables.
+
+            Protected sites, settlements, and immutable zones stay unchanged.
+            Zones with player footprint markers stay unchanged. The system
+            never wakes frozen zones in the background.
+
+            Off by default. This changes the world after you empty a place.
+        </helptext>
+  </option>
 </options>

@@ -20,6 +20,9 @@ recorded because contributors need them, not because subscribers do.
 - Travelling bands now avoid protected sites and choose reclaim, rival-expansion, or expansion missions
   from recorded same-world holdings. Their tokens retain mission, origin and target metadata for
   `vixyband` reporting. (#924)
+- Wildlife recovery now restores one small cohort of non-sentient fauna in eligible wilderness zones
+  after 30 days away. The feature is off by default and skips protected sites and player footprints.
+  (#951)
 
 ### Changed
 
