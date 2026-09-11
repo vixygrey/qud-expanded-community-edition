@@ -122,6 +122,7 @@ namespace QudExpandedCE
                 // matter: chargen for a new character, and CallAfterGameLoaded for an existing
                 // save. RequireSystem is idempotent the same way RequirePart is. See #923.
                 The.Game?.RequireSystem<Vixy_Territory>();
+                The.Game?.RequireSystem<Vixy_WildlifeRecovery>();
             }
         }
     }
