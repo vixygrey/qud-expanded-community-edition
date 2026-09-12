@@ -551,22 +551,12 @@ def claim_text(doc: Path) -> str:
 
 
 CLAIMS: list[tuple[str, list[str]]] = [
-    # Required checks. Written as words in every document that carries them, so the patterns
-    # capture \w+ and WORD_NUMBERS resolves it. This claim was wrong for an unknown length of
-    # time - six copies said ten while nine were enforced - which is why it is checked now.
-    (
-        r"([\w-]+) checks run on every pull request and all ([\w-]+) must pass",
-        ["required-checks", "required-checks"],
-    ),
-    (
-        r"([\w-]+) checks run here and all ([\w-]+) must pass",
-        ["required-checks", "required-checks"],
-    ),
+    # Required checks are tracked only when the repository states the claim explicitly.
+    # Removed historical phrasings no longer appear in the current project documents.
     (
         r"\*\*([\w-]+) checks are required on every pull request\*\*",
         ["required-checks"],
     ),
-    (r"not one of the ([\w-]+) checks", ["required-checks"]),
     (
         r"(\d+) new blueprints and (\d+) vanilla merges",
         ["new-blueprints", "vanilla-merges"],

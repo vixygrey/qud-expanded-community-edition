@@ -1,96 +1,104 @@
-# Project Conventions
+# Coding Conventions
 
-## Engineering Principles
+This document defines language-agnostic conventions for project code and supporting files.
+Language-specific rules can add detail when they follow the rules in this document.
 
-Follow established best practices.
+## Core Principles
 
-Do not use workarounds or hacks.
+- Prefer clear code over clever code.
+- Keep each module focused on one responsibility.
+- Make data flow and side effects visible.
+- Preserve simple interfaces.
+- Choose predictable behavior over hidden behavior.
+- Remove code that no longer serves the current design.
 
-Implement the correct solution, even when it requires more work.
+## Formatting
 
-Prefer maintainable solutions over quick solutions.
+- Follow `.editorconfig`.
+- Use the formatter that the project defines.
+- Keep line breaks, indentation, and quoting consistent with nearby files.
+- Do not reformat unrelated code.
+- Keep comments short and explain decisions, constraints, or risks.
 
-Resolve root causes instead of hiding symptoms.
+## Naming
 
-Treat high security as a requirement for every feature.
+- Use names that describe purpose.
+- Use one term for one concept across the project.
+- Match the naming style of the language and existing code.
+- Avoid unexplained abbreviations.
+- Name boolean values as conditions when the language supports that style.
 
-## Delivery and Versioning
+## Structure
 
-Keep each commit atomic and limited to one logical change.
+- Keep public interfaces small.
+- Keep functions and methods focused.
+- Separate parsing, validation, transformation, storage, and presentation.
+- Keep configuration separate from executable logic.
+- Place tests near the code or in the project test structure.
+- Prefer existing directories and file patterns.
 
-Use Conventional Commits for commit messages.
+## Errors and Validation
 
-Use Conventional PRs with a clear summary, scope, and verification details.
+- Validate external input at the system boundary.
+- Return or raise errors that identify the failed operation.
+- Preserve useful error context.
+- Do not catch errors without handling or rethrowing them.
+- Do not use broad fallback behavior to hide failures.
+- Use explicit defaults for missing or invalid configuration.
 
-Keep `CHANGELOG.md` for every user-visible change.
+## Tests and Verification
 
-Follow the Keep a Changelog format.
+- Test observable behavior.
+- Cover normal behavior, boundaries, invalid input, and important state changes.
+- Keep tests deterministic and isolated.
+- Use the project test command and test naming pattern.
+- Remove tests that only assert implementation details.
+- Document manual verification when automation cannot cover the behavior.
 
-Use Semantic Versioning for release versions.
+## Git and Change Management
 
-Run the pre-commit hooks before each commit.
+- Keep every commit atomic. Each commit must represent one coherent change.
+- Use Conventional Commits for every commit.
+- Use Conventional PRs for every pull request.
+- Use a Conventional Commit-style title with an optional scope for every pull request.
 
-Use a trunk-based Git strategy.
+## Best Practices
 
-Create or identify an issue before starting code work.
+- Always use established best practices for the language, framework, and project.
+- Choose the first correct design instead of a temporary workaround.
+- Do not add hacks, bypasses, hidden exceptions, or symptom suppression.
+- Fix root causes instead of masking failures.
+- Prefer a complete solution over a partial solution.
+- Keep quality gates enabled.
 
-Always squash-merge pull requests.
+## Versioning and Changelog
 
-## Specifications
+- Use Semantic Versioning for every release.
+- Record the current version in `VERSION`.
+- Keep `CHANGELOG.md` in the Keep a Changelog format.
+- Record user-visible changes under `Unreleased` before release.
 
-Store specifications in [`specs/`](specs/).
+## Dependencies and Configuration
 
-Read [`specs/README.md`](specs/README.md) before writing a specification.
+- Use the project package manager and lockfile.
+- Keep dependency versions reproducible.
+- Add a dependency only when existing project code cannot provide the required behavior.
+- Keep environment-specific values outside committed source when appropriate.
+- Do not commit secrets or credentials.
 
-Start new specifications from [`specs/template.md`](specs/template.md).
+## Security
 
-Use these specifications as the concise requirement layer:
+- Treat files, network responses, commands, and user input as untrusted.
+- Apply least privilege to file, network, and process access.
+- Use secure parsers and disable unnecessary external resource resolution.
+- Avoid shell interpolation with untrusted values.
+- Log enough context for diagnosis without logging sensitive data.
+- Review changes that affect authentication, authorization, cryptography, or data handling.
 
-- [`specs/charter.md`](specs/charter.md)
-- [`specs/style-guide.md`](specs/style-guide.md)
-- [`specs/maintenance-lessons.md`](specs/maintenance-lessons.md)
-- [`specs/releasing.md`](specs/releasing.md)
-- [`specs/project-conventions.md`](specs/project-conventions.md)
+## Documentation and Changes
 
-Name files with lowercase kebab-case.
-
-Describe observable behavior, prerequisites, safety rules, and failure behavior.
-
-Use MUST for required behavior and MAY for optional behavior.
-
-Link related scripts and configuration files with repository-relative paths.
-
-## Documentation
-
-Use concise headings and short paragraphs.
-
-Use code blocks for commands and identifiers.
-
-Document destructive or irreversible actions with a clear warning before the action.
-
-Keep examples safe to copy and run.
-
-## House Writing Style
-
-Write polished, composed, warm, and direct prose.
-
-Use clear American English, active voice, and one consistent term for each concept.
-
-Write instructions in the imperative. Put required conditions before commands.
-
-Keep one topic per paragraph and one instruction per sentence.
-
-Keep descriptive sentences to 25 words or fewer and procedural sentences to 20 words or fewer.
-
-Use complete sentences with articles. Do not use contractions.
-
-Do not use em dashes, semicolons, filler words, Latin abbreviations, or unexplained jargon.
-
-Put a clear command before the risk in warnings and cautions.
-
-Keep code, identifiers, file paths, quoted errors, proper nouns, legal text, and preserved historical text unchanged.
-Preserve intentional voice in design philosophy and historical rationale when that voice carries design meaning.
-
-Use the house style for specifications, technical documentation, changelogs, release notes, error messages, CLI output, and UI copy.
-
-Use a looser version for issues, comments, and chat. Keep those passages clear and free of filler.
+- Update documentation when a public behavior or workflow changes.
+- Keep examples valid and current.
+- Use the project terminology consistently.
+- Keep commits focused on one coherent change.
+- Include verification results in change descriptions.

@@ -1,114 +1,51 @@
-# Notes for coding agents
+# Agent Instructions
 
+These instructions define the default workflow for agents that work in this project.
+Project-specific instructions can add constraints. They must not weaken safety requirements.
 
-If you are an AI assistant working in this repository, start here. This file is deliberately short
-and points at the documents and house rules that apply to contributions.
+## Scope
 
+Apply this file to the project root and all child paths unless a nearer `AGENTS.md` provides more specific instructions.
 
-## Read these first
+## Before You Change Files
 
-| File | What it settles |
-|---|---|
-| [`docs/CHARTER.md`](docs/CHARTER.md) | The six rules this fork is maintained under. Rule 1 (merge, never replace) and rule 5 (what the C# may not do) are the two that will fail a review if you miss them. |
-| [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) | Naming, layout, formatting. **§1 first**, because several names are identifiers and renaming one fails silently with no error anywhere. |
-| [`docs/LESSONS.md`](docs/LESSONS.md) | Traps already hit, mostly about Qud itself. Reading it will save you rediscovering them. |
-| [`CONVENTIONS.md`](CONVENTIONS.md) | Project conventions for engineering, delivery, specifications, and documentation. |
-| [`specs/README.md`](specs/README.md) | Index of the active project specifications and their required structure. |
-| [`docs/FEATURES.md`](docs/FEATURES.md) | What the mod does. §10 is the backlog, with a file and line per row. |
-| [`docs/WIKI.md`](docs/WIKI.md) | An index of Freehold's official modding wiki: which page answers which question, and where the wiki and the game's assembly disagree. Check it before deriving Qud's behaviour from scratch. |
-| [`docs/RELEASING.md`](docs/RELEASING.md) | How a release is cut. Two publications, and neither implies the other. |
+1. Read the relevant source files and nearby tests.
+2. Read the project specifications in `specs/` when they exist.
+3. Identify every affected caller before changing an exported symbol.
+4. Keep the existing architecture unless the task requires a design change.
+5. Record the active task in the project state files when the project uses them.
 
-## The things most likely to trip you
+## Implementation Rules
 
-- **`mod/` ships verbatim to the Steam Workshop.** Anything in that directory reaches subscribers.
-  Keep development tooling at the repository root.
-- **The repository has no build step.** Qud loads XML directly. Do not add a build step.
-- **Use `Load="Merge"` for every vanilla record that you touch.**
-  A redeclaration discards future Qud patches.
-  The `merge-discipline` validator check enforces this rule.
-- **The C# compiles through a local hook, not CI.**
-  `tools/compile_scripting.py` builds `mod/Scripting/` against the game's assemblies.
-  The hook runs on commits that touch this directory.
-  It needs Caves of Qud and skips when the game is unavailable.
-  CodeQL does not cover the C#.
-  The repository has no `.csproj` because compilation needs four DLLs from a Qud install.
-  Report an unavailable local compile in the pull request.
-- **Check tile names against the installed game.**
-  Qud renders a missing `Tile=` as a solid colored block.
-  `tools/check_tile_names.py` reads names from `Data/resources.assets`.
-  Use an existing game tile or add a sprite under `mod/Textures/`.
-  Sprites must use 16x24 RGBA pixels and exactly three values:
-  transparent, white for `ColorString`, and black for `DetailColor`.
-  Use the established naming pattern for each directory.
-  `items/` uses `Vixy_PascalCase.png` with the same XML extension.
-  `Subtypes/` writes `.bmp` against a `.png`.
-  **Build sprites with `tools/make_tile.py`** from an ASCII map in `tools/tiles/`.
-  The tool rejects a wrong size and a fourth color.
-  Keep the maps outside `mod/`.
-- **A missing `command -v` result does not prove that a tool is absent.**
-  The .NET installer writes the literal `~/.dotnet/tools` to `/etc/paths.d/dotnet-cli-tools`.
-  `path_helper` does not expand `~`.
-  Add `export PATH="$HOME/.dotnet/tools:$PATH"` before deciding that `ilspycmd` is absent.
-  See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full explanation.
-- **Do not use `rg -r` as a recursive search flag.**
-  Ripgrep recurses by default.
-  The `-r` option replaces matched text.
-  See [`docs/LESSONS.md`](docs/LESSONS.md) for the failure record.
-- **Check Qud claims against the game's files.**
-  Read installed mods under `steamapps/workshop/content/333640/`.
-  Read vanilla data under `StreamingAssets/Base`.
-  [`docs/LESSONS.md`](docs/LESSONS.md) identifies vanilla files that are not valid XML.
-  Resolve `Inherits=` before counting parts or tags.
-  Treat `*noinherit` and `*delete` as tag sentinels.
-  A `Tier` tag states an item's crafting cost, not its player encounter point.
-  Use population tables to determine encounter point.
+- Make the smallest complete change that satisfies the task.
+- Reuse existing project patterns before adding a new pattern.
+- Keep names clear and consistent with nearby code.
+- Preserve public behavior unless the task changes the contract.
+- Remove obsolete code after a clean migration.
+- Do not add placeholders, stubs, silent fallbacks, or disabled checks.
+- Do not add dependencies without a clear need and an update to project records.
+- Do not expose secrets, tokens, personal data, or private paths in source or logs.
+- Treat external input as untrusted.
+- Avoid destructive commands unless the task requires them and the risk is clear.
 
-## Before you commit
+## Verification
 
-```bash
-python3 tools/validate_mod.py
-```
+- Run the narrowest relevant formatter, linter, type check, or test after each change.
+- Exercise the changed behavior through the real project surface when practical.
+- Add a regression test when a plausible failure can recur.
+- Report checks that ran and checks that did not run.
+- Do not report a check as passing unless the check ran successfully.
 
-Ten checks run on every pull request and all ten must pass. Never commit to `main`. Branch, then
-open a pull request.
+## File and Repository Safety
 
-## Task tracking
+- Do not overwrite user changes.
+- Stop when an unexpected file change affects the task.
+- Do not modify generated files when the project provides a source generator.
+- Review file permissions when a change creates a file.
+- Review rollback steps before any operation that can discard work.
 
-Mark each TODO complete immediately after its work finishes.
+## Completion
 
-Do not wait until the end of a section to mark completed TODOs.
-
-Do not batch TODO updates after multiple tasks finish.
-
-Keep the task list synchronized with the work in progress.
-
-
-## Writing
-
-Use clear, concise American English.
-
-Use active voice and simple present or past tense in descriptive text.
-
-Write instructions in the imperative.
-
-Keep one topic per paragraph and one instruction per sentence.
-
-Keep descriptive sentences to 25 words or fewer and procedural sentences to 20 words or fewer.
-
-Use complete sentences with articles. Do not use contractions.
-
-Use one consistent term for each concept.
-
-Do not use em dashes, semicolons, filler words, Latin abbreviations, or unexplained jargon.
-
-Put required conditions before commands.
-
-Put a clear command before the risk in warnings and cautions.
-
-Keep code, identifiers, file paths, quoted errors, and proper nouns unchanged.
-
-Apply these rules to specifications, technical documentation, changelogs, release notes, error messages, CLI output, and UI copy.
-
-Use the looser version for issues, comments, and chat. Keep those passages clear and free of filler.
-
-The project-specific documentation rules are in [`CONVENTIONS.md`](CONVENTIONS.md).
+Before you finish, confirm that all affected callers, tests, and documentation are consistent.
+Summarize the changed files, behavior, and verification results.
+State known limitations and follow-up work when they remain.

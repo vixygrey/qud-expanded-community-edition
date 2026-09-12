@@ -1,41 +1,45 @@
-# This file has to stand on its own. A global gitignore (core.excludesfile) is per-developer
-# machine configuration and is not part of a clone, so anything covered only there is invisible
-# to whoever set it up and untracked noise for everyone else. See #63.
-
-# macOS
+# Operating system files
 .DS_Store
+.DS_Store?
 ._*
-
-# Windows — the counterpart to the above, and Qud contributors skew Windows
+.Spotlight-V100/
+.Trashes/
 Thumbs.db
-desktop.ini
+Desktop.ini
 
-# Editor / tooling scratch
-*.swp
+# Editor and IDE state
 .idea/
-.vscode/
+.vscode/*.code-workspace
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
 
-# Python: tools/ holds the validators, so running them writes tools/__pycache__/.
-# README.md tells contributors to run them, so this is generated on a normal first clone.
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-
-# Node: the repo's XML formatter (prettier + @prettier/plugin-xml) is dev tooling only.
-# It lives at the repo root, never in mod/, so it cannot ship to subscribers.
-node_modules/
-
-
-# Never commit secrets. Nothing here reads a .env today; this is insurance, not a description.
+# Local environment and secrets
 .env
+.env.*
+!.env.example
+!.env.template
+*.local
 
-# Qud writes these next to a loaded mod
+# Logs and runtime files
 *.log
+*.pid
+*.seed
+*.swp
+*.swo
+.test-results/
+*.tmp
+*.temp
 
-# The release asset, which `tools/sync_mod.py --zip` writes to the repository root by default.
-# It is a build output and belongs on the GitHub release rather than in git — but the real reason
-# it is here is that `--publish` and `--zip` both refuse a dirty working tree, so an untracked zip
-# left over from step 7 of docs/RELEASING.md blocks step 6 of the same release. Cutting 2.6.0 hit
-# exactly that, between building the asset and installing the publish build.
-QudExpandedCommunityEdition-*.zip
+# Generic generated output
+.cache/
+.coverage/
+.generated/
+build/
+coverage/
+dist/
+out/
+tmp/
+
+# Local tool state
+.tool-state/
