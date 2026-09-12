@@ -243,23 +243,23 @@
 
   <option
     ID="OptionQudExpandedCEAskName"
-    DisplayText="{{C|Qud Expanded}}: ask a creature its name"
+    DisplayText="{{C|Qud Expanded}}: name sharing and gifts"
     Category="Mods"
     Type="Checkbox"
     Default="Yes"
-    SearchKeywords="qud expanded ask name conversation npc creature introduce naming"
+    SearchKeywords="qud expanded name sharing gift ask name introduce conversation opinion"
   >
     <helptext>
-            Adds {{G|What is your name?}} to conversations with creatures that have none
-            yet, and they answer - drawn from their own culture, faction and region, in
-            Caves of Qud's own wording.
+            Enables the connected name-sharing and gift systems. Creatures can answer
+            {{G|What is your name?}}, you can introduce yourself, and introduced
+            creatures can receive gifts that affect their personal regard.
 
-            {{y|Asking means you can no longer rename them.}} The game refuses to rename
-            anyone who already has a name, so a creature that has told you who it is
-            cannot be renamed by you afterwards. Turn this off if you would rather name
-            your companions yourself.
+            {{y|Turn this off for a closer-to-vanilla social experience.}} This
+            hides the name and gift choices and stops new gift opinions. Player
+            renaming, ordinary trade, water rituals, existing names, and existing
+            gift opinions are unchanged.
 
-            Applies immediately. Names already given are kept.
+            Applies immediately. The existing option setting controls both systems.
         </helptext>
   </option>
 

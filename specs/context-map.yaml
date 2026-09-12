@@ -1,0 +1,20 @@
+version: 1.0.0
+critical_paths:
+  shipped_mod: "mod/"
+  manifest: "mod/manifest.json"
+  workshop_metadata: "mod/workshop.json"
+  validation_tool: "tools/validate_mod.py"
+  documentation_checker: "tools/check_docs.py"
+  tool_tests: "tools/test_*.py"
+  ci_workflow: ".github/workflows/ci.yml"
+  specification_state: "specs/state.yaml"
+  active_feature: "specs/active-feature.yaml"
+  project_version: "VERSION"
+  changelog: "CHANGELOG.md"
+high_risk_zones:
+  - "Save-backed identifiers and Qud references"
+  - "Vanilla records and tables changed with Load=\"Merge\""
+  - "C# scripts compiled against installed game assemblies"
+  - "Workshop and manifest metadata"
+  - "Optional directories and controlling options"
+  - "Preserved historical and attribution documents"

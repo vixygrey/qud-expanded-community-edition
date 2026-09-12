@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+if [[ -f "$ROOT_DIR/validate-context.sh" ]]; then
+    "$ROOT_DIR/validate-context.sh"
+else
+    "$ROOT_DIR/specs/validate-context.sh"
+fi

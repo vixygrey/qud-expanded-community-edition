@@ -1,0 +1,68 @@
+name: Validate project context
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  context:
+    name: Validate project context
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate project context
+        run: ./specs/validate-context.sh
+
+  conventional_commits:
+    name: Validate Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate commit messages
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_BEFORE: ${{ github.event.before }}
+          EVENT_SHA: ${{ github.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -Eeuo pipefail
+          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([[:alnum:]._/-]+\))?!?: .+'
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+              commit_range="$BASE_SHA..$HEAD_SHA"
+          elif [[ "$EVENT_BEFORE" =~ ^0+$ ]]; then
+              commit_range="$EVENT_SHA"
+          else
+              commit_range="$EVENT_BEFORE..$EVENT_SHA"
+          fi
+          subjects="$(git log --format=%s "$commit_range")"
+          while IFS= read -r subject; do
+              [[ -n "$subject" ]] || continue
+              if [[ ! "$subject" =~ $pattern ]]; then
+                  printf 'Invalid Conventional Commit subject: %s\n' "$subject" >&2
+                  exit 1
+              fi
+          done <<< "$subjects"
+
+  pull_request_title:
+    name: Validate pull request title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -Eeuo pipefail
+          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([[:alnum:]._/-]+\))?!?: .+'
+          if [[ ! "$TITLE" =~ $pattern ]]; then
+              printf 'Invalid Conventional PR title: %s\n' "$TITLE" >&2
+              exit 1
+          fi

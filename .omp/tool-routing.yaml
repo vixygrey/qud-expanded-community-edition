@@ -1,0 +1,15 @@
+version: 1.0.0
+policy_mode: "advisory"
+policy_note: "The consuming harness must enforce these settings. This file does not enforce them."
+current_session_provider: "local"
+provider_profiles:
+  openai:
+    tier: "Max Reasoning"
+    allowed_actions: ["subagent_orchestration"]
+  local:
+    tier: "Constrained Local"
+    allowed_actions: ["single_file_edits", "run_local_unit_tests"]
+    constraints:
+      prevent_subagents: true
+      max_file_reads_per_turn: 2
+      require_human_approval: true

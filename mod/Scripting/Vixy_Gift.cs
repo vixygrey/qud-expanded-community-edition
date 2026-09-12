@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using QudExpandedCE;
 using XRL.UI;
 using XRL.World.AI;
 using XRL.World.Parts;
@@ -116,6 +117,11 @@ namespace XRL.World.Conversations.Parts
         /// </remarks>
         public override bool HandleEvent(GetTargetElementEvent E)
         {
+            if (!Raven_Options.AskName)
+            {
+                return base.HandleEvent(E);
+            }
+
             if (Vixy_OpinionGift.Familiar(The.Speaker, The.Player))
             {
                 E.Target = WarmNode;
@@ -161,14 +167,18 @@ namespace XRL.World.Conversations.Parts
         /// follower has no such route, so the choice is shown and refused with a reason on entry.
         /// </para>
         /// <para>
-        /// No option gates this. Charter rule 6 asks whether anybody would turn it off, and the
-        /// feature is already opt-in at the point of use: nothing happens to a player who does not
-        /// introduce themselves and then choose to give, ten times over ten days. #663 settled that
-        /// flavour and additions nobody would disable do not earn a line in the menu.
+        /// The combined social option gates this choice together with the name-sharing exchanges.
+        /// Turning it off hides the choice and prevents new gift opinions while preserving existing
+        /// opinions and ordinary trade.
         /// </para>
         /// </remarks>
         public override bool HandleEvent(IsElementVisibleEvent E)
         {
+            if (!Raven_Options.AskName)
+            {
+                return false;
+            }
+
             GameObject speaker = The.Speaker;
             if (speaker == null || !speaker.IsCreature) return false;
 
@@ -191,6 +201,11 @@ namespace XRL.World.Conversations.Parts
 
         public override bool HandleEvent(EnterElementEvent E)
         {
+            if (!Raven_Options.AskName)
+            {
+                return false;
+            }
+
             GameObject player = The.Player;
             GameObject speaker = The.Speaker;
             if (player?.Inventory == null || speaker == null)
