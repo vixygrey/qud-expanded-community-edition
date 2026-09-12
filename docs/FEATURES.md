@@ -1,10 +1,9 @@
 ﻿# Caves of Qud Expanded: Complete Feature Reference
 
-*I reconstructed this by reading the whole mod source: every XML blueprint, population table,
-skill, genotype, subtype, body, C# script, and the Joppa map patch. No complete list of what this
-mod does had ever existed, including for Mura, and I needed one before I could safely change
-anything. Where this document and the XML disagree, **the XML is what ships**; §10 tabulates the
-disagreements I know about.*
+*This reference comes from the complete mod source: XML blueprints, population tables, skills,
+genotypes, subtypes, bodies, C# scripts, and the Joppa map patch.*
+Use the XML as the shipping authority when this document disagrees with it.
+It covers 527 new blueprints and 284 vanilla merges.
 
 **Original author:** Mura (`@mura_raven`), with contributions from Noble Lark (subtype sprites),
 Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship).
@@ -20,28 +19,27 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New item blueprints** | **527** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
-| **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
+| **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, and 4 for Psionic Adepts. A Mutated Human has none (#353). |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
-| **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
+| **New armor classes** | Greatshield and vambrace armor. The weave cloak, nanoweave, and flexi lines complete the one-piece vanilla families. |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
-| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork, §4) |
+| **Skill tree edits** | Six skill trees retuned. Akimbo was added to Multiweapon Fighting upstream and removed in this fork, §4. |
 | **Loot tables** | **139** vanilla tables merged, none replaced, plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
-> **This document specifies; the [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
-> explains.** Every figure below, whether tier, weight, price, drop rate, stat modifier, option
-> default or scope, is authoritative here, and the wiki links back to it rather than repeating it. What a build
-> plays like, how the chip families interact and how to open a run belong there instead. The boundary,
-> and why it is stricter for the wiki than for anything in this repository, is in
-> [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies).
+> **This document specifies.** The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
+> explains how the mod plays. Every figure below is authoritative here.
+> This includes tiers, weights, prices, drop rates, stat modifiers, option defaults, and scopes.
+> The wiki links to this document instead of repeating figures.
+> See [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies) for this boundary.
 
 ---
 
 ## 1. Genotypes
 
-All three genotypes are defined/merged in `Genotypes.xml`.
+All three genotypes are defined or merged in `Genotypes.xml`.
 
 ### 1.1 Changes shared by all genotypes
 
@@ -49,10 +47,13 @@ Every genotype gains these starting skills:
 
 - **Staunch Wounds** (`Physic_StaunchWounds`)
 - **Cooking and Gathering** (`CookingAndGathering`)
-- **Meal Preparation** (`CookingAndGathering_MealPreparation`), and the base skill is required for this to function, which is why both are granted
+- **Meal Preparation** (`CookingAndGathering_MealPreparation`)
+  The base skill is also granted because the meal skill requires it.
 
-Every humanoid **NPC** also gains one Chip Interface slot (see §3). A Mutated Human player does
-not, though vanilla's genotype shares that anatomy. See §3.1.
+Every humanoid **NPC** gains one Chip Interface slot.
+See §3.
+The Mutated Human player does not gain one.
+See §3.1.
 
 ### 1.2 Mutated Human
 
@@ -65,32 +66,26 @@ not, though vanilla's genotype shares that anatomy. See §3.1.
 | Joppa reputation | 0 | **+300** |
 | Extra starting skill | - | **Menacing Stare** (`Persuasion_MenacingStare`) |
 
-> ℹ️ **`BaseHPGain` was `2-3` through 2.2; this fork corrected it to `1-5` in #90.** All three of
-> Mura's writeups (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop
-> feature list) state 1-5, and the XML was the odd one out.
+> ℹ️ **`BaseHPGain` was `2-3` through 2.2. This fork changed it to `1-5` in #90.**
+> Mura's three source documents state `1-5`.
+> The XML was the only source that differed.
 >
-> Three things settled it. `2-3` is uniform over {2,3}, so it carries **vanilla's own 2.5 average**
-> and the headline mutant HP change moved nothing. It inverts the changelog's stated design, which
-> gives mutants "variability but potential for greater numbers" against True Kin's 2-4 "for a
-> little more consistency, leaning the opposite from Mutants"; at 2-3 mutants are *more* consistent
-> than True Kin and strictly dominated by them, same floor of 2 against a ceiling of 3 rather than
-> 4. And every other HP claim in the docs matches its XML: True Kin's 2-4 and the Adept's 1-4 both
-> check out, leaving this the single disagreement.
+> A uniform `2-3` range has a 2.5 average.
+> It leaves mutants with less variation than True Kin.
+> The XML therefore contradicted the stated design.
+> The other HP claims match the XML.
 >
-> The WIP notes' sentence is the source of the long-standing confusion: *"Narrowed health gain from
-> 1-4 to 1-5 for more flavor and a chance at more HP"* contradicts itself, since the verb says
-> narrow while the numbers and the rationale say widen. The newer changelog carries the reasoning
-> and resolves it.
->
-> Players who preferred the shipped 2-3 can select it. See §13.
+> Players who prefer the shipped `2-3` can select it.
+> See §13.
 
-**How HP gain actually works**, verified against `Assembly-CSharp.dll` metadata rather than
-inferred: `XRL.GenotypeEntry.BaseHPGain` is a **public string**, and `XRL.World.Parts.Leveler`
-calls `RollHP(string BaseHPGain)` on every level-up via `GetEntryDice`. Rolls run through
-`Stat.RandomLevelUpChoice` on a dedicated seeded level-up RNG stream. The range is a uniform
-inclusive `min-max`, re-read **fresh at each level**, so nothing is baked at chargen, which is why
-the option over it takes effect mid-save from the next level onward. `BaseSPGain` and `BaseMPGain`
-work identically, through `RollSP` and `RollMP`.
+**HP gain uses live game data.**
+`XRL.GenotypeEntry.BaseHPGain` is a public string.
+`XRL.World.Parts.Leveler` calls `RollHP(string BaseHPGain)` at each level-up through `GetEntryDice`.
+The range is inclusive and uniform.
+The game reads it again at each level.
+The value is not fixed at character creation.
+The option takes effect from the next level in an existing save.
+`BaseSPGain` and `BaseMPGain` use the same mechanism.
 
 ### 1.3 True Kin
 
@@ -104,23 +99,25 @@ work identically, through `RollSP` and `RollMP`.
 
 ### 1.4 Psionic Adept (new)
 
-**What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list:
-credits cost 150 water each, implants are chosen, and you install exactly what you saved for at a
-becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be bought and
-cannot be built.** They carry no `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables
-naming them are `Artifact 3` through `8`, which is what `ChestBuilders` uses to fill a chest. So
-they come out of chests, tier-scaled, and from nowhere else.
+**Purpose.** A True Kin plans a build.
+An Adept adapts to available loot.
+True Kin implants cost 150 water credits each.
+Players choose those implants at a becoming nook.
+Psionic chips cannot be bought or built.
+They have no `TinkerItem` or `DynamicObjectsTable` tag.
+The only tables that name them are `Artifact 3` through `8`.
+`ChestBuilders` uses those tables to fill chests.
 
-Chargen fills three of its four slots from its affinity's own kit, and everything after that is a
-find. It is the one genotype whose build you cannot decide in advance, which is what its fiction
-already says: a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become
-what you find.**
+Character creation fills three of four slots from the affinity kit.
+The remaining slots use found chips.
+The genotype therefore prevents advance planning.
+Its fiction calls a chip *"knowledge lost eons ago"* that integrates with flesh.
+**You become what you find.**
 
-The **95 skill points a level**, the highest in the game, are the counterweight. The Adept has no
-innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
-points. What it has instead is the broadest skill access in the game and a mutation kit assembled
-from loot. **Skills and scavenging** is the fantasy.
-
+The Adept gains **95 skill points per level**, the highest value in the game.
+It has no innate power, the fewest stat points at 34, and the lowest hit points.
+It has broad skill access and a mutation kit assembled from loot.
+**Skills and scavenging** define the play style.
 > ⚪ **Its power curve is the opposite shape to a mutant's**, and that is deliberate rather than a
 > defect to fix. A chip's rank is capped at its grade, so an Adept is at its strongest relative to
 > the others around **character level 18**, where the rank cap reaches 10 and a perfected chip is

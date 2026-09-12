@@ -48,10 +48,7 @@ PLINTH_ROWS = ROWS - FIELD_ROWS
 FONTS = Path(
     os.environ.get(
         "QUD_PREVIEW_FONTS",
-        Path.home()
-        / "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin"
-        / "e9775754-2cca-4f67-904a-fe8a1bd1a07f/704e84b0-0b0d-4b63-be0f-d61606a61517"
-        / "skills/canvas-design/canvas-fonts",
+        str(Path.home() / "Library/Fonts"),
     )
 )
 

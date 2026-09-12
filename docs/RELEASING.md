@@ -1,103 +1,105 @@
 # Releasing
 
-Every release has to reach two places and neither one implies the other. Steam is where the
-subscribers are, so it is easy to think of the Workshop upload as *the* release — but GOG, itch and
-Linux players install from the GitHub release zip, and for all of them a Workshop upload is not a
-release at all. Miss the tag and those players get nothing, silently.
+Every release must reach two places.
+Steam serves subscribers.
+GOG, itch, and Linux players install the GitHub release zip.
+A Workshop upload alone is not a release for those players.
+The tag connects the release note to the released files.
 
-This is the order I do it in. The steps that can be checked are checked; the rest are here because
-four releases in, the process lived only in my head.
+Follow this order.
+Run each available check.
+Document the remaining steps because the process must not depend on memory.
 
 ---
 
 ## 1. Decide the version
 
-`docs/STYLEGUIDE.md` §7.2.1 has the rule, and it is worth reading rather than deciding by feel:
+`docs/STYLEGUIDE.md` §7.2.1 defines the version rule:
 
-- **Patch** — defect fixes that change no player-facing behaviour beyond correcting it
-- **Minor** — new content, new tables, rebalancing
-- **Major** — reserved for a change that breaks saves or removes content
+- **Patch:** defect fixes that correct behavior without a broader player-facing change
+- **Minor:** new content, new tables, or rebalancing
+- **Major:** save-breaking changes or removed content
 
-"Removes content" means content that *goes away*, not content replaced in function. 2.4.0
-disabled
-the quill arrow and shipped the hulk honey arrow in its place and was still minor, because saves
-load, the old blueprint is commented rather than deleted, and the release net-grows.
+"Removes content" means that content goes away.
+It does not include content that another feature replaces.
+Version 2.4.0 disabled the quill arrow and shipped the hulk honey arrow in its place.
+The release remained minor because saves load, the old blueprint remains commented, and the release adds content overall.
 
 ## 2. Roll the changelog
 
-Turn `## [Unreleased]` into `## [X.Y.Z] - YYYY-MM-DD` and open a fresh empty `[Unreleased]`
-above it.
+Change `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD`.
+Open a new empty `[Unreleased]` section above it.
 
-Entries marked **(internal)** stay — the changelog serves contributors as well as subscribers, and
-the marking is what lets a reader skip them.
+Keep entries marked **(internal)**.
+The changelog serves contributors and subscribers.
+The marker lets readers skip internal entries.
 
 ## 3. Bump `manifest.json`
 
-`version` only. **`validate_mod.py` now fails if this and the changelog's newest released heading
-disagree**, so these two cannot drift apart — but they can only be checked against each other, not
-against the tag — so pass `--tag vX.Y.Z` to `sync_mod.py --zip` in step 7 and the third side of
-that triangle is checked too (#314).
+Change `version` only.
+**`validate_mod.py` fails when this value disagrees with the newest released changelog heading.**
+Pass `--tag vX.Y.Z` to `sync_mod.py --zip` in step 7.
+That command compares the tag with the manifest and completes the three-way version check (#314).
 
 ## 4. Update `workshop.json`
 
-**The version lives in two places in the description, and it is easy to update one.**
+**The description carries the version in two places.**
 
-1. The **New in X.Y.Z** heading. Replace the section with this release's summary and delete the
-   previous one rather than letting them stack.
-2. The **Version and saves** block, which opens `[b]X.Y.Z.[/b]` and then says which saves load. Both
-   the number and the sentence need this release's answer — 2.10.0 loads on 2.9.x, and which of its
-   features reach a character already running is not the same answer 2.9.0 gave.
+1. Replace the **New in X.Y.Z** section with this release's summary.
+   Delete the previous section.
+2. Update the **Version and saves** block.
+   Set `[b]X.Y.Z.[/b]`.
+   State which saves load.
+   Use the answer for this release.
 
-`check_docs.py`'s `workshop-version` compares the second one against `manifest.json` and fails the
-commit if they disagree, so this cannot ship wrong. It caught exactly this during the 2.10.0 release,
-which is why it is written down here now: a check is the backstop, not the instruction (#694).
+`check_docs.py`'s `workshop-version` check compares the second value with `manifest.json`.
+It caught a mismatch during the 2.10.0 release (#694).
+The check is a backstop, not an instruction.
 
-**Watch the budget.** Steam's limit is 8,000 characters, hard. Check the headroom before you start
-rather than after you have written the summary:
+**Watch the byte budget.** Steam limits the description to 8,000 bytes.
+Measure the budget before writing the summary:
 
 ```bash
 python3 -c "import json;print(len(json.loads(open('mod/workshop.json',encoding='utf-8-sig').read())['Description'].encode('utf-8')),'bytes')"
 ```
 
-**Count bytes, not characters, and this line used to get that wrong.** The limit is 8,000 *bytes*
-and `validate_mod.py` measures them; `len()` on the string measures characters. The description
-carries 33 em dashes at three bytes each, so the old one-liner under-reported by 66 — enough that
-2.15.0 measured 7,969 "characters", looked like it had 31 to spare, and failed the build at 8,035
-bytes. Every non-ASCII character in the prose widens that gap.
+**Count bytes, not characters.** `validate_mod.py` measures bytes.
+`len()` on the string measures characters.
+The description contains non-ASCII characters that occupy more than one byte.
+An older check measured 7,969 characters and missed a total of 8,035 bytes in version 2.15.0.
 
-`validate_mod.py` fails the build past 8,000, so this cannot ship broken — but it can block a release
-at the worst possible moment. **Trim as you add.** The description has been within a hundred bytes of
-the limit since 2.10.0, so for now that is not advice, it is the step.
+`validate_mod.py` rejects a description above 8,000 bytes.
+Trim the description while adding content.
+The description has stayed within 100 bytes of the limit since version 2.10.0.
 
-`docs/STYLEGUIDE.md` §7.4 has the rules for what belongs there at all.
+See [`docs/STYLEGUIDE.md`](STYLEGUIDE.md) §7.4 for description content rules.
+
 
 ## 5. Write the player-facing notes
 
-One piece of prose, used twice: the GitHub release body, and the change note pasted into Caves of
-Qud's uploader.
+Write one note for two destinations:
+the GitHub release body and the change note in Qud's Workshop uploader.
 
-Write it for a player. What changed, what it means for a character they are already running,
-and
-whether they need a new one. The reasoning belongs in `CHANGELOG.md` and the issues — the release
-notes say what they get.
+Write for players.
+State what changed, how it affects an existing character, and whether a new character is required.
+Put reasoning in `CHANGELOG.md` and issue records.
+Put player effects in the release notes.
 
-Open with the save-compatibility line, because it is the first thing anyone wants:
+Start with the save-compatibility line:
 
-> **A 2.4.x character carries over** — no new character needed.
+> **A 2.4.x character carries over.** No new character is needed.
 
-### One piece of prose, two markups — and the second one is not Markdown
+### Use separate Markdown and BBCode
 
-The sentence above says *used twice*, which is true of the words and false of the form. GitHub takes
-**Markdown**. Steam's change-note field takes **BBCode**, the same as the description in
-`mod/workshop.json`. Paste one into the other and it renders `**like this**`, asterisks and all, to
-every subscriber who opens the change note.
+Use the same words in both destinations.
+GitHub uses **Markdown**.
+Steam uses **BBCode**, the format in `mod/workshop.json`.
+Do not paste Markdown into Steam.
+The asterisks render as literal text.
 
-**Nothing here can catch it.** `workshop-description`, `workshop-figure` and `workshop-version` all
-read `mod/workshop.json`; the change note is typed into Steam's own UI at upload time and never exists
-in this repository. So write both forms here, while the prose is in front of you, rather than converting at
-the uploader with the game already open.
-
-The tag set is small, and the description has never needed anything outside it:
+The repository checks `mod/workshop.json`.
+It does not check the change note entered in Steam.
+Write both forms before opening the uploader.
 
 | Markdown | BBCode |
 |---|---|
@@ -107,10 +109,9 @@ The tag set is small, and the description has never needed anything outside it:
 | `[text](https://example.com)` | `[url=https://example.com]text[/url]` |
 | `# Heading` | `[h1]Heading[/h1]` |
 
-Two things that differ from the description rather than carrying over from it. **No heading** — Steam
-already prints the version above the field, so an `[h1]` only repeats it. And **an em dash is fine
-here**: the 8,000-byte wall that makes `docs/STYLEGUIDE.md` §7.4 count bytes is the *description's*,
-and a change note has no budget to protect.
+Do not add a heading to the Steam change note.
+Steam prints the version above the field.
+The 8,000-byte limit applies to the description, not the change note.
 
 The 2.15.1 note is the worked example, trimmed:
 
@@ -130,28 +131,32 @@ One fix.
 python3 tools/sync_mod.py --publish
 ```
 
-This refuses anything but a clean `main` level with `origin`, and runs the validator first. It
-installs the mod into the game's `Mods` directory exactly as it will ship.
+`tools/sync_mod.py --publish` requires a clean `main` that matches `origin`.
+It runs the validator first.
+It installs the mod in the game's `Mods` directory as the published build.
 
-Then launch Caves of Qud and upload through its own Workshop uploader, pasting the notes from step 5
-into the change note field.
+Launch Caves of Qud.
+Upload through the Workshop uploader.
+Paste the notes from step 5 into the change note field.
 
-**Do not hand-edit the install directory afterwards.** It is the same directory `--dev` writes to,
-which is why `--dev` strips the `WorkshopId` and suffixes the title — so a dev build cannot
-overwrite the published item.
+**Do not edit the install directory after publication.**
+`--dev` writes to the same directory.
+It removes `WorkshopId` and adds a title suffix.
+This prevents a development build from overwriting the published item.
 
 ## 7. Tag and release on GitHub
 
 ```bash
-git tag -a vX.Y.Z -m "X.Y.Z — short title"
+git tag -a vX.Y.Z -m "X.Y.Z - short title"
 git push origin vX.Y.Z
-gh release create vX.Y.Z --title "X.Y.Z — short title" --notes-file <notes>
+gh release create vX.Y.Z --title "X.Y.Z - short title" --notes-file <notes>
 ```
 
-**This is the step that serves everyone not on Steam.** The tag is also the third place the
-version lives, and the one nothing can check: on the release commit the manifest and changelog
-already say `X.Y.Z` while the tag does not exist yet, so a validator including it would fail the
-very commit that creates a release.
+**This step serves players who do not use Steam.**
+The tag is the third version value.
+No validator can check it before the tag exists.
+The release commit contains the manifest and changelog values.
+The tag command creates the third value afterward.
 
 ### Attach the zip, and do not skip this
 
@@ -160,61 +165,63 @@ python3 tools/sync_mod.py --zip --tag vX.Y.Z
 gh release upload vX.Y.Z QudExpandedCommunityEdition-X.Y.Z.zip
 ```
 
-The contents of `mod/`, under a folder named for the manifest id. Both names come from
-`manifest.json` — the archive from its `version`, the folder inside from its `id` — so the rename
-that used to hide inside a `cp -R` cannot go wrong: the install directory is
-`qud-expanded-community-edition` and every published zip contains `QudExpandedCommunityEdition`, and
-that difference used to be a step you had to remember rather than something the tool knew.
+The archive contains `mod/` under a folder named for the manifest ID.
+Both names come from `manifest.json`.
+The archive name uses `version`.
+The folder name uses `id`.
+The install directory is `qud-expanded-community-edition`.
+Each published archive contains `QudExpandedCommunityEdition`.
 
-The archive is gitignored, so it does not have to be moved or deleted before step 6 — which matters
-because `--publish` refuses a dirty tree too, and for one release the asset from this step blocked the
-publish build of the same release.
+The archive is gitignored.
+It does not need removal before step 6.
+`--publish` rejects a dirty tree.
+An earlier release asset blocked publication for that reason.
 
-**`--zip` builds from `mod/`, not from the install directory**, which closes the other hole: there is
-no copy in between that could belong to a `--dev` run or to a version before the bump. It applies the
-same guards `--publish` does — refuses a dirty tree, refuses a branch that is not `main` level with
-origin, and runs the validator first — and `--tag` refuses to build at all unless the tag agrees with
-the manifest version. That is the check step 3 says it cannot make.
+**`--zip` builds from `mod/`, not the install directory.**
+No intermediate copy can come from a development build or an older version.
+The command uses the same guards as `--publish`.
+It rejects a dirty tree and a branch that does not match `origin`.
+It runs the validator first.
+The `--tag` option requires agreement with the manifest version.
 
-It reproduces what the manual recipe produced: run against the `v2.5.1` tag it rebuilds the shipped
-2.5.1 asset **byte for byte, all 81 files** (#314).
+The command reproduces the manual recipe.
+The `v2.5.1` tag rebuilds the shipped 2.5.1 asset **byte for byte, all 81 files** (#314).
 
-**A release without it is not empty, which is the trap.** GitHub generates a source zip for any tag,
-so the page still offers a download — of the whole repository, `tools/` and `docs/` and all. A
-player who takes that and drops it in `Mods/` gets the repo rather than the mod. The failure is not
-a missing file, it is a plausible wrong one, offered to exactly the players this step exists for.
-2.5.1 went out without the asset for twenty minutes for this reason (#312).
+**A release without the archive still offers a download.**
+GitHub creates a source zip for every tag.
+That archive contains the repository, including `tools/` and `docs/`.
+A player who copies it into `Mods/` receives the repository instead of the mod.
+Version 2.5.1 lacked the asset for 20 minutes for this reason (#312).
 
-The two checks #312 added here are gone, because `--zip` makes both impossible rather than
-detectable. A stale build cannot happen when the archive is assembled from `mod/` at the commit the
-guards just verified, and zipping the source tree by mistake cannot happen when no path is typed. A
-check you can delete because the failure is now unreachable is the best outcome a check can have.
+The two checks added for #312 are now removed.
+`--zip` makes both failure modes unreachable.
+The archive comes from `mod/` at the verified commit.
+The command receives no manually typed source path.
+Removing a check after removing its failure path is the intended result.
 
 ## 8. Move the board
 
-Everything in **Staging** becomes **Done**. Per `CONTRIBUTING.md`, Done means released — a merged
-pull request is not Done, and neither is a Workshop upload on its own.
+Everything in **Staging** becomes **Done** after publication.
+Per [`CONTRIBUTING.md`](../CONTRIBUTING.md), a merged pull request is not Done.
+A Workshop upload alone is not Done.
 
-Done also holds issues closed *without* shipping, which arrive there directly rather than through
-Staging. Those are not part of a release and nothing here moves them; the close reason tells them
-apart (`not planned` against `completed`).
+Done also contains issues closed without shipping.
+Those issues bypass Staging.
+The close reason distinguishes `not planned` from `completed`.
 
 ---
 
 ## The checklist, without the reasoning
 
-- [ ] Version chosen against §7.2.1
-- [ ] `CHANGELOG.md` rolled, fresh `[Unreleased]` opened
-- [ ] `manifest.json` version bumped
-- [ ] `workshop.json` — **New in X.Y.Z** replaced and the previous one removed, **and** the
-      **Version and saves** block's version and save answer updated. Under 8,000 characters
-- [ ] Player-facing notes written, opening with save compatibility — **in both Markdown and
-      BBCode**, because the GitHub body and the Steam change note do not take the same markup
-- [ ] `python3 tools/validate_mod.py` passes
-- [ ] `python3 tools/sync_mod.py --publish`
-- [ ] Uploaded through Caves of Qud's uploader, notes pasted into the change note
-- [ ] Tagged, pushed, and a GitHub release created with the same notes
-- [ ] `QudExpandedCommunityEdition-X.Y.Z.zip` built with `sync_mod.py --zip --tag vX.Y.Z` and
-      attached — **this is what non-Steam players install**, and GitHub's auto source zip is not a
-      substitute
-- [ ] Board: Staging → Done
+- [ ] Choose the version against §7.2.1
+- [ ] Roll `CHANGELOG.md` and open a fresh `[Unreleased]`
+- [ ] Bump the `manifest.json` version
+- [ ] Replace **New in X.Y.Z** in `workshop.json` and update **Version and saves**
+- [ ] Keep the description below 8,000 bytes
+- [ ] Write player-facing notes in Markdown and BBCode
+- [ ] Run `python3 tools/validate_mod.py`
+- [ ] Run `python3 tools/sync_mod.py --publish`
+- [ ] Upload through Caves of Qud's Workshop uploader
+- [ ] Tag, push, and create the GitHub release with the same notes
+- [ ] Build and attach `QudExpandedCommunityEdition-X.Y.Z.zip` with `sync_mod.py --zip --tag vX.Y.Z`
+- [ ] Move the board item from Staging to Done
