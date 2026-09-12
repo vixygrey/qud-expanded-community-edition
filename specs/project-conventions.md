@@ -35,7 +35,7 @@ Protected legal, quoted, identifier, and historical text remains unchanged.
 
 Create or identify an issue before starting code work.
 
-Store specifications in `spec/` and use lowercase kebab-case filenames.
+Store specifications in `specs/` and use lowercase kebab-case filenames.
 
 ## Safety Rules
 
@@ -60,4 +60,4 @@ Reject a commit that combines unrelated logical changes.
 - [`CONVENTIONS.md`](../CONVENTIONS.md)
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md)
 - [`CHANGELOG.md`](../CHANGELOG.md)
-- [`spec/template.md`](template.md)
+- [`specs/template.md`](template.md)
