@@ -1,35 +1,37 @@
 # The official modding wiki, indexed
 
-Every question this fork keeps re-deriving from the game files has a page on the official wiki, and
-I kept not knowing that. This is the index I wish I had had: the 53 pages the modding navbox carries,
-what each one actually settles, and which of them answer questions this repo has already got wrong
-once.
+Every question that this fork re-derives from game files has an official wiki page.
+This index lists the 53 pages in the modding navbox.
+It states what each page settles and identifies corrections that this repository already made.
 
-**Nothing from the wiki is reproduced here.** Its content is CC BY-NC-SA, and the non-commercial
-clause does not sit comfortably beside this repository's own licences — see `COPYING.md`. So this
-file holds links, page titles, section names and my own one-line descriptions, and stops there. Read
-the page at the link.
+**This index does not reproduce wiki content.**
+The wiki uses CC BY-NC-SA.
+Its non-commercial clause does not align with this repository's licenses.
+See `COPYING.md`.
+This file contains links, page titles, section names, and one-line descriptions.
+Read each source page at its link.
 
-The wiki is a secondary source. Where it disagrees with the decompiled assembly, the assembly wins
-and `docs/LESSONS.md` records why — but the wiki is very often the faster way to find out *which*
-type to go and read.
+The wiki is a secondary source.
+The decompiled assembly takes precedence when the sources disagree.
+[`docs/LESSONS.md`](LESSONS.md) records those disagreements.
+The wiki often provides the fastest route to the relevant type.
 
-## Where I would look first
+## Where to look first
 
-| The question I keep asking | Page |
+| Question | Page |
 |---|---|
-| Why did my `Load="Merge"` not merge? | [XML](https://wiki.cavesofqud.com/wiki/Modding:XML) — load strategies |
-| What puts an object into the world? | [Populations](https://wiki.cavesofqud.com/wiki/Modding:Populations) — and read *Dynamic Tables* twice |
-| Does the engine read this tag? | [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) — the supported-tag list |
-| What is `<stag>` for? | [Grammar](https://wiki.cavesofqud.com/wiki/Modding:Grammar) — semantic terms |
-| Which random function may I call? | [Randomness](https://wiki.cavesofqud.com/wiki/Modding:Randomness) — never `Random.Next()` |
-| Will this option actually be read? | [Options](https://wiki.cavesofqud.com/wiki/Modding:Options) — both directions fail silently |
-| Why did my save stop loading? | [Serialization](<https://wiki.cavesofqud.com/wiki/Modding:Serialization_(Saving/Loading)>) — and its migration section |
-| How do I not break other mods? | [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) — prefixing, merging, named arguments |
+| Why did my `Load="Merge"` not merge? | [XML](https://wiki.cavesofqud.com/wiki/Modding:XML): load strategies |
+| What puts an object into the world? | [Populations](https://wiki.cavesofqud.com/wiki/Modding:Populations): read *Dynamic Tables* twice |
+| Does the engine read this tag? | [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects): supported tags |
+| What is `<stag>` for? | [Grammar](https://wiki.cavesofqud.com/wiki/Modding:Grammar): semantic terms |
+| Which random function can I call? | [Randomness](https://wiki.cavesofqud.com/wiki/Modding:Randomness): never `Random.Next()` |
+| Will this option be read? | [Options](https://wiki.cavesofqud.com/wiki/Modding:Options): both directions fail silently |
+| Why did my save stop loading? | [Serialization](<https://wiki.cavesofqud.com/wiki/Modding:Serialization_(Saving/Loading)>): migration section |
+| How do I avoid breaking other mods? | [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility): prefixing, merging, named arguments |
 | Where does a zone's content come from? | [Zone Builders](https://wiki.cavesofqud.com/wiki/Modding:Zone_Builders) |
-| What colour codes exist? | [Colors & Object Rendering](https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering) |
-| Where else can a tag come from? | [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) — `<mixin>`, which `Inherits=` alone will not find (#526) |
-| How do I test this without playing to it? | [Wishes](https://wiki.cavesofqud.com/wiki/Wishes) — the full player-facing list |
+| What color codes exist? | [Colors & Object Rendering](https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering) |
+| Where else can a tag come from? | [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects): `<mixin>`, which `Inherits=` alone cannot find (#526) |
+| How do I test this without playing? | [Wishes](https://wiki.cavesofqud.com/wiki/Modding:Wishes): full player-facing list |
 
 ## Core Concepts
 
@@ -37,16 +39,16 @@ type to go and read.
 |---|---|
 | [Overview](https://wiki.cavesofqud.com/wiki/Modding:Overview) | File structure, what a mod may do, the incompatible-mod flag |
 | [XML](https://wiki.cavesofqud.com/wiki/Modding:XML) | Syntax, how data loads, **load strategies**, debugging |
-| [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) | Blueprint definitions, the component system, the supported tag list, the part catalogue by category, and **`<mixin>` — the second inheritance mechanism, with `Include` / `Exclude` / `Priority` / `Load="Fill"`** |
+| [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) | Blueprint definitions, the component system, supported tags, the part catalogue, and **`<mixin>` with `Include` / `Exclude` / `Priority` / `Load="Fill"`** |
 | [Parts](https://wiki.cavesofqud.com/wiki/Modding:Parts) | What a part is and the kinds there are |
-| [Active Parts](https://wiki.cavesofqud.com/wiki/Modding:Active_Parts) | `IActivePart` — statuses, `IsReady()`, `IPoweredPart`, and the configuration points that reconfigure all of it from XML |
-| [Events](https://wiki.cavesofqud.com/wiki/Modding:Events) | String events and MinEvents — listening, firing, handling, cascading |
+| [Active Parts](https://wiki.cavesofqud.com/wiki/Modding:Active_Parts) | `IActivePart` statuses, `IsReady()`, `IPoweredPart`, and XML configuration points |
+| [Events](https://wiki.cavesofqud.com/wiki/Modding:Events) | String events and MinEvents, including listening, firing, handling, and cascading |
 | [Effects](https://wiki.cavesofqud.com/wiki/Modding:Effects) | `GetEffectType()` as a bit vector, and the masking that follows from it |
 | [Populations](https://wiki.cavesofqud.com/wiki/Modding:Populations) | Encounter vs population tables, **`DynamicObjectsTable` / `DynamicInheritsTable` / `DynamicSemanticTable`**, excluding objects, debugging |
-| [Grammar](https://wiki.cavesofqud.com/wiki/Modding:Grammar) | Term format, pronouns, verbs — the semantic layer `<stag>` feeds |
+| [Grammar](https://wiki.cavesofqud.com/wiki/Modding:Grammar) | Term format, pronouns, and verbs. The semantic layer receives `<stag>` terms. |
 | [Turns, Segments, and Actions](https://wiki.cavesofqud.com/wiki/Modding:Turns,_Segments,_and_Actions) | `ActionManager.RunSegment`, the action queue, action cost |
 | [Scripting](https://wiki.cavesofqud.com/wiki/Modding:Scripting) | C# 9, runtime compilation, getting the source, dev environment |
-| [Wishes](https://wiki.cavesofqud.com/wiki/Modding:Wishes) | Declaring your own — `[WishCommand]` and `[HasWishCommand]` |
+| [Wishes](https://wiki.cavesofqud.com/wiki/Modding:Wishes) | Declaring your own commands with `[WishCommand]` and `[HasWishCommand]` |
 | [Polish](https://wiki.cavesofqud.com/wiki/Modding:Polish) | The pre-publish checklist: articles, zoom levels, both UIs |
 
 ## Creatures and Objects
@@ -54,7 +56,7 @@ type to go and read.
 | Page | What it settles |
 |---|---|
 | [Creature AI](https://wiki.cavesofqud.com/wiki/Modding:Creature_AI) | What `Brain` exposes to XML alone, the AI part catalogue, goal handlers, opinions and allegiances |
-| [Mutations](https://wiki.cavesofqud.com/wiki/Modding:Mutations) | `Mutations.xml` parameters — cost, `MaxSelected`, exclusions, `BearerDescription` |
+| [Mutations](https://wiki.cavesofqud.com/wiki/Modding:Mutations) | `Mutations.xml` parameters, including cost, `MaxSelected`, exclusions, and `BearerDescription` |
 | [Activated Abilities](https://wiki.cavesofqud.com/wiki/Modding:Activated_Abilities) | Registering and activating, from any part |
 | [Bodies](https://wiki.cavesofqud.com/wiki/Modding:Bodies) | `Bodies.xml`, part types and variants, anatomies |
 | [StatShifter](https://wiki.cavesofqud.com/wiki/Modding:StatShifter) | The bookkeeping API for temporary stat changes |
@@ -70,11 +72,11 @@ type to go and read.
 
 | Page | What it settles |
 |---|---|
-| [Intro - Zones and Worlds](https://wiki.cavesofqud.com/wiki/Modding:Intro_-_Zones_and_Worlds) | The vocabulary — start here before the other four |
+| [Intro - Zones and Worlds](https://wiki.cavesofqud.com/wiki/Modding:Intro_-_Zones_and_Worlds) | The vocabulary. Start here before the other four pages. |
 | [Zone Builders](https://wiki.cavesofqud.com/wiki/Modding:Zone_Builders) | The pre-existing builders, `ZoneBuilderSandbox`, `PlacePopulationInRegion`, pathfinding |
 | [Zone Procedural Generation](https://wiki.cavesofqud.com/wiki/Modding:Zone_Procedural_Generation) | FastNoise, NoiseMap, wave function collapse |
 | [Interior Zones](https://wiki.cavesofqud.com/wiki/Modding:Interior_Zones) | Zones attached to objects, vehicles, interior weights, and the limits |
-| [Maps](https://wiki.cavesofqud.com/wiki/Modding:Maps) | `.rpm` format, patching a shipped map, the map editor — what `mod/Optional/JoppaBuilding/Joppa.rpm` is |
+| [Maps](https://wiki.cavesofqud.com/wiki/Modding:Maps) | `.rpm` format, patching a shipped map, and the map editor. It also explains `mod/Optional/JoppaBuilding/Joppa.rpm`. |
 | [Worlds](https://wiki.cavesofqud.com/wiki/Modding:Worlds) | `JoppaWorldBuilderExtension`, worldgen patterns, building a world of your own |
 
 ## Miscellanea
@@ -82,39 +84,38 @@ type to go and read.
 | Page | What it settles |
 |---|---|
 | [Options](https://wiki.cavesofqud.com/wiki/Modding:Options) | The XML structure, option types, `[OptionFlag]`, `Options.GetOption`, requirement specs, **enabling and disabling XML from an option** |
-| [Randomness](https://wiki.cavesofqud.com/wiki/Modding:Randomness) | The `Stat.cs` generators and which to use — `Rnd`, `SeededRandom`, `GaussianRandom`, `RandomCosmetic` |
+| [Randomness](https://wiki.cavesofqud.com/wiki/Modding:Randomness) | The `Stat.cs` generators and their uses: `Rnd`, `SeededRandom`, `GaussianRandom`, and `RandomCosmetic` |
 | [Serialization (Saving/Loading)](<https://wiki.cavesofqud.com/wiki/Modding:Serialization_(Saving/Loading)>) | How Qud saves, custom serialization, and **migrating between mod versions** |
 | [Adding Code at Startup](https://wiki.cavesofqud.com/wiki/Modding:Adding_Code_at_Startup) | The four cache points and their timing |
 | [Adding Code to the Player](https://wiki.cavesofqud.com/wiki/Modding:Adding_Code_to_the_Player) | `[PlayerMutator]` / `IPlayerMutator`, on new game and on load |
-| [Genotypes and Subtypes](https://wiki.cavesofqud.com/wiki/Modding:Genotypes_and_Subtypes) | A whole genotype in XML — the worked snapjaw example covers all four files |
+| [Genotypes and Subtypes](https://wiki.cavesofqud.com/wiki/Modding:Genotypes_and_Subtypes) | A genotype in XML. The worked snapjaw example covers all four files. |
 | [Quests](https://wiki.cavesofqud.com/wiki/Modding:Quests) | `Quests.xml`, `IQuestSystem`, giving and completing steps in XML or script |
 | [Liquids](https://wiki.cavesofqud.com/wiki/Modding:Liquids) | `BaseLiquid` plus the `IsLiquid` attribute |
 | [Key Mapping (Commands)](<https://wiki.cavesofqud.com/wiki/Modding:Key_Mapping_(Commands)>) | Custom entries in the Key Mapping menu |
 | [Sounds](https://wiki.cavesofqud.com/wiki/Modding:Sounds) | The `/sounds` folder, supported types, the recognised tag names |
-| [Harmony](https://wiki.cavesofqud.com/wiki/Modding:Harmony) | Runtime patching. **Charter rule 5 forbids this here** — the page is for reading other people's mods |
+| [Harmony](https://wiki.cavesofqud.com/wiki/Modding:Harmony) | Runtime patching. **Charter rule 5 forbids this here.** Read the page for other people's mods. |
 
 ## Resources
 
 | Page | What it settles |
 |---|---|
-| [Mod Configuration](https://wiki.cavesofqud.com/wiki/Modding:Mod_Configuration) | `manifest.json`, `workshop.json`, `modconfig.json`, `config.json` — structure and version ranges |
+| [Mod Configuration](https://wiki.cavesofqud.com/wiki/Modding:Mod_Configuration) | `manifest.json`, `workshop.json`, `modconfig.json`, and `config.json`. The page covers structure and version ranges. |
 | [Creating a Workshop Mod](https://wiki.cavesofqud.com/wiki/Modding:Creating_a_Workshop_Mod) | Publishing, and the `workshop.json` fields |
-| [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) | Prefixing, merging, named arguments, save migration — the practices this fork is built on |
+| [Compatibility](https://wiki.cavesofqud.com/wiki/Modding:Compatibility) | Prefixing, merging, named arguments, and save migration. These practices support this fork. |
 | [Installing a mod](https://wiki.cavesofqud.com/wiki/Modding:Installing_a_mod) | Every install route, for writing release instructions |
 | [Colors & Object Rendering](https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering) | The colour letters, the markup language, colour templates, custom colours |
-| [Code page 437](https://wiki.cavesofqud.com/wiki/Modding:Code_page_437) | The escape table and how it renders. Not only `RenderString`, which is how I had this line for a year: **every** UI string goes through the table, and XML is safe only because the reader undoes it first. `docs/LESSONS.md` has the asymmetry |
+| [Code page 437](https://wiki.cavesofqud.com/wiki/Modding:Code_page_437) | The escape table and rendering behavior. XML is safe because the reader reverses the map. `docs/LESSONS.md` records the asymmetry. |
 | [Visual Style](https://wiki.cavesofqud.com/wiki/Visual_Style) | The palette itself, in several formats, plus the font and graphics conventions |
-| [Wishes](https://wiki.cavesofqud.com/wiki/Wishes) | The player-facing wish list — the testing tool, as opposed to the modding page above |
+| [Tutorial - Snapjaw Mages](https://wiki.cavesofqud.com/wiki/Modding:Tutorial_-_Snapjaw_Mages) | A worked tutorial for creatures, tiles, inventory, skills, and stats |
 | [Histographicnomicon](https://wiki.cavesofqud.com/wiki/Modding:Histographicnomicon) | The sultan-history generator in the mod toolkit |
-| [Tutorial - Snapjaw Mages](https://wiki.cavesofqud.com/wiki/Modding:Tutorial_-_Snapjaw_Mages) | The long worked tutorial — creature, tiles, inventory, skills, stats |
 | [Tutorial - Custom Player Tiles](https://wiki.cavesofqud.com/wiki/Modding:Tutorial_-_Custom_Player_Tiles) | Player tile presets, build codes |
 
 ## Where the wiki and the assembly disagree
 
-The wiki is written by people, some of it years ago, and I have found places where the game has
-moved on — and one where a page contradicts itself. These are the ones I have checked against the
-decompiled assembly myself. The assembly wins; the wiki entry is noted so nobody re-derives the same
-correction.
+The wiki contains older pages.
+The assembly takes precedence when a page disagrees with current game behavior.
+This section records checks against the decompiled assembly.
+It prevents repeated investigation.
 
 **`<tag Value="*delete">` is not broken, in either of the two ways the wiki says it is.**
 [Objects](https://wiki.cavesofqud.com/wiki/Modding:Objects) says it "appears to currently be broken
@@ -125,23 +126,25 @@ against the assembly:
   while baking a blueprint's flattened node tree, so an inherited tag does not survive. This fork
   relies on that in seven blueprints, and #171 confirmed it by measuring pool membership before and
   after.
-- **With `Load="Merge"`.** `ObjectBlueprintXMLChildNode.Merge` copies the incoming node's attributes
-  over the existing ones — `Attributes[attribute.Key] = attribute.Value` — so merging
-  `<tag Name="X" Value="*delete" />` sets `Value` on the target's own node, and `Bake` then skips it
-  like any other. Settled by reading the loader rather than by running it: this fork has no
-  `*delete` on a merge, so there is no case in the repository to point at. A ten-second check with
-  `population:generate` would close that gap before the correction is worth offering upstream (#504).
+- **With `Load="Merge"`.** `ObjectBlueprintXMLChildNode.Merge` copies incoming attributes over existing
+  attributes with `Attributes[attribute.Key] = attribute.Value`.
+  Merging `<tag Name="X" Value="*delete" />` therefore sets `Value` on the target node.
+  `Bake` then skips the tag.
+  This repository has no `*delete` merge to demonstrate.
+  A `population:generate` check can support a future upstream correction (#504).
 
-**`<stag>` is not only a grammar mechanism.** The same page describes it as adding an object to a
-dynamic semantic table; `docs/STYLEGUIDE.md` §4.0b describes it as the semantic-term layer. Both are
-right and neither is complete: `Bake` stores `<stag Name="X">` as the single tag `SemanticX`, and
-*two* different consumers read that key — `XRL.Language.Semantics` for grammar, and
-`FabricateDynamicSemanticTable`, which prefixes each requested category with `Semantic` and builds a
-population table from everything carrying it. So an `<stag>` can put an object into a spawn pool.
-Twenty-four semantic categories are named in vanilla's population tables — `Furniture` and
-`ElectricalPowerConsumer` among them — and six more sites build the name at runtime from village and
-dungeon data, so the consumed set has no fixed size. None of the five this fork declares is among the
-twenty-four, and none matches the runtime shapes either.
+**`<stag>` provides more than grammar terms.**
+The wiki describes it as a dynamic semantic table.
+`docs/STYLEGUIDE.md` §4.0b describes it as the semantic-term layer.
+Both descriptions are incomplete.
+`Bake` stores `<stag Name="X">` as `SemanticX`.
+`XRL.Language.Semantics` reads that key for grammar.
+`FabricateDynamicSemanticTable` also reads it and builds a population table.
+An `<stag>` can therefore place an object in a spawn pool.
+Vanilla names 24 semantic categories in population tables.
+Six more sites build names at runtime from village and dungeon data.
+The consumed set has no fixed size.
+None of the five categories declared by this fork matches those sets.
 
 **Dynamic tables come in six kinds, not three.**
 [Populations](https://wiki.cavesofqud.com/wiki/Modding:Populations) documents `DynamicObjectsTable`,
@@ -149,39 +152,42 @@ twenty-four, and none matches the runtime shapes either.
 `StaticObjectsTable:`, `DynamicArtifactsTable:` and `DynamicHasPartTable:`, the last of which takes a
 `:Tier` slice the same way the documented ones do.
 
-**A parasang's X is counted from the left, and the coordinate example says right.**
+**A parasang's X coordinate increases from the left.**
 [Intro - Zones and Worlds](https://wiki.cavesofqud.com/wiki/Modding:Intro_-_Zones_and_Worlds) sets
-the frame correctly — the top-left parasang of the world map is (0, 0), the bottom-right is
-(79, 24) — and then, two sentences later, reads `JoppaWorld.53.3.1.1.10` as being in "the 53rd tile
-from the *right*". Only one of those can be true.
+the top-left parasang to (0, 0) and the bottom-right parasang to (79, 24).
+The page later describes `JoppaWorld.53.3.1.1.10` as the 53rd tile from the right.
+Those statements conflict.
 
-The assembly says left. `WorldFactory.BuildZoneNameMap` walks parasang X from 0 to 79 and Y from 0
-to 24, assembling zone IDs in that order, and `Zone` converts back with
-`Location2D.Get(ParasangX * 3 + ZoneX, ParasangY * 3 + ZoneY)` — so parasang X grows with map X, and
-map X grows rightward from the origin the page itself puts at top left. Nothing anywhere counts from
-the other side.
+The assembly uses the left-origin interpretation.
+`WorldFactory.BuildZoneNameMap` walks parasang X from 0 to 79 and Y from 0 to 24.
+`Zone` converts back with
+`Location2D.Get(ParasangX * 3 + ZoneX, ParasangY * 3 + ZoneY)`.
+Map X grows rightward from the top-left origin.
 
-The size of it is `79 - 53 = 26`. A `goto:` wish or a landing zone derived from that example lands
-twenty-six parasangs from where its reader meant, on a map eighty wide, and the page gives no reason
-to suspect it. Everything else there is sound and I leaned on all of it while investigating #470 —
-the parasang definition, the `World.wX.wY.X.Y.Z` format, zone coordinates running 0–2, `Z = 10` as
-the surface stratum.
+The example is `79 - 53 = 26` parasangs from the intended position.
+A `goto:` wish or landing zone based on it lands 26 parasangs away on an 80-parasang map.
+The remaining page content is sound.
+The coordinate definition, `World.wX.wY.X.Y.Z` format, 0–2 zone coordinates, and `Z = 10` surface stratum remain useful.
 
-**This one is the page against itself, not the game moving on**, which changes what to do about it.
-There is no version of Qud where it was right, so the correction needs no version note, and it is a
-one-word fix worth offering upstream.
+**This contradiction exists within the page.**
+It does not depend on a Qud version.
+Offer the one-word correction upstream.
 
 ## Refreshing this index
 
-The navbox is category-driven rather than hand-written, so a page joins it the moment it is
-categorised. To see what has been added since I wrote this, list the five categories:
+The navbox is category-driven.
+A page joins it when the page receives a category.
+List the five categories to find additions:
 
 ```bash
 for c in "Modding - Core Concepts" "Modding - Creatures and Objects" "Zones and Worlds" "Modding - Miscellanea" "Modding Resources"; do echo "== $c"; curl -s -A "Mozilla/5.0" --get --data-urlencode "cmtitle=Category:$c" --data "action=query&list=categorymembers&cmlimit=500&format=json" https://wiki.cavesofqud.com/api.php | python3 -c 'import json,sys;[print("  ",m["title"]) for m in json.load(sys.stdin)["query"]["categorymembers"]]'; done
 ```
 
-Two traps in that command, both of which cost me a detour. The wiki returns **403 to an unrecognised
-user agent**, so the browser UA is not decoration — `WebFetch` and a bare `curl` both bounce. And the
-*rendered* navbox filters to the `Modding:` namespace, which hides two pages the categories really do
-contain: `Visual Style` and `Wishes`. The API sees both; the sidebar does not. Reading the sidebar
-and calling it the whole list is the same mistake as reading the XML and calling it the whole game.
+This command has two traps.
+The wiki returns **403 for an unrecognized user agent**.
+The browser user agent is required.
+The rendered navbox filters to the `Modding:` namespace.
+It therefore hides `Visual Style` and `Wishes`.
+The API returns both pages.
+The sidebar does not.
+Do not treat the sidebar as the complete list.

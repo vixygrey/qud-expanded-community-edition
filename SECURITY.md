@@ -1,20 +1,19 @@
 # Security policy
 
-This mod ships C#. Qud runs mods with **full process privileges**, and any mod containing a
-`Scripting/` directory makes the game ask each subscriber to approve it before loading. That's a
-real trust relationship, and this document exists because of it rather than as boilerplate.
+This mod ships C#. Qud runs mods with **full process privileges**.
+Any mod with a `Scripting/` directory asks each subscriber for approval before loading.
+This creates a direct trust relationship.
 
 ## Reporting
 
 **Use [private vulnerability reporting](https://github.com/vixygrey/qud-expanded-community-edition/security/advisories/new).**
-It's enabled on this repository, so the report stays between us until there's a fix.
+The report stays private until a fix exists.
 
-Please don't open a public issue for anything that could be abused before subscribers can update.
-For everything else — a crash, a broken drop table, a wrong number — a normal issue is perfect and I'd
-rather have it that way.
+Do not open a public issue for a vulnerability that subscribers cannot safely receive before an update.
+Use a normal issue for crashes, broken drop tables, and incorrect values.
 
-I maintain this on my own, so I can't promise a response time. I will acknowledge a report and tell
-you what I intend to do about it.
+This project has one maintainer, so no response time is guaranteed.
+The maintainer will acknowledge each report and state the planned action.
 
 ## In scope
 
@@ -36,41 +35,47 @@ know.
 
 ## What already enforces this
 
-`tools/validate_mod.py` runs two checks on every pull request, and both must pass:
+`tools/validate_mod.py` runs two checks on every pull request.
+Both checks must pass:
 
-- **`scripting-policy`** — pattern-matches every banned API in rule 5's list against
-  `mod/Scripting/`, with each pattern naming the clause it enforces. Comments are stripped first,
-  since the scripts legitimately *describe* these APIs; string literals deliberately are not,
-  because `Type.GetType("System.IO.File")` is how a token scan gets sidestepped.
-- **`serializable-shape`** — flags any instance field on a `[Serializable]` type, because that
-  layout is written into every player's save file.
+- **`scripting-policy`** matches every banned API in rule 5 against `mod/Scripting/`.
+  Each pattern names the clause that it enforces.
+  The check strips comments because the scripts describe these APIs.
+  It keeps string literals because `Type.GetType("System.IO.File")` can evade a token scan.
+- **`serializable-shape`** flags every instance field on a `[Serializable]` type.
+  That layout enters every player's save file.
 
-Neither is a security boundary. I write this code, and anyone determined could evade both trivially.
-They catch **drift** — the `File.ReadAllText` added while debugging and forgotten, or a dependency
-that quietly pulls Harmony in.
+These checks are not security boundaries.
+The maintainer writes this code, and a determined actor can evade both checks.
+They catch **drift**, such as a forgotten `File.ReadAllText` call or a dependency that adds Harmony.
 
-**CodeQL does not cover the C#, and can't.** Every non-`System` dependency lives only in Freehold's
-`Assembly-CSharp.dll`, which is proprietary and absent from CI runners, so call-target resolution
-sat permanently below CodeQL's threshold. The two checks above are what stands in its place, and
-they enforce a project policy CodeQL's generic queries could never express. `docs/CHARTER.md` rule 5
-has the full reasoning.
+**CodeQL does not cover the C#.** Every non-`System` dependency exists only in Freehold's
+`Assembly-CSharp.dll`.
+The proprietary assembly is absent from CI runners.
+Call-target resolution therefore remains below CodeQL's threshold.
+The two checks enforce project rules that CodeQL's generic queries cannot express.
+See rule 5 in [`docs/CHARTER.md`](docs/CHARTER.md) for the full reasoning.
 
-**The C# is compiled locally, not here.** `tools/compile_scripting.py` builds `mod/Scripting/` against
-the game's own assemblies as a pre-commit hook, so a syntax error is caught before it ships. It cannot
-run in CI, though — compiling needs Freehold's proprietary `Assembly-CSharp.dll`, which is the same
-wall CodeQL hit — and it skips where the game isn't installed. So no check on a runner ever compiles
-this C#, and a review of a contributor's scripting change is still a human reading it. There remains
-deliberately no `.csproj`: the compile needs four DLLs from a Qud install and nothing else.
+**The C# compiles locally, not in CI.** `tools/compile_scripting.py` builds `mod/Scripting/`
+against the game's assemblies through a pre-commit hook.
+The hook catches syntax errors before release.
+The hook cannot run in CI because Freehold's proprietary `Assembly-CSharp.dll` is required.
+The hook skips when the game is not installed.
+No CI check compiles this C#.
+A maintainer must review each scripting change.
+The repository has no `.csproj` because the compile needs four DLLs from a Qud install.
 
 ## Supported versions
 
-Only the current release. This is a single-maintainer hobby project and I don't backport.
+Support only the current release.
+This project has one maintainer and does not backport fixes.
 
 ## Out of scope
 
-- Vulnerabilities in **Caves of Qud itself** — report those to
-  [Freehold Games](https://www.cavesofqud.com/). If one affects how this mod behaves, do tell me and
-  I'll work around it; issues like that get the `upstream-qud` label.
-- Vulnerabilities in **other mods**, including Mura's original and the sub-mods split from it.
-- Anything requiring an attacker to already have write access to a player's Qud install directory.
+- Report vulnerabilities in **Caves of Qud itself** to
+  [Freehold Games](https://www.cavesofqud.com/).
+  Tell the maintainer when a game vulnerability affects this mod.
+  The maintainer will work around it and apply the `upstream-qud` label.
+- Do not report vulnerabilities in **other mods**, including Mura's original and its split sub-mods.
+- Do not report an issue that requires write access to a player's Qud install directory.
   At that point the mod is not the weak link.
