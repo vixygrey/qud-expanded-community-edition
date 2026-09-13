@@ -4324,18 +4324,6 @@ CODEPAGE_LAST = 0xFF
 STEAM_ONLY_JSON = {("workshop.json", "Description")}
 
 
-def is_corpus_json(data: object) -> bool:
-    """Check whether `data` matches the MarkovChainData / Markov corpus schema.
-
-    Qud's `MarkovChainData` / `LibraryCorpus.json` carries rendered book text where characters in
-    U+0080-U+00FF are authored directly as raw CP437 byte codes rather than target Unicode
-    characters (see #933). Scanning corpus JSON for transliterations would flag intended raw bytes.
-    """
-    if isinstance(data, dict):
-        return "WordData" in data or "Corpus" in data or "Transitions" in data
-    return False
-
-
 def codepage_substitute(ch: str) -> str:
     """What Qud puts on the screen instead of `ch`.
 
@@ -4403,8 +4391,6 @@ def check_codepage_text(f: Findings) -> None:
     for jf in sorted(MOD.rglob("*.json")):
         with contextlib.suppress(json.JSONDecodeError):
             data = json.loads(jf.read_text(encoding="utf-8-sig"))
-            if is_corpus_json(data):
-                continue
             for keypath, value in json_strings(data):
                 if (jf.name, keypath.split(".")[0].split("[")[0]) in STEAM_ONLY_JSON:
                     continue
