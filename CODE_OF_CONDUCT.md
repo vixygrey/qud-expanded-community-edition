@@ -1,20 +1,20 @@
 # Code of Conduct
 
-The maintainer holds the standard below and welcomes reports about conduct that falls short.
+I maintain this on my own, and the standard below is the one I hold myself to as much as anyone
+else. If I fall short of it, say so.
 
 **To report a concern, use
 [private reporting](https://github.com/vixygrey/qud-expanded-community-edition/security/advisories/new).**
-The form uses GitHub's security advisory flow.
-It also supports conduct reports.
-The route keeps a report private without publishing a personal email address.
-It reaches the maintainer and nobody else.
-Use GitHub's own [abuse reporting](https://github.com/contact/report-abuse) when the report concerns
-the maintainer or when the private form is unavailable.
+That form is GitHub's security advisory flow, and I use it for conduct reports too — it's the only
+route I have that keeps a report private without publishing a personal email address on a repository
+that gets Workshop traffic. It reaches me and nobody else. If you'd rather not use it, or the person
+you need to report is me, GitHub's own [abuse reporting](https://github.com/contact/report-abuse)
+goes to them instead of to me, and that's a legitimate thing to use.
 
-The text below is the [Contributor Covenant](https://www.contributor-covenant.org) v2.1.
-Only the contact method under **Enforcement** differs.
-The Covenant leaves that field blank.
-All other text remains verbatim.
+The text below is the [Contributor Covenant](https://www.contributor-covenant.org) v2.1. The only
+change is the contact method under **Enforcement**, which the Covenant leaves as a blank to fill in;
+everything else is verbatim, deliberately, since a code of conduct people already recognise is worth
+more than one I reworded.
 
 ---
 

@@ -1,30 +1,29 @@
 # Contributing
 
-This is a community fork, and community contributions are welcome.
+I'd be glad of the help. This is a community fork and it's meant to act like one.
 
-**You will be credited by name** in the README and the Workshop description in the pull request
-that merges your work. You do not need to ask. This follows charter rule 3, the condition Mura
-attached to opening this mod. I treat that condition as permanent.
+**You'll be credited by name**, in the README and the Workshop description, in the same pull request
+that merges your work, not later, and you shouldn't have to ask. That's charter rule 3, and it's
+the one condition Mura attached to opening this mod up, so I treat it as permanent.
 
-**Use the house writing style in project documentation.** Keep prose clear, composed, warm, and direct.
-Use the stricter rules for documentation, specifications, changelogs, release notes, CLI output, error
-messages, and UI copy. Use the looser rules for issues, pull requests, comments, and chat.
+**Write however comes naturally to you.** The documents here are in my voice, first person and all,
+because I wrote them. That's a description of how I write, not a house style. Your issues, pull
+requests and comments are yours, and I'd rather have your contribution than a stylistic match.
 
 ## Start here
 
-- [`docs/CHARTER.md`](docs/CHARTER.md) covers the six rules that maintain this fork and explains them.
-  The rules are constraints, and most are mechanically enforced.
-- [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout, and formatting.
-  **Read §1 before renaming anything.** Several conventions are load-bearing identifiers.
-  Breaking one can fail without an error.
-- [`docs/LESSONS.md`](docs/LESSONS.md) collects traps from Qud and prior maintenance work.
-  Read it before a first change.
-- [`docs/FEATURES.md`](docs/FEATURES.md) records the mod's behavior.
-  §10 contains the severity-ranked backlog with a file and line for every open row.
+- [`docs/CHARTER.md`](docs/CHARTER.md) covers the six rules I maintain this fork under, and why. They're
+  constraints rather than aspirations, and most are mechanically enforced.
+- [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout and formatting. **Read §1 before renaming
+  anything**: several conventions look like mess and are load-bearing identifiers, and breaking one
+  fails silently with no error anywhere.
+- [`docs/LESSONS.md`](docs/LESSONS.md) collects traps I've already hit, mostly about Qud itself. Worth a
+  skim; it'll save you an afternoon at some point.
+- [`docs/FEATURES.md`](docs/FEATURES.md) records what the mod actually does. §10 is the severity-ranked
+  backlog, with a file and line on every open row, and it's a good place to find a first change.
 
-The mod has no build step.
-Qud loads the XML in `mod/` directly, so contributors need no toolchain.
-`README.md` covers the validators and optional local hooks.
+There's **no build step**. Qud loads the XML in `mod/` directly, so you need no toolchain to
+contribute. `README.md` covers running the validators and the optional local hooks.
 
 ## The workflow
 
@@ -32,14 +31,14 @@ Trunk-based: issue first, short-lived branch, small PR, squash merge.
 
 ### Issue first
 
-File an issue before starting code work.
-Use [`docs/FEATURES.md`](docs/FEATURES.md) §10 as a backlog source.
-Each backlog row has a scope, file, and line.
+Nothing gets coded before it's filed. `docs/FEATURES.md` §10 is the backlog to seed from, and each row
+is already scoped and carries a file and line.
 
-The [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1) shows active work.
-Check it before starting.
-Each issue has a **Track** for Ammo, Content, Systems, Sub-mod merges, Upstream, or Tooling & docs.
-The maintainer adds filed issues to the board and assigns their tracks.
+The [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1) is the live
+view of the same work, and it's public. Check it before starting: it shows what's already in
+progress, and every issue carries a **Track** (Ammo, Content, Systems, Sub-mod merges, Upstream,
+Tooling & docs), which is how the work is grouped in practice. If you file something, I'll add it to
+the board and set its track; you don't have to.
 
 Labels: `bug` · `feature` · `chore` · `docs` · `tech-debt` · `balance` · `compat` ·
 `upstream-defect` · `upstream-qud` · `security` · `dependencies`.
@@ -60,263 +59,286 @@ Four of those are less obvious than they look:
 
 ### Branches and commits
 
-- **Use short-lived branches off `main`** with names such as `type/kebab-case-description`.
-  Never commit to `main`.
-  A server-side ruleset and a local hook enforce this rule.
-- **Make atomic commits.** Keep one logical change in each commit.
-  Do not mix a defect fix with a design change.
-  A population-table edit and a blueprint edit can look similar in a diff and have different risks.
-- **Use Conventional Commits** with scopes that match this repository:
+- **Short-lived branches off `main`**, named `type/kebab-case-description`. Never commit to `main`;
+  a ruleset enforces it server-side and a local hook fails first.
+- **Atomic commits**, one logical change each. This matters more here than in most repositories: a
+  population-table edit and a blueprint edit can look identical in a diff and have completely
+  different blast radii. Never mix a defect fix with a design change in one commit.
+- **Conventional commits**, with scopes matching this repo's structure:
   `tables` (`mod/Core/PopulationTables.xml`) · `chips` · `armor` · `melee` · `ranged` · `skills` ·
   `genotypes` · `bodies` · `workshop` · `scripting` · `docs`.
 
   Example: `fix(tables): merge Artifact 3-8 instead of replacing (closes #3)`.
 
-- **State the cause in the commit body.** Cite the relevant convention or in-world reason.
-  A one-line commit body violates charter rule 2.
+- **The body carries the causality.** Charter rule 2 lives or dies here, so say *why*, and cite the
+  convention or the in-world reason. A one-line commit body is a rule-2 violation. This is the rule
+  I care most about and the one most easily skipped.
 
-### A merged PR still needs a release
+### Your PR merging isn't the end of it
 
-An item reaches **Done** after the change is live on the Steam Workshop and a release is available.
-GOG, itch, and Linux players outside Steam install the release zip.
-A change that exists only on `main` has not reached those players.
+An item only reaches **Done** on the board once the change is live on the Steam Workshop *and* a
+release has been cut for everyone else. GOG, itch, and Linux players outside Steam install from
+the release zip, and a change that exists only in `main` hasn't reached them.
 
-**QA** identifies code that needs play testing.
-Validators prove that an object is well-formed and reachable.
-Only gameplay proves the stated behavior.
-**Staging** identifies all work merged since the last release.
+Two columns cover the gap. **QA** means the code is written and someone is testing it. The
+validators can prove an object is well-formed and reachable, but only playing can prove it does what
+it says, so an item can sit in QA while its pull request is still open. **Staging** is everything
+merged since the last release: changes that passed QA, and changes that never needed it, like this
+sentence.
 
-A merged change remains in Staging until release.
-The changelog records it when the release is cut.
+So if your change merges and the board doesn't move to Done, nothing is wrong. It's in Staging, and
+you'll see it in the changelog when a release is cut.
 
-**An issue closed without shipping goes straight to Done.**
-#364 records the first such issue.
-Its premise did not hold, so the issue will not appear in a release.
-The close reason distinguishes `completed` from `not planned`.
+**An issue closed without shipping goes straight to Done**, and #364 is the first: a report whose
+premise turned out not to hold. Nothing about it will ever appear in a release, so it cannot wait in
+Staging, and leaving it in On Deck would count dead work as upcoming. So Done means *out of the
+pipeline*: released, for anything that was built, and immediate for anything that will not be. The
+issue's close reason carries the distinction, `completed` against `not planned`, which is where to
+look if you need to tell the two apart.
 
-The maintainer cuts releases.
-[`docs/RELEASING.md`](docs/RELEASING.md) describes the process and the waiting points.
+Cutting one is mine to do and [`docs/RELEASING.md`](docs/RELEASING.md) is how, if you ever want to
+know what your change is waiting on.
 
 ### Pull requests
 
-- **Use a Conventional Commit as the title.** The title becomes the squash commit message.
-  CI checks it.
-- **State the compatibility impact.** Name each vanilla record that the change touches.
-  State whether the edit is additive.
-  Identify any commonly edited population table.
-- **Update [`CHANGELOG.md`](CHANGELOG.md).** Use [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
-  categories: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, and `Security`.
-  Place entries under `[Unreleased]` until release.
-  Mark entries that do not affect the shipped mod as **(internal)**.
+- **The title must be a conventional commit too.** It becomes the squash commit message, and CI
+  checks it.
+- **State the compatibility impact**: which vanilla records the change touches, and whether the
+  edit is additive. If it touches a table other mods commonly touch, say so.
+- **Update [`CHANGELOG.md`](CHANGELOG.md).** [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+  format: `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed` / `Security`, newest first,
+  under `[Unreleased]` until a release cuts it. Entries that don't affect the shipped mod are marked
+  **(internal)**, because the changelog serves subscribers first and contributors second.
 
-A pull request without a changelog entry is incomplete.
-The changelog carries charter rule 2's causality to players.
-CI enforces this requirement.
-Apply the `skip-changelog` label only when the change records nothing for subscribers.
+  A PR without a changelog entry is incomplete rather than untidy: the changelog is where charter
+  rule 2's causality reaches players, who never read commit messages. CI enforces this; apply the
+  `skip-changelog` label if a change genuinely records nothing.
 
-Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
+  Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
 
-Ten checks run here and all ten must pass.
-Run `python3 tools/validate_mod.py` before committing.
+Ten checks run on every pull request and all ten must pass. Run
+`python3 tools/validate_mod.py` before you commit. Locally it costs you seconds instead of a round
+trip.
 
 ### If you touch `mod/Scripting/`
 
-**CI does not compile the C#.** Compilation needs the proprietary
-`Assembly-CSharp.dll`, which cannot be committed or fetched on a runner.
-The validator lints these files, but a linter is not a compiler.
-Two local checks cover this gap.
-Both checks skip when the game is unavailable.
+**Nothing in CI compiles the C#, and nothing can.** Compiling it needs the game's own
+`Assembly-CSharp.dll`, which is proprietary and cannot be committed or fetched on a runner. The
+validator lints those files, but a linter is not a compiler. Two local checks cover the gap, and both
+skip rather than fail if you don't have the game, so neither can block you, and neither is
+CI-enforced. That makes running them a courtesy you owe the next person.
 
-**[`tools/compile_scripting.py`](tools/compile_scripting.py) compiles the C#.**
-It uses four DLLs from the Qud installation.
-The `pre-commit` hook runs it when a change touches `mod/Scripting/`.
-Run it directly with:
+**[`tools/compile_scripting.py`](tools/compile_scripting.py) actually compiles it**, in about half a
+second, against four DLLs from your Qud install. It runs automatically as a `pre-commit` hook when you
+touch `mod/Scripting/`, so usually you'll just see it pass. To run it directly:
 
 ```bash
 python3 tools/compile_scripting.py
 ```
 
-The command needs a .NET SDK.
-It finds the SDK automatically.
-Set `QUD_MANAGED_DIR` or `QUD_CSC` when the installation uses another path.
-The compiler uses C# 9 because Unity embeds an older compiler.
-The reference set is narrow, so a new namespace can fail here while succeeding in the game.
-Add the missing reference to `REFERENCES` when that failure occurs.
+It needs a .NET SDK (`brew install dotnet`) and finds one on its own; set `QUD_MANAGED_DIR` or
+`QUD_CSC` if your install isn't where it looks. Two things worth knowing: the language version is
+pinned to C# 9 on purpose, because the SDK's compiler is newer than the one Unity embeds and would
+otherwise accept syntax the game rejects; and the reference set is deliberately narrow, so a file that
+starts using a new namespace fails here while compiling fine in game. That is a false *failure*: it
+names the missing reference, and the fix is to add it to `REFERENCES`.
 
-**[`tools/check_build_log.py`](tools/check_build_log.py) reads the game build log.**
-Qud compiles each enabled mod at launch and records the result in `build_log.txt`.
-This tool compares that result with the working tree.
-The `identical` check compares source with the compiled copy.
-The `fresh` check rejects a verdict from before that copy.
-Launch the game with the mod enabled before running:
+**[`tools/check_build_log.py`](tools/check_build_log.py) reads back what the game actually did.** Qud
+compiles every enabled mod at launch and records the outcome in `build_log.txt`; this reads that
+verdict and refuses it unless it demonstrably describes your working tree. The `identical` check
+compares your source against the copy the game compiled, and the `fresh` check rejects a verdict
+written before that copy. Launch the game once with the mod enabled, then:
 
 ```bash
 pre-commit run --hook-stage manual check-build-log
 ```
 
-Run this check manually after each C# change.
-Set `QUD_SAVE_DIR` when the save directory is not in the macOS default location.
-Report the result in the pull request when local compilation is unavailable.
+That one is manual rather than automatic because mid-work you'll often have edited C# without
+relaunching. Set `QUD_SAVE_DIR` if your save directory isn't in the macOS default location.
+
+If you changed C# and couldn't run either, say so in the pull request and I'll run them.
 
 ### After a Qud update
 
-**[`tools/snapshot_qud_api.py`](tools/snapshot_qud_api.py) records names that Qud exposes.**
-`tools/validate_mod.py` uses those names to check part names, blueprint names, and part attributes
-on a runner without a game installation.
-The answers are committed to `tools/qud-api.json`.
-The validator reads that file and runs everywhere.
+**[`tools/snapshot_qud_api.py`](tools/snapshot_qud_api.py) records the names Qud exposes**, so
+`tools/validate_mod.py` can check part names, blueprint names and part attributes on a runner that
+has no copy of the game. The answers are committed to `tools/qud-api.json`; the validator reads that
+file and runs everywhere.
 
-**Regenerate the snapshot after every game update.**
-Run it with `tools/check_vanilla_drift.py`:
+The snapshot goes stale when Qud updates, so **regenerate it after every game update**, alongside
+`tools/check_vanilla_drift.py`:
 
 ```bash
 python3 tools/snapshot_qud_api.py --assembly
 ```
 
-The `--assembly` option is required.
-The committed snapshot uses it.
-A run without it drops 656 part names and the generator refuses that result (#244).
+`--assembly` is not an optional extra. The committed snapshot is built that way, and mixing the two
+sources is refused outright, because a plain run drops 656 part names in silence (#244).
 
-The `snapshot-check` pre-commit hook runs `--check` on every commit.
-It uses `always_run` instead of a file pattern because a Qud update can affect any file.
-The hook skips when the game, .NET SDK, or `ilspycmd` is absent.
-The `--require` option changes that skip into a failure.
+A `snapshot-check` pre-commit hook runs `--check` on **every** commit, `always_run` rather than on a
+file pattern: what it catches is a Qud update, which correlates with nothing in a diff. Where the
+game, the .NET SDK or `ilspycmd` is absent it skips loudly and passes, so it cannot block a
+contributor who has none of them. `--require` turns that skip into a failure.
 
-Install the .NET SDK and `ilspycmd` to run the check:
+To have that check run rather than skip, install both, the .NET SDK (`brew install dotnet`) and
+`ilspycmd`:
 
 ```bash
 dotnet tool install -g ilspycmd
 export PATH="$PATH:$HOME/.dotnet/tools"
 ```
 
-The `export` command remains required after installation.
-The .NET installer writes the literal string `~/.dotnet/tools` to `/etc/paths.d/dotnet-cli-tools`.
-`path_helper` copies that string without expanding `~`.
-The path therefore points to a directory named `~` and matches no binaries.
-Use `$HOME` in the shell profile:
+**That `export` is required even though you just installed the tool, and the reason is worth
+knowing**, because everything looks correct without it. The .NET installer writes its own PATH
+entry to `/etc/paths.d/dotnet-cli-tools`, and the contents are the *literal* string
+`~/.dotnet/tools`. `path_helper` copies entries out of that directory verbatim and never expands
+`~`, so the entry resolves to a directory named `~` and matches nothing. The result is a path that
+is visibly present in `echo $PATH` while every binary under it stays unreachable:
 
 ```bash
-export PATH="$HOME/.dotnet/tools:$PATH"
+$ echo $PATH | tr ':' '\n' | grep dotnet
+/usr/local/share/dotnet
+~/.dotnet/tools          # present, and inert
+$ command -v ilspycmd    # nothing
 ```
 
-The hook skips until the profile contains the corrected path.
+Put the `export` in your shell profile with `$HOME` spelled out, not `~`. Until you do, the hook
+skips on every commit, which it does loudly, so it is a visible no-op rather than a false pass, but
+it is still a check that never runs.
 
 ### Checking the wiki's links into this repository
 
-The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) links to repository figures.
-It contains 89 anchor links across 27 pages, mostly into `docs/FEATURES.md`.
-GitHub derives anchors from heading text.
-**Renaming a heading silently breaks every wiki link to it.**
-The server can still return HTTP 200 for a broken fragment.
-The links use 67 distinct headings.
+The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) links into this
+repository for its figures: 89 anchor links across 27 pages, almost all into `docs/FEATURES.md`.
+GitHub derives an anchor from the heading text, so **renaming a heading silently breaks every wiki
+link to it**: a bad fragment still returns HTTP 200 and neither repository reports anything. Those
+links land on 67 distinct headings, so renaming a heavily cited one breaks up to four at once.
 
 ```bash
 python3 tools/check_docs.py --wiki
 ```
 
-This command clones the public wiki and checks every anchor.
-Pass `--wiki-path PATH` to check an existing clone.
-The command runs outside the normal checks because it needs another repository and network access.
-**Run it after renaming or removing a heading cited by the wiki.**
+It clones the wiki (public, no credentials) and verifies every anchor still resolves. Pass
+`--wiki-path PATH` to check a clone you already have.
 
-The command checks link targets, not page accuracy.
-Search the wiki for affected claims after a change lands.
-The wiki is a separate repository, so contributors must clone it before searching.
+Deliberately outside the normal run, like `--ruleset` and for the same reason: it needs a second
+repository and a network, and a check that passes quietly when it could not reach anything is worse
+than no check. **Run it after renaming or removing a heading in any document the wiki cites.**
+
+It cannot tell whether a page is still *true*, only whether its links still land. That half stays
+judgement, and the rule is the same one that applies here: when a change lands, grep the wiki for
+what it describes.
 
 ### Seeing what a `DynamicObjectsTable:` tag distributes
 
-A `DynamicObjectsTable:` tag distributes a blueprint, but the tag site does not show its destinations.
-The validator checks `Blueprint="…"` references and new blueprint reachability.
-It does not resolve distribution tags.
-Tags inherit, so the tagged blueprint is often not the distributed blueprint.
+A tag on a blueprint is a distribution route, and nothing at the tag site says where it goes. The
+validator cannot see it: it checks that every `Blueprint="…"` in `PopulationTables.xml` resolves and
+that every new blueprint is reachable, and a tag is neither. Worse, tags inherit, so the blueprint
+carrying one is usually not the blueprint being distributed.
 
 ```bash
 python3 tools/report_dynamic_tables.py
 ```
 
-The report separates fork declarations from vanilla inheritance.
-Only fork declarations represent decisions in this repository.
-For example, `DynamicObjectsTable:Items` reaches 325 fork blueprints through vanilla distribution.
+Output separates what this fork declares from what it inherits from vanilla, because only the first
+is a decision anyone here made: `DynamicObjectsTable:Items` reaches 325 of the fork's blueprints and
+that is simply how vanilla distributes items.
 
-**The `--check` option fails on membership drift.**
-`tools/dynamic-pools.json` pins pool membership.
-The `pre-commit` hook compares current membership with that file.
-Use `--snapshot` when an intended change adds or removes a blueprint:
+**`--check` fails.** Membership is pinned in `tools/dynamic-pools.json` and a `pre-commit` hook
+compares against it, so a blueprint arriving in or leaving a pool is reported rather than noticed
+later. When the change is intended, `--snapshot` rewrites the file and the diff is the review:
 
 ```bash
 python3 tools/report_dynamic_tables.py --check     # the hook
-python3 tools/report_dynamic_tables.py --snapshot  # an intended change
+python3 tools/report_dynamic_tables.py --snapshot  # when the change is deliberate
 ```
 
-The report needs the game because `BaseArrow` is vanilla.
-A mod-only run would miss the important tag.
-The command skips without the game.
-The `--require` option turns that skip into a failure.
+Like the compile hook, it needs the game, because `BaseArrow` is vanilla and a mod-only run would miss the
+tag that matters most, and it skips loudly without it. `--require` turns the skip into a failure.
 
-## Two rules that prevent common errors
+## Two things that will save you pain
 
-**Anything under `mod/` ships to subscribers.** The directory is uploaded verbatim.
-Development tooling belongs at the repository root.
+**Anything you put in `mod/` ships to subscribers.** That directory is uploaded verbatim; 8 of the
+87 mods installed on my machine accidentally ship a `README.md`. Development tooling lives at the
+repo root, outside `mod/`.
 
-**Merge, never replace.** Use `Load="Merge"` for every change to a vanilla object or table.
-A full redeclaration conflicts with other mods and discards future Qud patches.
-The `merge-discipline` validator check catches violations.
+**Merge, never replace.** `Load="Merge"` on every touch of a vanilla object or table. A full
+redeclaration conflicts with any other mod touching the same record *and* silently discards whatever
+future Qud patches add to it. `merge-discipline` in the validator will catch you, but it's easier to
+write it right the first time.
 
 ## The wiki: it explains, `docs/FEATURES.md` specifies
 
-The wiki explains play patterns, chip combinations, opening strategy, system purpose, and fiction.
-[`docs/FEATURES.md`](docs/FEATURES.md) specifies tiers, weights, prices, drop rates, stat modifiers,
-option defaults, and option scopes.
+The wiki is for the things a reference document is bad at: what a build actually plays like, how the
+chip families interact, which combinations are worth building toward, what a system is *for* in the
+game's fiction, how to open a run as a Psionic Adept. [`docs/FEATURES.md`](docs/FEATURES.md) keeps
+every figure: tiers, weights, prices, drop rates, stat modifiers, option defaults and their scopes.
 
 | The wiki | `docs/FEATURES.md` |
 |---|---|
 | What an affinity plays like | The subtype's stat modifiers and resistances |
 | How the chip families interact, and what to build toward | Every chip, with its tier, grade and mutation level |
-| Why a build works and its opening strategy | Starting gear tables, drop rates, and the value curve |
-| What the Chip Interface does in the fiction | Anatomies that carry the slot and its merge behavior |
-| What an option changes about a run | The option table, defaults, and live, restart, or new-character scopes (§13) |
+| Why a build works; opening strategy | Starting gear tables, drop rates, the value curve |
+| What the Chip Interface is for, in the fiction | Which anatomies carry the slot, and how it merges |
+| What an option changes about a run | The option table, defaults, and live/restart/new-character scopes (§13) |
 
-**Link to `docs/FEATURES.md` for figures instead of repeating them.**
-A wiki number has no repository check.
-State the source when a number must appear inline.
+**The rule that falls out of it: link to `docs/FEATURES.md` for figures instead of repeating them.** A
+tier, a weight, a price, a drop rate or an option default typed into a wiki page is a copy that nothing
+will ever check. Where a number genuinely has to appear inline for a page to read, say where it came
+from, so a later reader knows which one wins.
 
-The wiki is a separate repository.
-It is separate, and not one of the ten checks reaches it.
-It has no Typos, Prettier, `tools/validate_mod.py`, changelog requirement, or merge-discipline check.
-Search the wiki for affected claims after each change.
+That is a stronger rule for the wiki than for anything in this repository, because **the wiki is a
+separate git repository and not one of the ten checks reaches it.** No `typos`, no prettier, no
+`tools/validate_mod.py`, no changelog requirement, no review, and no `merge-discipline` or
+`unreachable` check standing behind its numbers. It is prose with *fewer* guardrails than the documents
+that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails, which makes it
+the highest-risk place in this project to write a number down.
 
-Clone the wiki anonymously:
+**When a change lands, grep the wiki for what it describes.** `docs/LESSONS.md` already carries that
+rule for the documents in this repository, and it does not reach the wiki for a practical reason: the
+wiki is a separate repository most contributors have never cloned. It clones anonymously and takes a
+moment:
 
 ```bash
 git clone https://github.com/vixygrey/qud-expanded-community-edition.wiki.git
 ```
 
-Do not use a relative link from the wiki to this repository.
-Use a full URL such as `https://github.com/…/blob/main/docs/FEATURES.md`.
+This has already cost something. While the ammunition page was being written, the scour slug landed
+and a page pushed an hour earlier still described this mod's ammunition as "arrows and shells". That
+sentence went from true to incomplete with no signal of any kind, and nothing in this repository would
+have prompted anyone reviewing that change to think about it. `--wiki` above would not have caught it
+either, because no anchor broke.
 
-Link the wiki home page to this section instead of repeating its rules.
+One practical trap: a wiki page **cannot** use a relative link to a file in this repository, because it
+is a different repository. Figures need a full `https://github.com/…/blob/main/docs/FEATURES.md` URL.
+That extra friction is exactly what tempts people to paste the number instead. Pay it.
+
+If you're creating or reorganising wiki pages, the home page should link to this section rather than
+restate it, for the same reason: one owner per rule.
 
 ## Licensing your contribution
 
-Contributions use the project licenses:
-Apache-2.0 for code and CC BY 4.0 for content and documentation.
-You retain your copyright and grant the project a license.
-[`COPYING.md`](COPYING.md) describes reuse rights and inherited work.
+Contributions are offered under the same terms as the project, Apache-2.0 for code and CC BY 4.0 for
+content, so it stays consistently licensed. You keep your copyright; you're granting a licence, not
+signing anything away. [`COPYING.md`](COPYING.md) has the details, including which parts of this
+repository aren't mine to license and why.
 
 ## Conduct
 
-[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) contains the Contributor Covenant.
-It applies to every contributor, including the maintainer.
-Report a concern when conduct falls below that standard.
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) is the Contributor Covenant, and the standard I hold
+myself to as much as anyone else. If I fall short of it, say so.
 
 ## Security
 
-Report a vulnerability privately before opening an issue.
-[`SECURITY.md`](SECURITY.md) describes the process and its reason.
-This mod runs C# with full process privileges, so the policy is necessary.
+If you find something that could be abused before subscribers can update, please report it
+privately rather than opening an issue. [`SECURITY.md`](SECURITY.md) has the details and the
+reasoning. This mod ships C# that Qud runs with full process privileges, which is why it has a
+policy at all.
 
-## Report documentation errors
+## If something here is wrong
 
-File an issue when this documentation is wrong.
-Four stale-documentation incidents (#93, #96, #106, and #139) showed that static checks do not assess truth.
-A contributor report remains the only check for claims that tools cannot measure.
+Say so, and file an issue. The documentation has gone quietly stale four separate times now (#93, #96,
+#106, #139) because not one of the ten checks reads a sentence and asks whether it's still true. The
+fourth was caused by the two checks that closed #134: they made "the C# has no compile gate" false in
+four documents at once, and nothing noticed. A contributor noticing is still the only mechanism that
+exists.
