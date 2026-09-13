@@ -206,7 +206,7 @@ qud-expanded-community-edition/
 │   ├── workshop.json
 │   └── preview.png
 ├── docs/                         # reference, design, provenance, and style documentation
-├── specs/                       # concise project requirements
+├── spec/                         # concise project requirements
 ├── tools/                        # validation script, helpers
 ├── .github/workflows/            # CI
 ├── .pre-commit-config.yaml

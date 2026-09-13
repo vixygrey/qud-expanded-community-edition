@@ -13,7 +13,7 @@ and points at the documents and house rules that apply to contributions.
 | [`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) | Naming, layout, formatting. **§1 first**, because several names are identifiers and renaming one fails silently with no error anywhere. |
 | [`docs/LESSONS.md`](docs/LESSONS.md) | Traps already hit, mostly about Qud itself. Reading it will save you rediscovering them. |
 | [`CONVENTIONS.md`](CONVENTIONS.md) | Project conventions for engineering, delivery, specifications, and documentation. |
-| [`specs/README.md`](specs/README.md) | Index of the active project specifications and their required structure. |
+| [`spec/README.md`](spec/README.md) | Index of the active project specifications and their required structure. |
 | [`docs/FEATURES.md`](docs/FEATURES.md) | What the mod does. §10 is the backlog, with a file and line per row. |
 | [`docs/WIKI.md`](docs/WIKI.md) | An index of Freehold's official modding wiki: which page answers which question, and where the wiki and the game's assembly disagree. Check it before deriving Qud's behaviour from scratch. |
 | [`docs/RELEASING.md`](docs/RELEASING.md) | How a release is cut. Two publications, and neither implies the other. |

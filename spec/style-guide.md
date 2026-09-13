@@ -20,7 +20,7 @@ Use these repository areas for their stated purpose:
 
 - `mod/`: shipped XML, map patches, C# scripts, textures, metadata, and preview image
 - `docs/`: reference, design, provenance, and release documentation
-- `specs/`: active project specifications and the specification template
+- `spec/`: active project specifications and the specification template
 - `tools/`: validation, reporting, API snapshot, build-log, and asset tools
 - `.github/`: workflows, issue templates, pull request templates, and repository automation
 - root files: contributor guidance, licenses, configuration, and project metadata
@@ -202,7 +202,7 @@ Install the hooks with `pre-commit install` and run them with `pre-commit run --
 - [`mod/workshop.json`](../mod/workshop.json)
 - [`mod/`](../mod/)
 - [`docs/`](../docs/)
-- [`specs/`](./)
+- [`spec/`](./)
 - [`tools/validate_mod.py`](../tools/validate_mod.py)
 - [`tools/check_docs.py`](../tools/check_docs.py)
 - [`.editorconfig`](../.editorconfig)

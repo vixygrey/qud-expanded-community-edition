@@ -38,19 +38,19 @@ Always squash-merge pull requests.
 
 ## Specifications
 
-Store specifications in [`specs/`](specs/).
+Store specifications in [`spec/`](spec/).
 
-Read [`specs/README.md`](specs/README.md) before writing a specification.
+Read [`spec/README.md`](spec/README.md) before writing a specification.
 
-Start new specifications from [`specs/template.md`](specs/template.md).
+Start new specifications from [`spec/template.md`](spec/template.md).
 
 Use these specifications as the concise requirement layer:
 
-- [`specs/charter.md`](specs/charter.md)
-- [`specs/style-guide.md`](specs/style-guide.md)
-- [`specs/maintenance-lessons.md`](specs/maintenance-lessons.md)
-- [`specs/releasing.md`](specs/releasing.md)
-- [`specs/project-conventions.md`](specs/project-conventions.md)
+- [`spec/charter.md`](spec/charter.md)
+- [`spec/style-guide.md`](spec/style-guide.md)
+- [`spec/maintenance-lessons.md`](spec/maintenance-lessons.md)
+- [`spec/releasing.md`](spec/releasing.md)
+- [`spec/project-conventions.md`](spec/project-conventions.md)
 
 Name files with lowercase kebab-case.
 
