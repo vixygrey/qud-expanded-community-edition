@@ -46,16 +46,10 @@ namespace XRL
                 Cell at = o.CurrentCell;
                 flight.Add(
                     "{{G|" + o.GetStringProperty(Vixy_Band.FactionProperty, "?") + "}}"
-                    + "  " + o.GetStringProperty(Vixy_Band.MissionProperty, "legacy")
-                    + "  from " + o.GetStringProperty(Vixy_Band.OriginProperty, "?")
                     + "  at " + (at == null ? "nowhere" : at.X + "," + at.Y)
                     + "  bound for " + (travel == null
                         ? "{{R|no route}}"
                         : travel.ParasangX + "," + travel.ParasangY)
-                    + "  target " + o.GetStringProperty(Vixy_Band.TargetProperty, "?")
-                    + "  [" + Vixy_BandDispatch.SiteFlags(
-                        o.GetStringProperty(Vixy_Band.TargetProperty)
-                    ) + "]"
                 );
             }
 

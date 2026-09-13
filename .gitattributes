@@ -1,38 +1,17 @@
-# Store text files with LF line endings.
+# LF everywhere, enforced in the repository regardless of contributor platform.
+#
+# The mod shipped as CRLF through upstream 2.2 (Mura worked on Windows) and was normalised to LF
+# in this fork. LF is what Qud mods overwhelmingly use — a sample of installed Workshop mods found
+# no CRLF at all — and .NET's XML parser is indifferent either way.
+#
+# To read a clean diff against the pre-normalisation baseline, use:
+#     git diff --ignore-cr-at-eol upstream-2.2
 * text=auto eol=lf
 
-# Keep Git metadata and repository guidance as text.
-.gitattributes text eol=lf
-.gitignore text eol=lf
-.editorconfig text eol=lf
-*.md text eol=lf
-*.markdown text eol=lf
-
-# Mark common binary files as non-text.
-*.7z binary
-*.avi binary
-*.bmp binary
-*.class binary
-*.dll binary
-*.eot binary
-*.gif binary
-*.ico binary
-*.jar binary
-*.jpeg binary
-*.jpg binary
-*.mov binary
-*.mp3 binary
-*.mp4 binary
-*.otf binary
-*.pdf binary
+# Binary: never touched, never diffed as text.
 *.png binary
-*.so binary
-*.tar binary
-*.ttf binary
-*.webm binary
-*.webp binary
-*.woff binary
-*.woff2 binary
-*.xls binary
-*.xlsx binary
-*.zip binary
+
+# Mura's original documents are a provenance record, preserved byte-for-byte. They shipped as
+# CRLF and must not be normalised — `-text` disables all EOL conversion for them.
+docs/2.2-changelog.txt        -text
+docs/mura-feature-notes-wip.txt -text

@@ -1,9 +1,10 @@
 ﻿# Caves of Qud Expanded: Complete Feature Reference
 
-*This reference comes from the complete mod source: XML blueprints, population tables, skills,
-genotypes, subtypes, bodies, C# scripts, and the Joppa map patch.*
-Use the XML as the shipping authority when this document disagrees with it.
-It covers 527 new blueprints and 284 vanilla merges.
+*I reconstructed this by reading the whole mod source: every XML blueprint, population table,
+skill, genotype, subtype, body, C# script, and the Joppa map patch. No complete list of what this
+mod does had ever existed, including for Mura, and I needed one before I could safely change
+anything. Where this document and the XML disagree, **the XML is what ships**; §10 tabulates the
+disagreements I know about.*
 
 **Original author:** Mura (`@mura_raven`), with contributions from Noble Lark (subtype sprites),
 Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship).
@@ -19,27 +20,28 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | **New item blueprints** | **527** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
-| **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, and 4 for Psionic Adepts. A Mutated Human has none (#353). |
+| **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
 | **New weapon classes** | Katana, rapier, halberd, greataxe, greatsword, vinereaper (extended), wristblade, two-handed mace, war hammer, greathammer |
-| **New armor classes** | Greatshield and vambrace armor. The weave cloak, nanoweave, and flexi lines complete the one-piece vanilla families. |
+| **New armor classes** | Greatshield and vambrace (arm armor); the weave cloak, nanoweave and flexi lines completed from the one piece vanilla ships of each |
 | **New ranged weapons** | 18 psionic pistols/rifles + 6 conventional guns |
-| **Skill tree edits** | Six skill trees retuned. Akimbo was added to Multiweapon Fighting upstream and removed in this fork, §4. |
+| **Skill tree edits** | 6 skill trees retuned (Akimbo was added to Multiweapon Fighting upstream; removed in this fork, §4) |
 | **Loot tables** | **139** vanilla tables merged, none replaced, plus 18 new starting-gear tables, 3 new chip tables + 1 helper |
 | **World edits** | New amenity building in Joppa (76 map cells) |
 | **Economy** | Vanilla's own prices on every merged item, including all 51 grenades (#334, #380) |
 
-> **This document specifies.** The [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
-> explains how the mod plays. Every figure below is authoritative here.
-> This includes tiers, weights, prices, drop rates, stat modifiers, option defaults, and scopes.
-> The wiki links to this document instead of repeating figures.
-> See [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies) for this boundary.
+> **This document specifies; the [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki)
+> explains.** Every figure below, whether tier, weight, price, drop rate, stat modifier, option
+> default or scope, is authoritative here, and the wiki links back to it rather than repeating it. What a build
+> plays like, how the chip families interact and how to open a run belong there instead. The boundary,
+> and why it is stricter for the wiki than for anything in this repository, is in
+> [`CONTRIBUTING.md`](../CONTRIBUTING.md#the-wiki-it-explains-docsfeaturesmd-specifies).
 
 ---
 
 ## 1. Genotypes
 
-All three genotypes are defined or merged in `Genotypes.xml`.
+All three genotypes are defined/merged in `Genotypes.xml`.
 
 ### 1.1 Changes shared by all genotypes
 
@@ -47,13 +49,10 @@ Every genotype gains these starting skills:
 
 - **Staunch Wounds** (`Physic_StaunchWounds`)
 - **Cooking and Gathering** (`CookingAndGathering`)
-- **Meal Preparation** (`CookingAndGathering_MealPreparation`)
-  The base skill is also granted because the meal skill requires it.
+- **Meal Preparation** (`CookingAndGathering_MealPreparation`), and the base skill is required for this to function, which is why both are granted
 
-Every humanoid **NPC** gains one Chip Interface slot.
-See §3.
-The Mutated Human player does not gain one.
-See §3.1.
+Every humanoid **NPC** also gains one Chip Interface slot (see §3). A Mutated Human player does
+not, though vanilla's genotype shares that anatomy. See §3.1.
 
 ### 1.2 Mutated Human
 
@@ -66,26 +65,32 @@ See §3.1.
 | Joppa reputation | 0 | **+300** |
 | Extra starting skill | - | **Menacing Stare** (`Persuasion_MenacingStare`) |
 
-> ℹ️ **`BaseHPGain` was `2-3` through 2.2. This fork changed it to `1-5` in #90.**
-> Mura's three source documents state `1-5`.
-> The XML was the only source that differed.
+> ℹ️ **`BaseHPGain` was `2-3` through 2.2; this fork corrected it to `1-5` in #90.** All three of
+> Mura's writeups (`2.2 changelog.txt`, `What Does the Mod Do (WIP).txt`, and the pinned Workshop
+> feature list) state 1-5, and the XML was the odd one out.
 >
-> A uniform `2-3` range has a 2.5 average.
-> It leaves mutants with less variation than True Kin.
-> The XML therefore contradicted the stated design.
-> The other HP claims match the XML.
+> Three things settled it. `2-3` is uniform over {2,3}, so it carries **vanilla's own 2.5 average**
+> and the headline mutant HP change moved nothing. It inverts the changelog's stated design, which
+> gives mutants "variability but potential for greater numbers" against True Kin's 2-4 "for a
+> little more consistency, leaning the opposite from Mutants"; at 2-3 mutants are *more* consistent
+> than True Kin and strictly dominated by them, same floor of 2 against a ceiling of 3 rather than
+> 4. And every other HP claim in the docs matches its XML: True Kin's 2-4 and the Adept's 1-4 both
+> check out, leaving this the single disagreement.
 >
-> Players who prefer the shipped `2-3` can select it.
-> See §13.
+> The WIP notes' sentence is the source of the long-standing confusion: *"Narrowed health gain from
+> 1-4 to 1-5 for more flavor and a chance at more HP"* contradicts itself, since the verb says
+> narrow while the numbers and the rationale say widen. The newer changelog carries the reasoning
+> and resolves it.
+>
+> Players who preferred the shipped 2-3 can select it. See §13.
 
-**HP gain uses live game data.**
-`XRL.GenotypeEntry.BaseHPGain` is a public string.
-`XRL.World.Parts.Leveler` calls `RollHP(string BaseHPGain)` at each level-up through `GetEntryDice`.
-The range is inclusive and uniform.
-The game reads it again at each level.
-The value is not fixed at character creation.
-The option takes effect from the next level in an existing save.
-`BaseSPGain` and `BaseMPGain` use the same mechanism.
+**How HP gain actually works**, verified against `Assembly-CSharp.dll` metadata rather than
+inferred: `XRL.GenotypeEntry.BaseHPGain` is a **public string**, and `XRL.World.Parts.Leveler`
+calls `RollHP(string BaseHPGain)` on every level-up via `GetEntryDice`. Rolls run through
+`Stat.RandomLevelUpChoice` on a dedicated seeded level-up RNG stream. The range is a uniform
+inclusive `min-max`, re-read **fresh at each level**, so nothing is baked at chargen, which is why
+the option over it takes effect mid-save from the next level onward. `BaseSPGain` and `BaseMPGain`
+work identically, through `RollSP` and `RollMP`.
 
 ### 1.3 True Kin
 
@@ -99,25 +104,23 @@ The option takes effect from the next level in an existing save.
 
 ### 1.4 Psionic Adept (new)
 
-**Purpose.** A True Kin plans a build.
-An Adept adapts to available loot.
-True Kin implants cost 150 water credits each.
-Players choose those implants at a becoming nook.
-Psionic chips cannot be bought or built.
-They have no `TinkerItem` or `DynamicObjectsTable` tag.
-The only tables that name them are `Artifact 3` through `8`.
-`ChestBuilders` uses those tables to fill chests.
+**What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list:
+credits cost 150 water each, implants are chosen, and you install exactly what you saved for at a
+becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be bought and
+cannot be built.** They carry no `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables
+naming them are `Artifact 3` through `8`, which is what `ChestBuilders` uses to fill a chest. So
+they come out of chests, tier-scaled, and from nowhere else.
 
-Character creation fills three of four slots from the affinity kit.
-The remaining slots use found chips.
-The genotype therefore prevents advance planning.
-Its fiction calls a chip *"knowledge lost eons ago"* that integrates with flesh.
-**You become what you find.**
+Chargen fills three of its four slots from its affinity's own kit, and everything after that is a
+find. It is the one genotype whose build you cannot decide in advance, which is what its fiction
+already says: a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become
+what you find.**
 
-The Adept gains **95 skill points per level**, the highest value in the game.
-It has no innate power, the fewest stat points at 34, and the lowest hit points.
-It has broad skill access and a mutation kit assembled from loot.
-**Skills and scavenging** define the play style.
+The **95 skill points a level**, the highest in the game, are the counterweight. The Adept has no
+innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
+points. What it has instead is the broadest skill access in the game and a mutation kit assembled
+from loot. **Skills and scavenging** is the fantasy.
+
 > ⚪ **Its power curve is the opposite shape to a mutant's**, and that is deliberate rather than a
 > defect to fix. A chip's rank is capped at its grade, so an Adept is at its strongest relative to
 > the others around **character level 18**, where the rank cap reaches 10 and a perfected chip is
@@ -2187,7 +2190,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 36 options (§13)
+│   ├── Options.xml             # 35 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2213,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 111 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 107 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -2256,7 +2259,7 @@ Mura's original documents are NOT in mod/; they live in docs/, outside what ship
 
 ## 13. Options (`Options.xml`)
 
-Thirty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -8056,13 +8059,11 @@ Give your name before you share water; come back having risen in their people's 
 deal with you again. Three changes to one gesture, all of #753, and each of them came out of playing
 §56 rather than reading.
 
-**The combined social option covers the naming half and leaves the ritual mechanics separate.**
-`OptionQudExpandedCEAskName` now controls the connected name-sharing and gift systems because
-`Vixy_Introduce`, `Vixy_AskName`, `Vixy_Introductions`, and `Vixy_Gift` share the
-`Vixy_Introduced` marker and the same conversation progression. `OptionQudExpandedCEWaterBond`,
-off by default, still decides whether the *ritual* waits on an introduction and whether a repeat is
-offered. Disabling the combined option makes `Vixy_Introduce.Possible` false, so the water ritual
-gate falls open rather than hiding the ritual.
+**The option covers the ritual half only.** `Vixy_Introduce` shipped behind it and came out again in
+#633, because giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
+§61 needs the marker on two people vanilla wrote no introduction for. What
+`OptionQudExpandedCEWaterBond` still decides, off by default, is whether the *ritual* waits on an
+introduction and whether a repeat is offered. §57.2 and §57.4 are the halves it gates.
 
 ### 57.1 You could share water with someone who never learned your name
 
@@ -9148,14 +9149,9 @@ on **register, characterisation, axis and arc shape**, close on a single creatur
 
 ### 61.6 Off-switch
 
-The combined `OptionQudExpandedCEAskName` switch controls familiar dialogue with the other
-name-sharing and gift choices. It is on by default and applies immediately.
-
-Turning it off hides ask-name, self-introduction, introduction detection, familiar dialogue, and
-gift choices. Existing introduction markers, names, and gift opinions remain stored.
-
-Re-enabling the option restores both systems without a new game. Player renaming, ordinary trade,
-water rituals, and unrelated opinions remain unchanged.
+None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
+nothing away, and nobody would turn it off. Every line is additive `Load="Merge"` content on four
+conversations, so removing the mod restores vanilla exactly.
 
 ---
 
@@ -9310,17 +9306,12 @@ the gift just given, and the seventh gift is the one that first sees the warmer 
 eighth. A failed or escaped give returns false from `Enter()` and never reaches the node at all.
 
 Ordinal 9600 puts the choice directly below the two naming exchanges at 10000 and 9900, which is also
-the order the gate needs: the choice stays unavailable until names pass both ways.
+the order the gate needs: the way to unlock it is the choice immediately above it.
 
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
-The combined `OptionQudExpandedCEAskName` switch controls this gift system together with the
-name-sharing system. It is on by default and applies immediately. Turning it off hides the `[give]`
-choice and stops new `Vixy_OpinionGift` updates.
-
-Existing names and gift opinions remain readable. Player renaming, ordinary trade, water rituals and
-unrelated opinions are unchanged. Re-enabling the option restores both systems without requiring a
-new game.
+No option, on rule 6's #663 test: the feature is opt-in at the point of use, since nothing happens to
+a player who does not introduce themselves and then choose to give, ten times over ten days.
 
 **Uninstalling the mod costs the ledger of any creature holding a gift opinion, and nothing else.**
 This is the first time this fork puts a type of its own into a vanilla collection, so it was traced
@@ -9524,7 +9515,7 @@ pass.
 |---|---|
 | Snapjaws 36/36 · Merchants 50/50 · Mopango 18/18 · Templar 14/15 · Mechanimists 27/28 · Dromad 14/15 | Robots 0/53 · Unshelled Reptiles 0/32 · Arachnids 0/22 · Insects 0/21 · Fish 0/16 · Winged Mammals 0/15 |
 
-A bat does not hold a cave. Legendary beasts carrying `GivesRep` from `HeroMaker` and corvids carrying Markov dialogue in `Conversations.xml` are filtered out explicitly via `IsAnimal` (#952).
+A bat does not hold a cave.
 
 **Awakened machines hold and ordinary ones do not, and that falls out for free.** The Slynth, Thah
 and the newly sentient pass on their own conversations, `Slynth`, `SlynthWanderer`, `Thah` and
@@ -9666,44 +9657,60 @@ The compromise is stated rather than hidden: **the world moves when you move thr
 still while you are underground.** The consolation is that the only time a band moves is the only
 time you could have watched it, so nothing happens unseen.
 
-### 65.5 Site classification and selection
+### 65.5 The reason, and only this one
 
-A vacancy qualifies only when its destination is ordinary. The dispatch reads exact zone and
-column journal notes, then adds `static` for immutable blueprints and `proper-named` for named sites
-without a `lair` or `ruins` note. Settlement, historic, artifact, merchant, oddity, static and
-proper-named sites stay protected. A protected destination is removed from consideration before the
-one-in-four roll, so it never rerolls into a band.
+A place somebody held and no longer does is a vacancy, and a people who hold ground elsewhere may
+want it. That is the whole trigger. It works only because §64 records who held a place.
 
-The former holder gets first claim when it still holds another recorded zone in the same world.
-Otherwise the dispatch ranks recorded holders by their feeling toward the former holder and chooses
-the most hostile faction. Neutral factions are considered only when no hostile faction exists.
-Every tier chooses the nearest holding by resolved world-map coordinates, with random choice among
-equal distances. Positive relations never qualify.
+**Who comes is deliberately dumb**: a faction §64 has recorded holding some *other* zone, and never
+the people who just lost this one, which would be a respawn wearing a journey, which is what #830
+decided against. So the world reclaims using peoples you have actually met, and no new data is
+invented to decide it. Site types, sacred places and a model of what each faction wants are #924.
 
-The band sets out from that recorded holding. Its mission, origin, target and faction remain on the
-token, so `vixyband` can explain the route while the band travels.
+The band sets out from a parasang its faction actually holds, so the distance walked is the real
+distance between two places, paced by `TerrainTravel`.
+
+**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it,
+answered or not, because a place that can be answered twice is a faucet, which is #802's lesson
+already paid for once. The roll on top is what keeps this at the edge of attention rather than
+around you.
+
+**Spent on the decision rather than on the outcome, which took a correction.** The record was
+originally cleared only when a band actually set out, and that read as though a vacancy nobody
+answered were still queued for one. It never was: §64 removes a zone's holder in the same breath as
+it records the vacancy, and the holder is what the branch tests, so a place is offered to this exactly
+once and whatever is decided is decided for good. Three vacancies in four therefore sat in `vixyband`
+under a heading promising an answer that could not come. The roll now sits last, after a neighbour and
+an origin have been found, so *one in four* describes openings somebody could actually have set out
+for, which changes no outcome, since a band still needs all four to agree. #929.
 
 ### 65.6 `vixyband`
 
-A band is rare on purpose: a zone must be held, cleared to its last member and left ordinary. Then
-the dispatch must find a qualifying holding and pass the one-in-four roll. The band advances only
-while you cross the map.
+A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
+one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
-`vixyband` lists each mission, origin, current position, route target and destination flags. It also
-lists recorded vacancies. An empty flight list is the resting state, not a queue that ran dry.
+`vixyband` lists what is in flight, where each is bound, and what vacancies are on record. **An empty
+list is the resting state, not a queue that ran dry**: with the option on, every vacancy is spent as
+it is considered, so a name sitting there is a defect worth chasing rather than a band still owed.
 
-`vixyband <faction>` sends one through the same token and travel path, with an explicit expansion
-mission. With no vacancy on record it targets the zone you occupy. The command refuses the world map.
+`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so what
+it produces is what play produces. With no vacancy on record it aims at the zone you are standing in
+and says that it did, which is also the better test of the two halves: arrival is the half that builds
+a party, and this is the only way to be standing in the zone when that happens. It refuses only from
+the world map, which is neither a parasang nor a zone and so cannot be a destination.
 
 ### 65.7 Off-switch, and what stays out
 
-**Off by default**, because *places you empty do not stay empty* is a new opinion this fork introduces.
-The option is checked before dispatch and before arrival, so disabling it stops new bands and stops a
-walking band from becoming a camp.
+**Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces, and
+*places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
+before sending, and `Vixy_Band` asks again before building the camp, so turning it off stops new
+bands and stops a walking one arriving as anything.
 
-Protected story settlements, historic sites, artifacts, merchants, oddities, immutable zones and
-proper-named sites without a safe `lair` or `ruins` classification stay out. The dispatch still
-records vacancies through §64, so later option changes do not rewrite territory history.
+**Story settlements are out**, and every hand-built static zone. Nothing in the game protects them:
+no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints, and
+that absence is the argument against rather than the licence. A band that kills Argyve while you are
+underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
+than depopulated* is a different and much larger question, recorded in #924.
 
 ### 65.8 Known limit: vacancies recorded while the option was off
 

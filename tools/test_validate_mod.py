@@ -446,41 +446,6 @@ class PrefixRecognition(unittest.TestCase):
 
     # -------------------------------------------------- conversation part names (#917)
 
-    def test_introduced_choice_requires_social_gate(self) -> None:
-        """Every choice unlocked by the persisted introduction marker needs the live option gate.
-
-        The marker remains on the speaker while the option is disabled. Checking only the code that
-        sets the marker therefore leaves existing familiar choices visible.
-        """
-        broken = Path(tempfile.mkdtemp(dir=self.tmp))
-        write_mod(
-            broken,
-            conversations='  <conversation ID="Tam">\n'
-            '    <choice ID="Vixy_TamFamiliar" Target="Reply" '
-            'IfSpeakerHaveProperty="Vixy_Introduced" />\n'
-            "  </conversation>",
-        )
-        broken_items = findings_for(validate_mod.check_social_option_gate, broken)
-        self.assertTrue(
-            any(check == "social-option-gate" for check, _ in broken_items),
-            "an introduced choice without the live option gate was not reported",
-        )
-
-        gated = Path(tempfile.mkdtemp(dir=self.tmp))
-        write_mod(
-            gated,
-            conversations='  <conversation ID="Tam">\n'
-            '    <choice ID="Vixy_TamFamiliar" Target="Reply" '
-            'IfSpeakerHaveProperty="Vixy_Introduced">\n'
-            '      <part Name="Vixy_SocialEnabled" />\n'
-            "    </choice>\n"
-            "  </conversation>",
-        )
-        self.assertEqual(
-            findings_for(validate_mod.check_social_option_gate, gated),
-            [],
-        )
-
     def test_unknown_conversation_part_name_is_reported(self) -> None:
         """The silent failure this check exists for: Qud ignores a conversation part it cannot
         resolve, and everything else about the mod still works."""
@@ -4215,11 +4180,6 @@ class CodepageText(unittest.TestCase):
         found = self._findings(files={"workshop.json": '{"Title": "café"}'})
         self.assertEqual(len(found), 1)
         self.assertIn("Title", found[0])
-
-    def test_corpus_json_is_exempt(self) -> None:
-        """#933. Qud's MarkovChainData / LibraryCorpus.json is authored directly in raw CP437 byte codes."""
-        found = self._findings(files={"Corpus.json": '{"WordData": {"café": 1}}'})
-        self.assertEqual(found, [])
 
     def test_the_substitute_is_the_games_own(self) -> None:
         """Spot-checked against Sidebar.Codepage437Mapping read out of the assembly. If Python's

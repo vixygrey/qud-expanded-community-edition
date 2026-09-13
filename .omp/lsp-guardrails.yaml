@@ -1,6 +1,0 @@
-meta:
-  engine: "omp_native_lsp"
-diagnostic_guardrails:
-  language_server_cmd: null
-  note: "Set the command only after confirming that the project language server is installed."
-critical_symbols_registry: []

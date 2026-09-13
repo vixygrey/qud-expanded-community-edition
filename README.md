@@ -5,16 +5,17 @@ A community-maintained fork of **[Caves of Qud Expanded](https://steamcommunity.
 **On the Steam Workshop:** [Qud Expanded Community Edition](https://steamcommunity.com/sharedfiles/filedetails/?id=3785441196) ·
 **Not on Steam?** [Download the latest release](https://github.com/vixygrey/qud-expanded-community-edition/releases/latest)
 
-This fork is a **separate mod**. It does not replace, modify, or take over the original.
-Mura's original remains available.
+I publish this as a **separate mod**. It doesn't replace, modify, or take over the original, which
+is still Mura's and still available.
 
-> **Development note:** VixyGrey uses AI to assist with development and documentation tasks.
+> **Development note:** I, VixyGrey, do use AI to help me with development and documentation
+> tasks.
 
 ---
 
 ## Credits
 
-This mod exists because other people built important parts of it. Read their credits first.
+This mod exists because of other people's work, so I'd rather you saw that before anything else.
 
 | Who | What |
 |---|---|
@@ -29,23 +30,22 @@ This mod exists because other people built important parts of it. Read their cre
 
 | Who | What |
 |---|---|
-| **[Jah-yee](https://github.com/Jah-yee)** | Fixed the `<stag>` typos that stopped advanced hoversled floating and stopped the sphere of negative weight from registering as a trinket. This project received its first outside contribution. |
+| **[Jah-yee](https://github.com/Jah-yee)** | Fixed the `<stag>` typos that stopped the advanced hoversled floating and the sphere of negative weight registering as a trinket. This project's first outside contribution. |
 
-Mura opened the mod to the community with one condition: *give credit where due, including Noble
-Lark for the subtype sprites*. I treat that condition as permanent.
-The build fails when `manifest.json` stops naming Mura.
-Provenance and the full grant appear in [`docs/PERMISSION.md`](docs/PERMISSION.md).
+Mura opened the mod to the community with one condition: *give credit where due, which includes
+Noble Lark for the subclass sprites*. I treat that as permanent, and the build fails if
+`manifest.json` stops naming Mura. Provenance and the full grant are in
+[`docs/PERMISSION.md`](docs/PERMISSION.md).
 
 ---
 
 ## What it does
 
-- **Psionic Adept**, a third genotype for players who prefer to find a build instead of planning one.
-  It has no mutations, the fewest stat points in the game, and the most skill points per level.
-  Psionic chips provide its power.
-  Chips cannot be bought or built, and they come only from chests.
-  A True Kin saves for a chosen implant. An Adept wears what it finds.
-  The 18 subtypes divide between casters and martial guardians.
+- **Psionic Adept**, a third genotype for players who would rather find their build than plan it.
+  It has no mutations and the fewest stat points in the game, and the most skill points per level of
+  anyone; its power comes from psionic chips, which cannot be bought or built and only ever come out
+  of chests. A True Kin saves up for the implant it wants. An Adept wears what it finds. 18 subtypes,
+  split between casters and martial guardians.
 - **144 psionic chips**, implantable chips granting real, working mutations to genotypes that
   cannot mutate. Every one of them can be found.
 - **Complete weapon and armor families**, bronze through zetachrome, one- and two-handed, with
@@ -54,93 +54,90 @@ Provenance and the full grant appear in [`docs/PERMISSION.md`](docs/PERMISSION.m
   wristblades, and the two-handed finesse lines: glaives, spears and quarterstaves.
 - **Skill and economy retuning**, and a home base building in Joppa.
 
-**Read these two sources for different information.** The
+**Two places to read more, and they don't overlap.** The
 [wiki](https://github.com/vixygrey/qud-expanded-community-edition/wiki) covers how the mod *plays*:
-builds, synergies, opening strategy, and each system's purpose.
-[`docs/FEATURES.md`](docs/FEATURES.md) is the complete reference and the authoritative source for
-tiers, weights, prices, drop rates, stat modifiers, and option defaults.
+builds, synergies, opening strategy, what each system is for. [`docs/FEATURES.md`](docs/FEATURES.md)
+is the complete reference and the authoritative source for every figure: tiers, weights, prices, drop
+rates, stat modifiers, option defaults.
 
 ### You can turn most of it off
 
-Thirty-six options, in Qud's own options menu, appear under **Mods**.
-Keep the weapons and armor while disabling the chip economy, vanilla skill requirements, or the Joppa building.
-The mod does not require every feature.
+Thirty-five options, in Qud's own options menu under **Mods**. If you want the weapons and armor but not
+the chip economy, or vanilla's skill requirements back, or the Joppa building left alone, you can
+have that. Nobody should need to swallow the whole mod to get one part of it.
 
-**The effect of a change depends on its scope:**
+**When a change takes effect varies, and it's the part people get caught by:**
 
-- **Immediately:** psionic chips in loot and skill point costs.
-  Hit points and skill points per level apply at the next level.
-- **On restart:** eased skill requirements.
-  Qud builds each power's requirement list once per session.
-- **On a new character:** mutation points, starting skills, starting reputation, both Chip Interface options,
-  and the Joppa building.
-  Qud reads these values at character creation or stores them in the save.
+- **Immediately**: psionic chips in loot, skill point costs. Hit points and skill points per level
+  apply from your next level.
+- **On restart**: the eased skill requirements. Qud builds each power's requirement list once per
+  session.
+- **On a new character**: mutation points, starting skills, starting reputation, both Chip
+  Interface options, the Joppa building. These are read at character creation or baked into the
+  save.
 
-[`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default, and its scope.
-That document is also the complete reference for the mod.
-It covers 527 new blueprints and 284 vanilla merges.
+[`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
+document is also the complete reference for the mod itself: every system, all 527 new blueprints and
+284 vanilla merges.
 
 ## Requires a new character
 
-Some identifiers changed during the fork, and Qud writes them into save files.
-**Start a new character with this mod enabled.** Saves from the original mod do not work.
+Some identifiers changed during the fork, and Qud writes those into save files, so **start a new
+character with this mod enabled.** Saves from the original mod won't work.
 
 ---
 
 ## Compatibility with the other Expanded mods
 
-> **Do not enable this fork and the original *Caves of Qud Expanded* at the same time.** Pick one.
+> ⚠️ **Do not enable this and the original *Caves of Qud Expanded* at the same time.** Pick one.
 
-This fork continues Mura's mod and defines the same records:
-**36 C# types with the same names in the same namespace**, one for each psionic chip part.
-Qud reports this state as `==== TYPE CONFLICTS DETECTED ====`.
-Load order decides which version wins.
-The result is undefined.
-Saves do not transfer between the two mods.
+This fork is a continuation of Mura's mod, so it defines the same things the original does: **36 C#
+types with the same names in the same namespace**, one per psionic chip part. Qud reports that as
+`==== TYPE CONFLICTS DETECTED ====` and the result is undefined: whichever loads first wins, and you
+may get either mod's version of any given part. It isn't a bug in either mod, it's what a fork *is*.
+Saves don't carry across either, as above.
 
 The other two mods in the family:
 
 | Mod | | |
 |---|---|---|
 | **Caves of Qud Expanded** (Mura's original) | ❌ | Same 36 types in `XRL.World.Parts`, so enable one or the other |
-| **Caves of Qud Expanded — The Grand Bazaar** | ❌ | Its content is now in this fork, so enable one or the other |
-| **Caves of Qud Expanded — Experience Curve Beta** | ✅ | No shared record or type, and its script cannot run |
+| **Caves of Qud Expanded — The Grand Bazaar** | ❌ | Its content is in this fork now, so enable one or the other |
+| **Caves of Qud Expanded — Experience Curve Beta** | ✅ | No shared record or type, and its own script cannot run at all |
 
-**The Bazaar compatibility mark changed because this fork absorbed its content.**
-The two merchants, their tents, and their merchant retuning are now part of this mod.
-The *Six Day Stilt* option controls them.
-Running both mods declares `Raven_Smithy` and `Raven_WaterMerchant` twice.
-The mods also merge the same merchant tables twice.
-Pick one.
+**The Bazaar's tick went red, and it is this fork's doing.** Its two merchants, their tents and its
+merchant retuning are part of this mod now, behind the *Six Day Stilt* option, so running both
+declares `Raven_Smithy` and `Raven_WaterMerchant` twice and merges the same merchant tables twice
+over. That is not a defect in Mura's mod; it is what absorbing content means, and the honest thing is
+to say so on the page rather than leave a tick that was true last release. Pick one.
 
-The tent-layout script is a separate matter.
-It never ran for players.
-See [`docs/FEATURES.md` §53.1](docs/FEATURES.md#531).
+Its tent-layout script is a separate matter and was never running for anybody. See
+`docs/FEATURES.md` §53.1.
 
-**The Experience Curve needs a separate note.**
-It ships no XML, and its one class is called `XRL.World.Parts.Experience`, vanilla's own name.
-Type resolution reaches vanilla's type first, so the sub-mod's C# remains inert.
-This fork has its own experience curve, off by default, in a separately named part.
-The two mods share no type or record.
-The compatibility mark remains valid.
-Enabling the sub-mod adds nothing because the sub-mod adds nothing on its own.
+**The Experience Curve needs a longer answer than it used to.** It ships no XML at all, and its one
+class is called `XRL.World.Parts.Experience`, vanilla's own name. That is why it does nothing: type
+resolution reaches vanilla's type first, so the sub-mod's C# has been inert since the day it shipped,
+for everyone, whatever else is installed. #775 has the measurement. This fork now has its own
+experience curve, off by default, in a separately named part, so the two still share no type and no
+record and the tick stands, but enabling the sub-mod alongside adds nothing, because it adds nothing
+on its own either.
 
-This comparison covers records and types.
-It does not cover every combination through a play test.
-Report unexpected behavior by [filing an issue](https://github.com/vixygrey/qud-expanded-community-edition/issues).
+That is a record-level comparison rather than a play-test of every combination, which is the honest
+limit of the claim. If you hit something anyway, please [file an
+issue](https://github.com/vixygrey/qud-expanded-community-edition/issues). That's the compatibility
+promise this fork is built on, and I'd want to know.
 
 ---
 
 ## Installing
 
-**On Steam.** [Subscribe on the Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3785441196)
-and enable the mod in Qud's mod menu. Updates arrive automatically.
+**On Steam.** [subscribe on the Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3785441196)
+and enable the mod in Qud's mod menu. Updates arrive on their own.
 
-**On GOG, itch, or Linux without Steam.** The Workshop is not available.
-Download the [latest release](https://github.com/vixygrey/qud-expanded-community-edition/releases/latest).
-The archive contains only the mod.
-It extracts to a single `QudExpandedCommunityEdition/` folder.
-Copy that folder into Qud's Mods directory:
+**On GOG, itch, or Linux without Steam.** The Workshop isn't available to you, so take the zip
+from the [latest release](https://github.com/vixygrey/qud-expanded-community-edition/releases/latest).
+It contains the mod and nothing else, no development tooling, and unzips to a single
+`QudExpandedCommunityEdition/` folder. Drop that folder into Qud's Mods directory:
 
 | Platform | Path |
 |---|---|
@@ -148,34 +145,31 @@ Copy that folder into Qud's Mods directory:
 | Windows | `%USERPROFILE%\AppData\LocalLow\Freehold Games\CavesOfQud\Mods\` |
 | Linux | `~/.config/unity3d/Freehold Games/CavesOfQud/Mods/` |
 
-The installation is correct when `Mods/QudExpandedCommunityEdition/manifest.json` exists.
-Enable the mod in Qud's mod menu.
-Update the mod by replacing the folder.
-Read the [changelog](CHANGELOG.md) for each change and its reason.
+The folder is right when `Mods/QudExpandedCommunityEdition/manifest.json` exists. Then enable the
+mod in Qud's mod menu. Updating means replacing the folder, so watch the releases page, or the
+[changelog](CHANGELOG.md), which says what changed and why.
 
-**From a clone.** Copy this repository's `mod/` directory as described above.
-Only `mod/` is the mod.
-All other files provide development tooling and never reach subscribers.
+**From a clone.** Copy this repository's `mod/` directory in as above. Only `mod/` is the mod;
+everything else here is development tooling and never reaches subscribers.
 
 ---
 
 ## Contributing
 
-The README and Workshop description credit every outside contribution by name in the pull request
-that merges it. You do not need to ask.
-[`CONTRIBUTING.md`](CONTRIBUTING.md) is the full guide.
-[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) applies to every contributor, including the maintainer.
+I'd be glad of the help, and I credit every outside contribution by name in the pull request that
+merges it. You shouldn't have to ask. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the full guide, and
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) applies to me as much as to anyone.
 
-The rules for this fork appear in [`docs/CHARTER.md`](docs/CHARTER.md).
-Six rules cover compatibility, causality, credit, developer experience, safety, and configuration.
-They are constraints, and most are mechanically enforced.
+The rules I maintain this fork under are in [`docs/CHARTER.md`](docs/CHARTER.md). Six of them,
+covering compatibility, causality, credit, developer experience, safety, and configurability. I mean
+them as constraints rather than aspirations, and most are mechanically enforced.
 
-[`docs/LESSONS.md`](docs/LESSONS.md) collects traps from Qud and prior maintenance work.
-Read it before a first change.
+[`docs/LESSONS.md`](docs/LESSONS.md) collects the traps I've hit, mostly about Qud itself. Worth a
+skim before a first change.
 
-[`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout, and formatting.
-**Read §1 before renaming anything.** Several conventions are load-bearing identifiers.
-Breaking one can fail without an error.
+[`docs/STYLEGUIDE.md`](docs/STYLEGUIDE.md) covers naming, layout, and formatting. **Read §1 before
+renaming anything**, because several conventions look like mess and are load-bearing identifiers, and
+breaking one fails silently with no error anywhere.
 
 ### There is no build step
 
@@ -183,58 +177,56 @@ Qud loads the XML in `mod/` directly. You need no toolchain to contribute.
 
 ### Validation
 
-Run one command. Python 3 is the only required dependency:
+One command, and nothing to install beyond Python 3:
 
 ```bash
 python3 tools/validate_mod.py
 ```
 
-The validator checks XML and JSON syntax, blueprint reachability, `Load="Merge"` discipline on
-vanilla records, C# part resolution, part attributes, the Workshop target, and manifest credit.
-It also enforces charter rule 5 against `mod/Scripting/`.
-It rejects file I/O, network access, reflection, shell execution, external assemblies, and Harmony.
-It flags instance fields on `[Serializable]` types because those fields enter player saves.
-CI runs the same checks on every pull request.
+It checks XML and JSON well-formedness, blueprint reachability, `Load="Merge"` discipline on every
+vanilla record, C# part resolution, part attributes against the members that back them, the
+Workshop upload target, and the manifest's credit field.
+It also enforces charter rule 5 against `mod/Scripting/`: no file I/O, network, reflection,
+shelling out, external assemblies or Harmony. It also flags any instance field on a `[Serializable]`
+type, since that layout is written into every player save.
+The same checks run in CI on every pull request.
 
-After a Caves of Qud update, run both additional commands:
+After a Caves of Qud update, run these two as well:
 
 ```bash
 python3 tools/check_vanilla_drift.py
 ```
 
-This command compares the mod with the installed game.
-It catches a missing `Load="Merge"` target and custom anatomies that drift from vanilla's `Humanoid`.
+It compares the mod against your installed copy of the game and catches the two failure modes that
+are otherwise completely silent: a `Load="Merge"` whose vanilla target no longer exists, and the
+custom anatomies drifting from vanilla's `Humanoid`.
 
 ```bash
 python3 tools/snapshot_qud_api.py
 ```
 
-This command regenerates `tools/qud-api.json`, the committed list of part and blueprint names that
-the game uses.
-The snapshot lets `validate_mod.py` check part names and blueprint references in **CI**.
-CI has no game installation, so the snapshot supplies the reference data.
+It regenerates `tools/qud-api.json`, the committed list of the part and blueprint names the game
+uses. That snapshot is what lets `validate_mod.py` check part names and blueprint references **in
+CI**, where there is no game to read, so the answer is committed rather than computed on demand.
 
-Most snapshot data comes from the game's plain-text XML.
-The `members` map is the exception.
-It lists the member names that each part class accepts, and it exists only inside `Assembly-CSharp.dll`.
-`tools/dump_part_members.cs` reads assembly *metadata* with `System.Reflection.Metadata`.
-The process does not decompile, execute, or restore a package.
-The result contains identifiers.
-The .NET SDK is required.
-The part list also comes from that assembly through `--assembly`.
-That option requires [`ilspycmd`](https://github.com/icsharpcode/ILSpy).
-The snapshot contains 1605 names, while vanilla XML uses 949 names.
-Vanilla declares more parts than its XML uses.
-**The `--assembly` option is required.** The committed snapshot uses it.
-The generator refuses a run without it instead of silently narrowing the file.
+Most of it comes from the plain-text XML the game ships. The exception is the `members` map,
+which member names each part class will actually accept, because that exists only inside
+`Assembly-CSharp.dll`. `tools/dump_part_members.cs` reads it out of the assembly's *metadata*
+using the in-box `System.Reflection.Metadata`: nothing is decompiled, nothing is executed, no
+package is restored, and what comes back is identifiers. That step needs the .NET SDK, the same
+one the C# pre-commit hook uses. The part list comes from that assembly too, via `--assembly`,
+which needs [`ilspycmd`](https://github.com/icsharpcode/ILSpy). That is 1605 names against the 949 vanilla's
+own XML happens to use, because vanilla declares far more parts than it uses. **That flag is not
+optional**: the committed snapshot is built with it, so it is what reproduces it. Regenerating
+without it is refused rather than silently narrowing the file.
 
-The snapshot records the Steam build that produced it.
-The `--check` option compares the snapshot with the installed game without writing.
-The pre-commit hook runs this check on every commit because a Qud update does not correlate with a file pattern.
-The hook skips when the game, SDK, or `ilspycmd` is missing.
-It passes for contributors who cannot run the check.
-A stale snapshot fails.
-That failure exposes a newly added vanilla name, which is the intended direction.
+The snapshot records the Steam build it came from, and `--check` compares it against what is
+installed without writing anything. It runs as a pre-commit hook, on every commit rather than on a
+file pattern, because what it catches is a Qud update, which correlates with nothing in a diff.
+Where the game, the SDK or `ilspycmd` is missing it skips loudly and passes, so a contributor
+without them is not blocked by a hook they cannot satisfy; a stale snapshot always fails. A stale
+one otherwise surfaces as a false positive on a newly added vanilla name, which is loud; that is the
+intended failure direction, since silence is the thing these checks exist to catch.
 
 After changing which checks are required to merge, run:
 
@@ -242,58 +234,59 @@ After changing which checks are required to merge, run:
 python3 tools/check_docs.py --ruleset
 ```
 
-This command compares `tools/required-checks.json` with the checks that GitHub enforces.
-The file records the repository's intended ruleset.
-`check_docs.py` verifies the documented count and the status of every CI job.
-The command cannot confirm that GitHub still matches the file.
-Run it with `gh` and network access after changing required checks.
+It compares `tools/required-checks.json` against what GitHub actually enforces. That file is the
+in-repository copy of the ruleset, so the intent is reviewable in a pull request rather than
+visible only to whoever can open the settings page, and `check_docs.py` uses it in CI to verify
+both the documented count and that every CI job is either required or deliberately not. The one
+thing it cannot check on its own is whether GitHub still agrees, which is what this command is
+for. It needs `gh` and a network, so it is deliberately not part of the normal run.
 
-### Installing it to play and publish
+### Installing it to play, and to publish
 
-Qud loads the mod from the same directory that the Workshop uploader publishes.
-`tools/sync_mod.py` creates separate development and publication builds:
+The directory Qud loads a mod from is the same one the Workshop uploader publishes from, which
+puts testing and releasing in direct conflict. `tools/sync_mod.py` resolves it by making the two
+builds tell themselves apart rather than asking you to remember which is which:
 
 ```bash
-python3 tools/sync_mod.py --dev       # any branch
-python3 tools/sync_mod.py --publish   # main only, after validation
+python3 tools/sync_mod.py --dev       # whatever branch you're on
+python3 tools/sync_mod.py --publish   # main only, validated first
 ```
 
-**A development build removes `WorkshopId`.** That key binds an upload to the published item.
-Without the key, the uploader treats the mod as unpublished and offers *"Create
-Workshop Id for Mod…"* instead of overwriting the published item.
-Experimental content therefore cannot reach the live page.
-The development `manifest.json` title also gains a `(dev)` suffix.
+**A dev build has its `WorkshopId` removed**, and that key is the only thing binding an upload to
+the published item. Without it the uploader treats the mod as unpublished and offers *"Create
+Workshop Id for Mod…"* rather than overwriting anything. So experimental content **cannot** reach
+the live page, whatever branch it came from. Its `manifest.json` title also gains a `(dev)` suffix,
+so the in-game mod list says which build is loaded.
 
-`--publish` requires `main`, a clean tree, and local `main` at `origin/main`.
-Publishing an unpulled `main` ships a state that the maintainer has not reviewed.
-The command runs `validate_mod.py` first and copies nothing after failure.
-Both modes require an empty destination with this mod's own `manifest.json` ID.
-This prevents a mistyped `--dest` from deleting another mod.
+`--publish` refuses unless you're on `main`, the tree is clean, and local `main` is level with
+`origin/main`. Publishing an unpulled `main` ships a state you haven't seen. It runs
+`validate_mod.py` first and copies nothing if that fails. Both modes refuse a destination that
+isn't empty and doesn't carry this mod's own `manifest.json` id, so a mistyped `--dest` can't
+delete somebody else's mod.
 
-Restart Qud after either mode.
-Qud reads XML at load, so a running session retains the previous blueprints.
-A wish for an unloaded blueprint resolves to the nearest loaded blueprint.
+Restart Qud after either: it reads the XML at load, so a running session still holds the previous
+blueprints. And note the failure mode this exists to prevent: a wish for a blueprint that isn't
+loaded doesn't fail, it hands you the nearest one that does.
 
 ### Regenerating the Workshop preview image
 
-`mod/preview.png` is committed.
-Run this command only when changing the image:
+`mod/preview.png` is committed, so you only need this if you're changing it:
 
 ```bash
 python3 tools/build_preview.py
 ```
 
-The image is **original work**, a stratigraphic cross-section in Caves of Qud's 18 fixed colors.
-It uses its own 16×24 character cell.
-It is not derived from Mura's logo.
-Mura receives credit in the image, `manifest.json`, and this README.
-[`docs/PREVIEW_DESIGN.md`](docs/PREVIEW_DESIGN.md) records the design reasoning.
+The image is **original work**, a stratigraphic cross-section in Caves of Qud's own eighteen fixed
+colours, on its own 16×24 character cell. It is not derived from Mura's logo, which the preview used
+to composite onto; Mura is credited in the image itself, in `manifest.json`, and here. The reasoning
+behind the design is in [`docs/PREVIEW_DESIGN.md`](docs/PREVIEW_DESIGN.md), so the next person to
+change it inherits the intent rather than guessing at it.
 
-The script needs Pillow, so it is outside the validation gate and does not run in CI.
-`tools/validate_mod.py` uses only the Python standard library.
-Set `QUD_PREVIEW_FONTS` when the script cannot find GeistMono.
-The script stores every size and interval and writes a 128px proof beside the output.
-The mod manager displays the proof at that size.
+Unlike the validators it needs Pillow, so it stays out of the validation gate and doesn't run in CI.
+`tools/validate_mod.py` is Python-stdlib-only precisely so every contributor can run it. It also
+needs GeistMono; set `QUD_PREVIEW_FONTS` if it isn't where the script looks. Every size and interval
+lives in the script rather than in someone's image editor, and it writes a 128px proof beside the
+output because that is the size the mod manager actually displays.
 
 ### Local hooks, worth installing
 
@@ -302,19 +295,18 @@ pre-commit install --install-hooks
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
-The hooks run the same checks as CI.
-They fail within seconds instead of after a remote round trip.
-CI cannot run `no-commit-to-main`.
-That hook rejects a commit on `main` before it exists.
-The server-side ruleset can reject such a push only afterward.
-The hook runs at `pre-commit` because release tags belong on `main` (#469).
+The hooks run the same checks CI does, so they fail in seconds instead of after a round trip. One of
+them CI **cannot** run: `no-commit-to-main` refuses a commit on `main` before it exists. By the time
+CI sees such a commit it has already been made, and the server-side ruleset can only reject the
+push afterwards. It runs at `pre-commit` only, because pushes are the ruleset's business, and asking this
+question at `pre-push` refused release tags, which belong on `main` (#469).
 
-Install the hooks before making commits.
-The maintainer learned this after committing to `main` without them (#120).
+I know that one matters because I skipped installing these and then committed to `main` (#120).
 
-**If `pre-commit` reports `Cowardly refusing to install hooks with core.hooksPath set`,** a global
-Git configuration sets `core.hooksPath`.
-Unset it during installation when the global hook delegates to the repository hook:
+**If you get `Cowardly refusing to install hooks with core.hooksPath set`,** something in your git
+config, usually a dotfile manager wiring in global hooks, has set `core.hooksPath`, and
+`pre-commit` won't write `.git/hooks/` while it is. If your global hook delegates to the per-repo
+one, which is the common arrangement, unset it for the length of the install:
 
 ```bash
 saved=$(git config --global --get core.hooksPath)
@@ -323,33 +315,30 @@ pre-commit install --install-hooks
 git config --global core.hooksPath "$saved"
 ```
 
-Confirm the installation by attempting a commit on `main`.
-The hook must reject that commit.
+Then check it took, by trying to commit on `main` and being told no.
 
 ### Workflow
 
-[`CONTRIBUTING.md`](CONTRIBUTING.md) contains the full workflow:
-issue first, short-lived branch, small PR, squash merge, and required pull request evidence.
+[`CONTRIBUTING.md`](CONTRIBUTING.md) has it in full: issue first, short-lived branch, small PR,
+squash merge, and what each pull request needs before I can take it.
 
-The [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1) shows active work.
-Issues use tracks for Ammo, Content, Systems, Sub-mod merges, Upstream, and Tooling & docs.
-Work reaches **Done** after Workshop publication and a release for players without Steam.
-**QA** identifies a change that requires play testing.
-**Staging** identifies work merged since the last release.
+What's actually in flight is on the [**Qud Expanded CE project board**](https://github.com/users/vixygrey/projects/1),
+which is public. Issues are grouped there by track (Ammo, Content, Systems, Sub-mod merges,
+Upstream, Tooling & docs), and nothing reaches **Done** until it is live on the Workshop *and* a
+release is cut for players who don't use Steam. Two columns sit in between: **QA** is a change that
+is written and being tested, and **Staging** is everything merged since the last release, whether it
+needed testing or never did.
 
 ---
 
 ## Licence
 
-This project licenses maintainer contributions as **Apache-2.0** for code
-([`LICENSE`](LICENSE)) and **CC BY 4.0** for content and documentation
-([`LICENSE-CONTENT`](LICENSE-CONTENT)).
+My contributions are **Apache-2.0** for code ([`LICENSE`](LICENSE)) and **CC BY 4.0** for content
+and documentation ([`LICENSE-CONTENT`](LICENSE-CONTENT)).
 
-Mura owns the inherited work.
-Noble Lark owns the subtype sprites.
-Neither contribution is mine to license.
-[`COPYING.md`](COPYING.md) states what you can reuse and from whom.
-[`NOTICE`](NOTICE) carries the credit required for redistribution.
+The inherited work is Mura's and the subtype sprites are Noble Lark's, and neither is mine to license,
+so neither is covered. [`COPYING.md`](COPYING.md) says exactly what you may reuse and from whom, and
+[`NOTICE`](NOTICE) carries the credit that has to travel with any redistribution.
 
 ## Layout
 
@@ -359,22 +348,22 @@ docs/    CHARTER, FEATURES, LESSONS, PERMISSION, STYLEGUIDE, and Mura's original
 tools/   validation, drift checking, and the preview-image generator
 ```
 
-`git diff upstream-2.2` shows changes since Mura's 2.2 release:
+`git diff upstream-2.2` shows what I've changed since Mura's 2.2 release:
 
 ```bash
 git diff -M --ignore-cr-at-eol upstream-2.2 HEAD
 ```
 
-**Since #78, this diff is dominated by formatting.**
-The XML was reformatted wholesale, and long elements now place one attribute on each line.
-`-w` does not help because it ignores whitespace within a line.
-The reformat splits single lines into many lines, which Git treats as changed lines.
-Read the raw diff as a file-change record, not a content-change record.
+**Since #78 that diff is dominated by formatting**, because I reformatted the XML wholesale and long
+elements now put one attribute per line. `-w` does *not* help: it ignores whitespace within a line,
+and the reformat splits single lines into many, which git sees as genuinely different lines. Read
+the raw diff as "what files changed", not "what changed in them".
 
-Two tools preserve the useful history:
+Two things still work, and they're the ones that matter:
 
-- **Retrieve Mura's originals.** `git show upstream-2.2:<path>` reproduces each file byte-for-byte.
-  The tag is immutable and remains unchanged through future reformats.
-- **Use `git blame`.** The reformat commit appears in [`.git-blame-ignore-revs`](.git-blame-ignore-revs).
-  Enable it once per clone:
+- **Retrieving Mura's originals.** `git show upstream-2.2:<path>` reproduces any file byte-for-byte
+  exactly as they wrote it. The tag is immutable and I never move it, so that stays true permanently
+  regardless of any future reformat.
+- **`git blame`.** The reformat commit is listed in [`.git-blame-ignore-revs`](.git-blame-ignore-revs),
+  so blame attributes lines to whoever actually wrote them. Enable it once per clone:
   `git config blame.ignoreRevsFile .git-blame-ignore-revs`.

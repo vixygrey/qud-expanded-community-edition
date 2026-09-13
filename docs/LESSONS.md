@@ -1,34 +1,35 @@
 # Lessons learned
 
-These notes record operational traps from maintaining this fork.
-They preserve the reasoning behind each fix.
+Operational traps I hit while maintaining this fork, written down so nobody pays for them twice.
+I add to this whenever something bites, because the reasoning is the durable artifact, not the fix.
 
-Some lessons concern Caves of Qud:
-its API sources, invalid vanilla XML, and extension-point markers.
-Others concern Git, GitHub, and repository tooling.
-All concern the difference between a real green result and an empty one.
+Some are about Caves of Qud itself and should be useful to anyone modding it: where the game keeps its
+own API documentation, which vanilla data files aren't valid XML, how an extension point fails when you
+forget its marker attribute. Others are about git, GitHub and the tooling here, and a growing number
+are about the same underlying problem, which is telling a real green result from one that means
+nothing.
 
-The notes do not quote a proportion of Qud lessons.
-That count changed over time and no tool checks it.
+(That first sentence used to read "most of these", which stopped being true somewhere around the
+thirteenth entry and was corrected in #137. A count in prose rots exactly as described in the last
+section of this document, so there is deliberately no proportion quoted here now, because nothing checks it.)
 
 ---
 
 ## Read the crash *type* before forming a hypothesis
 
-A Qud crash report's exception type narrows the search:
+A Qud crash report's exception type narrows the search enormously, and it's free:
 
-- `EXC_BAD_ACCESS` in the **Stack Guard** region with `RECURSION LEVEL n` markers indicates stack
-  overflow inside the game.
-  A handler that calls two functions and returns cannot produce it.
-- A managed exception appears in `game_log.txt` with a stack trace and its type.
+- `EXC_BAD_ACCESS` in the **Stack Guard** region with `RECURSION LEVEL n` markers is a **stack
+  overflow**: unbounded recursion inside the game, not an exception thrown by mod code. A
+  handler that calls two functions and returns cannot produce it.
+- A managed exception appears in `game_log.txt` with a stack trace instead, and names the type.
 
-Read the report before forming a hypothesis.
-The options-menu crash first appeared to come from mod code.
-The recursion markers identified the game's UI instead.
+I chased the options-menu crash through two wrong hypotheses before reading the report properly.
+The recursion markers pointed at the game's own UI, which immediately made "my C# threw something"
+the wrong tree.
 
-Read the macOS crash reporter for the crash report.
-Do not rely on Qud's logs.
-`game_log.txt` had four lines because the process died before logging started.
+The crash report lives in macOS's crash reporter, **not** in Qud's own logs. `game_log.txt` had
+four lines because the process died before logging started.
 
 ## Stacked PRs do not survive a squash merge of their base
 
@@ -3631,14 +3632,16 @@ Neighbour of [`a search that finds nothing has two explanations, and one of them
 with the failure moved one step along: there the search could not match, here it matched correctly
 and rewrote what it found. Both end in output that reads as evidence and is not.
 
+<!-- check-docs: not-a-file CLAUDE.md - the maintainer's private working notes, untracked by .gitignore since #115. Named below because the entry is about exactly that. -->
 
 ## A file check reads the working tree, and CI reads the tracked one
 
 `check_docs.py` gained a check that file paths written as prose resolve. It passed locally and
-failed on CI with seventeen findings for paths that existed only in the local working tree.
+failed on CI with seventeen findings, every one naming `CLAUDE.md`.
 
-The file was real on the maintainer's machine but absent from a clean checkout. A check asking the
-filesystem whether a path resolved therefore answered differently in the two places.
+That file is real. It is also `.gitignore`d, being private working notes, untracked since #115. So it
+exists on my machine and does not exist in a clean checkout, and a check asking the filesystem
+*"does this resolve"* answers differently in the two places.
 
 ```python
 if any((base / target).exists() for base in (Path("."), Path("docs"), doc.parent)):
@@ -3658,7 +3661,9 @@ failure mode is *invisible locally by construction*, the same shape as
 [`a hook that was never installed protects nothing, and this one failed to install quietly`](#a-hook-that-was-never-installed-protects-nothing-and-this-one-failed-to-install-quietly),
 where the thing that would have reported the problem was the thing that was missing.
 
-**And fix the class, not the instance.** Having marked a path that existed only locally, I swept every prose path in every document for anything else resolving to an untracked file. Zero, but the sweep is the part that makes the fix trustworthy, because one instance found by CI says nothing about the second.
+**And fix the class, not the instance.** Having marked `CLAUDE.md`, I swept every prose path in
+every document for anything else resolving to an untracked file. Zero, but the sweep is the part
+that makes the fix trustworthy, because one instance found by CI says nothing about the second.
 
 ## Five vanilla defects worth not rediscovering
 

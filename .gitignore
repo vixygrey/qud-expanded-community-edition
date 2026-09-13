@@ -1,45 +1,56 @@
-# Operating system files
+# This file has to stand on its own. A global gitignore (core.excludesfile) is per-developer
+# machine configuration and is not part of a clone, so anything covered only there is invisible
+# to whoever set it up and untracked noise for everyone else. See #63.
+
+# macOS
 .DS_Store
-.DS_Store?
 ._*
-.Spotlight-V100/
-.Trashes/
+
+# Windows — the counterpart to the above, and Qud contributors skew Windows
 Thumbs.db
-Desktop.ini
+desktop.ini
 
-# Editor and IDE state
-.idea/
-.vscode/*.code-workspace
-.vscode/settings.json
-.vscode/launch.json
-.vscode/tasks.json
-
-# Local environment and secrets
-.env
-.env.*
-!.env.example
-!.env.template
-*.local
-
-# Logs and runtime files
-*.log
-*.pid
-*.seed
+# Editor / tooling scratch
 *.swp
-*.swo
-.test-results/
-*.tmp
-*.temp
+.idea/
+.vscode/
 
-# Generic generated output
-.cache/
-.coverage/
-.generated/
-build/
-coverage/
-dist/
-out/
-tmp/
+# Python: tools/ holds the validators, so running them writes tools/__pycache__/.
+# README.md tells contributors to run them, so this is generated on a normal first clone.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
-# Local tool state
-.tool-state/
+# Node: the repo's XML formatter (prettier + @prettier/plugin-xml) is dev tooling only.
+# It lives at the repo root, never in mod/, so it cannot ship to subscribers.
+node_modules/
+
+# Claude Code local instructions. CLAUDE.md loads automatically for anyone working in this repo, so
+# my personal writing preferences would otherwise be inherited by a contributor's assistant and end
+# up shaping their pull requests. The project's own rules are tracked in docs/CHARTER.md,
+# docs/LESSONS.md, docs/STYLEGUIDE.md and CONTRIBUTING.md; AGENTS.md points any agent at them.
+CLAUDE.md
+
+# Claude Code agent worktrees. Each is a COMPLETE second copy of the working tree, created inside
+# the repo and removed when the agent finishes — so it is absent most of the time and present
+# exactly while someone is mid-task and least likely to read `git status` closely. Left untracked,
+# one `git add -A` stages the whole duplicate.
+#
+# Only worktrees/, not all of .claude/: a blanket ignore would silently hide agent or skill
+# configuration if this project ever checks any in, which is the failure shape this repo keeps
+# writing lessons about.
+.claude/worktrees/
+
+# Never commit secrets. Nothing here reads a .env today; this is insurance, not a description.
+.env
+
+# Qud writes these next to a loaded mod
+*.log
+
+# The release asset, which `tools/sync_mod.py --zip` writes to the repository root by default.
+# It is a build output and belongs on the GitHub release rather than in git — but the real reason
+# it is here is that `--publish` and `--zip` both refuse a dirty working tree, so an untracked zip
+# left over from step 7 of docs/RELEASING.md blocks step 6 of the same release. Cutting 2.6.0 hit
+# exactly that, between building the asset and installing the publish build.
+QudExpandedCommunityEdition-*.zip

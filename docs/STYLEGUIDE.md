@@ -205,14 +205,14 @@ qud-expanded-community-edition/
 │   ├── manifest.json
 │   ├── workshop.json
 │   └── preview.png
-├── docs/                         # reference, design, provenance, and style documentation
-├── specs/                       # concise project requirements
+├── docs/                         # CHARTER, FEATURES, LESSONS, PERMISSION, STYLEGUIDE, upstream notes
 ├── tools/                        # validation script, helpers
 ├── .github/workflows/            # CI
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── CONTRIBUTING.md
-└── LICENSE                       # project license
+└── CLAUDE.md                     # my local working notes; untracked
+```
 
 This matches the layout already used by the sibling Qud projects in this workspace
 (`qud-creature-variants`, `lore-expansion`), so the whole set stays consistent.
@@ -1408,48 +1408,53 @@ save-baked identifiers changed during the fork.
 
 ## 8. Documentation
 
-- **Use Markdown with LF line endings.** Wrap lines at about 100 characters.
-- `README.md` is the entry point for project purpose, credits, installation, and contribution.
-- `FEATURES.md` is the exhaustive feature reference.
-- `PERMISSION.md` is a provenance record. **Append to it. Never rewrite it.**
-- Reference issues as `#N` and files as clickable relative paths.
-- Preserve `2.2-changelog.txt` and `mura-feature-notes-wip.txt` byte-for-byte.
-  They are Mura's provenance records.
-- **Keep em dashes out of new prose.** Rebuild each sentence with a comma, colon, full stop, or brackets.
+- **Markdown, LF line endings**, one sentence per line not required but lines wrapped at ~100.
+- `README.md` is the entry point: what it is, credits, install, contributing.
+- `FEATURES.md` is the feature reference and is expected to stay exhaustive.
+- `PERMISSION.md` is a provenance record: **append, never rewrite**.
+- Reference issues as `#N`, files as clickable relative paths.
+- `2.2-changelog.txt` and `mura-feature-notes-wip.txt` are Mura's, kept byte-for-byte as a
+  provenance record and **never edited**, not even for typos or line endings.
+- **No em dashes in prose.** Rebuild the sentence instead of swapping the punctuation: a comma, a
+  colon, a full stop or a pair of brackets, whichever the sentence actually wanted. See below.
 
-### 8.1 Writing scope and protected text
+> **On the first person.** The documents here are written in my voice, so they say "I decided" and
+> "I checked" rather than reporting decisions as though they made themselves. That is a description
+> of how *I* write, not a rule for you. **Write your issues, pull requests and comments however
+> comes naturally**, in your own voice, in whatever person you like. I'd rather have your
+> contribution than a stylistic match, and I'll keep the docs consistent myself.
 
-Apply the house writing style to new and materially edited project prose.
-Write clear, composed, warm, and direct text.
-Use active voice, complete sentences, and one consistent term for each concept.
-Use the stricter rules for technical documentation, specifications, changelogs, release notes, CLI output,
-error messages, and UI copy.
-Use the looser rules for issues, comments, and chat.
+### 8.1 On em dashes
 
-Preserve code, identifiers, file paths, quoted errors, proper nouns, legal text, and historical records.
-Do not restyle canonical third-party text.
-Do not rewrite released changelog entries only to meet a later style rule.
-Preserve intentional voice in design philosophy and historical rationale when that voice carries design meaning.
+I wrote most of this project leaning on them, and then stopped. They are gone from my prose here and
+from the wiki, and #935 tracks the remaining documents.
 
-Scope notes:
+**It is not a find and replace**, which is why the passes are one document at a time rather than one
+commit. An em dash does different work every time it appears. Some are parenthetical and want commas
+or brackets; some introduce a consequence and want a colon or a full stop; some join two clauses that
+should simply be two sentences. Substituting one character for another produces prose that parses
+and does not read.
 
-- Preserve evidence-rich historical passages in `FEATURES.md` and `LESSONS.md` unless accuracy or the change requires a rewrite.
-- Preserve deliberate artistic voice in `docs/DESIGN_*.md` and `PREVIEW_DESIGN.md` when that voice expresses design intent.
+**Three things are carved out**, and none of them is a style exception:
 
-Rebuild em dash sentences one document at a time.
-Use commas for parenthetical phrases.
-Use a colon when the first clause introduces a consequence.
-Use a full stop when two clauses express separate ideas.
+- **Mura's documents are never edited at all**, per the rule above. That outranks this.
+- **`CHANGELOG.md` applies from `[Unreleased]` forward.** Released entries are a published record
+  people have already read, and rewriting one to suit a convention adopted afterwards edits history
+  for nobody's benefit. `PERMISSION.md` is append-only for the same reason.
+- **The title of somebody else's work is not mine to restyle.** `README.md` still carries two, both
+  inside the Workshop titles of Mura's own mods, because changing them would misname the thing a
+  reader might go looking for.
 
-**A heading is an anchor.**
-Changing a heading changes the fragment that GitHub derives from it.
-A spaced em dash creates a double hyphen in that fragment.
-The forms `#2-causality--nothing-arbitrary` and `#2-causality-nothing-arbitrary` differ.
-Run `check_docs.py --wiki` after changing a heading cited by the wiki.
+**A heading is an anchor.** Rewriting one changes the fragment GitHub derives from it, and a spaced
+em dash leaves a *double* hyphen behind, so `#2-causality--nothing-arbitrary` and
+`#2-causality-nothing-arbitrary` are different links. Ten headings changed across these documents;
+nothing in this repository or the wiki cited any of them, checked first. `check_docs.py --wiki` is
+what tells you whether the wiki still lands.
 
-**A prose claim check can go idle.**
-`check_docs.py` matches figures written on the wiki against nearby sentences.
-The `claim-coverage` check detects a pattern that no longer matches.
+**And a check that matches prose can go idle the same way.** `check_docs.py` verifies figures written
+on the wiki by matching the sentence around them, and one of those patterns was anchored on an em
+dash. It stopped matching the moment the wiki stopped using them, and `claim-coverage` is the only
+reason that surfaced rather than silently ceasing to check anything (#942).
 
 ---
 
@@ -1484,7 +1489,6 @@ seconds rather than after a round trip.
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Conversation part names resolving to a real class in `XRL.World.Conversations.Parts` | `unknown-conversation-part`, against the same snapshot's `conversation_parts` list |
-| Choices unlocked by `Vixy_Introduced` carrying the live combined-option gate | `social-option-gate` in `tools/validate_mod.py` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
 | `<part Builder="…">` naming a class in `XRL.World.PartBuilders` | `part-builder`, against the snapshot's `part_builders` list |
@@ -1628,7 +1632,6 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `self-anchor` | `check_docs.py` | a `](#anchor)` link resolving to a heading in the same file. A spaced em dash anchors as a **double** hyphen, which is the spelling four broken links in `docs/LESSONS.md` got wrong (#945) |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
 | `snapshot-coverage` | `validate_mod.py` | everything this fork writes being something `tools/qud-api.json` has an opinion about, so a snapshot the mod has outrun fails without needing the game |
-| `social-option-gate` | `validate_mod.py` | choices unlocked by the persisted introduction marker carrying the live combined-option gate |
 | `subtype-gear` | `validate_mod.py` | a subtype's `Gear` naming a table this fork actually defines |
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |
