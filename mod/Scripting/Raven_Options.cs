@@ -599,6 +599,7 @@ namespace QudExpandedCE
         /// </summary>
         public static bool TrashDiviningDensity => Enabled(TrashDiviningDensityID, "Yes");
 
+        /// <summary>
         /// Whether the connected name-sharing and gift systems are enabled.
         ///
         /// Live, and the off-switch is a runtime decision: conversation parts read this value when
