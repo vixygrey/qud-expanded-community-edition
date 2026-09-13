@@ -9657,44 +9657,60 @@ The compromise is stated rather than hidden: **the world moves when you move thr
 still while you are underground.** The consolation is that the only time a band moves is the only
 time you could have watched it, so nothing happens unseen.
 
-### 65.5 Site classification and selection
+### 65.5 The reason, and only this one
 
-A vacancy qualifies only when its destination is ordinary. The dispatch reads exact zone and
-column journal notes, then adds `static` for immutable blueprints and `proper-named` for named sites
-without a `lair` or `ruins` note. Settlement, historic, artifact, merchant, oddity, static and
-proper-named sites stay protected. A protected destination is removed from consideration before the
-one-in-four roll, so it never rerolls into a band.
+A place somebody held and no longer does is a vacancy, and a people who hold ground elsewhere may
+want it. That is the whole trigger. It works only because §64 records who held a place.
 
-The former holder gets first claim when it still holds another recorded zone in the same world.
-Otherwise the dispatch ranks recorded holders by their feeling toward the former holder and chooses
-the most hostile faction. Neutral factions are considered only when no hostile faction exists.
-Every tier chooses the nearest holding by resolved world-map coordinates, with random choice among
-equal distances. Positive relations never qualify.
+**Who comes is deliberately dumb**: a faction §64 has recorded holding some *other* zone, and never
+the people who just lost this one, which would be a respawn wearing a journey, which is what #830
+decided against. So the world reclaims using peoples you have actually met, and no new data is
+invented to decide it. Site types, sacred places and a model of what each faction wants are #924.
 
-The band sets out from that recorded holding. Its mission, origin, target and faction remain on the
-token, so `vixyband` can explain the route while the band travels.
+The band sets out from a parasang its faction actually holds, so the distance walked is the real
+distance between two places, paced by `TerrainTravel`.
+
+**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it,
+answered or not, because a place that can be answered twice is a faucet, which is #802's lesson
+already paid for once. The roll on top is what keeps this at the edge of attention rather than
+around you.
+
+**Spent on the decision rather than on the outcome, which took a correction.** The record was
+originally cleared only when a band actually set out, and that read as though a vacancy nobody
+answered were still queued for one. It never was: §64 removes a zone's holder in the same breath as
+it records the vacancy, and the holder is what the branch tests, so a place is offered to this exactly
+once and whatever is decided is decided for good. Three vacancies in four therefore sat in `vixyband`
+under a heading promising an answer that could not come. The roll now sits last, after a neighbour and
+an origin have been found, so *one in four* describes openings somebody could actually have set out
+for, which changes no outcome, since a band still needs all four to agree. #929.
 
 ### 65.6 `vixyband`
 
-A band is rare on purpose: a zone must be held, cleared to its last member and left ordinary. Then
-the dispatch must find a qualifying holding and pass the one-in-four roll. The band advances only
-while you cross the map.
+A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
+one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
-`vixyband` lists each mission, origin, current position, route target and destination flags. It also
-lists recorded vacancies. An empty flight list is the resting state, not a queue that ran dry.
+`vixyband` lists what is in flight, where each is bound, and what vacancies are on record. **An empty
+list is the resting state, not a queue that ran dry**: with the option on, every vacancy is spent as
+it is considered, so a name sitting there is a defect worth chasing rather than a band still owed.
 
-`vixyband <faction>` sends one through the same token and travel path, with an explicit expansion
-mission. With no vacancy on record it targets the zone you occupy. The command refuses the world map.
+`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so what
+it produces is what play produces. With no vacancy on record it aims at the zone you are standing in
+and says that it did, which is also the better test of the two halves: arrival is the half that builds
+a party, and this is the only way to be standing in the zone when that happens. It refuses only from
+the world map, which is neither a parasang nor a zone and so cannot be a destination.
 
 ### 65.7 Off-switch, and what stays out
 
-**Off by default**, because *places you empty do not stay empty* is a new opinion this fork introduces.
-The option is checked before dispatch and before arrival, so disabling it stops new bands and stops a
-walking band from becoming a camp.
+**Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces, and
+*places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
+before sending, and `Vixy_Band` asks again before building the camp, so turning it off stops new
+bands and stops a walking one arriving as anything.
 
-Protected story settlements, historic sites, artifacts, merchants, oddities, immutable zones and
-proper-named sites without a safe `lair` or `ruins` classification stay out. The dispatch still
-records vacancies through §64, so later option changes do not rewrite territory history.
+**Story settlements are out**, and every hand-built static zone. Nothing in the game protects them:
+no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints, and
+that absence is the argument against rather than the licence. A band that kills Argyve while you are
+underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
+than depopulated* is a different and much larger question, recorded in #924.
 
 ### 65.8 Known limit: vacancies recorded while the option was off
 

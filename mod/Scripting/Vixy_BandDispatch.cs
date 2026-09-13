@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Qud.API;
 using QudExpandedCE;
 using XRL.Rules;
 using XRL.World;
@@ -48,72 +46,78 @@ namespace XRL
     /// </remarks>
     public static class Vixy_BandDispatch
     {
+        /// <summary>The token blueprint. Named here, which is also its route past #926.</summary>
         public const string Blueprint = "Vixy_Band";
 
+        /// <summary>One in this many answerable vacancies is answered.</summary>
+        /// <remarks>
+        /// A vacancy is already uncommon — it needs a zone that was held, cleared to the last
+        /// member, and left. Rolling on top of that is what keeps a band something I come across
+        /// rather than something that follows me around. See #832 on why the trigger is narrowed
+        /// instead of optioned into silence.
+        /// <para>
+        /// The roll is the <em>last</em> gate rather than the first, so this number describes
+        /// openings somebody could actually have set out for. Which way round it sits changes no
+        /// outcome — a band is sent only when the roll, a neighbour, an origin and the placement all
+        /// agree — but with the roll first the constant claimed a rate over vacancies that had
+        /// nobody to answer them. #929.
+        /// </para>
+        /// </remarks>
         public const int OneIn = 4;
 
-        private const string Reclaim = "reclaim";
-        private const string RivalExpansion = "rival-expansion";
-        private const string Expansion = "expansion";
-
-        private sealed class Holding
-        {
-            public string Faction;
-            public string ZoneID;
-            public int X;
-            public int Y;
-            public int Distance;
-        }
-
-        private sealed class Selection
-        {
-            public string Faction;
-            public string Mission;
-            public Holding Origin;
-        }
-
-        /// <summary>A zone has fallen empty. Perhaps somebody sets out for it.</summary>
+        /// <summary>
+        /// A zone has fallen empty. Perhaps somebody sets out for it.
+        /// </summary>
+        /// <remarks>
+        /// <b>The vacancy is spent on the decision, not on the outcome.</b> Nothing calls this twice
+        /// for one zone: <c>Vixy_Territory.Record</c> removes <c>HeldBy</c> in the same breath as it
+        /// sets <c>Vacated</c>, and that property is the branch's own precondition — so whatever is
+        /// decided here is decided once and for good. Leaving the record set after a miss made three
+        /// vacancies in four sit in <c>vixyband</c> as though they were still queued for an answer
+        /// that could never come. #929.
+        /// <para>
+        /// The one exit that does not spend is the option being off, because that is the feature not
+        /// running rather than the feature deciding. Those records stay as <c>Vixy_Territory</c>
+        /// wrote them — see §65.8 for what they can and cannot become later.
+        /// </para>
+        /// </remarks>
         public static void OnVacancy(string ZoneID, string Lost)
         {
             if (!Raven_Options.TravellingBands) return;
             if (ZoneID.IsNullOrEmpty()) return;
 
+            // From here the dispatch has run, so the opening is settled either way. A place that
+            // can be answered twice is a faucet, and a place recorded as waiting for an answer
+            // nothing will ever give is a lie the report then tells me.
             The.ZoneManager.RemoveZoneProperty(ZoneID, Vixy_Territory.Vacated);
 
-            if (Protected(ZoneID)) return;
+            string faction = Neighbour(Lost);
+            if (faction.IsNullOrEmpty()) return;
 
-            Selection selection = Select(ZoneID, Lost);
-            if (selection == null) return;
+            string from = HeldZone(faction);
+            if (from.IsNullOrEmpty()) return;
 
-            if (Stat.Random(1, OneIn) != 1) return;
+            if (!Stat.Random(1, OneIn).Equals(1)) return;
 
-            Send(
-                selection.Faction,
-                selection.Origin.ZoneID,
-                ZoneID,
-                selection.Mission
-            );
+            Send(faction, from, ZoneID);
         }
 
         /// <summary>
         /// Put a band on the world map at <paramref name="FromZone"/>'s parasang, bound for
         /// <paramref name="ToZone"/>.
         /// </summary>
-        public static bool Send(
-            string Faction,
-            string FromZone,
-            string ToZone,
-            string Mission = Expansion
-        )
+        /// <remarks>
+        /// <c>SetZoneID</c> does the parsing — it is <c>ZoneID.Parse</c> under the name — so the
+        /// destination is handed over as a string and the part works out its own parasang. The
+        /// world-map zone is reached through any loaded zone's <c>GetZoneWorld()</c>, which returns
+        /// the world's name rather than the zone, exactly as <c>Zone</c> does it internally.
+        /// </remarks>
+        public static bool Send(string Faction, string FromZone, string ToZone)
         {
             Zone anchor = The.ActiveZone;
             if (anchor == null) return false;
 
-            if (!ZoneID.Parse(FromZone, out string fromWorld, out int px, out int py))
-                return false;
-            if (!ZoneID.Parse(ToZone, out string toWorld, out int _, out int _))
-                return false;
-            if (fromWorld != toWorld || fromWorld != anchor.GetZoneWorld()) return false;
+            if (!ZoneID.Parse(FromZone, out string _, out int px, out int py)) return false;
 
             Zone world = The.ZoneManager.GetZone(anchor.GetZoneWorld());
             Cell start = world?.GetCell(px, py);
@@ -124,9 +128,6 @@ namespace XRL
 
             token.RequirePart<Vixy_Band>();
             token.SetStringProperty(Vixy_Band.FactionProperty, Faction);
-            token.SetStringProperty(Vixy_Band.MissionProperty, Mission);
-            token.SetStringProperty(Vixy_Band.OriginProperty, FromZone);
-            token.SetStringProperty(Vixy_Band.TargetProperty, ToZone);
 
             AIWorldMapTravel travel = token.RequirePart<AIWorldMapTravel>();
             if (!travel.SetZoneID(ToZone))
@@ -135,208 +136,48 @@ namespace XRL
                 return false;
             }
 
+            // Pinned keeps the world map cached rather than frozen, so a journey survives my
+            // wandering off. It does not make it tick - only the active zone does that.
             travel.Pinned = true;
+
             start.AddObject(token, Forced: true, System: true);
             return true;
         }
 
-        public static string SiteFlags(string id)
+        /// <summary>
+        /// A people who hold ground somewhere and are not the ones who just lost this place.
+        /// </summary>
+        private static string Neighbour(string Lost)
         {
-            List<string> flags = new List<string>();
-            if (id.IsNullOrEmpty()) return "unknown";
-
-            if (!ZoneID.Parse(
-                    id,
-                    out string world,
-                    out int px,
-                    out int py,
-                    out int zx,
-                    out int zy,
-                    out int _
-                ))
-                return "unknown";
-
-            foreach (JournalMapNote note in JournalAPI.GetMapNotesForZone(id))
-                AddFlags(flags, note);
-
-            foreach (JournalMapNote note in JournalAPI.GetMapNotesForColumn(world, px, py))
-            {
-                if (note.ResolvedX == px * 3 + zx && note.ResolvedY == py * 3 + zy)
-                    AddFlags(flags, note);
-            }
-
-            Zone zone = The.ZoneManager.GetZone(id);
-            if (zone?.GetBlueprint()?.Cell != null && !zone.GetBlueprint().Cell.Mutable)
-                Add(flags, "static");
-
-            if (zone?.GetBlueprint()?.ProperName == true && !HasSafeFlag(flags))
-                Add(flags, "proper-named");
-
-            return flags.Count == 0 ? "ordinary" : string.Join(",", flags);
-        }
-
-        private static void AddFlags(List<string> flags, JournalMapNote note)
-        {
-            foreach (string flag in new[] {
-                "settlement", "historic", "artifact", "merchant", "oddity"
-            })
-            {
-                if (note.Has(flag)) Add(flags, flag);
-            }
-            if (note.Has("lair")) Add(flags, "lair");
-            if (note.Has("ruins")) Add(flags, "ruins");
-        }
-
-        private static void Add(List<string> flags, string flag)
-        {
-            if (!flags.Contains(flag)) flags.Add(flag);
-        }
-
-        private static bool HasSafeFlag(List<string> flags)
-        {
-            return flags.Contains("lair") || flags.Contains("ruins");
-        }
-
-        private static bool Protected(string ZoneID)
-        {
-            string flags = SiteFlags(ZoneID);
-            return flags != "ordinary"
-                && (flags.Contains("settlement")
-                    || flags.Contains("historic")
-                    || flags.Contains("artifact")
-                    || flags.Contains("merchant")
-                    || flags.Contains("oddity")
-                    || flags.Contains("static")
-                    || flags.Contains("proper-named"));
-        }
-
-        private static Selection Select(string targetID, string lost)
-        {
-            if (!ZoneID.Parse(
-                    targetID,
-                    out string world,
-                    out int targetPX,
-                    out int targetPY,
-                    out int targetZX,
-                    out int targetZY,
-                    out int _
-                ))
-                return null;
-
-            List<Holding> holdings = Holdings(world, targetPX, targetPY, targetZX, targetZY);
-            List<Holding> reclaim = holdings.FindAll(h => h.Faction == lost);
-            Holding origin = Nearest(reclaim);
-            if (origin != null)
-            {
-                return new Selection { Faction = lost, Mission = Reclaim, Origin = origin };
-            }
-
-            List<Holding> rival = new List<Holding>();
-            int lowest = 0;
-            foreach (Holding holding in holdings)
-            {
-                if (holding.Faction == lost) continue;
-                Faction faction = Factions.Get(holding.Faction);
-                if (faction == null) continue;
-                int feeling = faction.GetFeelingTowardsFaction(lost);
-                if (feeling >= 0) continue;
-                if (feeling < lowest)
-                {
-                    lowest = feeling;
-                    rival.Clear();
-                }
-                if (feeling == lowest) rival.Add(holding);
-            }
-
-            origin = Nearest(rival);
-            if (origin != null)
-            {
-                return new Selection {
-                    Faction = origin.Faction,
-                    Mission = RivalExpansion,
-                    Origin = origin
-                };
-            }
-
-            List<Holding> neutral = new List<Holding>();
-            foreach (Holding holding in holdings)
-            {
-                if (holding.Faction == lost) continue;
-                Faction faction = Factions.Get(holding.Faction);
-                if (faction != null && faction.GetFeelingTowardsFaction(lost) == 0)
-                    neutral.Add(holding);
-            }
-
-            origin = Nearest(neutral);
-            return origin == null
-                ? null
-                : new Selection {
-                    Faction = origin.Faction,
-                    Mission = Expansion,
-                    Origin = origin
-                };
-        }
-
-        private static List<Holding> Holdings(
-            string world,
-            int targetPX,
-            int targetPY,
-            int targetZX,
-            int targetZY
-        )
-        {
-            List<Holding> holdings = new List<Holding>();
-            int targetX = targetPX * 3 + targetZX;
-            int targetY = targetPY * 3 + targetZY;
-
+            List<string> holders = new List<string>();
             foreach (KeyValuePair<string, Dictionary<string, object>> zone
                      in The.ZoneManager.ZoneProperties)
             {
-                if (zone.Value == null
-                    || !zone.Value.TryGetValue(Vixy_Territory.HeldBy, out object value))
-                    continue;
+                if (zone.Value == null) continue;
+                if (!zone.Value.TryGetValue(Vixy_Territory.HeldBy, out object holder)) continue;
 
-                string faction = value as string;
-                if (faction.IsNullOrEmpty()) continue;
-                if (!ZoneID.Parse(
-                        zone.Key,
-                        out string holderWorld,
-                        out int px,
-                        out int py,
-                        out int zx,
-                        out int zy,
-                        out int _
-                    )
-                    || holderWorld != world)
-                    continue;
-
-                holdings.Add(new Holding {
-                    Faction = faction,
-                    ZoneID = zone.Key,
-                    X = px * 3 + zx,
-                    Y = py * 3 + zy,
-                    Distance = Math.Abs(px * 3 + zx - targetX)
-                        + Math.Abs(py * 3 + zy - targetY)
-                });
+                string name = holder as string;
+                if (name.IsNullOrEmpty() || name == Lost) continue;
+                if (!holders.Contains(name)) holders.Add(name);
             }
-            return holdings;
+            return holders.Count == 0 ? null : holders.GetRandomElement();
         }
 
-        private static Holding Nearest(List<Holding> candidates)
+        /// <summary>A zone this faction is recorded as holding, to set out from.</summary>
+        private static string HeldZone(string Faction)
         {
-            if (candidates.Count == 0) return null;
-            int nearest = int.MaxValue;
-            List<Holding> tied = new List<Holding>();
-            foreach (Holding candidate in candidates)
+            List<string> zones = new List<string>();
+            foreach (KeyValuePair<string, Dictionary<string, object>> zone
+                     in The.ZoneManager.ZoneProperties)
             {
-                if (candidate.Distance < nearest)
+                if (zone.Value == null) continue;
+                if (zone.Value.TryGetValue(Vixy_Territory.HeldBy, out object holder)
+                    && (holder as string) == Faction)
                 {
-                    nearest = candidate.Distance;
-                    tied.Clear();
+                    zones.Add(zone.Key);
                 }
-                if (candidate.Distance == nearest) tied.Add(candidate);
             }
-            return tied.GetRandomElement();
+            return zones.Count == 0 ? null : zones.GetRandomElement();
         }
     }
 }
