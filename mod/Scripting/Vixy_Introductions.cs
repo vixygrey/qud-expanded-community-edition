@@ -1,5 +1,4 @@
 using System;
-using QudExpandedCE;
 using System.Collections.Generic;
 using XRL.UI;
 
@@ -77,11 +76,12 @@ namespace XRL.World.Conversations.Parts
 
         public override bool HandleEvent(EnterElementEvent E)
         {
-            if (!Raven_Options.AskName)
-            {
-                return base.HandleEvent(E);
-            }
-
+            // Recorded whatever the options say, and that is deliberate - #633, on the same
+            // reasoning as the water-ritual snapshot in §56.5. Gating a *record* makes the
+            // off-switch worse rather than better: switching an option on later would do nothing
+            // for anybody I had already introduced myself to, because the moment it needed to
+            // notice has passed. The marker is one int on a creature and is invisible until
+            // something reads it, so it costs nothing to keep.
             if (IsIntroduction(E.Element))
             {
                 The.Speaker?.SetIntProperty(Vixy_Introduce.Marker, 1);

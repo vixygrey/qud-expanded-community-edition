@@ -599,14 +599,20 @@ namespace QudExpandedCE
         /// </summary>
         public static bool TrashDiviningDensity => Enabled(TrashDiviningDensityID, "Yes");
 
-        /// Whether the connected name-sharing and gift systems are enabled.
+        /// <summary>
+        /// Whether a nameless creature can be asked what it is called.
         ///
-        /// Live, and the off-switch is a runtime decision: conversation parts read this value when
-        /// choices become visible or are entered. Disabling it hides name and gift choices and stops
-        /// new gift opinions. Existing names and gift opinions remain stored.
+        /// Live, and the off-switch is a runtime decision: <c>Vixy_AskName</c> reads this each time
+        /// the choice is offered, so turning it off hides the question from the next conversation
+        /// onward. Names already given are kept - they are stored on the creature like any other
+        /// proper name, and a creature that has told me who it is does not become nameless again.
         ///
-        /// Defaults on to preserve the mod's established behaviour. The option keeps the historical
-        /// AskName ID so existing settings continue to address the same stored value.
+        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
+        /// content attached; this grants a question, and the thing it gives back is a name the
+        /// creature already had. It also takes something away, which is the reason this option
+        /// exists at all rather than shipping unconditionally: asking forecloses renaming, and a
+        /// player who names their companions should be able to keep doing that without meeting the
+        /// question every time they talk to one.
         /// </summary>
         public static bool AskName => Enabled(AskNameID, "Yes");
 

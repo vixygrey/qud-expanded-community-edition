@@ -24,8 +24,7 @@ recorded because contributors need them, not because subscribers do.
   after 30 days away. The feature is off by default and skips protected sites and player footprints.
   (#951)
 
-- Project context, specification, and verification scaffolding.
-- Combined name-sharing and gift-system option under `Qud Options > Mods`.
+### Changed
 
 ### Fixed
 

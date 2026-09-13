@@ -8056,13 +8056,11 @@ Give your name before you share water; come back having risen in their people's 
 deal with you again. Three changes to one gesture, all of #753, and each of them came out of playing
 §56 rather than reading.
 
-**The combined social option covers the naming half and leaves the ritual mechanics separate.**
-`OptionQudExpandedCEAskName` now controls the connected name-sharing and gift systems because
-`Vixy_Introduce`, `Vixy_AskName`, `Vixy_Introductions`, and `Vixy_Gift` share the
-`Vixy_Introduced` marker and the same conversation progression. `OptionQudExpandedCEWaterBond`,
-off by default, still decides whether the *ritual* waits on an introduction and whether a repeat is
-offered. Disabling the combined option makes `Vixy_Introduce.Possible` false, so the water ritual
-gate falls open rather than hiding the ritual.
+**The option covers the ritual half only.** `Vixy_Introduce` shipped behind it and came out again in
+#633, because giving somebody your name changes no mechanic, so rule 6 does not let it hold an option, and
+§61 needs the marker on two people vanilla wrote no introduction for. What
+`OptionQudExpandedCEWaterBond` still decides, off by default, is whether the *ritual* waits on an
+introduction and whether a repeat is offered. §57.2 and §57.4 are the halves it gates.
 
 ### 57.1 You could share water with someone who never learned your name
 
@@ -9305,17 +9303,12 @@ the gift just given, and the seventh gift is the one that first sees the warmer 
 eighth. A failed or escaped give returns false from `Enter()` and never reaches the node at all.
 
 Ordinal 9600 puts the choice directly below the two naming exchanges at 10000 and 9900, which is also
-the order the gate needs: the choice stays unavailable until names pass both ways.
+the order the gate needs: the way to unlock it is the choice immediately above it.
 
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
-The combined `OptionQudExpandedCEAskName` switch controls this gift system together with the
-name-sharing system. It is on by default and applies immediately. Turning it off hides the `[give]`
-choice and stops new `Vixy_OpinionGift` updates.
-
-Existing names and gift opinions remain readable. Player renaming, ordinary trade, water rituals and
-unrelated opinions are unchanged. Re-enabling the option restores both systems without requiring a
-new game.
+No option, on rule 6's #663 test: the feature is opt-in at the point of use, since nothing happens to
+a player who does not introduce themselves and then choose to give, ten times over ten days.
 
 **Uninstalling the mod costs the ledger of any creature holding a gift opinion, and nothing else.**
 This is the first time this fork puts a type of its own into a vanilla collection, so it was traced
