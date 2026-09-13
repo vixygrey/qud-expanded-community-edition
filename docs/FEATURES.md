@@ -9515,7 +9515,7 @@ pass.
 |---|---|
 | Snapjaws 36/36 · Merchants 50/50 · Mopango 18/18 · Templar 14/15 · Mechanimists 27/28 · Dromad 14/15 | Robots 0/53 · Unshelled Reptiles 0/32 · Arachnids 0/22 · Insects 0/21 · Fish 0/16 · Winged Mammals 0/15 |
 
-A bat does not hold a cave. Legendary beasts carrying `GivesRep` from `HeroMaker` and corvids carrying Markov dialogue in `Conversations.xml` are filtered out explicitly via `IsAnimal` (#952).
+A bat does not hold a cave.
 
 **Awakened machines hold and ordinary ones do not, and that falls out for free.** The Slynth, Thah
 and the newly sentient pass on their own conversations, `Slynth`, `SlynthWanderer`, `Thah` and

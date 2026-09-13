@@ -185,12 +185,6 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
-- **Legendary beasts and corvids leak through CanHold into territory and regard** (#952).
-  `Vixy_Regard.CanHold` is intended to separate sentient people from wildlife and vermin. In practice,
-  legendary animals generated via `HeroMaker.MakeHero` and corvids carrying Markov corvid dialogue
-  passed the check, allowing wildlife factions to hold territory, generate vacancies, and dispatch
-  warbands. Animal, beast, and plant factions are now filtered out entirely during the check.
-
 - **(internal)** **A wiki claim was anchored on punctuation the wiki no longer uses** (#935).
   `check_docs.py` verifies a figure written on the wiki by matching the sentence around it, and one
   of those patterns anchored on an em dash. The wiki has dropped em dashes from its prose, so the
