@@ -20,7 +20,7 @@ acceptance_criteria:
   - id: "AC-003"
     statement: "The combined toggle gates ask-name, self-introduction, introduction detection, dependent name-sharing choices, the Vixy_Gift conversation choice, and new Vixy_OpinionGift tracking."
     verification:
-      tests: []
+      tests: ["TC-003"]
       manual_checks: ["MC-003"]
   - id: "AC-004"
     statement: "Turning the combined toggle off does not change player renaming, ordinary trade, water rituals, unrelated opinions, existing names, or existing gift opinions."
@@ -78,6 +78,7 @@ impact:
     - "The name-sharing system includes ask-name, self-introduction, introduction detection, and ritual gating."
     - "The gift system must disable new gifts without erasing existing opinion state."
     - "Live option changes can affect conversations already open."
+    - "A familiar choice that reads an existing Vixy_Introduced marker can remain visible while the combined option is disabled unless every marker consumer has a live option gate."
 decision_records: []
 design:
   summary: "Broaden the existing AskName option into one default-on, live social-systems toggle. Gate the complete name-sharing and gift interaction surfaces without changing stored names, opinions, ordinary trade, or water rituals."
@@ -122,8 +123,14 @@ test_plan:
       file: "tools/test_check_docs.py"
       name: "documentation checks pass after the option documentation update"
       command: "python3 -m unittest tools.test_check_docs -v"
-      result: "failed"
-      red_evidence: "Pre-implementation and post-implementation runs fail only ClaimCoverage.test_the_repository_agrees_with_itself_today with three pre-existing claim-coverage findings."
+      result: "passed"
+      red_evidence: "The original documentation check failed on three inherited claim-coverage findings. The repository-wide audit reran this command after those findings were resolved, and all 134 tests passed."
+    - id: "TC-003"
+      file: "tools/test_validate_mod.py"
+      name: "introduced conversation choices require the combined social option gate"
+      command: "python3 -m unittest tools.test_validate_mod.PrefixRecognition.test_introduced_choice_requires_social_gate -v"
+      result: "passed"
+      red_evidence: "The focused red run failed because validate_mod had no check_social_option_gate function. Conversations.xml also contained 50 Vixy_Introduced choices without a live option gate."
   manual_checks:
     - id: "MC-001"
       description: "Open Qud Options > Mods and confirm one combined name-sharing and gift checkbox has clear text and a default of enabled."
@@ -142,18 +149,28 @@ test_plan:
       result: "not_run"
     - id: "MC-006"
       description: "Review documentation for combined scope, default-on behavior, live timing, and existing AskName preference effects."
-      result: "not_run"
+      result: "passed"
     - id: "MC-007"
       description: "Exercise the combined toggle in a Qud conversation flow before and after changing the option."
       result: "not_run"
 verification:
   status: "not_run"
   evidence:
-    - "python3 tools/validate_mod.py --all passed."
-    - "python3 -m unittest tools.test_check_docs -v ran with one pre-existing ClaimCoverage failure."
-    - "git diff --check passed."
+    - "The focused red run failed because validate_mod had no social-option-gate check and 50 familiar choices lacked a live option gate."
+    - "specs/run-feature-tests.sh --green passed TC-001, TC-002, and TC-003."
+    - "python3 tools/compile_scripting.py compiled all 111 C# files with no warnings."
+    - "python3 -m unittest discover -s tools -v passed all 753 tests."
+    - "python3 tools/check_docs.py passed."
+    - "ruff check tools/ and ruff format --check tools/ passed."
+    - "basedpyright tools/ passed with no errors, warnings, or notes."
+    - "npx prettier --check \"mod/**/*.xml\" \"mod/**/*.rpm\" passed."
+    - "pre-commit run --all-files passed."
+    - "specs/validate-context.sh passed."
+    - "The game compiled and loaded the byte-identical development build with all 111 C# files."
+    - "In-game option and conversation interaction checks remain pending."
 implementation_plan:
-  files_to_create: []
+  files_to_create:
+    - "mod/Scripting/Vixy_SocialEnabled.cs"
   files_to_modify:
     - "mod/Core/Options.xml"
     - "mod/Core/Conversations.xml"
@@ -165,6 +182,11 @@ implementation_plan:
     - "mod/Scripting/Vixy_Gift.cs"
     - "mod/Scripting/Vixy_OpinionGift.cs"
     - "docs/FEATURES.md"
+    - "docs/STYLEGUIDE.md"
+    - "tools/validate_mod.py"
+    - "tools/test_validate_mod.py"
+    - "specs/active-feature.yaml"
+    - "specs/state.yaml"
     - "CHANGELOG.md"
   files_to_delete: []
   files_to_rename: []

@@ -2213,7 +2213,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 110 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 111 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -9148,9 +9148,14 @@ on **register, characterisation, axis and arc shape**, close on a single creatur
 
 ### 61.6 Off-switch
 
-None, and that is rule 6's #663 test applied rather than skipped: this changes no mechanic, takes
-nothing away, and nobody would turn it off. Every line is additive `Load="Merge"` content on four
-conversations, so removing the mod restores vanilla exactly.
+The combined `OptionQudExpandedCEAskName` switch controls familiar dialogue with the other
+name-sharing and gift choices. It is on by default and applies immediately.
+
+Turning it off hides ask-name, self-introduction, introduction detection, familiar dialogue, and
+gift choices. Existing introduction markers, names, and gift opinions remain stored.
+
+Re-enabling the option restores both systems without a new game. Player renaming, ordinary trade,
+water rituals, and unrelated opinions remain unchanged.
 
 ---
 
