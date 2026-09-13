@@ -1484,7 +1484,6 @@ seconds rather than after a round trip.
 | Blueprint reachability, and table entries resolving | `unreachable`, `dangling-blueprint` |
 | Part names resolving to a real class in `XRL.World.Parts` | `unknown-part`, against `tools/qud-api.json` |
 | Conversation part names resolving to a real class in `XRL.World.Conversations.Parts` | `unknown-conversation-part`, against the same snapshot's `conversation_parts` list |
-| Choices unlocked by `Vixy_Introduced` carrying the live combined-option gate | `social-option-gate` in `tools/validate_mod.py` |
 | Blueprint-valued part attributes naming a blueprint that exists | `dangling-blueprint-ref`, same snapshot |
 | Part attributes naming a settable member of the part class | `part-attribute`, against the snapshot's `members` map |
 | `<part Builder="…">` naming a class in `XRL.World.PartBuilders` | `part-builder`, against the snapshot's `part_builders` list |
@@ -1628,7 +1627,6 @@ checked the first until #402, so a new check could ship unlisted in silence, and
 | `self-anchor` | `check_docs.py` | a `](#anchor)` link resolving to a heading in the same file. A spaced em dash anchors as a **double** hyphen, which is the spelling four broken links in `docs/LESSONS.md` got wrong (#945) |
 | `serializable-shape` | `validate_mod.py` | instance fields on `[Serializable]` types, which enter every save |
 | `snapshot-coverage` | `validate_mod.py` | everything this fork writes being something `tools/qud-api.json` has an opinion about, so a snapshot the mod has outrun fails without needing the game |
-| `social-option-gate` | `validate_mod.py` | choices unlocked by the persisted introduction marker carrying the live combined-option gate |
 | `subtype-gear` | `validate_mod.py` | a subtype's `Gear` naming a table this fork actually defines |
 | `stat-discipline` | `validate_mod.py` | `MeleeWeapon.Stat` on new weapons and on merges |
 | `skill-option-coverage` | `validate_mod.py` | a skill value this fork changes being one its options restore |

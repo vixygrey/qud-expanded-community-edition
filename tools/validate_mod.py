@@ -4026,29 +4026,6 @@ def check_conversation_part_names(
                 )
 
 
-def check_social_option_gate(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
-    """Every persisted introduction-marker choice must also read the live social option.
-
-    Disabling the option preserves Vixy_Introduced on each speaker. The XML property predicate
-    therefore remains true until a conversation part votes the choice invisible.
-    """
-    for path, root in all_roots.items():
-        for choice in root.iter("choice"):
-            if choice.get("IfSpeakerHaveProperty") != "Vixy_Introduced":
-                continue
-            if any(
-                part.get("Name") == "Vixy_SocialEnabled" for part in choice.iter("part")
-            ):
-                continue
-            owner = choice.get("ID") or choice.get("Target") or "<unnamed>"
-            f.add(
-                "social-option-gate",
-                f"{path}: choice {owner} reads the persisted Vixy_Introduced marker without "
-                '<part Name="Vixy_SocialEnabled">, so it remains visible while the combined '
-                "social option is disabled",
-            )
-
-
 def check_mutation_type_arguments(f: Findings) -> None:
     """Every `ModImprovedMutationBase<T>` must name a `T` the game will actually grant.
 
@@ -4496,7 +4473,6 @@ def run() -> Findings:
     check_table_targets(f, roots)
     check_part_names(f, roots)
     check_conversation_part_names(f, roots)
-    check_social_option_gate(f, roots)
     check_blueprint_refs(f, roots)
     check_part_attributes(f, roots)
     check_bit_letters(f, roots)

@@ -1,11 +1,11 @@
 schema_version: "1.0"
 meta:
-  last_updated: "2026-09-13T00:36:00Z"
+  last_updated: "2026-09-12T15:45:00Z"
   active_feature_id: "issue-963-social-system-options"
 milestone:
   phase_id: "verification"
   phase_name: "Verification"
-  completion_percentage: 90
+  completion_percentage: 80
 status_board:
   blocked: false
   block_reason: null
@@ -24,12 +24,12 @@ status_board:
     - id: "T-004"
       title: "Implement name-sharing and gift toggles"
 system_health:
-  formatting: "passed"
-  linting: "passed"
-  build: "passed"
-  type_check: "passed"
-  unit_tests: "passed"
-  integration_tests: "passed"
+  formatting: "not_run"
+  linting: "not_run"
+  build: "not_run"
+  type_check: "not_run"
+  unit_tests: "not_run"
+  integration_tests: "not_run"
   end_to_end_tests: "not_run"
 task_checklist:
   - id: "T-001"
@@ -37,13 +37,13 @@ task_checklist:
     status: "complete"
   - id: "T-002"
     title: "Design option and conversation gates"
-    status: "complete"
+    status: "in_progress"
   - id: "T-003"
     title: "Design automated and manual verification"
-    status: "complete"
+    status: "pending"
   - id: "T-004"
     title: "Implement name-sharing and gift toggles"
-    status: "complete"
+    status: "pending"
   - id: "T-005"
     title: "Run verification and update project records"
-    status: "in_progress"
+    status: "pending"
