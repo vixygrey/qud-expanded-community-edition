@@ -61,7 +61,6 @@ namespace QudExpandedCE
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
         public const string TravellingBandsID = "OptionQudExpandedCETravellingBands";
-        public const string WildlifeRecoveryID = "OptionQudExpandedCEWildlifeRecovery";
 
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
@@ -648,10 +647,6 @@ namespace QudExpandedCE
         /// menu line and one that does not.
         /// </remarks>
         public static bool TravellingBands => Enabled(TravellingBandsID, "No");
-        /// <summary>
-        /// Whether wilderness zones recover a small amount of wildlife after a month away.
-        /// </summary>
-        public static bool WildlifeRecovery => Enabled(WildlifeRecoveryID, "No");
 
         /// <summary>
         /// Whether a charmed merchant still charges for their goods.
