@@ -18,14 +18,6 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
-### Changed
-
-### Fixed
-
-## [2.18.0] - 2026-09-09
-
-### Added
-
 - **(internal)** **Corpus JSON files are exempt from codepage-text transliteration checks** (#933).
   Qud's procedural text generator loads `LibraryCorpus.json` via `JsonUtility` without character
   translation, and vanilla authors book prose using raw code page 437 byte values directly.
