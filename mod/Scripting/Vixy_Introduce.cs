@@ -57,6 +57,7 @@ namespace XRL.World.Conversations.Parts
         /// </remarks>
         public static bool Possible(GameObject speaker)
         {
+            if (!Raven_Options.NameSharingAndGifts) return false;
             if (speaker == null || !speaker.IsCreature) return false;
             if (speaker.HasPropertyOrTag("NoAskName")) return false;
             if (ConversationUI.StartNode == null || !ConversationUI.StartNode.AllowEscape) return false;
@@ -75,11 +76,8 @@ namespace XRL.World.Conversations.Parts
             if (Vixy_AskName.SaysNothing(ConversationUI.CurrentConversation)) return false;
 
             // Giving my name is flavour and changes no mechanic, so charter rule 6 says it does not
-            // earn an option and it is always on - #633. The named are reachable through this part
-            // unconditionally; the nameless are reachable through Vixy_AskName, which has its own
-            // option, so if that is off an unnamed creature genuinely cannot be introduced to and
-            // the ritual gate must fall open.
-            return speaker.HasProperName || Raven_Options.AskName;
+            // earn an option and it is always on. The combined option gates this path as well.
+            return speaker.HasProperName || Raven_Options.NameSharingAndGifts;
         }
 
         /// <summary>Whether a name has already passed between us.</summary>
@@ -97,11 +95,8 @@ namespace XRL.World.Conversations.Parts
         {
             GameObject speaker = The.Speaker;
 
-            // No option check. Giving somebody my name changes no mechanic, so rule 6 leaves it
-            // always on - #633 needs the marker on Elder Irudad and Warden Yrame, neither of whom
-            // vanilla wrote an introduction for, and gating it behind the water-ritual option would
-            // have put half that cast behind a switch that has nothing to do with them.
-            // OptionQudExpandedCEWaterBond still gates the ritual consequence in Vixy_RitualGate.
+            // Name sharing is the combined live option. Existing markers remain valid when it is off.
+            if (!Raven_Options.NameSharingAndGifts) return false;
             if (speaker == null) return false;
             if (ConversationUI.StartNode == null || !ConversationUI.StartNode.AllowEscape) return false;
 
@@ -124,9 +119,9 @@ namespace XRL.World.Conversations.Parts
             return base.HandleEvent(E);
         }
 
-        /// <summary>Remembers that I gave my name, the moment the words are chosen.</summary>
-        public override bool HandleEvent(EnterElementEvent E)
+        public override bool HandleEvent(EnteredElementEvent E)
         {
+            if (!Raven_Options.NameSharingAndGifts) return false;
             The.Speaker?.SetIntProperty(Marker, 1);
             return base.HandleEvent(E);
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using QudExpandedCE;
 using XRL.UI;
 using XRL.World.AI;
 using XRL.World.Parts;
@@ -116,7 +117,7 @@ namespace XRL.World.Conversations.Parts
         /// </remarks>
         public override bool HandleEvent(GetTargetElementEvent E)
         {
-            if (Vixy_OpinionGift.Familiar(The.Speaker, The.Player))
+            if (Raven_Options.NameSharingAndGifts && Vixy_OpinionGift.Familiar(The.Speaker, The.Player))
             {
                 E.Target = WarmNode;
             }
@@ -169,9 +170,9 @@ namespace XRL.World.Conversations.Parts
         /// </remarks>
         public override bool HandleEvent(IsElementVisibleEvent E)
         {
+            if (!Raven_Options.NameSharingAndGifts) return false;
             GameObject speaker = The.Speaker;
             if (speaker == null || !speaker.IsCreature) return false;
-
             // A dominated creature under my control holds no opinions at all - Brain
             // .TryGetOpinions returns false for IsPlayer() - so the gift would silently vanish.
             if (speaker.IsPlayer()) return false;
@@ -191,6 +192,7 @@ namespace XRL.World.Conversations.Parts
 
         public override bool HandleEvent(EnterElementEvent E)
         {
+            if (!Raven_Options.NameSharingAndGifts) return false;
             GameObject player = The.Player;
             GameObject speaker = The.Speaker;
             if (player?.Inventory == null || speaker == null)

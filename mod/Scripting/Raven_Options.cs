@@ -599,21 +599,17 @@ namespace QudExpandedCE
         public static bool TrashDiviningDensity => Enabled(TrashDiviningDensityID, "Yes");
 
         /// <summary>
-        /// Whether a nameless creature can be asked what it is called.
+        /// Whether the fork's name-sharing and gift systems are enabled.
         ///
-        /// Live, and the off-switch is a runtime decision: <c>Vixy_AskName</c> reads this each time
-        /// the choice is offered, so turning it off hides the question from the next conversation
-        /// onward. Names already given are kept - they are stored on the creature like any other
-        /// proper name, and a creature that has told me who it is does not become nameless again.
+        /// Live, and the off-switch is a runtime decision: the conversation parts read this when
+        /// they offer or enter their choices. Turning it off hides those choices and stops new
+        /// introduction markers and gift opinions. Existing names, markers and gift opinions stay
+        /// in the save and work again when the option is enabled.
         ///
-        /// Defaults on. Rule 6 reserves "off by default" for a change that grants power with no
-        /// content attached; this grants a question, and the thing it gives back is a name the
-        /// creature already had. It also takes something away, which is the reason this option
-        /// exists at all rather than shipping unconditionally: asking forecloses renaming, and a
-        /// player who names their companions should be able to keep doing that without meeting the
-        /// question every time they talk to one.
+        /// Defaults on. The option continues the established Ask Name behavior and adds a player
+        /// choice for the connected gift system.
         /// </summary>
-        public static bool AskName => Enabled(AskNameID, "Yes");
+        public static bool NameSharingAndGifts => Enabled(AskNameID, "Yes");
 
         /// <summary>
         /// Whether an artifact I marked important is kept out of Argyve's picker.

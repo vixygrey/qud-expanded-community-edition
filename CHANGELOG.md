@@ -163,6 +163,10 @@ recorded because contributors need them, not because subscribers do.
   Nothing ships wrong today — measured at 0 before the check landed.
 
 ### Changed
+- **Name sharing and gifts now share one live option** (#963). `OptionQudExpandedCEAskName` remains
+  enabled by default, hides both systems when disabled, preserves existing names and gift opinions,
+  and supports re-enabling without a new character.
+
 
 - **(internal)** **The five short documents lost their em dashes** (#936). `AGENTS.md`, `README.md`,
   `CONTRIBUTING.md`, `docs/CHARTER.md` and `docs/STYLEGUIDE.md`, 402 of them, each sentence rebuilt
