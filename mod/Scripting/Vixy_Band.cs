@@ -59,6 +59,19 @@ namespace XRL.World.Parts
         /// </remarks>
         public const string FactionProperty = "Vixy_BandFaction";
 
+        /// <summary>The selected reason for the journey.</summary>
+        public const string MissionProperty = "Vixy_BandMission";
+
+        /// <summary>The recorded holding the token left.</summary>
+        public const string OriginProperty = "Vixy_BandOrigin";
+
+        /// <summary>The vacancy the token was sent to fill.</summary>
+        public const string TargetProperty = "Vixy_BandTarget";
+
+        public const string ReclaimMission = "reclaim";
+        public const string RivalExpansionMission = "rival-expansion";
+        public const string ExpansionMission = "expansion";
+
         public override bool WantEvent(int ID, int cascade)
         {
             return base.WantEvent(ID, cascade) || ID == EnteredCellEvent.ID;

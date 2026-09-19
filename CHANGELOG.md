@@ -18,6 +18,17 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **Bands now reclaim and expand for a reason** (#924). When an eligible vacancy opens, its former
+  holder can reclaim it from the nearest remaining holding. Otherwise the most hostile nearby people
+  expand into it, followed by neutral people when no rival qualifies.
+
+  Settlements, historic sites, artifact sites, merchants, oddities, and hand-built static places
+  cannot receive a band. Each evaluated vacancy is spent whether it sends a band or not, so protected
+  places cannot become a repeatable encounter source.
+
+  A travelling token now records its mission, origin, and target. `vixyband` reports these facts and
+  the target's site flags while it travels.
+
 - **(internal)** **A document's links to its own headings are checked now** (#945). `check_docs.py`
   verified the wiki's links into this repository and every relative path between documents, and
   never a link from a document to a heading inside itself. Four sat broken in `docs/LESSONS.md` for

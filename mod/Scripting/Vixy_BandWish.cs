@@ -44,9 +44,28 @@ namespace XRL
             {
                 AIWorldMapTravel travel = o.GetPart<AIWorldMapTravel>();
                 Cell at = o.CurrentCell;
+                string faction = o.GetStringProperty(Vixy_Band.FactionProperty, "?");
+                string mission = o.GetStringProperty(Vixy_Band.MissionProperty);
+                string origin = o.GetStringProperty(Vixy_Band.OriginProperty);
+                string target = o.GetStringProperty(Vixy_Band.TargetProperty);
+
+                if (mission.IsNullOrEmpty() || origin.IsNullOrEmpty() || target.IsNullOrEmpty())
+                {
+                    flight.Add(
+                        "{{G|" + faction + "}}  {{K|legacy token}}"
+                        + "  at " + (at == null ? "nowhere" : at.X + "," + at.Y)
+                        + "  bound for " + (travel == null
+                            ? "{{R|no route}}"
+                            : travel.ParasangX + "," + travel.ParasangY)
+                    );
+                    continue;
+                }
+
                 flight.Add(
-                    "{{G|" + o.GetStringProperty(Vixy_Band.FactionProperty, "?") + "}}"
-                    + "  at " + (at == null ? "nowhere" : at.X + "," + at.Y)
+                    "{{G|" + faction + "}}  " + mission
+                    + "\n    from " + origin
+                    + "\n    to " + target + "  {{K|" + Vixy_BandDispatch.DescribeSite(target) + "}}"
+                    + "\n    at " + (at == null ? "nowhere" : at.X + "," + at.Y)
                     + "  bound for " + (travel == null
                         ? "{{R|no route}}"
                         : travel.ParasangX + "," + travel.ParasangY)
@@ -100,19 +119,15 @@ namespace XRL
         }
 
         /// <summary>
-        /// <c>vixyband &lt;faction&gt;</c> — send one from anywhere that faction holds, to the
-        /// vacancy nearest to hand.
+        /// <c>vixyband &lt;faction&gt;</c> — send one explicit expansion from a recorded holding.
         /// </summary>
         /// <remarks>
-        /// Deliberately uses the ordinary dispatch path rather than a shortcut, so what this
-        /// produces is what play produces.
+        /// Deliberately uses the ordinary sender rather than a shortcut, so the token has the same
+        /// route and complete metadata as a dispatched band. The mission is <c>expansion</c> because
+        /// this wish supplies the faction and does not infer a relationship.
         /// <para>
-        /// <b>It falls back to wherever I am standing, and says so.</b> Recorded vacancies used to
-        /// accumulate, so there was nearly always one lying about to aim at; since #929 spends every
-        /// vacancy on the dispatch that considered it, there is usually none. Refusing on that
-        /// ground would leave the only instrument for #832's two unverified questions unable to
-        /// fire. Sending a band to my own zone is also the better test of the pair — arrival is the
-        /// half that builds a party, and this is the one way to be standing in it when that happens.
+        /// With no vacancy on record the target is wherever I stand. That keeps arrival observable
+        /// without inventing a vacancy, and it is the one way to stand in the destination.
         /// </para>
         /// </remarks>
         [WishCommand("vixyband", null)]
@@ -166,7 +181,12 @@ namespace XRL
                 return;
             }
 
-            bool sent = Vixy_BandDispatch.Send(Faction, from, destination);
+            bool sent = Vixy_BandDispatch.Send(
+                Faction,
+                Vixy_Band.ExpansionMission,
+                from,
+                destination
+            );
             Popup.Show(sent
                 ? "{{G|" + Faction + "}} set out from " + from + "\nfor " + destination + "."
                     + (here ? "\n\n{{K|No recorded vacancy, so they are bound for where I stand.}}" : "")
