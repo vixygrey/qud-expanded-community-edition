@@ -153,7 +153,7 @@ namespace XRL
             {
                 The.ZoneManager.SetZoneProperty(id, Vacated, was);
                 The.ZoneManager.RemoveZoneProperty(id, HeldBy);
-                Vixy_BandDispatch.OnVacancy(id, was);
+                Vixy_BandDispatch.OnVacancy(Zone, was);
             }
         }
 

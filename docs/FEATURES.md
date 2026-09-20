@@ -9657,47 +9657,44 @@ The compromise is stated rather than hidden: **the world moves when you move thr
 still while you are underground.** The consolation is that the only time a band moves is the only
 time you could have watched it, so nothing happens unseen.
 
-### 65.5 The reason, and only this one
+### 65.5 A band has a reason, origin, and target
 
-A place somebody held and no longer does is a vacancy, and a people who hold ground elsewhere may
-want it. That is the whole trigger. It works only because §64 records who held a place.
+A vacancy is not a random encounter source. The dispatch first classifies the vacated zone from its
+journal map notes and immutable cell blueprint. Settlements, historic and artifact sites, merchants,
+oddities, hand-built static cells, and proper-named sites without a lair or ruins flag are protected.
+Ordinary wilderness, lairs, and ruins can qualify. A protected site is still spent when considered,
+so it never becomes a rerollable source.
 
-**Who comes is deliberately dumb**: a faction §64 has recorded holding some *other* zone, and never
-the people who just lost this one, which would be a respawn wearing a journey, which is what #830
-decided against. So the world reclaims using peoples you have actually met, and no new data is
-invented to decide it. Site types, sacred places and a model of what each faction wants are #924.
+Every candidate origin is a recorded `Vixy_HeldBy` zone in the same world. Distance is Manhattan
+distance between parasangs. The dispatch chooses one mission in order:
 
-The band sets out from a parasang its faction actually holds, so the distance walked is the real
-distance between two places, paced by `TerrainTravel`.
+1. **Reclaim** — the former holder leaves from its nearest other recorded holding.
+2. **Rival expansion** — otherwise the holder with the most negative
+   `Faction.GetFeelingTowardsFaction()` value leaves from its nearest holding.
+3. **Expansion** — otherwise the nearest neutral holder leaves.
 
-**Once per vacancy, and one in four.** The vacancy is spent by the dispatch that considers it,
-answered or not, because a place that can be answered twice is a faucet, which is #802's lesson
-already paid for once. The roll on top is what keeps this at the edge of attention rather than
-around you.
+Positive relationships cannot expand into a former holder's territory. Equal relationship and
+distance results break randomly. The one-in-four roll remains last, after the target, mission,
+faction, origin, and world-map placement qualify.
 
-**Spent on the decision rather than on the outcome, which took a correction.** The record was
-originally cleared only when a band actually set out, and that read as though a vacancy nobody
-answered were still queued for one. It never was: §64 removes a zone's holder in the same breath as
-it records the vacancy, and the holder is what the branch tests, so a place is offered to this exactly
-once and whatever is decided is decided for good. Three vacancies in four therefore sat in `vixyband`
-under a heading promising an answer that could not come. The roll now sits last, after a neighbour and
-an origin have been found, so *one in four* describes openings somebody could actually have set out
-for, which changes no outcome, since a band still needs all four to agree. #929.
+New tokens store `Vixy_BandFaction`, `Vixy_BandMission`, `Vixy_BandOrigin`, and
+`Vixy_BandTarget` as object properties. A token from an earlier save can lack the new properties and
+still arrives through the faction-only path. Arrival itself still only calls
+`FactionEncounters.BuildFactionEncounter()`. Territory changes later, when `Vixy_Territory` observes
+the resulting zone on deactivation.
 
 ### 65.6 `vixyband`
 
 A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
 one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
-`vixyband` lists what is in flight, where each is bound, and what vacancies are on record. **An empty
-list is the resting state, not a queue that ran dry**: with the option on, every vacancy is spent as
-it is considered, so a name sitting there is a defect worth chasing rather than a band still owed.
+`vixyband` lists a token's faction, mission, origin, target, derived site flags, current map
+position, and route. A token from an earlier save is marked as legacy. An empty list is the resting
+state, not a queue that ran dry: with the option on, every vacancy is spent as it is considered.
 
-`vixyband <faction>` sends one now, through the ordinary dispatch path rather than a shortcut, so what
-it produces is what play produces. With no vacancy on record it aims at the zone you are standing in
-and says that it did, which is also the better test of the two halves: arrival is the half that builds
-a party, and this is the only way to be standing in the zone when that happens. It refuses only from
-the world map, which is neither a parasang nor a zone and so cannot be a destination.
+`vixyband <faction>` sends an explicit `expansion` token through the ordinary sender. It stores the
+same metadata as play. With no vacancy on record it targets the zone you are standing in, which keeps
+arrival observable without inventing a vacancy.
 
 ### 65.7 Off-switch, and what stays out
 
