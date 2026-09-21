@@ -18,6 +18,14 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [2.19.0] - 2026-09-21
+
+### Added
+
 - **Bands now reclaim and expand for a reason** (#924). When an eligible vacancy opens, its former
   holder can reclaim it from the nearest remaining holding. Otherwise the most hostile nearby people
   expand into it, followed by neutral people when no rival qualifies.
@@ -44,6 +52,22 @@ recorded because contributors need them, not because subscribers do.
 
   The first version failed on the styleguide row describing it, because that row quotes the link
   syntax as an example. Code is stripped before matching now, and that case is pinned in a test.
+
+### Changed
+
+- **Name sharing and gifts now share one live option** (#963). `OptionQudExpandedCEAskName` remains
+  enabled by default, hides both systems when disabled, preserves existing names and gift opinions,
+  and supports re-enabling without a new character.
+
+## [2.18.0] - 2026-09-09
+
+### Added
+
+- **(internal)** **Corpus JSON files are exempt from codepage-text transliteration checks** (#933).
+  Qud's procedural text generator loads `LibraryCorpus.json` via `JsonUtility` without character
+  translation, and vanilla authors book prose using raw code page 437 byte values directly.
+  `check_codepage_text` now detects Markov corpus schemas and skips transliteration validation
+  on them, preventing false positives on intentional raw bytes.
 
 - **Peoples send bands to places that fall empty** (#832). **Off by default.** Clear a lair to the
   last of its holders and, sometimes, another people sets out to take it — crossing the world map as
@@ -174,10 +198,6 @@ recorded because contributors need them, not because subscribers do.
   Nothing ships wrong today — measured at 0 before the check landed.
 
 ### Changed
-- **Name sharing and gifts now share one live option** (#963). `OptionQudExpandedCEAskName` remains
-  enabled by default, hides both systems when disabled, preserves existing names and gift opinions,
-  and supports re-enabling without a new character.
-
 
 - **(internal)** **The five short documents lost their em dashes** (#936). `AGENTS.md`, `README.md`,
   `CONTRIBUTING.md`, `docs/CHARTER.md` and `docs/STYLEGUIDE.md`, 402 of them, each sentence rebuilt
@@ -192,7 +212,14 @@ recorded because contributors need them, not because subscribers do.
   pages, and after the rewrite it holds 89 across 27; it also said renaming one heading breaks five
   links, where those 89 land on 67 distinct headings and the worst case is four.
 
+
 ### Fixed
+
+- **Legendary beasts and corvids leak through CanHold into territory and regard** (#952).
+  `Vixy_Regard.CanHold` is intended to separate sentient people from wildlife and vermin. In practice,
+  legendary animals generated via `HeroMaker.MakeHero` and corvids carrying Markov corvid dialogue
+  passed the check, allowing wildlife factions to hold territory, generate vacancies, and dispatch
+  warbands. Animal, beast, and plant factions are now filtered out entirely during the check.
 
 - **(internal)** **A wiki claim was anchored on punctuation the wiki no longer uses** (#935).
   `check_docs.py` verifies a figure written on the wiki by matching the sentence around it, and one
