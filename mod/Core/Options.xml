@@ -763,4 +763,26 @@
             own opinion, and this changes it.
         </helptext>
   </option>
+
+  <option
+    ID="OptionQudExpandedCEWildlifeRecovery"
+    DisplayText="{{C|Qud Expanded}}: cleared wilderness slowly regains wildlife"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded wildlife ecology animals fauna recovery respawn wilderness"
+  >
+    <helptext>
+            After a month away, a cleared wilderness zone can regain a small
+            cohort drawn only from the wildlife it originally contained.
+
+            Recovery never rebuilds settlements or named places, never fills a
+            zone around surviving fauna, and stops after three cohorts per zone.
+
+            {{y|Time away counts while this is off.}} Turning it on permits a
+            long-abandoned eligible zone to recover when you next return.
+
+            {{y|Off by default.}}
+        </helptext>
+  </option>
 </options>

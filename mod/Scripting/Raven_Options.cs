@@ -61,6 +61,8 @@ namespace QudExpandedCE
         public const string PronounSelectionID = "OptionQudExpandedCEPronounSelection";
 
         public const string TravellingBandsID = "OptionQudExpandedCETravellingBands";
+        public const string WildlifeRecoveryID = "OptionQudExpandedCEWildlifeRecovery";
+
 
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
@@ -643,6 +645,18 @@ namespace QudExpandedCE
         /// menu line and one that does not.
         /// </remarks>
         public static bool TravellingBands => Enabled(TravellingBandsID, "No");
+
+        /// <summary>Whether cleared wilderness can regain a little of its original wildlife.</summary>
+        /// <remarks>
+        /// Live at recovery time. Departure turns are recorded regardless, so turning this on after
+        /// a long absence permits recovery on the next eligible return; turning it off prevents the
+        /// placement and changes nothing else. The finite per-zone budget is never reset.
+        ///
+        /// Defaults off under charter rule 6: wildlife staying gone is vanilla's behaviour, and
+        /// changing it creates creatures and rewards without a player action in that zone.
+        /// </remarks>
+        public static bool WildlifeRecovery => Enabled(WildlifeRecoveryID, "No");
+
 
         /// <summary>
         /// Whether a charmed merchant still charges for their goods.

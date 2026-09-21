@@ -116,12 +116,13 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Oathbreaker>();
                 player.RequirePart<Vixy_Defends>();
 
-                // Not a part, and not on the player - Vixy_Territory is an IGameSystem, because
-                // the zone events it wants dispatch to The.Game and never to the player. It is
-                // installed from here anyway, because this class already owns the two moments that
-                // matter: chargen for a new character, and CallAfterGameLoaded for an existing
-                // save. RequireSystem is idempotent the same way RequirePart is. See #923.
+                // These are not parts, and not on the player: Vixy_Territory and
+                // Vixy_WildlifeRecovery hear zone events that dispatch to The.Game rather than to
+                // the player. They are installed here because this class owns chargen and
+                // CallAfterGameLoaded for existing saves. RequireSystem is idempotent just like
+                // RequirePart. See #923 and #951.
                 The.Game?.RequireSystem<Vixy_Territory>();
+                The.Game?.RequireSystem<Vixy_WildlifeRecovery>();
             }
         }
     }

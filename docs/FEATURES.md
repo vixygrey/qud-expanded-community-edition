@@ -2190,7 +2190,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 35 options (§13)
+│   ├── Options.xml             # 36 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2216,12 +2216,12 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 108 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 110 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
-│                               # their opinions, the territory record, the
-│                               # travelling bands, and four Finesse powers
+│                               # their opinions, the territory record, wildlife
+│                               # recovery, travelling bands, and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2259,7 +2259,7 @@ Mura's original documents are NOT in mod/; they live in docs/, outside what ship
 
 ## 13. Options (`Options.xml`)
 
-Thirty-five options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -2323,6 +2323,7 @@ rather than anything the mod already was.
 | the water ritual is a relationship | Checkbox | **No** | Whether the ritual waits on an introduction, and whether a repeat is offered once you have risen in their people's eyes. Introducing yourself is always available and never waits on this. §57. |
 | killing a water-sibling costs everything | Checkbox | **No** | Whether anyone who thought well of you falls to nothing before vanilla's flat curse lands. If you were already disliked, nothing changes. §58. |
 | peoples send bands to places that fall empty | Checkbox | **No** | Whether emptying a lair can send another people to take it, crossing the world map as a real object. Moves only while you travel overland. §65. |
+| cleared wilderness slowly regains wildlife | Checkbox | **No** | After 30 days away, an eligible wilderness zone can regain at most three small cohorts from the wildlife that vanilla originally placed there. §66. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -9721,6 +9722,66 @@ emptied before the switch was flipped stay empty. `vixyband` marks the list as i
 in that state rather than letting it read as a backlog. Giving those records a second chance means a
 vacancy that can be re-rolled on every departure, which tends toward certainty and is #802's faucet in
 a new shape, so it wants its own cap and its own issue, not a quiet extension of this one.
+
+---
+
+## 66. Cleared wilderness regains a little wildlife (`Vixy_WildlifeRecovery`)
+
+**Off by default.** A wilderness zone that the player clears and leaves alone for a month can regain
+one or two animals from the creatures vanilla originally placed there. This is ecological recovery,
+not a faction band: no origin token travels, no population table is replayed, and no message announces
+it.
+
+### 66.1 The completed zone is the source
+
+`AfterZoneBuiltEvent` arrives after ordinary generation, wall painting, and water painting. The
+system records the distinct blueprints of living, ordinary `Animal` descendants present at that
+moment in `Vixy_WildlifePool`. That catches the site's actual local mix, including compatible mod
+creatures, without rerolling template nodes that can also create traders, faction encounters, loot,
+bosses, and decoration.
+
+`Animal` is Qud's own creature lineage. The recovery predicate excludes the player, companions,
+temporary objects, proper-named creatures, robots, people, and plants. Fish, insects, arachnids,
+worms, shellfish, and ooze-like animals remain eligible because they inherit the same root.
+
+### 66.2 Recovery happens on return, not in the background
+
+Frozen zones do not tick. On `ZoneDeactivatedEvent`, an eligible built zone records
+`Vixy_WildlifeLastLeft`; on `ZoneActivatedEvent`, it checks the elapsed turns and may add one small
+cohort. No cached zone wakes and no off-screen ecology runs.
+
+Activation happens after the player has entered the destination cell. The system therefore excludes
+the arrival cell and the five cells around it, rather than mistaking the expected arriving player for
+a settlement footprint.
+
+### 66.3 What never recovers, and why
+
+The shared `Vixy_BandDispatch.IsProtectedSite` policy excludes static maps, settlements, historic
+sites, artifact sites, merchants, oddities, and protected proper-named sites. It also excludes the
+world map and a zone the player explicitly named. A named zone is Qud's durable player-claim flag.
+Generic containers, beds, and campfires are not evidence of ownership, because vanilla uses them too.
+
+### 66.4 A finite return, not a farm
+
+Recovery requires a full `30 * Calendar.TurnsPerDay` absence, no currently living local wildlife, a
+recorded pool, and a remaining budget. Each zone receives at most **three** qualifying cohorts of
+**one or two** creatures, so it can yield no more than six recovered animals over its save. The
+attempt is spent even when its pool can no longer create an object or no legal cell remains. Killing a
+cohort cannot turn a cleared zone into an unbounded source of experience or corpses.
+
+Time away counts while the option is off. The switch gates placement rather than the ecological clock,
+so enabling it can make a genuinely long-abandoned eligible zone recover on return. Turning it off
+stops placement immediately and does not reset the finite budget.
+
+### 66.5 Placement and diagnostics
+
+The system precomputes a legal cell and calls `Cell.AddObject` directly. It never uses
+`ZoneBuilderSandbox.PlaceObjectInArea`: its fallback can select an occupied combat cell and then fail
+to move away from it. Connections, spawn blockers, occupied combat cells, unsuitable aquatic support,
+and unsuitable wall cells are excluded with no fallback.
+
+`vixywildlife` reports the active zone's option state, eligibility, pool size, current wildlife,
+remaining cohorts, and departure and attempt times. It changes nothing.
 
 ## Appendix A: every merged vanilla melee weapon
 

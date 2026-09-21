@@ -69,8 +69,7 @@ namespace XRL
             // stay spent rather than becoming a rerollable encounter source.
             The.ZoneManager.RemoveZoneProperty(target, Vixy_Territory.Vacated);
 
-            Site site = Classify(target, Zone);
-            if (site.Protected) return;
+            if (IsProtectedSite(target, Zone)) return;
 
             if (!TryCoordinates(target, out string world, out int x, out int y)) return;
 
@@ -120,6 +119,14 @@ namespace XRL
         public static string DescribeSite(string ZoneID)
         {
             return Classify(ZoneID, null).Flags;
+        }
+
+        /// <summary>
+        /// Whether the shared site policy keeps this zone out of emergent world systems.
+        /// </summary>
+        public static bool IsProtectedSite(string ZoneID, Zone Loaded = null)
+        {
+            return Classify(ZoneID, Loaded).Protected;
         }
 
         private static Site Classify(string ZoneID, Zone Loaded)
