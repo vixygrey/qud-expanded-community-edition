@@ -17,6 +17,15 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+- **Cleared wilderness can regain its original wildlife slowly** (#951). **Off by default.** After a
+  full month away, an eligible zone can receive a small cohort selected only from the animals vanilla
+  originally placed there.
+
+  Static and named sites, settlements, player-named zones, surviving wildlife, and unsafe cells are
+  excluded. Each zone has a three-cohort lifetime budget, so recovery cannot become a repeatable
+  source of creatures, experience, or corpses. `vixywildlife` reports the active zone's recovery
+  record for QA.
+
 
 ### Changed
 
