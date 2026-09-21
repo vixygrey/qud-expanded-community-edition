@@ -41,7 +41,7 @@ repos:
     # it out of here rather than pinning it again, so Dependabot's bump merges on its own and there
     # is no second file to remember. `check_ruff_is_derived` in tools/check_docs.py fails if that
     # step is ever reworded back into a literal pin.
-    rev: v0.16.6
+    rev: v0.16.8
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -52,7 +52,7 @@ repos:
   - repo: https://github.com/crate-ci/typos
     # Must match the crate-ci/typos pin in .github/workflows/ci.yml — see the note there.
     # Dependabot tracks the two in separate ecosystems, so it moves one without the other.
-    rev: v1.50.1
+    rev: v1.50.2
     hooks:
       - id: typos
         args: [--config, .typos.toml]
