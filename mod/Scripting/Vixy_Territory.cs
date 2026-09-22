@@ -89,6 +89,12 @@ namespace XRL
         /// <summary>Set once a zone that was held has been emptied of its holders.</summary>
         public const string Vacated = "Vixy_Vacated";
 
+        /// <summary>Bounded directed ownership transitions considered for counterraids.</summary>
+        public const string Transitions = "Vixy_TerritoryTransitions";
+
+        /// <summary>Counterraid decisions a zone can produce over its lifetime.</summary>
+        public const int TransitionLimit = 4;
+
         /// <summary>
         /// Living members a faction needs present before it counts as holding the place.
         /// </summary>
@@ -140,10 +146,18 @@ namespace XRL
             string holder = Dominant(Zone, out int living);
             string was = The.ZoneManager.TryGetZoneProperty(id, HeldBy, out string Value) ? Value : null;
 
-            if (holder != null)
+            if (!holder.IsNullOrEmpty())
             {
                 The.ZoneManager.SetZoneProperty(id, HeldBy, holder);
                 The.ZoneManager.RemoveZoneProperty(id, Vacated);
+
+                // A first occupation records a fact. Only replacing another recorded holder is a
+                // counterraid trigger, and writing the new holder first makes the new state durable
+                // even if dispatch finds no answer.
+                if (!was.IsNullOrEmpty() && was != holder)
+                {
+                    Vixy_BandDispatch.OnTakeover(Zone, was, holder);
+                }
                 return;
             }
 
@@ -157,6 +171,34 @@ namespace XRL
             }
         }
 
+        /// <summary>
+        /// Spend one distinct directed ownership transition, up to the per-zone bound.
+        /// </summary>
+        public static bool TryConsiderTransition(string ZoneID, string Former, string Current)
+        {
+            if (ZoneID.IsNullOrEmpty() || Former.IsNullOrEmpty() || Current.IsNullOrEmpty()) return false;
+
+            string edge = Former + "\u001f" + Current;
+            string recorded = The.ZoneManager.TryGetZoneProperty(ZoneID, Transitions, out string Value)
+                ? Value
+                : "";
+            string[] entries = recorded.Split('\n');
+            int count = 0;
+            for (int i = 0; i < entries.Length; i++)
+            {
+                if (entries[i].IsNullOrEmpty()) continue;
+                if (entries[i] == edge) return false;
+                count++;
+            }
+            if (count >= TransitionLimit) return false;
+
+            The.ZoneManager.SetZoneProperty(
+                ZoneID,
+                Transitions,
+                recorded.IsNullOrEmpty() ? edge : recorded + "\n" + edge
+            );
+            return true;
+        }
         /// <summary>
         /// The faction with the most living people here, if it clears <see cref="Threshold"/>.
         /// </summary>

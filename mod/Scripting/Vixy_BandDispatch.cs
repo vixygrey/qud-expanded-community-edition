@@ -84,10 +84,50 @@ namespace XRL
             Send(mission.Faction, mission.Name, mission.Origin, target);
         }
 
+        /// <summary>Consider one hostile answer to a recorded holder replacement.</summary>
+        public static void OnTakeover(Zone Zone, string Former, string Current)
+        {
+            if (!Raven_Options.TravellingBands || Zone == null) return;
+
+            string target = Zone.ZoneID;
+            if (target.IsNullOrEmpty()
+                || !Vixy_Territory.TryConsiderTransition(target, Former, Current)
+                || IsProtectedSite(target, Zone)
+                || !TryCoordinates(target, out string world, out int x, out int y))
+            {
+                return;
+            }
+
+            Faction attacker = Factions.GetIfExists(Former);
+            if (attacker == null || attacker.GetFeelingTowardsFaction(Current) >= 0) return;
+
+            Holding origin = Nearest(
+                GetHoldings(target, world, x, y),
+                (Holding h) => h.Faction == Former
+            );
+            if (origin.ZoneID.IsNullOrEmpty()
+                || HasInFlightCounterraid(Former, target)
+                || !TryGetStart(origin.ZoneID, target, out Cell _)
+                || !Stat.Random(1, OneIn).Equals(1))
+            {
+                return;
+            }
+
+            Send(
+                Former,
+                Vixy_Band.CounterraidMission,
+                origin.ZoneID,
+                target,
+                Former + " -> " + Current
+            );
+        }
+
         /// <summary>
         /// Put a fully described band on the world map, bound for <paramref name="ToZone"/>.
         /// </summary>
-        public static bool Send(string Faction, string Mission, string FromZone, string ToZone)
+        public static bool Send(
+            string Faction, string Mission, string FromZone, string ToZone, string Trigger = null
+        )
         {
             if (!TryGetStart(FromZone, ToZone, out Cell start)) return false;
 
@@ -99,6 +139,7 @@ namespace XRL
             token.SetStringProperty(Vixy_Band.MissionProperty, Mission);
             token.SetStringProperty(Vixy_Band.OriginProperty, FromZone);
             token.SetStringProperty(Vixy_Band.TargetProperty, ToZone);
+            if (!Trigger.IsNullOrEmpty()) token.SetStringProperty(Vixy_Band.TriggerProperty, Trigger);
 
             AIWorldMapTravel travel = token.RequirePart<AIWorldMapTravel>();
             if (!travel.SetZoneID(ToZone))
@@ -293,6 +334,20 @@ namespace XRL
                 if (holding.Distance == distance) nearest.Add(holding);
             }
             return nearest.Count == 0 ? default : nearest.GetRandomElement();
+        }
+
+        private static bool HasInFlightCounterraid(string Faction, string Target)
+        {
+            foreach (GameObject token in The.ZoneManager.FindObjects(
+                         (GameObject o) => o.HasPart<Vixy_Band>()))
+            {
+                if (token.GetStringProperty(Vixy_Band.FactionProperty) == Faction
+                    && token.GetStringProperty(Vixy_Band.TargetProperty) == Target)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static bool TryGetStart(string FromZone, string ToZone, out Cell Start)
