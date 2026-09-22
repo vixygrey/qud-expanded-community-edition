@@ -17,6 +17,14 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+- **Hostile former holders can now counterraid a takeover** (#958). A counterraid leaves from the
+  nearest other recorded holding, crosses the world map as a token, and builds a normal faction camp
+  only on arrival. Protected sites remain excluded.
+
+  Each zone considers a directed ownership transition once and stores at most four, so a place cannot
+  become an endless A-to-B-to-A warband source. `vixyband` identifies a counterraid's trigger while
+  it travels, and `vixyterritory` reports the bounded transition record for QA.
+
 - **Cleared wilderness can regain its original wildlife slowly** (#951). **Off by default.** After a
   full month away, an eligible zone can receive a small cohort selected only from the animals vanilla
   originally placed there.

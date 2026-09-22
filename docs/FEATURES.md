@@ -9684,7 +9684,25 @@ still arrives through the faction-only path. Arrival itself still only calls
 `FactionEncounters.BuildFactionEncounter()`. Territory changes later, when `Vixy_Territory` observes
 the resulting zone on deactivation.
 
-### 65.6 `vixyband`
+### 65.6 Counterraids answer takeovers, not empty ground
+
+`Vixy_Territory` distinguishes first occupation, unchanged ownership, vacancy, and a replacement
+holder. Only a recorded replacement can trigger a counterraid. The former holder must dislike the
+new holder through `Faction.GetFeelingTowardsFaction()`, still hold another valid zone in the same
+world, and leave from its nearest such holding. Protected destinations use the same policy as
+vacancy bands.
+
+The transition is recorded before the protected-site check, origin lookup, duplicate check, or
+one-in-four roll. Each directed edge is considered once: `A → B` and `B → A` are different, but a
+second `A → B` is inert. A zone stores at most four distinct edges for its lifetime, then produces no
+further counterraid decisions. This bounds cycles without a global timer or a rerollable failure.
+
+Counterraid tokens carry their triggering edge as well as faction, mission, origin, and target.
+Arrival still only calls `FactionEncounters.BuildFactionEncounter()`; it never claims territory or
+resolves combat. If the later record names the same holder, no new counterraid is considered.
+
+### 65.7 `vixyband`
+
 
 A band is rare on purpose: a zone that was held, cleared to its last member and left, then a
 one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
@@ -9697,7 +9715,7 @@ state, not a queue that ran dry: with the option on, every vacancy is spent as i
 same metadata as play. With no vacancy on record it targets the zone you are standing in, which keeps
 arrival observable without inventing a vacancy.
 
-### 65.7 Off-switch, and what stays out
+### 65.8 Off-switch, and what stays out
 
 **Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces, and
 *places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
@@ -9710,7 +9728,7 @@ that absence is the argument against rather than the licence. A band that kills 
 underground has not simulated a world, it has ruined a save. *A settlement that can be damaged rather
 than depopulated* is a different and much larger question, recorded in #924.
 
-### 65.8 Known limit: vacancies recorded while the option was off
+### 65.9 Known limit: vacancies recorded while the option was off
 
 §64 records who holds a place whatever this option says, because it is a separate feature that changes
 no behaviour on its own. So a run played with bands off still accumulates vacancies, and turning the

@@ -48,6 +48,7 @@ namespace XRL
                 string mission = o.GetStringProperty(Vixy_Band.MissionProperty);
                 string origin = o.GetStringProperty(Vixy_Band.OriginProperty);
                 string target = o.GetStringProperty(Vixy_Band.TargetProperty);
+                string trigger = o.GetStringProperty(Vixy_Band.TriggerProperty);
 
                 if (mission.IsNullOrEmpty() || origin.IsNullOrEmpty() || target.IsNullOrEmpty())
                 {
@@ -63,6 +64,7 @@ namespace XRL
 
                 flight.Add(
                     "{{G|" + faction + "}}  " + mission
+                    + (trigger.IsNullOrEmpty() ? "" : "  {{K|" + trigger + "}}")
                     + "\n    from " + origin
                     + "\n    to " + target + "  {{K|" + Vixy_BandDispatch.DescribeSite(target) + "}}"
                     + "\n    at " + (at == null ? "nowhere" : at.X + "," + at.Y)

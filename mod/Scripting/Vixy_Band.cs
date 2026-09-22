@@ -68,9 +68,13 @@ namespace XRL.World.Parts
         /// <summary>The vacancy the token was sent to fill.</summary>
         public const string TargetProperty = "Vixy_BandTarget";
 
+        /// <summary>The ownership replacement that caused a counterraid.</summary>
+        public const string TriggerProperty = "Vixy_BandTrigger";
+
         public const string ReclaimMission = "reclaim";
         public const string RivalExpansionMission = "rival-expansion";
         public const string ExpansionMission = "expansion";
+        public const string CounterraidMission = "counterraid";
 
         public override bool WantEvent(int ID, int cascade)
         {

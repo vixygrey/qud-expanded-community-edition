@@ -65,6 +65,7 @@ namespace XRL
 
             List<string> held = new List<string>();
             List<string> vacated = new List<string>();
+            List<string> transitions = new List<string>();
 
             foreach (KeyValuePair<string, Dictionary<string, object>> zone
                      in The.ZoneManager.ZoneProperties)
@@ -78,6 +79,17 @@ namespace XRL
                 {
                     vacated.Add(zone.Key + "  {{K|" + was + "}} gone");
                 }
+                if (zone.Value.TryGetValue(Vixy_Territory.Transitions, out object history))
+                {
+                    string[] entries = (history as string ?? "").Split('\n');
+                    for (int i = 0; i < entries.Length; i++)
+                    {
+                        if (!entries[i].IsNullOrEmpty())
+                        {
+                            transitions.Add(zone.Key + "  {{K|" + entries[i].Replace("\u001f", " -> ") + "}}");
+                        }
+                    }
+                }
             }
 
             sb.Append("zones recorded  ").Append(held.Count + vacated.Count)
@@ -86,6 +98,7 @@ namespace XRL
 
             Append(sb, "held", held);
             Append(sb, "vacated", vacated);
+            Append(sb, "counterraid transitions (" + Vixy_Territory.TransitionLimit + " per zone)", transitions);
 
             if (held.Count == 0 && vacated.Count == 0)
             {
