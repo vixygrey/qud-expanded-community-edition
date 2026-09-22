@@ -21,6 +21,10 @@ recorded because contributors need them, not because subscribers do.
 ### Changed
 
 ### Fixed
+- **Normal psionic chips now fit gigantic Chip Interface slots** (#982). The base chip carries
+  vanilla's `GiganticEquippable` tag, so every existing chip accepts the slots without creating
+  enormous duplicate blueprints or loot entries.
+
 
 ## [2.20.0] - 2026-09-22
 

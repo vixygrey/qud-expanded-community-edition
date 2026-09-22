@@ -330,8 +330,8 @@ prefers the inventory over the drop inventory, so it goes into the pack rather t
 
 `Raven_Base Psionic Chip` inherits `BaseArmor`, sits in the Chip Interface slot with 0 AV /
 0 DV and 0 weight, and uses the `UnknownArmor` examiner alternate (so it needs identifying).
-Its description explains the fiction: the chip integrates with your flesh and grants lost
-knowledge, so remove it and you lose the ability.
+It also carries vanilla's `GiganticEquippable` tag, so ordinary chips fit a gigantic creature's
+Chip Interface slots without needing duplicate gigantic chip blueprints.
 
 Each chip carries one or more custom parts named `Raven_Mod<Mutation>`. Every one of those is a
 one-line C# class in `Scripting/`:
