@@ -13,8 +13,9 @@ body:
         The test I use is whether the world explains it, and whether it changes a decision the
         player makes.
 
-        **Rule 6 — everything ships with an off-switch.** New features arrive with their option in
-        the same pull request, so it's worth thinking about what turning it off would mean.
+        **Rule 6 — options earn their place.** If a reasonable player could want the mod without
+        this feature, its option arrives in the same pull request. Otherwise, explain why it needs
+        no opt-out: flavour and immersion that change no mechanic do not earn a switch.
 
   - type: textarea
     id: idea
@@ -37,10 +38,10 @@ body:
   - type: textarea
     id: option
     attributes:
-      label: What turning it off would look like
+      label: Opt-out design or no-option rationale
       description: >
-        Live (a loot table or a formula), on restart, or only on a new character? Designs whose
-        off-switch is a runtime decision are preferred — a chip family that can be dropped from
-        the loot tables is more configurable than one welded into character creation.
+        If this feature earns an option, say what turning it off looks like: live, on restart, or
+        only on a new character. Designs whose off-switch is a runtime decision are preferred. If
+        it does not earn one, say why a reasonable player would not turn it off.
     validations:
-      required: false
+      required: true

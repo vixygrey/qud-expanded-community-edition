@@ -381,9 +381,9 @@ UPSTREAM_WORKSHOP_ID = 1134036260
 # evidence behind each name.
 ELEMENT_ATTRS = ("Name", "Namespace", "ChanceOneIn", "Reflector", "Builder")
 
-# Steam's own ceiling on a published item's description. Steamworks caps it at 8000 characters,
+# Steam's own ceiling on a published item's description. Steamworks caps it at 8000 UTF-8 bytes,
 # and the installed mods agree: of the 72 that ship a workshop.json, the longest description is
-# Caves of Qud Expanded's own at 7943 — right against the wall. Qud's uploader does not warn, so
+# Caves of Qud Expanded's own at 7943 bytes — right against the wall. Qud's uploader does not warn, so
 # an over-long description is the kind of failure that only shows up on the published page.
 STEAM_DESCRIPTION_MAX = 8000
 

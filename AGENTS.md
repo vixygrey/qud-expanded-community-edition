@@ -75,8 +75,8 @@ in them applies to a contribution you're helping someone else write.
 python3 tools/validate_mod.py
 ```
 
-Ten checks run on every pull request and all ten must pass. Never commit to `main`. Branch, then
-open a pull request.
+Eleven checks run on every pull request and all eleven must pass. Never commit to `main`. Branch,
+then open a pull request.
 
 ## Writing
 

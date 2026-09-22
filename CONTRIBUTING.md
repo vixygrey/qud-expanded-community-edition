@@ -25,6 +25,17 @@ requests and comments are yours, and I'd rather have your contribution than a st
 There's **no build step**. Qud loads the XML in `mod/` directly, so you need no toolchain to
 contribute. `README.md` covers running the validators and the optional local hooks.
 
+### Change routing
+
+| Change | Read first | Run and record |
+|---|---|---|
+| XML, blueprints or population tables | [`CHARTER.md`](docs/CHARTER.md) rule 1, [`STYLEGUIDE.md`](docs/STYLEGUIDE.md) §1 and §3 | `python3 tools/validate_mod.py` |
+| C# under `mod/Scripting/` | [`CHARTER.md`](docs/CHARTER.md) rule 5 and [the scripting guide](#if-you-touch-modscripting) | `python3 tools/compile_scripting.py`; after launch, `pre-commit run --hook-stage manual check-build-log` |
+| Tile or sprite | [`STYLEGUIDE.md`](docs/STYLEGUIDE.md) §5 | `python3 tools/make_tile.py` for new sprites; `python3 tools/check_tile_names.py` |
+| Qud update | [the update procedure](#after-a-qud-update) and [`LESSONS.md`](docs/LESSONS.md) | `python3 tools/snapshot_qud_api.py --assembly`, `python3 tools/check_vanilla_drift.py`, and the local Qud hooks |
+| Player-facing facts or wiki links | [`FEATURES.md`](docs/FEATURES.md) and [the wiki boundary](#the-wiki-it-explains-docsfeaturesmd-specifies) | `python3 tools/check_docs.py`; then `python3 tools/check_docs.py --wiki` |
+| Release | [`RELEASING.md`](docs/RELEASING.md) | `python3 tools/sync_mod.py --publish` and `python3 tools/sync_mod.py --zip --tag vX.Y.Z` |
+
 ## The workflow
 
 Trunk-based: issue first, short-lived branch, small PR, squash merge.
@@ -116,7 +127,7 @@ know what your change is waiting on.
 
   Mura's `docs/2.2-changelog.txt` is upstream history and is never edited.
 
-Ten checks run on every pull request and all ten must pass. Run
+Eleven checks run on every pull request and all eleven must pass. Run
 `python3 tools/validate_mod.py` before you commit. Locally it costs you seconds instead of a round
 trip.
 
@@ -288,7 +299,7 @@ will ever check. Where a number genuinely has to appear inline for a page to rea
 from, so a later reader knows which one wins.
 
 That is a stronger rule for the wiki than for anything in this repository, because **the wiki is a
-separate git repository and not one of the ten checks reaches it.** No `typos`, no prettier, no
+separate git repository and not one of the eleven checks reaches it.** No `typos`, no prettier, no
 `tools/validate_mod.py`, no changelog requirement, no review, and no `merge-discipline` or
 `unreachable` check standing behind its numbers. It is prose with *fewer* guardrails than the documents
 that have now gone quietly stale four times (#93, #96, #106, #139) *with* guardrails, which makes it
@@ -338,7 +349,7 @@ policy at all.
 ## If something here is wrong
 
 Say so, and file an issue. The documentation has gone quietly stale four separate times now (#93, #96,
-#106, #139) because not one of the ten checks reads a sentence and asks whether it's still true. The
+#106, #139) because not one of the eleven checks reads a sentence and asks whether it's still true. The
 fourth was caused by the two checks that closed #134: they made "the C# has no compile gate" false in
 four documents at once, and nothing noticed. A contributor noticing is still the only mechanism that
 exists.

@@ -1,18 +1,27 @@
 name: Wiki
 
-# The wiki is a separate repository, so nothing here changes when it does — a push-triggered run
-# would never see a wiki edit at all. It is also the only documentation with no version selector:
-# whatever it says is what every player reads on every version, which makes drift there cost more
-# than drift anywhere else. #427 found nine wrong figures on it that nothing could have caught.
+# The wiki is a separate repository, so a wiki edit cannot trigger this workflow. It is also the
+# only documentation with no version selector: whatever it says is what every player reads on every
+# version, which makes drift there cost more than drift anywhere else. #427 found nine wrong figures
+# on it that nothing could have caught.
 #
-# So this runs on a schedule and on demand, and deliberately not on pull requests. Cloning the wiki
-# needs the network, and ci.yml stays offline so it cannot fail for a reason unrelated to the change
-# under review. It is not a required check for the same reason: a merge should not wait on a separate
-# repository's state.
+# Run after the source of wiki facts reaches main, weekly for independent wiki edits, and on demand.
+# It deliberately never runs on pull requests: cloning the wiki needs the network, and ci.yml stays
+# offline so it cannot fail for a reason unrelated to the change under review. It is not a required
+# check for the same reason: a merge should not wait on a separate repository's state.
 on:
+  push:
+    branches: [main]
+    paths:
+      - "mod/**"
+      - "README.md"
+      - "docs/CHARTER.md"
+      - "docs/FEATURES.md"
+      - "docs/STYLEGUIDE.md"
+      - "tools/check_docs.py"
+      - ".github/workflows/wiki.yml"
   schedule:
-    # Mondays, 07:00 UTC. Weekly suits a document nobody edits daily — the point is to catch drift
-    # before a player does, not within the hour.
+    # Mondays, 07:00 UTC. Weekly catches wiki-only drift before a player does.
     - cron: "0 7 * * 1"
   workflow_dispatch:
 
