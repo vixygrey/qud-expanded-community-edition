@@ -12,6 +12,7 @@
     <tag Name="BaseObject" Value="*noinherit" />
     <tag Name="NoSparkingQuest" />
     <tag Name="EquipSound" Value="sfx_equip_metal_quantum" />
+    <tag Name="GiganticEquippable" />
     <!-- Chips are not generic loot, and this tag is what makes that true (#481).
 
          This base inherits BaseArmor, so all 144 chips descend from it and every dynamic pool
