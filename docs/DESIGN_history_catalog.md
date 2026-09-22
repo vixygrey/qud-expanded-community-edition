@@ -1,81 +1,37 @@
-# Event Catalog — Role Grid, Retrofit, and Expansion
+# Record-Only Event Eligibility Catalog
 
-> Companion to `DESIGN_history_events.md`. All identifiers use the `LX_` prefix per the wiki's
-> compatibility guidance on unique namespacing.
+> **Status:** #731 uses this document as a safety boundary, not as an authoring catalog. The
+> speculative role-grid and `LX_` event proposals below are archived design material. Any future
+> shipped code uses the repository's `Vixy_` prefix and is selected only after #979 reviews #731 play
+> evidence.
 
----
+## 1. Footprint classification
 
-## 1. The role grid
+An earlier event is eligible for a record-only response only when the response does not claim to
+change a thing that the earlier event created or moved into the world.
 
-The diagnosis in `DESIGN_history.md` §2.3 says the vanilla pool is structurally lopsided. Here
-is the shape of that lopsidedness, and what filling it requires.
+| Classification | Vanilla event types | #731 disposition |
+|---|---|---|
+| Creates a findable entity | `BattleItem`, `ForgeItem`, `FoundGuild`, `LoseItemAtTavern`, `Marry`, `MeetFaction` | Blocked. A truthful consequence requires matching worldgen work in #815. |
+| Reveals a place or faction only | `BloodyBattle`, `CapturedByBandits`, `ChallengeSultan`, `ChariotDrivesOffCliff`, `CorruptAdministrator`, `InspiringExperience`, `LiberateCity`, `RampageRegion`, `SecretRitual`, `UnderWeirdSky` | Potentially safe for a later prose-only response. Each proposed consequence needs its own footprint review. |
+| Closed beat | `Abdicate` | No answerable open thread in the current slice. |
 
-| Role | Vanilla coverage | Needed | Gap |
-|---|---|---|---|
-| `origin` | 2 variants (heir / foundling) | 2–4 | small |
-| `inciting` | ~2 of 17 | ~8 | **large** |
-| `escalation` | ~9 of 17 | ~8 | none — oversupplied |
-| `complication` | ~2 of 17 | ~5 | moderate |
-| `reversal` | ~2 of 17 | ~5 | moderate |
-| `resolution` | ~1 of 17 | ~8 | **large** |
-| `terminal` | death variants | 4–6 | small |
-| `legacy` | none | ~5 | **absent** |
+## 2. First response
 
-The generator is almost entirely middle. It has spectacles but very few beginnings and
-almost no endings-of-things — which is exactly why events feel interchangeable: with
-nothing to open a thread and nothing to close one, every event is a middle with no
-surrounding arc.
+`CapturedByBandits` is eligible only when its generated `tombInscriptionCategory` is
+`EnduresHardship`. That branch records an escape and leaves the bandits at large; it creates no
+entity. The `Slays` branch is a resolved murder and is excluded.
 
-**The expansion should therefore be roughly 60% `inciting` and `resolution`.** Adding more
-spectacles — more battles, more rampages — would make the problem *worse* by deepening an
-already oversupplied role.
+The response is a later, same-sultan gospel reflection. It must not change the source event's
+location, revealed region, or any other existing property. It must stand alone because the journal
+reveals sultan notes independently.
 
----
+## 3. Deferred catalog
 
-## 2. Retrofit table — the vanilla seventeen
-
-Per `DESIGN_history_events.md` §8: assign metadata, preserve all existing text, prefer permissive
-predicates. `requires` is written informally here; `∅` means unconditional.
-
-| # | Vanilla event | Role | `requires` | `opens` | `closes` |
-|---|---|---|---|---|---|
-| 1 | Corrupt Minister | complication | has `holdings` | `grudge`(minister), `debt` | — |
-| 2 | Captured by Bandits | reversal | `location` outside holdings | `absence`, `debt`(ransom) | — |
-| 3 | Inspiring Experience | inciting | ∅ | `oath` \| `prophecy` | — |
-| 4 | Meet Faction | inciting | ∅ | — (introduces `EntityRef`) | — |
-| 5 | Secret Ritual | inciting | `piety` ≥ 0 | `prophecy`, `oath` | — |
-| 6 | Challenge Sultan | escalation | not yet sultan | `claim`, `grudge` | — |
-| 7 | Crafted Item | inciting | ∅ | — (introduces `ObjectRef`) | `prophecy` (if foretold) |
-| 8 | Under Weird Sky | inciting | ∅ | `prophecy` | — |
-| 9 | Army at the Gates | escalation | has `holdings` | `claim` \| `grudge` | — |
-| 10 | Rampage Region | escalation | ∅ | `grudge`(region) | `grudge` (if vengeance) |
-| 11 | Gathering Place | inciting | ∅ | — (introduces `PlaceRef`) | — |
-| 12 | Faction Battle | escalation | has `enemies` | `grudge` | `grudge` (if decisive) |
-| 13 | Tavern Misfortune | complication | ∅ | `grudge` \| `debt` | — |
-| 14 | Bloody Battle | escalation | has `enemies` | `wound`, `grudge` | `claim` (if decisive) |
-| 15 | Chariot Incident | complication | ∅ | `wound` \| `grudge` | — |
-| 16 | Power Shift | reversal | is sultan | `claim` | `claim` |
-| 17 | Marriage | resolution | no living spouse | `oath`, `heirless` | `grudge` (if political) |
-
-### 2.1 What this table already buys
-
-Even with **zero new events**, the retrofit alone should produce a visible change, because
-selection stops being uniform. *Bloody Battle* now requires an enemy, so it can no longer
-appear before anyone has been made an enemy. *Marriage* can close a political grudge, so it
-lands as a settlement rather than as a non-sequitur. *Captured by Bandits* opens a ransom
-debt that a later event can discharge.
-
-**This is v0.2 and it should be shipped and evaluated before any writing begins.** If the
-retrofit alone moves the "share of events in a chain" metric above ~35%, the expansion is
-strongly justified. If it does not, something in the model is wrong and it is far better to
-learn that before authoring fifty prose fragments.
-
-### 2.2 Oversupply note
-
-Items 6, 9, 10, 12, 14 are five distinct escalation-role combat set-pieces. Under the
-per-world type budget (`DESIGN_history_events.md` §5.4) these will now compete with each other
-rather than all firing, which by itself should reduce the "constant war" texture of vanilla
-biographies.
+The remaining sections preserve the original proposed role grid and expansion ideas. They are not
+safe to implement from this document: several imply a new entity, a relocated relic, or a changed
+faction. #979 decides whether a later record-only candidate is worth a dedicated issue; #815 owns
+world-facing consequences.
 
 ---
 

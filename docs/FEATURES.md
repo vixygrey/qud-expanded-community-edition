@@ -2190,7 +2190,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 36 options (§13)
+│   ├── Options.xml             # 37 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
 │   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
@@ -2216,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 110 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 111 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -2259,7 +2259,7 @@ Mura's original documents are NOT in mod/; they live in docs/, outside what ship
 
 ## 13. Options (`Options.xml`)
 
-Thirty-six options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
+Thirty-seven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
 reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
@@ -9800,6 +9800,41 @@ and unsuitable wall cells are excluded with no fallback.
 
 `vixywildlife` reports the active zone's option state, eligibility, pool size, current wildlife,
 remaining cohorts, and departure and attempt times. It changes nothing.
+
+## 67. An escape leaves a mark on a sultan (`Vixy_HistoryModule`)
+
+**Off by default.** When a sultan escaped bandit captivity, a later gospel can say what that
+hardship made of their rule. It is the first record-only history response in #731.
+
+### 67.1 One safe branch
+
+`CapturedByBandits` has a murder branch and an escape branch. Only escape events carrying
+`tombInscriptionCategory = EnduresHardship` qualify. The module adds at most one later gospel to the
+same sultan, after the escape and before the sultan's terminal event.
+
+The gospel repeats that the sultan escaped captivity among bandits. Sultan gospels enter the journal
+as independent random secrets, so a player can discover this response before finding the escape that
+prompted it.
+
+### 67.2 History is an input to the world
+
+Sultan history is complete before Qud constructs its world. Events can therefore create or move the
+relics, places, and factions later encountered in play. This response changes none of them: it adds
+only an event-local gospel and a private marker property.
+
+`Vixy_HistoryModule` handles the completed-history boot event and carries a `The.Game` guard, so the
+normal path writes once even if a future lifecycle change dispatches that event again. It is separate
+from `Vixy_NameFlavourModule`, whose early registration intentionally permits duplicate dispatches
+for character-creation name previews.
+
+### 67.3 Scope
+
+Set {{C|sultans carry the consequences of escape}} before making a world. The option is read while
+sultan history is generated, so existing worlds and their saves keep the history they already have.
+
+This is the safe half of the history work. The six vanilla event types that create a findable entity
+need a matching worldgen consequence to remain truthful and are deferred to #815. #979 evaluates
+additional prose-only chains only after this first one has play evidence.
 
 ## Appendix A: every merged vanilla melee weapon
 

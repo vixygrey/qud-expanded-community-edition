@@ -17,6 +17,13 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+- **Escaped sultans now remember the bandits** (#731). **Off by default.** A sultan who escaped
+  bandit captivity can receive one later chronicle entry about what that hardship made of their rule.
+  The line stands alone when the journal reveals it before the original escape.
+
+  It writes history only: no relic, site, faction, region, or other world-facing fact changes.
+  Set the option before creating a world. Existing worlds keep the histories they already have.
+
 - **Hostile former holders can now counterraid a takeover** (#958). A counterraid leaves from the
   nearest other recorded holding, crosses the world map as a token, and builds a normal faction camp
   only on arrival. Protected sites remain excluded.

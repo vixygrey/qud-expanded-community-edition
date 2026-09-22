@@ -499,54 +499,35 @@ list for a separate project's next session, and these are the parts that outlive
 
 | Component | Prior | **Revised** | Basis |
 |---|---|---|---|
-| Plainness quota / PLAIN lexicon | 1 or 2 | **Tier 2-light** — spice mutation | No JSON merge, but `[ModSensitiveCacheInit]` works (Q8) |
-| Remove ungrounded relic forms | — | **Tier 2-light** — replace the array | `spice.history.relics.names` is mutable (Q8) |
-| New name forms, existing bindings | 2, maybe 3 | **Tier 2-light** | Uses `*itemType*` / `*element*` already bound (Q2) |
-| Naming derivation, new bindings | 2 or 3 | **Tier 2** | Needs new `*variables*` at the call site — blocked on Q2 decompile |
-| Ledger + threads | 2 | **Tier 2, lower risk** | Entity property helpers already exist (N2) |
-| Event pool extension | 2 or 3 | **Unknown** | Blocked on Q3 |
-| Source divergence | 2 | **Tier 2, lower risk** | `HistoricPerspective` exists (N3) |
-| Cross-sultan legacy | 2–3 | **Unknown** | Blocked on Q5 |
+| Plainness quota / PLAIN lexicon | 1 or 2 | **Shipped** | #730 adds optional JSON grammar forms. |
+| Record-only history response | 2 | **Tier 2-light** | Public `HistoricEvent` and unused embark boot hook; no override, reflection, or Harmony. |
+| Event pool replacement | 2 or 3 | **Out of scope** | Q3: seventeen hardcoded factory branches; no registry. |
+| World-facing history response | 2 | **Deferred to #815** | Requires matching worldgen work for entity-creating events. |
+| Source divergence | 2 | **Deferred** | `HistoricPerspective` exists, but murals and oral consumers are not part of #731. |
+| Cross-sultan legacy | 2 | **Deferred** | Q5: one shared chronological `History`; no current record-only implementation. |
 
-"Tier 2-light" means: compiled C#, so the approval prompt applies, but no Harmony, no type
-override, and no reflection into private state — only documented attributes and a public data
-structure. It is the lowest-risk way to ship code in this game, and **it is enough for v0.1.**
-
-Note the consequence for the macOS constraint: everything in v0.1 and most of v0.2 needs no
-Harmony at all, so it is fully developable and testable on the Mac. The Windows machine is
-not on the critical path until Q3 or Q5 forces it.
+"Tier 2-light" means compiled C# using documented extension points and public history structures:
+no Harmony, type override, reflection into private state, I/O, or network access.
 
 ---
 
 ## Revised next actions
 
-1. **Build the v0.1 spike.** A `[HasModSensitiveStaticCache]` class that replaces
-   `spice.history.relics.names` — drop the two ungrounded forms, add a plain-register
-   lexicon, add forms drawing on it. No Harmony, no decompile needed, testable on the Mac.
-   This validates the whole delivery path and is a real mod on its own.
-2. **Run Q0 live** — native and forced-Rosetta, with a Harmony-using mod installed. Now
-   lower priority: nothing on the near-term path needs Harmony.
-3. **Decompile** (ILSpy on the Windows machine, or any machine with the .NET SDK) and answer
-   Q3, Q5, Q7, plus the `HistoricStringExpander` variable-bag question from Q2 — that last
-   one is the gate on real derivation-based naming.
-4. **Measure the baseline.** With the spice tree reachable in code, dumping generated relic
-   names for corpus analysis is now straightforward.
-5. **Revise the design docs** for the element system (N1), the existing ledger primitives
-   (N2), and the existing perspective type (N3).
+1. Ship #731's one `CapturedByBandits` escape response behind a new-world-scoped option.
+2. Verify it in an actual new world, including the independent journal-note reveal and save/load.
+3. Record the observed coverage and legibility outcome in #979 before selecting another
+   record-only response.
+4. Keep any answer that changes a created or moved entity in #815's worldgen scope.
+5. Treat all broader ledger, source, and cross-sultan proposals as deferred design, not as
+   prerequisites for this safe slice.
 
 ---
 
-## Document revisions required
+## Documentation status
 
-| Doc | Change |
-|---|---|
-| `DESIGN_history.md` | Add the element system to the diagnosis; note thematic-vs-causal coherence; correct HistoryKit/XRL.Annals |
-| `DESIGN_history_events.md` | Rework §2 ledger onto `HistoricEntity` properties; downgrade the stateless-generator risk; add element affinity to temperament (§5.3) |
-| `DESIGN_history_catalog.md` | Update the retrofit table to real class names; **halve** the §6 authoring estimate to ~64 fragments |
-| `DESIGN_history_naming.md` | Add the eight measured forms; promote plainness quota to Tier 1; add the ~280/~488 vocabulary measurement |
-| `DESIGN_history_sources.md` | Reframe as extending `HistoricPerspective` rather than inventing a model |
-| `DESIGN_history_implementation.md` | Revised tier table; Q0 finding (arm64 slice, Rosetta workaround); add the JSON-merge question |
-| **all of the above** | **Cross-check against `DESIGN_history_recon_addendum.md` (2026-08-15) first — it corrects §Q8 and N3, and answers Q2/Q7/Q9** |
+The #731 documents now record the boot-event route, record-only boundary, and revised criteria.
+The remaining ledger, source-divergence, and cross-sultan proposals are explicitly deferred. Their
+historical analysis remains below for reference, but it is not an implementation specification.
 
 
 ---
