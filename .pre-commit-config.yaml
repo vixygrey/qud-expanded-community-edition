@@ -1,4 +1,4 @@
-# Local gates. CI (.github/workflows/ci.yml) runs the same checks — these just fail faster.
+# Local gates overlap with CI and add checks that only a Qud installation can answer.
 #   pre-commit install     once, per clone
 #   pre-commit run --all-files
 default_install_hook_types: [pre-commit, pre-push]
@@ -82,6 +82,16 @@ repos:
         language: system
         pass_filenames: false
         files: ^(mod/|docs/|tools/validate_mod\.py$|[A-Z]+\.md$|NOTICE$)
+
+      # The suite is Python-standard-library-only and takes about six seconds. Keep it at pre-push
+      # rather than delaying every commit, but run it before the CI Tests job has to report it.
+      - id: tooling-tests
+        name: tooling unit tests
+        entry: python3 -m unittest discover -s tools -v
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
 
       # Deliberately unscoped, unlike check-docs above. #446 put a diff3 base marker into
       # CHANGELOG.md and every gate passed it: pre-commit's own check-merge-conflict hook matches

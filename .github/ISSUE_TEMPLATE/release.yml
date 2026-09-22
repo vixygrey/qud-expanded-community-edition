@@ -56,7 +56,7 @@ body:
       options:
         - label: "`CHANGELOG.md` rolled — `[Unreleased]` becomes `[X.Y.Z] - YYYY-MM-DD`, fresh `[Unreleased]` opened"
         - label: "`manifest.json` version bumped (the validator holds this against the changelog)"
-        - label: "`workshop.json` — **New in X.Y.Z** replaced, the previous section removed, still under 8,000 characters"
+        - label: "`workshop.json` — **New in X.Y.Z** replaced, the previous section removed, still under 8,000 UTF-8 bytes"
         - label: "`python3 tools/validate_mod.py` passes"
 
   - type: checkboxes

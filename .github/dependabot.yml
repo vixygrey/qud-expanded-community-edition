@@ -7,17 +7,15 @@
 # sustainable rather than a slow ratchet.
 #
 # Updates are grouped so a single-maintainer repository gets one PR per ecosystem per week rather
-# than a stream of them. Every PR still runs the full nine required checks.
+# than a stream of them. Every PR still runs the full eleven required checks.
 version: 2
 
 updates:
   # Action SHAs in .github/workflows/. Dependabot reads the `# vX.Y.Z` comment beside each pin and
   # keeps it in step with the SHA, which is the whole reason the comment is there.
   #
-  # Note the workflows currently pin the majors that were in use when SHA-pinning landed (#103):
-  # checkout and setup-node at v4, gitleaks-action at v2, while v7/v7/v3 exist upstream. Those
-  # major bumps are deliberately left for Dependabot to raise as reviewable PRs rather than being
-  # smuggled in under a change described as "pinning".
+  # Action SHAs are pinned to their current majors. Dependabot raises later major updates as
+  # reviewable PRs rather than smuggling them into a change described as "pinning".
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -39,13 +37,9 @@ updates:
       npm:
         patterns: ["*"]
 
-  # .pre-commit-config.yaml hook revisions.
-  #
-  # ⚠️ The ruff hook rev is deliberately kept identical to the version ci.yml installs
-  # (`pipx install ruff==0.16.2`), so a contributor's local run and CI cannot disagree about
-  # formatting. Dependabot updates the hook rev but CANNOT see the pinned version in the workflow —
-  # so when a ruff bump lands, the workflow has to be changed in the same PR. Check that before
-  # merging one.
+  # The Ruff hook revision is the only version source. ci.yml reads it from
+  # .pre-commit-config.yaml, so a Dependabot pre-commit bump keeps contributor and CI formatting in
+  # step without a second version edit. check_ruff_is_derived guards that relationship.
   - package-ecosystem: pre-commit
     directory: /
     schedule:

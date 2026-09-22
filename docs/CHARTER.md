@@ -324,11 +324,13 @@ Cross-mod dependencies, if ever needed, use `LoadBefore` / `LoadAfter` in `manif
 
 A growing single mod becomes take-it-or-leave-it unless the off-switches keep pace. So:
 
-> **Every new feature ships with its option in the same PR.**
+> **A feature that earns an option ships it in the same PR. A feature that does not earns a
+> written no-option rationale.**
 
 Not "options later". Retrofitting a toggle onto a shipped feature means deciding its default after
 players already have expectations, and it's the exact debt this fork spent its first release
-paying down.
+paying down. But flavour and immersion that change no mechanic do not earn a switch: inventing one
+for them spends a menu row, help text and a branch on a choice nobody would make.
 
 This rule pulls against rule 5's preference rather than against its limits: gating content means
 more C#, not less. That is fine, and worth being explicit about, because the two rules would

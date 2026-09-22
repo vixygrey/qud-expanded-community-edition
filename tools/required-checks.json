@@ -31,6 +31,10 @@
       "source": "ci.yml:python"
     },
     {
+      "context": "Type check",
+      "source": "ci.yml:typecheck"
+    },
+    {
       "context": "Tests",
       "source": "ci.yml:tests"
     },
@@ -72,12 +76,7 @@
     {
       "context": "Check the wiki",
       "source": "wiki.yml:wiki",
-      "reason": "Runs on a weekly schedule and on demand, never on a pull request. It clones a separate repository over the network, so requiring it would make a merge wait on the wiki's state and on ci.yml losing the offline guarantee that keeps it from failing for reasons unrelated to the change under review."
-    },
-    {
-      "context": "Type check",
-      "source": "ci.yml:typecheck",
-      "reason": "New in #910 and not yet in GitHub's ruleset, which is the authority - marking it required here while the ruleset lacks it would recreate the documented-but-unenforced drift #152 exists to prevent. It reports zero today and arrives green, so promoting it is a one-line settings change once it has run on a few pull requests; until then it reports without blocking."
+      "reason": "Runs after source changes reach main, weekly for independent wiki edits, and on demand. It clones a separate repository over the network, so requiring it would make a merge wait on the wiki's state and on ci.yml losing the offline guarantee that keeps it from failing for reasons unrelated to the change under review."
     }
   ]
 }

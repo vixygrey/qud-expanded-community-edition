@@ -1,6 +1,6 @@
 <!--
-Thanks for this. Everything below is what CI already checks, gathered here so you meet it before
-the red X rather than after. Delete anything that doesn't apply.
+Thanks for this. Everything below gathers the required checks and evidence before review. Delete
+anything that does not apply.
 
 If this is your first contribution: I credit it by name in the README and the Workshop description,
 in this pull request. You shouldn't have to ask, and I'd rather not miss it — tell me if I do.
@@ -37,16 +37,22 @@ Closes #
 - [ ] **If this changes what a player sees or does** — the wiki has been grepped for what it
       describes. It's a separate repository and not one of these checks reaches it
 
+## C# verification
+
+<!-- Delete this section if mod/Scripting/ is unchanged. -->
+
+- [ ] `python3 tools/compile_scripting.py` passed against the installed game's assemblies
+- [ ] I launched Qud with this source deployed and `pre-commit run --hook-stage manual check-build-log` passed
+- [ ] I could not run one or both checks: reason and maintainer follow-up are stated below
+
 <!--
 Two things worth knowing:
 
-- The C# is compiled by a local hook, not by CI. tools/compile_scripting.py builds mod/Scripting/
-  against the game's own assemblies, but it needs Caves of Qud installed and skips without it, and
-  CodeQL can't cover the C# either. So nothing here compiles it. If you changed C# and couldn't run
-  the hook, say so and I'll run it — and say whether you tested in game, which is a separate question
-  a compiler can't answer.
+- The C# is compiled locally, not by CI. It needs Caves of Qud's proprietary assemblies, and
+  CodeQL cannot cover it either. A compiler proves the source builds, not that it behaves correctly
+  in a run.
 
-- Ten checks run here and all ten must pass. None of them reads prose, so if you changed
+- Eleven checks run here and all eleven must pass. None reads prose, so if you changed
   documentation, the accuracy is on us rather than on CI. The wiki is documentation that isn't even
   in this repository — CONTRIBUTING.md has the clone URL and `tools/check_docs.py --wiki` checks
   that its links still land, though not that its pages are still true.

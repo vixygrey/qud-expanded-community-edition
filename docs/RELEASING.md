@@ -52,7 +52,7 @@ that triangle is checked too (#314).
 commit if they disagree, so this cannot ship wrong. It caught exactly this during the 2.10.0 release,
 which is why it is written down here now: a check is the backstop, not the instruction (#694).
 
-**Watch the budget.** Steam's limit is 8,000 characters, hard. Check the headroom before you start
+**Watch the budget.** Steam's limit is 8,000 UTF-8 bytes, hard. Check the headroom before you start
 rather than after you have written the summary:
 
 ```bash
@@ -207,7 +207,7 @@ apart (`not planned` against `completed`).
 - [ ] `CHANGELOG.md` rolled, fresh `[Unreleased]` opened
 - [ ] `manifest.json` version bumped
 - [ ] `workshop.json` — **New in X.Y.Z** replaced and the previous one removed, **and** the
-      **Version and saves** block's version and save answer updated. Under 8,000 characters
+      **Version and saves** block's version and save answer updated. Under 8,000 UTF-8 bytes
 - [ ] Player-facing notes written, opening with save compatibility — **in both Markdown and
       BBCode**, because the GitHub body and the Steam change note do not take the same markup
 - [ ] `python3 tools/validate_mod.py` passes
