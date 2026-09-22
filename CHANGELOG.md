@@ -17,6 +17,15 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [2.20.0] - 2026-09-22
+
+### Added
+
 - **Escaped sultans now remember the bandits** (#731). **Off by default.** A sultan who escaped
   bandit captivity can receive one later chronicle entry about what that hardship made of their rule.
   The line stands alone when the journal reveals it before the original escape.
@@ -40,7 +49,6 @@ recorded because contributors need them, not because subscribers do.
   excluded. Each zone has a three-cohort lifetime budget, so recovery cannot become a repeatable
   source of creatures, experience, or corpses. `vixywildlife` reports the active zone's recovery
   record for QA.
-
 
 ### Changed
 
