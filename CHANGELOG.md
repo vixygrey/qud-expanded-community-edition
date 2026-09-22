@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.20.1] - 2026-09-22
+
 ### Added
 
 ### Changed
