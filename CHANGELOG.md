@@ -20,6 +20,10 @@ recorded because contributors need them, not because subscribers do.
 
 ### Changed
 
+- **(internal)** Contributor checks now run the tooling test suite before push, call out local C#
+  evidence, route common changes to their canonical guidance, and run wiki validation after relevant
+  source changes reach `main`.
+
 ### Fixed
 - **Normal psionic chips now fit gigantic Chip Interface slots** (#982). The base chip carries
   vanilla's `GiganticEquippable` tag, so every existing chip accepts the slots without creating
