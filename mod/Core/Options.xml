@@ -786,4 +786,25 @@
             {{y|Off by default.}}
         </helptext>
   </option>
+  <option
+    ID="OptionQudExpandedCEHistoryEvents"
+    DisplayText="{{C|Qud Expanded}}: sultans carry the consequences of escape"
+    Category="Mods"
+    Type="Checkbox"
+    Default="No"
+    SearchKeywords="qud expanded history sultan bandit escape gospel journal world generation"
+  >
+    <helptext>
+            When a sultan escaped captivity among bandits, a later chronicle entry can
+            remember what that hardship made of their rule.
+
+            This writes only the sultan's record. It does not create, move, or remove a
+            place, relic, faction, or creature.
+
+            {{y|Set this before creating a world.}} Sultan histories are written once
+            during world generation. Existing worlds keep the histories they already have.
+
+            {{y|Off by default.}}
+        </helptext>
+  </option>
 </options>

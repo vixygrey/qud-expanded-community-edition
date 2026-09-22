@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <embarkmodules>
-  <!-- Declares Vixy_NameFlavourModule to character creation. The game resolves the class by name
-       and instantiates it, the same way a blueprint's <part Name="..."> resolves to a class, so
-       nothing here reflects into anything.
+  <!-- Declares the fork's boot-event modules to character creation. The game resolves each class by
+       name and instantiates it, the same way a blueprint's <part Name="..."> resolves to a class,
+       so nothing here reflects into anything.
 
-       No <window> element, deliberately. A window would add a page to character creation, and
-       this module has no UI - it reads an option and replaces one string. Modules are enabled by
-       default (AbstractEmbarkBuilderModule._enabled starts true), so a windowless one is active
-       and receives boot events without appearing anywhere. -->
+       Vixy_NameFlavourModule has no window because it only reads an option and replaces one string.
+       Vixy_HistoryModule has no window because it only appends eligible history during world creation.
+       Modules are enabled by default (AbstractEmbarkBuilderModule._enabled starts true), so both are
+       active and receive boot events without adding a character-creation page. -->
   <module Class="QudExpandedCE.Vixy_NameFlavourModule" />
+  <module Class="QudExpandedCE.Vixy_HistoryModule" />
 </embarkmodules>

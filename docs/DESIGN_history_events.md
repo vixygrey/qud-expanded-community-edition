@@ -1,11 +1,24 @@
-# Compositional Event Model
+# Causal History Design
 
-> **Status:** design specification, not an implementation plan. Written against the
-> generator's *published behaviour*, not its source. Every assumption about internals is
-> marked **[ASSUMPTION]** and must be checked once the game is installed.
+> **Status:** #731 implements one record-only response after vanilla history generation. It does
+> not implement this document's generator replacement, ledger, metadata retrofit, or broad catalog.
+> Those remain deferred design material and must not be used as an implementation plan.
+
+## Current #731 contract
+
+The post-pass receives the completed `History` at `BOOTEVENT_AFTERINITIALIZESULTANHISTORY`. It may
+append one self-contained gospel response to an eligible `CapturedByBandits` escape and nothing
+world-facing. It must use an exactly-once game-state guard, preserve vanilla events and draw
+distribution, and skip a candidate that has no valid later date before the sultan's terminal event.
+
+The first response is prose-only. It does not establish a general ledger or thread format.
 
 ---
 
+## Deferred compositional model
+
+The remaining sections preserve the original design language for later evaluation under #979 and
+#815. They are not a claim that the current generator is being replaced.
 ## 1. The core move
 
 Today an event is a **template**: a bundle of text with slots, selected at random from a
@@ -68,10 +81,10 @@ Ledger {
 }
 ```
 
-**[ASSUMPTION]** that a per-sultan mutable context can be threaded through generation at
-all. If the vanilla generator is stateless by design, this is the single largest
-implementation risk in the project, and `DESIGN_history_implementation.md` §2 treats it as the first
-recon question.
+**Settled:** `HistoricEntity` exposes mutable event and property structures, and vanilla generates
+five sultans in chronological order over one shared `History` before adding Resheph. The uncertainty
+is no longer whether state can be carried. It is whether a proposed consequence remains truthful
+without changing the world, which #731 answers conservatively by writing only a later record.
 
 ### 2.2 Reference types
 
@@ -133,7 +146,7 @@ what makes the expansion in `DESIGN_history_catalog.md` cheap.**
 
 ```
 EventType {
-  id              : String              # prefixed, e.g. LX_OathSworn
+  id              : String              # prefixed, e.g. Vixy_OathSworn
   role            : Role                # §5.1
   weight          : Float               # base selection weight
 
@@ -279,47 +292,21 @@ generate_biography(sultan_index, era, rng):
 
 ## 7. Cross-sultan causality
 
-The sultanate is a **sequence of five**, and the largest coherence win available is treating
-it as one. At present each biography is generated in isolation, so the dynasty is five
-unrelated lives that happen to share a throne.
+Vanilla's five generated sultans are chronological and share one mutable `History`; this is settled
+by the factory body. That makes cross-sultan work technically possible, but not part of #731.
 
-Proposal: a **dynastic ledger** persists across sultans, carrying a reduced subset —
-`holdings`, `enemies`, surviving `kin`, unresolved `legacy` threads, and the `possessions`
-that became entombed relics.
-
-Each sultan after the first draws 1–2 events from a `legacy` role, reacting to a predecessor:
-
-- venerating or canonising them
-- iconoclasm — destroying their monuments, striking their name from inscriptions
-- recovering, or losing, one of their relics
-- honouring or repudiating one of their treaties
-- avenging or completing an unresolved grudge
-
-This is disproportionately valuable for three reasons. It converts the era-vocabulary drift
-from a cosmetic gradient into a *narrative* one; it gives relics a second life in the record
-(a relic mentioned twice, centuries apart, is worth more than two relics mentioned once);
-and iconoclasm gives an in-fiction license for genuine contradiction between sources, which
-`DESIGN_history_sources.md` then exploits directly.
-
-**[ASSUMPTION]** that the five sultans are generated in chronological sequence within one
-pass. If they are generated independently or in parallel, this section needs rework.
+Any legacy response that changes a relic, monument, faction, or other entity belongs to #815, because
+history drives world construction. #731 deliberately limits itself to a same-sultan, gospel-only
+response to an escape that created no entity. The ledger proposal remains deferred until #979 has play
+evidence for that smaller shape.
 
 ---
 
 ## 8. Retrofitting the vanilla seventeen
 
-The seventeen existing types are retained and given model metadata rather than replaced.
-Full table in `DESIGN_history_catalog.md` §2. The retrofit rules:
-
-1. **Preserve all existing text.** Retrofit assigns preconditions, effects and threads; it
-   does not rewrite prose. This keeps 0.2 shippable without a writing pass and keeps the
-   diff reviewable.
-2. **Assign the least restrictive `requires` that is still meaningful.** Over-constraining
-   the vanilla pool starves the generator before any new events exist to fill the gap.
-3. **Prefer `opens` over `closes` on retrofit.** The vanilla seventeen are set-pieces; most
-   naturally *create* obligations. Discharge is what the new connective events are for.
-4. **Any vanilla type that cannot be sensibly retrofitted keeps `requires: always`** and
-   participates as an unconstrained filler. Graceful degradation over forced modelling.
+Not part of #731. Reweighting, constraining, or pruning vanilla's seventeen hardcoded draw branches
+would replace or alter Freehold generation rather than append to it. It needs a separate charter and
+compatibility decision before it can become implementation work.
 
 ---
 
@@ -334,8 +321,8 @@ Full table in `DESIGN_history_catalog.md` §2. The retrofit rules:
 | Referent explosion | Too many proper nouns; none recur | Cap `introduces`; prefer reusing existing refs |
 | Determinism break | Same seed, different world | Route all randomness through seeded rng |
 
-The instrumentation in `DESIGN_history_implementation.md` §5 exists to detect each of these before
-release rather than from Workshop comments after it.
+Any future implementation needs a new instrumentation design. The retired generator metrics do not
+measure a post-pass that leaves its draw pool untouched.
 
 ---
 

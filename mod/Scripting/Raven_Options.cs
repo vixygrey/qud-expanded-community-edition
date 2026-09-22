@@ -67,6 +67,12 @@ namespace QudExpandedCE
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
         /// <summary>
+        /// New-world-scoped history additions. This is read only while sultan history is generated;
+        /// changing it cannot alter a world or history that already exists.
+        /// </summary>
+        public const string HistoryEventsID = "OptionQudExpandedCEHistoryEvents";
+
+        /// <summary>
         /// Read by nothing in this class, and by no C# at all. The building is a map patch, and
         /// manifest.json gates the directory holding it on this option - so the option decides
         /// whether the file is ever loaded rather than what any code then does about it.
@@ -565,6 +571,16 @@ namespace QudExpandedCE
         {
             return Options.GetOption(id, fallback) == "Yes";
         }
+
+        /// <summary>
+        /// Whether new worlds receive this fork's record-only sultan-history responses.
+        ///
+        /// The handler reads this once during history generation. Existing worlds retain the
+        /// history they were created with, regardless of later option changes.
+        ///
+        /// Defaults off: this is new authored history rather than a correction to vanilla.
+        /// </summary>
+        public static bool HistoryEvents => Enabled(HistoryEventsID, "No");
 
         /// <summary>True when the player asked to keep their own chip slots.</summary>
         public static bool PlayerChipSlots => Enabled(ChipSlotsPlayerID, "Yes");

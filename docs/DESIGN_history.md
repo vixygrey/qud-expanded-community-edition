@@ -140,85 +140,73 @@ recoverable moment in the game.
 
 ---
 
-## 4. Scope
+## 4. Current scope
 
-### In scope
+### #730 — shipped
 
-- A compositional event model with preconditions, effects and open threads
-  (`DESIGN_history_events.md`)
-- Retrofit of the existing seventeen event types into that model (`DESIGN_history_catalog.md`)
-- An expansion of the event pool with **connective** event types (`DESIGN_history_catalog.md`)
-- Derivation-based naming for relics and sultan items (`DESIGN_history_naming.md`)
-- A source/divergence model for gospel, mural and tomb inscription (`DESIGN_history_sources.md`)
-- Cross-sultan causality: later sultans reacting to earlier sultans' legacies
+Plain-register relic-name forms are an optional, restart-scoped JSON merge. They are documented in
+`docs/FEATURES.md` §48.
 
-### Out of scope (for now)
+### #731 — record-only causal responses
 
-- Village history generation — related, larger, and worth a separate mod
-- Faction relation overhaul beyond what history already sets
-- New historic site types or map generation changes
-- Dialogue and gossip systems consuming history (desirable; deferred to a later release)
-- Any change to Resheph, the fixed sixth sultan
+The first history slice is deliberately smaller than the original compositional proposal:
 
-### Explicit non-goals
+- A separate embark module receives the completed history at
+  `BOOTEVENT_AFTERINITIALIZESULTANHISTORY`.
+- It may append a later **record-only** response to a safe vanilla event. It never changes a
+  generated event, the generator's draw pool, or a world-facing entity.
+- Its first candidate is `CapturedByBandits`' escape branch
+  (`tombInscriptionCategory = EnduresHardship`). The response is a self-contained gospel about the
+  later consequence of that escape.
+- The option is new-world-scoped. Existing worlds and histories never change.
 
-- **Not** a wordlist expansion mod
-- **Not** a tonal rewrite toward mundane realism
-- **Not** a total-conversion of worldgen
+The module runs before world construction, so history is an input to worldgen rather than merely a
+description of it. A response must not reclaim, relocate, create, or alter an entity, site, relic,
+faction, region, or map state. The six vanilla event types that create a findable entity are outside
+this slice. See #815 for the worldgen route.
 
----
+### Deferred work
 
-## 5. Release staging
-
-Sequencing chosen to put something shippable on the Workshop early, and to avoid
-authoring content that later needs retrofitting.
-
-| Version | Contents | Depends on |
-|---|---|---|
-| **0.1** | Naming derivation + plainness quota. Self-contained, high visibility per unit of work. Proves the approach and the mod's identity. | Access to naming call site |
-| **0.2** | Compositional event model; vanilla 17 retrofitted; no new events yet. Output should already feel different. | History generation hook |
-| **0.3** | Event pool expansion — connective tissue events. | 0.2 |
-| **0.4** | Source divergence model. | 0.2 |
-| **0.5+** | Cross-sultan legacy events; consumers (gossip, murals) reading the record. | 0.3 |
-
-Each version is independently shippable. If the project stalls after 0.1, 0.1 is still a
-good mod.
+- Additional safe, place-revealing record-only responses depend on observed play of #731 and are
+  tracked by #979.
+- World-facing consequences, including any response to an entity-creating event, belong to #815.
+- Generator replacement, draw-pool reweighting, and pruning vanilla events are not proposed by this
+  feature.
+- Source divergence, murals, gossip, relic derivation, and cross-sultan legacy remain design work,
+  not part of #731.
 
 ---
 
-## 6. Success metrics
+## 5. Evidence and success criteria
 
-Design intent should be measurable, otherwise "feels less formulaic" is unfalsifiable.
-Proposed instrumentation (see `DESIGN_history_implementation.md` §5 for how to collect it):
+The installed assembly establishes that vanilla draws eight events from seventeen hardcoded branches
+for each of five generated sultans, then adds Resheph. A post-pass cannot change those draw
+statistics, so the former distinct-type, repeat-rate, and 55% causal-chain targets do not measure
+this feature.
 
-| Metric | Vanilla baseline (est.) | Target |
-|---|---|---|
-| Distinct event types seen per world | ~16 / 17 | ≥ 22 / 35 |
-| Mean repeats per event type per world | ~2.4 | ≤ 1.3 |
-| Share of events participating in a causal chain (≥2 linked) | ~0 | ≥ 55% |
-| Distinct cross-referenced proper nouns per world | low | ≥ 12 |
-| Names containing ≥1 plain-register token | low | ≥ 85% |
-| Names referencing a record fact | ~0 | ≥ 70% |
+| Criterion | Required result |
+|---|---|
+| Eligible coverage | Every eligible sultan gets exactly one response. |
+| Ordering | The response is after its escape and before its terminal event. |
+| Idempotence | Repeated boot dispatch adds no duplicate response. |
+| Record-only boundary | The pass writes no world-facing state. |
+| Legibility | The gospel makes sense when revealed before its antecedent. |
+| Save safety | A generated response reloads as ordinary `HistoricEvent` data. |
 
-Baselines marked "est." are inferred from published descriptions of the generator and must
-be measured directly once the game is installed.
-
----
-
-## 7. Open questions
-
-Carried into `DESIGN_history_implementation.md`; listed here so the design record is self-contained.
-
-1. How much of the event text lives in shipped XML versus compiled into the assembly?
-2. Is there a seam at which a relic is named where the originating event is still in scope?
-3. Can the event pool be extended by registration, or does it require replacing
-   `QudHistoryFactory` wholesale?
-4. Does the era vocabulary system operate on tokens or on whole strings? This determines
-   how much authoring each new event actually costs.
-5. Are sultan biographies generated before or after the map, and can events therefore place
-   sites rather than merely reference them?
+Sultan gospels become independent journal notes revealed one random secret at a time. The response
+therefore repeats enough of the earlier captivity or escape to be meaningful alone.
 
 ---
+
+## 6. Settled questions
+
+1. The hardcoded event pool cannot be extended by registration. Replacing it is out of scope.
+2. `BOOTEVENT_AFTERINITIALIZESULTANHISTORY` is an unused, documented pass-through extension point.
+3. Five generated sultans share one mutable `History`, and Resheph is added separately.
+4. History generation precedes world construction. Record-only additions are safe only when they do
+   not contradict a world footprint.
+5. `HistoricEvent.Load` flattens subclasses to ordinary events while retaining event properties, so
+   fieldless generated events are save-safe.
 
 *Companion documents:*
 `DESIGN_history_events.md` · `DESIGN_history_catalog.md` · `DESIGN_history_naming.md` · `DESIGN_history_sources.md` · `DESIGN_history_implementation.md`
