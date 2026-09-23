@@ -9255,7 +9255,7 @@ Water settles itself: a waterskin is an object with a value and is offered, whil
 is not an object at all: drams live in a `LiquidVolume` inside a container, so nothing in an
 inventory walk can reach one. The water ritual is the faction-scale version of this and §57 owns it.
 
-### 62.6 The transfer is `TakeItem`'s, and the reply is wordless
+### 62.6 The transfer is `TakeItem`'s, and the reply begins as an emote
 
 Vanilla has both halves of this and they never meet. `GiveArtifact` picks and does not record;
 `TakeItem` performs a proper player-to-speaker transfer but matches inventory against a fixed
@@ -9267,15 +9267,15 @@ the speaker, and set **`WontSell`**, without which a merchant puts your gift str
 shelf at their markup. `ReceiveObject` is `TakeObject(…, Silent: true)` and does the whole move, so
 nothing is removed first; removing it would drop a failed give on the floor.
 
-**The reply is an emote**, and that is §61.2 applied rather than forgotten. The choice is distributed
-from `BaseConversation`, so it reaches every mouth in the game, and no spoken line is true in all of
-them, since a legendary snapjaw carries a proper name because `HeroMaker` calls `GiveProperName` while its
-conversation is still `you food?`. Written replies for a named cast are #919. The acknowledgement a
-player actually reads is `Popup.Show`'s *"Tam takes the waterskin."*, in Qud's own conjugation.
+**The universal reply is an emote.** The choice is distributed from `BaseConversation`, so it reaches
+every mouth in the game, and no spoken line is true in all of them, since a legendary snapjaw carries
+a proper name because `HeroMaker` calls `GiveProperName` while its conversation is still `you food?`.
+`=pronouns.Subjective=` and `=pronouns.possessive=` are vanilla substitutions, so the generic reply
+serves every gender.
 
-`=pronouns.Subjective=` and `=pronouns.possessive=` are vanilla's own substitutions, so one line
-serves every gender, and a they/them speaker reads *"They incline their head"* with no second line
-written.
+The acknowledgement a player actually reads is `Popup.Show`'s *"Tam takes the waterskin."*, in Qud's
+own conjugation. Named replies add voice only; they promise no discount, favour, retained stock, or
+other benefit beyond the personal regard the gift already grants.
 
 ### 62.6a The emote changes once giving stops being remarkable
 
@@ -9306,8 +9306,21 @@ Ordering makes it read correctly, and it is `ConversationUI.SelectChoice`'s rath
 the gift just given, and the seventh gift is the one that first sees the warmer node rather than the
 eighth. A failed or escaped give returns false from `Enter()` and never reaches the node at all.
 
+
 Ordinal 9600 puts the choice directly below the two naming exchanges at 10000 and 9900, which is also
 the order the gate needs: the way to unlock it is the choice immediately above it.
+
+### 62.6b Four people answer in their own voices
+
+Tam, Elder Irudad, Warden Yrame, and Mehmet override both inherited reply nodes in their own
+conversations. Gifts one through six use `Vixy_Gifted`; the seventh accepted gift and later ones use
+`Vixy_GiftedWarm`. The latter treats giving as familiar rather than repeatedly thanking the player.
+
+Their existing conversations already establish the registers the lines extend: Tam's formal dromad
+welcome, Irudad's elliptical warmth, Yrame's clipped practical watchfulness, and Mehmet's wind and
+taste imagery. Every other speaker keeps the generic emote, including named creatures whose dialogue
+does not establish a compatible voice.
+
 
 ### 62.7 Off-switch, and the one thing uninstalling costs
 

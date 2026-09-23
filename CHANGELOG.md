@@ -15,6 +15,12 @@ Entries marked **(internal)** do not affect the shipped mod and are invisible to
 recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
+### Added
+
+- **Tam, Elder Irudad, Warden Yrame, and Mehmet now answer gifts in their own voices** (#919).
+  Their familiarity with giving changes with the seventh accepted gift, while every other creature
+  retains the universal emote response.
+
 
 ## [2.20.1] - 2026-09-22
 
