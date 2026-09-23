@@ -613,6 +613,18 @@
         I am far from Moghra'yi and not sorry for it. You are the second thing here I did not have to learn twice.
       </text>
     </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        Your kindness is a good weight in the chest, =name=. We receive it gladly.~
+        Such a gift travels farther than a caravan, =name=. It tells us who walks beside us.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        Ah, =name=. You bring something as naturally as you take a place by the fire. We are accustomed.~
+        Again, then. A road is known by its returning feet, and so is a friend.
+      </text>
+    </node>
   </conversation>
 
   <!-- Elder Irudad. Elliptical, leading dashes, expansive - "-mm. Mmm?", "-this? The oasis-hamlet."
@@ -637,6 +649,18 @@
         -well enough. The vine grows, the salt blows, and you walk in out of it. Three things I can rely on, =name=.~
         -mm, ask the pillows. They know more of me than I do. ...Sit. It is good you asked.~
         -I keep. That is the whole of it at my age. But there is a difference between quiet and alone, =name=, and you are the difference.
+      </text>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        -mm. A kindness. It sits quiet, but it sits.~
+        -ah, you bring a thing freely. That is rare enough to remember.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        -mm. You needn't make ceremony of it, =name=. The shade knows who comes beneath it.~
+        -a gift again. Well. Some things become part of a place without asking.
       </text>
     </node>
   </conversation>
@@ -667,6 +691,18 @@
         You'll do. I've buried better and worse, and I'd rather not dig for you.
       </text>
     </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        Thoughtful. Don't let it make you careless, hyeh.~
+        All right. I see it. Keep your peace. That's all I ask.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        Mm. Put it there. No need for a speech.~
+        You've made a habit. Could be worse habits.
+      </text>
+    </node>
   </conversation>
 
   <!-- Mehmet. Waterhand, tastes the wind - "A tongue can taste a hundred kinds of wind, y'know?",
@@ -691,6 +727,18 @@
         Copper off the marsh, and rain a long way off that won't reach us. Anywhile - good you asked.~
         Same wind, =name=. Different tongue tasting it, mayhaps. You've a way of turning up on the good days.~
         Dust. Always dust. But you en't dust, and that's worth the saying.
+      </text>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        Aye, =name=. A kind wind, that.~
+        Feels good, that. Like rain that gets where it was going.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        Ah, =name=. I knew the feel of this before you spoke.~
+        Same good wind, then. No surprise in it now.
       </text>
     </node>
   </conversation>
