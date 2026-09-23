@@ -129,6 +129,25 @@ namespace XRL.World.AI
         /// How much <paramref name="Speaker" /> has been given by <paramref name="Subject" />, as a
         /// count of gifts that counted. Zero when there is no such opinion.
         /// </summary>
+        public static float Given(GameObject Speaker, GameObject Subject)
+        {
+            return FindGift(Speaker, Subject)?.Magnitude ?? 0f;
+        }
+
+        /// <summary>
+        /// Whether another gift would deepen <paramref name="Speaker" />'s regard for
+        /// <paramref name="Subject" />.
+        /// </summary>
+        /// <param name="atCeiling">Whether the refusal is permanent rather than until tomorrow.</param>
+        internal static bool CanDeepenRegard(GameObject Speaker, GameObject Subject, out bool atCeiling)
+        {
+            Vixy_OpinionGift gift = FindGift(Speaker, Subject);
+            atCeiling = gift != null && gift.Magnitude >= gift.Limit;
+            return gift == null
+                || (!atCeiling && (The.Game?.TimeTicks ?? 0) - gift.Time >= gift.Cooldown);
+        }
+
+        /// <summary>Find this gift opinion without creating an empty opinion list on a read.</summary>
         /// <remarks>
         /// <b><c>Brain.TryGetOpinions</c> is deliberately not used.</b> It is not a read-only
         /// accessor — where no list exists it writes one,
@@ -138,16 +157,16 @@ namespace XRL.World.AI
         /// <c>Dictionary.TryGetValue</c> creates nothing. <c>Vixy_CustomsRegard</c> avoids the same
         /// trap for the same reason.
         /// </remarks>
-        public static float Given(GameObject Speaker, GameObject Subject)
+        private static Vixy_OpinionGift FindGift(GameObject Speaker, GameObject Subject)
         {
             Brain brain = Speaker?.Brain;
-            if (brain == null || Subject == null || !Subject.HasID) return 0f;
-            if (!brain.Opinions.TryGetValue(Subject.BaseID, out OpinionList held)) return 0f;
+            if (brain == null || Subject == null || !Subject.HasID) return null;
+            if (!brain.Opinions.TryGetValue(Subject.BaseID, out OpinionList held)) return null;
             for (int i = 0; i < held.Count; i++)
             {
-                if (held[i] is Vixy_OpinionGift gift) return gift.Magnitude;
+                if (held[i] is Vixy_OpinionGift gift) return gift;
             }
-            return 0f;
+            return null;
         }
 
         /// <summary>
