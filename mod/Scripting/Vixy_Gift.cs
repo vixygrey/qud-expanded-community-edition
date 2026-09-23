@@ -214,6 +214,18 @@ namespace XRL.World.Conversations.Parts
                 );
             }
 
+            // Brain.AddOpinion would either ignore a renewal before its cooldown or clamp one at
+            // the ceiling. Refuse before picking an item, so neither case can consume a gift.
+            if (!Vixy_OpinionGift.CanDeepenRegard(speaker, player, out bool atCeiling))
+            {
+                return player.ShowFailure(
+                    speaker.Does("have", int.MaxValue, null, null, null, AsIfKnown: false)
+                    + (atCeiling
+                        ? " received all the gifts that can deepen their regard."
+                        : " already accepted a gift today.")
+                );
+            }
+
             List<GameObject> offerable = new List<GameObject>();
             bool held = false;
             foreach (GameObject item in player.Inventory.GetObjects())

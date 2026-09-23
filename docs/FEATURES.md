@@ -9182,8 +9182,9 @@ can hand a companion your whole inventory and their regard is unchanged.
 
 `Vixy_OpinionGift` is `BaseValue` 5 and `Limit` 10. `Brain.AddOpinion` starts `Magnitude` at 1 and
 renews it as `Magnitude = min(Limit, Magnitude + 1)` behind the inherited `Cooldown` of 1200 turns,
-one game day, with `Value = BaseValue × Magnitude`. So a second gift inside a day counts for
-nothing, and the tenth on the tenth day reaches **+50**.
+one game day, with `Value = BaseValue × Magnitude`. `Vixy_Gift` checks those same conditions before
+offering an item: one accepted gift per day can deepen regard, and no further gift can after the tenth.
+A refused gift leaves the item in your inventory. The tenth on the tenth day reaches **+50**.
 
 That number is `Brain.GetFeelingLevel`'s Allied threshold, and it is the whole point of the value.
 Personal and faction feeling **sum** into one figure, and from #188 faction feeling takes five values:
