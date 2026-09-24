@@ -52,6 +52,8 @@ namespace XRL
         private struct Site
         {
             public bool Protected;
+            public bool Lair;
+            public bool Ruins;
             public string Flags;
         }
 
@@ -69,13 +71,18 @@ namespace XRL
             // stay spent rather than becoming a rerollable encounter source.
             The.ZoneManager.RemoveZoneProperty(target, Vixy_Territory.Vacated);
 
-            if (IsProtectedSite(target, Zone)) return;
+            Site site = Classify(target, Zone);
+            if (site.Protected) return;
 
             if (!TryCoordinates(target, out string world, out int x, out int y)) return;
 
             List<Holding> holdings = GetHoldings(target, world, x, y);
             Mission mission = SelectMission(Lost, holdings);
             if (!mission.Valid) return;
+
+            // A plain ruin receives one retrieval trip instead of a new occupation. Lairs remain
+            // ordinary band destinations because their scattered contents are not abandoned storage.
+            if (site.Ruins && !site.Lair) mission.Name = Vixy_Band.ScavengeMission;
 
             // The rate applies only to journeys that have a legal world-map start and destination.
             if (!TryGetStart(mission.Origin, target, out Cell _)) return;
@@ -140,6 +147,10 @@ namespace XRL
             token.SetStringProperty(Vixy_Band.OriginProperty, FromZone);
             token.SetStringProperty(Vixy_Band.TargetProperty, ToZone);
             if (!Trigger.IsNullOrEmpty()) token.SetStringProperty(Vixy_Band.TriggerProperty, Trigger);
+            if (Mission == Vixy_Band.ScavengeMission)
+            {
+                token.SetStringProperty(Vixy_Band.LegProperty, Vixy_Band.OutboundLeg);
+            }
 
             AIWorldMapTravel travel = token.RequirePart<AIWorldMapTravel>();
             if (!travel.SetZoneID(ToZone))
@@ -209,6 +220,8 @@ namespace XRL
             return new Site
             {
                 Protected = protectedNote || immutable || (proper && !lair && !ruins),
+                Lair = lair,
+                Ruins = ruins,
                 Flags = string.Join(", ", flags),
             };
         }
