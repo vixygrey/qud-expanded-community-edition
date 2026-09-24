@@ -9350,6 +9350,18 @@ The nodes remain in `BaseConversation`, which reaches placed traders through nor
 inheritance and village merchants through `ConversationsAPI.AddDynamicShim`. A merchant-specific
 conversation merge would miss the latter.
 
+### 62.6e Four Grit Gate figures receive the next bespoke replies
+
+Otho, Hortensa, Dardi, and Aloysius are the first four of Grit Gate's eight named figures. Their
+existing familiarity dialogue already supplies the reason each gift reply can be individual: Otho
+receives responsibility formally, Hortensa grudgingly, Dardi through practical work, and Aloysius as
+an accord that does not become kindness. Their several conditional greeting nodes describe the
+speaker's circumstances, not a change in what freely accepting a gift means, so both gift pools stay
+static.
+
+Each override has priority `1`, above the shared merchant reply at `0` and the generic emote at `-1`.
+That precedence keeps bespoke replies durable if a target later acquires the merchant part.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice
