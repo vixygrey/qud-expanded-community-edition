@@ -9386,6 +9386,19 @@ visits. That supports individual writing but does not make a gift conditional on
 so all twelve reply pools remain static. The merchant-covered Freehold residents stay on the shared
 merchant layer rather than receiving competing bespoke nodes.
 
+### 62.6h Bey Lah and the water siblings complete a combined cast
+
+Bey Lah's six named hindren, then Miryam, Tzedech, Tikva, Thicksalt, Tammuz and Agyra, bring two
+geographically separate but mechanically identical casts together. Both groups already give the
+player a name and a standing, but their voices remain individual: a hindren `kendren` is not the
+scholar's clue, the guard's report, or the Hindriarch's concession; likewise each water sibling makes
+the gift fit an epithet and a chime voice of their own.
+
+Bey Lah's village states and Chavvah's `ElseingComplete` state continue to shape their familiar
+dialogue, not their gift replies. A freely accepted gift makes the same personal claim in every state,
+so each ordinary and warm gift pool is static. That leaves quest outcomes where their existing
+conversations already express them, rather than inventing a second conditional layer.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice
