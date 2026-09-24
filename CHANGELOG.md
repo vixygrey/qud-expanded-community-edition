@@ -15,6 +15,8 @@ Entries marked **(internal)** do not affect the shipped mod and are invisible to
 recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
+
+## [2.21.0] - 2026-09-24
 ### Added
 
 - **Scavenger bands recover loose loot from cleared plain ruins** (#956). They leave player storage,
