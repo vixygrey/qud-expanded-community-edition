@@ -1870,6 +1870,18 @@
         <text>I'll take the cider.~Be ape-still and muse.~Live and drink, Nuntu.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        =name=. A gift freely given! I find that a better surprise than most a mayor receives.~
+        Thank you. It is a small thing, perhaps, but villages are made of small things received in good faith.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        Ah, =name=. You have made this a familiar kindness. I am glad to have learned to expect it.~
+        Again. I have stopped wondering whether you mean it, which is a good kind of certainty.
+      </text>
+    </node>
   </conversation>
 
   <!-- Warden Indrix. Goatfolk, ferocious, and hostile in the mouth even when he is not - "Impudent
@@ -1903,6 +1915,18 @@
         <text>I won't press.~Then I'll make haste.~Live and drink, Warden.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        Grrrah. Thoughtful. Don't take that as an invitation to become soft.~
+        Live and drink. I accept it. There, I said it.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        Hrmph. You know where to put your kindness. That is becoming familiar.~
+        Again? Fine. You have made the gesture ordinary, and I will not complain.
+      </text>
+    </node>
   </conversation>
 
   <!-- Crowsong. Deathwonder. Speaks in fragments that are not quite answers - "being grass, the
@@ -1929,6 +1953,18 @@
       <choice Target="Start">
         <text>......~Then I'll return.~Live and drink, Crowsong.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text>
+        given. not taken. the difference is a small light.~
+        the thing arrives by your hand. the grass notices.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text>
+        again. =name= arrives twice: once and then the familiar echo.~
+        no surprise. surprise has gone grassward.
+      </text>
     </node>
   </conversation>
   <!-- The tenth cast is one person, and he is the one this feature has been walking toward. #633.
