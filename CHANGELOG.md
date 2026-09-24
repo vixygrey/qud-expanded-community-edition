@@ -22,6 +22,10 @@ recorded because contributors need them, not because subscribers do.
   retains the universal emote response.
 - **Mayor Nuntu, Warden Indrix, and Crowsong now answer gifts in their own voices** (#989).
   Their first replies accept the gesture, while later ones treat it as familiar.
+- **Merchants now distinguish a gift from a sale** (#990). Dynamic village merchants and placed
+  dromad traders acknowledge the gift at both familiarity thresholds without promising a discount,
+  saved stock, or special treatment.
+
 
 
 

@@ -313,7 +313,14 @@
     </choice>
 
     <node ID="Vixy_Gifted">
-      <text>
+      <text IfSpeakerHavePart="GenericInventoryRestocker">
+        A gift is not a sale. I know the difference, and I thank you for it.~
+        Freely given, then. A trader learns the difference.~
+        No price on this one. I receive it as it was offered.~
+        You brought it without asking a price. That matters.~
+        This one does not cross a counter. I understand.
+      </text>
+      <text Priority="-1">
         {{emote|*=pronouns.Subjective= looks at you a moment longer than before.*}}~
         {{emote|*=pronouns.Subjective= nods once, and puts it away.*}}~
         {{emote|*=pronouns.Subjective= turns it over in =pronouns.possessive= hands, then stows it.*}}~
@@ -345,7 +352,14 @@
          thing that actually changed. Five rather than ten: this is the tail of the curve, and a
          player reaching it has already seen the wide pool. None assume anatomy. -->
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text IfSpeakerHavePart="GenericInventoryRestocker">
+        No need to name it a gift. I know what passed between us.~
+        Again, freely given. I have stopped looking for the price.~
+        Not stock, not a sale. Just something you chose to leave with me.~
+        You have made this familiar enough that the counter does not enter into it.~
+        Still no tally. I understand.
+      </text>
+      <text Priority="-1">
         {{emote|*=pronouns.Subjective= takes it without hesitating.*}}~
         {{emote|*=pronouns.Subjective= does not ask why.*}}~
         {{emote|*=pronouns.Subjective= looks at you rather than at what you gave.*}}~
@@ -614,13 +628,13 @@
       </text>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         Your kindness is a good weight in the chest, =name=. We receive it gladly.~
         Such a gift travels farther than a caravan, =name=. It tells us who walks beside us.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         Ah, =name=. You bring something as naturally as you take a place by the fire. We are accustomed.~
         Again, then. A road is known by its returning feet, and so is a friend.
       </text>
@@ -652,13 +666,13 @@
       </text>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         -mm. A kindness. It sits quiet, but it sits.~
         -ah, you bring a thing freely. That is rare enough to remember.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         -mm. You needn't make ceremony of it, =name=. The shade knows who comes beneath it.~
         -a gift again. Well. Some things become part of a place without asking.
       </text>
@@ -692,13 +706,13 @@
       </text>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         Thoughtful. Don't let it make you careless, hyeh.~
         All right. I see it. Keep your peace. That's all I ask.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         Mm. Put it there. No need for a speech.~
         You've made a habit. Could be worse habits.
       </text>
@@ -730,13 +744,13 @@
       </text>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         Aye, =name=. A kind wind, that.~
         Feels good, that. Like rain that gets where it was going.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         Ah, =name=. I knew the feel of this before you spoke.~
         Same good wind, then. No surprise in it now.
       </text>
@@ -1871,13 +1885,13 @@
       </choice>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         =name=. A gift freely given! I find that a better surprise than most a mayor receives.~
         Thank you. It is a small thing, perhaps, but villages are made of small things received in good faith.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         Ah, =name=. You have made this a familiar kindness. I am glad to have learned to expect it.~
         Again. I have stopped wondering whether you mean it, which is a good kind of certainty.
       </text>
@@ -1916,13 +1930,13 @@
       </choice>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         Grrrah. Thoughtful. Don't take that as an invitation to become soft.~
         Live and drink. I accept it. There, I said it.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         Hrmph. You know where to put your kindness. That is becoming familiar.~
         Again? Fine. You have made the gesture ordinary, and I will not complain.
       </text>
@@ -1955,13 +1969,13 @@
       </choice>
     </node>
     <node ID="Vixy_Gifted">
-      <text>
+      <text Priority="1">
         given. not taken. the difference is a small light.~
         the thing arrives by your hand. the grass notices.
       </text>
     </node>
     <node ID="Vixy_GiftedWarm">
-      <text>
+      <text Priority="1">
         again. =name= arrives twice: once and then the familiar echo.~
         no surprise. surprise has gone grassward.
       </text>
