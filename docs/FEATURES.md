@@ -9362,6 +9362,17 @@ static.
 Each override has priority `1`, above the shared merchant reply at `0` and the generic emote at `-1`.
 That precedence keeps bespoke replies durable if a target later acquires the merchant part.
 
+### 62.6f The other four Grit Gate figures complete the cast
+
+Iseppa, Shem, Barathrum, and Q Girl supply the other half of Grit Gate's eight voices. Iseppa is
+startled to be considered; Shem keeps the exchange between conspirators and retains his whispered
+emote; Barathrum recognizes a freely made thing through a maker's long view; and Q Girl turns a
+surprise into a new question to pursue.
+
+Their conditional starts and teaching nodes describe their circumstances, not a change in what a
+freely accepted gift means. The ordinary and warm pools are therefore static, with the same priority
+`1` that keeps them above the merchant and generic reply layers.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice

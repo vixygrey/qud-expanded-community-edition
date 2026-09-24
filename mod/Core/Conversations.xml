@@ -469,6 +469,18 @@
         <text>Thank you, =pronouns.formalAddressTerm=.~I'll come back.~That is worth hearing.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        A thing freely made and freely given. Those are rarer than either of us admits, child.~
+        I will keep it. Not for its weight, but because you chose to set it in my hands.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. You have made a practice of leaving good things behind. A practice is a material, if you work it long enough.~
+        I know the shape of this gesture now, child. It has become part of the work.
+      </text>
+    </node>
     <start>
       <choice ID="Vixy_TeachModLegendary" Target="Vixy_TaughtModLegendary" Ordinal="9700">
         <text>Master, teach me to make something that outlasts me.</text>
@@ -555,6 +567,18 @@
       <choice Target="Start">
         <text>I'll come back.~I'd like to see it.~Good.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Hey, thanks! You just gave me something with no warning. That's the best kind.~
+        Oh, excellent. I was not expecting this, which means I have already started thinking what it might do.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again? I know that look now. You come in, hand me something, and my day gets more interesting.~
+        You have made this a reliable source of good surprises. That's a rare specification to meet.
+      </text>
     </node>
     <start>
       <choice ID="Vixy_TeachModMassivelyOverloaded" Target="Vixy_TaughtModMassivelyOverloaded" Ordinal="9700">
@@ -963,6 +987,18 @@
         <text>I might, at that.~I'm glad.~Thank you, =pronouns.formalAddressTerm=.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Oh. You brought this for me? That is... very kind, =name=. I was not expecting it.~
+        You needn't have. But I am glad you did. It is good to be thought of.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again? I find I have begun to expect these small kindnesses from you. That is a strange comfort.~
+        You have made a habit of leaving things with me. I think I have made a habit of being glad.
+      </text>
+    </node>
   </conversation>
 
   <!-- Shem -1. Whispers, and is conspiratorially on my side from the first line - "You're not
@@ -987,6 +1023,18 @@
       <choice Target="Start">
         <text>Good.~Keep it that way.~Thank you, Shem.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        {{emote|*Shem whispers*}} For me? You didn't have to. I won't tell anyone you did.~
+        {{emote|*Shem whispers*}} A gift. That is a secret between us now. A good one.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        {{emote|*Shem whispers*}} Again. I knew it was you before I saw it. I am getting good at keeping that kind of secret.~
+        {{emote|*Shem whispers*}} You leave things, and I keep them. That is how it is now.
+      </text>
     </node>
   </conversation>
   <!-- The fourth cast is Yd Freehold, and it is three people rather than five. #633.

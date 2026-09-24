@@ -27,6 +27,9 @@ recorded because contributors need them, not because subscribers do.
   saved stock, or special treatment.
 - **Otho, Hortensa, Dardi, and Aloysius now acknowledge gifts in their own voices** (#991).
   Their later replies recognize familiar giving without turning Grit Gate's wary thaws into favours.
+- **Iseppa, Shem, Barathrum, and Q Girl now acknowledge gifts in their own voices** (#994).
+  Their later replies make familiar giving part of Iseppa's comfort, Shem's secret, Barathrum's work,
+  and Q Girl's good surprises.
 
 
 
