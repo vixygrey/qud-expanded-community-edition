@@ -33,6 +33,11 @@ recorded because contributors need them, not because subscribers do.
 - **Six Yd Freehold and Six Day Stilt regulars now acknowledge gifts in their own voices** (#995).
   Mak, Une, Goek, Warden Esthers, Lulihart, and Tszappur recognize later gifts as familiar without
   promising a favour, saved stock, or other benefit.
+- **Bey Lah's six named hindren now acknowledge gifts in their own voices** (#996). Angohind, Isahind,
+  Kesehind, Neelahind, Keh, and Eskhind keep the village's changing circumstances in their existing
+  dialogue while treating gifts as a personal gesture.
+- **Chavvah's water siblings and Agyra now acknowledge gifts in their own voices** (#997). Their
+  familiar replies preserve each chime voice without making gift reactions depend on the -elseing.
 
 
 
