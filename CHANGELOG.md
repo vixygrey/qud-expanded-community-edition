@@ -20,6 +20,9 @@ recorded because contributors need them, not because subscribers do.
 - **Tam, Elder Irudad, Warden Yrame, and Mehmet now answer gifts in their own voices** (#919).
   Their familiarity with giving changes with the seventh accepted gift, while every other creature
   retains the universal emote response.
+- **Mayor Nuntu, Warden Indrix, and Crowsong now answer gifts in their own voices** (#989).
+  Their first replies accept the gesture, while later ones treat it as familiar.
+
 
 
 ## [2.20.1] - 2026-09-22

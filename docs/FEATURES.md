@@ -9321,6 +9321,17 @@ welcome, Irudad's elliptical warmth, Yrame's clipped practical watchfulness, and
 taste imagery. Every other speaker keeps the generic emote, including named creatures whose dialogue
 does not establish a compatible voice.
 
+### 62.6c Kyakukya receives a second cast
+
+Mayor Nuntu, Warden Indrix, and Crowsong each override the ordinary and familiar gift reply nodes.
+They share a village, not a register: Nuntu is openly learning what it means to be accepted, Indrix
+is a warden whose hard-earned trust remains clipped, and Crowsong must not resolve into ordinary
+warmth. All three already have `Vixy_Introduced`-gated dialogue, so the gift choice reaches them by
+the established route.
+
+Indrix's gift replies are deliberately static. His existing familiar conversation distinguishes
+whether `Raising Indrix` is complete because that quest changes the relationship; a gift does not, so
+the new nodes leave that split untouched.
 
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
