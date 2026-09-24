@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using QudExpandedCE;
+using XRL.Rules;
 using XRL.World.ZoneBuilders;
 
 namespace XRL.World.Parts
@@ -71,10 +73,23 @@ namespace XRL.World.Parts
         /// <summary>The ownership replacement that caused a counterraid.</summary>
         public const string TriggerProperty = "Vixy_BandTrigger";
 
+        /// <summary>The scavenger journey phase.</summary>
+        public const string LegProperty = "Vixy_BandLeg";
+
+        /// <summary>The saved result of a scavenging trip.</summary>
+        public const string ScavengerResultProperty = "Vixy_ScavengerResult";
+
+        /// <summary>How many actual item units the token carries.</summary>
+        public const string ScavengerCarriedProperty = "Vixy_ScavengerCarried";
+
         public const string ReclaimMission = "reclaim";
         public const string RivalExpansionMission = "rival-expansion";
         public const string ExpansionMission = "expansion";
         public const string CounterraidMission = "counterraid";
+        public const string ScavengeMission = "scavenge";
+        public const string OutboundLeg = "outbound";
+        public const string ReturningLeg = "returning";
+        public const string ScavengerCacheBlueprint = "Vixy_ScavengerCache";
 
         public override bool WantEvent(int ID, int cascade)
         {
@@ -92,23 +107,16 @@ namespace XRL.World.Parts
         }
 
         /// <summary>
-        /// Become a real party here, and stop being a token.
+        /// Resolve the mission when a token leaves the world map.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// <b>The token removes itself either way.</b> If the encounter cannot be built — an unknown
-        /// faction, a zone with nowhere to put anybody — leaving a banner lying in a ruin would be
-        /// worse than the band never having come. <c>Obliterate</c> rather than <c>Destroy</c>
-        /// because there is no corpse to leave and nothing should drop.
-        /// </para>
-        /// <para>
-        /// Level and tier come from the destination rather than from the band, so a war party that
-        /// walks into the deep jungle arrives as the jungle's problem. That is
-        /// <c>HandleFactionEncounterWish</c>'s own default and it wants no cleverness.
-        /// </para>
-        /// </remarks>
         private void Arrive(Zone Where)
         {
+            if (ParentObject.GetStringProperty(MissionProperty) == ScavengeMission)
+            {
+                ArriveScavenger(Where);
+                return;
+            }
+
             string Faction = ParentObject.GetStringProperty(FactionProperty);
             if (!Faction.IsNullOrEmpty() && Raven_Options.TravellingBands)
             {
@@ -125,6 +133,167 @@ namespace XRL.World.Parts
             }
 
             ParentObject.Obliterate();
+        }
+
+        /// <summary>
+        /// Take only safe loose items at the target, then carry those same objects home.
+        /// </summary>
+        private void ArriveScavenger(Zone Where)
+        {
+            if (ParentObject.GetStringProperty(LegProperty) == ReturningLeg)
+            {
+                RecoverCargo(Where);
+                return;
+            }
+
+            if (!Raven_Options.TravellingBands)
+            {
+                ParentObject.Obliterate();
+                return;
+            }
+
+            CollectCargo(Where);
+            if (!ReturnToOrigin(Where) && ParentObject.GetIntProperty(ScavengerCarriedProperty) == 0)
+            {
+                ParentObject.Obliterate();
+            }
+        }
+
+        /// <summary>
+        /// Collect one or two uniformly chosen item units from the zone's direct object list.
+        /// Containers and every known player, story, or infrastructure marker stay out.
+        /// </summary>
+
+        private void CollectCargo(Zone Where)
+        {
+            ParentObject.RequirePart<Inventory>();
+
+            List<GameObject> candidates = new List<GameObject>();
+            List<GameObject> objects = Where.GetObjects();
+            for (int i = 0; i < objects.Count; i++)
+            {
+                if (IsAbandonedLooseItem(objects[i])) candidates.Add(objects[i]);
+            }
+
+            int wanted = Math.Min(Stat.Random(1, 2), candidates.Count);
+            for (int i = 0; i < wanted; i++)
+            {
+                int index = Stat.Random(0, candidates.Count - 1);
+                GameObject item = candidates[index];
+                candidates.RemoveAt(index);
+                item.SplitFromStack();
+                if (!ParentObject.ReceiveObject(item, NoStack: true, Context: "Vixy_Scavenge"))
+                {
+                    item.CheckStack();
+                }
+            }
+
+            int carried = ParentObject.Inventory?.GetObjectStackCount() ?? 0;
+            ParentObject.SetIntProperty(ScavengerCarriedProperty, carried);
+            ParentObject.SetStringProperty(
+                ScavengerResultProperty,
+                carried == 0 ? "empty" : carried + (carried == 1 ? " item" : " items")
+            );
+        }
+
+        /// <summary>
+        /// A root object is abandoned only when the game gives no contrary ownership or protection
+        /// signal. This deliberately never walks an inventory.
+        /// </summary>
+        private static bool IsAbandonedLooseItem(GameObject Item)
+        {
+            return Item != null
+                && Item.CurrentCell != null
+                && Item.IsReal
+                && Item.Takeable
+                && !Item.IsTemporary
+                && !Item.IsCreature
+                && !Item.IsCombatObject()
+                && !Item.HasPart<Container>()
+                && !Item.HasTag("Corpse")
+                && Item.CanClear()
+                && !Item.IsSpecialItem()
+                && !Item.IsMarkedImportantByPlayer()
+                && !Item.IsOwned()
+                && !Item.OwnedByPlayer
+                && Item.GetIntProperty("DroppedByPlayer") <= 0
+                && Item.GetIntProperty("StoredByPlayer") <= 0
+                && Item.GetIntProperty("FromStoredByPlayer") <= 0;
+        }
+
+        /// <summary>
+        /// Lift the token back to its source parasang and give it a fresh travel part.
+        /// </summary>
+        private bool ReturnToOrigin(Zone Where)
+        {
+            string origin = ParentObject.GetStringProperty(OriginProperty);
+            Cell world = Where.GetWorldCell();
+            if (origin.IsNullOrEmpty() || world == null)
+            {
+                PreserveCargo("return blocked");
+                return false;
+            }
+
+            ParentObject.RemovePart<AIWorldMapTravel>();
+            ParentObject.SetStringProperty(LegProperty, ReturningLeg);
+            if (!ParentObject.SystemMoveTo(world))
+            {
+                PreserveCargo("return blocked");
+                return false;
+            }
+
+            AIWorldMapTravel travel = ParentObject.RequirePart<AIWorldMapTravel>();
+            if (!travel.SetZoneID(origin))
+            {
+                ParentObject.RemovePart<AIWorldMapTravel>();
+                PreserveCargo("return blocked");
+                return false;
+            }
+            travel.Pinned = true;
+            return true;
+        }
+
+        /// <summary>
+        /// Put returned objects in a normal, inspectable container at the origin.
+        /// </summary>
+        private void RecoverCargo(Zone Where)
+        {
+            Inventory cargo = ParentObject.Inventory;
+            if (cargo == null || cargo.GetObjectCountDirect() == 0)
+            {
+                ParentObject.Obliterate();
+                return;
+            }
+
+            GameObject cache = GameObject.Create(ScavengerCacheBlueprint);
+            Cell cell = cache == null ? null : Where.GetPullDownLocation(cache);
+            if (cache == null || cell == null)
+            {
+                PreserveCargo("origin cache unavailable");
+                return;
+            }
+
+            cell.AddObject(cache, Forced: true, System: true);
+            while (cargo.GetObjectCountDirect() > 0)
+            {
+                GameObject item = cargo.GetFirstObjectDirect();
+                if (!cache.ReceiveObject(item, NoStack: true, Context: "Vixy_Scavenge"))
+                {
+                    PreserveCargo("partial return");
+                    return;
+                }
+            }
+            ParentObject.Obliterate();
+        }
+
+        /// <summary>
+        /// A failed recovery remains an openable token rather than losing carried objects.
+        /// </summary>
+        private void PreserveCargo(string Result)
+        {
+            ParentObject.RequirePart<Container>();
+            ParentObject.DisplayName = "scavenger cache";
+            ParentObject.SetStringProperty(ScavengerResultProperty, Result);
         }
     }
 }

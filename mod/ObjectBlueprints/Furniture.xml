@@ -107,6 +107,23 @@
     <part Name="RandomColors" MainColor="w" DetailColor="all" />
   </object>
 
+  <!-- The physical recovery point for a returned scavenger band. It inherits Object rather than
+       Chest so this one-purpose cache cannot enter vanilla's dynamic PhysicalObject pools. -->
+  <object Name="Vixy_ScavengerCache" Inherits="Object">
+    <part
+      Name="Render"
+      DisplayName="scavenger cache"
+      RenderString="&#9633;"
+      ColorString="&amp;Y"
+      DetailColor="y"
+      RenderLayer="2"
+    />
+    <part Name="Physics" Solid="false" Takeable="false" IsReal="true" Weight="0" />
+    <part Name="Inventory" />
+    <part Name="Container" Preposition="in" />
+    <part Name="Description" Short="Things gathered from a cleared ruin await collection." />
+  </object>
+
   <!-- A band on the march, as one object on the world map. #832.
 
        Not the party. Brain.GoToPartyLeader refuses world-map targets outright and

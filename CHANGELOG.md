@@ -17,6 +17,9 @@ recorded because contributors need them, not because subscribers do.
 ## [Unreleased]
 ### Added
 
+- **Scavenger bands recover loose loot from cleared plain ruins** (#956). They leave player storage,
+  containers, corpses, quest and important items untouched, then return actual collected objects to a
+  persistent cache at their recorded origin.
 - **Tam, Elder Irudad, Warden Yrame, and Mehmet now answer gifts in their own voices** (#919).
   Their familiarity with giving changes with the seventh accepted gift, while every other creature
   retains the universal emote response.

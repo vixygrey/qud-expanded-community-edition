@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **527** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **528** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -616,14 +616,14 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Cybernetics.xml` | 10 | 14 |
 | `OtherEquipment.xml` | 9 | 16 |
 | `Throwables.xml` | 0 | 51 |
-| `Furniture.xml` | 5 | 9 |
+| `Furniture.xml` | 6 | 9 |
 | `Creatures.xml` | 46 | 4 |
 | `Food.xml` | 15 | 2 |
 | `Plants.xml` | 10 | 0 |
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **527 active** | **284** |
+| **Total** | **528 active** | **284** |
 
 ### 6.2 Melee weapons
 
@@ -2213,7 +2213,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Items.xml               # 18 new (§47, §49, §60), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
-│   ├── Furniture.xml           # 5 new, 9 merged (§29, §30, §65)
+│   ├── Furniture.xml           # 6 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
 ├── Scripting/                  # 111 files: 36 mutation stubs, plus options,
@@ -9770,20 +9770,32 @@ Ordinary wilderness, lairs, and ruins can qualify. A protected site is still spe
 so it never becomes a rerollable source.
 
 Every candidate origin is a recorded `Vixy_HeldBy` zone in the same world. Distance is Manhattan
-distance between parasangs. The dispatch chooses one mission in order:
+distance between parasangs. Wilderness and lairs choose one mission in order:
 
 1. **Reclaim** — the former holder leaves from its nearest other recorded holding.
 2. **Rival expansion** — otherwise the holder with the most negative
    `Faction.GetFeelingTowardsFaction()` value leaves from its nearest holding.
 3. **Expansion** — otherwise the nearest neutral holder leaves.
 
-Positive relationships cannot expand into a former holder's territory. Equal relationship and
-distance results break randomly. The one-in-four roll remains last, after the target, mission,
-faction, origin, and world-map placement qualify.
+A **plain ruin** carries the same selected faction and origin, but its mission becomes **scavenge**
+instead of occupation. It never calls `FactionEncounters` or changes `Vixy_HeldBy`. On arrival, it
+examines only direct loose objects in that zone: real takeable non-creatures with no container,
+corpse, owner, player-storage marker, player drop marker, player-important marker, special-item
+marker, or `CanClear()` protection. Its one or two uniformly random item units move into the token's
+own serialised `Inventory`, never from a container and never by copying or rerolling.
+
+The token then lifts back to its origin through a fresh `AIWorldMapTravel` part. Its actual cargo is
+placed in a normal `Vixy_ScavengerCache` there, so a player can inspect and recover it. If that cache
+cannot be made, the token becomes an openable cache in place rather than losing the items. Empty
+trips return and disappear without a cache. Positive relationships cannot expand into a former
+holder's territory. Equal relationship and distance results break randomly. The one-in-four roll
+remains last, after the target, mission, faction, origin, and world-map placement qualify.
 
 New tokens store `Vixy_BandFaction`, `Vixy_BandMission`, `Vixy_BandOrigin`, and
-`Vixy_BandTarget` as object properties. A token from an earlier save can lack the new properties and
-still arrives through the faction-only path. Arrival itself still only calls
+`Vixy_BandTarget` as object properties. Scavengers additionally store `Vixy_BandLeg`,
+`Vixy_ScavengerResult`, and `Vixy_ScavengerCarried`; inventory serialisation preserves the actual
+objects between departure and recovery. A token from an earlier save can lack the new properties and
+still arrives through the faction-only path. Normal arrival itself still only calls
 `FactionEncounters.BuildFactionEncounter()`. Territory changes later, when `Vixy_Territory` observes
 the resulting zone on deactivation.
 
@@ -9811,8 +9823,9 @@ A band is rare on purpose: a zone that was held, cleared to its last member and 
 one-in-four roll, then only advancing while you cross the map. Waiting for one is not a test.
 
 `vixyband` lists a token's faction, mission, origin, target, derived site flags, current map
-position, and route. A token from an earlier save is marked as legacy. An empty list is the resting
-state, not a queue that ran dry: with the option on, every vacancy is spent as it is considered.
+position, and route. A scavenger adds its outbound or returning leg, collection result, and carried
+item count. A token from an earlier save is marked as legacy. An empty list is the resting state, not
+a queue that ran dry: with the option on, every vacancy is spent as it is considered.
 
 `vixyband <faction>` sends an explicit `expansion` token through the ordinary sender. It stores the
 same metadata as play. With no vacancy on record it targets the zone you are standing in, which keeps
@@ -9823,7 +9836,8 @@ arrival observable without inventing a vacancy.
 **Off by default**, which rule 6 reserves for a genuinely new opinion this fork introduces, and
 *places you empty do not stay empty* is exactly that. Read at both ends: `Vixy_BandDispatch` asks
 before sending, and `Vixy_Band` asks again before building the camp, so turning it off stops new
-bands and stops a walking one arriving as anything.
+bands and stops a walking occupation band arriving as anything. A scavenger that has already taken
+real objects is the safety exception: it finishes its return and recovery, but cannot collect again.
 
 **Story settlements are out**, and every hand-built static zone. Nothing in the game protects them:
 no zone-level flag exists anywhere in `Worlds.xml` and `Important` is tagged on zero blueprints, and

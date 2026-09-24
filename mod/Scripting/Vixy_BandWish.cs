@@ -49,6 +49,10 @@ namespace XRL
                 string origin = o.GetStringProperty(Vixy_Band.OriginProperty);
                 string target = o.GetStringProperty(Vixy_Band.TargetProperty);
                 string trigger = o.GetStringProperty(Vixy_Band.TriggerProperty);
+                string leg = o.GetStringProperty(Vixy_Band.LegProperty);
+                string result = o.GetStringProperty(Vixy_Band.ScavengerResultProperty);
+                int carried = o.GetIntProperty(Vixy_Band.ScavengerCarriedProperty);
+
 
                 if (mission.IsNullOrEmpty() || origin.IsNullOrEmpty() || target.IsNullOrEmpty())
                 {
@@ -62,11 +66,17 @@ namespace XRL
                     continue;
                 }
 
+                string scavenger = mission == Vixy_Band.ScavengeMission
+                    ? "\n    " + (leg.IsNullOrEmpty() ? Vixy_Band.OutboundLeg : leg)
+                        + "  {{K|" + (result.IsNullOrEmpty() ? "not yet collected" : result) + "}}"
+                        + "  cargo " + carried
+                    : "";
                 flight.Add(
                     "{{G|" + faction + "}}  " + mission
                     + (trigger.IsNullOrEmpty() ? "" : "  {{K|" + trigger + "}}")
                     + "\n    from " + origin
                     + "\n    to " + target + "  {{K|" + Vixy_BandDispatch.DescribeSite(target) + "}}"
+                    + scavenger
                     + "\n    at " + (at == null ? "nowhere" : at.X + "," + at.Y)
                     + "  bound for " + (travel == null
                         ? "{{R|no route}}"
