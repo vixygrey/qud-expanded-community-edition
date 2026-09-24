@@ -9373,6 +9373,19 @@ Their conditional starts and teaching nodes describe their circumstances, not a 
 freely accepted gift means. The ordinary and warm pools are therefore static, with the same priority
 `1` that keeps them above the merchant and generic reply layers.
 
+### 62.6g Yd Freehold and the Stilt add six regulars
+
+Mak, Une and Goek at Yd Freehold, then Warden Esthers, Lulihart and Tszappur at the Six Day Stilt,
+complete the next two returning groups. They are not a shared voice: Mak turns a gift into another
+grudging nuisance, Une enters it in the tally she claims not to keep, Goek is openly joyful, Esthers
+keeps it behind the peacekeeping job, Lulihart finds it in the wind at his tent, and Tszappur receives
+it as quiet hospitality.
+
+Une, Esthers and Lulihart already establish a relationship that can deepen through naming or repeat
+visits. That supports individual writing but does not make a gift conditional on any of those states,
+so all twelve reply pools remain static. The merchant-covered Freehold residents stay on the shared
+merchant layer rather than receiving competing bespoke nodes.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice

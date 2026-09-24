@@ -30,6 +30,9 @@ recorded because contributors need them, not because subscribers do.
 - **Iseppa, Shem, Barathrum, and Q Girl now acknowledge gifts in their own voices** (#994).
   Their later replies make familiar giving part of Iseppa's comfort, Shem's secret, Barathrum's work,
   and Q Girl's good surprises.
+- **Six Yd Freehold and Six Day Stilt regulars now acknowledge gifts in their own voices** (#995).
+  Mak, Une, Goek, Warden Esthers, Lulihart, and Tszappur recognize later gifts as familiar without
+  promising a favour, saved stock, or other benefit.
 
 
 

@@ -1106,6 +1106,18 @@
         <text>I'll take it.~Understood.~Then I'll leave you to brood.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Another thing to heap upon the mound, whelp? Leave it. I will find a use or a complaint.~
+        A gift. Freely given. You do have a talent for making an old creature reconsider the evidence.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again? You are becoming a regular nuisance in a manner I have not yet learned to despise.~
+        Leave it there. I know the shape of this indignity now, and it is less troublesome than most.
+      </text>
+    </node>
   </conversation>
 
   <!-- Une. Warden by necessity rather than temperament, dry, masked, and given to philosophy about
@@ -1132,6 +1144,18 @@
         <text>Moon and Sun.~That is good news.~I'll let you get back to the hurdy-gurdy.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Moon and Sun. You brought this without being asked. I will make the appropriate private note.~
+        A gift, =name=. I have no public category for it, which is why it will remain private.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. The tally has a column for this now. I dislike that it does, but I would dislike crossing it out more.~
+        You have made a habit of generosity. I will not praise it; that might give you ideas.
+      </text>
+    </node>
   </conversation>
 
   <!-- Goek. Svardym too, and Mak's opposite in every way that matters - "Live and drink, friend. rrk
@@ -1157,6 +1181,18 @@
       <choice Target="Start">
         <text>Live and drink.~That is good to hear.~Joyful, then.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        {{emote|*reeeeeps joyfully*}} For rrk? A thing freely given! rrk will remember the happy weight of it!~
+        =name= brings rrk a gift! The Yd has more joy in it already. rrk says so!
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        {{emote|*reeeeeps joyfully*}} Again! rrk knows this good surprise now. It comes with a friend named =name=!~
+        rrk has a place for gifts from friends. Not a place on a shelf, rrk means a place in the day! Joyful!
+      </text>
     </node>
   </conversation>
   <!-- The fifth cast is the Six Day Stilt. #633.
@@ -1213,6 +1249,18 @@
         <text>I'll stay peaceful.~I won't spoil it.~Good to see you, warden.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        You brought me something? Right. I have no policy for that, so I suppose I will take it personally.~
+        Thanks. Do not make a fuss. I have enough pilgrims doing that on both sides of the gate.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again? You are making it difficult to claim I do not know you. Keep the peace anyway.~
+        All right, I know what this means by now. It means you are here, and you brought something. Fine.
+      </text>
+    </node>
   </conversation>
 
   <!-- Lulihart. A hindren drifter who calls himself a pariah and speaks in wind and breath - "the
@@ -1239,6 +1287,18 @@
         <text>I'll sit a while.~The wind is kind, then.~Live and drink, Lulihart.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        The wind carries things to tents that need them. I will take this as it came, =name=.~
+        A kindness, freely given. I will keep it near the smoke awhile.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. The salt breeze has a way of bringing you back, and now it brings this too.~
+        You leave something behind each time you go. It makes the tent less like a place to wait.
+      </text>
+    </node>
   </conversation>
 
   <!-- Tszappur. A priest of Resheph outside the marble, tending a centuries-old shrine to the Coiled
@@ -1263,6 +1323,18 @@
       <choice Target="Start">
         <text>Peace and health.~I will, at that.~Live and drink, priest.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Peace and health, =name=. A gift offered without burden is a small grace.~
+        I receive it gladly. You have brought a kindness to a quiet place.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. You have made this a quiet part of our meetings, as natural as the lamp.~
+        You need not explain it. I know this kindness now, and I accept it in peace.
+      </text>
     </node>
   </conversation>
   <!-- The sixth cast is Bey Lah, and it is the first that answers differently depending on how the
