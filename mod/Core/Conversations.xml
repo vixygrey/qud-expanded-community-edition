@@ -1987,6 +1987,18 @@
         <text>Live and drink, Lebah.~I'll sit with you a while.~Sing on, then.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        ... aye. For me. {{emote|*Lebah does not curl up.*}}~
+        Ah. A thing freely given. ... aye.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        ... again. {{emote|*Lebah looks at you, and stays uncurled.*}}~
+        =name= leaves good things. I, ah. I know.
+      </text>
+    </node>
   </conversation>
 
   <!-- Doyoba. Excitable and warm, sharp when eir credo is prodded and quick to apologize for it.
@@ -2016,6 +2028,18 @@
       <choice Target="Start">
         <text>Live and drink, Doyoba.~I'll ask the other things.~Then I'll let you watch.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Thou broughtest this freely? Oh! I accept, and I shall not turn it into a lesson, though I am tempted.~
+        Kindness, =name=. I have no credo for it, which is perhaps why it fits so well.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again! Thou hast made generosity one of the things I expect, which is a pleasant danger.~
+        I know this gift now. It is not a debt, only thou being thou. That is better.
+      </text>
     </node>
   </conversation>
 
@@ -2047,6 +2071,18 @@
         <text>Live and drink, Gyamyo.~I'll keep asking.~I hope you see it free.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Thou hast brought this for me? It is a gentle surprise. I thank thee.~
+        A freely given thing. I shall keep it, and think kindly of the hand that offered it.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. I have learned that thy kindness returneth, as thou dost.~
+        Thou needest not explain. I know the shape of this gesture and find it good.
+      </text>
+    </node>
   </conversation>
 
   <!-- Yona. Haughty, and quite willing to tell me I am a fool without being wroth about it. Watches
@@ -2076,6 +2112,18 @@
       <choice Target="Start">
         <text>Live and drink, Yona.~I'll take the promotion.~Then I'll sit with you.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Thou bringest a gift. I accept it. Do not mistake acceptance for softness.~
+        Freely given? Then I shall call thee less foolish for a moment.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. Thou art making a habit of a surprisingly sound judgment.~
+        I know thy meaning. It is irritatingly difficult to dismiss.
+      </text>
     </node>
   </conversation>
 
@@ -2107,6 +2155,18 @@
         <text>Then I'll be still.~Live and drink, Dadogom.~I'll sit a while.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Received. Be still and know I receive it.~
+        Thou hast given freely. I will keep the thing.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. I have noticed.~
+        No need for words. I know.
+      </text>
+    </node>
   </conversation>
 
   <!-- Vivira. A turret the mopango uplifted by chance and cared for by choice, keeping the gate of
@@ -2132,6 +2192,18 @@
       <choice Target="Start">
         <text>Live and remain rustless.~The shape is the incidental part.~Until next time, Vivira.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        {{emote|*BEEP* *crackle*}} Thou hast brought a gift. Form needeth not follow function, and neither doth kindness.~
+        By Her Light, I receive it gladly, =name=. It is not in my design, yet it fits.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        {{emote|*BEEP* *crackle*}} Again. I have begun to expect thy kindness, though no turret manual prepared me.~
+        Thy gifts return as thou dost. I find the pattern pleasing.
+      </text>
     </node>
   </conversation>
   <!-- The ninth cast is Kyakukya. #633.
@@ -2358,6 +2430,18 @@
         <text>Moon and Sun, Thah.~I'll come back.~Then I'll let you read.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Moon and Sun, =name=. A gift. Ah... I had an answer prepared for practical matters, and not for this. Thank you.~
+        Freely given? Then, ah, I accept it freely. That feels like a thing worth saying.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. You have made kindness feel, ah, less like a debt and more like a visit.~
+        I know this gesture now, =name=. I find I look forward to it, which I hope is not an unfair thing to admit.
+      </text>
+    </node>
   </conversation>
   <!-- The eleventh cast is six people who belong to places already written. #633.
 
@@ -2408,6 +2492,18 @@
         <text>That's a good rock.~Wooooow.~Live and drink, Neek.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        GIFT! It is sort of like when someone hands you a thing and you go "oh!" except the "oh" is HUGE. Thank you!~
+        =name= brought Neek something! That is a fact! It is a GOOD fact! Wooooow!
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again! You know how you come back? This is like the item version of coming back. Different, but ALSO the same.~
+        Another gift! I was expecting you, sort of, and now I was expecting the surprise too. That is VERY interesting.
+      </text>
+    </node>
   </conversation>
 
   <!-- Dyvvrach, who is Chavvah. Plural, unhurried and immense - "this keter roams above my trunk at
@@ -2432,6 +2528,18 @@
       <choice Target="Start">
         <text>We share the bright and now.~Dream well, Chavvah.~Live and drink.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        We receive this in dozens, =name=. A freely given thing changes shape as it passes among us.~
+        Thou hast placed a kindness in Chavvah. We will remember the placing.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. The bright and now has learned this pattern: =name= arrives, and something good remains.~
+        We know thy gift as we know thy step. Neither is required; both are welcome.
+      </text>
     </node>
   </conversation>
 
@@ -2462,6 +2570,18 @@
       <choice Target="Start">
         <text>Live and drink, Meyehind.~I'll ask again.~I'll come back.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        You brought this for me? That is kind. I will not make you defend it with a speech.~
+        Freely given. I accept it, =name=. There are few enough gentle things without questioning them.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. I have stopped wondering what you want in return.~
+        You leave a kindness behind whenever you leave. I have noticed.
+      </text>
     </node>
   </conversation>
 
@@ -2494,6 +2614,18 @@
         <text>Not making it weird.~......~Live and drink, Liihart.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        ... for me? ...thanks.~
+        ... okay. I'll keep it.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        ... again. ...yeah. I know.~
+        ... you do this. ...not bad.
+      </text>
+    </node>
   </conversation>
 
   <!-- Haddas of Ezra. Ancient, rooted and enormously amused - "HA." - and everyone smaller than her
@@ -2518,6 +2650,18 @@
       <choice Target="Start">
         <text>Then I'll sit.~HA.~Live and drink, Haddas.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        HA. A gift for an old root? Little walker, you have odd seasons. I accept.~
+        Freely given. Good. A seedling who brings shade as well as noise.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        HA HA. Again! Your roots reach farther each time you wander off.~
+        I know this little habit. Sit. Let it be ordinary.
+      </text>
     </node>
   </conversation>
 
@@ -2544,6 +2688,18 @@
       <choice Target="Start">
         <text>It's a correction.~Live and drink, Zothom.~I'll come back.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        A gift? I should ask why. I will not. Thank you, =name=.~
+        Freely given. I accept it carefully. Good things deserve that much.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. You are making it harder to believe I am beyond ordinary kindness.~
+        I know this gesture now. I will not mistake it for absolution, but I am glad of it.
+      </text>
     </node>
   </conversation>
   <!-- The twelfth cast is the last of them, and it is three. #633.
@@ -2611,6 +2767,18 @@
         <text>I'll be there.~Peace, Herododicus.~Carve on, then.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        .....oh... a gift? For me? I shall, ah, I shall remember the donor. That is what biographers do.~
+        A freely given thing. I have carved gifts into stone before, but never been handed one. How unusual.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again... oh. I find I have begun to expect a new deed when you appear, =name=.~
+        Your gifts are becoming a small biography of their own. I hope you do not mind being recorded.
+      </text>
+    </node>
   </conversation>
 
   <!-- Asphodel, self-proclaimed Earl of Omonporch. Grandiose and entirely unembarrassed - "there was
@@ -2637,6 +2805,18 @@
         <text>Use it freely.~Live and drink, Earl.~It is a fine Spindle.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Ah! A tribute to the Earl! I accept it in the generous spirit in which it was, obviously, intended.~
+        You brought this for me? Splendid. The earldom gains another treasure and I gain the story of who brought it.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again! You are establishing a tradition of courtly generosity, and I refuse to be humble about it.~
+        I know this ceremony now. You arrive, the earldom improves, and everyone benefits. Principally me.
+      </text>
+    </node>
   </conversation>
 
   <!-- Rainwater Shomer, keeper of the high gate to Brightsheol. Every sentence opens "Saad," - his
@@ -2662,6 +2842,18 @@
       <choice Target="Start">
         <text>I'll come back through.~Live and drink, Shomer.~Keep the gate well.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Saad, =name=, thu hast broughten this freely. I receiven hit with good will.~
+        Saad, thy gift cometh unbidden and welcom. I shall keepen hit in peace.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        =name=, again thou bringest kindness to the gate. I knowen the manner now.~
+        Saad no more for this. Thy gift hath taughten me thy name twice over.
+      </text>
     </node>
   </conversation>
 </conversations>

@@ -9399,6 +9399,18 @@ dialogue, not their gift replies. A freely accepted gift makes the same personal
 so each ordinary and warm gift pool is static. That leaves quest outcomes where their existing
 conversations already express them, rather than inventing a second conditional layer.
 
+### 62.6i The final sixteen end the bespoke reply rollout
+
+The Tomb watchers, seven final returning figures, and three distant landmarks complete the named voices
+selected for individual gift replies. They are deliberately one closing implementation rather than one
+voice: Lebah accepts in fragments, Dadogom in stillness, Liihart in almost nothing, Neek in too much,
+Dyvvrach as a multitude, and Shomer by replacing the gate-name `Saad` with the personal one.
+
+Their existing `Chose*`, quest, village, and faction conditions remain where vanilla and the
+familiarity dialogue already use them. A gift is a personal gesture in every state, so the final
+ordinary and warm pools are static. This completes the rollout without adding replies to bound,
+one-visit, positional-only, or deliberately unremembering speakers.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice

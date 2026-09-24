@@ -38,6 +38,15 @@ recorded because contributors need them, not because subscribers do.
   dialogue while treating gifts as a personal gesture.
 - **Chavvah's water siblings and Agyra now acknowledge gifts in their own voices** (#997). Their
   familiar replies preserve each chime voice without making gift reactions depend on the -elseing.
+- **The Tomb watchers now acknowledge gifts in their own voices** (#998). Lebah, Doyoba, Gyamyo, Yona,
+  Dadogom, and Vivira keep their distinct credo-bound registers while treating repeated gifts as
+  familiar.
+- **Seven remaining returning figures now acknowledge gifts in their own voices** (#999). Thah, Neek,
+  Dyvvrach, Meyehind, Liihart, Haddas, and Zothom receive personal replies without copying unrelated
+  quest or village-state branches.
+- **Herododicus, Asphodel, and Rainwater Shomer now acknowledge gifts in their own voices** (#1000).
+  Their ordinary and familiar gift replies remain personal rather than changing faction standing,
+  titles, or gatekeeping.
 
 
 
