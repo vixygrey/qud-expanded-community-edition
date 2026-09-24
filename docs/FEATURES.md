@@ -9333,6 +9333,23 @@ Indrix's gift replies are deliberately static. His existing familiar conversatio
 whether `Raising Indrix` is complete because that quest changes the relationship; a gift does not, so
 the new nodes leave that split untouched.
 
+### 62.6d Merchants distinguish a gift from a sale
+
+`GenericInventoryRestocker` already establishes the shared merchant relationship for §61.5a's
+familiarity question, so it is the merchant test here too. A matching speaker chooses the shared
+merchant reply in both gift nodes: an ordinary acknowledgement for gifts one through six, then a
+familiar one from the seventh accepted gift onward. The lines name no benefit beyond recognizing that
+the item was freely given rather than sold.
+
+The priorities keep three scopes from overwriting one another: bespoke replies are `1`, the merchant
+text is `0`, and the generic emote fallback is `-1`. Tam carries `GenericInventoryRestocker`, so this
+is not decorative ordering: without it the shared merchant reply would replace his own. The same
+ordering protects every current and later named merchant with a bespoke node.
+
+The nodes remain in `BaseConversation`, which reaches placed traders through normal conversation
+inheritance and village merchants through `ConversationsAPI.AddDynamicShim`. A merchant-specific
+conversation merge would miss the latter.
+
 ### 62.7 Off-switch, and the one thing uninstalling costs
 
 `OptionQudExpandedCEAskName` also gates gifts, on by default and read live. Off hides the gift choice
