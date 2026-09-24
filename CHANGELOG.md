@@ -25,6 +25,9 @@ recorded because contributors need them, not because subscribers do.
 - **Merchants now distinguish a gift from a sale** (#990). Dynamic village merchants and placed
   dromad traders acknowledge the gift at both familiarity thresholds without promising a discount,
   saved stock, or special treatment.
+- **Otho, Hortensa, Dardi, and Aloysius now acknowledge gifts in their own voices** (#991).
+  Their later replies recognize familiar giving without turning Grit Gate's wary thaws into favours.
+
 
 
 

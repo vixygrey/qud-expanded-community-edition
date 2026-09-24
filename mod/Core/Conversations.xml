@@ -815,6 +815,18 @@
         <text>Good.~That is well said, =pronouns.formalAddressTerm=.~I will let you get on.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        That is a considerate offering, =name=. I accept it with the same care it was given.~
+        I appreciate the gesture. Grit Gate receives few things freely, and I am glad to count this among them.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again, =name=. I have stopped being surprised by your consideration, though I have not stopped valuing it.~
+        Your gifts have become part of the Gate's expected workings. That is a reassuring thing.
+      </text>
+    </node>
   </conversation>
 
   <!-- Hortensa. Brusque, and calls me `=player.OffspringTerm=` on first meeting - "child, who are
@@ -839,6 +851,18 @@
       <choice Target="Start">
         <text>Good.~I will leave you to it.~Sparingly, then.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Thoughtful. Put it there. I will not make a ceremony of it.~
+        You brought something and did not ask for anything. I notice that.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again? Fine. I know what you mean by it now.~
+        Put it there. You have made a habit, and I have stopped objecting.
+      </text>
     </node>
   </conversation>
 
@@ -865,6 +889,18 @@
         <text>I'll take it.~Understood.~Then I'll be quiet.</text>
       </choice>
     </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        Leave it there. I will make use of it.~
+        Hm. You brought something useful. Do not expect applause.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Again. You are becoming predictable in one acceptable way.~
+        Leave it. I know the arrangement by now.
+      </text>
+    </node>
   </conversation>
 
   <!-- Aloysius. Grandiose and threatening in the most formal possible register - he proposes accords
@@ -889,6 +925,18 @@
       <choice Target="Start">
         <text>I won't.~Noted, =pronouns.formalAddressTerm=.~A generous clause.</text>
       </choice>
+    </node>
+    <node ID="Vixy_Gifted">
+      <text Priority="1">
+        An offering freely made. I acknowledge its receipt; do not mistake that for leniency.~
+        Your gesture is noted as goodwill, not as payment. It purchases no alteration.
+      </text>
+    </node>
+    <node ID="Vixy_GiftedWarm">
+      <text Priority="1">
+        Another provision of goodwill, then. The accord has grown accustomed to it.~
+        You persist in this courtesy. I have ceased to regard it as a tactical feint.
+      </text>
     </node>
   </conversation>
 
