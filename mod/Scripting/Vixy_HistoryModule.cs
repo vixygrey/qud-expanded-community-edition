@@ -4,17 +4,17 @@ using XRL;
 using XRL.Annals;
 using XRL.CharacterBuilds;
 using XRL.CharacterBuilds.Qud;
+using XRL.World;
 
 namespace QudExpandedCE
 {
     /// <summary>
-    /// Adds a later, record-only consequence to safe sultan-history events.
+    /// Adds later, record-only consequences to safe sultan-history events.
     ///
     /// Qud fires BOOTEVENT_AFTERINITIALIZESULTANHISTORY after it has generated and normalized
     /// sultan history, but before it builds worlds. The history therefore feeds world generation:
     /// this module must never alter an entity, site, faction, relic, region, or existing event.
-    /// It appends only a gospel-bearing HistoricEvent to the sultan who escaped bandit captivity.
-    ///
+    /// It appends only gospel-bearing HistoricEvents that answer eligible vanilla experiences.
     /// This is deliberately separate from Vixy_NameFlavourModule. That module joins
     /// EmbarkInfo.modules early so character-creation name re-rolls can reach it, then the builder
     /// adds it again. A history append is not idempotent under that lifecycle. This module remains
@@ -24,6 +24,7 @@ namespace QudExpandedCE
     {
         private const string AppliedStateKey = "Vixy_HistoryEventsApplied";
         private const string BanditEscapeResponseKey = "Vixy_BanditEscapeResponse";
+        private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
 
         private sealed class PlannedResponse
         {
@@ -71,62 +72,122 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 2);
 
             foreach (HistoricEntity sultan in sultans)
             {
-                if (HasBanditEscapeResponse(sultan))
-                {
-                    continue;
-                }
-
-                HistoricEvent escape = FindBanditEscape(sultan);
-                if (escape == null)
-                {
-                    continue;
-                }
-
-                long responseYear = escape.year + escape.duration + 1;
-                if (responseYear >= sultan.lastYear)
-                {
-                    continue;
-                }
-
-                string name = sultan.GetEntityProperty("name", responseYear);
-                if (string.IsNullOrEmpty(name))
-                {
-                    continue;
-                }
-
-                HistoricEvent response = new HistoricEvent
-                {
-                    year = responseYear,
-                    eventProperties = new Dictionary<string, string>
-                    {
-                        {
-                            "gospel",
-                            "After escaping captivity among bandits, " + name
-                                + " ruled with a vigilance born of that hardship."
-                        },
-                        { BanditEscapeResponseKey, escape.id.ToString() }
-                    }
-                };
-
-                responses.Add(new PlannedResponse
-                {
-                    Sultan = sultan,
-                    Event = response
-                });
+                PlanBanditEscapeResponse(sultan, responses);
+                PlanSecretRitualResponse(sultan, responses);
             }
 
             return responses;
         }
 
-        private static bool HasBanditEscapeResponse(HistoricEntity sultan)
+        private static void PlanBanditEscapeResponse(
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, BanditEscapeResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent escape = FindBanditEscape(sultan);
+            if (escape == null)
+            {
+                return;
+            }
+
+            long responseYear = escape.year + escape.duration + 1;
+            if (responseYear >= sultan.lastYear)
+            {
+                return;
+            }
+
+            string name = sultan.GetEntityProperty("name", responseYear);
+            if (string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After escaping captivity among bandits, " + name
+                            + " ruled with a vigilance born of that hardship."
+                    },
+                    { BanditEscapeResponseKey, escape.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanSecretRitualResponse(
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, SecretRitualResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent ritual = FindAcceptedSecretRitual(sultan, out string faction);
+            if (ritual == null)
+            {
+                return;
+            }
+
+            long responseYear = ritual.year + ritual.duration + 1;
+            if (responseYear >= sultan.lastYear)
+            {
+                return;
+            }
+
+            string name = sultan.GetEntityProperty("name", responseYear);
+            string factionName = Faction.GetFormattedName(faction);
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(factionName))
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After a clan of " + factionName + " welcomed " + name
+                            + " into its secret rite, " + name
+                            + " measured every later judgment against the clan's hidden precepts."
+                    },
+                    { SecretRitualResponseKey, ritual.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static bool HasResponse(HistoricEntity sultan, string responseKey)
         {
             foreach (HistoricEvent existing in sultan.events)
             {
-                if (existing.HasEventProperty(BanditEscapeResponseKey))
+                if (existing.HasEventProperty(responseKey))
                 {
                     return true;
                 }
@@ -147,6 +208,45 @@ namespace QudExpandedCE
             }
 
             return null;
+        }
+
+        private static HistoricEvent FindAcceptedSecretRitual(
+            HistoricEntity sultan,
+            out string faction
+        )
+        {
+            HistoricEvent earliest = null;
+            faction = null;
+            HistoricEntitySnapshot finalSnapshot = sultan.GetSnapshotAtYear(sultan.lastYear);
+            List<string> finalLikedFactions = finalSnapshot.GetList("likedFactions");
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is SecretRitual)
+                    || existing.GetEventProperty("tombInscriptionCategory") != "LearnsSecret")
+                {
+                    continue;
+                }
+
+                List<string> addedFactions = existing.GetListProperties("likedFactions");
+                if (addedFactions == null
+                    || addedFactions.Count != 1
+                    || string.IsNullOrEmpty(addedFactions[0])
+                    || !finalLikedFactions.Contains(addedFactions[0]))
+                {
+                    continue;
+                }
+
+                if (earliest == null
+                    || existing.year < earliest.year
+                    || (existing.year == earliest.year && existing.id < earliest.id))
+                {
+                    earliest = existing;
+                    faction = addedFactions[0];
+                }
+            }
+
+            return earliest;
         }
     }
 }

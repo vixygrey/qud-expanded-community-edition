@@ -16,6 +16,12 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Sultans initiated into a faction's secret rite can carry its hidden precepts into later
+  judgments** (#1012). The optional history system records the consequence without changing the
+  faction relationship, revealed region, or generated world.
+
 ## [2.21.0] - 2026-09-24
 ### Added
 

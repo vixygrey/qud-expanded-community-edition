@@ -155,9 +155,11 @@ The first history slice is deliberately smaller than the original compositional 
   `BOOTEVENT_AFTERINITIALIZESULTANHISTORY`.
 - It may append a later **record-only** response to a safe vanilla event. It never changes a
   generated event, the generator's draw pool, or a world-facing entity.
-- Its first candidate is `CapturedByBandits`' escape branch
-  (`tombInscriptionCategory = EnduresHardship`). The response is a self-contained gospel about the
-  later consequence of that escape.
+- `CapturedByBandits`' escape branch (`tombInscriptionCategory = EnduresHardship`) receives a
+  self-contained gospel about the later consequence of that escape.
+- `SecretRitual`'s accepted branch (`tombInscriptionCategory = LearnsSecret` plus one retained
+  `likedFactions` addition) receives a self-contained gospel about the initiation informing later
+  judgments.
 - The option is new-world-scoped. Existing worlds and histories never change.
 
 The module runs before world construction, so history is an input to worldgen rather than merely a
@@ -167,13 +169,12 @@ this slice. See #815 for the worldgen route.
 
 ### Deferred work
 
-- Additional safe, place-revealing record-only responses depend on observed play of #731 and are
-  tracked by #979.
+- Further safe record-only responses are evaluated one source and branch at a time under #979.
 - World-facing consequences, including any response to an entity-creating event, belong to #815.
 - Generator replacement, draw-pool reweighting, and pruning vanilla events are not proposed by this
   feature.
 - Source divergence, murals, gossip, relic derivation, and cross-sultan legacy remain design work,
-  not part of #731.
+  not part of the record-only pass.
 
 ---
 
@@ -186,15 +187,15 @@ this feature.
 
 | Criterion | Required result |
 |---|---|
-| Eligible coverage | Every eligible sultan gets exactly one response. |
-| Ordering | The response is after its escape and before its terminal event. |
+| Eligible coverage | Every eligible sultan gets exactly one response of each qualifying type. |
+| Ordering | Each response is after its source and before the terminal event. |
 | Idempotence | Repeated boot dispatch adds no duplicate response. |
 | Record-only boundary | The pass writes no world-facing state. |
-| Legibility | The gospel makes sense when revealed before its antecedent. |
+| Legibility | Each gospel makes sense when revealed before its antecedent. |
 | Save safety | A generated response reloads as ordinary `HistoricEvent` data. |
 
-Sultan gospels become independent journal notes revealed one random secret at a time. The response
-therefore repeats enough of the earlier captivity or escape to be meaningful alone.
+Sultan gospels become independent journal notes revealed one random secret at a time. Each response
+therefore repeats enough of its source experience to be meaningful alone.
 
 ---
 
