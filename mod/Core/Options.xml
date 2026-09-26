@@ -788,15 +788,15 @@
   </option>
   <option
     ID="OptionQudExpandedCEHistoryEvents"
-    DisplayText="{{C|Qud Expanded}}: sultans carry the consequences of escape"
+    DisplayText="{{C|Qud Expanded}}: sultans carry the consequences of history"
     Category="Mods"
     Type="Checkbox"
     Default="No"
-    SearchKeywords="qud expanded history sultan bandit escape gospel journal world generation"
+    SearchKeywords="qud expanded history sultan consequence inspiration ritual initiation gospel journal world generation"
   >
     <helptext>
-            When a sultan escaped captivity among bandits, a later chronicle entry can
-            remember what that hardship made of their rule.
+            Some experiences in a sultan's history can receive a later chronicle entry
+            recording how they shaped what followed.
 
             This writes only the sultan's record. It does not create, move, or remove a
             place, relic, faction, or creature.

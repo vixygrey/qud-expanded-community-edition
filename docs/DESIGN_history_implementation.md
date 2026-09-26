@@ -1,29 +1,35 @@
 # Record-Only History Implementation
 
-> **Status:** implementation specification for #731. It supersedes this document's former
-> pre-recon plan. The old plan assumed an unavailable registry and retained a Harmony route that
-> `docs/CHARTER.md` rule 5 forbids.
+> **Status:** implementation specification for the record-only responses shipped through #731 and
+> #1012. It supersedes this document's former pre-recon plan, which assumed an unavailable registry
+> and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
 
 ---
 
 ## 1. Boundary
 
 Vanilla generates sultan history before it builds worlds. A history event can therefore name or move
-an entity that later becomes a relic, site, faction, or other world-facing fact. #731 adds only a
-later event record. It never changes an existing event or any world-facing state.
+an entity that later becomes a relic, site, faction, or other world-facing fact. The record-only pass
+adds later event records without changing an existing event or any world-facing state.
 
-The first response is limited to `CapturedByBandits`' escape branch:
+Two source branches are implemented:
 
 ```csharp
 event is CapturedByBandits
     && event.GetEventProperty("tombInscriptionCategory") == "EnduresHardship"
+
+event is SecretRitual
+    && event.GetEventProperty("tombInscriptionCategory") == "LearnsSecret"
+    && event.GetListProperties("likedFactions") contains exactly one retained faction
 ```
 
-The murder branch (`Slays`) is not eligible. `CapturedByBandits` reveals a region but creates no
-entity, so a later reflection on the escape can remain truthful without a matching worldgen change.
+The bandit murder branch (`Slays`) and the ritual rejection branch (`hatedFactions`) are not eligible.
+The accepted sources reveal regions and may add a faction relationship, but create no entity. A later
+reflection can therefore remain truthful without matching worldgen work.
 
-The six vanilla types that create findable entities are excluded. A response to one of them belongs
-in #815, where the history and the constructed world can be changed together.
+The vanilla branches that create or relocate findable entities remain excluded. A response that
+changes one of those entities belongs in #815, where the history and constructed world can change
+together.
 
 ## 2. Extension point
 
@@ -56,13 +62,15 @@ must not leave a partial record for a sultan.
 
 ## 4. Response construction
 
-For every generated sultan, select at most one eligible escape deterministically. A response is valid
-only if it can be assigned a year after the source event and before that sultan's terminal event.
+For every generated sultan, select at most one source of each eligible type deterministically. Ritual
+selection uses the earliest event by `(year, id)` and requires the faction relationship to survive in
+the final snapshot. A response is valid only if it can be assigned a year after its source event and
+before that sultan's terminal event.
 
-Create a plain `HistoricEvent` with only event-local properties. At minimum it needs:
+Create a plain `HistoricEvent` with only event-local properties:
 
-- `gospel`: a complete line that names the sultan and restates enough of the captivity or escape to
-  make the later consequence intelligible alone;
+- `gospel`: a complete line that names the sultan and restates enough of the source experience to
+  make its later consequence intelligible alone;
 - a private `Vixy_` marker property identifying the source and preventing duplicate responses.
 
 Do not write entity properties, entity list properties, `revealsRegion`, `revealsItem`, factions,
@@ -76,28 +84,29 @@ Use fully rendered source data rather than relying on that post-processing.
 ## 5. Journal and legibility
 
 Every event with a `gospel` becomes its own `JournalSultanNote`. Sultan notes enter the random secret
-pool independently, so a player can discover the response before discovering the escape it answers.
-The response must be legible in that order. It cannot depend on a preceding note, a tomb inscription,
-or a map discovery for its subject.
+pool independently, so a player can discover a response before discovering the source it answers.
+Each response must be legible in that order. It cannot depend on a preceding note, tomb inscription,
+or map discovery for its subject.
 
 ## 6. Verification
 
 1. Compile `mod/Scripting/` with `python3 tools/compile_scripting.py` against the installed game.
 2. Run `python3 tools/validate_mod.py`.
-3. Create new worlds with the option disabled and enabled. Use a recorded seed containing an eligible
-   escape branch.
-4. Verify one response per eligible sultan, valid chronology, and no duplicate after repeated dispatch.
-5. Inspect the source event and world output to confirm no entity, location, faction, region, or relic
-   contradiction.
-6. Save and reload the generated world, then verify the response remains an ordinary history record.
-7. Reveal the response through the Sultan journal flow and review it without its antecedent.
+3. Create new worlds with the option disabled and enabled. Use recorded seeds containing each
+   eligible source branch.
+4. Verify one response of each qualifying type per eligible sultan, valid chronology, deterministic
+   ritual selection, and no duplicate after repeated dispatch.
+5. Inspect each source and the world output to confirm no entity, location, faction relationship,
+   region, or relic contradiction.
+6. Save and reload the generated world, then verify each response remains an ordinary history record.
+7. Reveal each response through the Sultan journal flow and review it without its antecedent.
 
 No permanent test harness is required unless an uncertain edge case survives this smoke test. Remove
 any temporary diagnostic code before release.
 
 ## 7. Deferred work
 
-- Further safe record-only chains are selected after #731 has play evidence, under #979.
+- Further safe record-only chains are selected one source and branch at a time under #979.
 - Entity-creating event responses and any consequence players can walk to are #815.
 - Replacing, pruning, or reweighting `QudHistoryFactory` is out of scope.
 - The original ledger, source-divergence, and cross-sultan proposals remain design material only.

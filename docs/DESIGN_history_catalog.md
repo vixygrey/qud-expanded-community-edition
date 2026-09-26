@@ -1,30 +1,35 @@
 # Record-Only Event Eligibility Catalog
 
-> **Status:** #731 uses this document as a safety boundary, not as an authoring catalog. The
-> speculative role-grid and `LX_` event proposals below are archived design material. Any future
-> shipped code uses the repository's `Vixy_` prefix and is selected only after #979 reviews #731 play
-> evidence.
+> **Status:** #731 and #1012 use this document as a safety boundary, not as an authoring catalog.
+> The speculative role-grid and `LX_` event proposals below are archived design material. Shipped
+> code uses the repository's `Vixy_` prefix, and each response is selected only after #979 reviews
+> the preceding play evidence and the exact source branch.
 
 ## 1. Footprint classification
 
 An earlier event is eligible for a record-only response only when the response does not claim to
 change a thing that the earlier event created or moved into the world.
 
-| Classification | Vanilla event types | #731 disposition |
+| Classification | Vanilla event types | Record-only disposition |
 |---|---|---|
 | Creates a findable entity | `BattleItem`, `ForgeItem`, `FoundGuild`, `LoseItemAtTavern`, `Marry`, `MeetFaction` | Blocked. A truthful consequence requires matching worldgen work in #815. |
 | Reveals a place or faction only | `BloodyBattle`, `CapturedByBandits`, `ChallengeSultan`, `ChariotDrivesOffCliff`, `CorruptAdministrator`, `InspiringExperience`, `LiberateCity`, `RampageRegion`, `SecretRitual`, `UnderWeirdSky` | Potentially safe for a later prose-only response. Each proposed consequence needs its own footprint review. |
 | Closed beat | `Abdicate` | No answerable open thread in the current slice. |
 
-## 2. First response
+## 2. Implemented responses
 
 `CapturedByBandits` is eligible only when its generated `tombInscriptionCategory` is
 `EnduresHardship`. That branch records an escape and leaves the bandits at large; it creates no
 entity. The `Slays` branch is a resolved murder and is excluded.
 
-The response is a later, same-sultan gospel reflection. It must not change the source event's
-location, revealed region, or any other existing property. It must stand alone because the journal
-reveals sultan notes independently.
+`SecretRitual` is eligible only when it carries `tombInscriptionCategory = LearnsSecret`, adds
+exactly one `likedFactions` value, and the final sultan snapshot retains that relationship. This
+selects the branch where a clan accepts the sultan into its secret rite. The branch that adds
+`hatedFactions` is excluded.
+
+Both responses are later, same-sultan gospel reflections. They must not change the source event's
+location, revealed region, faction relationship, or any other existing property. Each must stand
+alone because the journal reveals sultan notes independently.
 
 ## 3. Deferred catalog
 

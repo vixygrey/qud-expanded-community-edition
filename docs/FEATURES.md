@@ -9920,8 +9920,9 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 
 ## 67. An escape leaves a mark on a sultan (`Vixy_HistoryModule`)
 
-**Off by default.** When a sultan escaped bandit captivity, a later gospel can say what that
-hardship made of their rule. It is the first record-only history response in #731.
+**Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
+what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
+initiation into a faction's secret rite.
 
 ### 67.1 One safe branch
 
@@ -9933,11 +9934,22 @@ The gospel repeats that the sultan escaped captivity among bandits. Sultan gospe
 as independent random secrets, so a player can discover this response before finding the escape that
 prompted it.
 
+### 67.1a An accepted secret stays with the sultan
+
+`SecretRitual` has one branch that welcomes the sultan and one that rebukes them. Only an event
+carrying `tombInscriptionCategory = LearnsSecret` and exactly one added `likedFactions` entry qualifies,
+and the final sultan record must still retain that relationship. If several accepted rituals qualify,
+the earliest by year and event ID supplies the one response.
+
+The gospel names the sultan and faction, restates the initiation, and records how the clan's hidden
+precepts informed later judgments. It does not parse the source gospel or change the faction
+relationship or region the ritual revealed.
+
 ### 67.2 History is an input to the world
 
 Sultan history is complete before Qud constructs its world. Events can therefore create or move the
-relics, places, and factions later encountered in play. This response changes none of them: it adds
-only an event-local gospel and a private marker property.
+relics, places, and factions later encountered in play. These responses change none of them: each
+adds only an event-local gospel and a private marker property.
 
 `Vixy_HistoryModule` handles the completed-history boot event and carries a `The.Game` guard, so the
 normal path writes once even if a future lifecycle change dispatches that event again. It is separate
@@ -9946,12 +9958,12 @@ for character-creation name previews.
 
 ### 67.3 Scope
 
-Set {{C|sultans carry the consequences of escape}} before making a world. The option is read while
+Set {{C|sultans carry the consequences of history}} before making a world. The option is read while
 sultan history is generated, so existing worlds and their saves keep the history they already have.
 
 This is the safe half of the history work. The six vanilla event types that create a findable entity
 need a matching worldgen consequence to remain truthful and are deferred to #815. #979 evaluates
-additional prose-only chains only after this first one has play evidence.
+each additional prose-only chain separately after the first response passed its play-evidence gate.
 
 ## Appendix A: every merged vanilla melee weapon
 
