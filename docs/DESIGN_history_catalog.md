@@ -51,12 +51,18 @@ crown or life state, location, monument, color, cognomen, revealed region, eleme
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.
 
-The first world-facing response is `BattleItem`. It qualifies only when the source added exactly
-one relic, the final sultan still owns it, and the battlefield, containing region, and relic each
-resolve uniquely. A second, independently gated post-pass removes the relic from the sultan and adds
-it to the battlefield and region. Vanilla worldgen then moves the physical relic from the period
-reliquary to that historic-site floor. This corrects the earlier six-class boundary: `Marry` creates
-an item only on its gift branch, while `BloodyBattle` can move an existing item without creating one.
+The world-facing pass implements two sources. `BattleItem` qualifies only when the source added
+exactly one relic, the final sultan still owns it, and the battlefield, containing region, and relic
+each resolve uniquely. `ForgeItem` has no structured guildhall; its generated guildhall remains
+prose. A qualifying forge instead uses the sultan's structured location at the response year, and
+requires the sultan to be alive there. The location, containing region, and relic must resolve
+uniquely, the region must still list the location, and no other final entity may own the relic.
+
+The independently gated post-pass removes each relic from the sultan and adds it to the destination
+location and region. Vanilla worldgen then moves the physical relic from the period reliquary to that
+historic-site floor. Each source type selects its earliest eligible event by year and event ID. This
+corrects the earlier six-class boundary: `Marry` creates an item only on its gift branch, while
+`BloodyBattle` can move an existing item without creating one.
 
 ## 3. Deferred catalog
 

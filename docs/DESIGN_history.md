@@ -175,14 +175,17 @@ description of it. A record-only response must not reclaim, relocate, create, or
 site, relic, faction, region, or map state. Exact branches that do belong to that world-facing half
 are reviewed under #815.
 
-### #815 — one structured relic transfer
+### #815 — structured relic transfers
 
-The first world-facing slice uses a second embark module and a separate, off-by-default option.
-An eligible `BattleItem` relic that still belongs to its sultan may be dedicated at the battle
-location. The post-pass removes the relic from the sultan and adds it to both the location and its
-containing region before world construction. Vanilla then omits it from the period reliquary, places
-it on that historic-site floor, and uses the response's reveal properties for the normal relic quest.
-No worldbuilder extension or new world entity is involved.
+The world-facing slice uses a second embark module and a separate, off-by-default option. An eligible
+`BattleItem` relic that still belongs to its sultan may be dedicated at the battle location. An
+eligible `ForgeItem` relic may be dedicated at the sultan's structured location when the later
+response occurs; the forge event's generated guildhall remains prose and is never treated as a site.
+
+For either source, the post-pass removes the relic from the sultan and adds it to both the destination
+location and its containing region before world construction. Vanilla then omits it from the period
+reliquary, places it on that historic-site floor, and uses the response's reveal properties for the
+normal relic quest. No worldbuilder extension or new world entity is involved.
 
 ### Deferred work
 

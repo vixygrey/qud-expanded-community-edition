@@ -2326,7 +2326,7 @@ rather than anything the mod already was.
 | peoples send bands to places that fall empty | Checkbox | **No** | Whether emptying a lair can send another people to take it, crossing the world map as a real object. Moves only while you travel overland. §65. |
 | cleared wilderness slowly regains wildlife | Checkbox | **No** | After 30 days away, an eligible wilderness zone can regain at most three small cohorts from the wildlife that vanilla originally placed there. §66. |
 | sultans carry the consequences of history | Checkbox | **No** | Record-only responses to eligible sultan experiences. New-world-scoped. §67. |
-| sultans leave relics where history happened | Checkbox | **No** | Moves one eligible battle-won relic from its sultan's reliquary to the battlefield's historic-site floor. New-world-scoped. §68. |
+| sultans leave relics where history happened | Checkbox | **No** | Moves eligible battle-won and forged relics from a sultan's reliquary to matching historic-site floors. New-world-scoped. §68. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -10010,39 +10010,52 @@ This is the record-only half of the history work. Any response that creates or m
 entity needs matching structured-history or worldgen work under #815; §68 implements the first such
 branch. #979 evaluates each additional prose-only chain separately.
 
-## 68. A battle-won relic returns to its battlefield (`Vixy_WorldHistoryModule`)
+## 68. Relics return to places in their histories (`Vixy_WorldHistoryModule`)
 
 **Off by default and new-world-scoped.** This is independent of §67's record-only option. For each
-generated sultan, the earliest eligible `BattleItem` by year and event ID can receive one later
-dedication response.
+generated sultan, the earliest eligible `BattleItem` and the earliest eligible `ForgeItem`, each
+selected by year and event ID, can receive one later dedication response.
 
-### 68.1 Eligibility
+### 68.1 A battle relic returns to its battlefield
 
 The source must add exactly one named relic and record its battlefield. The final sultan snapshot
 must still own that relic, so a later vanilla event that moved it disqualifies the source. The relic,
 battlefield location, and containing region must each resolve uniquely; the region must still list
 the battlefield, and neither destination may already contain the relic.
 
-Malformed, ambiguous, already-moved, or chronologically terminal candidates are skipped. The source
-event, relic entity, battlefield identity, and region identity are never changed.
+### 68.2 A forged relic follows the sultan's structured location
 
-### 68.2 One transfer, three matching records
+`ForgeItem` creates a relic and adds it to the sultan, but the remote or obscure guildhall in its
+gospel is generated prose rather than a historic entity. The later response therefore uses the
+sultan's structured `location` at the response year. This follows any same-year structured move
+instead of pretending that the prose-only guildhall is a place the world can build.
 
-The response removes the relic from the sultan's `items`, adds it to the battlefield location's
-`items`, and adds it to the containing region's `items`. It also records the standard
-`revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
+The source must add exactly one named relic, and the final sultan must still own it. The response
+year must fall before the terminal event while the sultan is alive. The relic, response-year
+location, and containing region must resolve uniquely; the region must still list the location, and
+no other final entity may already own the relic.
+
+Malformed, ambiguous, already-moved, chronologically terminal, dead-year, renamed beyond resolution,
+or orphaned candidates are skipped. The source event, relic entity, destination identity, and region
+identity are never changed.
+
+### 68.3 One transfer, three matching records
+
+Each response removes its relic from the sultan's `items`, adds it to the destination location's
+`items`, and adds it to the containing region's `items`. It also records the standard `revealsItem`,
+`revealsItemLocation`, and `revealsItemRegion` properties.
 
 Those three list changes are the shape vanilla already consumes. `SultanLoot` no longer generates
 the relic in that period's Tomb of the Eaters reliquary.
-`JoppaWorldBuilder.AddSultanHistoryLocations` instead generates it on the battlefield's
-historic-site floor, and revealing the response starts the ordinary relic quest for that exact item
-and place. The fork does not register a worldbuilder extension or create another relic.
+`JoppaWorldBuilder.AddSultanHistoryLocations` instead generates it on the destination's historic-site
+floor, and revealing the response starts the ordinary relic quest for that exact item and place. The
+fork does not register a worldbuilder extension or create another relic.
 
-### 68.3 Safety and scope
+### 68.4 Safety and scope
 
 `Vixy_WorldHistoryModule` plans every eligible transfer without mutation, applies both destination
-records before the visible sultan response, and carries its own exactly-once game-state guard and
-per-sultan source marker. It uses a separate option because §67 promises never to move a relic.
+records before the visible sultan response, and carries its own exactly-once game-state guard plus a
+separate per-sultan marker for each source type.
 
 Set {{C|sultans leave relics where history happened}} before making a world. Existing worlds keep
 their original histories, reliquaries, historic sites, and quest targets.
