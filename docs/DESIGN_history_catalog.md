@@ -1,7 +1,7 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, and #815 use this document as a safety boundary, not as an
-> authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
+> **Status:** #731, #1008, #1012, #1019, and #815 use this document as a safety boundary, not as
+> an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
 > material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
 > selected only after its exact source branch and world footprint are reviewed.
 
@@ -32,9 +32,16 @@ selects the branch where a clan accepts the sultan into its secret rite. The bra
 The stored element supplies deterministic vocabulary for the response. Its optional region reveal
 and the sultan's element list remain unchanged.
 
-All three responses are later, same-sultan gospel reflections. They must not change the source
-event's location, revealed region, element, faction relationship, or any other existing property.
-Each must stand alone because the journal reveals sultan notes independently.
+`UnderWeirdSky` is eligible only when it carries `tombInscriptionCategory = DoesSomethingRad`, adds
+exactly one rendered `colors` value and one rendered `cognomen`, and records one rendered location.
+That location and its containing region must resolve uniquely, the region must list the location, and
+the location must carry exactly one monument marker for the sultan's source-time name. These checks
+exclude malformed histories and the helper's unregistered fallback-location shape. The later response
+uses the stored color, cognomen, and location without changing any of them.
+
+All four responses are later, same-sultan gospel reflections. They must not change a source event's
+location, monument, color, cognomen, revealed region, element, faction relationship, or any other
+existing property. Each must stand alone because the journal reveals sultan notes independently.
 
 The first world-facing response is `BattleItem`. It qualifies only when the source added exactly
 one relic, the final sultan still owns it, and the battlefield, containing region, and relic each

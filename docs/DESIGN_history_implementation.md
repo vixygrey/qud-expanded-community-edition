@@ -1,8 +1,8 @@
 # Record-Only History Implementation
 
 > **Status:** implementation specification for the record-only responses shipped through #731,
-> #1008, and #1012. It supersedes this document's former pre-recon plan, which assumed an unavailable
-> registry and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
+> #1008, #1012, and #1019. It supersedes this document's former pre-recon plan, which assumed an
+> unavailable registry and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
 
 ---
 
@@ -12,7 +12,7 @@ Vanilla generates sultan history before it builds worlds. A history event can th
 an entity that later becomes a relic, site, faction, or other world-facing fact. The record-only pass
 adds later event records without changing an existing event or any world-facing state.
 
-Three source branches are implemented:
+Four source branches are implemented:
 
 ```csharp
 event is CapturedByBandits
@@ -25,11 +25,21 @@ event is InspiringExperience
 event is SecretRitual
     && event.GetEventProperty("tombInscriptionCategory") == "LearnsSecret"
     && event.GetListProperties("likedFactions") contains exactly one retained faction
+
+event is UnderWeirdSky
+    && event.GetEventProperty("tombInscriptionCategory") == "DoesSomethingRad"
+    && event.GetListProperties("colors") contains exactly one rendered color
+    && event.GetListProperties("cognomen") contains exactly one rendered cognomen
+    && event.GetEntityProperty("location") resolves uniquely inside the source region
+    && the region lists that location
+    && the location has exactly one monument marker for the source-time sultan name
 ```
 
 The bandit murder branch (`Slays`) and the ritual rejection branch (`hatedFactions`) are not eligible.
-The accepted sources may reveal regions and add an element or faction relationship, but create no
-entity. A later reflection can therefore remain truthful without matching worldgen work.
+The accepted sources may reveal regions, move the sultan, add an element or faction relationship, or
+add a color, cognomen, and monument marker, but the generated shape creates no entity. The
+`UnderWeirdSky` checks reject the helper's unregistered fallback-location shape. A later reflection
+can therefore remain truthful without matching worldgen work.
 
 The vanilla branches that create or relocate findable entities remain excluded. A response that
 changes one of those entities belongs in #815, where the history and constructed world can change
@@ -67,9 +77,11 @@ must not leave a partial record for a sultan.
 ## 4. Response construction
 
 For every generated sultan, select at most one source of each eligible type deterministically.
-Inspiration and ritual selection use the earliest event by `(year, id)`; ritual additionally requires
-the faction relationship to survive in the final snapshot. A response is valid only if it can be
-assigned a year after its source event and before that sultan's terminal event.
+Inspiration, ritual, and strange-sky selection use the earliest event by `(year, id)`. Ritual also
+requires the faction relationship to survive in the final snapshot; strange-sky selection requires
+the final location, region membership, and source-time monument marker to remain structurally valid.
+A response is valid only if it can be assigned a year after its source event and before that sultan's
+terminal event.
 
 Create a plain `HistoricEvent` with only event-local properties:
 
@@ -99,9 +111,9 @@ or map discovery for its subject.
 3. Create new worlds with the option disabled and enabled. Use recorded seeds containing each
    eligible source branch.
 4. Verify one response of each qualifying type per eligible sultan, valid chronology, deterministic
-   inspiration and ritual selection, and no duplicate after repeated dispatch.
-5. Inspect each source and the world output to confirm no entity, location, element, faction
-   relationship, region, or relic contradiction.
+   source selection, and no duplicate after repeated dispatch.
+5. Inspect each source and the world output to confirm no entity, location, monument, color, cognomen,
+   element, faction relationship, region, or relic contradiction.
 6. Save and reload the generated world, then verify each response remains an ordinary history record.
 7. Reveal each response through the Sultan journal flow and review it without its antecedent.
 

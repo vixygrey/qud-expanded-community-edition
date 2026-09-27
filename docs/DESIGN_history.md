@@ -162,6 +162,9 @@ The first history slice is deliberately smaller than the original compositional 
   judgments.
 - `InspiringExperience` (`tombInscriptionCategory = HasInspiringExperience` plus one added
   `elements` value) receives a self-contained gospel about that fascination guiding later judgment.
+- `UnderWeirdSky` (`tombInscriptionCategory = DoesSomethingRad`, one color, one cognomen, and a
+  validated location monument) receives a self-contained gospel about the apparition shaping the
+  sultan's later legend.
 - The option is new-world-scoped. Existing worlds and histories never change.
 
 The module runs before world construction, so history is an input to worldgen rather than merely a
