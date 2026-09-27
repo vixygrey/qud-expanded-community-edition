@@ -9930,8 +9930,8 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 
 **Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
 what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
-initiation into a faction's secret rite, and #1008 carries an inspiring experience into later
-judgments.
+initiation into a faction's secret rite, #1008 carries an inspiring experience into later judgments,
+and #1019 carries a strange-sky apparition into the sultan's later legend.
 
 ### 67.1 One safe branch
 
@@ -9965,6 +9965,17 @@ The gospel names the sultan and the recorded element, restates that an experienc
 fascination, and says that its memory guided later judgments. It uses the stored element directly,
 without consuming another random history-spice draw, and does not change the element or any region
 the source event revealed.
+
+### 67.1c An apparition becomes a lasting legend
+
+`UnderWeirdSky` qualifies only with `tombInscriptionCategory = DoesSomethingRad`, one recorded color,
+one cognomen, and a unique historic location whose containing region and monument marker still agree
+with the source. If several apparitions qualify, the earliest by year and event ID supplies the one
+response.
+
+The gospel names the sultan, location, color, cognomen, and monument so it remains intelligible when
+revealed first. It uses only those stored values and does not move the sultan, create a location, or
+change the monument, color, cognomen, or containing region.
 
 ### 67.2 History is an input to the world
 

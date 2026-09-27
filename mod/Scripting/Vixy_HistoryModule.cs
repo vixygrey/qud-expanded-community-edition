@@ -26,6 +26,7 @@ namespace QudExpandedCE
         private const string BanditEscapeResponseKey = "Vixy_BanditEscapeResponse";
         private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
         private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
+        private const string UnderWeirdSkyResponseKey = "Vixy_UnderWeirdSkyResponse";
 
         private sealed class PlannedResponse
         {
@@ -73,13 +74,14 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 3);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 4);
 
             foreach (HistoricEntity sultan in sultans)
             {
                 PlanBanditEscapeResponse(sultan, responses);
                 PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
+                PlanUnderWeirdSkyResponse(history, sultan, responses);
             }
 
             return responses;
@@ -235,6 +237,55 @@ namespace QudExpandedCE
             });
         }
 
+        private static void PlanUnderWeirdSkyResponse(
+            History history,
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, UnderWeirdSkyResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent apparition = FindEligibleUnderWeirdSky(
+                history,
+                sultan,
+                out string name,
+                out string location,
+                out string color,
+                out string cognomen,
+                out long responseYear
+            );
+            if (apparition == null)
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After the people of " + location + " beheld " + name
+                            + " beneath a sky of " + color + ", raised a monument, and called "
+                            + name + " " + cognomen
+                            + ", that apparition shaped every later telling of " + name
+                            + "'s legend."
+                    },
+                    { UnderWeirdSkyResponseKey, apparition.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
         private static bool HasResponse(HistoricEntity sultan, string responseKey)
         {
             foreach (HistoricEvent existing in sultan.events)
@@ -253,6 +304,46 @@ namespace QudExpandedCE
             return earliest == null
                 || candidate.year < earliest.year
                 || (candidate.year == earliest.year && candidate.id < earliest.id);
+        }
+
+        private static string SnapshotValue(
+            HistoricEntitySnapshot snapshot,
+            string property
+        )
+        {
+            return snapshot.properties.TryGetValue(property, out string value) ? value : null;
+        }
+
+        private static HistoricEntity ResolveUniqueEntity(
+            History history,
+            string property,
+            string value
+        )
+        {
+            HistoricEntityList matches = history.GetEntitiesWherePropertyEquals(property, value);
+            return matches.Count == 1 ? matches.entities[0] : null;
+        }
+
+        private static bool IsRendered(string value)
+        {
+            return !string.IsNullOrEmpty(value)
+                && value.IndexOf('<') < 0
+                && value.IndexOf('%') < 0
+                && value.IndexOf('=') < 0;
+        }
+
+        private static int CountOccurrences(List<string> values, string value)
+        {
+            int count = 0;
+            foreach (string candidate in values)
+            {
+                if (candidate == value)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private static HistoricEvent FindBanditEscape(HistoricEntity sultan)
@@ -335,6 +426,97 @@ namespace QudExpandedCE
                 {
                     earliest = existing;
                     faction = addedFactions[0];
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleUnderWeirdSky(
+            History history,
+            HistoricEntity sultan,
+            out string name,
+            out string location,
+            out string color,
+            out string cognomen,
+            out long responseYear
+        )
+        {
+            HistoricEvent earliest = null;
+            name = null;
+            location = null;
+            color = null;
+            cognomen = null;
+            responseYear = 0;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is UnderWeirdSky)
+                    || existing.GetEventProperty("tombInscriptionCategory") != "DoesSomethingRad")
+                {
+                    continue;
+                }
+
+                List<string> addedColors = existing.GetListProperties("colors");
+                List<string> addedCognomens = existing.GetListProperties("cognomen");
+                string candidateColor = addedColors != null && addedColors.Count == 1
+                    ? addedColors[0]
+                    : null;
+                string candidateCognomen = addedCognomens != null && addedCognomens.Count == 1
+                    ? addedCognomens[0]
+                    : null;
+                string candidateLocationName = existing.GetEntityProperty("location");
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateName = sultan.GetEntityProperty("name", existing.year);
+                string candidateRegionName = sultan.GetEntityProperty("region", existing.year);
+                if (!IsRendered(candidateColor)
+                    || !IsRendered(candidateCognomen)
+                    || !IsRendered(candidateLocationName)
+                    || !IsRendered(candidateName)
+                    || !IsRendered(candidateRegionName)
+                    || candidateResponseYear >= sultan.lastYear)
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateLocation = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateLocationName
+                );
+                HistoricEntity candidateRegion = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateRegionName
+                );
+                if (candidateLocation == null || candidateRegion == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot locationSnapshot = candidateLocation.GetSnapshotAtYear(
+                    candidateLocation.lastYear
+                );
+                HistoricEntitySnapshot regionSnapshot = candidateRegion.GetSnapshotAtYear(
+                    candidateRegion.lastYear
+                );
+                if (SnapshotValue(locationSnapshot, "type") != "location"
+                    || SnapshotValue(locationSnapshot, "region") != candidateRegionName
+                    || SnapshotValue(regionSnapshot, "type") != "region"
+                    || !regionSnapshot.GetList("locations").Contains(candidateLocationName)
+                    || CountOccurrences(locationSnapshot.GetList("monuments"), candidateName) != 1)
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
+                    name = candidateName;
+                    location = candidateLocationName;
+                    color = candidateColor;
+                    cognomen = candidateCognomen;
+                    responseYear = candidateResponseYear;
                 }
             }
 
