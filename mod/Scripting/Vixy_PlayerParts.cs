@@ -51,11 +51,12 @@ namespace QudExpandedCE
             Attach(player);
         }
 
-        /// <summary>Existing saves, on load.</summary>
+        /// <summary>Attach player parts and migrate saved band travel on existing saves.</summary>
         [CallAfterGameLoaded]
         public static void OnGameLoaded()
         {
             Attach(TrueBody());
+            Vixy_BandTravel.MigrateLegacyTokens();
         }
 
         /// <summary>
