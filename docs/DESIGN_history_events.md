@@ -21,11 +21,15 @@ The responses are prose-only. They do not establish a general ledger or thread f
 ## Current world-facing contract
 
 A second post-pass receives the same completed `History` but has its own option and exactly-once
-guard. Its first eligible source is `BattleItem`: the source must add one relic that the final sultan
-still owns, and the relic, battlefield, and containing region must resolve uniquely. The response
-removes that relic from the sultan, adds it to the battlefield and region, and records the standard
-item-reveal properties. Vanilla worldgen consumes those final lists, so no worldbuilder extension is
-needed. The source event, relic entity, location identity, and region identity remain unchanged.
+guard. It accepts `BattleItem`, whose source records its battlefield, and `ForgeItem`, whose later
+dedication uses the sultan's structured location at the response year rather than the prose-only
+guildhall. Each source must add one relic that the final sultan still owns, and the relic,
+destination, and containing region must resolve uniquely.
+
+The response removes the relic from the sultan, adds it to the destination and region, and records
+the standard item-reveal properties. Vanilla worldgen consumes those final lists, so no worldbuilder
+extension is needed. The source event, relic entity, location identity, and region identity remain
+unchanged.
 
 ---
 
@@ -310,9 +314,9 @@ Vanilla's five generated sultans are chronological and share one mutable `Histor
 by the factory body. That makes cross-sultan work technically possible, but not part of #731.
 
 Any legacy response that changes a relic, monument, faction, or other entity belongs to #815, because
-history drives world construction. Its first implementation transfers one `BattleItem` relic through
-the final structured history; broader ledger work remains deferred. The record-only pass stays
-limited to same-sultan gospels whose sources created or moved nothing.
+history drives world construction. The current implementation transfers eligible `BattleItem` and
+`ForgeItem` relics through final structured history; broader ledger work remains deferred. The
+record-only pass stays limited to same-sultan gospels whose sources created or moved nothing.
 
 ---
 

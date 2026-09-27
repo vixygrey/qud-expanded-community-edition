@@ -813,12 +813,13 @@
     Category="Mods"
     Type="Checkbox"
     Default="No"
-    SearchKeywords="qud expanded history sultan relic battle battlefield dedication world generation historic site"
+    SearchKeywords="qud expanded history sultan relic battle battlefield forge forged dedication world generation historic site"
   >
     <helptext>
-            A qualifying sultan can dedicate a relic won in battle at that
-            battlefield. The relic moves from the sultan's reliquary to the
-            battlefield's historic-site floor, where its ordinary relic quest leads.
+            A qualifying sultan can dedicate a battle-won relic at its battlefield,
+            or a forged relic at the historic location where the later dedication
+            occurs. The relic moves from the sultan's reliquary to that site's floor,
+            where its ordinary relic quest leads.
 
             This is independent of the record-only history option above.
 

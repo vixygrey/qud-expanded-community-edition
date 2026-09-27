@@ -22,6 +22,10 @@ recorded because contributors need them, not because subscribers do.
   A separate new-world option moves the physical relic from the period reliquary to the matching
   historic-site floor, and its journal reveal starts the ordinary relic quest there.
 
+- **Sultans can dedicate forged relics at places already grounded in their histories** (#1017).
+  The existing new-world option moves each eligible relic from the period reliquary to the sultan's
+  structured location when the dedication occurs, and its ordinary relic quest follows it there.
+
 - **A sultan's inspiring experience can now shape their later judgments** (#1008). The optional
   history system carries the fascination forward without changing its element, revealed region, or
   generated world.
