@@ -67,10 +67,16 @@ namespace QudExpandedCE
         public const string NameFlavourID = "OptionQudExpandedCENameFlavour";
 
         /// <summary>
-        /// New-world-scoped history additions. This is read only while sultan history is generated;
-        /// changing it cannot alter a world or history that already exists.
+        /// New-world-scoped, record-only history additions. This is read only while sultan history
+        /// is generated; changing it cannot alter a world or history that already exists.
         /// </summary>
         public const string HistoryEventsID = "OptionQudExpandedCEHistoryEvents";
+
+        /// <summary>
+        /// New-world-scoped history transfers that vanilla world generation turns into physical
+        /// relic placement. Kept separate from the record-only option and its stronger promise.
+        /// </summary>
+        public const string WorldHistoryEventsID = "OptionQudExpandedCEWorldHistoryEvents";
 
         /// <summary>
         /// Read by nothing in this class, and by no C# at all. The building is a map patch, and
@@ -581,6 +587,16 @@ namespace QudExpandedCE
         /// Defaults off: this is new authored history rather than a correction to vanilla.
         /// </summary>
         public static bool HistoryEvents => Enabled(HistoryEventsID, "No");
+
+        /// <summary>
+        /// Whether new worlds may move eligible historical relics into matching historic sites.
+        ///
+        /// Read once during history generation, before vanilla constructs the world from the final
+        /// structured record. Existing worlds remain unchanged when the option changes.
+        ///
+        /// Defaults off: this moves a physical relic and its quest target.
+        /// </summary>
+        public static bool WorldHistoryEvents => Enabled(WorldHistoryEventsID, "No");
 
         /// <summary>True when the player asked to keep their own chip slots.</summary>
         public static bool PlayerChipSlots => Enabled(ChipSlotsPlayerID, "Yes");

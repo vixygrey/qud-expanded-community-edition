@@ -1,9 +1,9 @@
 # Causal History Design
 
 > **Status:** #731, #1008, and #1012 implement record-only responses after vanilla history
-> generation. They do not implement this document's generator replacement, ledger, metadata retrofit,
-> or broad catalog. Those remain deferred design material and must not be used as an implementation
-> plan.
+> generation. #815 adds one separately gated structured relic transfer before worldgen. None
+> implements this document's generator replacement, ledger, metadata retrofit, or broad catalog.
+> Those remain deferred design material and must not be used as an implementation plan.
 
 ## Current record-only contract
 
@@ -15,6 +15,15 @@ vanilla events and draw distribution, and skip a candidate that has no valid lat
 sultan's terminal event.
 
 The responses are prose-only. They do not establish a general ledger or thread format.
+
+## Current world-facing contract
+
+A second post-pass receives the same completed `History` but has its own option and exactly-once
+guard. Its first eligible source is `BattleItem`: the source must add one relic that the final sultan
+still owns, and the relic, battlefield, and containing region must resolve uniquely. The response
+removes that relic from the sultan, adds it to the battlefield and region, and records the standard
+item-reveal properties. Vanilla worldgen consumes those final lists, so no worldbuilder extension is
+needed. The source event, relic entity, location identity, and region identity remain unchanged.
 
 ---
 
@@ -299,9 +308,9 @@ Vanilla's five generated sultans are chronological and share one mutable `Histor
 by the factory body. That makes cross-sultan work technically possible, but not part of #731.
 
 Any legacy response that changes a relic, monument, faction, or other entity belongs to #815, because
-history drives world construction. #731 deliberately limits itself to a same-sultan, gospel-only
-response to an escape that created no entity. The ledger proposal remains deferred until #979 has play
-evidence for that smaller shape.
+history drives world construction. Its first implementation transfers one `BattleItem` relic through
+the final structured history; broader ledger work remains deferred. The record-only pass stays
+limited to same-sultan gospels whose sources created or moved nothing.
 
 ---
 

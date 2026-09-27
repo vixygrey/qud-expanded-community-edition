@@ -111,6 +111,7 @@ any temporary diagnostic code before release.
 ## 7. Deferred work
 
 - Further safe record-only chains are selected one source and branch at a time under #979.
-- Entity-creating event responses and any consequence players can walk to are #815.
+- Entity-creating or relocating responses belong to #815; `docs/FEATURES.md` §68 specifies its first
+  structured `BattleItem` transfer.
 - Replacing, pruning, or reweighting `QudHistoryFactory` is out of scope.
 - The original ledger, source-divergence, and cross-sultan proposals remain design material only.

@@ -4982,3 +4982,34 @@ Related: [`A decompiled call site tells you what that frame does not do, never w
 is the same failing pointed one frame the other way, and
 [`A guard that fires on a correct action teaches people to disable it`](#a-guard-that-fires-on-a-correct-action-teaches-people-to-disable-it)
 is what the first draft would have cost.
+
+## Before adding a worldbuilder extension, ask whether final history already builds the world
+
+`BattleItem` creates a relic and adds its rendered name to the sultan's `items`. The physical copy
+does not exist yet. Later, `SultanLoot.generateRelics()` reads the period sultan's final list and
+generates every relic still there in the Tomb of the Eaters reliquary.
+
+Locations use the same final-state contract. `JoppaWorldBuilder.AddSultanHistoryLocations()` reads a
+historic location's `items`, generates those relics, and places them on that location's floor within
+the containing historic site. The containing region's own `items` list is the index that makes the
+region eligible for that placement path.
+
+That means a complete pre-worldgen transfer is three structured mutations:
+
+```text
+sultan.items      - relic
+location.items    + relic
+region.items      + relic
+```
+
+Vanilla then omits the relic from the reliquary, places it on the location's floor, and can use
+`revealsItem`, `revealsItemLocation`, and `revealsItemRegion` for its ordinary quest. No direct zone
+mutation or `IJoppaWorldBuilderExtension` is involved.
+
+#814 failed in the opposite direction: it changed who the record said owned an item without removing
+the old location and region ownership that worldgen consumed. A custom worldbuilder would have been a
+second wrong turn. The durable check is:
+
+> Before building a world-facing consequence directly, trace every final history property into
+> worldgen. If vanilla already consumes the state, make that state internally complete and let
+> Freehold's pipeline place the result.

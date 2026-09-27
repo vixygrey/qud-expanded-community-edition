@@ -502,7 +502,7 @@ list for a separate project's next session, and these are the parts that outlive
 | Plainness quota / PLAIN lexicon | 1 or 2 | **Shipped** | #730 adds optional JSON grammar forms. |
 | Record-only history response | 2 | **Tier 2-light** | Public `HistoricEvent` and unused embark boot hook; no override, reflection, or Harmony. |
 | Event pool replacement | 2 or 3 | **Out of scope** | Q3: seventeen hardcoded factory branches; no registry. |
-| World-facing history response | 2 | **Deferred to #815** | Requires matching worldgen work for entity-creating events. |
+| World-facing history response | 2 | **Implemented first slice** | #815 transfers one `BattleItem` relic through final structured history; vanilla worldgen places it. |
 | Source divergence | 2 | **Deferred** | `HistoricPerspective` exists, but murals and oral consumers are not part of #731. |
 | Cross-sultan legacy | 2 | **Deferred** | Q5: one shared chronological `History`; no current record-only implementation. |
 
@@ -513,13 +513,15 @@ no Harmony, type override, reflection into private state, I/O, or network access
 
 ## Revised next actions
 
-1. Ship #731's one `CapturedByBandits` escape response behind a new-world-scoped option.
-2. Verify it in an actual new world, including the independent journal-note reveal and save/load.
-3. Record the observed coverage and legibility outcome in #979 before selecting another
-   record-only response.
-4. Keep any answer that changes a created or moved entity in #815's worldgen scope.
+1. Keep the record-only pass and its option independent from world-facing transfers.
+2. Verify #815's `BattleItem` dedication in an actual new world: reliquary absence, battlefield
+   placement, relic-quest targeting, independent journal reveal, repeated dispatch, and save/load.
+3. Use exact branch and list/property mutations rather than the old six-class boundary:
+   `Marry` creates an item only on its gift branch, while `BloodyBattle` can relocate one.
+4. Try the final structured-history route before adding a worldbuilder extension. Reserve
+   `OnAfterBuild` for a bespoke site vanilla cannot derive from history.
 5. Treat all broader ledger, source, and cross-sultan proposals as deferred design, not as
-   prerequisites for this safe slice.
+   prerequisites for these post-passes.
 
 ---
 

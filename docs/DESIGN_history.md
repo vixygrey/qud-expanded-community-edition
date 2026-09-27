@@ -165,18 +165,28 @@ The first history slice is deliberately smaller than the original compositional 
 - The option is new-world-scoped. Existing worlds and histories never change.
 
 The module runs before world construction, so history is an input to worldgen rather than merely a
-description of it. A response must not reclaim, relocate, create, or alter an entity, site, relic,
-faction, region, or map state. The six vanilla event types that create a findable entity are outside
-this slice. See #815 for the worldgen route.
+description of it. A record-only response must not reclaim, relocate, create, or alter an entity,
+site, relic, faction, region, or map state. Exact branches that do belong to that world-facing half
+are reviewed under #815.
+
+### #815 — one structured relic transfer
+
+The first world-facing slice uses a second embark module and a separate, off-by-default option.
+An eligible `BattleItem` relic that still belongs to its sultan may be dedicated at the battle
+location. The post-pass removes the relic from the sultan and adds it to both the location and its
+containing region before world construction. Vanilla then omits it from the period reliquary, places
+it on that historic-site floor, and uses the response's reveal properties for the normal relic quest.
+No worldbuilder extension or new world entity is involved.
 
 ### Deferred work
 
 - Further safe record-only responses are evaluated one source and branch at a time under #979.
-- World-facing consequences, including any response to an entity-creating event, belong to #815.
+- Further world-facing branches remain under #815. A bespoke site or psionic history feature may
+  need a worldbuilder extension, but only after the structured-history route has play evidence.
 - Generator replacement, draw-pool reweighting, and pruning vanilla events are not proposed by this
   feature.
 - Source divergence, murals, gossip, relic derivation, and cross-sultan legacy remain design work,
-  not part of the record-only pass.
+  not part of either shipped post-pass.
 
 ---
 
