@@ -18,6 +18,10 @@ recorded because contributors need them, not because subscribers do.
 
 ### Added
 
+- **A sultan's inspiring experience can now shape their later judgments** (#1008). The optional
+  history system carries the fascination forward without changing its element, revealed region, or
+  generated world.
+
 - **Sultans initiated into a faction's secret rite can carry its hidden precepts into later
   judgments** (#1012). The optional history system records the consequence without changing the
   faction relationship, revealed region, or generated world.

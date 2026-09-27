@@ -160,6 +160,8 @@ The first history slice is deliberately smaller than the original compositional 
 - `SecretRitual`'s accepted branch (`tombInscriptionCategory = LearnsSecret` plus one retained
   `likedFactions` addition) receives a self-contained gospel about the initiation informing later
   judgments.
+- `InspiringExperience` (`tombInscriptionCategory = HasInspiringExperience` plus one added
+  `elements` value) receives a self-contained gospel about that fascination guiding later judgment.
 - The option is new-world-scoped. Existing worlds and histories never change.
 
 The module runs before world construction, so history is an input to worldgen rather than merely a

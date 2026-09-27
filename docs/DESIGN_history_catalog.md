@@ -1,9 +1,9 @@
 # Record-Only Event Eligibility Catalog
 
-> **Status:** #731 and #1012 use this document as a safety boundary, not as an authoring catalog.
-> The speculative role-grid and `LX_` event proposals below are archived design material. Shipped
-> code uses the repository's `Vixy_` prefix, and each response is selected only after #979 reviews
-> the preceding play evidence and the exact source branch.
+> **Status:** #731, #1008, and #1012 use this document as a safety boundary, not as an authoring
+> catalog. The speculative role-grid and `LX_` event proposals below are archived design material.
+> Shipped code uses the repository's `Vixy_` prefix, and each response is selected only after #979
+> reviews the preceding play evidence and the exact source branch.
 
 ## 1. Footprint classification
 
@@ -27,9 +27,14 @@ exactly one `likedFactions` value, and the final sultan snapshot retains that re
 selects the branch where a clan accepts the sultan into its secret rite. The branch that adds
 `hatedFactions` is excluded.
 
-Both responses are later, same-sultan gospel reflections. They must not change the source event's
-location, revealed region, faction relationship, or any other existing property. Each must stand
-alone because the journal reveals sultan notes independently.
+`InspiringExperience` is eligible on either prose branch when it carries
+`tombInscriptionCategory = HasInspiringExperience` and adds exactly one nonempty `elements` value.
+The stored element supplies deterministic vocabulary for the response. Its optional region reveal
+and the sultan's element list remain unchanged.
+
+All three responses are later, same-sultan gospel reflections. They must not change the source
+event's location, revealed region, element, faction relationship, or any other existing property.
+Each must stand alone because the journal reveals sultan notes independently.
 
 ## 3. Deferred catalog
 

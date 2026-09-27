@@ -9922,7 +9922,8 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 
 **Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
 what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
-initiation into a faction's secret rite.
+initiation into a faction's secret rite, and #1008 carries an inspiring experience into later
+judgments.
 
 ### 67.1 One safe branch
 
@@ -9944,6 +9945,18 @@ the earliest by year and event ID supplies the one response.
 The gospel names the sultan and faction, restates the initiation, and records how the clan's hidden
 precepts informed later judgments. It does not parse the source gospel or change the faction
 relationship or region the ritual revealed.
+
+### 67.1b An inspiration informs later judgment
+
+Both prose branches of `InspiringExperience` carry
+`tombInscriptionCategory = HasInspiringExperience`. An event qualifies only when it added exactly one
+nonempty `elements` value. If several inspirations qualify, the earliest by year and event ID supplies
+the one response.
+
+The gospel names the sultan and the recorded element, restates that an experience awakened the
+fascination, and says that its memory guided later judgments. It uses the stored element directly,
+without consuming another random history-spice draw, and does not change the element or any region
+the source event revealed.
 
 ### 67.2 History is an input to the world
 
