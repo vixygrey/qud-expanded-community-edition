@@ -2190,9 +2190,9 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Skills.xml              # 7 tree edits
 │   ├── Bodies.xml              # Chip Interface part; TrueKin + PsionicAdept anatomies
 │   ├── Mutations.xml           # Fangs (§21), Tail (§23)
-│   ├── Options.xml             # 37 options (§13)
+│   ├── Options.xml             # 38 options (§13)
 │   ├── Naming.xml              # widened Qudish pools + 2 new namestyles (§15)
-│   ├── EmbarkModules.xml       # declares the name-flavour chargen module (§15.4)
+│   ├── EmbarkModules.xml       # declares three boot-event modules (§15.4, §67–§68)
 │   ├── Genders.xml             # 8 new genders + 1 unhidden (§16)
 │   ├── Colors.xml              # 24 pride flag shaders (§32)
 │   ├── Conversations.xml       # the ask-a-name choice (§26)
@@ -2216,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 6 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 111 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 112 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -2259,8 +2259,9 @@ Mura's original documents are NOT in mod/; they live in docs/, outside what ship
 
 ## 13. Options (`Options.xml`)
 
-Thirty-seven options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure XML;
-reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read that way.
+Thirty-eight options, all under **Category="Mods"** in Qud's own options menu. Declaring one is pure
+XML; reading one requires C#, and `mod/Scripting/Raven_Options.cs` holds every option that is read
+that way.
 
 **The Joppa building is the exception, and it is read by no code at all** (#498).
 `mod/manifest.json` gates the directory holding the map on
@@ -2324,6 +2325,8 @@ rather than anything the mod already was.
 | killing a water-sibling costs everything | Checkbox | **No** | Whether anyone who thought well of you falls to nothing before vanilla's flat curse lands. If you were already disliked, nothing changes. §58. |
 | peoples send bands to places that fall empty | Checkbox | **No** | Whether emptying a lair can send another people to take it, crossing the world map as a real object. Moves only while you travel overland. §65. |
 | cleared wilderness slowly regains wildlife | Checkbox | **No** | After 30 days away, an eligible wilderness zone can regain at most three small cohorts from the wildlife that vanilla originally placed there. §66. |
+| sultans carry the consequences of history | Checkbox | **No** | Record-only responses to eligible sultan experiences. New-world-scoped. §67. |
+| sultans leave relics where history happened | Checkbox | **No** | Moves one eligible battle-won relic from its sultan's reliquary to the battlefield's historic-site floor. New-world-scoped. §68. |
 
 The Psionic Adept is deliberately outside every one of these. Its skills, reputation, four chip
 slots and 95 skill points are the genotype rather than additions to a vanilla one, so there is no
@@ -2357,7 +2360,7 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 > capability no document describes; if it does not, whatever stops it belongs in `docs/LESSONS.md`,
 > because the trace above says it should.
 
-### 13.2 When an option takes effect: three scopes
+### 13.2 When an option takes effect: four scopes
 
 This is the distinction that decides how an option must be written and what its `<helptext>` has to
 warn about. The charter's guidance to *prefer designs whose off-switch is a runtime decision* is
@@ -2368,6 +2371,7 @@ about moving features up this table.
 | **Live**, applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and, from your next level, hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
 | **Restart** | eased skill requirements, plainer relic names, the Six Day Stilt market | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. The other two are read at load rather than in play: relic name forms join the pool as it is built, and the Stilt's stock is decided when the zone's tables are read. All three declare `Restart="true"`, the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
+| **New world** | record-only sultan responses, battle-relic dedications | Both read the completed sultan history before vanilla builds the world. Existing saves retain the history, relic ownership, and placement they were created with. |
 
 ### 13.3 Two constraints worth knowing before adding another option
 
@@ -9974,9 +9978,46 @@ for character-creation name previews.
 Set {{C|sultans carry the consequences of history}} before making a world. The option is read while
 sultan history is generated, so existing worlds and their saves keep the history they already have.
 
-This is the safe half of the history work. The six vanilla event types that create a findable entity
-need a matching worldgen consequence to remain truthful and are deferred to #815. #979 evaluates
-each additional prose-only chain separately after the first response passed its play-evidence gate.
+This is the record-only half of the history work. Any response that creates or moves a findable
+entity needs matching structured-history or worldgen work under #815; §68 implements the first such
+branch. #979 evaluates each additional prose-only chain separately.
+
+## 68. A battle-won relic returns to its battlefield (`Vixy_WorldHistoryModule`)
+
+**Off by default and new-world-scoped.** This is independent of §67's record-only option. For each
+generated sultan, the earliest eligible `BattleItem` by year and event ID can receive one later
+dedication response.
+
+### 68.1 Eligibility
+
+The source must add exactly one named relic and record its battlefield. The final sultan snapshot
+must still own that relic, so a later vanilla event that moved it disqualifies the source. The relic,
+battlefield location, and containing region must each resolve uniquely; the region must still list
+the battlefield, and neither destination may already contain the relic.
+
+Malformed, ambiguous, already-moved, or chronologically terminal candidates are skipped. The source
+event, relic entity, battlefield identity, and region identity are never changed.
+
+### 68.2 One transfer, three matching records
+
+The response removes the relic from the sultan's `items`, adds it to the battlefield location's
+`items`, and adds it to the containing region's `items`. It also records the standard
+`revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
+
+Those three list changes are the shape vanilla already consumes. `SultanLoot` no longer generates
+the relic in that period's Tomb of the Eaters reliquary.
+`JoppaWorldBuilder.AddSultanHistoryLocations` instead generates it on the battlefield's
+historic-site floor, and revealing the response starts the ordinary relic quest for that exact item
+and place. The fork does not register a worldbuilder extension or create another relic.
+
+### 68.3 Safety and scope
+
+`Vixy_WorldHistoryModule` plans every eligible transfer without mutation, applies both destination
+records before the visible sultan response, and carries its own exactly-once game-state guard and
+per-sultan source marker. It uses a separate option because §67 promises never to move a relic.
+
+Set {{C|sultans leave relics where history happened}} before making a world. Existing worlds keep
+their original histories, reliquaries, historic sites, and quest targets.
 
 ## Appendix A: every merged vanilla melee weapon
 

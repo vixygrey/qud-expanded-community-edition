@@ -5,9 +5,12 @@
        so nothing here reflects into anything.
 
        Vixy_NameFlavourModule has no window because it only reads an option and replaces one string.
-       Vixy_HistoryModule has no window because it only appends eligible history during world creation.
-       Modules are enabled by default (AbstractEmbarkBuilderModule._enabled starts true), so both are
-       active and receive boot events without adding a character-creation page. -->
+       Vixy_HistoryModule has no window because it only appends record-only history during world creation.
+       Vixy_WorldHistoryModule has no window because it transfers structured history before vanilla
+       turns that record into physical relic placement. Modules are enabled by default
+       (AbstractEmbarkBuilderModule._enabled starts true), so all three are active and receive boot
+       events without adding a character-creation page. -->
   <module Class="QudExpandedCE.Vixy_NameFlavourModule" />
   <module Class="QudExpandedCE.Vixy_HistoryModule" />
+  <module Class="QudExpandedCE.Vixy_WorldHistoryModule" />
 </embarkmodules>

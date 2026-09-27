@@ -1,19 +1,19 @@
-# Record-Only Event Eligibility Catalog
+# History Event Eligibility Catalog
 
-> **Status:** #731, #1008, and #1012 use this document as a safety boundary, not as an authoring
-> catalog. The speculative role-grid and `LX_` event proposals below are archived design material.
-> Shipped code uses the repository's `Vixy_` prefix, and each response is selected only after #979
-> reviews the preceding play evidence and the exact source branch.
+> **Status:** #731, #1008, #1012, and #815 use this document as a safety boundary, not as an
+> authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
+> material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
+> selected only after its exact source branch and world footprint are reviewed.
 
 ## 1. Footprint classification
 
 An earlier event is eligible for a record-only response only when the response does not claim to
 change a thing that the earlier event created or moved into the world.
 
-| Classification | Vanilla event types | Record-only disposition |
+| Classification | Vanilla event types | Disposition |
 |---|---|---|
-| Creates a findable entity | `BattleItem`, `ForgeItem`, `FoundGuild`, `LoseItemAtTavern`, `Marry`, `MeetFaction` | Blocked. A truthful consequence requires matching worldgen work in #815. |
-| Reveals a place or faction only | `BloodyBattle`, `CapturedByBandits`, `ChallengeSultan`, `ChariotDrivesOffCliff`, `CorruptAdministrator`, `InspiringExperience`, `LiberateCity`, `RampageRegion`, `SecretRitual`, `UnderWeirdSky` | Potentially safe for a later prose-only response. Each proposed consequence needs its own footprint review. |
+| Creates or moves a findable entity on some or all branches | `BattleItem`, `BloodyBattle`, `ForgeItem`, `FoundGuild`, `LoseItemAtTavern`, `Marry`, `MeetFaction` | Review the exact branch under #815. A truthful consequence must update every structured owner before worldgen. |
+| Creates no findable entity | `CapturedByBandits`, `ChallengeSultan`, `ChariotDrivesOffCliff`, `CorruptAdministrator`, `InspiringExperience`, `LiberateCity`, `RampageRegion`, `SecretRitual`, `UnderWeirdSky` | Potentially safe for a later prose-only response. Each proposed consequence still needs its own footprint review. |
 | Closed beat | `Abdicate` | No answerable open thread in the current slice. |
 
 ## 2. Implemented responses
@@ -35,6 +35,13 @@ and the sultan's element list remain unchanged.
 All three responses are later, same-sultan gospel reflections. They must not change the source
 event's location, revealed region, element, faction relationship, or any other existing property.
 Each must stand alone because the journal reveals sultan notes independently.
+
+The first world-facing response is `BattleItem`. It qualifies only when the source added exactly
+one relic, the final sultan still owns it, and the battlefield, containing region, and relic each
+resolve uniquely. A second, independently gated post-pass removes the relic from the sultan and adds
+it to the battlefield and region. Vanilla worldgen then moves the physical relic from the period
+reliquary to that historic-site floor. This corrects the earlier six-class boundary: `Marry` creates
+an item only on its gift branch, while `BloodyBattle` can move an existing item without creating one.
 
 ## 3. Deferred catalog
 
