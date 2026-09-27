@@ -9931,7 +9931,8 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 **Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
 what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
 initiation into a faction's secret rite, #1008 carries an inspiring experience into later judgments,
-and #1019 carries a strange-sky apparition into the sultan's later legend.
+#1016 carries a survived challenge into the sultan's sense of legitimacy, and #1019 carries a
+strange-sky apparition into the sultan's later legend.
 
 ### 67.1 One safe branch
 
@@ -9976,6 +9977,18 @@ response.
 The gospel names the sultan, location, color, cognomen, and monument so it remains intelligible when
 revealed first. It uses only those stored values and does not move the sultan, create a location, or
 change the monument, color, cognomen, or containing region.
+
+### 67.1d A contested crown shapes legitimacy
+
+`ChallengeSultan` qualifies only when its structured category is `CrownedSultan` and the event writes
+`isSultan = true`, or when its category is `Slays`. The type check distinguishes the coronation from
+other vanilla events that reuse `CrownedSultan`. `Dies` is excluded because it writes
+`isAlive = false`; vanilla records any later return in a separate `FakedDeath` event.
+
+If several surviving challenges qualify, the earliest by year and event ID supplies the one response.
+The gospel restates that the sultan prevailed in a challenge to the crown and records how it shaped
+their later sense of legitimacy. It does not change the crown or life state, optional region reveal,
+or faction, profession, and element vocabulary already rendered into the source prose.
 
 ### 67.2 History is an input to the world
 

@@ -162,6 +162,9 @@ The first history slice is deliberately smaller than the original compositional 
   judgments.
 - `InspiringExperience` (`tombInscriptionCategory = HasInspiringExperience` plus one added
   `elements` value) receives a self-contained gospel about that fascination guiding later judgment.
+- `ChallengeSultan`'s surviving categories (`CrownedSultan` with its crown-state write, or `Slays`)
+  receive a self-contained gospel about the challenge shaping the sultan's sense of legitimacy;
+  `Dies` remains excluded.
 - `UnderWeirdSky` (`tombInscriptionCategory = DoesSomethingRad`, one color, one cognomen, and a
   validated location monument) receives a self-contained gospel about the apparition shaping the
   sultan's later legend.
