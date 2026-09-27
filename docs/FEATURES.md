@@ -2216,7 +2216,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Furniture.xml           # 6 new, 9 merged (§29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 112 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 113 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
@@ -9753,17 +9753,20 @@ if (Zone.IsWorldMap())
 
 ### 65.4 It moves only while you travel overland
 
-`ZoneManager.Tick` marks and weathers the active zone and calls `CheckCached`, and does nothing else.
-No cached zone is ticked. So `AIWorldMapTravel.TurnTick` reaches a band only when the world map is
-the **active** zone, while you are crossing it.
+`ActionManager.ProcessSingleTurn` and `ProcessTurnTick` tick every cached zone that is neither
+suspended nor stale, then every live object whose current zone is not suspended. The active zone is
+not the boundary. An `AIWorldMapTravel` with `Pinned = true` answers
+`GetZoneSuspendabilityEvent` with `Suspendability.Pinned`, so the world map remains live and its
+travellers keep receiving `TurnTick` while the player is underground.
 
-**`Pinned` does not change that**, though it looks like it should: it sets `Suspendability.Pinned`
-and calls `SetCachedZone`, which keeps the world map in memory rather than frozen. Cached is not
-ticked. Pinned buys persistence, not motion.
+Bands use `Vixy_BandTravel`, a fieldless subtype that delegates to vanilla travel only when the
+band's world map is `The.ActiveZone`. It stays unpinned, allowing the ordinary cache lifecycle to
+suspend the map, but suspension is not the movement gate: another object or mod can pin the shared
+zone without making a band advance off-screen.
 
-The compromise is stated rather than hidden: **the world moves when you move through it, and holds
-still while you are underground.** The consolation is that the only time a band moves is the only
-time you could have watched it, so nothing happens unseen.
+The compromise remains explicit: **the world moves when you move through it, and holds still while
+you are underground.** The only time a band moves is the only time you could have watched it, so
+nothing happens unseen.
 
 ### 65.5 A band has a reason, origin, and target
 
@@ -9788,7 +9791,7 @@ corpse, owner, player-storage marker, player drop marker, player-important marke
 marker, or `CanClear()` protection. Its one or two uniformly random item units move into the token's
 own serialised `Inventory`, never from a container and never by copying or rerolling.
 
-The token then lifts back to its origin through a fresh `AIWorldMapTravel` part. Its actual cargo is
+The token then lifts back to its origin through a fresh `Vixy_BandTravel` part. Its actual cargo is
 placed in a normal `Vixy_ScavengerCache` there, so a player can inspect and recover it. If that cache
 cannot be made, the token becomes an openable cache in place rather than losing the items. Empty
 trips return and disappear without a cache. Positive relationships cannot expand into a former
@@ -9798,10 +9801,11 @@ remains last, after the target, mission, faction, origin, and world-map placemen
 New tokens store `Vixy_BandFaction`, `Vixy_BandMission`, `Vixy_BandOrigin`, and
 `Vixy_BandTarget` as object properties. Scavengers additionally store `Vixy_BandLeg`,
 `Vixy_ScavengerResult`, and `Vixy_ScavengerCarried`; inventory serialisation preserves the actual
-objects between departure and recovery. A token from an earlier save can lack the new properties and
-still arrives through the faction-only path. Normal arrival itself still only calls
-`FactionEncounters.BuildFactionEncounter()`. Territory changes later, when `Vixy_Territory` observes
-the resulting zone on deactivation.
+objects between departure and recovery. On load, a token saved with the former exact
+`AIWorldMapTravel` part is migrated to `Vixy_BandTravel` with its route, partial segment count, and
+metadata intact. A still older token can lack the newer object properties and still arrives through
+the faction-only path. Normal arrival itself only calls `FactionEncounters.BuildFactionEncounter()`.
+Territory changes later, when `Vixy_Territory` observes the resulting zone on deactivation.
 
 ### 65.6 Counterraids answer takeovers, not empty ground
 

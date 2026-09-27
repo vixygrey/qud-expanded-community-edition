@@ -757,8 +757,8 @@
             The band crosses the world map as a real thing you can see, and
             becomes a camp where it arrives.
 
-            {{y|It moves only while you travel overland.}} Nothing outside
-            your own zone runs, so a band waits while you are underground.
+            {{y|It moves only while you travel overland.}} Its travel part
+            checks that the world map is active, so it waits underground.
 
             Off by default: a place you empty staying empty is Caves of Qud's
             own opinion, and this changes it.

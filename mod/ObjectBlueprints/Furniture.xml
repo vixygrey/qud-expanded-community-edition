@@ -135,9 +135,9 @@
        Inherits Object rather than PhysicalObject, and the omission is the design: Object is
        Physics alone, so this has **no Brain**. IsCombatObject() is (Flags & 2), and vanilla's own
        obsolete overload says combat-flagged objects always have a Brain - so being Brain-less makes
-       it non-combat with no flag to set. It cannot be attacked on a map with no tactical terrain,
-       and AIWorldMapTravel moves it with Forced: true, which bypasses the mobility check that would
-       otherwise fail on a null Brain.
+       it non-combat with no flag to set. It cannot be attacked on a map with no tactical terrain.
+       Vixy_BandTravel delegates to AIWorldMapTravel's Forced movement, which bypasses the mobility
+       check that would otherwise fail on a null Brain.
 
        RenderLayer 2 because every terrain object is 1, and a band standing on a parasang should be
        seen rather than hidden under the ground it is crossing.

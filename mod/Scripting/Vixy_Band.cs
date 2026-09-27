@@ -27,11 +27,11 @@ namespace XRL.World.Parts
     /// band is indistinguishable from a placed one, because it is one.
     /// </para>
     /// <para>
-    /// <b>Only while I am on the world map.</b> <c>ZoneManager.Tick</c> marks and weathers the
-    /// active zone and nothing else, so <c>AIWorldMapTravel.TurnTick</c> reaches this only when the
-    /// world map is the active zone. A band advances while I travel overland and stands still while
-    /// I am underground. That is a fiction compromise stated rather than hidden: the world moves
-    /// when I move through it.
+    /// <b>Only while I am on the world map.</b> The action manager ticks every live object in every
+    /// cached, unsuspended zone, not only the active one. <c>Vixy_BandTravel.TurnTick</c> therefore
+    /// checks that the band's world map is the active zone before delegating to vanilla travel.
+    /// Suspension is only lifecycle management: another object may pin the shared zone without
+    /// making this band move while I am underground.
     /// </para>
     /// <para>
     /// <b>Arrival is detected by leaving the world map, not by reaching a cell.</b>
@@ -221,8 +221,8 @@ namespace XRL.World.Parts
                 && Item.GetIntProperty("FromStoredByPlayer") <= 0;
         }
 
-        /// <summary>
-        /// Lift the token back to its source parasang and give it a fresh travel part.
+        /// Lift the token back to its source parasang and give it fresh band travel.
+        /// The active-zone gate applies to the return leg exactly as it does to the outbound leg.
         /// </summary>
         private bool ReturnToOrigin(Zone Where)
         {
@@ -234,7 +234,10 @@ namespace XRL.World.Parts
                 return false;
             }
 
-            ParentObject.RemovePart<AIWorldMapTravel>();
+            if (ParentObject.TryGetPartDescendedFrom<AIWorldMapTravel>(out AIWorldMapTravel oldTravel))
+            {
+                ParentObject.RemovePart(oldTravel);
+            }
             ParentObject.SetStringProperty(LegProperty, ReturningLeg);
             if (!ParentObject.SystemMoveTo(world))
             {
@@ -242,14 +245,13 @@ namespace XRL.World.Parts
                 return false;
             }
 
-            AIWorldMapTravel travel = ParentObject.RequirePart<AIWorldMapTravel>();
+            Vixy_BandTravel travel = ParentObject.RequirePart<Vixy_BandTravel>();
             if (!travel.SetZoneID(origin))
             {
-                ParentObject.RemovePart<AIWorldMapTravel>();
+                ParentObject.RemovePart(travel);
                 PreserveCargo("return blocked");
                 return false;
             }
-            travel.Pinned = true;
             return true;
         }
 

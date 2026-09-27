@@ -152,15 +152,14 @@ namespace XRL
                 token.SetStringProperty(Vixy_Band.LegProperty, Vixy_Band.OutboundLeg);
             }
 
-            AIWorldMapTravel travel = token.RequirePart<AIWorldMapTravel>();
+            Vixy_BandTravel travel = token.RequirePart<Vixy_BandTravel>();
             if (!travel.SetZoneID(ToZone))
             {
                 token.Obliterate();
                 return false;
             }
 
-            // Pinned keeps the world map cached rather than frozen. It does not make it tick.
-            travel.Pinned = true;
+            // Movement is gated by Vixy_BandTravel, not by the shared zone's suspension state.
             start.AddObject(token, Forced: true, System: true);
             return true;
         }

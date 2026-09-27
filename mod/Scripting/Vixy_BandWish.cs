@@ -42,7 +42,7 @@ namespace XRL
             foreach (GameObject o in The.ZoneManager.FindObjects(
                          (GameObject x) => x.HasPart<Vixy_Band>()))
             {
-                AIWorldMapTravel travel = o.GetPart<AIWorldMapTravel>();
+                o.TryGetPartDescendedFrom<AIWorldMapTravel>(out AIWorldMapTravel travel);
                 Cell at = o.CurrentCell;
                 string faction = o.GetStringProperty(Vixy_Band.FactionProperty, "?");
                 string mission = o.GetStringProperty(Vixy_Band.MissionProperty);

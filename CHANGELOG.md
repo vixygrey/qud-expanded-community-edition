@@ -30,6 +30,13 @@ recorded because contributors need them, not because subscribers do.
   judgments** (#1012). The optional history system records the consequence without changing the
   faction relationship, revealed region, or generated world.
 
+### Fixed
+
+- **Travelling bands now wait while the player is outside the world map** (#1010). Occupation and
+  scavenger journeys check the active zone directly instead of pinning the shared world map, so an
+  unrelated pinned traveller cannot move them underground. Existing in-flight tokens migrate on
+  load without losing their route, progress, mission metadata, or cargo.
+
 ## [2.21.0] - 2026-09-24
 ### Added
 
@@ -181,9 +188,9 @@ recorded because contributors need them, not because subscribers do.
   that places every faction camp in the game. It cannot be attacked and will not attack: it has no
   Brain, which is what makes it non-combat.
 
-  **It moves only while you are travelling overland**, because nothing outside your own zone runs.
-  The world moves when you move through it. Which also means nothing happens unseen — the only time
-  a band moves is the only time you could have watched it.
+  **It moves only while you are travelling overland.** Its travel part checks that the world map is
+  active before advancing, so another traveller can keep that shared zone live without moving the
+  band underground. The only time a band moves is the only time you could have watched it.
 
   Who comes is your neighbours: a people recorded holding somewhere else, never the ones who just
   lost the place. Story settlements are deliberately out of scope; `docs/FEATURES.md` §65.7 says why.
