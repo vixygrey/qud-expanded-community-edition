@@ -67,6 +67,12 @@ recorded because contributors need them, not because subscribers do.
   changing the location, monument, crown state, region, faction or profession facts, or generated
   world.
 
+### Changed
+
+- **(internal) Prettier 3.9.8 → 3.9.9** (#1032). The upstream patch corrects Markdown parsing of
+  dollar signs; this repository formats only the mod's XML and RPM files, whose complete output is
+  unchanged under the new version.
+
 ### Fixed
 
 - **(internal) Refreshed the Qud API snapshot for Steam build 25520692** (#1040). Local hooks and
