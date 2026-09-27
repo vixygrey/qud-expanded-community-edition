@@ -1,8 +1,8 @@
 # Source and Divergence Model
 
-> **Status:** #731 writes one gospel-only record and does not implement source divergence. The
-> gospel is a separate journal note and must be self-contained. Tomb changes, murals, oral
-> traditions, and deliberately conflicting accounts are deferred design work.
+> **Status:** the record-only pass writes independent gospel-only records and does not implement
+> source divergence. Each gospel is a separate journal note and must be self-contained. Tomb changes,
+> murals, oral traditions, and deliberately conflicting accounts are deferred design work.
 
 > **Implementation boundary:** use existing `HistoricEvent` gospel properties only. Do not add a
 > source model, alter tomb inscriptions, or make a record-only response contradict the world.

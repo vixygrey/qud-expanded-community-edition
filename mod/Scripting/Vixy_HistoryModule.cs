@@ -25,6 +25,7 @@ namespace QudExpandedCE
         private const string AppliedStateKey = "Vixy_HistoryEventsApplied";
         private const string BanditEscapeResponseKey = "Vixy_BanditEscapeResponse";
         private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
+        private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
 
         private sealed class PlannedResponse
         {
@@ -72,11 +73,12 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 2);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 3);
 
             foreach (HistoricEntity sultan in sultans)
             {
                 PlanBanditEscapeResponse(sultan, responses);
+                PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
             }
 
@@ -122,6 +124,56 @@ namespace QudExpandedCE
                             + " ruled with a vigilance born of that hardship."
                     },
                     { BanditEscapeResponseKey, escape.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanInspirationResponse(
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, InspirationResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent inspiration = FindInspiringExperience(sultan, out string element);
+            if (inspiration == null)
+            {
+                return;
+            }
+
+            long responseYear = inspiration.year + inspiration.duration + 1;
+            if (responseYear >= sultan.lastYear)
+            {
+                return;
+            }
+
+            string name = sultan.GetEntityProperty("name", responseYear);
+            if (string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After an experience awakened in " + name
+                            + " a lasting fascination with " + element + ", " + name
+                            + " let that memory guide every later judgment."
+                    },
+                    { InspirationResponseKey, inspiration.id.ToString() }
                 }
             };
 
@@ -196,6 +248,13 @@ namespace QudExpandedCE
             return false;
         }
 
+        private static bool IsEarlierSource(HistoricEvent candidate, HistoricEvent earliest)
+        {
+            return earliest == null
+                || candidate.year < earliest.year
+                || (candidate.year == earliest.year && candidate.id < earliest.id);
+        }
+
         private static HistoricEvent FindBanditEscape(HistoricEntity sultan)
         {
             foreach (HistoricEvent existing in sultan.events)
@@ -208,6 +267,41 @@ namespace QudExpandedCE
             }
 
             return null;
+        }
+
+        private static HistoricEvent FindInspiringExperience(
+            HistoricEntity sultan,
+            out string element
+        )
+        {
+            HistoricEvent earliest = null;
+            element = null;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is InspiringExperience)
+                    || existing.GetEventProperty("tombInscriptionCategory")
+                        != "HasInspiringExperience")
+                {
+                    continue;
+                }
+
+                List<string> addedElements = existing.GetListProperties("elements");
+                if (addedElements == null
+                    || addedElements.Count != 1
+                    || string.IsNullOrEmpty(addedElements[0]))
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
+                    element = addedElements[0];
+                }
+            }
+
+            return earliest;
         }
 
         private static HistoricEvent FindAcceptedSecretRitual(
@@ -237,9 +331,7 @@ namespace QudExpandedCE
                     continue;
                 }
 
-                if (earliest == null
-                    || existing.year < earliest.year
-                    || (existing.year == earliest.year && existing.id < earliest.id))
+                if (IsEarlierSource(existing, earliest))
                 {
                     earliest = existing;
                     faction = addedFactions[0];

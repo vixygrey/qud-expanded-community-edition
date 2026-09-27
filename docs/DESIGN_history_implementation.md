@@ -1,8 +1,8 @@
 # Record-Only History Implementation
 
-> **Status:** implementation specification for the record-only responses shipped through #731 and
-> #1012. It supersedes this document's former pre-recon plan, which assumed an unavailable registry
-> and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
+> **Status:** implementation specification for the record-only responses shipped through #731,
+> #1008, and #1012. It supersedes this document's former pre-recon plan, which assumed an unavailable
+> registry and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
 
 ---
 
@@ -12,11 +12,15 @@ Vanilla generates sultan history before it builds worlds. A history event can th
 an entity that later becomes a relic, site, faction, or other world-facing fact. The record-only pass
 adds later event records without changing an existing event or any world-facing state.
 
-Two source branches are implemented:
+Three source branches are implemented:
 
 ```csharp
 event is CapturedByBandits
     && event.GetEventProperty("tombInscriptionCategory") == "EnduresHardship"
+
+event is InspiringExperience
+    && event.GetEventProperty("tombInscriptionCategory") == "HasInspiringExperience"
+    && event.GetListProperties("elements") contains exactly one nonempty element
 
 event is SecretRitual
     && event.GetEventProperty("tombInscriptionCategory") == "LearnsSecret"
@@ -24,8 +28,8 @@ event is SecretRitual
 ```
 
 The bandit murder branch (`Slays`) and the ritual rejection branch (`hatedFactions`) are not eligible.
-The accepted sources reveal regions and may add a faction relationship, but create no entity. A later
-reflection can therefore remain truthful without matching worldgen work.
+The accepted sources may reveal regions and add an element or faction relationship, but create no
+entity. A later reflection can therefore remain truthful without matching worldgen work.
 
 The vanilla branches that create or relocate findable entities remain excluded. A response that
 changes one of those entities belongs in #815, where the history and constructed world can change
@@ -62,10 +66,10 @@ must not leave a partial record for a sultan.
 
 ## 4. Response construction
 
-For every generated sultan, select at most one source of each eligible type deterministically. Ritual
-selection uses the earliest event by `(year, id)` and requires the faction relationship to survive in
-the final snapshot. A response is valid only if it can be assigned a year after its source event and
-before that sultan's terminal event.
+For every generated sultan, select at most one source of each eligible type deterministically.
+Inspiration and ritual selection use the earliest event by `(year, id)`; ritual additionally requires
+the faction relationship to survive in the final snapshot. A response is valid only if it can be
+assigned a year after its source event and before that sultan's terminal event.
 
 Create a plain `HistoricEvent` with only event-local properties:
 
@@ -95,9 +99,9 @@ or map discovery for its subject.
 3. Create new worlds with the option disabled and enabled. Use recorded seeds containing each
    eligible source branch.
 4. Verify one response of each qualifying type per eligible sultan, valid chronology, deterministic
-   ritual selection, and no duplicate after repeated dispatch.
-5. Inspect each source and the world output to confirm no entity, location, faction relationship,
-   region, or relic contradiction.
+   inspiration and ritual selection, and no duplicate after repeated dispatch.
+5. Inspect each source and the world output to confirm no entity, location, element, faction
+   relationship, region, or relic contradiction.
 6. Save and reload the generated world, then verify each response remains an ordinary history record.
 7. Reveal each response through the Sultan journal flow and review it without its antecedent.
 

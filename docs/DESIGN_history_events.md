@@ -1,16 +1,18 @@
 # Causal History Design
 
-> **Status:** #731 and #1012 implement record-only responses after vanilla history generation. They
-> do not implement this document's generator replacement, ledger, metadata retrofit, or broad catalog.
-> Those remain deferred design material and must not be used as an implementation plan.
+> **Status:** #731, #1008, and #1012 implement record-only responses after vanilla history
+> generation. They do not implement this document's generator replacement, ledger, metadata retrofit,
+> or broad catalog. Those remain deferred design material and must not be used as an implementation
+> plan.
 
 ## Current record-only contract
 
 The post-pass receives the completed `History` at `BOOTEVENT_AFTERINITIALIZESULTANHISTORY`. It may
 append one self-contained gospel response per qualifying source type and nothing world-facing. The
-implemented sources are `CapturedByBandits`' escape branch and `SecretRitual`'s accepted branch. The
-pass must use an exactly-once game-state guard, preserve vanilla events and draw distribution, and
-skip a candidate that has no valid later date before the sultan's terminal event.
+implemented sources are `CapturedByBandits`' escape branch, either `InspiringExperience` prose branch,
+and `SecretRitual`'s accepted branch. The pass must use an exactly-once game-state guard, preserve
+vanilla events and draw distribution, and skip a candidate that has no valid later date before the
+sultan's terminal event.
 
 The responses are prose-only. They do not establish a general ledger or thread format.
 
