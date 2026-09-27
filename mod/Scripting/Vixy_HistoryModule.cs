@@ -24,6 +24,7 @@ namespace QudExpandedCE
     {
         private const string AppliedStateKey = "Vixy_HistoryEventsApplied";
         private const string BanditEscapeResponseKey = "Vixy_BanditEscapeResponse";
+        private const string ChallengeSultanResponseKey = "Vixy_ChallengeSultanResponse";
         private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
         private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
         private const string UnderWeirdSkyResponseKey = "Vixy_UnderWeirdSkyResponse";
@@ -74,11 +75,12 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 4);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 5);
 
             foreach (HistoricEntity sultan in sultans)
             {
                 PlanBanditEscapeResponse(sultan, responses);
+                PlanChallengeSultanResponse(sultan, responses);
                 PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
                 PlanUnderWeirdSkyResponse(history, sultan, responses);
@@ -227,6 +229,51 @@ namespace QudExpandedCE
                             + " measured every later judgment against the clan's hidden precepts."
                     },
                     { SecretRitualResponseKey, ritual.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanChallengeSultanResponse(
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, ChallengeSultanResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent challenge = FindEligibleChallengeSultan(sultan);
+            if (challenge == null)
+            {
+                return;
+            }
+
+            long responseYear = challenge.year + challenge.duration + 1;
+            string name = sultan.GetEntityProperty("name", responseYear);
+            if (!IsRendered(name))
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After prevailing in a challenge to the crown, " + name
+                            + " treated every later act of rule as proof of " + name
+                            + "'s legitimacy."
+                    },
+                    { ChallengeSultanResponseKey, challenge.id.ToString() }
                 }
             };
 
@@ -426,6 +473,40 @@ namespace QudExpandedCE
                 {
                     earliest = existing;
                     faction = addedFactions[0];
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleChallengeSultan(HistoricEntity sultan)
+        {
+            HistoricEvent earliest = null;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is ChallengeSultan))
+                {
+                    continue;
+                }
+
+                string category = existing.GetEventProperty("tombInscriptionCategory");
+                bool crowned = category == "CrownedSultan"
+                    && existing.GetEntityProperty("isSultan") == "true";
+                if (!crowned && category != "Slays")
+                {
+                    continue;
+                }
+
+                long responseYear = existing.year + existing.duration + 1;
+                if (responseYear >= sultan.lastYear)
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
                 }
             }
 

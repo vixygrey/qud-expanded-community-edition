@@ -30,6 +30,10 @@ recorded because contributors need them, not because subscribers do.
   judgments** (#1012). The optional history system records the consequence without changing the
   faction relationship, revealed region, or generated world.
 
+- **Surviving a challenge to the crown can now shape a sultan's later legitimacy** (#1016). The
+  optional history system answers successful coronations and defeated challengers without changing
+  crown state, source references, revealed regions, or the generated world.
+
 - **A strange-sky apparition can now shape a sultan's later legend** (#1019). The optional history
   system carries its location, monument, color, and cognomen into a later gospel without changing
   the generated world.
