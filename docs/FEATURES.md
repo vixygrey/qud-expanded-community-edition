@@ -18,7 +18,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 | Area | What the mod does |
 |---|---|
 | **New item blueprints** | **528** brand-new objects across 8 blueprint files |
-| **Modified vanilla blueprints** | **284** `Load="Merge"` edits to existing objects |
+| **Modified vanilla blueprints** | **285** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
 | **New equipment system** | 144 psionic chips/chipsets granting real mutations to any genotype |
@@ -614,7 +614,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `RangedWeapons.xml` | 49 | 62 |
 | `PsionicChips.xml` | 145 | 0 |
 | `Cybernetics.xml` | 10 | 14 |
-| `OtherEquipment.xml` | 9 | 16 |
+| `OtherEquipment.xml` | 9 | 17 |
 | `Throwables.xml` | 0 | 51 |
 | `Furniture.xml` | 6 | 9 |
 | `Creatures.xml` | 46 | 4 |
@@ -623,7 +623,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Ammo.xml` | 22 (22 dormant) | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **528 active** | **284** |
+| **Total** | **528 active** | **285** |
 
 ### 6.2 Melee weapons
 
@@ -1349,10 +1349,10 @@ cell at twice its capacity and twenty times commoner than antimatter.
 
 | Item | Change |
 |---|---|
-| `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable**, 10,000 charge per use, and every vanilla recoiler inherits this |
-| `Programmable Recoiler` | **Vanilla object.** Charge use 10,000 → **5,000**, and `Reprogrammable` false → **true**, so the cheaper recoiler can now be re-imprinted. Custom description. *(Listed as a new object in earlier drafts of this file; it is not, see #29.)* |
+| `BaseRecoiler` | Renamed "basic recoiler"; now **programmable and reprogrammable** at 10,000 charge per imprint. Blank recoilers inherit this behavior. |
+| `Programmable Recoiler` | **Vanilla object.** Charge use 10,000 → **5,000**, and `Reprogrammable` false → **true**, so the cheaper programmable model can be re-imprinted. Custom description. *(Listed as a new object in earlier drafts of this file; it is not, see #29.)* |
 | `Reprogrammable Recoiler` | **Vanilla object.** Charge use 30,000 → **2,500**. Custom description. |
-| All 7 location recoilers (Joppa, Grit Gate, Six Day Stilt, Kyakukya, Golgotha, Bethesda Susa, Ezra) | Given `NameElide` values so their names render correctly under the new programmable system |
+| All 8 fixed-destination recoilers (Joppa, Grit Gate, Six Day Stilt, Kyakukya, Golgotha, Bethesda Susa, Ezra, Yd Freehold) | Remove the inherited programmable part, preserving their vanilla destinations and preventing re-imprinting. |
 | Force bracelet | Charge use → 250 |
 | Bottle | Weight 5, value 10, **1000 HP**, 100 in all four resistances, `Inorganic`, `ThermalInsulation` 1000, non-solid, immune to freezing/burning |
 | Scrap | Weight → 0 |
@@ -2208,7 +2208,7 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── RangedWeapons.xml       # 49 new / 62 merged
 │   ├── PsionicChips.xml        # 145 new (1 base + 144 chips)
 │   ├── Cybernetics.xml         # 10 new / 14 merged
-│   ├── OtherEquipment.xml      # 9 new / 16 merged
+│   ├── OtherEquipment.xml      # 9 new / 17 merged
 │   ├── Throwables.xml          # 51 merged (prices only)
 │   ├── Items.xml               # 18 new (§47, §49, §60), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
