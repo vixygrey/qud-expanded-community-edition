@@ -1,9 +1,10 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, #1024, and #815 use this document
-> as a safety boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
-> material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
-> selected only after its exact source branch and world footprint are reviewed.
+> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, #1024, #815, #1017, and #1025 use
+> this document as a safety boundary, not as an authoring catalog. The speculative role-grid and
+> `LX_` event proposals below are archived design material. Shipped code uses the repository's
+> `Vixy_` prefix, and each response or transfer is selected only after its exact source branch and
+> world footprint are reviewed.
 
 ## 1. Footprint classification
 
@@ -75,18 +76,25 @@ crown or life state, location, monument, color, cognomen, revealed region, eleme
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.
 
-The world-facing pass implements two sources. `BattleItem` qualifies only when the source added
+The world-facing pass implements three sources. `BattleItem` qualifies only when the source added
 exactly one relic, the final sultan still owns it, and the battlefield, containing region, and relic
 each resolve uniquely. `ForgeItem` has no structured guildhall; its generated guildhall remains
 prose. A qualifying forge instead uses the sultan's structured location at the response year, and
 requires the sultan to be alive there. The location, containing region, and relic must resolve
 uniquely, the region must still list the location, and no other final entity may own the relic.
 
-The independently gated post-pass removes each relic from the sultan and adds it to the destination
-location and region. Vanilla worldgen then moves the physical relic from the period reliquary to that
-historic-site floor. Each source type selects its earliest eligible event by year and event ID. This
-corrects the earlier six-class boundary: `Marry` creates an item only on its gift branch, while
-`BloodyBattle` can move an existing item without creating one.
+`MeetFaction` qualifies only on `tombInscriptionCategory = Treats`, with exactly one event-local
+`likedFactions` addition retained by the final sultan. The event-local meeting location and its
+containing region must resolve uniquely and preserve their identity, membership, and matching region
+reveal. A living, pre-terminal response year must provide a valid period and rendered element. The
+pass creates one uniquely named `Curio`, records the faction on its `likedFactions`, and adds it to
+the location and region before appending the reveal response.
+
+The independently gated post-pass transfers or creates each relic before making its response
+visible. Vanilla worldgen then places the physical relic on that historic-site floor and consumes
+the ordinary reveal and faction-reputation records. Each source type selects its earliest eligible
+event by year and event ID. This corrects the earlier six-class boundary: `Marry` creates an item only
+on its gift branch, while `BloodyBattle` can move an existing item without creating one.
 
 ## 3. Deferred catalog
 

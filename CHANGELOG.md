@@ -26,6 +26,10 @@ recorded because contributors need them, not because subscribers do.
   The existing new-world option moves each eligible relic from the period reliquary to the sultan's
   structured location when the dedication occurs, and its ordinary relic quest follows it there.
 
+- **A sultan's alliance can leave a compact relic at its meeting place** (#1025). The existing
+  new-world option creates the compact from structured history, places it on the matching
+  historic-site floor, and lets vanilla apply its faction reputation and ordinary relic quest.
+
 - **A sultan's inspiring experience can now shape their later judgments** (#1008). The optional
   history system carries the fascination forward without changing its element, revealed region, or
   generated world.

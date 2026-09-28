@@ -9,21 +9,34 @@ using XRL.World;
 namespace QudExpandedCE
 {
     /// <summary>
-    /// Moves eligible historical relics between structured history records before vanilla builds
-    /// the world from them. Every transfer must update the sultan, location, and containing region
-    /// together so the chronicle, physical relic, and relic quest continue to describe one fact.
+    /// Moves or creates eligible historical relics in structured history before vanilla builds
+    /// the world from it. Every change must update the relic, location, containing region, and
+    /// visible response together so the chronicle, physical relic, and quest describe one fact.
     /// </summary>
     public class Vixy_WorldHistoryModule : AbstractEmbarkBuilderModule
     {
         private const string AppliedStateKey = "Vixy_WorldHistoryEventsApplied";
         private const string BattleItemResponseKey = "Vixy_BattleItemDedicationResponse";
         private const string ForgeItemResponseKey = "Vixy_ForgeItemDedicationResponse";
+        private const string MeetFactionResponseKey = "Vixy_MeetFactionCompactResponse";
 
         private sealed class PlannedTransfer
         {
             public HistoricEntity Sultan;
             public HistoricEntity Destination;
             public HistoricEntity Region;
+            public HistoricEvent SultanEvent;
+            public HistoricEvent DestinationEvent;
+            public HistoricEvent RegionEvent;
+        }
+
+        private sealed class PlannedCompact
+        {
+            public HistoricEntity Sultan;
+            public HistoricEntity Destination;
+            public HistoricEntity Region;
+            public long ResponseYear;
+            public HistoricEvent ItemEvent;
             public HistoricEvent SultanEvent;
             public HistoricEvent DestinationEvent;
             public HistoricEvent RegionEvent;
@@ -46,14 +59,16 @@ namespace QudExpandedCE
             }
 
             List<PlannedTransfer> transfers;
+            List<PlannedCompact> compacts;
             try
             {
                 transfers = PlanTransfers(history);
+                compacts = PlanCompacts(history);
             }
             catch
             {
                 // Planning is read-only. An unfamiliar future history shape must leave vanilla's
-                // completed history intact rather than risking a one-sided relic transfer.
+                // completed history intact rather than risking a partial relic placement.
                 return history;
             }
 
@@ -69,8 +84,27 @@ namespace QudExpandedCE
                 transfer.Sultan.ApplyEvent(transfer.SultanEvent, transfer.SultanEvent.year);
             }
 
+            ApplyCompacts(history, compacts);
+
             The.Game.SetIntGameState(AppliedStateKey, 1);
             return history;
+        }
+
+        private static void ApplyCompacts(History history, List<PlannedCompact> compacts)
+        {
+            foreach (PlannedCompact compact in compacts)
+            {
+                // The response becomes visible only after the new relic and both ownership indexes
+                // describe the same placement.
+                HistoricEntity item = history.CreateEntity(compact.ResponseYear);
+                item.ApplyEvent(compact.ItemEvent, compact.ItemEvent.year);
+                compact.Region.ApplyEvent(compact.RegionEvent, compact.RegionEvent.year);
+                compact.Destination.ApplyEvent(
+                    compact.DestinationEvent,
+                    compact.DestinationEvent.year
+                );
+                compact.Sultan.ApplyEvent(compact.SultanEvent, compact.SultanEvent.year);
+            }
         }
 
         private static List<PlannedTransfer> PlanTransfers(History history)
@@ -85,6 +119,106 @@ namespace QudExpandedCE
             }
 
             return transfers;
+        }
+
+        private static List<PlannedCompact> PlanCompacts(History history)
+        {
+            HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
+            List<PlannedCompact> compacts = new List<PlannedCompact>(sultans.Count);
+            HashSet<string> plannedItemNames = new HashSet<string>();
+
+            foreach (HistoricEntity sultan in sultans)
+            {
+                PlanMeetFactionCompact(history, sultan, plannedItemNames, compacts);
+            }
+
+            return compacts;
+        }
+
+        private static void PlanMeetFactionCompact(
+            History history,
+            HistoricEntity sultan,
+            HashSet<string> plannedItemNames,
+            List<PlannedCompact> compacts
+        )
+        {
+            if (HasResponse(sultan, MeetFactionResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent meeting = FindEligibleMeetFaction(
+                history,
+                sultan,
+                plannedItemNames,
+                out string item,
+                out string baseItemName,
+                out string locationName,
+                out HistoricEntity location,
+                out HistoricEntity region,
+                out string faction,
+                out string element,
+                out int period,
+                out long responseYear,
+                out string sultanName,
+                out string revealedRegionName
+            );
+            if (meeting == null || !plannedItemNames.Add(item))
+            {
+                return;
+            }
+
+            HistoricEvent itemEvent = new HistoricEvent
+            {
+                year = responseYear,
+                duration = 0,
+                entityProperties = new Dictionary<string, string>
+                {
+                    { "itemType", "Curio" },
+                    { "baseName", baseItemName },
+                    { "article", "the" },
+                    { "name", item },
+                    { "descriptionAdj", "historic" },
+                    { "descriptionNoun", "compact" },
+                    { "period", period.ToString() }
+                },
+                addedListProperties = new Dictionary<string, List<string>>
+                {
+                    { "elements", new List<string> { element } },
+                    { "likedFactions", new List<string> { faction } }
+                }
+            };
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                duration = 0,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After " + sultanName + " befriended "
+                            + Faction.GetFormattedName(faction) + " at " + locationName
+                            + ", they enshrined " + item
+                            + " there as a token of their compact."
+                    },
+                    { MeetFactionResponseKey, meeting.id.ToString() },
+                    { "revealsItem", item },
+                    { "revealsItemLocation", locationName },
+                    { "revealsItemRegion", revealedRegionName }
+                }
+            };
+
+            compacts.Add(new PlannedCompact
+            {
+                Sultan = sultan,
+                Destination = location,
+                Region = region,
+                ResponseYear = responseYear,
+                ItemEvent = itemEvent,
+                SultanEvent = response,
+                DestinationEvent = DestinationEvent(responseYear, item),
+                RegionEvent = DestinationEvent(responseYear, item)
+            });
         }
 
         private static void PlanBattleItemDedication(
@@ -199,6 +333,163 @@ namespace QudExpandedCE
                 DestinationEvent = DestinationEvent(responseYear, item),
                 RegionEvent = DestinationEvent(responseYear, item)
             });
+        }
+
+        private static HistoricEvent FindEligibleMeetFaction(
+            History history,
+            HistoricEntity sultan,
+            HashSet<string> plannedItemNames,
+            out string item,
+            out string baseItemName,
+            out string locationName,
+            out HistoricEntity location,
+            out HistoricEntity region,
+            out string faction,
+            out string element,
+            out int period,
+            out long responseYear,
+            out string sultanName,
+            out string revealedRegionName
+        )
+        {
+            HistoricEvent earliest = null;
+            item = null;
+            baseItemName = null;
+            locationName = null;
+            location = null;
+            region = null;
+            faction = null;
+            element = null;
+            period = 0;
+            responseYear = 0;
+            sultanName = null;
+            revealedRegionName = null;
+            HistoricEntitySnapshot finalSultan = sultan.GetSnapshotAtYear(sultan.lastYear);
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is MeetFaction)
+                    || existing.GetEventProperty("tombInscriptionCategory") != "Treats")
+                {
+                    continue;
+                }
+
+                string candidateLocationName = existing.GetEntityProperty("location");
+                List<string> addedFactions = existing.GetListProperties("likedFactions");
+                string candidateFaction = addedFactions != null && addedFactions.Count == 1
+                    ? addedFactions[0]
+                    : null;
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateSultanName = sultan.GetEntityProperty(
+                    "name",
+                    candidateResponseYear
+                );
+                string candidatePeriod = sultan.GetEntityProperty(
+                    "period",
+                    candidateResponseYear
+                );
+                if (!IsRendered(candidateLocationName)
+                    || !IsRendered(candidateFaction)
+                    || !finalSultan.GetList("likedFactions").Contains(candidateFaction)
+                    || !Factions.TryGet(candidateFaction, out Faction _)
+                    || candidateResponseYear >= sultan.lastYear
+                    || sultan.GetEntityProperty("isAlive", candidateResponseYear) != "true"
+                    || !IsRendered(candidateSultanName)
+                    || !int.TryParse(candidatePeriod, out int candidatePeriodNumber)
+                    || candidatePeriodNumber < 1
+                    || candidatePeriodNumber > 5)
+                {
+                    continue;
+                }
+
+                string candidateElement = null;
+                foreach (string value in sultan.GetSnapshotAtYear(candidateResponseYear)
+                    .GetList("elements"))
+                {
+                    if (IsRendered(value))
+                    {
+                        candidateElement = value;
+                        break;
+                    }
+                }
+                if (candidateElement == null)
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateLocation = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateLocationName
+                );
+                if (candidateLocation == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot locationSnapshot = candidateLocation.GetSnapshotAtYear(
+                    candidateLocation.lastYear
+                );
+                string candidateRegionName = SnapshotValue(locationSnapshot, "region");
+                if (SnapshotValue(locationSnapshot, "type") != "location"
+                    || SnapshotValue(locationSnapshot, "name") != candidateLocationName
+                    || !IsRendered(candidateRegionName))
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateRegion = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateRegionName
+                );
+                if (candidateRegion == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot regionSnapshot = candidateRegion.GetSnapshotAtYear(
+                    candidateRegion.lastYear
+                );
+                string candidateRevealedRegionName = SnapshotValue(regionSnapshot, "newName");
+                string candidateBaseItemName = "Compact of " + candidateLocationName;
+                string candidateItem = "the " + candidateBaseItemName;
+                if (SnapshotValue(regionSnapshot, "type") != "region"
+                    || CountOccurrences(
+                        regionSnapshot.GetList("locations"),
+                        candidateLocationName
+                    ) != 1
+                    || !IsRendered(candidateRevealedRegionName)
+                    || existing.GetEventProperty("revealsRegion")
+                        != candidateRevealedRegionName
+                    || history.GetEntitiesWherePropertyEquals("name", candidateItem).Count != 0
+                    || plannedItemNames.Contains(candidateItem)
+                    || locationSnapshot.GetList("items").Contains(candidateItem)
+                    || regionSnapshot.GetList("items").Contains(candidateItem))
+                {
+                    continue;
+                }
+
+                if (earliest == null
+                    || existing.year < earliest.year
+                    || (existing.year == earliest.year && existing.id < earliest.id))
+                {
+                    earliest = existing;
+                    item = candidateItem;
+                    baseItemName = candidateBaseItemName;
+                    locationName = candidateLocationName;
+                    location = candidateLocation;
+                    region = candidateRegion;
+                    faction = candidateFaction;
+                    element = candidateElement;
+                    period = candidatePeriodNumber;
+                    responseYear = candidateResponseYear;
+                    sultanName = candidateSultanName;
+                    revealedRegionName = candidateRevealedRegionName;
+                }
+            }
+
+            return earliest;
         }
 
         private static HistoricEvent FindEligibleForgeItem(
@@ -436,6 +727,20 @@ namespace QudExpandedCE
             }
 
             return earliest;
+        }
+
+        private static int CountOccurrences(List<string> values, string value)
+        {
+            int count = 0;
+            foreach (string candidate in values)
+            {
+                if (candidate == value)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private static string SnapshotValue(HistoricEntitySnapshot snapshot, string property)

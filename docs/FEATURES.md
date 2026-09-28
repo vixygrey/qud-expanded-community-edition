@@ -10054,11 +10054,11 @@ This is the record-only half of the history work. Any response that creates or m
 entity needs matching structured-history or worldgen work under #815; §68 implements the first such
 branch. #979 evaluates each additional prose-only chain separately.
 
-## 68. Relics return to places in their histories (`Vixy_WorldHistoryModule`)
+## 68. Relics return to or arise at places in their histories (`Vixy_WorldHistoryModule`)
 
 **Off by default and new-world-scoped.** This is independent of §67's record-only option. For each
-generated sultan, the earliest eligible `BattleItem` and the earliest eligible `ForgeItem`, each
-selected by year and event ID, can receive one later dedication response.
+generated sultan, the earliest eligible `BattleItem`, `ForgeItem`, and `MeetFaction` of their
+respective types, selected by year and event ID, can receive one later world-facing response.
 
 ### 68.1 A battle relic returns to its battlefield
 
@@ -10083,26 +10083,39 @@ Malformed, ambiguous, already-moved, chronologically terminal, dead-year, rename
 or orphaned candidates are skipped. The source event, relic entity, destination identity, and region
 identity are never changed.
 
-### 68.3 One transfer, three matching records
+### 68.3 A faction compact becomes a relic
 
-Each response removes its relic from the sultan's `items`, adds it to the destination location's
-`items`, and adds it to the containing region's `items`. It also records the standard `revealsItem`,
-`revealsItemLocation`, and `revealsItemRegion` properties.
+`MeetFaction` qualifies only on its `Treats` branch when it adds exactly one faction relationship
+that the final sultan still retains. Its event-local location must resolve uniquely, remain a
+location under the same name, and occur exactly once in a uniquely resolved containing region. The
+source's region reveal must still match that region's final revealed name. The response year must
+fall before the terminal event while the sultan is alive, with a valid period and element for relic
+generation.
 
-Those three list changes are the shape vanilla already consumes. `SultanLoot` no longer generates
-the relic in that period's Tomb of the Eaters reliquary.
-`JoppaWorldBuilder.AddSultanHistoryLocations` instead generates it on the destination's historic-site
-floor, and revealing the response starts the ordinary relic quest for that exact item and place. The
-fork does not register a worldbuilder extension or create another relic.
+The response creates one `Curio` named `the Compact of <location>`. Its `likedFactions` entry records
+the meeting faction, so vanilla relic generation applies the ordinary faction reputation effect. A
+pre-existing entity or planned compact with the same name disqualifies the candidate.
 
-### 68.4 Safety and scope
+### 68.4 Matching records drive vanilla worldgen
 
-`Vixy_WorldHistoryModule` plans every eligible transfer without mutation, applies both destination
-records before the visible sultan response, and carries its own exactly-once game-state guard plus a
-separate per-sultan marker for each source type.
+The battle and forge responses remove their existing relic from the sultan's `items`; every response
+adds its relic to the destination location's `items` and the containing region's `items`. The compact
+also creates the relic's structured history entity. Each response records the standard
+`revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
 
-Set {{C|sultans leave relics where history happened}} before making a world. Existing worlds keep
-their original histories, reliquaries, historic sites, and quest targets.
+Those records are the shape vanilla already consumes. `SultanLoot` omits a transferred relic from
+the period reliquary. `JoppaWorldBuilder.AddSultanHistoryLocations` generates transferred relics and
+new compacts on their destination historic-site floors. Revealing a response starts the ordinary
+relic quest for that exact item and place. The fork registers no worldbuilder extension.
+
+### 68.5 Safety and scope
+
+`Vixy_WorldHistoryModule` plans every eligible change without mutation, applies the relic and both
+destination records before the visible sultan response, and carries its own exactly-once game-state
+guard plus a separate per-sultan marker for each source type.
+
+Set {{C|sultans leave relics and compacts where history happened}} before making a world. Existing
+worlds keep their original histories, reliquaries, historic sites, and quest targets.
 
 ## Appendix A: every merged vanilla melee weapon
 

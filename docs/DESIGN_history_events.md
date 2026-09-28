@@ -1,10 +1,10 @@
 # Causal History Design
 
 > **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, and #1024 implement record-only
-> responses after vanilla history generation. #815 adds one separately gated structured relic transfer before worldgen.
-> None implements this document's generator replacement, ledger, metadata retrofit, or broad
-> catalog.
-> Those remain deferred design material and must not be used as an implementation plan.
+> responses after vanilla history generation. #815, #1017, and #1025 add one separately gated
+> structured world-facing relic pass before worldgen. None implements this document's generator
+> replacement, ledger, metadata retrofit, or broad catalog. Those remain deferred design material
+> and must not be used as an implementation plan.
 
 ## Current record-only contract
 
@@ -23,14 +23,16 @@ The responses are prose-only. They do not establish a general ledger or thread f
 ## Current world-facing contract
 
 A second post-pass receives the same completed `History` but has its own option and exactly-once
-guard. It accepts `BattleItem`, whose source records its battlefield, and `ForgeItem`, whose later
+guard. It accepts `BattleItem`, whose source records its battlefield; `ForgeItem`, whose later
 dedication uses the sultan's structured location at the response year rather than the prose-only
-guildhall. Each source must add one relic that the final sultan still owns, and the relic,
-destination, and containing region must resolve uniquely.
+guildhall; and `MeetFaction`, whose accepted branch contributes one retained event-local faction and
+an existing meeting location. Existing relic sources must add one relic that the final sultan still
+owns. Every destination and containing region must resolve uniquely.
 
-The response removes the relic from the sultan, adds it to the destination and region, and records
-the standard item-reveal properties. Vanilla worldgen consumes those final lists, so no worldbuilder
-extension is needed. The source event, relic entity, location identity, and region identity remain
+Transfer responses remove the relic from the sultan. Every response adds the relic to the
+destination and region and records the standard reveal triplet. `MeetFaction` additionally creates
+one `Curio` entity whose `likedFactions` list preserves the meeting relationship for vanilla relic
+reputation. Source records, location identity, region membership, and faction relationships remain
 unchanged.
 
 ---
