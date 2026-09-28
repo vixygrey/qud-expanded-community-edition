@@ -1,10 +1,10 @@
 # Causal History Design
 
 > **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, and #1024 implement record-only
-> responses after vanilla history generation. #815, #1017, #1025, and #1026 add one separately
-> gated structured world-facing relic pass before worldgen. None implements this document's
-> generator replacement, ledger, metadata retrofit, or broad catalog. Those remain deferred design
-> material and must not be used as an implementation plan.
+> responses after vanilla history generation. #815, #1017, #1025, #1026, and #1027 add one
+> separately gated structured world-facing relic pass before worldgen. None implements this
+> document's generator replacement, ledger, metadata retrofit, or broad catalog. Those remain
+> deferred design material and must not be used as an implementation plan.
 
 ## Current record-only contract
 
@@ -26,16 +26,17 @@ A second post-pass receives the same completed `History` but has its own option 
 guard. It accepts `BattleItem`, whose source records its battlefield; `ForgeItem`, whose later
 dedication uses the sultan's structured location at the response year rather than the prose-only
 guildhall; wedding-gift `Marry`, whose later dedication uses the same structured location rather
-than inventing a spouse site; and `MeetFaction`, whose accepted branch contributes one retained
+than inventing a spouse site; `FoundGuild`, whose created location is linked by the immediately
+following history event ID; and `MeetFaction`, whose accepted branch contributes one retained
 event-local faction and an existing meeting location. Existing relic sources must add one relic
 that the final sultan still owns. A wedding gift must also add exactly one faction and record that
 same faction on the relic. Every destination and containing region must resolve uniquely.
 
 Transfer responses remove the relic from the sultan. Every response adds the relic to the
-destination and region and records the standard reveal triplet. `MeetFaction` additionally creates
-one `Curio` entity whose `likedFactions` list preserves the meeting relationship for vanilla relic
-reputation. Source records, location identity, region membership, and faction relationships remain
-unchanged.
+destination and region and records the standard reveal triplet. `FoundGuild` and `MeetFaction`
+additionally create one `Curio` entity whose `likedFactions` list preserves the source relationship
+for vanilla relic reputation. Source records, location identity and parameters, region membership,
+and faction relationships remain unchanged.
 
 ---
 

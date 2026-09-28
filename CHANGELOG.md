@@ -30,6 +30,10 @@ recorded because contributors need them, not because subscribers do.
   The existing new-world option moves each eligible gift from the period reliquary to the sultan's
   structured location after the wedding, and its ordinary relic quest follows it there.
 
+- **A sultan-founded guild can preserve its charter as a relic** (#1027). The existing new-world
+  option creates the charter from structured history, places it on the guildhall's historic-site
+  floor, and lets vanilla apply its faction reputation and ordinary relic quest.
+
 - **A sultan's alliance can leave a compact relic at its meeting place** (#1025). The existing
   new-world option creates the compact from structured history, places it on the matching
   historic-site floor, and lets vanilla apply its faction reputation and ordinary relic quest.

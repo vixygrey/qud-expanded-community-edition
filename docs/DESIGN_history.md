@@ -190,14 +190,15 @@ The world-facing slice uses a second embark module and a separate, off-by-defaul
 `BattleItem` relic that still belongs to its sultan may be dedicated at the battle location. Eligible
 `ForgeItem` and wedding-gift `Marry` relics may be dedicated at the sultan's structured location when
 the later response occurs; their generated guildhalls and spouse remain prose and are never treated
-as sites. An eligible `MeetFaction` relationship may produce a new compact relic at the existing
-meeting location, with the event-local faction encoded on the relic.
+as sites. An eligible `FoundGuild` may produce a charter relic at the structured guildhall it
+created, and an eligible `MeetFaction` relationship may produce a compact relic at the existing
+meeting location. Both new relics encode the event-local faction.
 
 For a transfer, the post-pass removes the relic from the sultan. Every branch adds its relic to both
-the destination location and its containing region before world construction; the compact branch
-also creates the relic's structured history entity. Vanilla then places the relic on that
-historic-site floor, applies its normal faction reputation effect, and uses the response's reveal
-properties for the ordinary relic quest. No worldbuilder extension is involved.
+the destination location and its containing region before world construction; the charter and
+compact branches also create their relics' structured history entities. Vanilla then places the
+relic on that historic-site floor, applies its normal faction reputation effect, and uses the
+response's reveal properties for the ordinary relic quest. No worldbuilder extension is involved.
 
 ### Deferred work
 

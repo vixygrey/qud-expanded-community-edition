@@ -1,10 +1,10 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, #1024, #815, #1017, #1025, and
-> #1026 use this document as a safety boundary, not as an authoring catalog. The speculative
-> role-grid and `LX_` event proposals below are archived design material. Shipped code uses the
-> repository's `Vixy_` prefix, and each response or transfer is selected only after its exact source
-> branch and world footprint are reviewed.
+> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, #1024, #815, #1017, #1025,
+> #1026, and #1027 use this document as a safety boundary, not as an authoring catalog. The
+> speculative role-grid and `LX_` event proposals below are archived design material. Shipped code
+> uses the repository's `Vixy_` prefix, and each response or transfer is selected only after its
+> exact source branch and world footprint are reviewed.
 
 ## 1. Footprint classification
 
@@ -76,7 +76,7 @@ crown or life state, location, monument, color, cognomen, revealed region, eleme
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.
 
-The world-facing pass implements four sources. `BattleItem` qualifies only when the source added
+The world-facing pass implements five sources. `BattleItem` qualifies only when the source added
 exactly one relic, the final sultan still owns it, and the battlefield, containing region, and relic
 each resolve uniquely. `ForgeItem` has no structured guildhall; its generated guildhall remains
 prose. A qualifying forge instead uses the sultan's structured location at the response year, and
@@ -90,12 +90,21 @@ location at its living, pre-terminal response year rather than deriving a site f
 spouse or guildhall. The location and region must resolve uniquely and preserve exact identity and
 membership; neither may already contain the relic.
 
+`FoundGuild` qualifies on `tombInscriptionCategory = CreatesSomething`, with one structured region
+write and exactly one event-local faction retained by the final sultan. `HistoricEntity.ApplyEvent`
+assigns the source ID before generation, and `FoundGuild` immediately creates its location, so the
+entity whose first event is `source ID + 1` is the only safe guildhall link. It must remain a
+location in the source region, retain the sultan's period and rendered guildhall parameters, and
+occur exactly once in the region's location list. The pass creates one uniquely named charter
+`Curio`, records the faction in `likedFactions`, and preserves the source, location parameters,
+membership, and relationship.
+
 `MeetFaction` qualifies only on `tombInscriptionCategory = Treats`, with exactly one event-local
 `likedFactions` addition retained by the final sultan. The event-local meeting location and its
 containing region must resolve uniquely and preserve their identity, membership, and matching region
 reveal. A living, pre-terminal response year must provide a valid period and rendered element. The
-pass creates one uniquely named `Curio`, records the faction on its `likedFactions`, and adds it to
-the location and region before appending the reveal response.
+pass creates one uniquely named compact `Curio`, records the faction on its `likedFactions`, and adds
+it to the location and region before appending the reveal response.
 
 The independently gated post-pass transfers or creates each relic before making its response
 visible. Vanilla worldgen then places the physical relic on that historic-site floor and consumes
