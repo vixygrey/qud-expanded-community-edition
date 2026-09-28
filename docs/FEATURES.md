@@ -9933,7 +9933,8 @@ what they made of that sultan. The first response answered bandit escape in #731
 initiation into a faction's secret rite, #1008 carries an inspiring experience into later judgments,
 #1016 carries a survived challenge into the sultan's sense of legitimacy, #1018 carries a regional
 rampage into later judgment, #1019 carries a strange-sky apparition into the sultan's later legend,
-and #1024 carries either structured rescue from a chariot wreck into later rule.
+#1022 carries a city campaign into later judgment, and #1024 carries either structured rescue from a
+chariot wreck into later rule.
 
 ### 67.1 One safe branch
 
@@ -10018,6 +10019,20 @@ ID supplies one response.
 The gospel restates the ravaged region and earned cognomen so it remains intelligible when revealed
 first. It adds no map reveal and does not change the destination, cognomen, faction relationships,
 life state, or generated world.
+
+### 67.1g A city campaign informs later judgment
+
+`LiberateCity` qualifies with `tombInscriptionCategory = Resists` and no event-local crown write, or
+with `tombInscriptionCategory = CrownedSultan` and `isSultan = true`. `Resists` covers both
+liberation by a reigning sultan and sack, so both categories receive the same neutral response. The
+renamed location and source-time region must resolve uniquely, retain their final membership, and
+carry exactly one monument marker for the source-time sultan name. The sultan must still be alive at
+the response year. If several campaigns qualify, the earliest by year and event ID supplies one
+response.
+
+The gospel names the sultan and renamed location and describes only the campaign's effect on later
+judgment. It does not parse the source prose or imply liberation or sack, and it does not change the
+location, monument, crown state, region, faction or profession facts, or generated world.
 
 ### 67.2 History is an input to the world
 

@@ -1,7 +1,7 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1024, and #815 use this document as a
-> safety boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
+> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, #1024, and #815 use this document
+> as a safety boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
 > material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
 > selected only after its exact source branch and world footprint are reviewed.
 
@@ -62,7 +62,15 @@ whose final `newName` matches the reveal, and the sultan must be alive at the re
 response uses only the stored region name and cognomen without changing either, the faction
 relationships, or the source's map reveal.
 
-All seven responses are later, same-sultan gospel reflections. They must not change a source event's
+`LiberateCity` is eligible when its structured category is `Resists` with no event-local
+`isSultan` write, or `CrownedSultan` with `isSultan = true`. `Resists` covers both liberation by a
+reigning sultan and sack, so every accepted branch uses the same neutral campaign response rather
+than parsing source prose. The renamed location and source-time region must resolve uniquely, retain
+their location membership, and carry exactly one monument marker for the source-time sultan name.
+The sultan must be alive at the response year. The response changes neither the location, monument,
+crown state, region, faction or profession facts, nor any other world-facing state.
+
+All eight responses are later, same-sultan gospel reflections. They must not change a source event's
 crown or life state, location, monument, color, cognomen, revealed region, element, faction
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.

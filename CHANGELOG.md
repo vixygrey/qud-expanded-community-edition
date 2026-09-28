@@ -50,6 +50,11 @@ recorded because contributors need them, not because subscribers do.
   system carries the ravaged region and earned cognomen into a later gospel without repeating its
   map reveal or changing its faction relationships, life state, or generated world.
 
+- **A city campaign can now shape a sultan's later judgments** (#1022). The optional history system
+  carries the renamed location into a neutral later gospel without confusing liberation with sack or
+  changing the location, monument, crown state, region, faction or profession facts, or generated
+  world.
+
 ### Fixed
 
 - **Travelling bands now wait while the player is outside the world map** (#1010). Occupation and
