@@ -809,17 +809,17 @@
   </option>
   <option
     ID="OptionQudExpandedCEWorldHistoryEvents"
-    DisplayText="{{C|Qud Expanded}}: sultans leave relics where history happened"
+    DisplayText="{{C|Qud Expanded}}: sultans leave relics and compacts where history happened"
     Category="Mods"
     Type="Checkbox"
     Default="No"
-    SearchKeywords="qud expanded history sultan relic battle battlefield forge forged dedication world generation historic site"
+    SearchKeywords="qud expanded history sultan relic battle battlefield forge forged dedication faction meeting compact world generation historic site"
   >
     <helptext>
             A qualifying sultan can dedicate a battle-won relic at its battlefield,
-            or a forged relic at the historic location where the later dedication
-            occurs. The relic moves from the sultan's reliquary to that site's floor,
-            where its ordinary relic quest leads.
+            dedicate a forged relic at a later historic location, or enshrine a new
+            faction compact at its meeting place. Vanilla places the relic on that
+            site's floor, where its ordinary relic quest leads.
 
             This is independent of the record-only history option above.
 
