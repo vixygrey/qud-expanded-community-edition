@@ -9931,8 +9931,9 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 **Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
 what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
 initiation into a faction's secret rite, #1008 carries an inspiring experience into later judgments,
-#1016 carries a survived challenge into the sultan's sense of legitimacy, and #1019 carries a
-strange-sky apparition into the sultan's later legend.
+#1016 carries a survived challenge into the sultan's sense of legitimacy, #1019 carries a
+strange-sky apparition into the sultan's later legend, and #1024 carries either structured rescue
+from a chariot wreck into later rule.
 
 ### 67.1 One safe branch
 
@@ -9989,6 +9990,21 @@ If several surviving challenges qualify, the earliest by year and event ID suppl
 The gospel restates that the sultan prevailed in a challenge to the crown and records how it shaped
 their later sense of legitimacy. It does not change the crown or life state, optional region reveal,
 or faction, profession, and element vocabulary already rendered into the source prose.
+
+### 67.1e Aid after a chariot wreck shapes later rule
+
+`ChariotDrivesOffCliff` has two rescue variants carrying
+`tombInscriptionCategory = DoesSomethingHumble`. The faction variant qualifies only when it adds
+exactly one `likedFactions` value and no profession properties. The training variant qualifies only
+when it adds no faction and writes both a rendered `profession` and `professionRank`.
+`BodyExperienceBad` is excluded because it writes `isAlive = false`, and the sultan must also be
+alive at the response year.
+
+If several rescues qualify, the earliest by year and event ID supplies one response. The
+faction-rescue gospel names the rescuing group; the training gospel records that local aid led into
+training. Both restate the wreck and rescue so they remain intelligible when revealed first. They do
+not parse source prose or change the faction relationship, profession, profession rank, sabotage
+data, region reveal, or life state.
 
 ### 67.2 History is an input to the world
 

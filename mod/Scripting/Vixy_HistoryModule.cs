@@ -25,9 +25,17 @@ namespace QudExpandedCE
         private const string AppliedStateKey = "Vixy_HistoryEventsApplied";
         private const string BanditEscapeResponseKey = "Vixy_BanditEscapeResponse";
         private const string ChallengeSultanResponseKey = "Vixy_ChallengeSultanResponse";
+        private const string ChariotRescueResponseKey = "Vixy_ChariotRescueResponse";
         private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
         private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
         private const string UnderWeirdSkyResponseKey = "Vixy_UnderWeirdSkyResponse";
+
+        private enum ChariotRescueVariant
+        {
+            None,
+            Faction,
+            Profession
+        }
 
         private sealed class PlannedResponse
         {
@@ -75,12 +83,13 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 5);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 6);
 
             foreach (HistoricEntity sultan in sultans)
             {
                 PlanBanditEscapeResponse(sultan, responses);
                 PlanChallengeSultanResponse(sultan, responses);
+                PlanChariotRescueResponse(sultan, responses);
                 PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
                 PlanUnderWeirdSkyResponse(history, sultan, responses);
@@ -274,6 +283,53 @@ namespace QudExpandedCE
                             + "'s legitimacy."
                     },
                     { ChallengeSultanResponseKey, challenge.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanChariotRescueResponse(
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, ChariotRescueResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent rescue = FindEligibleChariotRescue(
+                sultan,
+                out ChariotRescueVariant variant,
+                out string name,
+                out string factionName,
+                out long responseYear
+            );
+            if (rescue == null)
+            {
+                return;
+            }
+
+            string gospel = variant == ChariotRescueVariant.Faction
+                ? "After a group of nearby " + factionName + " rescued " + name
+                    + " from a chariot wreck, " + name
+                    + " carried the memory of their aid into every later judgment."
+                : "After locals rescued " + name
+                    + " from a chariot wreck, their kindness moved " + name
+                    + " to train among them and guided " + name + "'s later rule.";
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    { "gospel", gospel },
+                    { ChariotRescueResponseKey, rescue.id.ToString() }
                 }
             };
 
@@ -507,6 +563,73 @@ namespace QudExpandedCE
                 if (IsEarlierSource(existing, earliest))
                 {
                     earliest = existing;
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleChariotRescue(
+            HistoricEntity sultan,
+            out ChariotRescueVariant variant,
+            out string name,
+            out string factionName,
+            out long responseYear
+        )
+        {
+            HistoricEvent earliest = null;
+            variant = ChariotRescueVariant.None;
+            name = null;
+            factionName = null;
+            responseYear = 0;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is ChariotDrivesOffCliff)
+                    || existing.GetEventProperty("tombInscriptionCategory")
+                        != "DoesSomethingHumble")
+                {
+                    continue;
+                }
+
+                List<string> addedFactions = existing.GetListProperties("likedFactions");
+                string profession = existing.GetEntityProperty("profession");
+                string professionRank = existing.GetEntityProperty("professionRank");
+                bool factionRescue = addedFactions != null
+                    && addedFactions.Count == 1
+                    && IsRendered(addedFactions[0])
+                    && profession == null
+                    && professionRank == null;
+                bool professionRescue = addedFactions == null
+                    && IsRendered(profession)
+                    && IsRendered(professionRank);
+                if (!factionRescue && !professionRescue)
+                {
+                    continue;
+                }
+
+                string candidateFactionName = factionRescue
+                    ? Faction.GetFormattedGroupName(addedFactions[0])
+                    : null;
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateName = sultan.GetEntityProperty("name", candidateResponseYear);
+                if ((factionRescue && !IsRendered(candidateFactionName))
+                    || candidateResponseYear >= sultan.lastYear
+                    || sultan.GetEntityProperty("isAlive", candidateResponseYear) != "true"
+                    || !IsRendered(candidateName))
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
+                    variant = factionRescue
+                        ? ChariotRescueVariant.Faction
+                        : ChariotRescueVariant.Profession;
+                    name = candidateName;
+                    factionName = candidateFactionName;
+                    responseYear = candidateResponseYear;
                 }
             }
 
