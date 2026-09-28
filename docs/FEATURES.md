@@ -10057,8 +10057,9 @@ branch. #979 evaluates each additional prose-only chain separately.
 ## 68. Relics return to or arise at places in their histories (`Vixy_WorldHistoryModule`)
 
 **Off by default and new-world-scoped.** This is independent of §67's record-only option. For each
-generated sultan, the earliest eligible `BattleItem`, `ForgeItem`, `Marry`, and `MeetFaction` of
-their respective types, selected by year and event ID, can receive one later world-facing response.
+generated sultan, the earliest eligible `BattleItem`, `ForgeItem`, `FoundGuild`, `Marry`, and
+`MeetFaction` of their respective types, selected by year and event ID, can receive one later
+world-facing response.
 
 ### 68.1 A battle relic returns to its battlefield
 
@@ -10094,7 +10095,23 @@ The response year must fall before the terminal event while the sultan is alive.
 response-year location, and containing region must resolve uniquely. The location must retain its
 name, the region must list it exactly once, and neither destination may already contain the relic.
 
-### 68.4 A faction compact becomes a relic
+### 68.4 A founded guild leaves a charter
+
+`FoundGuild` creates a location, adds it to a region, and records one faction relationship, but it
+does not copy the guildhall name onto the source. The history engine assigns the source event ID
+before generation, then `FoundGuild` immediately creates the location. The guildhall's first event
+therefore has ID `source ID + 1`, which identifies it without parsing the generated gospel.
+
+The linked entity must remain a location in the source region with the sultan's period, rendered
+guildhall parameters, and exactly one region-membership entry. The faction relationship must survive
+on the final sultan, and the living response year must precede the terminal event. The response
+creates one `Curio` named `the Charter of <guildhall>`, with the founding faction in
+`likedFactions`.
+
+Vanilla currently writes the same guildhall parameter twice. Those parameters style the historic
+floor and remain unchanged; this pass does not normalize the duplicate.
+
+### 68.5 A faction compact becomes a relic
 
 `MeetFaction` qualifies only on its `Treats` branch when it adds exactly one faction relationship
 that the final sultan still retains. Its event-local location must resolve uniquely, remain a
@@ -10105,21 +10122,23 @@ generation.
 
 The response creates one `Curio` named `the Compact of <location>`. Its `likedFactions` entry records
 the meeting faction, so vanilla relic generation applies the ordinary faction reputation effect. A
-pre-existing entity or planned compact with the same name disqualifies the candidate.
+pre-existing or already planned relic with the same name disqualifies the candidate.
 
-### 68.5 Matching records drive vanilla worldgen
+### 68.6 Matching records drive vanilla worldgen
 
 The battle, forge, and wedding-gift responses remove their existing relic from the sultan's `items`;
 every response adds its relic to the destination location's `items` and the containing region's
-`items`. The compact also creates the relic's structured history entity. Each response records the
-standard `revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
+`items`. The guild and faction branches also create their relics' structured history entities. Each
+response records the standard `revealsItem`, `revealsItemLocation`, and `revealsItemRegion`
+properties.
 
 Those records are the shape vanilla already consumes. `SultanLoot` omits a transferred relic from
-the period reliquary. `JoppaWorldBuilder.AddSultanHistoryLocations` generates transferred relics and
-new compacts on their destination historic-site floors. Revealing a response starts the ordinary
-relic quest for that exact item and place. The fork registers no worldbuilder extension.
+the period reliquary. `JoppaWorldBuilder.AddSultanHistoryLocations` generates transferred relics,
+new charters, and new compacts on their destination historic-site floors. Revealing a response
+starts the ordinary relic quest for that exact item and place. The fork registers no worldbuilder
+extension.
 
-### 68.6 Safety and scope
+### 68.7 Safety and scope
 
 `Vixy_WorldHistoryModule` plans every eligible change without mutation, applies the relic and both
 destination records before the visible sultan response, and carries its own exactly-once game-state
