@@ -1,7 +1,7 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, #1016, #1019, #1024, and #815 use this document as a safety
-> boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
+> **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1024, and #815 use this document as a
+> safety boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
 > material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
 > selected only after its exact source branch and world footprint are reviewed.
 
@@ -54,7 +54,15 @@ the location must carry exactly one monument marker for the sultan's source-time
 exclude malformed histories and the helper's unregistered fallback-location shape. The later response
 uses the stored color, cognomen, and location without changing any of them.
 
-All six responses are later, same-sultan gospel reflections. They must not change a source event's
+`RampageRegion` is eligible only when it carries
+`tombInscriptionCategory = DoesSomethingDestructive`, writes one rendered destination region and
+its matching rendered `revealsRegion` name, adds exactly two distinct rendered `hatedFactions`
+values, and adds exactly one rendered `cognomen`. The destination must resolve uniquely to a region
+whose final `newName` matches the reveal, and the sultan must be alive at the response year. The
+response uses only the stored region name and cognomen without changing either, the faction
+relationships, or the source's map reveal.
+
+All seven responses are later, same-sultan gospel reflections. They must not change a source event's
 crown or life state, location, monument, color, cognomen, revealed region, element, faction
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.
