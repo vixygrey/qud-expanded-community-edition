@@ -61,6 +61,10 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **Fixed-destination recoilers can no longer be re-imprinted** (#1037). Joppa and the other seven
+  named-location recoilers keep their vanilla destinations, while blank and purpose-built
+  programmable recoilers retain their imprint behavior.
+
 - **Travelling bands now wait while the player is outside the world map** (#1010). Occupation and
   scavenger journeys check the active zone directly instead of pinning the shared world map, so an
   unrelated pinned traveller cannot move them underground. Existing in-flight tokens migrate on
