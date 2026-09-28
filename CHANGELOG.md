@@ -65,6 +65,9 @@ recorded because contributors need them, not because subscribers do.
 
 ### Fixed
 
+- **(internal) Refreshed the Qud API snapshot for Steam build 25520692** (#1040). Local hooks and
+  offline validation now share the current identifier and merged-record baseline.
+
 - **Fixed-destination recoilers can no longer be re-imprinted** (#1037). Joppa and the other seven
   named-location recoilers keep their vanilla destinations, while blank and purpose-built
   programmable recoilers retain their imprint behavior.
