@@ -165,6 +165,9 @@ The first history slice is deliberately smaller than the original compositional 
 - `ChallengeSultan`'s surviving categories (`CrownedSultan` with its crown-state write, or `Slays`)
   receive a self-contained gospel about the challenge shaping the sultan's sense of legitimacy;
   `Dies` remains excluded.
+- `ChariotDrivesOffCliff`'s two `DoesSomethingHumble` rescue variants receive branch-specific
+  gospels about the aid shaping later rule. One variant records exactly one rescuing faction; the
+  other records both a profession and profession rank. `BodyExperienceBad` remains excluded.
 - `UnderWeirdSky` (`tombInscriptionCategory = DoesSomethingRad`, one color, one cognomen, and a
   validated location monument) receives a self-contained gospel about the apparition shaping the
   sultan's later legend.

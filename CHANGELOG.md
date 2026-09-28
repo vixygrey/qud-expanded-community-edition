@@ -42,6 +42,10 @@ recorded because contributors need them, not because subscribers do.
   system carries its location, monument, color, and cognomen into a later gospel without changing
   the generated world.
 
+- **Aid after a chariot wreck can now shape a sultan's later rule** (#1024). The optional history
+  system distinguishes faction rescue from local training without changing the rescuing faction,
+  profession, sabotage, revealed region, life state, or generated world.
+
 ### Fixed
 
 - **Travelling bands now wait while the player is outside the world map** (#1010). Occupation and

@@ -1,7 +1,7 @@
 # History Event Eligibility Catalog
 
-> **Status:** #731, #1008, #1012, #1016, #1019, and #815 use this document as a safety boundary,
-> not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
+> **Status:** #731, #1008, #1012, #1016, #1019, #1024, and #815 use this document as a safety
+> boundary, not as an authoring catalog. The speculative role-grid and `LX_` event proposals below are archived design
 > material. Shipped code uses the repository's `Vixy_` prefix, and each response or transfer is
 > selected only after its exact source branch and world footprint are reviewed.
 
@@ -39,6 +39,14 @@ may not append the separate `FakedDeath` record until a later year. The response
 optional region reveal nor the faction, profession, and element vocabulary rendered into the source
 prose.
 
+`ChariotDrivesOffCliff` is eligible only when its structured category is `DoesSomethingHumble` and
+its event-local changes identify exactly one rescue variant. The faction variant adds exactly one
+`likedFactions` value and no profession properties. The training variant adds no faction and writes
+one rendered `profession` and `professionRank`. `BodyExperienceBad` is excluded because it writes
+`isAlive = false`; the response year must also find the sultan alive, since a different same-year
+event can temporarily kill them before a later `FakedDeath`. The response changes neither rescue
+variant's faction relationship, profession, sabotage data, nor region reveal.
+
 `UnderWeirdSky` is eligible only when it carries `tombInscriptionCategory = DoesSomethingRad`, adds
 exactly one rendered `colors` value and one rendered `cognomen`, and records one rendered location.
 That location and its containing region must resolve uniquely, the region must list the location, and
@@ -46,7 +54,7 @@ the location must carry exactly one monument marker for the sultan's source-time
 exclude malformed histories and the helper's unregistered fallback-location shape. The later response
 uses the stored color, cognomen, and location without changing any of them.
 
-All five responses are later, same-sultan gospel reflections. They must not change a source event's
+All six responses are later, same-sultan gospel reflections. They must not change a source event's
 crown or life state, location, monument, color, cognomen, revealed region, element, faction
 relationship, profession reference, or any other existing property. Each must stand alone because
 the journal reveals sultan notes independently.
