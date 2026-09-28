@@ -813,13 +813,13 @@
     Category="Mods"
     Type="Checkbox"
     Default="No"
-    SearchKeywords="qud expanded history sultan relic battle battlefield forge forged dedication faction meeting compact world generation historic site"
+    SearchKeywords="qud expanded history sultan relic battle battlefield forge forged wedding marriage gift dedication faction meeting compact world generation historic site"
   >
     <helptext>
             A qualifying sultan can dedicate a battle-won relic at its battlefield,
-            dedicate a forged relic at a later historic location, or enshrine a new
-            faction compact at its meeting place. Vanilla places the relic on that
-            site's floor, where its ordinary relic quest leads.
+            dedicate a forged relic or wedding gift at a later historic location,
+            or enshrine a new faction compact at its meeting place. Vanilla places
+            the relic on that site's floor, where its ordinary relic quest leads.
 
             This is independent of the record-only history option above.
 
