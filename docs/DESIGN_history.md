@@ -168,6 +168,9 @@ The first history slice is deliberately smaller than the original compositional 
 - `ChariotDrivesOffCliff`'s two `DoesSomethingHumble` rescue variants receive branch-specific
   gospels about the aid shaping later rule. One variant records exactly one rescuing faction; the
   other records both a profession and profession rank. `BodyExperienceBad` remains excluded.
+- `RampageRegion` (`tombInscriptionCategory = DoesSomethingDestructive`, two distinct hated
+  factions, one cognomen, and a validated destination region) receives a self-contained gospel about
+  the campaign shaping later judgment without repeating its map reveal.
 - `UnderWeirdSky` (`tombInscriptionCategory = DoesSomethingRad`, one color, one cognomen, and a
   validated location monument) receives a self-contained gospel about the apparition shaping the
   sultan's later legend.

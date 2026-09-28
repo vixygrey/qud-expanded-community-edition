@@ -46,6 +46,10 @@ recorded because contributors need them, not because subscribers do.
   system distinguishes faction rescue from local training without changing the rescuing faction,
   profession, sabotage, revealed region, life state, or generated world.
 
+- **A regional rampage can now shape a sultan's later judgments** (#1018). The optional history
+  system carries the ravaged region and earned cognomen into a later gospel without repeating its
+  map reveal or changing its faction relationships, life state, or generated world.
+
 ### Fixed
 
 - **Travelling bands now wait while the player is outside the world map** (#1010). Occupation and

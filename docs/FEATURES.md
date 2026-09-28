@@ -9931,9 +9931,9 @@ remaining cohorts, and departure and attempt times. It changes nothing.
 **Off by default.** Safe experiences in a sultan's generated history can receive a later gospel about
 what they made of that sultan. The first response answered bandit escape in #731; #1012 adds accepted
 initiation into a faction's secret rite, #1008 carries an inspiring experience into later judgments,
-#1016 carries a survived challenge into the sultan's sense of legitimacy, #1019 carries a
-strange-sky apparition into the sultan's later legend, and #1024 carries either structured rescue
-from a chariot wreck into later rule.
+#1016 carries a survived challenge into the sultan's sense of legitimacy, #1018 carries a regional
+rampage into later judgment, #1019 carries a strange-sky apparition into the sultan's later legend,
+and #1024 carries either structured rescue from a chariot wreck into later rule.
 
 ### 67.1 One safe branch
 
@@ -10005,6 +10005,19 @@ faction-rescue gospel names the rescuing group; the training gospel records that
 training. Both restate the wreck and rescue so they remain intelligible when revealed first. They do
 not parse source prose or change the faction relationship, profession, profession rank, sabotage
 data, region reveal, or life state.
+
+### 67.1f A regional rampage shapes later judgment
+
+`RampageRegion` qualifies only with
+`tombInscriptionCategory = DoesSomethingDestructive`, one rendered destination region and matching
+region reveal, exactly two distinct added `hatedFactions` values, and exactly one added cognomen. The
+destination must resolve uniquely to a region whose final name matches the reveal, and the sultan
+must still be alive at the response year. If several rampages qualify, the earliest by year and event
+ID supplies one response.
+
+The gospel restates the ravaged region and earned cognomen so it remains intelligible when revealed
+first. It adds no map reveal and does not change the destination, cognomen, faction relationships,
+life state, or generated world.
 
 ### 67.2 History is an input to the world
 

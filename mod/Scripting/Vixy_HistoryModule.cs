@@ -29,6 +29,7 @@ namespace QudExpandedCE
         private const string SecretRitualResponseKey = "Vixy_SecretRitualResponse";
         private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
         private const string UnderWeirdSkyResponseKey = "Vixy_UnderWeirdSkyResponse";
+        private const string RampageRegionResponseKey = "Vixy_RampageRegionResponse";
 
         private enum ChariotRescueVariant
         {
@@ -83,7 +84,7 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 6);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 7);
 
             foreach (HistoricEntity sultan in sultans)
             {
@@ -92,6 +93,7 @@ namespace QudExpandedCE
                 PlanChariotRescueResponse(sultan, responses);
                 PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
+                PlanRampageRegionResponse(history, sultan, responses);
                 PlanUnderWeirdSkyResponse(history, sultan, responses);
             }
 
@@ -330,6 +332,52 @@ namespace QudExpandedCE
                 {
                     { "gospel", gospel },
                     { ChariotRescueResponseKey, rescue.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanRampageRegionResponse(
+            History history,
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, RampageRegionResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent rampage = FindEligibleRampageRegion(
+                history,
+                sultan,
+                out string name,
+                out string region,
+                out string cognomen,
+                out long responseYear
+            );
+            if (rampage == null)
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After ravaging all of " + region + " and becoming known as "
+                            + cognomen + ", " + name
+                            + " carried the memory of that campaign into every later judgment."
+                    },
+                    { RampageRegionResponseKey, rampage.id.ToString() }
                 }
             };
 
@@ -629,6 +677,85 @@ namespace QudExpandedCE
                         : ChariotRescueVariant.Profession;
                     name = candidateName;
                     factionName = candidateFactionName;
+                    responseYear = candidateResponseYear;
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleRampageRegion(
+            History history,
+            HistoricEntity sultan,
+            out string name,
+            out string region,
+            out string cognomen,
+            out long responseYear
+        )
+        {
+            HistoricEvent earliest = null;
+            name = null;
+            region = null;
+            cognomen = null;
+            responseYear = 0;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is RampageRegion)
+                    || existing.GetEventProperty("tombInscriptionCategory")
+                        != "DoesSomethingDestructive")
+                {
+                    continue;
+                }
+
+                List<string> addedFactions = existing.GetListProperties("hatedFactions");
+                List<string> addedCognomens = existing.GetListProperties("cognomen");
+                string candidateRegionKey = existing.GetEntityProperty("region");
+                string candidateRegionName = existing.GetEventProperty("revealsRegion");
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateName = sultan.GetEntityProperty("name", candidateResponseYear);
+                if (addedFactions == null
+                    || addedFactions.Count != 2
+                    || !IsRendered(addedFactions[0])
+                    || !IsRendered(addedFactions[1])
+                    || addedFactions[0] == addedFactions[1]
+                    || addedCognomens == null
+                    || addedCognomens.Count != 1
+                    || !IsRendered(addedCognomens[0])
+                    || !IsRendered(candidateRegionKey)
+                    || !IsRendered(candidateRegionName)
+                    || !IsRendered(candidateName)
+                    || candidateResponseYear >= sultan.lastYear
+                    || sultan.GetEntityProperty("isAlive", candidateResponseYear) != "true")
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateRegion = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateRegionKey
+                );
+                if (candidateRegion == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot regionSnapshot = candidateRegion.GetSnapshotAtYear(
+                    candidateRegion.lastYear
+                );
+                if (SnapshotValue(regionSnapshot, "type") != "region"
+                    || SnapshotValue(regionSnapshot, "newName") != candidateRegionName)
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
+                    name = candidateName;
+                    region = candidateRegionName;
+                    cognomen = addedCognomens[0];
                     responseYear = candidateResponseYear;
                 }
             }
