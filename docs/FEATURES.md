@@ -10057,8 +10057,8 @@ branch. #979 evaluates each additional prose-only chain separately.
 ## 68. Relics return to or arise at places in their histories (`Vixy_WorldHistoryModule`)
 
 **Off by default and new-world-scoped.** This is independent of §67's record-only option. For each
-generated sultan, the earliest eligible `BattleItem`, `ForgeItem`, and `MeetFaction` of their
-respective types, selected by year and event ID, can receive one later world-facing response.
+generated sultan, the earliest eligible `BattleItem`, `ForgeItem`, `Marry`, and `MeetFaction` of
+their respective types, selected by year and event ID, can receive one later world-facing response.
 
 ### 68.1 A battle relic returns to its battlefield
 
@@ -10083,7 +10083,18 @@ Malformed, ambiguous, already-moved, chronologically terminal, dead-year, rename
 or orphaned candidates are skipped. The source event, relic entity, destination identity, and region
 identity are never changed.
 
-### 68.3 A faction compact becomes a relic
+### 68.3 A wedding gift follows the sultan's structured location
+
+`Marry` qualifies only on its gift branch when it adds exactly one relic and one marriage faction.
+The relic must record exactly that faction in `lovedFactions`, and the final sultan must still own
+it without another final owner. As with a forged relic, the response uses the sultan's structured
+location at the response year rather than inventing a site from the prose-only spouse or guildhall.
+
+The response year must fall before the terminal event while the sultan is alive. The relic,
+response-year location, and containing region must resolve uniquely. The location must retain its
+name, the region must list it exactly once, and neither destination may already contain the relic.
+
+### 68.4 A faction compact becomes a relic
 
 `MeetFaction` qualifies only on its `Treats` branch when it adds exactly one faction relationship
 that the final sultan still retains. Its event-local location must resolve uniquely, remain a
@@ -10096,19 +10107,19 @@ The response creates one `Curio` named `the Compact of <location>`. Its `likedFa
 the meeting faction, so vanilla relic generation applies the ordinary faction reputation effect. A
 pre-existing entity or planned compact with the same name disqualifies the candidate.
 
-### 68.4 Matching records drive vanilla worldgen
+### 68.5 Matching records drive vanilla worldgen
 
-The battle and forge responses remove their existing relic from the sultan's `items`; every response
-adds its relic to the destination location's `items` and the containing region's `items`. The compact
-also creates the relic's structured history entity. Each response records the standard
-`revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
+The battle, forge, and wedding-gift responses remove their existing relic from the sultan's `items`;
+every response adds its relic to the destination location's `items` and the containing region's
+`items`. The compact also creates the relic's structured history entity. Each response records the
+standard `revealsItem`, `revealsItemLocation`, and `revealsItemRegion` properties.
 
 Those records are the shape vanilla already consumes. `SultanLoot` omits a transferred relic from
 the period reliquary. `JoppaWorldBuilder.AddSultanHistoryLocations` generates transferred relics and
 new compacts on their destination historic-site floors. Revealing a response starts the ordinary
 relic quest for that exact item and place. The fork registers no worldbuilder extension.
 
-### 68.5 Safety and scope
+### 68.6 Safety and scope
 
 `Vixy_WorldHistoryModule` plans every eligible change without mutation, applies the relic and both
 destination records before the visible sultan response, and carries its own exactly-once game-state

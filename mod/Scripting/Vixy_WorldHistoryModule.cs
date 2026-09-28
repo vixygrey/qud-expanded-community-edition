@@ -18,6 +18,7 @@ namespace QudExpandedCE
         private const string AppliedStateKey = "Vixy_WorldHistoryEventsApplied";
         private const string BattleItemResponseKey = "Vixy_BattleItemDedicationResponse";
         private const string ForgeItemResponseKey = "Vixy_ForgeItemDedicationResponse";
+        private const string MarryGiftResponseKey = "Vixy_MarryGiftDedicationResponse";
         private const string MeetFactionResponseKey = "Vixy_MeetFactionCompactResponse";
 
         private sealed class PlannedTransfer
@@ -110,12 +111,13 @@ namespace QudExpandedCE
         private static List<PlannedTransfer> PlanTransfers(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedTransfer> transfers = new List<PlannedTransfer>(sultans.Count * 2);
+            List<PlannedTransfer> transfers = new List<PlannedTransfer>(sultans.Count * 3);
 
             foreach (HistoricEntity sultan in sultans)
             {
                 PlanBattleItemDedication(history, sultan, transfers);
                 PlanForgeItemDedication(history, sultan, transfers);
+                PlanMarryGiftDedication(history, sultan, transfers);
             }
 
             return transfers;
@@ -335,6 +337,63 @@ namespace QudExpandedCE
             });
         }
 
+        private static void PlanMarryGiftDedication(
+            History history,
+            HistoricEntity sultan,
+            List<PlannedTransfer> transfers
+        )
+        {
+            if (HasResponse(sultan, MarryGiftResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent marriage = FindEligibleMarryGift(
+                history,
+                sultan,
+                out string item,
+                out string destinationName,
+                out HistoricEntity destination,
+                out HistoricEntity region,
+                out long responseYear,
+                out string sultanName,
+                out string revealedRegionName
+            );
+            if (marriage == null)
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After receiving " + item + " as a wedding gift, " + sultanName
+                            + " dedicated it at " + destinationName
+                            + ", where it stood as a testament to the marriage alliance."
+                    },
+                    { MarryGiftResponseKey, marriage.id.ToString() },
+                    { "revealsItem", item },
+                    { "revealsItemLocation", destinationName },
+                    { "revealsItemRegion", revealedRegionName }
+                },
+                removedListProperties = OneItemList(item)
+            };
+
+            transfers.Add(new PlannedTransfer
+            {
+                Sultan = sultan,
+                Destination = destination,
+                Region = region,
+                SultanEvent = response,
+                DestinationEvent = DestinationEvent(responseYear, item),
+                RegionEvent = DestinationEvent(responseYear, item)
+            });
+        }
+
         private static HistoricEvent FindEligibleMeetFaction(
             History history,
             HistoricEntity sultan,
@@ -483,6 +542,145 @@ namespace QudExpandedCE
                     faction = candidateFaction;
                     element = candidateElement;
                     period = candidatePeriodNumber;
+                    responseYear = candidateResponseYear;
+                    sultanName = candidateSultanName;
+                    revealedRegionName = candidateRevealedRegionName;
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleMarryGift(
+            History history,
+            HistoricEntity sultan,
+            out string item,
+            out string destinationName,
+            out HistoricEntity destination,
+            out HistoricEntity region,
+            out long responseYear,
+            out string sultanName,
+            out string revealedRegionName
+        )
+        {
+            HistoricEvent earliest = null;
+            item = null;
+            destinationName = null;
+            destination = null;
+            region = null;
+            responseYear = 0;
+            sultanName = null;
+            revealedRegionName = null;
+            HistoricEntitySnapshot finalSultan = sultan.GetSnapshotAtYear(sultan.lastYear);
+            List<string> finalSultanItems = finalSultan.GetList("items");
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is Marry)
+                    || existing.GetEventProperty("tombInscriptionCategory") != "Trysts")
+                {
+                    continue;
+                }
+
+                List<string> addedItems = existing.GetListProperties("items");
+                string candidateItem = addedItems != null && addedItems.Count == 1
+                    ? addedItems[0]
+                    : null;
+                List<string> addedFactions = existing.GetListProperties("likedFactions");
+                string candidateFaction = addedFactions != null && addedFactions.Count == 1
+                    ? addedFactions[0]
+                    : null;
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateDestinationName = sultan.GetEntityProperty(
+                    "location",
+                    candidateResponseYear
+                );
+                string candidateSultanName = sultan.GetEntityProperty(
+                    "name",
+                    candidateResponseYear
+                );
+                if (!IsRendered(candidateItem)
+                    || !IsRendered(candidateFaction)
+                    || !finalSultanItems.Contains(candidateItem)
+                    || candidateResponseYear >= sultan.lastYear
+                    || sultan.GetEntityProperty("isAlive", candidateResponseYear) != "true"
+                    || !IsRendered(candidateDestinationName)
+                    || !IsRendered(candidateSultanName)
+                    || HasOtherFinalOwner(history, sultan, candidateItem))
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateItemEntity = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateItem
+                );
+                HistoricEntity candidateDestination = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateDestinationName
+                );
+                if (candidateItemEntity == null || candidateDestination == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot itemSnapshot = candidateItemEntity.GetSnapshotAtYear(
+                    candidateItemEntity.lastYear
+                );
+                List<string> lovedFactions = itemSnapshot.GetList("lovedFactions");
+                if (lovedFactions.Count != 1 || lovedFactions[0] != candidateFaction)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot destinationSnapshot = candidateDestination.GetSnapshotAtYear(
+                    candidateDestination.lastYear
+                );
+                string candidateRegionName = SnapshotValue(destinationSnapshot, "region");
+                if (SnapshotValue(destinationSnapshot, "type") != "location"
+                    || SnapshotValue(destinationSnapshot, "name") != candidateDestinationName
+                    || !IsRendered(candidateRegionName)
+                    || destinationSnapshot.GetList("items").Contains(candidateItem))
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateRegion = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateRegionName
+                );
+                if (candidateRegion == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot regionSnapshot = candidateRegion.GetSnapshotAtYear(
+                    candidateRegion.lastYear
+                );
+                string candidateRevealedRegionName = SnapshotValue(regionSnapshot, "newName");
+                if (SnapshotValue(regionSnapshot, "type") != "region"
+                    || CountOccurrences(
+                        regionSnapshot.GetList("locations"),
+                        candidateDestinationName
+                    ) != 1
+                    || !IsRendered(candidateRevealedRegionName)
+                    || regionSnapshot.GetList("items").Contains(candidateItem))
+                {
+                    continue;
+                }
+
+                if (earliest == null
+                    || existing.year < earliest.year
+                    || (existing.year == earliest.year && existing.id < earliest.id))
+                {
+                    earliest = existing;
+                    item = candidateItem;
+                    destinationName = candidateDestinationName;
+                    destination = candidateDestination;
+                    region = candidateRegion;
                     responseYear = candidateResponseYear;
                     sultanName = candidateSultanName;
                     revealedRegionName = candidateRevealedRegionName;

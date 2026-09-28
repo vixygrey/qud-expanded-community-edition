@@ -1,10 +1,10 @@
 # Causal History Design
 
 > **Status:** #731, #1008, #1012, #1016, #1018, #1019, #1022, and #1024 implement record-only
-> responses after vanilla history generation. #815, #1017, and #1025 add one separately gated
-> structured world-facing relic pass before worldgen. None implements this document's generator
-> replacement, ledger, metadata retrofit, or broad catalog. Those remain deferred design material
-> and must not be used as an implementation plan.
+> responses after vanilla history generation. #815, #1017, #1025, and #1026 add one separately
+> gated structured world-facing relic pass before worldgen. None implements this document's
+> generator replacement, ledger, metadata retrofit, or broad catalog. Those remain deferred design
+> material and must not be used as an implementation plan.
 
 ## Current record-only contract
 
@@ -25,9 +25,11 @@ The responses are prose-only. They do not establish a general ledger or thread f
 A second post-pass receives the same completed `History` but has its own option and exactly-once
 guard. It accepts `BattleItem`, whose source records its battlefield; `ForgeItem`, whose later
 dedication uses the sultan's structured location at the response year rather than the prose-only
-guildhall; and `MeetFaction`, whose accepted branch contributes one retained event-local faction and
-an existing meeting location. Existing relic sources must add one relic that the final sultan still
-owns. Every destination and containing region must resolve uniquely.
+guildhall; wedding-gift `Marry`, whose later dedication uses the same structured location rather
+than inventing a spouse site; and `MeetFaction`, whose accepted branch contributes one retained
+event-local faction and an existing meeting location. Existing relic sources must add one relic
+that the final sultan still owns. A wedding gift must also add exactly one faction and record that
+same faction on the relic. Every destination and containing region must resolve uniquely.
 
 Transfer responses remove the relic from the sultan. Every response adds the relic to the
 destination and region and records the standard reveal triplet. `MeetFaction` additionally creates

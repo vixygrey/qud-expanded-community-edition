@@ -187,11 +187,11 @@ are reviewed under #815.
 ### #815 — structured world-facing relic consequences
 
 The world-facing slice uses a second embark module and a separate, off-by-default option. An eligible
-`BattleItem` relic that still belongs to its sultan may be dedicated at the battle location. An
-eligible `ForgeItem` relic may be dedicated at the sultan's structured location when the later
-response occurs; the forge event's generated guildhall remains prose and is never treated as a site.
-An eligible `MeetFaction` relationship may produce a new compact relic at the existing meeting
-location, with the event-local faction encoded on the relic.
+`BattleItem` relic that still belongs to its sultan may be dedicated at the battle location. Eligible
+`ForgeItem` and wedding-gift `Marry` relics may be dedicated at the sultan's structured location when
+the later response occurs; their generated guildhalls and spouse remain prose and are never treated
+as sites. An eligible `MeetFaction` relationship may produce a new compact relic at the existing
+meeting location, with the event-local faction encoded on the relic.
 
 For a transfer, the post-pass removes the relic from the sultan. Every branch adds its relic to both
 the destination location and its containing region before world construction; the compact branch
