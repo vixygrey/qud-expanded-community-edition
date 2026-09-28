@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.22.0] - 2026-09-28
+
 ### Added
 
 - **Sultans can dedicate battle-won relics at the battlefields where they earned renown** (#815).
