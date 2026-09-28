@@ -30,6 +30,7 @@ namespace QudExpandedCE
         private const string InspirationResponseKey = "Vixy_InspiringExperienceResponse";
         private const string UnderWeirdSkyResponseKey = "Vixy_UnderWeirdSkyResponse";
         private const string RampageRegionResponseKey = "Vixy_RampageRegionResponse";
+        private const string LiberateCityResponseKey = "Vixy_LiberateCityResponse";
 
         private enum ChariotRescueVariant
         {
@@ -84,7 +85,7 @@ namespace QudExpandedCE
         private static List<PlannedResponse> PlanResponses(History history)
         {
             HistoricEntityList sultans = history.GetEntitiesWherePropertyEquals("type", "sultan");
-            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 7);
+            List<PlannedResponse> responses = new List<PlannedResponse>(sultans.Count * 8);
 
             foreach (HistoricEntity sultan in sultans)
             {
@@ -93,6 +94,7 @@ namespace QudExpandedCE
                 PlanChariotRescueResponse(sultan, responses);
                 PlanInspirationResponse(sultan, responses);
                 PlanSecretRitualResponse(sultan, responses);
+                PlanLiberateCityResponse(history, sultan, responses);
                 PlanRampageRegionResponse(history, sultan, responses);
                 PlanUnderWeirdSkyResponse(history, sultan, responses);
             }
@@ -332,6 +334,50 @@ namespace QudExpandedCE
                 {
                     { "gospel", gospel },
                     { ChariotRescueResponseKey, rescue.id.ToString() }
+                }
+            };
+
+            responses.Add(new PlannedResponse
+            {
+                Sultan = sultan,
+                Event = response
+            });
+        }
+
+        private static void PlanLiberateCityResponse(
+            History history,
+            HistoricEntity sultan,
+            List<PlannedResponse> responses
+        )
+        {
+            if (HasResponse(sultan, LiberateCityResponseKey))
+            {
+                return;
+            }
+
+            HistoricEvent campaign = FindEligibleLiberateCity(
+                history,
+                sultan,
+                out string name,
+                out string location,
+                out long responseYear
+            );
+            if (campaign == null)
+            {
+                return;
+            }
+
+            HistoricEvent response = new HistoricEvent
+            {
+                year = responseYear,
+                eventProperties = new Dictionary<string, string>
+                {
+                    {
+                        "gospel",
+                        "After leading the campaign at " + location + ", " + name
+                            + " weighed every later judgment against what happened there."
+                    },
+                    { LiberateCityResponseKey, campaign.id.ToString() }
                 }
             };
 
@@ -677,6 +723,90 @@ namespace QudExpandedCE
                         : ChariotRescueVariant.Profession;
                     name = candidateName;
                     factionName = candidateFactionName;
+                    responseYear = candidateResponseYear;
+                }
+            }
+
+            return earliest;
+        }
+
+        private static HistoricEvent FindEligibleLiberateCity(
+            History history,
+            HistoricEntity sultan,
+            out string name,
+            out string location,
+            out long responseYear
+        )
+        {
+            HistoricEvent earliest = null;
+            name = null;
+            location = null;
+            responseYear = 0;
+
+            foreach (HistoricEvent existing in sultan.events)
+            {
+                if (!(existing is LiberateCity))
+                {
+                    continue;
+                }
+
+                string category = existing.GetEventProperty("tombInscriptionCategory");
+                string crownWrite = existing.GetEntityProperty("isSultan");
+                bool resists = category == "Resists" && crownWrite == null;
+                bool accession = category == "CrownedSultan" && crownWrite == "true";
+                if (!resists && !accession)
+                {
+                    continue;
+                }
+
+                string candidateLocationName = existing.GetEntityProperty("location");
+                long candidateResponseYear = existing.year + existing.duration + 1;
+                string candidateName = sultan.GetEntityProperty("name", existing.year);
+                string candidateRegionName = sultan.GetEntityProperty("region", existing.year);
+                if (!IsRendered(candidateLocationName)
+                    || !IsRendered(candidateName)
+                    || !IsRendered(candidateRegionName)
+                    || candidateResponseYear >= sultan.lastYear
+                    || sultan.GetEntityProperty("isAlive", candidateResponseYear) != "true")
+                {
+                    continue;
+                }
+
+                HistoricEntity candidateLocation = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateLocationName
+                );
+                HistoricEntity candidateRegion = ResolveUniqueEntity(
+                    history,
+                    "name",
+                    candidateRegionName
+                );
+                if (candidateLocation == null || candidateRegion == null)
+                {
+                    continue;
+                }
+
+                HistoricEntitySnapshot locationSnapshot = candidateLocation.GetSnapshotAtYear(
+                    candidateLocation.lastYear
+                );
+                HistoricEntitySnapshot regionSnapshot = candidateRegion.GetSnapshotAtYear(
+                    candidateRegion.lastYear
+                );
+                if (SnapshotValue(locationSnapshot, "type") != "location"
+                    || SnapshotValue(locationSnapshot, "region") != candidateRegionName
+                    || SnapshotValue(regionSnapshot, "type") != "region"
+                    || !regionSnapshot.GetList("locations").Contains(candidateLocationName)
+                    || CountOccurrences(locationSnapshot.GetList("monuments"), candidateName) != 1)
+                {
+                    continue;
+                }
+
+                if (IsEarlierSource(existing, earliest))
+                {
+                    earliest = existing;
+                    name = candidateName;
+                    location = candidateLocationName;
                     responseYear = candidateResponseYear;
                 }
             }

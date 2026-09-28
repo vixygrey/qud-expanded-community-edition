@@ -1,8 +1,9 @@
 # Record-Only History Implementation
 
 > **Status:** implementation specification for the record-only responses shipped through #731,
-> #1008, #1012, #1016, #1018, #1019, and #1024. It supersedes this document's former pre-recon plan,
-> which assumed an unavailable registry and retained a Harmony route that `docs/CHARTER.md` rule 5 forbids.
+> #1008, #1012, #1016, #1018, #1019, #1022, and #1024. It supersedes this document's former
+> pre-recon plan, which assumed an unavailable registry and retained a Harmony route that
+> `docs/CHARTER.md` rule 5 forbids.
 
 ---
 
@@ -12,7 +13,7 @@ Vanilla generates sultan history before it builds worlds. A history event can th
 an entity that later becomes a relic, site, faction, or other world-facing fact. The record-only pass
 adds later event records without changing an existing event or any world-facing state.
 
-Seven source branches are implemented:
+Eight source branches are implemented:
 
 ```csharp
 event is CapturedByBandits
@@ -42,6 +43,18 @@ event is ChariotDrivesOffCliff
         event writes one rendered "profession" and "professionRank"
     && the response-year snapshot has isAlive == "true"
 
+event is LiberateCity
+    && (
+        event.GetEventProperty("tombInscriptionCategory") == "Resists"
+            && event.GetEntityProperty("isSultan") is absent
+        || event.GetEventProperty("tombInscriptionCategory") == "CrownedSultan"
+            && event.GetEntityProperty("isSultan") == "true"
+    )
+    && event.GetEntityProperty("location") resolves uniquely inside the source region
+    && the region lists that location
+    && the location has exactly one monument marker for the source-time sultan name
+    && the response-year snapshot has isAlive == "true"
+
 event is RampageRegion
     && event.GetEventProperty("tombInscriptionCategory") == "DoesSomethingDestructive"
     && event.GetEntityProperty("region") resolves uniquely to a region
@@ -63,12 +76,16 @@ The bandit murder branch (`Slays`), the challenge death branch (`Dies`), the cha
 (`BodyExperienceBad`), and the ritual rejection branch (`hatedFactions`) are not eligible. The two
 death branches write `isAlive = false`; vanilla may restore the sultan only in a later `FakedDeath`
 event, so neither can truthfully support an immediate response. Chariot rescue classification also
-rejects a candidate carrying both structured variants or neither. The accepted sources may reveal
-regions, move the sultan, change crown state, add an element or faction relationship, write a
-profession, or add a color, cognomen, and monument marker, but the generated shape creates no
-entity. The `RampageRegion` checks require its complete two-faction, cognomen, and destination-region
-footprint; the `UnderWeirdSky` checks reject the helper's unregistered fallback-location shape. A
-later reflection can therefore remain truthful without matching worldgen work.
+rejects a candidate carrying both structured variants or neither. `LiberateCity`'s `Resists`
+category does not distinguish a reigning sultan's liberation from a sack, so its response uses only
+the campaign, renamed location, and sultan name common to both. The accepted sources may reveal
+regions, move the sultan, change crown state, rename a location, add a monument, add an element or
+faction relationship, write a profession, or add a color and cognomen, but the generated shape
+creates no entity. The `LiberateCity` checks require its final location, region membership, and
+source-time monument marker to remain valid. The `RampageRegion` checks require its complete
+two-faction, cognomen, and destination-region footprint; the `UnderWeirdSky` checks reject the
+helper's unregistered fallback-location shape. A later reflection can therefore remain truthful
+without matching worldgen work.
 
 The vanilla branches that create or relocate findable entities remain excluded. A response that
 changes one of those entities belongs in #815, where the history and constructed world can change
@@ -106,17 +123,20 @@ must not leave a partial record for a sultan.
 ## 4. Response construction
 
 For every generated sultan, select at most one source of each eligible type deterministically.
-Challenge, chariot rescue, inspiration, rampage, ritual, and strange-sky selection use the earliest
-event by `(year, id)`. Challenge selection also requires either the exact `Slays` category or the
-`CrownedSultan` category with its crown-state write. Chariot rescue requires exactly one structured
-variant, either one faction addition without profession properties or both profession properties
-without a faction addition, and the sultan must be alive at the response year. Rampage requires its
-two distinct faction additions, one cognomen, and a uniquely resolved destination whose final
-`newName` matches the source reveal; its response year must also find the sultan alive. Ritual
-requires the faction relationship to survive in the final snapshot; strange-sky selection requires
-the final location, region membership, and source-time monument marker to remain structurally valid.
-A response is valid only if it can be assigned a year after its source event and before that sultan's
-terminal event.
+Challenge, chariot rescue, city campaign, inspiration, rampage, ritual, and strange-sky selection
+use the earliest event by `(year, id)`. Challenge selection also requires either the exact `Slays`
+category or the `CrownedSultan` category with its crown-state write. Chariot rescue requires exactly
+one structured variant, either one faction addition without profession properties or both profession
+properties without a faction addition, and the sultan must be alive at the response year. A city
+campaign requires either `Resists` without a crown write or `CrownedSultan` with `isSultan = true`,
+plus a uniquely resolved renamed location whose final region membership and source-time monument
+marker remain valid; its response is neutral because `Resists` does not distinguish every branch.
+Rampage requires its two distinct faction additions, one cognomen, and a uniquely resolved
+destination whose final `newName` matches the source reveal; its response year must also find the
+sultan alive. Ritual requires the faction relationship to survive in the final snapshot; strange-sky
+selection requires the final location, region membership, and source-time monument marker to remain
+structurally valid. A response is valid only if it can be assigned a year after its source event and
+before that sultan's terminal event.
 
 Create a plain `HistoricEvent` with only event-local properties:
 
@@ -146,8 +166,8 @@ or map discovery for its subject.
 3. Create new worlds with the option disabled and enabled. Use recorded seeds containing each
    eligible source branch.
 4. Verify one response of each qualifying type per eligible sultan, valid chronology, deterministic
-   source selection, explicit rejection of challenge `Dies`, chariot `BodyExperienceBad`, and
-   malformed rampage footprints, and no duplicate after repeated dispatch.
+   source selection, explicit rejection of challenge `Dies`, chariot `BodyExperienceBad`, malformed
+   city and rampage footprints, and no duplicate after repeated dispatch.
 5. Inspect each source and the world output to confirm no crown or life state, entity, location,
    monument, color, cognomen, element, faction relationship, profession reference, sabotage data,
    region, or relic contradiction.
