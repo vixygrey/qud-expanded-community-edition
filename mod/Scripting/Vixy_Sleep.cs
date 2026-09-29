@@ -76,9 +76,48 @@ namespace XRL.World.Parts
             Cell cell = Player?.CurrentCell;
             if (cell == null) return Where.Open;
             if (Player.CurrentZone?.IsCheckpoint() ?? false) return Where.Settlement;
-            if (cell.HasObjectWithPart("Bed")) return Where.Bed;
+            if (HasUsableBed(cell, Player)) return Where.Bed;
             if (Player.CurrentZone?.IsInside() ?? false) return Where.Sheltered;
             return Where.Open;
+        }
+
+        /// <summary>
+        /// Whether any bed on the cell is operational and currently usable by the sleeper.
+        /// </summary>
+        /// <remarks>
+        /// Testing part presence alone granted full Bed-tier rest to an unhung hammock dropped on
+        /// open ground or a broken bed. Vanilla's <c>Bed.AttemptSleep</c> refuses both, and this
+        /// mirrors those preconditions rather than accepting inactive furniture. #1047.
+        /// </remarks>
+        private static bool HasUsableBed(Cell Cell, GameObject Player)
+        {
+            for (int i = 0; i < Cell.Objects.Count; i++)
+            {
+                if (IsUsableBed(Cell.Objects[i], Player)) return true;
+            }
+            return false;
+        }
+
+        private static bool IsUsableBed(GameObject Object, GameObject Player)
+        {
+            Bed bed = Object.GetPart<Bed>();
+            if (bed == null) return false;
+
+            if (Object.IsBroken() || !bed.IsReady(UseCharge: false, IgnoreRust: true, IgnoreSubject: true))
+            {
+                return false;
+            }
+
+            Hangable hangable = Object.GetPart<Hangable>();
+            if (hangable != null)
+            {
+                hangable.CheckHanging();
+                if (!hangable.Hanging) return false;
+            }
+
+            if (Player != null && !Player.PhaseMatches(Object)) return false;
+
+            return true;
         }
 
         /// <summary>Rest quality in tenths, so the arithmetic stays integer.</summary>

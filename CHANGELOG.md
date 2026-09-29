@@ -16,6 +16,13 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Sleep requires an operational, usable bed before granting Bed-tier rest** (#1047).
+  `Vixy_Sleep.Locate` checked only part presence, allowing an unhung hammock dropped on bare ground
+  or a broken bed to grant full Bed-tier rest quality and ambush odds. It now requires the bed to be
+  unbroken, operational, in phase, and, for hangable beds like hammocks, hung with sufficient support.
+
 ### Changed
 
 - **(internal) Rejected blueprint definitions no longer ship as XML comments** (#1045). Git history
