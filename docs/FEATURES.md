@@ -7152,6 +7152,13 @@ actions rather than 250 is 25%, not the 30% it was deliberately set to. So the p
 always claimed to be, so a doorway is worth finding for the reason the table gives, and for no accidental
 second reason.
 
+#### An unusable bed does not count as Bed-tier rest (#1047)
+
+`Locate` previously returned `Where.Bed` whenever any object on the player's cell carried a `Bed`
+part. That granted Bed-tier rest to a broken bed or an unhung hammock dropped on bare ground, even
+though vanilla's `Bed.AttemptSleep` refuses both. `Locate` now requires the bed to be operational,
+unbroken, in phase, and, for hangable beds like hammocks, hung with sufficient support.
+
 ### What I am carrying, and a penalty that had never once applied (#780)
 
 Sleeping in my armour rests me worse. It was supposed to already: `RestQuality` read

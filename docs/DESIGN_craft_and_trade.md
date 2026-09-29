@@ -66,7 +66,7 @@ Measured rather than assumed. Each row is the thing a phase depends on.
 | `Interior` + `Vehicle` | an interior zone attached to an object, declarable in pure XML | Freehold's own modding wiki says so outright |
 | `Interior` weight | answers the carried-weight event by adding its contents' weight | read in the part |
 | `InteriorRequired` | per-object property that exempts that object's weight | the wiki documents it as what the base game itself does |
-| portable beds | three of them, and any one reaches the `Bed` rest tier | `Hammock`, `Bedroll`, `Folding Cot` |
+| portable beds | three of them; a laid-out cot or bedroll or properly hung hammock reaches the `Bed` rest tier | `Hammock`, `Bedroll`, `Folding Cot` |
 | `Survival_Camp` | places a campfire and registers it as a point of interest | read in the skill |
 | bulk consumables | priced in common bits and made in quantity — a lead slug is one common bit for fifty | read from the blueprints |
 
