@@ -1486,9 +1486,10 @@ thing the issue is about has answered a different question.
 
 ## A commented-out blueprint is invisible to every check, and to nothing else
 
-`mod/ObjectBlueprints/MeleeWeapons.xml` holds four objects inside a `<!-- rework these or remove
-them` block: `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`, `Raven_Vibro War Hammer` and
-`Raven_Two-Handed Vibro War Hammer`. They are not blueprints. They are text.
+`mod/ObjectBlueprints/MeleeWeapons.xml` used to hold four objects inside a
+`<!-- rework these or remove them` block: `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`,
+`Raven_Vibro War Hammer` and `Raven_Two-Handed Vibro War Hammer`. They were not blueprints. They
+were text, and #1045 removed the archival block from the shipped mod.
 
 I tagged one of them by accident. The mace-ladder change in #342 needed a `Finesse` tag on ten
 blueprints, I matched objects with a regex over the raw file, and the regex found the commented one
@@ -1506,11 +1507,11 @@ raw_objs = set(re.findall(r'<object Name="([^"]*)"', raw))
 assert not (raw_objs - live) & touched      # touched something that is not a blueprint
 ```
 
-`stat-discipline` already knew this and says so in its own docstring, *"Parses rather than greps,
+`stat-discipline` already knew this and said so in its own docstring, *"Parses rather than greps,
 deliberately… ElementTree does not see inside a comment"*, written because a line-based check
-reported those same two vibro war hammers as violations nobody could fix. **The knowledge existed in
-a docstring in the validator and nowhere a person writing an edit script would look.** That is the
-part worth fixing, and why this is here.
+reported those same two vibro war hammers as violations nobody could fix without reviving rejected
+code. **The knowledge existed in a docstring in the validator and nowhere a person writing an edit
+script would look.** That is the part worth fixing, and why this is here.
 
 **And counting by pattern fails the same way as editing by pattern.** Establishing that vanilla
 declares `Role` as a tag and never as a property, I ran `grep -c 'tag Name="Role"'` over
@@ -2259,9 +2260,9 @@ somebody. `BitType.TranslateBit` remaps every scrap character on the way to the 
 
 `B` and `C` are valid in both alphabets and mean different things in each. Write `Bits="B"` after
 reading the wiki's `<B>` and you have asked for scrap metal while intending scrap crystal, and
-nothing warns, because `B` *is* a real bit. The ten `Bits="BC"` records in
-`mod/ObjectBlueprints/Ammo.xml` are Mura's, and they are safely inside the commented-out block from
-#146, but they are what this trap looks like in the wild. Use digits unless there is a reason not to.
+nothing warns, because `B` *is* a real bit. Mura's ten `Bits="BC"` records were the exact shape of
+this trap; #146 rejected them and #1045 removed their inert definitions from the shipped XML. Use
+digits unless there is a reason not to.
 
 **The wiki's modding page is stale on precisely this field.** `Modding:Adding Code at Startup`, last
 edited July 2024, still shows an instance `LoadBlueprint()` doing `tinkerData.Cost = this.Bits;

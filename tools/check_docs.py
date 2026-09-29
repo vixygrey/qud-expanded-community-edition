@@ -200,9 +200,7 @@ def vibro_weapons() -> int:
     "New" rather than merged, which is the same test `facts()` uses everywhere else: vanilla's own
     `Vibro Blade` and `Vibro Dagger` are merges and are not part of the count the wiki quotes.
 
-    Parsed rather than grepped. `mod/ObjectBlueprints/MeleeWeapons.xml` holds four vibro objects
-    inside a comment block, and a regex over the raw text counts them - which is the defect
-    docs/LESSONS.md records against that exact file.
+    Parsed rather than grepped so XML comments can never contribute to the result.
     """
     path = MOD / "ObjectBlueprints" / "MeleeWeapons.xml"
     if not path.is_file():
@@ -246,7 +244,6 @@ def facts() -> dict[str, int]:
     """Recompute every figure the documents are allowed to quote."""
     new = merged = 0
     per_file: dict[str, tuple[int, int]] = {}
-    dormant: dict[str, int] = {}
     for f in sorted(MOD.rglob("*.xml")):
         try:
             root = parse(f)
@@ -268,7 +265,6 @@ def facts() -> dict[str, int]:
             # whole mod's forty-six. The totals above still count every blueprint under mod/,
             # which is why they are recounted rather than summed from these rows.
             per_file[f.name] = (fn, fm)
-            dormant[f.name] = dormant_objects(f)
         new += fn
         merged += fm
 
@@ -300,22 +296,7 @@ def facts() -> dict[str, int]:
     for name, (n, m) in per_file.items():
         out[f"file:{name}:new"] = n
         out[f"file:{name}:merged"] = m
-        out[f"file:{name}:dormant"] = dormant[name]
     return out
-
-
-def dormant_objects(path: Path) -> int:
-    """Objects commented out inside an XML file rather than deleted.
-
-    `Ammo.xml` keeps the ten cut bullets and the quill arrow commented as a record of what was
-    tried (#146, #210), and docs/FEATURES.md 6.1 quotes that number beside the live one. An
-    element inside a comment is invisible to the parser, so it has to be counted from the text.
-    """
-    text = path.read_text(encoding="utf-8-sig")
-    return sum(
-        len(re.findall(r"<object\s", block))
-        for block in re.findall(r"<!--(.*?)-->", text, re.DOTALL)
-    )
 
 
 def optioned_requirements() -> set[tuple[str, str]]:
@@ -1428,7 +1409,7 @@ def check_file_rows(f: Findings, known: dict[str, int]) -> int:
     table = text[heading.end() :].split("\n###", 1)[0]
     row = re.compile(
         r"^\|\s*`(?P<file>[^`]+\.xml)`\s*\|"
-        r"\s*(?P<new>\d+)(?:\s*\((?P<dormant>\d+) dormant\))?\s*\|"
+        r"\s*(?P<new>\d+)\s*\|"
         r"\s*(?P<merged>\d+)\s*\|",
         re.MULTILINE,
     )
@@ -1444,10 +1425,8 @@ def check_file_rows(f: Findings, known: dict[str, int]) -> int:
                 f"docs/FEATURES.md 6.1: row names {name}, which is not in mod/ObjectBlueprints",
             )
             continue
-        for column in ("new", "merged", "dormant"):
+        for column in ("new", "merged"):
             raw = m.group(column)
-            if raw is None:
-                continue
             checked += 1
             actual = known[f"file:{name}:{column}"]
             if int(raw) != actual:
@@ -1456,13 +1435,8 @@ def check_file_rows(f: Findings, known: dict[str, int]) -> int:
                     f"docs/FEATURES.md 6.1: {name} {column} says {raw}, "
                     f"recounted from mod/ it is {actual}",
                 )
-        if m.group("dormant") is None and known[f"file:{name}:dormant"]:
-            f.add(
-                "file-rows",
-                f"docs/FEATURES.md 6.1: {name} holds "
-                f"{known[f'file:{name}:dormant']} commented-out object(s) and the row does not "
-                f"say so - write it as 'N (M dormant)'",
-            )
+        # Both numeric columns are required by the row pattern, so reaching here means both were
+        # checked against the parsed file.
 
     for key in known:
         parts = key.split(":")

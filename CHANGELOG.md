@@ -16,6 +16,20 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Changed
+
+- **(internal) Rejected blueprint definitions no longer ship as XML comments** (#1045). Git history
+  and linked issues preserve the twenty-two ammunition objects and four vibro weapons, while the
+  feature reference and its checker now count only data Qud can load.
+
+- **(internal) Preview thumbnail proofs are now explicit output** (#1044).
+  `tools/build_preview.py` writes only the committed Workshop preview by default; `--proof PATH`
+  creates the optional 128×128 review image outside `mod/`.
+
+- **(internal) Tooling tests assert emitted behavior rather than Python source spelling** (#1043).
+  Reflowed claims, check-name coverage, and snapshot part-source selection remain covered without
+  pinning call counts, assignments, or literal check names.
+
 ## [2.22.0] - 2026-09-28
 
 ### Added

@@ -2133,38 +2133,6 @@
     <tag Name="Role" Value="Rare" />
   </object>
 
-  <!-- rework these or remove them
-  <object Name="Raven_Vibro Mace" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro mace}}" Tile="Items/sw_cudgel_6.bmp" DetailColor="K" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6" />
-    <part Name="Examiner" Alternate="UnknownClub" Complexity="4" Difficulty="0" />
-    <part Name="Commerce" Value="300" />
-    <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="Shimmering black spikes extend from all over the mace's head." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
-    <part Name="TinkerItem" Bits="0004" CanDisassemble="true" CanBuild="true" />
-    <part Name="Metal" />
-    <part Name="VibroWeapon" ChargeUse="100" />
-    <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Tier" Value="4" />
-  </object>
-
-  <object Name="Raven_Two-Handed Vibro Mace" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro flail}}" Tile="Items/sw_cudgel_6.bmp" DetailColor="K" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="2d6" />
-    <part Name="Examiner" Alternate="UnknownClub" Complexity="4" Difficulty="0" />
-    <part Name="Commerce" Value="300" />
-    <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="Large shimmering black spikes extend from all over the flail's head." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
-    <part Name="TinkerItem" Bits="0004" CanDisassemble="true" CanBuild="true" />
-    <part Name="Metal" />
-    <part Name="VibroWeapon" ChargeUse="100" />
-    <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Tier" Value="4" />
-  </object>
--->
-
   <object Name="Rhinox-Skull Maul" Load="Merge">
     <part Name="MeleeWeapon" PenBonus="1" MaxStrengthBonus="7" BaseDamage="3d4+1" />
     <part Name="Commerce" Value="320" />
@@ -2572,38 +2540,6 @@
     <tag Name="Tier" Value="8" />
     <part Name="Physics" Weight="6" />
   </object>
-
-  <!-- rework these or remove them
-  <object Name="Raven_Vibro War Hammer" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro warhammer}}" Tile="Items/sw_cudgel_2.bmp" DetailColor="K" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="1d6" Stat="Agility" />
-    <part Name="Examiner" Alternate="UnknownClub" Complexity="4" Difficulty="0" />
-    <part Name="Commerce" Value="300" />
-    <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A shimmering black spike extends from each face of the club's head." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
-    <part Name="TinkerItem" Bits="0004" CanDisassemble="true" CanBuild="true" />
-    <part Name="Metal" />
-    <part Name="VibroWeapon" ChargeUse="100" />
-    <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Tier" Value="3" />
-  </object>
-
-  <object Name="Raven_Two-Handed Vibro War Hammer" Inherits="MeleeWeapon">
-    <part Name="Render" DisplayName="{{c|vibro greathammer}}" Tile="Items/sw_cudgel_3.bmp" DetailColor="K" />
-    <part Name="MeleeWeapon" MaxStrengthBonus="0" BaseDamage="2d6" Stat="Agility" />
-    <part Name="Examiner" Alternate="UnknownClub" Complexity="4" Difficulty="0" />
-    <part Name="Commerce" Value="300" />
-    <part Name="EnergyCellSocket" SlotType="EnergyCell" />
-    <part Name="Description" Short="A large shimmering black spike extends from each face of the large war hammer's head." />
-    <part Name="RulesDescription" Text="When charged, this weapon's penetration value is equal to the defender's armor value." />
-    <part Name="TinkerItem" Bits="0004" CanDisassemble="true" CanBuild="true" />
-    <part Name="Metal" />
-    <part Name="VibroWeapon" ChargeUse="100" />
-    <tag Name="Mods" Value="BladeMods,WeaponMods,CommonMods,ElectronicsMods" />
-    <tag Name="Tier" Value="6" />
-  </object>
--->
 
   <!--
         Natural equipment for the Fangs mutation (#589). Not loot: it carries no Tier and no

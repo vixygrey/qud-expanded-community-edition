@@ -212,8 +212,7 @@ class PrefixRecognition(unittest.TestCase):
         )
 
     def test_a_commented_out_mention_does_not_vouch(self) -> None:
-        """This repo keeps blocks of dormant blueprints and scripts commented out, and a name
-        that only appears in one is spawned by nothing. Same reason
+        """A name that appears only in a comment is spawned by nothing. Same reason
         check_mutation_type_arguments strips comments."""
         for body in (
             '// GameObject.Create("Vixy_Orphan");',
@@ -968,7 +967,7 @@ class MutationTypeArguments(unittest.TestCase):
         self.assertIn("unknown-mutation", codes)
 
     def test_a_commented_out_declaration_is_ignored(self) -> None:
-        """The mod keeps dormant scripts and blueprints commented out, so this is not academic."""
+        """A commented declaration is not a mutation implementation."""
         for source in (
             "// public class X : ModImprovedMutationBase<GasGeneration> { }",
             "/* public class X : ModImprovedMutationBase<GasGeneration> { } */",

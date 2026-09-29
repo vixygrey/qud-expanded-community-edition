@@ -245,16 +245,16 @@ class GuardPartSource(unittest.TestCase):
             )
             self.assertIsNone(snapshot_qud_api.guard_part_source(ASSEMBLY))
 
-    def test_the_guard_and_the_snapshot_agree_on_what_a_run_is(self) -> None:
-        """part_source_for is the single definition build() uses, so the guard cannot compare
-        against a label the file would never actually carry."""
+    def test_built_snapshot_records_the_selected_part_source(self) -> None:
+        """The serialized value, not an assignment spelling, is the consumer contract."""
+        with stubbed_build():
+            vanilla = snapshot_qud_api.build(Path(), None, Path())
+            assembly = snapshot_qud_api.build(Path(), ASSEMBLY, Path())
+        self.assertEqual(vanilla["part_source"], "vanilla-xml")
         self.assertEqual(
-            snapshot_qud_api.part_source_for(ASSEMBLY),
+            assembly["part_source"],
             f"assembly:{snapshot_qud_api.PART_NAMESPACE}",
         )
-        self.assertEqual(snapshot_qud_api.part_source_for(None), "vanilla-xml")
-        source = Path(snapshot_qud_api.__file__).read_text(encoding="utf-8")
-        self.assertIn("part_source = part_source_for(assembly)", source)
 
 
 @contextmanager
@@ -268,6 +268,38 @@ def stub(**attrs):
     finally:
         for k, v in previous.items():
             setattr(snapshot_qud_api, k, v)
+
+
+@contextmanager
+def stubbed_build():
+    """Replace data collectors unrelated to selecting the part source."""
+    with stub(
+        collect_parts=lambda *_: ["Part"],
+        collect_parts_from_xml=lambda *_: ["Part"],
+        collect_conversation_parts=lambda *_: [],
+        collect_blueprints=lambda *_: ["Object"],
+        collect_members=lambda *_: ({}, [], []),
+        collect_figures=lambda *_: {},
+        collect_mutation_classes=lambda *_: [],
+        collect_census=lambda *_: {},
+        collect_hidden_mutations=lambda *_: {},
+        collect_merged_records=lambda *_: {},
+        collect_aggregate_descendants=lambda *_: {},
+        collect_table_weights=lambda *_: {},
+        collect_tag_forms=lambda *_: {},
+        collect_tag_forms_absent=lambda *_: [],
+        collect_scatter_quantities=lambda *_: {},
+        collect_group_multipliers=lambda *_: {},
+        collect_variant_parent_quantities=lambda *_: {},
+        collect_mutation_names=lambda *_: [],
+        collect_shader_names=lambda *_: [],
+        collect_absent_tables=lambda *_: [],
+        collect_template_hints=lambda *_: {},
+        collect_skill_powers=lambda *_: {},
+        verify=lambda *_: [],
+        steam_build_id=lambda: "test",
+    ):
+        yield
 
 
 def run_main(argv: list[str]) -> tuple[int, str]:

@@ -367,11 +367,9 @@ backlog, with a file and line on every open row.
 - **Credit is the one condition of the fork permission.** Mura named **Noble Lark** explicitly for
   the subtype sprites. Keep the credits list in `docs/PERMISSION.md` §4 intact in the Workshop
   description and any README.
-- `mod/ObjectBlueprints/Ammo.xml` is **entirely commented out** (62 objects, "removed temporarily").
-  Don't delete it. It's the largest block of ready-made content available, including vibro
-  bullets/shells and a reworked shotgun shell. Reviving it is a good early win.
-- Four vibro weapons are commented out in `mod/ObjectBlueprints/MeleeWeapons.xml` with "rework these
-  or remove them".
+- **Rejected definitions do not ship as comments.** Git history and their linked issues preserve the
+  investigation more completely than inert XML can. `mod/` carries only active blueprint
+  definitions; a blueprint that might return belongs in an issue until it is ready.
 - The `Chip Interface` slot is merged into the base `Humanoid` anatomy, so **every humanoid NPC
   in the game has one**. Nothing populates it today. Be deliberate if you ever change that, because it
   would affect the entire world at once. Option-gated as of #81, and note `Humanoid` is shared by
