@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.22.1] - 2026-09-29
+
 ### Fixed
 
 - **Sleep requires an operational, usable bed before granting Bed-tier rest** (#1047).
