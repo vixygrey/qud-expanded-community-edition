@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Regenerate mod/preview.png — the mod manager and Steam Workshop image.
 
-    python3 tools/build_preview.py            # write mod/preview.png
-    python3 tools/build_preview.py out.png    # write elsewhere, to eyeball first
+    python3 tools/build_preview.py                         # write mod/preview.png
+    python3 tools/build_preview.py out.png                 # write elsewhere
+    python3 tools/build_preview.py --proof /tmp/proof.png  # also write a 128px proof
 
 Needs Pillow, so it stays outside the validation gate the way its shell predecessor did -
 tools/validate_mod.py is Python-stdlib-only precisely so every contributor can run it. Change
@@ -24,9 +25,9 @@ and the annotation is built to dissolve gracefully rather than smear.
 
 from __future__ import annotations
 
+import argparse
 import math
 import os
-import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -219,7 +220,21 @@ def vignette(img: Image.Image) -> Image.Image:
     return Image.composite(img, Image.new("RGB", (W, H), (5, 20, 20)), mask)
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "output",
+        nargs="?",
+        type=Path,
+        default=Path("mod/preview.png"),
+        help="full-size preview path (default: mod/preview.png)",
+    )
+    parser.add_argument(
+        "--proof",
+        type=Path,
+        help="optional path for a 128x128 mod-manager proof",
+    )
+    args = parser.parse_args(argv)
     if not (FONTS / "GeistMono-Bold.ttf").is_file():
         raise SystemExit(
             f"GeistMono not found under {FONTS}.\n"
@@ -227,11 +242,11 @@ def main() -> None:
             "GeistMono-Regular.ttf."
         )
     img = vignette(scanlines(label(build())))
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("mod/preview.png")
-    img.save(out)
-    proof = out.with_name(out.stem + "-128.png")
-    img.resize((128, 128), Image.LANCZOS).save(proof)
-    print(f"wrote {out} ({W}x{H}) and {proof}, the mod-manager proof")
+    img.save(args.output)
+    print(f"wrote {args.output} ({W}x{H})")
+    if args.proof is not None:
+        img.resize((128, 128), Image.LANCZOS).save(args.proof)
+        print(f"wrote {args.proof} (128x128), the mod-manager proof")
 
 
 if __name__ == "__main__":

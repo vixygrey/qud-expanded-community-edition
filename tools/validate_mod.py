@@ -1986,10 +1986,9 @@ def check_stat_discipline(f: Findings, all_roots: dict[Path, ET.Element]) -> Non
     protects the three vanilla weapons that roll against Ego, which a flat "always Strength" rule
     would have quietly rewritten.
 
-    Parses rather than greps, deliberately. mod/ObjectBlueprints/MeleeWeapons.xml carries a
-    commented-out block holding two vibro war hammers that still declare Stat="Agility"; they are
-    inert, and a line-based check would report two violations nobody can fix without touching code
-    marked for rework. ElementTree does not see inside a comment.
+    Parses rather than greps, deliberately. XML comments are not declarations, and a line-based
+    check would report inert examples as violations. ElementTree follows the loader boundary and
+    does not see inside a comment.
     """
     for path, root in all_roots.items():
         for obj in root.iter("object"):
@@ -3489,9 +3488,8 @@ def _code_spawned() -> set[str]:
     **Reading the code cannot rot.** Delete the spawner and the blueprint stops being vouched for on
     the very next run, which is exactly when it should be.
 
-    Comments are stripped for the same reason `check_mutation_type_arguments` strips them: this repo
-    keeps blocks of dormant blueprints and scripts commented out, and a name that only appears in one
-    is not spawned by anything.
+    Comments are stripped for the same reason `check_mutation_type_arguments` strips them: a name
+    that appears only in commented-out code is not spawned by anything.
 
     **What this does not check is whether the code actually *creates* it.** A blueprint named in a
     string comparison passes. That is the same shape of limit this check already accepts when it does
@@ -3836,10 +3834,9 @@ def check_bit_letters(f: Findings, all_roots: dict[Path, ET.Element]) -> None:
     An unrecognised character is reported too. `TinkerItem.Initialize` logs a warning and carries on
     without it, which is the usual silent-drop shape.
 
-    **This cannot see a commented-out blueprint.** `ElementTree` discards comments, so the ten
-    `Bits="BC"` records inside the cut block in `mod/ObjectBlueprints/Ammo.xml` are invisible here,
-    exactly as docs/LESSONS.md describes for every other check. A clean run means the live content
-    is clean, not that the file contains no letter bits.
+    **This cannot see a commented-out blueprint.** `ElementTree` discards comments. A clean run
+    therefore means the live content is clean, not that arbitrary XML comments contain no letter
+    bits.
     """
     for path, root in all_roots.items():
         if path.parent.name != "ObjectBlueprints":
@@ -4057,8 +4054,7 @@ def check_mutation_type_arguments(f: Findings) -> None:
         return
     known = set(known)
     for cs in sorted((MOD / "Scripting").glob("*.cs")):
-        # Comments are stripped so a commented-out declaration cannot invent a violation; the
-        # mod keeps blocks of dormant blueprints and scripts exactly like that.
+        # Comments are stripped so an inert declaration cannot invent a violation.
         src = "\n".join(strip_cs_comments(cs.read_text(encoding="utf-8-sig")))
         # Type parameters are not mutation names. Raven_ModVariantMutationBase is generic over T
         # and passes it through to ModImprovedMutationBase<T>, so a literal read finds "T" and
@@ -4117,9 +4113,9 @@ def check_graded_unlevellable_chips(
         return
     unlevellable = set(unlevellable)
 
-    # Every chip part, and which of them grant a mutation that cannot level. Comments are
-    # stripped for the same reason check_mutation_type_arguments strips them: the mod keeps
-    # dormant scripts commented out, and a dormant declaration is not a violation.
+    # Every chip part, and which of them grant a mutation that cannot level. Comments are stripped
+    # for the same reason check_mutation_type_arguments strips them: an inert declaration is not a
+    # violation.
     granting: set[str] = set()
     dead: dict[str, str] = {}
     for cs in sorted((MOD / "Scripting").glob("*.cs")):

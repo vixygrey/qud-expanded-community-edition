@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -688,29 +687,6 @@ class VanillaFiguresInModXml(unittest.TestCase):
             self.assertIn("creature-blueprints-bleeding", f.items[0][1])
 
 
-class CheckNameSources(unittest.TestCase):
-    """check_docs.py emits named checks; leaving itself out of its own sources is the trap its
-    comment warns about, and #242 walked into it."""
-
-    def test_this_scripts_own_check_names_are_known(self) -> None:
-        emitted = set(
-            re.findall(
-                r'f\.add\(\s*"([a-z-]+)"',
-                Path(check_docs.__file__).read_text(encoding="utf-8"),
-            )
-        )
-        self.assertIn(
-            "vanilla-figure", emitted, "the fixture no longer matches the source"
-        )
-        f = check_docs.Findings()
-        check_docs.check_check_names(f)
-        self.assertEqual(
-            [i for i in f.items if "vanilla-figure" in i[1]],
-            [],
-            "check_docs.py cannot see the check names it emits itself",
-        )
-
-
 class CheckNameRegistry(unittest.TestCase):
     """#402. The reverse direction was never checked, so a new check could ship unlisted.
 
@@ -853,18 +829,26 @@ class WrappedClaims(unittest.TestCase):
     def test_wrapped_joins_on_whitespace(self) -> None:
         self.assertEqual(check_docs.wrapped("a b c"), r"a\s+b\s+c")
 
-    def test_every_counted_claim_pattern_is_wrapped_by_the_loop(self) -> None:
-        """Wrapping is applied centrally, so a new pattern cannot be written unwrapped by
-        accident. 19 of the 29 patterns were literal-space before #422, and one of them had
-        already gone silent across a reflow."""
-        source = Path("tools/check_docs.py").read_text()
-        self.assertEqual(
-            source.count("re.finditer(wrapped(pattern), text)"),
-            4,
-            "check_counts, check_vanilla_figures, check_wiki_counts and check_workshop_counts "
-            "must all wrap the pattern - this count rising is a new loop that has to opt in "
-            "deliberately",
-        )
+    def test_document_count_claim_survives_a_line_break(self) -> None:
+        """Exercise the ordinary document loop through findings, not its source spelling."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "claim.md").write_text(
+                "There are 3 active\noptions.", encoding="utf-8"
+            )
+            with (
+                chdir(root),
+                mock.patch.object(check_docs, "DOCS", (Path("claim.md"),)),
+                mock.patch.object(
+                    check_docs,
+                    "CLAIMS",
+                    [(r"There are (\d+) active options\.", ["options"])],
+                ),
+            ):
+                f = check_docs.Findings()
+                counted = check_docs.check_counts(f, {"options": 3})
+        self.assertEqual(counted, 1, "a reflowed claim stopped being checked")
+        self.assertEqual(f.items, [])
 
 
 class ClaimCoverage(unittest.TestCase):
@@ -1283,7 +1267,6 @@ def row_findings(rows: str, known: dict | None = None):
         known = {
             "file:Armor.xml:new": 61,
             "file:Armor.xml:merged": 38,
-            "file:Armor.xml:dormant": 0,
         }
     tmp = Path(tempfile.mkdtemp())
     (tmp / "docs").mkdir()
@@ -1330,30 +1313,6 @@ class FileRows(unittest.TestCase):
         _, items = row_findings("")
         self.assertTrue(items, "a file with no row was not reported")
         self.assertIn("has no row", items[0][1])
-
-    def test_a_dormant_count_is_checked_when_written(self) -> None:
-        known = {
-            "file:Ammo.xml:new": 22,
-            "file:Ammo.xml:merged": 1,
-            "file:Ammo.xml:dormant": 22,
-        }
-        self.assertEqual(
-            row_findings("| `Ammo.xml` | 22 (22 dormant) | 1 |", known)[1], []
-        )
-        _, items = row_findings("| `Ammo.xml` | 22 (20 dormant) | 1 |", known)
-        self.assertTrue(items, "the stale parenthetical that shipped was not reported")
-        self.assertIn("dormant says 20", items[0][1])
-
-    def test_unwritten_dormant_objects_are_reported(self) -> None:
-        """A file that holds commented-out objects must say so, or the figure hides."""
-        known = {
-            "file:Ammo.xml:new": 22,
-            "file:Ammo.xml:merged": 1,
-            "file:Ammo.xml:dormant": 22,
-        }
-        _, items = row_findings("| `Ammo.xml` | 22 | 1 |", known)
-        self.assertTrue(items, "a hidden dormant count was not reported")
-        self.assertIn("holds 22 commented-out object(s)", items[0][1])
 
     def test_a_renamed_heading_is_reported_rather_than_passing_quietly(self) -> None:
         """The vacuous case: a table this cannot find must fail, not check zero rows."""

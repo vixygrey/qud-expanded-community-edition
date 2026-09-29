@@ -341,10 +341,8 @@ possible in practice. Match them when adding anything.
   Short Blades, Long Blades, Axe and Cudgel. `docs/DESIGN_balance.md` §3.9 has the reasoning and the
   tabletop precedent, and §3.3 has why the Axe and Cudgel powers were added later than the other two.
   The 61 blueprints that once violated this were reverted in
-  [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321); **no live
-  declaration breaks it now.** Two `Stat="Agility"` vibro war hammers survive inside a commented-out
-  block in `MeleeWeapons.xml`, inert and invisible to `stat-discipline`, which parses rather than
-  greps, and not precedent.
+  [#321](https://github.com/vixygrey/qud-expanded-community-edition/issues/321); **no declaration
+  breaks it now.**
 - **A finesse weapon is light for its class**, and that is the whole test, not the hand count. A
   one-handed finesse weapon sits below one-handed norms for its tier, a two-handed one below
   two-handed norms. This is why the mace ladder sits a pound below the war hammers, and it is what
@@ -1251,9 +1249,9 @@ Two consequences worth knowing before writing one:
 ### 4.5 Comments
 
 - Section comments mark groups within a file: `<!-- Feet -->`
-- Commented-out content **states why and when**. `ObjectBlueprints/Ammo.xml` is a ~500-line
-  comment reading only "removed temporarily", with no date and no reason. See #14. Do not add
-  more of these.
+- Commented-out content **states why and when**. `ObjectBlueprints/Ammo.xml` once held a ~500-line
+  comment reading only "removed temporarily", with no date and no reason. #1045 removed the archival
+  definitions. Do not add more of these.
 
 ---
 
@@ -1363,11 +1361,12 @@ credit for the eleven releases that came before.
 - **Major**: reserved for a change that breaks saves or removes content
 
 "Removes content" means content that *goes away*, not content that is **replaced in function**.
-Settled by 2.4.0, which disabled the quill arrow and shipped the hulk honey arrow in its place:
-saves still load, the shipped blueprint is commented out rather than deleted so existing copies
-keep working (§1.1b), and the release adds four shells besides, so content net-grows and nothing
-a player owns stops functioning. That is **minor**. Reserve major for a release that genuinely
-takes something away and leaves a hole, or that breaks saves outright.
+Settled by 2.4.0, which disabled the quill arrow and shipped the hulk honey arrow in its place.
+Existing copies retained their serialised parts despite the missing blueprint; commenting the old
+definition out did not load it or preserve its blueprint-level lookups. The release added four
+shells besides, so content net-grew and nothing a player owned stopped functioning. That is
+**minor**. Reserve major for a release that genuinely takes something away and leaves a hole, or
+that breaks saves outright.
 
 Note that "requires a new character" applies to the **first** release regardless, because
 save-baked identifiers changed during the fork.
@@ -1377,8 +1376,8 @@ save-baked identifiers changed during the fork.
 - PNG, **under 1 MB** (Steam limit). The current file is 512×512 and 35 KB.
 - **Square, and readable as a thumbnail.** Freehold recommend 512×512; the mod manager displays it
   at 128×128 and Steam's front page at up to 435×435, so it has to survive reduction. Design for the
-  small view first. `tools/build_preview.py` writes a 128px proof beside the output for exactly
-  that reason.
+  small view first. `tools/build_preview.py --proof /tmp/qud-expanded-preview-128.png` writes the
+  small proof only when requested and keeps disposable output outside the Workshop upload root.
 - Path declared in `workshop.json` `ImagePath` and `manifest.json` `previewImage`.
 - **Original work, not Mura's logo.** Until #500 the preview composited the fork's marks onto
   `tools/preview-base.png`, which was Mura's artwork. It is now an original design in Caves of Qud's

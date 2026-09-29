@@ -609,7 +609,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 
 | File | New objects | Merged vanilla objects |
 |---|---|---|
-| `MeleeWeapons.xml` | 108 (4 dormant) | 77 |
+| `MeleeWeapons.xml` | 108 | 77 |
 | `Armor.xml` | 61 | 38 |
 | `RangedWeapons.xml` | 49 | 62 |
 | `PsionicChips.xml` | 145 | 0 |
@@ -620,7 +620,7 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Creatures.xml` | 46 | 4 |
 | `Food.xml` | 15 | 2 |
 | `Plants.xml` | 10 | 0 |
-| `Ammo.xml` | 22 (22 dormant) | 2 |
+| `Ammo.xml` | 22 | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
 | **Total** | **528 active** | **285** |
@@ -904,10 +904,6 @@ Steel Long Swordth 1d10, Long Sword3th 1d12, Long Sword8th 2d12+1).
 > ⚠️ **Likely typo:** `Cudgel6th` (tier 6 two-handed war hammer) has `MaxStrengthBonus="11"`.
 > Every other tier-6 weapon in the mod uses 7. This lets it scale off ~4 extra Strength.
 
-> 🗒️ **Dormant content:** four blueprints are commented out in `MeleeWeapons.xml` (two blocks,
-> both headed *"rework these or remove them"*): `Raven_Vibro Mace`, `Raven_Two-Handed Vibro Mace`
-> ("vibro flail"), `Raven_Vibro War Hammer`, and `Raven_Two-Handed Vibro War Hammer`
-> ("vibro greathammer").
 
 ### 6.3 Armor
 
@@ -1384,8 +1380,8 @@ comment** marked only *"removed temporarily"*. Mura pulled the file when a Qud c
 effects and the ammo degraded to plain ammo. #144 revived the arrows and #145 the shells. #146 was
 the largest reachability claim of the three, since 12 vanilla weapons plus 7 relic bases consume slugs,
 and it resolved by **cutting all 20 bullet objects** and adding one new round in their place, the
-scour slug. Those 20 stay commented as a record of what was tried, with `Raven_Quill Arrow` and its
-projectile. See *The scour slug* below for the measurement that decided it.
+scour slug. #1045 removed the rejected definitions from the shipped XML; Git history and the linked
+issues preserve what was tried. See *The scour slug* below for the measurement that decided it.
 
 **The six effect arrows.** All are `Commerce Value="0.20"`, carry **no `TinkerItem`**, inherit
 `BaseArrow`, and pair with a `BaseArrowProjectile` at `StrengthPenetration="1"` over `1d2` damage.
@@ -1532,13 +1528,13 @@ becomes the binding constraint. `CastNet` would hold the same target the full 12
 half a net in practice as well as on paper. `SaveTarget` governs the other end instead: a
 Strength-16 target escapes in about two attempts.
 
-**`Raven_Quill Arrow` is commented out rather than deleted**, so #210 can restore it verbatim. The
+**`Raven_Quill Arrow` shipped for one day before #210 replaced it with the hulk honey arrow.** The
 quillipede barb is the right fiction for bleeding and the wrong one for anything else, so the
-replacement took a new blueprint instead of the name. Commenting out a blueprint that shipped is not
+replacement took a new blueprint instead of the name. Removing a blueprint that shipped is not
 free: `GameObject.GetBlueprint` falls back to the generic `Object` blueprint and logs an error, so
 anyone still holding one keeps a working arrow (its parts are serialised on the object) whose
-blueprint-level tag lookups answer as `Object`. One day of release exposure on a weight-2 drop,
-against leaving an arrow in the tables that does nothing.
+blueprint-level tag lookups answer as `Object`. Commenting the old definition out never loaded it;
+#1045 removed that inert archival text without changing this behaviour.
 
 **None of them can end up in a turret the game stocked**: all six carry `ExcludeFromTurretStock`,
 and vanilla's `Boomrose Arrow` gains it by merge. `MagazineAmmoLoader.GetAmmoBlueprints` is
@@ -2121,7 +2117,7 @@ someone rediscover the problem from scratch.
 | 10 | ✅ Fixed | **Dark matter cell (500k charge) priced same as advanced chem cell (50k)**, both 300 | `ObjectBlueprints/OtherEquipment.xml` |
 | 11 | ✅ Fixed | **Psionic pistols listed `RifleMods`, not `PistolMods`** (the pistol base inherits `BaseRifle`) | `ObjectBlueprints/RangedWeapons.xml` |
 | 12 | ✅ Fixed | **Psionic Adept chargen text said "+30 bonus skill points"**, a bonus the genotype did not grant, against an actual delta of +25 on vanilla's True Kin and +10 on this fork's. Corrected in #276 (#275): the panel now reads `{{C|95}} skill points each level`, the absolute figure `BaseSPGain="95"` gives, which cannot drift out of step with a comparison the way a delta can. | `Genotypes.xml` |
-| 13 | 🟡 Low | **Four vibro weapons commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer) | `ObjectBlueprints/MeleeWeapons.xml` |
+| 13 | ✅ Fixed | **Four rejected vibro weapons remained commented out** with "rework these or remove them" (vibro mace, two-handed vibro mace/flail, vibro war hammer, two-handed vibro war hammer/greathammer). #1045 removed the inert definitions; Git history and the linked design work preserve them without shipping archival source to players. | `ObjectBlueprints/MeleeWeapons.xml` |
 | 13b | ✅ Fixed | **`Raven_ProjectileFireRifle` used `Attributes="Heat"`** while its pistol counterpart uses `"Heat Fire"`, so the rifle likely won't set things alight | `ObjectBlueprints/RangedWeapons.xml` |
 | 14 | ✅ Fixed | Subtype sprite files used the prefix `corrosion*` while the subtype is named "Corrosive". Renamed to `corrosive*` in this fork (#24), and `tools/validate_mod.py` now checks every subtype tile against its affinity. | `Textures/Subtypes/` |
 | 15 | ✅ Fixed | The `Yttrian` anatomy/body-object name survived the genotype's rename to "Psionic Adept". Renamed to `PsionicAdept` in this fork (#13). | `Bodies.xml`, `Genotypes.xml` |

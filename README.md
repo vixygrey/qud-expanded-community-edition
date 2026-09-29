@@ -285,8 +285,13 @@ change it inherits the intent rather than guessing at it.
 Unlike the validators it needs Pillow, so it stays out of the validation gate and doesn't run in CI.
 `tools/validate_mod.py` is Python-stdlib-only precisely so every contributor can run it. It also
 needs GeistMono; set `QUD_PREVIEW_FONTS` if it isn't where the script looks. Every size and interval
-lives in the script rather than in someone's image editor, and it writes a 128px proof beside the
-output because that is the size the mod manager actually displays.
+lives in the script rather than in someone's image editor. To inspect the size the mod manager
+actually displays without placing a disposable file in the Workshop upload root, request a proof
+outside `mod/`:
+
+```bash
+python3 tools/build_preview.py --proof /tmp/qud-expanded-preview-128.png
+```
 
 ### Local hooks, worth installing
 
