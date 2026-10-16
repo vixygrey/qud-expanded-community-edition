@@ -17,7 +17,7 @@ Arendeth (table fixes), Tyrir (bug reports), and Scrolldier/Parzival (mentorship
 
 | Area | What the mod does |
 |---|---|
-| **New item blueprints** | **528** brand-new objects across 8 blueprint files |
+| **New item blueprints** | **529** brand-new objects across 8 blueprint files |
 | **Modified vanilla blueprints** | **285** `Load="Merge"` edits to existing objects |
 | **New genotype** | Psionic Adept, with 18 subtypes |
 | **New body system** | "Chip Interface" slots: 1 for humanoid NPCs, 2 for True Kin, 4 for Psionic Adepts; a Mutated Human has none (#353) |
@@ -114,17 +114,22 @@ and `CanDisassemble="false"` flags prohibit crafting and disassembly. They also 
 them out of generic item and armor pools, rather than the absence of a dynamic-table tag.
 
 Chargen supplies three basic chips or chipsets from its affinity's own kit. After that, the supply
-comes from exploration: special artifact contents in eligible chests and loose artifact loot in
-random encounters. There is no dependable shopping list of upgrades. The fiction already says a
-chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become what you find.**
+comes from exploration: sealed mnemonic caskets in qualifying ancient ruins, special artifact
+contents in eligible chests, and loose artifact loot in random encounters. There is no dependable
+shopping list of upgrades. The fiction already says a chip is *"knowledge lost eons ago"* that
+integrates with your flesh. **You become what you find.**
 
-**The acquisition routes** (#1055):
+**The acquisition routes** (#1055, #1060):
 
 - **Guaranteed Adept starting gear:** all eighteen `Vixy_StartingGear_*` tables give three basic
   chips or chipsets directly.
 - **Random True Kin starting gear:** vanilla's Priest of All Suns, Priest of All Moons, Artifex,
   Consul, Child of the Hearth, Child of the Wheel, Child of the Deep and Fuming God-Child kits roll
   `Artifact 3`, which can yield a basic chip. These are chances, not guaranteed starting chips.
+- **Ancient mnemonic caches:** each newly generated procedural ordinary ruin, procedural baroque
+  ruin or generated historical-site dungeon floor at effective zone tier 3–8 gets one 20% cache
+  opportunity. A placed cache holds one or two independent results from the matching chip table:
+  basic at tiers 3–5, upgraded at 6–7 and perfected at 8. §3.4 gives the denominator and limits.
 - **Chest special contents:** numbered common and rare chests using tier 3–8 builders can select
   the unsuffixed `Artifact N` table. Numbered metal chests inherit the corresponding builder;
   ordinary lockers choose the tier-3 or tier-4 builder. The gates and probabilities are in §3.4.
@@ -133,14 +138,16 @@ chip is *"knowledge lost eons ago"* that integrates with your flesh. **You becom
   loot can be a chip. Cave and ruins encounter populations consume this table; it is not a
   dedicated chip drop from the arconaut.
 
-The vanilla evidence is `Base/PopulationTables.xml` (`CommonOddEncounters` and the eight
-`StartingGear_*` tables), `Base/Subtypes.xml` (the caste bindings), and
+The vanilla evidence for the older routes is `Base/PopulationTables.xml` (`CommonOddEncounters` and
+the eight `StartingGear_*` tables), `Base/Subtypes.xml` (the caste bindings), and
 `XRL.World.PartBuilders.ChestBuilders` (the chest branches). The inheritance flags are in
 `Base/ObjectBlueprints/Items.xml`, on `Armor` and `Item`.
 
-Turning off *psionic chips in loot* removes the six chip-table references, closing those random
-routes, including the vanilla caste rolls. It does not remove direct Adept starting gear or chips
-already acquired. See §13.
+Turning off *psionic chips in loot* removes the six chip-table references, closing the older random
+routes, including the vanilla caste rolls, and consumes cache opportunities in zones generated
+while it is off. It does not remove direct Adept starting gear, chips already acquired or caches
+already generated. Turning it back on reaches future qualifying zones, not zones already processed.
+See §13.
 
 The **95 skill points a level**, the highest in the game, are the counterweight. The Adept has no
 innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
@@ -452,9 +459,9 @@ exceptions: every grade of each is 20, for the reason in §3.2.
 
 ### 3.4 Chip drop rates
 
-Chips enter random loot through the **unsuffixed Artifact tables** (see §7.3). The acquisition
-routes are catalogued in §1.4 (#1055); the probabilities here distinguish the draw from its source
-(#1056).
+The ancient-cache route added in #1060 draws directly from the same three chip tables. The older
+random-loot routes enter through the **unsuffixed Artifact tables** (see §7.3); their probabilities
+distinguish the draw from its source (#1055, #1056).
 
 | Artifact table | Chip table used | Grade | Weight per artifact draw |
 |---|---|---|---|
@@ -501,6 +508,53 @@ the other eight families each total weight 10. A particular chipset is therefore
 of its family's results**, respectively, not 1/4. Across the whole table, each weight-1 entry has
 probability 1/112 and each weight-3 entry has probability 3/112, conditional on a chip draw.
 
+**Ancient mnemonic caches use a separate, once-per-zone denominator.** A freshly built procedural
+ordinary ruin, procedural baroque ruin or generated historical-site dungeon floor at effective
+zone tier 3–8 receives one 20% placement roll when the option is enabled and a legal reachable
+cell exists. Success places one cache containing one or two independent draws, uniformly chosen:
+
+| Effective zone tier | Contents table | Grade |
+|---:|---|---|
+| 3–5 | `Raven_Chips Tier 1` | basic |
+| 6–7 | `Raven_Chips Tier 2` | upgraded |
+| 8 | `Raven_Chips Tier 3` | perfected |
+
+The cache does not pass through an Artifact table, so each result is conditional only on the 112
+weight inside its grade table. Duplicates are possible, including two identical results in one
+cache. No mutation rank, item value, slot count, old artifact weight or chip-table entry changes.
+
+`Vixy_MnemonicCache` is an `Object`-lineage native `Inventory` + `Container`, not a `Chest`.
+It declares no `InventoryPopulationTable`; the generation system completes the one or two contents
+before publishing it. `ExcludeFromDynamicEncounters` and `NoSparkingQuest` keep it out of generic
+fabrication and quest selection. Its recognizable storage tile is `Tiles/sw_chest.bmp`, verified
+against the installed game's packed texture names.
+
+At the nominal 20% rate, before accounting for zones with no legal placement cell:
+
+| Qualifying zones explored | Chance of at least one cache | Expected recovered chips |
+|---:|---:|---:|
+| 5 | 67.23% | 1.5 |
+| 10 | 89.26% | 3 |
+| 20 | 98.85% | 6 |
+
+The median first cache is four qualifying opportunities. These are probability-model predictions,
+not campaign measurements or a claim that the cadence is balanced. A zone with no legal cell has
+no cache and lowers realised availability.
+
+Eligibility is positive rather than scenery-based. Ordinary and baroque procedural ruins require
+the exact `TerrainRuins` or `TerrainBaroqueRuins` terrain plus the `Ruins` builder, including deeper
+floors. A historical site requires both its `HistoricSite` zone property and the `SultanDungeon`
+builder, so only generated dungeon floors qualify. Shared parasangs, journal notes, ruin furniture
+or display names do not make historical outskirts, generic caves, jungles, deserts, settlements,
+authored quest locations, towns, tutorial areas, world maps or interior instances eligible.
+Scattered `SecretRuins` are not an advertised source. The effective `Zone.NewTier`, including
+vanilla overrides, selects the grade.
+
+Each zone records a terminal attempt. A miss, disabled option, missing legal cell, placement,
+or generation failure never rerolls on revisit, activation, save/load, cache destruction or an
+option change. Existing saves receive the system, but already generated zones are not backfilled;
+only qualifying zones generated afterwards can receive a cache.
+
 **Generic pools used to provide an additional route, until #481.** `Raven_Base Psionic Chip`
 inherits `BaseArmor`, so all 144 chips descended from it and every pool fabricated from that base
 picked them up. `DynamicInheritsTable:BaseArmor` ran **80% to 96% this fork's at tiers 4 and
@@ -543,10 +597,10 @@ already have was built with whatever the anatomy said at the time and will never
 afterwards, so switching the option on reaches only humanoids generated after it. That is not a defect;
 it is what §13.2 means by an option read once, applied to a creature rather than to you.
 
-**Nothing in this mod ever puts a chip on an NPC.** Chips reach the world through the artifact tables
-that fill containers (#410), never through creature inventories, so this only ever happens because a
-player chose to hand one over. That is the sense in which §13.1's original line was half right: no
-creature is *generated* carrying one.
+**Nothing in this mod ever puts a chip on an NPC.** Chips enter containers or appear as loose
+encounter loot, never through creature inventories, so this only ever happens because a player
+chose to hand one over. That is the sense in which §13.1's original line was half right: no creature
+is *generated* carrying one.
 
 ## 4. Skills (`Skills.xml`)
 
@@ -675,14 +729,14 @@ damage is rolled **once per penetration**, so it is +3 *per penetration* rather 
 | `Cybernetics.xml` | 10 | 14 |
 | `OtherEquipment.xml` | 9 | 17 |
 | `Throwables.xml` | 0 | 51 |
-| `Furniture.xml` | 6 | 9 |
+| `Furniture.xml` | 7 | 9 |
 | `Creatures.xml` | 46 | 4 |
 | `Food.xml` | 15 | 2 |
 | `Plants.xml` | 10 | 0 |
 | `Ammo.xml` | 22 | 2 |
 | `Items.xml` | 18 | 9 |
 | `Trinkets.xml` | 18 | 0 |
-| **Total** | **528 active** | **285** |
+| **Total** | **529 active** | **285** |
 
 ### 6.2 Melee weapons
 
@@ -2268,15 +2322,16 @@ mod/                            # the only directory uploaded to the Workshop
 │   ├── Items.xml               # 18 new (§47, §49, §60), 9 merged (§30)
 │   ├── Trinkets.xml            # 18 new (§36, §37)
 │   ├── Ammo.xml                # 20 new + 1 merge; 20 bullets still disabled
-│   ├── Furniture.xml           # 6 new, 9 merged (§29, §30, §65)
+│   ├── Furniture.xml           # 7 new, 9 merged (§3.4, §29, §30, §65)
 │   ├── Creatures.xml           # 2 new bodies + 2 merges
 │   └── Food.xml                # 2 merges
-├── Scripting/                  # 113 files: 36 mutation stubs, plus options,
+├── Scripting/                  # 114 files: 36 mutation stubs, plus options,
 │                               # the chip-slot mutator, burden, bearings, liquid
 │                               # gather, merchant pricing, arrow recovery, the
 │                               # ammo payload, the gift and the defence with
 │                               # their opinions, the territory record, wildlife
-│                               # recovery, travelling bands, and four Finesse powers
+│                               # recovery, mnemonic caches, travelling bands,
+│                               # and four Finesse powers
 └── Textures/Subtypes/          # 18 sprites by Noble Lark
 
 manifest.json's `Directories` array names the four always-loaded paths and gates
@@ -2351,7 +2406,7 @@ rather than anything the mod already was.
 | eased skill requirements | Checkbox | **Yes** | The fifteen retuned attribute requirements in §4. |
 | retuned skill point costs | Checkbox | **Yes** | The four retuned prices in §4. |
 | starting reputation bonus | Checkbox | **No** | +300 Joppa for mutants. §1.2. |
-| psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8. §7.3. |
+| psionic chips in loot | Checkbox | **Yes** | The six `Raven_Chips Tier N` references in Artifact 3–8 and future ancient-cache generation. Already generated caches and chips remain. §3.4. |
 | home base building in Joppa | Checkbox | **Yes** | The map patch in §8. |
 | graded burden | Checkbox | **No** | Four load bands under vanilla's carry cliff. §14. |
 | True Kin Chip Interface slots | Checkbox | **Yes** | A True Kin's 2 slots. A Mutated Human has none either way (#353); the Adept's 4 are the genotype. §3.1. |
@@ -2392,8 +2447,8 @@ vanilla value to restore and turning them off would leave a genotype with nothin
 > killed a snapjaw with it. What follows was a code reading first and is now a result, see §3.5. This
 > row read *"nothing here ever fills those slots, so the reason to turn it off is to stop another mod
 > or a later version of this one, being able to."* The first clause is true of the **mod**: no
-> creature is generated carrying a chip, and chips reach the world only through the artifact tables
-> that fill containers. The conclusion drawn from it is not, because a player is not another mod.
+> creature is generated carrying a chip, and chips reach the world only as loot in containers or
+> loose encounter objects. The conclusion drawn from it is not, because a player is not another mod.
 >
 > **Chips are worn armour, not implants.** `Raven_Base Psionic Chip` inherits `BaseArmor` and sits in
 > the slot with `WornOn="Chip Interface"`, which puts it on the ordinary AI equip path. Every gate on
@@ -2423,7 +2478,8 @@ about moving features up this table.
 
 | Scope | Options | Why |
 |---|---|---|
-| **Live**, applies immediately | graded burden, charmed merchant prices, arrow recovery, chips in loot, retuned skill point costs, the experience curve, and, from your next level, hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. Population tables stay mutable after load, `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Live**, applies immediately | graded burden, charmed merchant prices, arrow recovery, retuned skill point costs, the experience curve, and, from your next level, hit points and skill points per level | Burden derives its band from carried weight every turn and stores nothing. `Cost` is a plain int with no cache, and `Leveler` re-reads `BaseHPGain`/`BaseSPGain` at every level-up. |
+| **Future generation**, applies at the next eligible creation | chips in loot | Artifact-table participation changes immediately. Ancient-cache eligibility is consumed once when a qualifying zone is built: existing caches stay, processed zones never reroll, and already generated zones are not backfilled. |
 | **Restart** | eased skill requirements, plainer relic names, the Six Day Stilt market | `PowerEntry` caches its requirement list on first use and `InitRequirements()` returns early rather than rebuilding. The cache is private, and reaching it would need reflection, which rule 5 forbids. The other two are read at load rather than in play: relic name forms join the pool as it is built, and the Stilt's stock is decided when the zone's tables are read. All three declare `Restart="true"`, the attribute vanilla uses for `OptionEnableMods`. |
 | **New character** | mutation points, starting skills, starting reputation, both Chip Interface options, Joppa building | Consumed once at chargen or baked into save state when a body or a zone is created. The Joppa building is additionally `Restart="true"`, because what its option gates is whether the map file loads at all: Joppa is built once from whatever loaded, and a save keeps what it was built with, in both directions (#498). |
 | **New world** | record-only sultan responses, battle-relic dedications | Both read the completed sultan history before vanilla builds the world. Existing saves retain the history, relic ownership, and placement they were created with. |

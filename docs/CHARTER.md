@@ -25,7 +25,7 @@ tools/   validation and helpers   .github/ CI
 ```
 
 **Read `docs/FEATURES.md` before touching anything.** It's the complete reference for what the mod
-does: every system, every item, all 528 new blueprints and 285 vanilla merges, which I reconstructed
+does: every system, every item, all 529 new blueprints and 285 vanilla merges, which I reconstructed
 from the source because no complete list had ever existed. Section 10 is the bug and
 fork checklist. **`docs/STYLEGUIDE.md`** covers naming, formatting, and Workshop requirements. Read
 §1 before renaming anything, because several conventions that look like mess are load-bearing
@@ -150,11 +150,16 @@ also:
   sultan gospels, and one transfers structured relic ownership before vanilla worldgen consumes it
 - **declares a mutation**, a `BaseDefaultEquipmentMutation` subclass, named by `Class` in
   `mod/Core/Mutations.xml`, which grows a natural weapon onto a body part and keeps its rank in step
+- **runs fieldless game systems** installed through the player's existing lifecycle hook:
+  `Vixy_Territory`, `Vixy_WildlifeRecovery` and `Vixy_MnemonicCaches` listen to public zone events;
+  the mnemonic-cache system records one terminal scalar zone property and places a native XML
+  container in qualifying newly generated ruins
 
-**I raised that ceiling three times, deliberately, and none of them was drift.** Drift is the failure
-this rule exists to prevent. #46 was the first: C# may hold state and adjust already-loaded data in
-response to a player's choice. The second is the embark-module extension point, and it is worth
-saying why it needed asking for rather than just doing.
+**I have raised that ceiling deliberately, and none of those changes was drift.** Drift is the
+failure this rule exists to prevent. #46 established that C# may hold state and adjust already
+loaded data in response to a player's choice. Embark modules, a mutation class and fieldless game
+systems each extended the set again. Each is worth saying why it needed asking for rather than just
+doing.
 
 The first use participates in character creation, which is a part of the game the mod had never
 touched. #731 then used the same public boot-event surface after sultan-history generation, and #815
@@ -170,7 +175,7 @@ The alternatives were Harmony, which rule 5 refuses and which breaks on arm64 ma
 worldbuilder extension for #815, which the final structured history made unnecessary. The question
 was never "patch or module", it was whether each feature was worth code at those lifecycle points.
 
-**The third is the mutation class (#589), and it is the one this rule's own phrasing nearly
+**The mutation class (#589) is the extension this rule's own phrasing nearly
 prevented.** Every `<mutation>` node names a `Class` the game resolves as
 `"XRL.World.Parts.Mutation." + Class`, so a mutation cannot be declared in data, and the issue was
 filed on the theory that it could be, by pointing `Class` at vanilla's `Horns`. That would have
@@ -185,6 +190,17 @@ reflection is the game's; it declares no instance fields, so the mod still adds 
 shape; and it inherits a base Freehold wrote to be extended rather than reaching into one that was
 not, which is a distinction `docs/LESSONS.md` now records, because `Horns` turned out to be
 unextendable and reading its access modifiers is what said so.
+
+**Ancient mnemonic caches extend the existing fieldless-system pattern (#1060).** The blueprint,
+native container behavior and the three existing contents tables remain XML. What data cannot
+express is one opportunity with a shared denominator across ordinary ruins, baroque ruins and
+generated historical-site dungeon floors, including deep levels whose template uses generic cave
+globals. A fieldless `IGameSystem` uses the public completed-zone event, generator provenance and
+`Zone.NewTier`; one namespaced scalar zone property is the terminal record. That keeps visits,
+activation, option changes and cache
+destruction from becoming generation hooks, without adding any serialised collection or instance
+field. The alternative was duplicate population hooks that miss deep ruins or also reach generic
+caves, not a better data implementation.
 
 **It has come down once, too.** A third bullet stood here until #498: a `[Serializable]`
 `IGameSystem` that handled a zone event and created and destroyed objects within one zone, which is
@@ -296,6 +312,7 @@ already passed by the time the player flips the switch:
 | Gate this | How |
 |---|---|
 | Loot/spawn participation, formulas, abilities, item behaviour | Option read at runtime. Fully live. |
+| One-time zone generation | Read when the zone is built. Already generated zones are not backfilled, and a consumed opportunity never rerolls; say so in the `<helptext>`. |
 | Genotypes, subtypes, skill-tree edits | Read at chargen. Option must be set **before starting a character**; say so in the `<helptext>`. |
 | Anatomy (the `Chip Interface` slot), the Joppa map patch | Baked into save state on creation. Realistically restart- or new-game-scoped. |
 

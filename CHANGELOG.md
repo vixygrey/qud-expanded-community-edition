@@ -16,6 +16,19 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Added
+
+- **Ancient ruins can hold sealed mnemonic caskets with psionic chips** (#1060, from the supply
+  decision in #1057). Each newly generated ordinary ruin, baroque ruin or historical-site dungeon
+  floor at effective tier 3–8 gets one 20% opportunity. A cache holds one or two independent chips:
+  basic at tiers 3–5, upgraded at 6–7 and perfected at 8.
+
+  The existing artifact and starting-gear routes remain, and no mutation rank, item value, slot
+  count or old loot weight changes. Turning *psionic chips in loot* off stops future caskets without
+  deleting chips or caskets already generated; old zones are not backfilled or rerolled. The 20%
+  cadence and one-or-two contents are the initial target for playtesting, not a claim that campaign
+  balance is already proven.
+
 ### Fixed
 
 - **(internal) Chip acquisition and probability documentation now follows the actual loot paths**

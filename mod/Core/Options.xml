@@ -288,15 +288,15 @@
     Category="Mods"
     Type="Checkbox"
     Default="Yes"
-    SearchKeywords="qud expanded psionic chip drops loot artifact tables"
+    SearchKeywords="qud expanded psionic chip drops loot artifact tables ancient caches ruins"
   >
     <helptext>
-            Lets psionic chips and chipsets appear in the world, rolled from the
-            artifact tables at tiers 3 through 8.
+            Lets psionic chips and chipsets appear in artifact loot at tiers 3 through
+            8. Newly generated ancient ruins can also hold sealed mnemonic caskets.
 
-            Turn this off for the mod's weapons, armor and genotypes without the chip
-            economy - no chip can be tinkered, so this closes the supply. Applies
-            immediately.
+            Turn this off for the rest of the mod without the chip economy. Artifact
+            loot changes immediately; future ruins stop receiving caskets. Chips and
+            caskets already generated stay where they are.
         </helptext>
   </option>
 

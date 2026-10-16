@@ -760,16 +760,18 @@ dial of three.
 +10 at 8,000. No ladder reaches below that floor, which is why §5.2's decision left this as the whole
 remaining question rather than one dial of three.
 
-**Price cannot gate a chip.** They live in `Artifact 3`–`8`, consumed only by
-`ChestBuilders.BuildSpecialChestInventory` at `1d2+1` items per special chest. Village tinkers stock
-`Artifact NR`, which carries none. So price sets what an unwanted chip *sells* for and nothing else;
-rarity is the access dial. Both are the mod's business under §5.2's rule, but they do different jobs.
+**Price cannot gate a chip.** Generated merchant stock still provides no regular source: village
+tinkers stock `Artifact NR`, which carries none. Post-chargen supply instead comes from exploration,
+through `Artifact 3`–`8` and through ancient mnemonic caches drawing directly from the same three
+grade tables. So price sets what an unwanted chip *sells* for and nothing else; rarity and source
+cadence are the access dials. Both are the mod's business under §5.2's rule, but they do different
+jobs.
 
 #### Settled: a stated chip curve at a quarter of the item curve
 
 `chip value = 1.25 × 2^tier`, written into `docs/STYLEGUIDE.md` §3.2 with its reason, in the style of
-`CURVE_EXEMPT`'s vibro entry — **chips are not equipment, their slot competes with nothing, and they
-cannot be bought.**
+`CURVE_EXEMPT`'s vibro entry — **chips are not equipment, their slot competes with nothing, and
+generated merchant stock provides no regular supply.**
 
 | tier | kind | count | now | item curve | chip curve |
 |---:|---|---:|---:|---:|---:|
@@ -870,8 +872,8 @@ cooldown caps it; **INERT** means the level is not read at all.
 | dial | outcome |
 |---|---|
 | **Level** | **not used** — §5.2. Vanilla decides what a rank is worth. |
-| **Price** | **used** — §5.3. A stated chip curve at a quarter of the item curve; 108 of 144 reprice. Sets sale value only, since chips cannot be bought. |
-| **Supply** | **used** — §5.3. The four steep permanent passives drop to weight 1. Slots were settled separately: the mutant's goes (#353), True Kin keep 2, the Adept keeps 4. |
+| **Price** | **used** — §5.3. A stated chip curve at a quarter of the item curve; 108 of 144 reprice. Sets sale value only, since generated merchant stock provides no regular supply. |
+| **Supply** | **used** — §5.3 and #1060. The four steep permanent passives have weight 1, and newly generated qualifying ruins have one 20% opportunity for a one-or-two-chip cache. Slots were settled separately: the mutant's goes (#353), True Kin keep 2, the Adept keeps 4. |
 
 None of them reaches the starting chipset every Guardian holds, which is why that is its own decision.
 
@@ -954,10 +956,11 @@ indefinitely — at half the mutation count.
 #### The niche, stated — and the sweep re-read against it
 
 `docs/FEATURES.md` §1.4 now opens with what the genotype is *for*, which #410 filed because nothing
-player-facing ever said. The short form: **a True Kin plans and an Adept adapts.** Chips carry no
-`TinkerItem` and no `DynamicObjectsTable` tag, and the only tables naming them are `Artifact 3`–`8`,
-which is what `ChestBuilders` uses to fill a chest — so they cannot be bought or built, and come out
-of chests or not at all. The 95 skill points a level are the counterweight for having no innate power.
+player-facing ever said. The short form: **a True Kin plans and an Adept adapts.** Chips inherit a
+non-buildable `TinkerItem` and stay out of generic dynamic pools. Their post-chargen routes are the
+six `Artifact 3`–`8` merges and ancient mnemonic caches in qualifying ruins, so they cannot be built
+or bought from generated merchant stock and remain an exploration supply. The 95 skill points a
+level are the counterweight for having no innate power.
 
 With that written, the five sweep changes that touched this genotype can finally be read against
 something. Four hold up:
@@ -969,14 +972,18 @@ something. Four hold up:
 | #332 halved the affinity resistances | **neutral** — it landed on the Guardian half's own scale, so the affinity is still the themed half |
 | #330 cut two subtypes' skill grants | **neutral** — 95 SP a level is a genotype property and untouched, and 15 skills is still the most in the game |
 
-**One is in tension, and it is worth naming rather than resolving.** #338's rarity pass dropped the
-four steep passives from weight 3 to 1 — about 0.081% per artifact roll. That is right on its own
-terms, and it lands on the one genotype whose **core resource has a drop rate at all**. A mutant
-spends points and a True Kin spends water; only an Adept can have a run simply not deliver. The
-starting kit is what keeps that from being a cliff — three chips at chargen, filling three of the four
-slots — so the floor is set and the rarity governs the ceiling. That reads as the intended shape, but
-it is the one number where a change aimed at the chip economy is really a change aimed at this
-genotype, and it should be weighed that way next time.
+**One was in tension, and #1060 changes the supply side without changing the item.** #338's rarity
+pass dropped the four steep passives from weight 3 to 1. That remains the conditional weight inside
+all three grade tables, but ancient caches now draw from those tables directly rather than first
+passing the 9.09% Artifact-table gate. A mutant spends points and a True Kin spends water; only an
+Adept can have a run simply not deliver, so newly generated qualifying ruins now get one 20%
+opportunity for one or two independent chip results. The grade follows effective zone tier:
+basic at 3–5, upgraded at 6–7 and perfected at 8.
+
+The starting kit still sets the floor at three chips, filling three of four slots. The cache cadence
+raises the exploration ceiling without changing mutation ranks, chip values, slots, table weights
+or the older loot routes. Its 20% and one-or-two figures are an initial tuning target for playtest,
+not evidence that campaign balance has already been validated (#1057, #1060).
 
 #### Settled — the stacking stays, because it is vanilla's
 
@@ -993,9 +1000,10 @@ are worth nothing before then — the Adept's four slots look like 4x and are 2x
 nothing while costing a slot. After 18 it trades breadth for depth, which is the shape of a real
 decision rather than a free upgrade.
 
-Rarity finishes the argument. Chips cannot be bought, and §5.3 dropped the four steep passives to
-weight 1: at 0.081% per artifact roll a *first* perfected Quickness chip is a coin flip at about 855
-rolls and a **second** at about 2,070. Ordinary chips at 0.244% need roughly 688 rolls for a pair.
+Rarity still finishes the duplicate argument inside one grade table. The four steep passives have
+weight 1 and ordinary singles weight 3 out of 112; duplicates remain independent, whether the draw
+came through an Artifact table or directly from a mnemonic cache. The old 0.081% figure describes
+one Artifact draw, not the new cache route or a whole campaign.
 
 The alternative — a chip setting a floor rather than adding to a base — was rejected. It needs C#,
 and it would pin the Adept at rank 10 permanently, which deepens the weakness this section already
@@ -1181,8 +1189,11 @@ An audit that lists only faults misrepresents the thing.
   decision to cut ten bullets on measurement rather than ship them shows in the result.
 - **Psionic gun distribution.** Weight 1 each in `Missile 2` and `Missile 3` against vanilla
   neighbours at 5–15. Whatever their stat line, they are correctly rare.
-- **Chip drop rate.** 9.09% per artifact roll, 48 entries per tier table, chipsets at a quarter the
-  weight of single chips.
+- **Chip supply.** The older Artifact route remains 9.09% per eligible artifact draw; every grade
+  table still has 48 entries and total weight 112. Ancient caches add one 20% opportunity per
+  qualifying newly generated ruin for one or two direct, independent draws: basic at effective
+  zone tiers 3–5, upgraded at 6–7 and perfected at 8. Those figures are tuning targets awaiting
+  playtest, not a completed balance finding (#1057, #1060).
 - **Subtype stat budgets.** Net +1 to +3 across all eighteen, against vanilla's +2 for callings and
   +3/+4 for castes. The comment at the top of `mod/Core/Subtypes.xml` states the target and the file
   meets it.

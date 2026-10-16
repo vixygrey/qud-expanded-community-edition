@@ -117,13 +117,14 @@ namespace QudExpandedCE
                 player.RequirePart<Vixy_Oathbreaker>();
                 player.RequirePart<Vixy_Defends>();
 
-                // These are not parts, and not on the player: Vixy_Territory and
-                // Vixy_WildlifeRecovery hear zone events that dispatch to The.Game rather than to
-                // the player. They are installed here because this class owns chargen and
-                // CallAfterGameLoaded for existing saves. RequireSystem is idempotent just like
-                // RequirePart. See #923 and #951.
+                // These are not parts, and not on the player: Vixy_Territory,
+                // Vixy_WildlifeRecovery and Vixy_MnemonicCaches hear zone events that dispatch to
+                // The.Game rather than to the player. They are installed here because this class
+                // owns chargen and CallAfterGameLoaded for existing saves. RequireSystem is
+                // idempotent just like RequirePart. See #923, #951 and #1060.
                 The.Game?.RequireSystem<Vixy_Territory>();
                 The.Game?.RequireSystem<Vixy_WildlifeRecovery>();
+                The.Game?.RequireSystem<Vixy_MnemonicCaches>();
             }
         }
     }
