@@ -106,15 +106,41 @@ work identically, through `RollSP` and `RollMP`.
 
 **What it is for.** A True Kin plans; an Adept adapts. A True Kin's power is a shopping list:
 credits cost 150 water each, implants are chosen, and you install exactly what you saved for at a
-becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be bought and
-cannot be built.** They carry no `TinkerItem` and no `DynamicObjectsTable` tag, and the only tables
-naming them are `Artifact 3` through `8`, which is what `ChestBuilders` uses to fill a chest. So
-they come out of chests, tier-scaled, and from nowhere else.
+becoming nook. An Adept's power is whatever the world hands it: **psionic chips cannot be built,
+and generated merchant stock provides no regular supply.** An existing chip can still be sold and
+bought back. Chips inherit `TinkerItem` through `BaseArmor` → `Armor`, but its `CanBuild="false"`
+and `CanDisassemble="false"` flags prohibit crafting and disassembly. They also inherit
+`DynamicObjectsTable:Items` through `Item`; `ExcludeFromDynamicEncounters` on the chip base keeps
+them out of generic item and armor pools, rather than the absence of a dynamic-table tag.
 
-Chargen fills three of its four slots from its affinity's own kit, and everything after that is a
-find. It is the one genotype whose build you cannot decide in advance, which is what its fiction
-already says: a chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become
-what you find.**
+Chargen supplies three basic chips or chipsets from its affinity's own kit. After that, the supply
+comes from exploration: special artifact contents in eligible chests and loose artifact loot in
+random encounters. There is no dependable shopping list of upgrades. The fiction already says a
+chip is *"knowledge lost eons ago"* that integrates with your flesh. **You become what you find.**
+
+**The acquisition routes** (#1055):
+
+- **Guaranteed Adept starting gear:** all eighteen `Vixy_StartingGear_*` tables give three basic
+  chips or chipsets directly.
+- **Random True Kin starting gear:** vanilla's Priest of All Suns, Priest of All Moons, Artifex,
+  Consul, Child of the Hearth, Child of the Wheel, Child of the Deep and Fuming God-Child kits roll
+  `Artifact 3`, which can yield a basic chip. These are chances, not guaranteed starting chips.
+- **Chest special contents:** numbered common and rare chests using tier 3–8 builders can select
+  the unsuffixed `Artifact N` table. Numbered metal chests inherit the corresponding builder;
+  ordinary lockers choose the tier-3 or tier-4 builder. The gates and probabilities are in §3.4.
+- **Loose encounter loot:** vanilla's `CommonOddEncounters` / `TrashAndArconaut` places
+  `Artifact {zonetier}` loot beside garbage, with a possible cave arconaut. At zone tiers 3–8 that
+  loot can be a chip. Cave and ruins encounter populations consume this table; it is not a
+  dedicated chip drop from the arconaut.
+
+The vanilla evidence is `Base/PopulationTables.xml` (`CommonOddEncounters` and the eight
+`StartingGear_*` tables), `Base/Subtypes.xml` (the caste bindings), and
+`XRL.World.PartBuilders.ChestBuilders` (the chest branches). The inheritance flags are in
+`Base/ObjectBlueprints/Items.xml`, on `Armor` and `Item`.
+
+Turning off *psionic chips in loot* removes the six chip-table references, closing those random
+routes, including the vanilla caste rolls. It does not remove direct Adept starting gear or chips
+already acquired. See §13.
 
 The **95 skill points a level**, the highest in the game, are the counterweight. The Adept has no
 innate power at all: no mutations, the fewest stat points of the three at 34, and the lowest hit
@@ -412,38 +438,71 @@ exceptions: every grade of each is 20, for the reason in §3.2.
 
 > ✅ **All 144 chips can drop.** Upstream 2.2 shipped only *the first chip of each family* plus that
 > family's chipset in `Raven_Chips Tier 1/2/3`, 24 entries where 48 were needed, so chips B and C
-> of all 12 families appeared nowhere in `PopulationTables.xml`. Since no chip carries a
-> `TinkerItem` part, they could not be built either, leaving **half the flagship catalogue
+> of all 12 families appeared nowhere in `PopulationTables.xml`. Their inherited `TinkerItem`
+> prohibits building, so they could not be crafted either, leaving **half the flagship catalogue
 > wish-only**. Each tier table now holds **48** entries (#6, fixed in #36).
 >
 > The 18 `Vixy_StartingGear_*` tables still hand out only first-of-family chips and chipsets, which is
 > deliberate: a Psionic Adept's opening kit is meant to be the entry point of its affinity, not a
 > sample of the whole catalogue.
 >
-> Chips remain **drop-only by design**: no `TinkerItem` anywhere in `PsionicChips.xml`. That is what
-> lets the *psionic chips in loot* option close the supply completely rather than leaving tinkering
-> as a way in, see §13.
+> Chips remain **uncraftable by design**: the inherited `TinkerItem` has `CanBuild="false"` and
+> `CanDisassemble="false"`. The *psionic chips in loot* option closes the random supply rather than
+> leaving tinkering as a way in; direct Adept starting gear is unaffected. See §1.4 and §13.
 
 ### 3.4 Chip drop rates
 
-Chips enter the loot pool through the **Artifact** tables (see §7.3):
+Chips enter random loot through the **unsuffixed Artifact tables** (see §7.3). The acquisition
+routes are catalogued in §1.4 (#1055); the probabilities here distinguish the draw from its source
+(#1056).
 
-| Table | Chip table used | Weight |
-|---|---|---|
-| Artifact 3, 4, 5 | `Raven_Chips Tier 1` | 10 / 110 |
-| Artifact 6, 7 | `Raven_Chips Tier 2` | 10 / 110 |
-| Artifact 8 | `Raven_Chips Tier 3` | 10 / 110 |
+| Artifact table | Chip table used | Grade | Weight per artifact draw |
+|---|---|---|---|
+| Artifact 3, 4, 5 | `Raven_Chips Tier 1` | basic | 10 / 110 |
+| Artifact 6, 7 | `Raven_Chips Tier 2` | upgraded | 10 / 110 |
+| Artifact 8 | `Raven_Chips Tier 3` | perfected | 10 / 110 |
 
 The denominator is **110**, not 100, because the entry is *added* to vanilla's pool rather than
 carved out of it. Vanilla's `Artifact N` group is a uniform 95 common / 5 rare across all six
 tables, read from the game's own `PopulationTables.xml`, so the merged pool totals 110 and a
-chip lands **9.09%** of the time. Under the pre-#34 replacement it was a flat 10%; see §7.3.
+chip lands **9.09% per eligible artifact draw**, not per chest. Under the pre-#34 replacement it
+was a flat 10% per draw; see §7.3.
 
-Within a chip table, single chips are weight 3 and chipsets weight 1, so a chipset is a 1-in-4
-result among that family, and each family is equally likely.
+**A standard chest has two gates before that draw.** In the installed game's
+`XRL.World.PartBuilders.ChestBuilders`, `BuildCommonChestInventory` and
+`BuildRareChestInventory` each select special contents only 5% of the time.
+`BuildSpecialChestInventory` then chooses uniformly among twelve categories. Only its artifact
+category calls `Artifact N`, with `1d2+1` draws, meaning two or three with equal probability.
+Ordinary contents instead call `Junk N` or `Junk NR`; their `Artifact NC/NR` references bypass the
+chip entry. `Artifact 6R`, for example, is not `Artifact 6`.
 
-**That is the only route, and it was not until #481.** `Raven_Base Psionic Chip` inherits
-`BaseArmor`, so all 144 chips descended from it and every pool the game fabricates from that base
+For a standard numbered common or rare chest using a tier 3–8 builder, the chance of **at least
+one chip** is:
+
+```text
+0.05 / 12 × ((1 − (10/11)^2) + (1 − (10/11)^3)) / 2 ≈ 0.0008796644
+```
+
+That is **about 0.088%, or one hit per 1,137 eligible chests on average**, with the loot option
+enabled and no other mod changing these tables or builders. Numbered metal chests inherit the
+corresponding common builder. The builder's artifact tier determines the chip grade, not the
+character's level; zone tier influences which chest is generated rather than replacing its builder.
+Medical lockers use a medicine builder, and scrapable deposit boxes roll `Artifact 6R` directly,
+so neither shares this calculation. It is not a universal container, zone or full-run acquisition
+rate, and it does not include the loose encounter loot described in §1.4.
+
+**Within each chip table**, the 48 entries total **112 weight**: 32 single chips at weight 3,
+four single chips at weight 1, and twelve chipsets at weight 1. Electrical Generation,
+Photosynthetic Skin, Regeneration and Heightened Quickness are the four weight-1 singles.
+Consequently, chipsets together account for **12/112, or 10.714% of chip results**.
+
+Families are not equally likely. Lightning, Light, Blood and Neutral Body each total weight 8;
+the other eight families each total weight 10. A particular chipset is therefore **1/8 or 1/10
+of its family's results**, respectively, not 1/4. Across the whole table, each weight-1 entry has
+probability 1/112 and each weight-3 entry has probability 3/112, conditional on a chip draw.
+
+**Generic pools used to provide an additional route, until #481.** `Raven_Base Psionic Chip`
+inherits `BaseArmor`, so all 144 chips descended from it and every pool fabricated from that base
 picked them up. `DynamicInheritsTable:BaseArmor` ran **80% to 96% this fork's at tiers 4 and
 above**, and it was chips the whole way down rather than armour.
 `DynamicObjectsTable:Items` took them too, because `FabricateDynamicObjectsTable` filters on the
@@ -455,9 +514,9 @@ chips rather than price. One `<tag Name="ExcludeFromDynamicEncounters" />` on th
 because tags inherit: `BaseArmor:Tier8` goes 96% → 0%, and `Armor` tiers 4, 6 and 8 fall from
 61–69% to 16–19%.
 
-Nothing became harder to find: every chip is placed by hand, 48 apiece in `Raven_Chips Tier 1`–`3`
-and three apiece across the eighteen `Vixy_StartingGear_` tables. What changed is that the hand-written
-rates above are now the whole story.
+Every chip remains reachable: 48 apiece in `Raven_Chips Tier 1`–`3`, with three basic chips or
+chipsets supplied directly by each of the eighteen `Vixy_StartingGear_` tables. Removing the generic
+pool route did reduce the available sources; reachability alone does not establish their frequency.
 
 `tools/dynamic-pools.json` pins the result, so a chip re-entering `DynamicObjectsTable:Items` fails
 a commit rather than waiting to be noticed.
