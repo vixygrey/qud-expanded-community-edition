@@ -16,6 +16,16 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+### Fixed
+
+- **(internal) Chip acquisition and probability documentation now follows the actual loot paths**
+  (#1055, #1056). The feature reference distinguishes guaranteed Adept gear, random True Kin
+  starting chips, chest special contents and loose encounter loot; explains inherited crafting
+  restrictions and dynamic-pool exclusion; and separates artifact-draw odds from the much rarer
+  standard-chest result. Chipset and family probabilities now use the shipped weights. No loot
+  tables or gameplay behavior changed; the intended acquisition cadence remains a separate
+  decision in #1057.
+
 ## [2.22.1] - 2026-09-29
 
 ### Fixed
