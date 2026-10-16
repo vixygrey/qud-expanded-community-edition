@@ -43,8 +43,9 @@ Noble Lark for the subclass sprites*. I treat that as permanent, and the build f
 
 - **Psionic Adept**, a third genotype for players who would rather find their build than plan it.
   It has no mutations and the fewest stat points in the game, and the most skill points per level of
-  anyone; its power comes from psionic chips, which cannot be bought or built and only ever come out
-  of chests. A True Kin saves up for the implant it wants. An Adept wears what it finds. 18 subtypes,
+  anyone; its power comes from uncraftable psionic chips recovered from ancient mnemonic caskets,
+  chest special contents and loose artifact loot. A True Kin saves up for the implant it wants.
+  An Adept wears what it finds. 18 subtypes,
   split between casters and martial guardians.
 - **144 psionic chips**, implantable chips granting real, working mutations to genotypes that
   cannot mutate. Every one of them can be found.
@@ -68,7 +69,9 @@ have that. Nobody should need to swallow the whole mod to get one part of it.
 
 **When a change takes effect varies, and it's the part people get caught by:**
 
-- **Immediately**: psionic chips in loot, skill point costs. Hit points and skill points per level
+- **Immediately**: psionic chips leave or rejoin artifact loot, and skill point costs change.
+  Ancient mnemonic caskets follow the chip option only when a qualifying ruin is first generated;
+  existing caskets stay and old zones are not backfilled. Hit points and skill points per level
   apply from your next level.
 - **On restart**: the eased skill requirements. Qud builds each power's requirement list once per
   session.
@@ -77,7 +80,7 @@ have that. Nobody should need to swallow the whole mod to get one part of it.
   save.
 
 [`docs/FEATURES.md`](docs/FEATURES.md) §13 lists every option, its default and its scope. That
-document is also the complete reference for the mod itself: every system, all 528 new blueprints and
+document is also the complete reference for the mod itself: every system, all 529 new blueprints and
 285 vanilla merges.
 
 ## Requires a new character

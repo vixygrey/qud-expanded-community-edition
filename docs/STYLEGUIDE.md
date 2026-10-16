@@ -277,15 +277,16 @@ possible in practice. Match them when adding anything.
   6 crysteel · 7 flawless crysteel · 8 zetachrome.
 - **Value curve doubles per tier:** 5 · 10 · 20 · 40 · 80 · 160 · 320 · 640 · 1280. Body armor
   runs 8→2048; vambraces run 4→1024 (half curve, partial slot).
-- **Chips run a quarter of that curve: `1.25 × 2^tier`**, giving 20 · 40 · 80 · 160 · 320 across tiers
-  4–8. They are not equipment: their slot competes with nothing, and they **cannot be bought**,
-  because they live in `Artifact 3`–`8` and village tinkers stock `Artifact NR`. So price only sets
-  what an unwanted chip sells for, and **rarity is the access dial, not price.**
+- **Chips run a quarter of the item curve: `1.25 × 2^tier`**, giving 20 · 40 · 80 · 160 · 320 across tiers
+  4–8. They are not equipment: their slot competes with nothing, and generated merchant stock
+  provides no regular supply because village tinkers stock `Artifact NR`, which carries none.
+  Later supply comes from exploration: `Artifact 3`–`8` and ancient mnemonic caches using the same grade tables.
+  Price only sets what an unwanted chip sells for, and **rarity is the access dial, not price.**
   `docs/DESIGN_balance.md` §5.3.
 - **The chip system controls access and price. Vanilla controls what a mutation is worth.** A
-  chip's price and its drop weight are this fork's to set; the number of ranks a grade grants is
-  not. Every mutation behind a chip is a vanilla mutation Freehold already balanced, so re-tuning
-  one through the chip ladder is second-guessing Qud's own mutation design by proxy.
+  chip's price, table weight and source cadence are this fork's to set; the number of ranks a grade
+  grants is not. Every mutation behind a chip is a vanilla mutation Freehold already balanced, so
+  re-tuning one through the chip ladder is second-guessing Qud's own mutation design by proxy.
   `docs/DESIGN_balance.md` §5.2.
 - **But a cost vanilla wrote is not always a cost vanilla weighed**, and the two want opposite
   treatment. The rule above protects Freehold's *balancing*; where there is none to protect it has
@@ -1257,25 +1258,31 @@ Two consequences worth knowing before writing one:
 
 ## 5. C# conventions
 
-The `Scripting/` directory currently holds 36 one-line classes and nothing else. Standard .NET
-conventions apply, plus two constraints from the charter:
+The `Scripting/` directory holds the mutation adapters and the mod's event, option and lifecycle
+code. Standard .NET conventions apply, plus two constraints from the charter:
 
 - **PascalCase** types and members, `_camelCase` private fields, 4-space indent, one public class
   per file, filename == class name.
 - **Parts inherit `IPart` and carry `[Serializable]`.** Keep `WantEvent` lean, because it runs on every
-  event fired.
+  event fired. Central lifecycle behavior that belongs to the game rather than one object uses a
+  fieldless `IGameSystem`, installed idempotently through `Vixy_PlayerParts`.
+- **Generation has one owner.** `Vixy_MnemonicCaches` consumes one `AfterZoneBuiltEvent`
+  opportunity per qualifying zone and stores only a namespaced scalar zone property. Its XML
+  blueprint remains a native `Inventory` + `Container`, while C# owns provenance, the 20% roll,
+  legal placement and direct draws from the existing grade tables. Do not add a second population
+  hook, visit-time refill or automatic `InventoryPopulationTable`.
 - **Charter rule 5 (safety) is a hard boundary.** No file I/O outside the mod directory, no
   network, no reflection into game internals, no Harmony, no loading external assemblies. Qud mods
   run with full process privileges and `Scripting/` triggers an approval prompt for every
   subscriber, and that is a trust relationship, and those limits do not move.
 - **What the C# is allowed to *do* is a separate question, and it is not fixed.** The 36 inert
-  `ModImprovedMutationBase<T>` subclasses used to be the ceiling; option handling, a
-  character-creation module and a mutation class have each raised it since, and #498 lowered it
-  again. Read rule 5 rather than assuming a limit, because this line has been out of date before.
-- **Where the game already does a thing in data, use the data**, because a blueprint or a tag is
-  Freehold's mechanism to maintain across patches, where equivalent C# is ours. **This is not a
-  budget.** Where a feature needs C#, write the C#; going looking for a worse XML route to avoid it
-  is not what the rule asks.
+  `ModImprovedMutationBase<T>` subclasses used to be the ceiling; option handling, embark modules,
+  a mutation class and fieldless game systems have each raised it, while #498 lowered it again.
+  Read rule 5 rather than assuming a limit, because this line has been out of date before.
+- **Where the game already does a thing in data, use the data**, because a blueprint, tag,
+  container or population table is Freehold's mechanism to maintain across patches, where
+  equivalent C# is ours. **This is not a budget.** Where a feature needs C#, write the C#; going
+  looking for a worse XML route to avoid it is not what the rule asks.
 
 ---
 

@@ -124,6 +124,30 @@
     <part Name="Description" Short="Things gathered from a cleared ruin await collection." />
   </object>
 
+  <!-- A one-purpose source placed and filled by Vixy_MnemonicCaches. Object lineage keeps it out
+       of Chest and Furniture's inherited dynamic pools; both exclusions below make that intent
+       explicit for encounter fabrication and quest selection. Contents are never populated here. -->
+  <object Name="Vixy_MnemonicCache" Inherits="Object">
+    <part
+      Name="Render"
+      DisplayName="sealed mnemonic casket"
+      Tile="Tiles/sw_chest.bmp"
+      RenderString="254"
+      ColorString="&amp;C"
+      DetailColor="c"
+      RenderLayer="6"
+    />
+    <part Name="Physics" Solid="false" Takeable="false" IsReal="true" Weight="0" />
+    <part Name="Inventory" />
+    <part Name="Container" Preposition="in" />
+    <part
+      Name="Description"
+      Short="A weathersealed casket preserves mnemonic wafers from an age whose knowledge survives only in flesh."
+    />
+    <tag Name="ExcludeFromDynamicEncounters" />
+    <tag Name="NoSparkingQuest" />
+  </object>
+
   <!-- A band on the march, as one object on the world map. #832.
 
        Not the party. Brain.GoToPartyLeader refuses world-map targets outright and

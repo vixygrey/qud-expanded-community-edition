@@ -136,11 +136,13 @@ namespace QudExpandedCE
         private const string ChipSlot = "Chip Interface";
 
         /// <summary>
-        /// Prefix of the tables that put psionic chips into the world: Raven_Chips Tier 1, 2 and 3.
+        /// Prefix of the graded psionic-chip tables: Raven_Chips Tier 1, 2 and 3.
         ///
-        /// Six loot tables reference them - Artifact 3 through 8, weight 10 each - and nothing else
-        /// does. Matching on the reference rather than on a list of Artifact table names means a
-        /// seventh reference added later is governed automatically rather than silently escaping.
+        /// Six loot tables reference them - Artifact 3 through 8, weight 10 each. The mnemonic
+        /// cache system also rolls these tables directly, after checking <see cref="ChipDrops"/>.
+        /// Matching detached references by prefix rather than by a list of Artifact table names
+        /// means a seventh reference added later is governed automatically rather than silently
+        /// escaping.
         ///
         /// Deliberately does NOT reach the Psionic Adept's starting gear, which names chip
         /// blueprints directly rather than going through these tables. Those chips are the
@@ -598,6 +600,14 @@ namespace QudExpandedCE
         /// </summary>
         public static bool WorldHistoryEvents => Enabled(WorldHistoryEventsID, "No");
 
+        /// <summary>
+        /// Whether future artifact rolls and newly built ancient caches may supply psionic chips.
+        ///
+        /// Existing loot is deliberately untouched. Cache generation reads this directly because
+        /// detaching population-table references cannot gate a C# call to the graded tables.
+        /// </summary>
+        public static bool ChipDrops => Enabled(ChipDropsID, "Yes");
+
         /// <summary>True when the player asked to keep their own chip slots.</summary>
         public static bool PlayerChipSlots => Enabled(ChipSlotsPlayerID, "Yes");
 
@@ -1016,14 +1026,16 @@ namespace QudExpandedCE
         }
 
         /// <summary>
-        /// Make the world's psionic chip supply match the option, in either direction.
+        /// Make the population-table side of the world's psionic chip supply match the option.
         ///
         /// Population tables are read from XML at load, but the loaded result stays mutable, so
-        /// this is fully live: it changes what future containers and merchants roll, without
-        /// needing a new character. Chips already in the world are left alone.
+        /// this is fully live for future artifact/container and merchant rolls. The mnemonic-cache
+        /// system reads <see cref="ChipDrops"/> directly because its calls to the graded tables are
+        /// not references this detacher can remove. Chips and caches already in the world are left
+        /// alone.
         ///
-        /// No chip carries a TinkerItem part, so removing these six references closes the supply
-        /// completely rather than leaving tinkering as a way in.
+        /// No chip carries a TinkerItem part, so there is no separate manufacturing route for this
+        /// method or the cache listener to gate.
         /// </summary>
         /// <summary>
         /// Take the cosmetic creature variants out of the spawn tables, or put them back.
