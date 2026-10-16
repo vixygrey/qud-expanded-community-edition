@@ -16,6 +16,8 @@ recorded because contributors need them, not because subscribers do.
 
 ## [Unreleased]
 
+## [2.23.0] - 2026-10-16
+
 ### Added
 
 - **Ancient ruins can hold sealed mnemonic caskets with psionic chips** (#1060, from the supply
