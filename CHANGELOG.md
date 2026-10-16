@@ -26,6 +26,13 @@ recorded because contributors need them, not because subscribers do.
   tables or gameplay behavior changed; the intended acquisition cadence remains a separate
   decision in #1057.
 
+### Changed
+
+- **(internal) Local hooks and CI receive synchronized tooling updates** (#1053, #1054).
+  Ruff advances to 0.16.10, setup-node to 7.1.0, and both typos pins to 1.51.1 so the local
+  spelling hook and CI use the same dictionary. Combining the dependency updates avoids the
+  pin-parity failures caused by updating either typos surface alone. No shipped mod files change.
+
 ## [2.22.1] - 2026-09-29
 
 ### Fixed
