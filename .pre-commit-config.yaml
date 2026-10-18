@@ -41,7 +41,7 @@ repos:
     # it out of here rather than pinning it again, so Dependabot's bump merges on its own and there
     # is no second file to remember. `check_ruff_is_derived` in tools/check_docs.py fails if that
     # step is ever reworded back into a literal pin.
-    rev: v0.16.10
+    rev: v0.17.1
     hooks:
       - id: ruff-check
         args: [--fix]
