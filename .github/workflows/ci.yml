@@ -198,7 +198,7 @@ jobs:
         # Drift means this job's dictionary disagrees with the hook a contributor just ran. #715
         # found the drift; #786 is where this comment earned itself, when Dependabot raised the
         # hook to v1.50.0 an hour later and left this pin sitting at v1.49.1.
-        uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
+        uses: crate-ci/typos@4c8b7f51ca60df14e3c5ca82770dfbbe6c3dae85 # v1.52.0
         with:
           config: .typos.toml
 
